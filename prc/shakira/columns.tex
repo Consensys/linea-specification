@@ -1,0 +1,46 @@
+\begin{enumerate}
+        \item \shakiraStamp{}:
+		module stamp
+	\item \shakiraId{}:
+		unique data identifier;
+		can have large increments but must be listed in ascending order;
+	\item \shakiraPhase{}:
+		``phase'' column;
+	\item \index{}:
+		index column
+	\item \indexMax{}:
+		associated ``maximum index'' column;
+\end{enumerate}
+A data limb is uniquely determined by
+(\emph{a}) a unique identifier,
+(\emph{b}) a phase and
+(\emph{c}) an index.
+These are provided above.
+\begin{enumerate}[resume]
+	\item \limb{}:
+		data limb column;
+	\item $\nBytes$:
+		column containing the number of bytes $\in \{ 1, 2, \dots, \llarge \}$ of a particular limb;
+		equal to $\llarge$ on all data-rows besides possibly the last one;
+	\item $\nBytesAcc$:
+		column accumulating the $\nBytes$ column;
+	\item $\shakiraTotalSize$:
+		column containing the total data size;
+\end{enumerate}
+The following columns are exclusive binary columns that allow the present module to identify the nature of the data it holds.
+\begin{multicols}{2}
+	\begin{enumerate}[resume]
+		\item \isShakiraKeccakData{}
+		\item \isShakiraShaTwoData{}
+		\item \isShakiraRipemdData{}
+		\item \isShakiraKeccakResult{}
+		\item \isShakiraShaTwoResult{}
+		\item \isShakiraRipemdResult{}
+		% \item[\vspace{\fill}]
+		% \item[\vspace{\fill}]
+	\end{enumerate}
+\end{multicols}
+The following columns are bit columns that light up exactly when the \limb{} contains the high part of the result of an instruction. It plays no rôle in the arithmetization \emph{per se} but proves useful to the prover.
+\begin{enumerate}
+	\item $\selectorKeccakRes\high$, $\selectorShaTwoRes\high$ and $\selectorRipemdRes\high$: 
+\end{enumerate}

@@ -1,0 +1,34 @@
+We define constraints that impose basic behaviour of the second scenario-row of a \inst{CALL}-type instruction (unexceptional, unaborted i.e. entered) targeting a precompile. 
+\[
+	\hspace*{-2cm}
+	\precompileScenarioRow {i}{\relof}
+	\iff
+	\left\{ \begin{array}{lcl}
+		\begin{array}{lcl}
+			\peekScenario               _{i + \relof} & = & \one                \\
+			\scenPrecompileSum          _{i + \relof} & = & \one                \\
+			\scenPrecompileWeightedSum  _{i + \relof} & = & \locCalleeAddressLo \\
+		\end{array} \vspace{4mm}  \\
+		\begin{array}{lcl}
+			\scenPrcFailure           _{i + \relof} & = & \scenCallPrcFailure_{i}           \\
+			\scenPrcSuccessWillRevert _{i + \relof} & = & \scenCallPrcSuccessWillRevert_{i} \\
+			\scenPrcSuccessWontRevert _{i + \relof} & = & \scenCallPrcSuccessWontRevert_{i} \\
+		\end{array} \vspace{4mm}  \\
+		\begin{array}{lcl}
+			\scenPrcCurrentlyValidCallerGas _{i + \relof} & = & \locGasActual - \locStpGasUpfront - \locStpGasPoop \\
+			\scenPrcGasAllowance            _{i + \relof} & = & \locStpGasPoop + \locStpGasStipend                 \\
+			\scenPrcGasOwedToCaller         _{i + \relof} & = & \toBeSet                                           \\
+		\end{array} \vspace{4mm}  \\
+		\begin{array}{lcl}
+			\scenPrcCdo _{i + \relof} & = & \locCdoLo \\
+			\scenPrcCds _{i + \relof} & = & \locCdsLo \\
+			\scenPrcRao _{i + \relof} & = & \locRaoLo \\
+			\scenPrcRac _{i + \relof} & = & \locRacLo \\
+			% \scenPrcFailureGas  _{i + \relof} & = & \\
+			% \scenPrcFailureData _{i + \relof} & = & \\
+		\end{array}  \\
+	\end{array} \right.
+\]
+\saNote{} The contents of column \scenPrcGasOwedToCaller{} will be set from the vantage point of a precompile row.
+
+\saNote{} Every time this constraint is invoked the first condition $\peekScenario \equiv \one$ will already hold by virtue of section~(\ref{hub: instruction handling: call: peeking flags and nRows for precompiles first half}).

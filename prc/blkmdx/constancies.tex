@@ -1,0 +1,38 @@
+We define a column \col{X} to be \textbf{stamp-constant} if it satisfies the following:
+\[
+	\If \blkMdxStamp_{i} \neq 1 + \blkMdxStamp_{i - 1} ~ \Then \col{X}_{i} = \col{X}_{i - 1}
+\]
+We impose that the following column(s) be stamp-constant
+\begin{enumerate}
+	\item \modexpBlakeId
+\end{enumerate}
+We define a column \col{X} to be \textbf{index-constant} if it satisfies the following:
+\[
+	\If \index_{i} \neq 0 ~ \Then \col{X}_{i} = \col{X}_{i - 1}.
+\]
+We impose that the following columns be index-constant: 
+\begin{enumerate}
+	\item \weightedPhaseFlagSum{}
+\end{enumerate}
+\saNote{}\label{blake + modexp: constancies: implied index constancy of the binary flags}
+It is crucial that the weights used in the definition of \weightedPhaseFlagSum{} (i.e. $\phaseModexpBase{}$, $\phaseModexpExponent{}$, \dots) be \textbf{pairwise distinct nonzero}.
+Combined with the fact that the columns which appear in the defining expression of \weightedPhaseFlagSum{} are \textbf{exclusive binary columns}, the index-constancy of \weightedPhaseFlagSum{} implies index-constancy of the underlying columns:
+\begin{multicols}{2}
+	\begin{enumerate}[resume]
+		\item \isModexpBase{}     \quad(\trash)
+		\item \isModexpExponent{} \quad(\trash)
+		\item \isModexpModulus{}  \quad(\trash)
+		\item \isModexpResult{}   \quad(\trash)
+		\item \isBlakeData{}      \quad(\trash)
+		\item \isBlakeParams{}    \quad(\trash)
+		\item \isBlakeResult{}    \quad(\trash)
+		\item[\vspace{\fill}]
+	\end{enumerate} 
+\end{multicols}
+These index-constancies also imply index-constancy of the columns derived from them:
+\begin{multicols}{2}
+	\begin{enumerate}[resume]
+		\item \modexpBlakePhase{}  \quad(\trash)
+		\item \indexMax{}          \quad(\trash)
+	\end{enumerate} 
+\end{multicols}

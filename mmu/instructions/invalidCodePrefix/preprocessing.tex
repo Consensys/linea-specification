@@ -1,0 +1,70 @@
+\begin{center}
+	\boxed{%
+		\text{The pre-processing presented below assumes that }
+		\left\{ \begin{array}{lcl}
+			\isMacro                          _{i}      & = & 1 \\
+			\mmuInstFlagInvalidCodePrefix     _{i}      & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+We constrain the number of rows of the pre-processing and micro-instruction-writing phase:
+\begin{enumerate}
+	\item $\ppTotNT_{i} = 1$
+	\item $\ppTotLZ_{i} = 0$
+	\item $\ppTotRZ_{i} = 0$
+\end{enumerate}
+We advance to the actual pre-processing and micro-instruction-writing phases.
+We deal with \mmuInstInvalidCodePrefix{}'s in a fixed number of rows.
+This allows us to deal both with pre-processing and micro-instruction-writing from a single vantage point. 
+\begin{description}
+	\item[Preprocessing row $\bm{n^\circ 1}$:] 
+		we impose that
+		\[
+			\left\{ \begin{array}{l}
+				\callToEuc
+				{i}{1}
+				{\macroSrcOffsetLo  _{i}}
+				{\llarge}
+				\vspace{2mm}
+				\\
+				\callToEq
+				{i}{1}
+				{0}{\microLimb_{i + \nppMmuInstInvalidCodePrefixValuePO}}
+				{\texttt{0x\,EF}}       
+			\end{array} \right.
+		\]
+		and we further impose that
+		\[
+			\macroSuccessBit_{i} = 1 - \ppWcpRes_{i + 1}
+		\]
+		we define the following shorthands:
+		\[
+			\left\{ \begin{array}{lcl}
+				\locSlo        & \define & \ppEucQuot   _{i + 1} \\
+				\locSbo        & \define & \ppEucRem    _{i + 1} \\
+			\end{array} \right.
+		\]
+	\item[Micro-instruction writing:]
+		only one micro-instruction is required: 
+		\[ \left\{ \begin{array}{lclr}		
+			\microInst        _{i + \nppMmuInstInvalidCodePrefixValuePO} & = &  \mmioInstRamToLimbOneSource \\
+			\microSize        _{i + \nppMmuInstInvalidCodePrefixValuePO} & = & 1 \\
+			\microSlo         _{i + \nppMmuInstInvalidCodePrefixValuePO} & = & \locSlo \\
+			\microSbo         _{i + \nppMmuInstInvalidCodePrefixValuePO} & = & \locSbo \\
+			\microTlo         _{i + \nppMmuInstInvalidCodePrefixValuePO} & = & \nothing \\
+			\microTbo         _{i + \nppMmuInstInvalidCodePrefixValuePO} & = & \llarge - 1 \\
+			\microLimb        _{i + \nppMmuInstInvalidCodePrefixValuePO} & = & \relevantValue \\
+			\microCns         _{i + \nppMmuInstInvalidCodePrefixValuePO} & = & \macroSrcId_{i} \\
+			\microCnt         _{i + \nppMmuInstInvalidCodePrefixValuePO} & = & \nothing \\
+			\microSuccessBit  _{i + \nppMmuInstInvalidCodePrefixValuePO} & = & \nothing \\
+			\microExoSum      _{i + \nppMmuInstInvalidCodePrefixValuePO} & = & \rZero \\
+			\microPhase       _{i + \nppMmuInstInvalidCodePrefixValuePO} & = & \nothing \\
+			\microIdOne       _{i + \nppMmuInstInvalidCodePrefixValuePO} & = & \nothing \\
+			\microIdTwo       _{i + \nppMmuInstInvalidCodePrefixValuePO} & = & \nothing \\
+			\microTotalSize   _{i + \nppMmuInstInvalidCodePrefixValuePO} & = & \nothing \\
+
+		\end{array} \right.
+		\]
+\end{description}
+\saNote{} The value present in $\microLimb_{i + \nppMmuInstInvalidCodePrefixValuePO}$ will be justified in the \mmioMod{} module by the  \mmioInstRamToLimbOneSource{} instruction.
+It is the byte contained at offset $\macroSrcOffsetLo_{i}$ in the \textsc{ram} of the execution context with context number $\macroSrcId_{i}$.

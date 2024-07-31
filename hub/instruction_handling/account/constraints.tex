@@ -1,0 +1,263 @@
+\begin{center}
+	\boxed{%
+		\text{The stack constraints presented below assume }
+		\left\{ \begin{array}{lcl}
+			\peekStack_{i}                & = & 1 \\
+			\stackDecAccFlag_{i}          & = & 1 \\
+			\stackSux_{i} + \stackSox_{i} & = & 0 \\
+		\end{array} \right. }
+\end{center}
+
+\begin{description}
+	\item[\underline{Setting the stack pattern:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\locRequiresTrimming = 1$ \Then $\oneOneSP  _{i}$
+			\item \If $\locCurrentAccount   = 1$ \Then $\zeroOneSP _{i}$
+		\end{enumerate}
+	\item[\underline{Setting allowable exceptions:}]
+		we impose $\xAhoy_{i} = \stackOogx_{i}$ \quad (\trash)
+	\item[\underline{Setting $\nonStackRows$:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\locRequiresTrimming = 1$ \Then $\nonStackRows_{i} = 1 + \cnWillRev_{i} + \cmc_{i}$
+			\item \If $\locCurrentAccount   = 1$ \Then $\nonStackRows_{i} = 1 + (1 - \cmc_{i})$
+		\end{enumerate}
+		\saNote{} For instructions raising the $\stackDecAccFlag$ one has $\cmc \equiv \xAhoy$.
+	\item[\underline{Setting the peeking flags:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\locRequiresTrimming = 1$ \Then
+				\begin{enumerate}
+					\item \If $\cnWillRev_{i} = 0$ \Then
+						\[
+							\left[ \begin{array}{cr}
+								+ & \peekAccount_{i + 1} \\ 
+								+ & \cmc_{i} \cdot \peekContext_{i + 2} \\ 
+							\end{array} \right]
+							= \nonStackRows_{i}
+						\]
+					\item \If $\cnWillRev_{i} = 1$ \Then
+						\[
+							\left[ \begin{array}{cr}
+								+ & \peekAccount_{i + 1} \\ 
+								+ & \peekAccount_{i + 2} \\ 
+								+ & \cmc_{i} \cdot \peekContext_{i + 3} \\ 
+							\end{array} \right]
+							= \nonStackRows_{i}
+						\]
+				\end{enumerate}
+			\item \If $\locCurrentAccount   = 1$ \Then
+				\begin{enumerate}
+					\item \If $\xAhoy_{i} = 0$ \Then
+						\[
+							\left[ \begin{array}{cr}
+								+ & \peekContext_{i + 1} \\ 
+								+ & \peekAccount_{i + 2} \\ 
+							\end{array} \right]
+							= \nonStackRows_{i}
+						\]
+					\item \If $\xAhoy_{i} = 1$ \Then $\peekContext_{i + 1} = \nonStackRows_{i}$
+				\end{enumerate}
+		\end{enumerate}
+	\item[\underline{Setting the gas cost:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\locRequiresTrimming = 1$ \Then
+				\[
+					\gasCost_{i}
+					=
+					\left[ \begin{array}{crcl}
+						+ & \locWarmth       & \cdot & G_{\text{warmaccess}}        \\
+						+ & (1 - \locWarmth) & \cdot & G_{\text{coldaccountaccess}} \\
+					\end{array} \right]
+				\]
+				\saNote{} Recall that
+				$G_{\text{coldaccountaccess}} = 2600$ and
+				$G_{\text{warmaccess}} = 100$.
+			\item \If $\locCurrentAccount   = 1$ \Then
+				\[
+					\gasCost_{i} = \stackStaticGas_{i}
+					% = G_{\text{low}} + \decFlag {4} _{i} \cdot ( G_{\text{base}} - G_{\text{low}} )
+				\]
+				\saNote{} In other words for
+				\inst{CODESIZE}    one has $\gasCost \equiv G_{\text{base}} \equiv 2$ while for
+				\inst{SELFBALANCE} one has $\gasCost \equiv G_{\text{low}}  \equiv 5$.
+		\end{enumerate}
+	\item[\underline{Garnishing the non stack rows:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\locRequiresTrimming = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\accRomLexFlag   _{i + 1} & = & \nothing             \\
+						\multicolumn{3}{l}{\accTrimAddress
+						{i}{1}
+						{\stackItemValHi {1} _{i}}
+						{\stackItemValLo {1} _{i}}} \\
+						% \accTrmFlag      _{i + 1} & = & \rOne                    \\
+						% \accTrmRawAddrHi _{i + 1} & = & \stackItemValHi {1} _{i} \\
+						% \accAddressLo    _{i + 1} & = & \stackItemValLo {1} _{i} \\
+						\multicolumn{3}{l}{\accSameBalance                      {i}{1}} \\
+						\multicolumn{3}{l}{\accSameNonce                        {i}{1}} \\
+						\multicolumn{3}{l}{\accSameCode                         {i}{1}} \\
+						\multicolumn{3}{l}{\accSameDeployment                   {i}{1}} \\
+						\multicolumn{3}{l}{\accTurnOnWarmth                     {i}{1}} \\
+						\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag    {i}{1}} \\
+						\multicolumn{3}{l}{
+							\standardDomSubStamps {
+								anchorRow        = i,
+								relOffset        = 1,
+								domOffset        = 0,
+							}
+						} \\
+							% \standardDomSubStamps                {i}{1}{0}} \\
+					\end{array} \right.
+				\]
+				\begin{enumerate}
+					\item \If $\cnWillRev_{i} = 0$ \Then we don't need to impose anything else;
+					\item \If $\cnWillRev_{i} = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\accRomLexFlag   _{i + 2} & = & \nothing             \\
+						\accTrmFlag      _{i + 2} & = & \nothing             \\
+						\accSameAddr                                   {i}{2}{1} \\
+						\accUndoBalanceUpdate                          {i}{2}{1} \\
+						\accUndoNonceUpdate                            {i}{2}{1} \\
+						\accUndoCodeUpdate                             {i}{2}{1} \\
+						\accUndoDeploymentStatusAndNumberUpdate        {i}{2}{1} \\
+						\accUndoWarmthUpdate                           {i}{2}{1} \\
+						\accSameMarkedForSelfdestructFlag              {i}{2}    \\
+						\revertDomSubStamps {
+							anchorRow        = i,
+							relOffset        = 2,
+							subOffset        = 1,
+						} \\
+						% \revertDomSubStamps {i}{2}{1} \\
+					\end{array} \right.
+				\]
+				\end{enumerate}
+			\item \If $\locCurrentAccount   = 1$ \Then
+				\begin{enumerate}
+					\item \If $\xAhoy_{i} = 0$ \Then we impose
+						\begin{description}
+							\item[\underline{Context row:}]
+								we impose
+								$\readContextData {i}{1}{\cn_{i}}$
+							\item[\underline{Account row:}]
+								we impose
+								\[
+									\left\{ \begin{array}{lcl}
+										\accTrmFlag      _{i + 2} & = & \nothing      \\
+										\accRomLexFlag   _{i + 2} & = & \nothing      \\
+										\accAddressHi    _{i + 2} & = & \valueToBeSet \\
+										\accAddressLo    _{i + 2} & = & \valueToBeSet \\
+										\multicolumn{3}{l}{\accSameBalance                     {i}{2}} \\
+										\multicolumn{3}{l}{\accSameNonce                       {i}{2}} \\
+										\multicolumn{3}{l}{\accSameCode                        {i}{2}} \\
+										\multicolumn{3}{l}{\accSameDeployment                  {i}{2}} \\
+										\multicolumn{3}{l}{\accTurnOnWarmth                    {i}{2}} \\
+										\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag   {i}{2}} \\
+										\multicolumn{3}{l}{
+											\standardDomSubStamps {
+												anchorRow        = i,
+												relOffset        = 2,
+												domOffset        = 0,
+											}
+										} \\
+											% \standardDomSubStamps               {i}{2}{0}} \\
+									\end{array} \right.
+								\]
+								furthermore
+								\begin{enumerate}
+									\item \If $\decFlag{4}_{i} = 0$ \Then
+										\[
+											\left\{ \begin{array}{lcl}
+												\accAddressHi    _{i + 2} & = & \locAccountAddressHi \\
+												\accAddressLo    _{i + 2} & = & \locAccountAddressLo \\
+											\end{array} \right.
+										\]
+										\saNote{} This is the \inst{SELFBALANCE} case.
+									\item \If $\decFlag{4}_{i} = 1$ \Then
+										\[
+											\left\{ \begin{array}{lcl}
+												\accAddressHi    _{i + 2} & = & \locCodeAddressHi \\
+												\accAddressLo    _{i + 2} & = & \locCodeAddressLo \\
+											\end{array} \right.
+										\]
+										\saNote{} This is the \inst{CODESIZE} case.
+								\end{enumerate}
+						\end{description}
+					\item \If $\xAhoy_{i} = 1$ \Then we don't need to impose anything;
+				\end{enumerate}
+		\end{enumerate}
+	\item[\underline{Value constraints:}]
+		\If $\xAhoy_{i} = 0$ \Then
+		we impose the following
+		\begin{description}
+			\item[\underline{The \inst{BALANCE} case:}]
+				\If $\decFlag{1}_{i} = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\stackItemValHi{4}_{i} & \!\!\! = \!\!\! & 0 \\
+						\stackItemValLo{4}_{i} & \!\!\! = \!\!\! & \accBalance_{i + 1} \\
+					\end{array} \right.
+				\]
+			\item[\underline{The \inst{EXTCODESIZE} case:}]
+				\If $\decFlag{2}_{i} = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\stackItemValHi{4}_{i} & \!\!\! = \!\!\! & 0 \\
+						\stackItemValLo{4}_{i} & \!\!\! = \!\!\! & \accCodesize_{i + 1} \\
+					\end{array} \right.
+				\]
+			\item[\underline{The \inst{EXTCODEHASH} case:}]
+				\If $\decFlag{3}_{i} = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\stackItemValHi{4}_{i} & \!\!\! = \!\!\! & \accCodehash_{i + 1}\high \\
+						\stackItemValLo{4}_{i} & \!\!\! = \!\!\! & \accCodehash_{i + 1}\low \\
+					\end{array} \right.
+				\]
+			\item[\underline{The \inst{CODESIZE} case:}]
+				\If $\decFlag{4}_{i} = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\stackItemValHi{4}_{i} & \!\!\! = \!\!\! & 0 \\
+						\stackItemValLo{4}_{i} & \!\!\! = \!\!\! & \accCodesize_{i + 2} \\
+					\end{array} \right.
+				\]
+			\item[\underline{The \inst{SELFBALANCE} case:}]
+				\If $\locDecFlagSumAccount = 0$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\stackItemValHi{4}_{i} & \!\!\! = \!\!\! & 0 \\
+						\stackItemValLo{4}_{i} & \!\!\! = \!\!\! & \accBalance_{i + 2} \\
+					\end{array} \right.
+				\]
+				where
+				\[
+					\locDecFlagSumAccount
+					\define
+					\left[ \begin{array}{cr}
+						+ & \decFlag{1}_{i} \\
+						+ & \decFlag{2}_{i} \\
+						+ & \decFlag{3}_{i} \\
+						+ & \decFlag{4}_{i} \\
+					\end{array} \right]
+				\]
+		\end{description}
+\end{description}
+
+% \begin{enumerate}
+% 	\item \If $\locRequiresTrimming = 1$ \Then
+% 		\begin{enumerate}
+% 			\item \If $\cnWillRev_{i} = 0$ \Then
+% 			\item \If $\cnWillRev_{i} = 1$ \Then
+% 		\end{enumerate}
+% 	\item \If $\locCurrentAccount   = 1$ \Then
+% 		\begin{enumerate}
+% 			\item \If $\xAhoy_{i} = 0$ \Then
+% 			\item \If $\xAhoy_{i} = 1$ \Then
+% 		\end{enumerate}
+% \end{enumerate}

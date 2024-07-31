@@ -1,0 +1,29 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{../../../pkg/draculatheme}
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NF Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\begin{document}
+\begin{verbatim}
+X  ≡ ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛  satisfies Plateau(X, c; CT), c = 0
+Y  ≡ ⬜⬜⬜⬜⬜⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛  satisfies Plateau(Y, c; CT), 0 < c = 5 < 16
+Z  ≡ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜  satisfies Plateau(Z, c; CT), c ≥ 16
+
+CT ≡  0 1 2 3 4 5 6 7      ...      15
+            
+White cells ⬜ represent 0.
+Black cells ⬛ represent 1.
+\end{verbatim}
+
+\end{document}

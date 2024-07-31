@@ -1,0 +1,7 @@
+The \mmuStamp{} keeps a running tally of all the times some memory instruction is to be carried out and requires a call to the \mmuMod{} module. The present section lays down some general constraints for the \mmuStamp{}.
+\begin{enumerate}
+	\item $\mmuStamp_{0} = 0$;
+	\item $\mmuStamp_{i + 1} \in \{ \mmuStamp_{i}, 1 + \mmuStamp_{i} \}$ (\trash)
+	\item $\mmuStamp_{i} = \mmuStamp_{i - 1} + \peekMisc_{i} \cdot \miscMmuFlag_{i}$
+\end{enumerate}
+% In other words, the only time the \mmuStamp{} changes is when dealing with an instruction that isn't squashed by a \suxSH{} or \soxSH{}. The precise conditions which lead to an increment in $\mmuStamp$ will be dealt with in a case by case fashion in section~\ref{hub: classifiers}.

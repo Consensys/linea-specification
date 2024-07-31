@@ -1,0 +1,71 @@
+We define the remaining context initialization parameterns,
+i.e. those marked with $(\textcolor{draculaorange}{\bigstar})$ in section~(\ref{hub: instruction handling: call: specialized: initializing callee}),
+as follows:
+\[
+	\col{new\_context\_is\_static}
+	\define
+	\left[ \begin{array}{rrrr}
+		+ & \locIsCall         & \cdot & \locIsStatic \\
+		+ & \locIsCallcode     & \cdot & \locIsStatic \\
+		+ & \locIsDelegatecall & \cdot & \locIsStatic \\
+		+ & \locIsStaticcall   & \cdot & \one         \\
+	\end{array} \right] 
+\]
+and
+\[
+	\left\{ \begin{array}{lcl}
+		\col{new\_account\_address\_hi} & \define &
+		\left[ \begin{array}{rrrr}
+			+ & \locIsCall         & \cdot & \locCalleeAddressHi  \\
+			+ & \locIsCallcode     & \cdot & \locCurrentAddressHi \\
+			+ & \locIsDelegatecall & \cdot & \locCurrentAddressHi \\
+			+ & \locIsStaticcall   & \cdot & \locCalleeAddressHi  \\
+		\end{array} \right] \vspace{2mm} \\
+		\col{new\_account\_address\_lo} & \define &
+		\left[ \begin{array}{rrrr}
+			+ & \locIsCall         & \cdot & \locCalleeAddressLo  \\
+			+ & \locIsCallcode     & \cdot & \locCurrentAddressLo \\
+			+ & \locIsDelegatecall & \cdot & \locCurrentAddressLo \\
+			+ & \locIsStaticcall   & \cdot & \locCalleeAddressLo  \\
+		\end{array} \right] \vspace{2mm} \\
+		%
+		\col{new\_account\_deployment\_number} & \define &
+		\left[ \begin{array}{rrrr}
+			+ & \locIsCall         & \cdot & \accDepNumber_{i + \callFirstCalleeAccountRowOffset} \\
+			+ & \locIsCallcode     & \cdot & \accDepNumber_{i + \callFirstCallerAccountRowOffset} \\
+			+ & \locIsDelegatecall & \cdot & \accDepNumber_{i + \callFirstCallerAccountRowOffset} \\
+			+ & \locIsStaticcall   & \cdot & \accDepNumber_{i + \callFirstCalleeAccountRowOffset} \\
+		\end{array} \right] \\
+	\end{array} \right.
+\]
+and
+\[
+	\left\{ \begin{array}{lcl}
+		\col{new\_caller\_address\_hi} & \define &
+		\left[ \begin{array}{rrrr}
+			+ & \locIsCall         & \cdot & \locCurrentAddressHi    \\
+			+ & \locIsCallcode     & \cdot & \locCurrentAddressHi    \\
+			+ & \locIsDelegatecall & \cdot & \locCurrentCallerAddressHi     \\
+			+ & \locIsStaticcall   & \cdot & \locCurrentAddressHi    \\
+		\end{array} \right] \vspace{2mm} \\
+		\col{new\_caller\_address\_lo} & \define &
+		\left[ \begin{array}{rrrr}
+			+ & \locIsCall         & \cdot & \locCurrentAddressLo    \\
+			+ & \locIsCallcode     & \cdot & \locCurrentAddressLo    \\
+			+ & \locIsDelegatecall & \cdot & \locCurrentCallerAddressLo     \\
+			+ & \locIsStaticcall   & \cdot & \locCurrentAddressLo    \\
+		\end{array} \right] \vspace{2mm} \\
+	\end{array} \right.
+\]
+and
+\[
+	\left\{ \begin{array}{lcl}
+		\col{new\_call\_value}         & \define &
+		\left[ \begin{array}{rrrr}
+			+ & \locIsCall         & \cdot & \locValueLo            \\
+			+ & \locIsCallcode     & \cdot & \locValueLo            \\
+			+ & \locIsDelegatecall & \cdot & \locCurrentCallValue   \\
+			+ & \locIsStaticcall   & \cdot & 0                      \\
+		\end{array} \right] \\
+	\end{array} \right.
+\]

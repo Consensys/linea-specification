@@ -1,0 +1,15 @@
+The arithmetization requires, at various points during opcode processing, access to the knowledge of whether an instruction produces an exception or not.
+Yet, the various exception flags for which we produced some preliminary constraints in section~(\ref{hub: generalities: exceptions: binarity and constancy}) belong to the stack perspective.
+In other words they are only ``readily available'' along stack-rows i.e. rows with $\peekStack = 1$.
+The purpose of the \xAhoy{} flag is to make a summary of that information available outside of stack rows for as long as required, i.e. along all rows with a given \hubStamp{}.
+
+The constraints for \xAhoy{} are as follows:
+\begin{enumerate}
+	\item \xAhoy{} is binary
+	\item \xAhoy{} is hub-stamp-constant
+	\item \If $\txExec_{i} = 0$ \Then $\xAhoy_{i} = 0$
+	\item \If $\peekStack_{i} = 1$ \Then $\xAhoy_{i} = \locExceptionFlagSum_{i}$
+\end{enumerate}
+\saNote{} Hub-stamp-constancy was already imposed in section~(\ref{hub: heartbeat: constancy conditions}).
+
+\saNote{} The \xAhoy{} flag is a refinement of the \cmc{} flag which we define in section~(\ref{hub: generalities: context: cmc flag}) in the sense that whenever $\xAhoy = 1$ then $\cmc = 1$, too. 

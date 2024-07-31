@@ -1,0 +1,102 @@
+\saNote{} Nonce and balance may change for the ``creator'' account. Everything else remains unchanged.
+\begin{center}
+	\boxed{%
+		\text{The next constraints are written assuming that}
+			\left\{ \begin{array}{lcl}
+				\peekScenario              _{i}   & = & 1 \\
+				\scenCreateComputeAddress  _{i}   & = & 1 \\
+			\end{array} \right. }
+\end{center}
+The present section contains details pertaining to the first appearance of the createe account.
+The \zkEvm{} loads this account \textbf{iff} the \inst{CREATE}-type instruction neither provokes an exception nor is aborted.
+Note that these innstructions may still produce a failure condition.
+In order to detect the triggering of the failure condition $\yellowPaperFailureCondition$.
+\begin{description}
+	\item[\underline{Account-row $n^°(i + \createFirstCreateeAccountRowOffset)$:}] 
+		we impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\accAddressHi _{i + \createFirstCreateeAccountRowOffset}                                             & = & \locCreateeAddressHi            \\
+				\accAddressLo _{i + \createFirstCreateeAccountRowOffset}                                             & = & \locCreateeAddressLo            \\
+				% balance: missing
+				% nonce  : not yet set
+				\multicolumn{3}{l}{\textcolor{solarized-green}{\texttt{<balance           operation set below>}}}   \\
+				\multicolumn{3}{l}{\textcolor{solarized-green}{\texttt{<nonce             operation   set below>}}} \\
+				% \multicolumn{3}{l}{\accSameCode              {i}{\createFirstCreateeAccountRowOffset}}            \\
+				\multicolumn{3}{l}{\textcolor{solarized-green}{\texttt{<code              operation set below>}}}   \\
+				% \multicolumn{3}{l}{\accSameWarmth            {i}{\createFirstCreateeAccountRowOffset}}            \\
+				\multicolumn{3}{l}{\textcolor{solarized-green}{\texttt{<warmth            operation set below>}}}   \\
+				% \multicolumn{3}{l}{\accSameDeploymentNumber  {i}{\createFirstCreateeAccountRowOffset}}            \\
+				\multicolumn{3}{l}{\textcolor{solarized-green}{\texttt{<deployment number operation set below>}}}   \\
+				% \multicolumn{3}{l}{\accSameDeploymentStatus  {i}{\createFirstCreateeAccountRowOffset}}            \\
+				\multicolumn{3}{l}{\textcolor{solarized-green}{\texttt{<deployment status operation set below>}}}   \\
+				\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag {i}{\createFirstCreateeAccountRowOffset}}      \\
+				\accRomLexFlag   _{i + \createFirstCreateeAccountRowOffset}                                          & = & \locTriggerRomLex               \\
+				\accTrmFlag      _{i + \createFirstCreateeAccountRowOffset}                                          & = & \valueUnknown                   \\
+				\accRlpAddrFlag  _{i + \createFirstCreateeAccountRowOffset}                                          & = & 0                  \vspace{2mm} \\
+				\multicolumn{3}{l}{
+					\standardDomSubStamps {
+						anchorRow        = i,
+						relOffset        = \createFirstCreateeAccountRowOffset,
+						domOffset        = 1,
+					}
+				} \\
+					% \standardDomSubStamps {i}{\createFirstCreateeAccountRowOffset}{1}}               \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		Given the premise of this section ($\scenCreateUnexceptional \equiv 1$) one will have $\accRlpAddrFlag \equiv 1$ unless $\scenCreateAbort \equiv 1$. 
+\end{description}
+\saNote{}
+For the upcoming set of constraints it suffices to impose the weaker precondition that $\peekScenario _{i} = 1$ i.e. one may drop the assumption that $\scenCreateComputeAddress _{i} = 1$.
+Indeedd this precondition follows from each and every precondition we will be imposing below.
+\begin{description}
+	\item[\underline{Setting the balance operation:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\scenCreateRebuffed    _{i} = 1$ \Then $\accSameBalance {i}{\createFirstCreatorAccountRowOffset}$
+			\item \If $\scenCreateNotRebuffed _{i} = 1$ \Then $\accIncrementBalance {i}{\createFirstCreatorAccountRowOffset}{\locValueLo}$
+		\end{enumerate}
+	\item[\underline{Setting the nonce operation:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\scenCreateRebuffed    _{i} = 1$ \Then $\accSameNonce      {i}{\createFirstCreateeAccountRowOffset}$
+			\item \If $\scenCreateNotRebuffed _{i} = 1$ \Then $\accIncrementNonce {i}{\createFirstCreateeAccountRowOffset}$
+		\end{enumerate}
+	\item[\underline{Setting the code operation:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\scenCreateRebuffed    _{i} = 1$ \Then $\accSameCode       {i}{\createFirstCreateeAccountRowOffset}$
+			\item \If $\scenCreateNotRebuffed _{i} = 1$ \Then
+				\[
+					\left\{ \begin{array}{lclr}
+						\multicolumn{3}{l}{\accSameCodeHash {i}{\createFirstCreateeAccountRowOffset}}                 \\
+						\accCodesize\new _{i + \createFirstCreateeAccountRowOffset}   & = & \locSizeLo      \vspace{2mm} \\
+						\accCodehashHi\new _{i + \createFirstCreateeAccountRowOffset} & = & \emptyKeccakHi                & (\trash) \\
+						\accCodehashLo\new _{i + \createFirstCreateeAccountRowOffset} & = & \emptyKeccakLo                & (\trash) \\
+					\end{array} \right.
+				\]
+				\saNote{}
+				The above is valid both for \inst{CREATE}-type instructions with empty initialization code and those with nonempty initialization code.
+		\end{enumerate}
+	\item[\underline{Setting the warmth operation:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\scenCreateNoCreatorStateChange _{i} = 1$ \Then $\accSameWarmth   {i}{\createFirstCreateeAccountRowOffset}$
+			\item \If $\scenCreateCreatorStateChange   _{i} = 1$ \Then $\accTurnOnWarmth {i}{\createFirstCreateeAccountRowOffset}$
+		\end{enumerate}
+	\item[\underline{Setting the deployment number operation:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\scenCreateRebuffed    _{i} = 1$ \Then $\accSameDeploymentNumber       {i}{\createFirstCreateeAccountRowOffset}$
+			\item \If $\scenCreateNotRebuffed _{i} = 1$ \Then $\accIncrementDeploymentNumber  {i}{\createFirstCreateeAccountRowOffset}$
+		\end{enumerate}
+	\item[\underline{Setting the deployment status operation:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\scenCreateRebuffed    _{i} = 1$ \Then $\accSameDeploymentStatus       {i}{\createFirstCreateeAccountRowOffset}$
+			\item \If $\scenCreateExecutionNonEmptyInitCode _{i} = 1$ \Then $\accTurnOnDepStatus {i}{\createFirstCreateeAccountRowOffset}$
+			\item \If $\scenCreateExecutionEmptyInitCode    _{i} = 1$ \Then $\accSameDeploymentStatus   {i}{\createFirstCreateeAccountRowOffset}$
+		\end{enumerate}
+\end{description}
+

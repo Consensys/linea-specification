@@ -1,0 +1,55 @@
+The following columns belong to the ``macro-instrution'' perspective, i.e. their contents behave as expected only on 
+\textbf{macro-instruction-rows}. 
+\begin{enumerate}
+	\item \macroInst{}:
+		custom ``\mmuMod{} instruction'' column;
+	\item \macroSrcId{}:
+		``source id'' which may or may not have been specified by the underlying macro-instruction;
+	\item \macroTgtId{}:
+		``target id'' which may or may not have been specified by the underlying macro-instruction;
+	\item \macroAuxId{}:
+		``auxiliary id'' which may or may not have been specified by the underlying macro-instruction;
+\end{enumerate}
+The ``id's'' specified above can refer to context numbers or identifiers for exogenous data modules, e.g. \kecStamp{} or \cfi{}.
+\begin{enumerate}[resume]
+	\item \macroSrcOffsetHi{} and \macroSrcOffsetLo{}:
+		high and low parts of a ``(relative) source byte offset'';
+	\item \macroTgtOffsetLo{}:
+		``(relative) target byte offset'';
+	\item \macroSize{}:
+		a ``size'' parameter;
+	\item \macroRefOffset{}:
+		a ``reference offset'' which some instructions provide;
+	\item \macroRefSize{}:  
+		a ``reference size'' which some instructions provide;
+\end{enumerate}
+Examples of instructions that provide these reference offsets and sizes are (non root) \inst{CALLDATACOPY} and \inst{RETURNDATACOPY}.
+The relevant data stores that these instructions extract data from are byte ranges in foreign execution context's \textsc{ram}'s.
+\begin{enumerate}[resume]
+	\item \macroSuccessBit{}:
+		a ``success bit'' that some instructions provide;
+\end{enumerate}
+The above is for instance used by precompiles which may e.g. fail due to their call data being malformed.
+Examples include \inst{ECADD}, \inst{ECMUL}, \inst{ECPAIRING} but also \inst{ECRECOVER}\footnote{\inst{ECRECOVER} won't \emph{fail} per se if provided with invalid inputs, but will return empty return data.}.
+Another usecase is that of (nonempty) bytecode deployments where the first byte of the code to deploy has to be tested against \texttt{0x\,EF}.
+The result of this (\hubMod{}) prediction is sent along with the \mmuMod{} instruction.
+\begin{enumerate}[resume]
+	\item \macroLimbOne{} and \macroLimbTwo{}:
+		data limbs that some instructions may provide;
+\end{enumerate}
+The above are used e.g. by
+\inst{MLOAD},
+\inst{MSTORE},
+\inst{MSTORE8},
+\inst{CALLDATALOAD}
+but also by the \inst{BLAKE2f} precompile (to transit the ``rounds'' and ``f'' parameter)
+and deployment \inst{RETURN}'s.
+
+The following fields provide further (more granular) identification for fetching or sending data to e.g. precompile data stores 
+\begin{enumerate}[resume]
+	\item \macroPhase{}:
+		small integer that helps distinguish e.g. inputs to precompiles from their outputs in the relevant exogenous data modules;
+	\item \macroExoSum{}:
+		integer that is understood as a bit field;
+		gets decoded into bits in the \mmioMod{} module;
+\end{enumerate}

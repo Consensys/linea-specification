@@ -1,0 +1,47 @@
+The present section describes the remaining computations required for dealing with \inst{ECRECOVER}, \inst{ECADD} and \inst{ECMUL}.
+As such:
+\[
+	\boxed{\text{All constraints in this subsection further assume }
+	\left[ \begin{array}{cr}
+		+ &  \oobInstIsEcrecover_{i} \\
+	        + &  \oobInstIsEcadd_{i}     \\
+	        + &  \oobInstIsEcmul_{i}     \\
+	\end{array} \right]
+	= 1
+	}
+\]
+We impose that
+\begin{description}
+	\item[\underline{Row n°$(i + 2)$:}] we impose the following:
+		\[
+			\oobCallToLt
+			{i}{2}
+			{0}{\locCallGas}
+			{0}{\locPrecompileCost}
+		\]
+		where
+		\[
+			\locPrecompileCost
+			\define
+			\left[ \begin{array}{crcl}
+				+ & 3000 & \cdot & \oobInstIsEcrecover_{i} \\
+				+ & 150  & \cdot & \oobInstIsEcadd_{i}     \\
+				+ & 6000 & \cdot & \oobInstIsEcmul_{i}     \\
+			\end{array} \right]
+		\]
+		we further introduce the following shorthand
+		\[ 
+			\locInsufficientGas \define \outgoingResLo_{i + 2}
+		\]
+		it follows that $\locCallGas < \locPrecompileCost \iff \locInsufficientGas = 1$.
+	\item[\underline{Justifying the remaining \hubMod{} predictions:}]
+		we impose that
+		\[
+			\locHubSuccess = 1 - \locInsufficientGas.
+		\]
+		we further impose that
+		\begin{enumerate}
+			\item \If $\locHubSuccess = 0$ \Then $\locReturnGas = 0$
+			\item \If $\locHubSuccess = 1$ \Then $\locReturnGas = \locCallGas - \locPrecompileCost$
+		\end{enumerate}
+\end{description}

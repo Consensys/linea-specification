@@ -1,0 +1,247 @@
+The present section constrains the byte column pairs
+$\shiftedBytes{3}\high$ and $\shiftedBytes{3}\low$,
+$\shiftedBytes{4}\high$ and $\shiftedBytes{4}\low$,
+$\shiftedBytes{5}\high$ and $\shiftedBytes{5}\low$, 
+$\shiftedBytes{6}\high$ and $\shiftedBytes{6}\low$,
+$\shiftedBytes{7}\high$ and $\shiftedBytes{7}\low$,
+and $\byteCol{4}$, $\byteCol{5}$.
+\[
+	\boxed{\text{All constraints below are written under the assumption that }\shfStamp_{i}\neq 0\text{ and }\oli_{i} = 0.}
+\]
+
+\paragraph{Constraining $\shiftedBytes{3}$.} ---
+\begin{enumerate}
+	\item \If $\shd_{i} = 0$ \Then
+	\begin{enumerate}
+		\item \If $\ct_{i} \neq \llargeMO$ \Then
+		\[
+		\left\{
+		\begin{array}{l}
+			\shiftedBytes{3}\high_{i} = \decLaHi_{i} + \decRaHi_{i + 1} \\
+			\shiftedBytes{3}\low_{i} = \decLaLo_{i} + \decRaLo_{i + 1} \\
+		\end{array}
+		\right.
+		\]
+		\item \If $\ct_{i} = \llargeMO$ 
+		\[
+		\left\{
+		\begin{array}{l}
+			\shiftedBytes{3}\high_{i} = \decLaHi_{i} + \decRaLo_{i - \llargeMO} \\
+			\shiftedBytes{3}\low_{i} = \decLaLo_{i} \\
+		\end{array}
+		\right.
+		\]
+	\end{enumerate}
+	\item \If $\shd_{i} = 1$ \Then
+	\begin{enumerate}
+		\item \If $\ct_{i} = 0$ 
+		\[
+		\left\{
+		\begin{array}{l}
+			\If \iInst_{i} = \inst{SAR} ~ \Then \shiftedBytes{3}\high_{i}
+			= \NEG_{i} \cdot \ONES_{i} + 
+			\decRaLo_{i} \\
+			\If \iInst_{i} = \inst{SHR} ~ \Then \shiftedBytes{3}\high_{i}
+			= \decRaLo_{i} \\
+			\shiftedBytes{3}\low_{i} = \decLaHi_{i + \llargeMO} + \decRaLo_{i}\\
+		\end{array}
+		\right.
+		\]
+		\item \If $\ct_{i} \neq 0$ \Then
+		\[
+		\left\{
+		\begin{array}{l}
+			\shiftedBytes{3}\high_{i} = \decLaHi_{i - 1} + \decRaHi_{i} \\
+			\shiftedBytes{3}\low_{i} = \decLaLo_{i - 1} + \decRaLo_{i} \\
+		\end{array}
+		\right.
+		\]
+	\end{enumerate}
+	Note that (given $\shd_{i} = 1$) the constraints
+	``$\If \iInst_{i} = \inst{SAR}$'' and ``$\If \iInst_{i} = \inst{SHR}$'' can be replaced by
+	``$\If \iInst_{i}\neq\inst{SHR}$'' and ``$\If \iInst_{i}\neq\inst{SAR}$'' respectively.
+\end{enumerate}
+
+\paragraph{Constraining $\shiftedBytes{4}$.} ---
+\begin{enumerate}
+	\item \If $\shd_{i} = 0$ \Then $\leftShiftBy_{1}\left(
+	\begin{array}{c}
+	\bit{b_{3}}, \bit{1}; \\
+	\shiftedBytes{3}\high_{i}, \shiftedBytes{3}\low_{i}; \\
+	\shiftedBytes{4}\high_{i}, \shiftedBytes{4}\low_{i}; \\
+	\end{array}\right)$
+	\item \If $\shd_{i} = 1$ \Then $\rightShiftBy_{1}\left(
+	\begin{array}{c}
+	\bit{b_{3}}, \bit{1}, \NEG, \iInst; \\
+	\shiftedBytes{3}\high_{i}, \shiftedBytes{3}\low_{i}; \\
+	\shiftedBytes{4}\high_{i}, \shiftedBytes{4}\low_{i}; \\
+	\end{array}\right)$
+\end{enumerate}
+
+\paragraph{Constraining $\shiftedBytes{5}$.} ---
+\begin{enumerate}
+	\item \If $\shd_{i} = 0$ \Then $\leftShiftBy_{2}\left(
+	\begin{array}{c}
+	\bit{b_{4}}, \bit{2}; \\
+	\shiftedBytes{4}\high_{i}, \shiftedBytes{4}\low_{i}; \\
+	\shiftedBytes{5}\high_{i}, \shiftedBytes{5}\low_{i}; \\
+	\end{array}\right)$
+	\item \If $\shd_{i} = 1$ \Then $\rightShiftBy_{2}\left(
+	\begin{array}{c}
+	\bit{b_{4}}, \bit{2}, \NEG, \iInst; \\
+	\shiftedBytes{4}\high_{i}, \shiftedBytes{4}\low_{i}; \\
+	\shiftedBytes{5}\high_{i}, \shiftedBytes{5}\low_{i}; \\
+	\end{array}\right)$
+\end{enumerate}
+
+\paragraph{Constraining $\shiftedBytes{6}$.} ---
+\begin{enumerate}
+	\item \If $\shd_{i} = 0$ \Then $\leftShiftBy_{4}\left(
+	\begin{array}{c}
+	\bit{b_{5}}, \bit{3}; \\
+	\shiftedBytes{5}\high_{i}, \shiftedBytes{5}\low_{i}; \\
+	\shiftedBytes{6}\high_{i}, \shiftedBytes{6}\low_{i}; \\
+	\end{array}\right)$
+	\item \If $\shd_{i} = 1$ \Then $\rightShiftBy_{4}\left(
+	\begin{array}{c}
+	\bit{b_{5}}, \bit{3}, \NEG, \iInst; \\
+	\shiftedBytes{5}\high_{i}, \shiftedBytes{5}\low_{i}; \\
+	\shiftedBytes{6}\high_{i}, \shiftedBytes{6}\low_{i}; \\
+	\end{array}\right)$
+\end{enumerate}
+
+\paragraph{Constraining $\shiftedBytes{7}$.} ---
+\begin{enumerate}
+	\item \If $\shd_{i} = 0$ \Then $\leftShiftBy_{8}\left(
+	\begin{array}{c}
+	\bit{b_{6}}, \bit{4}; \\
+	\shiftedBytes{6}\high_{i}, \shiftedBytes{6}\low_{i}; \\
+	\shiftedBytes{7}\high_{i}, \shiftedBytes{7}\low_{i}; \\
+	\end{array}\right)$
+	\item \If $\shd_{i} = 1$ \Then $\rightShiftBy_{8}\left(
+	\begin{array}{c}
+	\bit{b_{6}}, \bit{4}, \NEG, \iInst; \\
+	\shiftedBytes{6}\high_{i}, \shiftedBytes{6}\low_{i}; \\
+	\shiftedBytes{7}\high_{i}, \shiftedBytes{7}\low_{i}; \\
+	\end{array}\right)$
+\end{enumerate}
+
+\iffalse
+\paragraph{Constraining $\shiftedBytes{4}$.} ---
+\begin{enumerate}
+	\item \If $\bit{b_3}_{i} = 0$ \Then	
+	\[
+	\left\{
+	\begin{array}{l}
+		\shiftedBytes{4}\high_{i} = \shiftedBytes{3}\high_{i} \\
+		\shiftedBytes{4}\low_{i}  = \shiftedBytes{3}\low_{i}  \\
+	\end{array}
+	\right.
+	\]
+	\item \If $\bit{b_3}_{i} = 1$ \Then
+	\begin{enumerate}
+		\item \If $\shd_{i} = 0$ \Then
+		\begin{enumerate}
+			\item \If $\bit{2}_{i} = 0$ \Then
+			\[
+			\left\{
+			\begin{array}{l}
+				\shiftedBytes{4}\high_{i} = \shiftedBytes{3}\high_{i + 2} \\
+				\shiftedBytes{4}\low_{i}  = \shiftedBytes{3}\low_{i + 2}  \\
+			\end{array}
+			\right.
+			\]
+			\item \If $\bit{2}_{i} = 1$ \Then 
+			\[
+			\left\{
+			\begin{array}{l}
+				\shiftedBytes{4}\high_{i} = \shiftedBytes{3}\low_{i - 14} \\
+				\shiftedBytes{4}\low_{i}  = 0  \\
+			\end{array}
+			\right.
+			\]
+%			\[
+%			\left\{
+%			\begin{array}{l}
+%				\shiftedBytes{4}\high_{i} =
+%				\begin{cases}
+%				\If \bit{b_3}_{i} = 1:&
+%				\shiftedBytes{4}\high_{i} \\
+%				\If \bit{b_3}_{i} = 1:&
+%				\shiftedBytes{3}\low_{i - 14} \\
+%				\end{cases}
+%				% \shiftedBytes{3}\low_{i - 14}
+%				\\
+%				\shiftedBytes{4}\low_{i}  = 0 \\
+%			\end{array}
+%			\right.
+%			\]
+		\end{enumerate}
+		\item \If $\shd_{i} = 1$ \Then
+		\begin{enumerate}
+			\item \If $\bit{2}_{i} = 0$ \Then
+			\[
+			\left\{
+			\begin{array}{l}
+				\shiftedBytes{4}\high_{i} = 0 \\
+				\shiftedBytes{4}\low_{i}  = \shiftedBytes{3}\high_{i + 14}  \\
+			\end{array}
+			\right.
+			\]
+			\item \If $\bit{2}_{i} = 1$ \Then 
+			\[
+			\left\{
+			\begin{array}{l}
+				\shiftedBytes{4}\high_{i} = \shiftedBytes{3}\high_{i - 2} \\
+				\shiftedBytes{4}\low_{i}  = \shiftedBytes{3}\low_{i - 2}  \\
+			\end{array}
+			\right.
+			\]
+%			\[
+%			\left\{
+%			\begin{array}{l}
+%				\shiftedBytes{4}\high_{i} =
+%				\begin{cases}
+%				\If \bit{b_3}_{i} = 1:&
+%				\shiftedBytes{4}\high_{i} \\
+%				\If \bit{b_3}_{i} = 1:&
+%				\shiftedBytes{3}\low_{i - 14} \\
+%				\end{cases}
+%				% \shiftedBytes{3}\low_{i - 14}
+%				\\
+%				\shiftedBytes{4}\low_{i}  = 0 \\
+%			\end{array}
+%			\right.
+%			\]
+		\end{enumerate}
+	\end{enumerate}
+	\item \If $\shd_{i} = 1$ \Then
+	\begin{enumerate}
+		\item \If $\bit{2}_{i} = 0$ 
+		\[
+		\left\{
+		\begin{array}{l}
+			\If \iInst_{i} = \inst{SAR} ~ \Then \shiftedBytes{4}\high_{i}
+			= \NEG_{i} \cdot \ONES_{i} + 
+			\decRaLo_{i} \\
+			\If \iInst_{i} = \inst{SHR} ~ \Then \shiftedBytes{4}\high_{i}
+			= \decRaLo_{i} \\
+			\shiftedBytes{3}\low_{i} = \decLaHi_{i + \llargeMO} + \decRaLo_{i}\\
+		\end{array}
+		\right.
+		\]
+		\item \If $\bit{2}_{i} = 1$ \Then
+		\[
+		\left\{
+		\begin{array}{l}
+			\shiftedBytes{3}\high_{i} = \decLaHi_{i - 1} + \decRaHi_{i} \\
+			\shiftedBytes{3}\low_{i} = \decLaLo_{i - 1} + \decRaLo_{i} \\
+		\end{array}
+		\right.
+		\]
+	\end{enumerate}
+	Note that (given $\shd_{i} = 1$) the constraints
+	``$\If \iInst_{i} = \inst{SAR}$'' and ``$\If \iInst_{i} = \inst{SHR}$'' can be replaced by
+	``$\If \iInst_{i}\neq\inst{SHR}$'' and ``$\If \iInst_{i}\neq\inst{SAR}$'' respectively.
+\end{enumerate}
+\fi

@@ -1,0 +1,13 @@
+Recall that \textbf{type 1} and \textbf{type 2} transactions provide (potentially empty) \textbf{accessList}'s, see section~(\ref{rlp_txn: phase constraints: access list: intro}).
+The purpose of the ``\textbf{pre-warming}'' phase of transaction processing is to perform the associated pre-warming of addresses and storage keys from the access list \textbf{if present} and \textbf{as required}.
+That is to say for transactions that
+(\emph{a}) come with an \textbf{accessList} and
+(\emph{b}) require \evm{} execution, see section~(\ref{txn_data: constraints: specialized computations}).
+
+The structure of these pre-warming operations is simple.
+Every access list item $E \equiv (E_\text{a}, E_\textbf{s})$, see section~(\ref{rlp_txn: phase constraints: access list: intro}), contains an address $E_\text{a}$.
+The first operation is thus to pre-warm said address on a dedicated \textbf{address-row}.
+At that point in time we are further able to retrieve the currently valid deployment number for said address.
+The following field in the access list item is a (possibly empty) list of storage keys $E_\textbf{s}$ of storage keys.
+When that list is nonempty the next step is to pre-warm the storage keys from $E_\textbf{s}$ on as many storage rows as.
+This requires us to know the currently valid deployment number, which we have access to by the above.

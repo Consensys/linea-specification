@@ -1,0 +1,32 @@
+This section presents some of the basic constraints pertaining to the context number columns $\cn$ and $\cn\new$.
+Recall that both are stamp-constant, see section~\ref{hub: constancy conditions}.
+\begin{enumerate}
+	\item $\cn$ and $\cn\new$ are hub-stamp-constant
+	\item \If $\txInit_{i} = 1$ \Then
+		\begin{enumerate}
+			\item $\cn     _{i} = 0$
+			\item $\cn\new _{i} = 1 + \hubStamp_{i}$
+		\end{enumerate}
+	\item \If $\txExec_{i} = 1$ \Then 
+		\begin{enumerate}
+			\item\label{next context number}
+				$\cn\new_{i} \in \{ \cn_{i}, \caller_{i}, 1 + \hubStamp_{i} \}$
+			\item \If $\hubStamp_{i} \neq \hubStamp_{i - 1}$ \Then $\cn_{i} = \cn\new_{i - 1}$
+			\item \If $\cmc_{i} = 0$ \Then $\cn\new_{i} = \cn_{i}$
+		\end{enumerate}
+	\item \If $\hubStamp_{i + 1} \neq \hubStamp_{i}$ \Then
+		\begin{enumerate}
+			\item \If $\cmc_{i}    = 1$ \Then $\peekContext_{i} = 1$
+			\item \If $\xAhoy_{i}  = 1$ \Then $\executionProvidesEmptyReturnData {i}{0} $
+			\item\label{hub: generalitiles: context: how to trigger finalization phase} \If $\txExec_{i} = 1$
+				\begin{enumerate}
+				        \item \If $\cn\new_{i} \neq 0$ \Then $\txExec_{i + 1} = 1$
+				        \item \If $\cn\new_{i} =    0$ \Then $\txFinl_{i + 1} = 1$
+				\end{enumerate}
+		\end{enumerate}
+	\item \If $\xAhoy_{i} = 1$ \Then $\cn\new_{i} = \caller_{i}$
+	\item \If \big($\peekStack_{i} = 1$ \et $\haltFlag_{i} = 1$\big) \Then $\cn\new_{i} = \caller_{i}$
+\end{enumerate}
+\saNote{} Constraint~(\ref{hub: generalitiles: context: how to trigger finalization phase}) settles the question of when execution stops and the finalization phase starts.
+
+\saNote{} We refer to section~\ref{hub: generalities: context: context constraints} for the definition of $\executionProvidesEmptyReturnData {i}{\relof}$.

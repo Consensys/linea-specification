@@ -1,0 +1,88 @@
+================================================================================
+// secp1kn = fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141
+
+// MSTOREing h
+// h = 0x0123456789abcdef to 4th or 5th power IIRC (mod 2**256)
+PUSH32 0xad5d179fa1525bc473f4f6d09efdfa875b8c34bd4a6c30aaef2c31b0d2ca22c1
+PUSH1  0x00
+MSTORE
+
+// MSTOREing v
+// requirement: v = 27 or v = 28
+PUSH1  0x1b		// v = 27
+PUSH1  0x20
+MSTORE
+
+// MSTOREing r
+// requirement: 0 < r < secp1kn
+// PUSH32 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141
+PUSH32 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0360000
+PUSH1  0x40
+MSTORE
+
+// MSTOREing s
+// which requirement must hold ?
+//	0 < r < secp1kn 		?
+//	0 < r < (secp1kn/2) + 1 ?
+PUSH31   0xfffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141
+PUSH1    0x60
+MSTORE
+
+// memory at this point:
+//
+// ad5d179fa1525bc473f4f6d09efdfa875b8c34bd4a6c30aaef2c31b0d2ca22c1		<- h
+// 000000000000000000000000000000000000000000000000000000000000001b		<- v
+// fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0360000		<- r
+// 00fffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141		<- s
+
+// preparing for the call
+PUSH1 0x20
+PUSH1 0x00
+PUSH1 0x80      // 128 bytes
+PUSH1 0x00
+PUSH1 0x00      // value
+PUSH1 0x01      // address = ecRecover
+PUSH3 0xffffff  // gas
+
+CALL
+================================================================================
+
+
+
+
+
+
+================================================================================
+// secp1kn = fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141
+//
+// h = 0x0123456789abcdef to 4th or 5th power IIRC (mod 2**256)
+PUSH32 0xad5d179fa1525bc473f4f6d09efdfa875b8c34bd4a6c30aaef2c31b0d2ca22c1
+PUSH1  0x00
+MSTORE
+
+// v = 27 or 28
+PUSH1  0x1b   // v = 27
+PUSH1  0x20
+MSTORE
+
+// 0 < r < secp1kn
+// removed 0x4141 from secp1kn 
+PUSH32 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0360000
+PUSH1  0x40
+MSTORE
+
+// 0 < s < secp1kn or 0 < s < 1 + secp1kn/2 ???
+PUSH32 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364140
+PUSH1  0x60
+MSTORE
+
+PUSH1 0x20
+PUSH1 0x00
+PUSH1 0x80      // 128 bytes
+PUSH1 0x00
+//
+PUSH1 0x00      // value
+PUSH1 0x01      // address = ecRecover
+PUSH3 0xffffff  // gas
+CALL
+================================================================================

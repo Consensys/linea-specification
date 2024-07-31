@@ -1,0 +1,57 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints below apply whenever }
+		\left\{ \begin{array}{lclr}
+			\peekScenario   _{i + \callFirstScenarioRowOffset} & = & \one \\
+			\scenCallAbort  _{i + \callFirstScenarioRowOffset} & = & \one  & (\trash) \\
+		\end{array} \right.}
+\end{center}
+We update the current execution context's return data.
+The current execution context receives empty return data.
+\begin{description}
+	\item[\underline{The \textsc{revert}ed case:}]
+		\If $\scenCallAbortWillRevert  _{i + \callFirstScenarioRowOffset} = 1$ \Then we undo the warmth udpate and reset the \callerr's return data:
+		\begin{description}
+			\item[\underline{Account-row $n^°(i + \callSecondCalleeAccountRowOffsetAbortWillRevert)$:}]
+				we impose that
+				\[
+					\left\{ \begin{array}{lcl}
+						\multicolumn{3}{l}{\accSameAddr             {i}{\callSecondCalleeAccountRowOffsetAbortWillRevert}{\callFirstCalleeAccountRowOffset}} \\
+						\multicolumn{3}{l}{\accSameBalance          {i}{\callSecondCalleeAccountRowOffsetAbortWillRevert}} \\
+						\multicolumn{3}{l}{\accSameNonce            {i}{\callSecondCalleeAccountRowOffsetAbortWillRevert}} \\
+						\multicolumn{3}{l}{\accSameCode             {i}{\callSecondCalleeAccountRowOffsetAbortWillRevert}} \\
+						\multicolumn{3}{l}{\accUndoWarmthUpdate     {i}{\callSecondCalleeAccountRowOffsetAbortWillRevert}{\callFirstCalleeAccountRowOffset}} \\
+						\multicolumn{3}{l}{\accSameDeploymentNumber {i}{\callSecondCalleeAccountRowOffsetAbortWillRevert}} \\
+						\multicolumn{3}{l}{\accSameDeploymentStatus {i}{\callSecondCalleeAccountRowOffsetAbortWillRevert}} \\
+						%%%%
+						\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag {i}{\callSecondCalleeAccountRowOffsetAbortWillRevert}} \\
+						\accRomLexFlag   _{i + \callSecondCalleeAccountRowOffsetAbortWillRevert} & = & 0 \\
+						\accTrmFlag      _{i + \callSecondCalleeAccountRowOffsetAbortWillRevert} & = & 0 \\
+						\accRlpAddrFlag  _{i + \callSecondCalleeAccountRowOffsetAbortWillRevert} & = & 0 \vspace{2mm} \\
+						\multicolumn{3}{l}{
+							\revertDomSubStamps {
+								anchorRow        = i,
+								relOffset        = \callSecondCalleeAccountRowOffsetAbortWillRevert,
+								subOffset        = 2,
+							}
+						} \\
+					\end{array} \right.
+				\]
+			\item[\underline{Context-row $n^°(i + \callAbortWillRevertUpdateCurrentContextRowOffset)$:}]
+				we impose that
+				\[
+					\nonContextProvidesEmptyReturnData
+					{i}{\callAbortWillRevertUpdateCurrentContextRowOffset}
+				\]
+		\end{description}
+	\item[\underline{The un\textsc{revert}ed case:}]
+		\If $\scenCallAbortWontRevert  _{i + \callFirstScenarioRowOffset} = 1$ \Then we reset the \callerr's return data:
+		\begin{description}
+			\item[\underline{Context-row $n^°(i + \callAbortWontRevertUpdateCurrentContextRowOffset)$:}]
+				we impose that
+				\[
+					\nonContextProvidesEmptyReturnData
+					{i}{\callAbortWontRevertUpdateCurrentContextRowOffset}
+				\]
+		\end{description}
+\end{description}

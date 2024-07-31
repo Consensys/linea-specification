@@ -1,0 +1,68 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{../../pkg/draculatheme}
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NF Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\begin{document}
+\begin{verbatim}
+We describe the method by which MODEXP byte size paramaeters
+will be extracted from RAM. We will use the same workflow as
+for a CALLDATALOAD targeting a non root context.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                                        ;;
+;;    MMU_INST_potentiallyRightPaddedEvmWordExtraction    ;;
+;;                                                        ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+This will be the underlying instruction for:
+- CALLDATALOAD (in a non root context)
+- MODEXP byte size parameter extractions
+
+
+# The CALLDATALOAD_nonRoot case
+
+
+- SRC_ID   = caller_cn
+- SRC_OFF  = offset      <== relative pointer µ[0]
+- TGT_ID   = ∅
+- REF_OFF  = cdo         (read off of context data)
+- REF_SIZE = cds         (read off of context data)
+- VAL_HI   = xbs_hi      (HUB prediction)
+- VAL_LO   = xbs_lo      (HUB prediction)
+
+
+# The "MODEXP byte size parameter extraction" case
+
+
+- SRC_ID   = cn
+- SRC_OFF  = x_off       <== relative pointer
+- TGT_ID   = ∅
+- REF_OFF  = cdo         (from the underlying CALL)
+- REF_SIZE = cds         (from the underlying CALL)
+- VAL_HI   = rel. val.   (HUB prediction)
+- VAL_LO   = rel. val.   (HUB prediction)
+
+Above: x = b, e, m (base, exponent, modulus resp.)
+
+
+|--------+---+----+----|
+| x      | b | e  | m  |
+|--------+---+----+----|
+| x_off  | 0 | 32 | 64 |
+|--------+---+----+----|
+
+\end{verbatim}
+\end{document}
+

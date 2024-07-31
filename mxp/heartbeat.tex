@@ -1,0 +1,72 @@
+The columns $\mxpStamp$, $\roob{}$, $\noop{}$, $\mxpx{}$ and \ct{} define the heartbeat of the memory expansion module. Observe that the counter-constancy constraints from section~\ref{mxp: sec: counter-constancies} as well as those from section~\ref{mxp: sec: roob} and section~\ref{mxp: sec: noop} imply that both \roob{} and \noop{} are counter-constant (binary) columns.
+\begin{enumerate}
+	\item $\mxpx$ is binary;
+		%\footnote{Further constraints will impose that $\roob + \noop$ is binary, too.}
+	\item $\mxpStamp_0 = 0$;
+	\item $\mxpStamp_{i+1}\in\{\mxpStamp_{i}, 1 + \mxpStamp_{i}\}$;
+	\item \If $\mxpStamp_{i} = 0$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\multicolumn{3}{l}{\roob{}_{i} + \noop{}_{i} + \mxpx{}_{i} = 0} \\
+				\ct_{i}		& \!\!\! = \!\!\! & 0 \\
+				\INST_{i}	& \!\!\! = \!\!\! & 0 \\
+			\end{array} \right.
+		\]
+	\item \If $\mxpStamp_{i} \neq 0$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\phantom{+ ~} \decMxpType{1}_{i} \\
+				\qquad + ~ \decMxpType{2}_{i} \\
+				\qquad\qquad + ~ \decMxpType{3}_{i} \\
+				\qquad\qquad\qquad + ~ \decMxpType{4}_{i} \\
+				\qquad\qquad\qquad\qquad + ~ \decMxpType{5}_{i} & = & 1 \\
+			\end{array} \right.
+		\]
+	\item \If $\mxpStamp_{i + 1} \neq \mxpStamp_{i}$ \Then $\ct{}_{i+1} = 0$;
+	\item \If $\roob{}_{i} + \noop{}_{i} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\mxpStamp_{i+1}	& \!\!\! = \!\!\! & 1 + \mxpStamp_{i} \\
+				\mxpx{}_{i}		& \!\!\! = \!\!\! & \roob_{i} \\
+			\end{array} \right.
+		\]
+		\saNote{} Given that $\noop + \roob$ is binary (see note~\ref{mxp: noop: roob + noop is binary}) one may replace the precondition
+		``$\noop_{i} + \roob_{i} =    1$'' with
+		``$\noop_{i} + \roob_{i} \neq 0$'' in the implementation.
+\end{enumerate}
+Nothing of interest happens if the current instruction is a \col{noop}.
+Nothing of interest happens if offset(s) or size(s) are ridiculously out of bounds (except that the $\mxpx$ is triggered.)
+%\begin{enumerate}[resume]
+%	\item \If \Big($\mxpStamp_{i} \neq 0$ \et $\roob_{i} = 0$ \et $\noop_{i} = 1$\Big) \Then
+%	\[
+%	\left\{
+%	\begin{array}{l}
+%		\ct_{i} = 0 \\
+%		\mxpx{}_{i} = 0 \\
+%		\mxpStamp_{i+1} = 1 + \mxpStamp_{i} \\
+%	\end{array}
+%	\right.
+%	\]
+%\end{enumerate}
+The following case is the main case of interest: the \zkEvm{} deals with a real instruction, i.e. $\mxpStamp \neq 0$, offsets aren't ridiculously out of bounds, i.e. $\roob = 0$, and some size is nonzero, i.e. $\noop = 0$.
+\begin{enumerate}[resume]
+	\item \If \Big($\mxpStamp_{i} \neq 0$ \et $\roob_{i} = 0$ \et $\noop_{i} = 0$\Big) \Then
+		\begin{enumerate}
+			\item \If $\mxpx{}_{i} = 0$ \Then
+				\begin{enumerate}
+					\item \If $\ct{}_{i} \neq \ssmallMO{}$ \Then $\ct_{i + 1} = 1 + \ct{}_{i}$
+					\item \If $\ct{}_{i} = \ssmallMO{}$ \Then $\mxpStamp_{i+1} = 1 + \mxpStamp_{i}$
+				\end{enumerate}
+			\item \If $\mxpx{}_{i} = 1$ \Then
+				\begin{enumerate}
+					\item \If $\ct{}_{i} \neq \lllargeMO$ \Then $\ct_{i + 1} = 1 + \ct{}_{i}$
+					\item \If $\ct{}_{i} = \lllargeMO$ \Then $\mxpStamp_{i+1} = 1 + \mxpStamp_{i}$
+				\end{enumerate}
+		\end{enumerate}
+	\item \If \Big($\mxpStamp_{N} \neq 0$ \et $\roob_{N} = 0$ \et $\noop_{N} = 0$\Big) \Then
+		\begin{enumerate}
+			\item \If $\mxpx{}_{N} = 0$ \Then $\ct{}_{N} = \ssmallMO$;
+			\item \If $\mxpx{}_{N} = 1$ \Then $\ct{}_{N} = \lllargeMO$.
+		\end{enumerate}
+		In other words the module doesn't terminate mid instruction.
+\end{enumerate}

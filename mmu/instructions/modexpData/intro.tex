@@ -1,0 +1,43 @@
+The present instruction is used by the \hubMod{} to extract a \textbf{potentially nontrivial} base, exponent or modulus parameter for the \inst{MODEXP} precompile.
+What follows is, depending on the case, the desired interpretation of some of the fields of the macro-instruction:
+\begin{description}
+	\item[General values:]
+		all cases will have
+		\[
+			\left\{ \begin{array}{lcl}
+				\macroRefOffset  & \equiv & \CDO \\
+				\macroRefSize    & \equiv & \CDS \\
+			\end{array} \right.
+		\]
+	\item[Base extraction case:] 
+		we will have
+		\[
+			\left\{ \begin{array}{lcl}
+				\macroSrcOffsetLo  & \equiv & 96            \\
+				\macroSize         & \equiv & \ell_\text{B} \\
+			\end{array} \right.
+		\]
+	\item[Exponent extraction case:] 
+		we will have
+		\[
+			\left\{ \begin{array}{lcl}
+				\macroSrcOffsetLo  & \equiv & 96 + \ell_\text{B} \\
+				\macroSize         & \equiv & \ell_\text{E}      \\
+			\end{array} \right.
+		\]
+	\item[Modulus extraction case:] 
+		we will have
+		\[
+			\left\{ \begin{array}{lcl}
+				\macroSrcOffsetLo  & \equiv & 96 + \ell_\text{B} + \ell_\text{E} \\
+				\macroSize         & \equiv & \ell_\text{M}                      \\
+			\end{array} \right.
+		\]
+\end{description}
+Using shorthands introduced in section~(\ref{mmu: instrutions: modexpdata: shorthands}) we will furthermore be guaranteed that
+\[
+	\left\{ \begin{array}{l}
+		0 < \locModexpParamByteSize \leq 512    \\
+		0 < \locModexpParamOffset        \ll 256^4 \\
+	\end{array} \right.
+\]

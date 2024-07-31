@@ -1,0 +1,104 @@
+\begin{center} \boxed{ \text{The pre-processing presented below assumes that } \mmuInstFlagRamToExoWithPadding  _{i} = 1 } \end{center}
+
+We impose the following:
+\begin{description}
+	\item[Progression:] \label{mmu: instructions: modexpdata: micro instrution writing: tlo progression}
+		we impose generally \If $\isMicro_{i} = 1$ \Then:
+		\begin{enumerate}
+			\item $\stdProgression_{i}\Big[\isMicro, \microTlo \Big]$
+			\item  $\microTbo_{i} = 0$
+		\end{enumerate}
+	\item[First row:] 
+		\If $\isFirstNT_{i} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst        _{i} & = & \locFirstMicroInst \\
+				\microSize        _{i} & = & \llarge            \\
+				\microSlo         _{i} & = & \locInitSlo        \\
+				\microSbo         _{i} & = & \locInitSbo        \\
+				\microTlo         _{i} & = & \alreadySet        \\
+				\microTbo         _{i} & = & \alreadySet        \\
+				\microLimb        _{i} & = & \relevantValue     \\
+			\end{array} \right.
+		\]
+		where we define the \locFirstMicroInst{} shorthand as follows:
+		\begin{enumerate}
+			\item \If $\locAligned = 0$ \Then \( \locFirstMicroInst \define \mmioInstRamToLimbTwoSource \)
+			\item \If $\locAligned = 1$ \Then \( \locFirstMicroInst \define \mmioInstRamToLimbTransplant \)
+		\end{enumerate}
+	\item[Middle rows:] 
+		\If $\isMiddleNT_{i} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst        _{i} & = & \locMiddleMicroInst   \\
+				\microSize        _{i} & = & \llarge               \\
+				\microSlo         _{i} & = & \microSlo_{i - 1} + 1 \\
+				\microSbo         _{i} & = & \microSbo_{i - 1}     \\
+				\microTlo         _{i} & = & \alreadySet           \\
+				\microTbo         _{i} & = & \alreadySet           \\
+				\microLimb        _{i} & = & \relevantValue        \\
+			\end{array} \right.
+		\]
+		where we define the \locMiddleMicroInst{} shorthand as follows:
+		\begin{enumerate}
+			\item \If $\locAligned = 0$ \Then \( \locMiddleMicroInst \define \mmioInstRamToLimbTwoSource \)
+			\item \If $\locAligned = 1$ \Then \( \locMiddleMicroInst \define \mmioInstRamToLimbTransplant \)
+		\end{enumerate}
+	\item[Last nontrivial row:] 
+		\If $\isLastNT_{i} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst        _{i} & = & \valueToBeSet         \\
+				\microSize        _{i} & = & \valueToBeSet         \\
+				\microSlo         _{i} & = & \microSlo_{i - 1} + 1 \\
+				\microSbo         _{i} & = & \microSbo_{i - 1}     \\
+				\microTlo         _{i} & = & \alreadySet           \\
+				\microTbo         _{i} & = & \alreadySet           \\
+				\microLimb        _{i} & = & \relevantValue        \\
+			\end{array} \right.
+		\]
+	\item[Only row:] 
+		\If $\isOnlyNT_{i} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst        _{i} & = & \valueToBeSet  \\
+				\microSize        _{i} & = & \valueToBeSet  \\
+				\microSlo         _{i} & = & \locInitSlo    \\
+				\microSbo         _{i} & = & \locInitSbo    \\
+				\microTlo         _{i} & = & \alreadySet    \\
+				\microTbo         _{i} & = & \alreadySet    \\
+				\microLimb        _{i} & = & \relevantValue \\
+			\end{array} \right.
+		\]
+	\item[Final (only or last) row:] 
+		\If $\isOnlyNT_{i} + \isLastNT_{i} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst        _{i} & = & \locLastMicroInst     \\
+				\microSize        _{i} & = & \locLastLimbByteSize  \\
+			\end{array} \right.
+		\]
+		where
+		\begin{enumerate}
+			\item \If $\locLastLimbSingleSource = 0$ \Then \( \locLastMicroInst \define \mmioInstRamToLimbTwoSource \)
+			\item \If $\locLastLimbSingleSource = 1$
+				\begin{enumerate}
+					\item \If $\locLastLimbIsFull = 0$ \Then \( \locLastMicroInst \define \mmioInstRamToLimbOneSource \)
+					\item \If $\locLastLimbIsFull = 1$ \Then \( \locLastMicroInst \define \mmioInstRamToLimbTransplant \)
+				\end{enumerate}
+		\end{enumerate}
+	\item[Padding rows:] 
+		\If $\isRightZero_{i}$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst _{i} & = & \mmioInstLimbVanishes \\
+				\microSize _{i} & = & \nothing              \\
+				\microSlo  _{i} & = & \nothing              \\
+				\microSbo  _{i} & = & \nothing              \\
+				\microTlo  _{i} & = & \alreadySet           \\
+				\microTbo  _{i} & = & \alreadySet           \\
+				\microLimb _{i} & = & \relevantValue        \\
+			\end{array} \right.
+		\]
+		\saNote{} The ``\relevantValue'' in this case will be $\rZero$.
+\end{description}

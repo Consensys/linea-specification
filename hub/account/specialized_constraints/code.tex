@@ -1,0 +1,41 @@
+Below $\relof$ is a (small) positive integer.
+\[
+	\left\{ \begin{array}{lcl}
+		\accSameCodeSize   {i}{\relof} & \!\!\! \iff \!\!\! & \accCodesize\new_{i + \relof} = \accCodesize_{i + \relof} \\
+		\accSameCodeHash   {i}{\relof} & \!\!\! \iff \!\!\! &
+		\left\{ \begin{array}{lcl} 
+			\accCodehashHi\new_{i + \relof}                  & \!\!\! =    \!\!\! & \accCodehashHi_{i + \relof} \\ 
+			\accCodehashLo\new_{i + \relof}                  & \!\!\! =    \!\!\! & \accCodehashLo_{i + \relof} \\
+		\end{array} \right. \vspace{1mm} \\
+		\accSameCode       {i}{\relof} & \!\!\! \iff \!\!\! &
+		\left\{ \begin{array}{lcl} 
+			\accSameCodeSize   {i}{\relof} \\
+			\accSameCodeHash   {i}{\relof} \\
+		\end{array} \right. \\
+	\end{array} \right.
+\]
+We also introduce ``undoing'' constraints:
+\[
+	\left\{ \begin{array}{lcl}
+		\accUndoCodeSizeUpdate {i}{\reluo}{\reldo}              & \!\!\! \iff \!\!\! &
+		\left\{ \begin{array}{lcl}
+			\accCodesize      _{i + \reluo} & \!\!\! =    \!\!\! & \accCodesize\new  _{i + \reldo} \\
+			\accCodesize\new  _{i + \reluo} & \!\!\! =    \!\!\! & \accCodesize      _{i + \reldo} \\
+		\end{array} \right. \vspace{1mm} \\
+		\accUndoCodeHashUpdate {i}{\reluo}{\reldo}              & \!\!\! \iff \!\!\! &
+		\left\{ \begin{array}{lcl}
+			\accCodehashHi     _{i + \reluo} & \!\!\! = \!\!\! & \accCodehashHi\new   _{i + \reldo}              \\
+			\accCodehashHi\new _{i + \reluo} & \!\!\! = \!\!\! & \accCodehashHi       _{i + \reldo} \vspace{1mm} \\
+			\accCodehashLo     _{i + \reluo} & \!\!\! = \!\!\! & \accCodehashLo\new   _{i + \reldo}              \\
+			\accCodehashLo\new _{i + \reluo} & \!\!\! = \!\!\! & \accCodehashLo       _{i + \reldo}              \\
+		\end{array} \right. \vspace{1mm} \\
+		\accUndoCodeUpdate {i}{\reluo}{\reldo}              & \!\!\! \iff \!\!\! &
+		\left\{ \begin{array}{lcl}
+			\accUndoCodeSizeUpdate {i}{\reluo}{\reldo} \\
+			\accUndoCodeHashUpdate {i}{\reluo}{\reldo} \\
+		\end{array} \right.
+	\end{array} \right.
+\]
+
+\saNote{}
+It may seem surprising on first glance to have both a constraint system for the code hash not changing and another one for the code size not changing. The distinction is there for contract deployments. While the intialization code is running the account is initialized with empty code (i.e. $\sigma[\textsf{a}]_c = \emptyKeccak$) yet \inst{CODESIZE} returns the size of its initialization code. Thus when deploying a contract the arithmetization will set a code size to the size of the initialization code while keeping the code hash equal to that of the empty byte array.

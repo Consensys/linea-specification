@@ -1,0 +1,92 @@
+\begin{center}
+	\boxed{\text{We abbreviate ``context-constant (binary) column'' to \cncc{}
+	(resp. \cncbc{}.)}}
+\end{center}
+\textbf{Context-rows}\label{def: stack row} are characterized by $\peekContext \equiv 1$ and columns pertaining to that perspective are prefixed with the following symbol: $\contextSignifier$.
+Note that \textbf{context data is immutable} (except for those which concerns return data, see below.)
+\begin{enumerate}
+	\item $\cnCn$:
+		column containing the $\CN$ of the context beeing peeked into currently;
+	\item  $\cnCsd$:
+		\cncc{} containing the \CSD{};
+	\item \cnIsRootContext{}:
+		\cncc{} binary column; indicates whether the current context is the root context of a transaction; logically equivalent to $\big[ \cnCsd = 1 \big]$;
+	\item $\cnStatic$:
+		\cncbc{} indicating whether the present context is static;
+\end{enumerate}
+% The \textbf{context type} of an execution context is defined to be
+% $\cnType = 0$ for message call contexts and
+% $\cnType = 1$ for deployment contexts.
+The following columns pertain to the \textbf{account} whose balance and storage are accessible in the current execution context.
+\begin{enumerate}[resume]
+	\item $\cnAccountAddress\high$, $\cnAccountAddress\low$:
+		\cncc{} containing the high and low part of the address of the underlying account;
+	\item $\cnAccDepNum$:
+		\cncc{} containing the deployment number of $\cnAccountAddress$ in the present execution context;
+\end{enumerate}
+The following columns pertain to the account whose \textbf{bytecode} is being run in the current execution context.
+\begin{enumerate}[resume]
+	\item $\cnCodeAddress\high$, $\cnCodeAddress\low$:
+		\cncc{} containing the high and low part of the address of the bytecode running in the current execution context;
+	\item $\cnCodeDepNum$:
+		\cncc{} containing the deployment number of $\cnCodeAddress$ in the present execution frame;
+	\item $\cnCodeDepStatus$:
+		\cncbc{} containing the deployment status of $\cnCodeAddress$ in the present execution frame;
+	\item $\cnCodeCfi$:
+		\cncc{} containing the \CFI{} of the bytecode running in the current execution frame;
+\end{enumerate}
+The following columns contains a partial reflection of the \textbf{caller} context. 
+\begin{enumerate}[resume]
+	\item $\cnCallerAddress\high$, $\cnCallerAddress\low$:
+		\cncc{} containing the high and low part of the caller's address as returned by the \inst{CALLER} opcode;
+	\item $\cnCallValue$:
+		\cncc{} containing the value in Gwei provided in the message call / deployment operation which spawned the present context; 
+\end{enumerate}
+The following columns contain information pertaining to call data:
+\begin{enumerate}[resume]
+	\item $\cnCallDataContextNumber$:
+		\cncc{} containing the caller context's context number;
+	\item $\cnCdo$:
+		\cncc{} containing the \CDO{};
+	\item $\cnCds$:
+		\cncc{} containing the \CDS{};
+	\item $\cnRao$:
+		\cncc{} containing the \RAO{};
+		specified by the caller context at the moment the present context was spawned;
+	\item $\cnRac$:
+		\cncc{} containing the \RAC{};
+		specified by the caller context at the moment the present context was spawned;
+\end{enumerate}
+\saNote{} \cnCdo{} and \cnCds{} vanish for deployment contexts.
+\saNote{} \cnRao{} and \cnRac{} vanish for deployment contexts and the root context of message call transactions.
+
+The following columns pertain to the returner context i.e. the most recent execution context spawned by the present context from which execution has returned. 
+\begin{enumerate}[resume]
+	\item $\cnUpdate$:
+		binary column;
+	\item $\cnReturner$:
+		contains the context number of;
+		% \item \ob{TODO: is this obsolete ?} $\cnReturnerIsPrecompile$:
+		% binary column indicating whether the returner is a precompile;
+	\item $\cnRdo$:
+		column containing the \RDO{}; specified by \cnReturner{} at "re-entry";
+	\item $\cnRds$:
+		column containing the \RDS{}; specified by \cnReturner{} at "re-entry";
+\end{enumerate}
+As already stated: all context data is \textbf{immutable} except for ``return data'' related columns. This immutability isn't (readily) apparent in the time-ordered traces. Rather it has to be enforced in a reordered version of the execution trace which juxtaposes in consecutive rows all \textbf{context-rows} ordered by context number $\cnCn$ and by \hubStamp{}.
+The binary flag $\cnUpdate$ indicates when the mutable context data $\cnReturner$, $\cnRdo$, $\cnRds$ are allowed to change.
+Let us provide further details.
+When an execution context resumes after a child context finishes executing it receives return data%
+\footnote{Said return data may be empty e.g. after a successful deployment, if the child context ended on a \inst{STOP} or a \inst{SELFDESTRUCT}, if the child context ended on a \inst{RETURN}/\inst{REVERT} with empty data, if the child context terminated on an exception, when returning from a \inst{CALL} to a precompile which triggered an internal error, \dots} That data lives in the child context's RAM (whose \cn{} will be stored \cnReturner{}) starting at some offset (stored in \cnRdo{}) and comprising a number of bytes (stored in \cnRds{}.) Contrary to the offset / size parameters introduced previously these parameters need not be context-constant. They are updated every time execution of the present context resumes after a message call or deployment.
+
+\saNote{} The above will hold true for \inst{CALL}'s to precompiled contracts, too. \inst{CALL}'s to these contracts \emph{do not} produce tangible execution contexts in the present arithmetization i.e. the \hubMod{} module never enters an execution context with $\cnCodeAddress \in \{ 1, 2, \dots, 9 \}$. Yet \textsc{ram} may have to undergo modifications. Typically (and along the happy path)
+(\emph{a})
+extraction of a slice of bytes from the current execution context's \textsc{ram} to be stored in some dedicated \col{DATA} module (e.g.
+\ecDataMod{},
+\hashDataMod{},
+\romMod{},
+\dots{})
+(\emph{b})
+producing a full copy of the result (extracted from a dedicated \col{INFO} module, e.g. \hashInfoMod{}) onto the \textsc{ram} of a ``fictitious execution context \col{fec}''
+(\emph{c})
+copying the relevant slice of bytes from the return data which was just inserted into \col{fec}'s \textsc{ram} into the current execution context's \textsc{ram}. The ``fictitious execution context \col{fec}'' will be granted a \cn{} deduced from the current \hubStamp{}. It will be stored as the \cnReturner{} of the current execution context, and various return-data-related fields of the current execution context will be set appropriately. 

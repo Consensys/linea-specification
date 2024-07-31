@@ -1,0 +1,117 @@
+We present the consistency constraints that apply to account data.
+Consider a row permutation $\col{X} \rightsquigarrow \order{\col{X}}$ such that
+\[
+	\left[\begin{array}{l}
+		\order{\peekAccount}, \\
+		\quad\quad\quad \order{\accAddress\high}, \\
+		\quad\quad\quad \quad\quad\quad \order{\accAddress\low}, \\
+		% \quad\quad\quad \quad\quad\quad \quad\quad\quad \order{\accDepNumber \cdot \peekAccount}, \\
+		\quad\quad\quad \quad\quad\quad \quad\quad\quad \order{\domStamp}, \\
+		\quad\quad\quad \quad\quad\quad \quad\quad\quad \quad\quad\quad\order{\subStamp} \\
+	\end{array}\right]
+\]
+\noindent is $(+, +, +, +, -)$-lexicographically ordered.
+In particular the rows where $\peekAccount \equiv 0$ appear before the rows where $\peekAccount \equiv 1$.
+We define the following shorthand
+\[
+	\locOrderedFullAddress_{i}
+	\define
+	256^\llarge \cdot \order{\accAddress\high}_{i} + \order{\accAddress\low}_{i}
+\]
+We impose the following consistency constraint:
+\begin{description}
+	\item[Setting $\accAddressAgain$ and $\accAddressFirst$:]
+		we impose that
+		\begin{enumerate}
+			\item $\accAddressAgain$ and $\accAddressFirst$ are binary
+			\item $\accAddressAgain_{i} + \accAddressFirst_{i} = \order{\peekAccount}_{i}$
+			\item \If $\order{\peekAccount}_{i} = 0$ \Then $\accAddressFirst_{i + 1} = \order{\peekAccount}_{i + 1}$
+			\item \If $\order{\peekAccount}_{i} = 1$ \Then
+				\begin{enumerate}
+					\item \If $\accAddressFirst_{i + 1} = 1$ \Then $ \locOrderedFullAddress_{i + 1} \neq \locOrderedFullAddress_{i} $
+					\item \If $\accAddressAgain_{i + 1} = 1$ \Then $ \locOrderedFullAddress_{i + 1} =    \locOrderedFullAddress_{i} $
+				\end{enumerate}
+		\end{enumerate}
+		The above fully characterizes $\accAddressAgain$ and $\accAddressFirst$.
+	\item[Setting $\accAbsTxNumAgain$ and $\accAbsTxNumFirst$:]
+		we impose that
+		\begin{enumerate}
+			\item $\accAbsTxNumAgain$ and $\accAbsTxNumFirst$ are binary
+			\item \If $\order{\absTxNum}_{i} =    0$ \Then $\accAbsTxNumAgain_{i} + \accAbsTxNumFirst_{i} = 0$
+			\item \If $\order{\absTxNum}_{i} \neq 0$ \Then $\accAbsTxNumAgain_{i} + \accAbsTxNumFirst_{i} = 1$
+			\item \If $\accAddressFirst_{i} = 1$ \Then $\order{\absTxNum}_{i} \neq \order{\absTxNum}_{i - 1}$
+			\item \If $\accAddressAgain_{i} = 1$ \Then $\order{\absTxNum}_{i} =    \order{\absTxNum}_{i - 1}$
+		\end{enumerate}
+	\item[Simple linking constraints:]
+		\If $\accAddressAgain _{i} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\order{\accNonce      }_{i} & = & \order{\accNonce       \new }_{i - 1} \\
+				\order{\accBalance    }_{i} & = & \order{\accBalance     \new }_{i - 1} \\
+				\order{\accCodesize   }_{i} & = & \order{\accCodesize    \new }_{i - 1} \\
+				\order{\accCodehash   }_{i} & = & \order{\accCodehash    \new }_{i - 1} \\
+				\order{\accDepNumber  }_{i} & = & \order{\accDepNumber   \new }_{i - 1} \\
+				\order{\accDepStatus  }_{i} & = & \order{\accDepStatus   \new }_{i - 1} \\
+				\order{\accHasCode    }_{i} & = & \order{\accHasCode     \new }_{i - 1} \\
+				\order{\accExists     }_{i} & = & \order{\accExists      \new }_{i - 1} \\
+			\end{array} \right.
+		\]
+	\item[Other linking constraints:]
+		we impose that
+		\begin{enumerate}
+			\item \If $\accAddressFirst _{i} = 1$ \Then
+				\begin{enumerate}
+					\item $\order{\accTrmFlag}_{i} = 1$ \ob{TODO: is the raw address set ?}
+					\item $\order{\accWarmth}_{i} = \order{\accTrmIsPrecompile}_{i}$
+					\item $\order{\accMarkedForSelfdestruct}_{i} = 0$
+					\item $\order{\accDepNumber  }_{i} = 0$
+					\item $\order{\accDepStatus  }_{i} = 0$
+				\end{enumerate}
+			\item \If $\accAddressAgain _{i} = 1$ \Then
+				\begin{enumerate}
+					\item \If $\accAbsTxNumAgain_{i} = 1$ \Then
+						\begin{enumerate}
+							\item $ \order{\accWarmth}_{i} = \order{\accWarmth\new}_{i - 1} $
+							\item $ \order{\accMarkedForSelfdestruct}_{i} = \order{\accMarkedForSelfdestruct\new}_{i - 1} $
+						\end{enumerate}
+					\item \If $\accAbsTxNumFirst_{i} = 1$ \Then $\order{\accWarmth}_{i} = \order{\accTrmIsPrecompile}_{i}$
+						\begin{enumerate}
+							\item $ \order{\accWarmth}_{i} = \order{\accTrmIsPrecompile}_{i}$
+							\item $ \order{\accMarkedForSelfdestruct}_{i} = 0 $
+							\item $\order{\accDepStatus  }_{i} = 0$
+						\end{enumerate}
+					\item $\order{\accTrmIsPrecompile}_{i} = \order{\accTrmIsPrecompile}_{i - 1}$
+				\end{enumerate}
+		\end{enumerate}
+	\item[Monotony constraints:]
+		\If $\order{\peekAccount}_{i} = 1$ \Then
+		we impose that
+		\begin{enumerate}
+			\item $ \order{\accDepNumber \new }_{i} \in \{ \order{\accDepNumber  }_{i}, 1 + \order{\accDepNumber  }_{i} \} $
+			\item \If $ \order{\accDepNumber \new }_{i} \neq 1 + \order{\accDepNumber  }_{i} $ \\
+				{} \qquad\qquad \Then $\order{\accDepStatus \new }_{i} \in \{ \order{\accDepStatus  }_{i}, - 1 + \order{\accDepStatus  }_{i} \} $
+			\item \If $ \order{\accMarkedForSelfdestruct}_{i} = 1$ \\
+				\Then $\order{\accMarkedForSelfdestruct\new}_{i} = 1 $
+		\end{enumerate}
+	\item[Constancy and finalization conditions:]
+		\begin{enumerate}
+			\item \If $\accAddressAgain _{i} = 1$ \Then
+				we impose that
+				\begin{enumerate}
+					\item $\order{\accDepNumber^\infty}_{i} = \order{\accDepNumber^\infty}_{i - 1}$ 
+					\item $\order{\accDepStatus^\infty}_{i} = \order{\accDepStatus^\infty}_{i - 1}$ 
+				\end{enumerate}
+			\item \If $\order{\peekAccount}_{i} = 1$ \et $\accAddressFirst _{i + 1} = 1$ \Then
+				we impose that
+				\begin{enumerate}
+					\item $\order{\accDepNumber^\infty}_{i} = \order{\accDepNumber}_{i}$ 
+					\item $\order{\accDepStatus^\infty}_{i} = \order{\accDepStatus}_{i}$ 
+				\end{enumerate}
+			\item \If $\order{\peekAccount}_{N} = 1$ \Then
+				we impose that
+				\begin{enumerate}
+					\item $\order{\accDepNumber^\infty}_{N} = \order{\accDepNumber}_{N}$ 
+					\item $\order{\accDepStatus^\infty}_{N} = \order{\accDepStatus}_{N}$ 
+				\end{enumerate}
+		\end{enumerate}
+\end{description}

@@ -1,0 +1,38 @@
+\begin{center}
+\boxed{\text{All constraints in this subsection assume that $\phase{4}_{i} = 1$.}}
+\end{center}
+
+The present section deals with the \textsc{rlp}-ization of the logs bloom $R_\text{b}$, a slice of 256 bytes. It establishes that what is being encoded is indeed a bytestring of size $256$. The actual value is not justified. The first row establishes the \textsc{rlp}-prefix associated with an element of $\mathbb{B}_{256}$. The $64 = 4 \cdot \llarge$ following rows perform byte decompositions of four $\llarge$-byte integers in parallel. Every $\llarge$ rows populate the $\limb$ column with four new $\llarge$-byte integers from the logs bloom.
+We remind the reader that $\isprefix$ is $\phase 3$-decrementing.
+\begin{enumerate}
+	\item \If $\phase{3}_{i-1}=0$ \Then 
+		\begin{enumerate}
+			\item $\isprefix_{i}=1$
+			\item $\phasesize_{i}=256$
+			\item $\nbstep_{i}=1$
+			\item $\limb_{i}=(\rlprefixLongInt + 2) \cdot 256^{\llargeMO} + \phasesize_{i} \cdot 256 ^{13}$
+			\item $\limbsize_{i}=3$
+			\item $\phasend_{i}=0$
+			\item $\isprefix_{i+1}=0$
+			\item $\indexlocal_{i}=0$
+		\end{enumerate}
+	\item \If $\isprefix_{i}=0$ \Then
+		\begin{enumerate}
+			\item $\nbstep_{i}=\llarge$
+			\item \If $\Done_{i}=1$ \Then:
+				\begin{enumerate}
+					\item $\acc 1_{i}=\Input 1_{i}$
+					\item $\acc 2_{i}=\Input 2_{i}$
+					\item $\acc 3_{i}=\Input 3_{i}$
+					\item $\acc 4_{i}=\Input 4_{i}$
+					\item $\lc_{i-4}+\lc_{i-3}=1$
+					\item $\limb_{i-3}=\Input 1 _{i}$ \et $\limbsize_{i-3}=\llarge$
+					\item $\limb_{i-2}=\Input 2 _{i}$ \et $\limbsize_{i-2}=\llarge$
+					\item $\limb_{i-1}=\Input 3 _{i}$ \et $\limbsize_{i-1}=\llarge$
+					\item $\limb_{i}=\Input 4 _{i}$   \et $\limbsize_{i}=\llarge$
+					\item \If $\phasesize_{i}=0$ \Then $\phasend_{i}=1$
+					\item \If $\phasesize_{i} \ne 0$ \Then $\phasend_{i}=0$ (\trash)
+				\end{enumerate}
+			\item $\indexlocal_{i}=\indexlocal_{i-1}+\lc_{i-1} \cdot (1 - \isprefix_{i-1})$
+		\end{enumerate}
+\end{enumerate}

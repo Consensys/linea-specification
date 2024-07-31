@@ -1,0 +1,78 @@
+\makeatletter
+% DEFINING KEYS
+
+\define@cmdkey [WCP] {var} {anchorRow} {} % "i" in the spec, ALWAYS use this name
+\define@cmdkey [WCP] {var} {relOffset} {} % relative offset, ALWAYS use this name
+\define@cmdkey [WCP] {var} {argOneHi}  {}
+\define@cmdkey [WCP] {var} {argOneLo}  {}
+\define@cmdkey [WCP] {var} {argTwoHi}  {}
+\define@cmdkey [WCP] {var} {argTwoLo}  {}
+% the above defines macros à la "\cmdWCP@var@anchorRow"
+
+% DEFAULT VALUES
+\presetkeys [WCP] {var} {
+	anchorRow = \missingParameter,
+	relOffset = \missingParameter,
+	argOneHi  = \missingParameter,
+	argOneLo  = \missingParameter,
+	argTwoHi  = \missingParameter,
+	argTwoLo  = \missingParameter,
+}{}
+
+% "call to LT" macro
+\newcommand{\wcpCallToLtName} {\texttt{wcpCallToLT}}
+\newcommand{\wcpCallToLt} [1] {
+	\setkeys[WCP]{var}{#1}
+	\wcpCallToLtName _{\cmdWCP@var@anchorRow}
+	\left[ \begin{array}{ll}
+			\utt{Rel. row offset:}        & \cmdWCP@var@relOffset \\
+			\utt{First argument (high):}  & \cmdWCP@var@argOneHi  \\
+			\utt{First argument (low):}   & \cmdWCP@var@argOneLo  \\
+			\utt{Second argument (high):} & \cmdWCP@var@argTwoHi  \\
+			\utt{Second argument (low):}  & \cmdWCP@var@argTwoLo  \\
+		\end{array} \right]
+}
+% Note: \utt{...} is a Latex macro for \underline{\texttt{...}}
+% \utt is the recommended style for such macros
+
+% "call to GT" macro
+\newcommand{\wcpCallToGtName} {\texttt{wcpCallToGT}}
+\newcommand{\wcpCallToGt} [1] {
+	\setkeys[WCP]{var}{#1}
+	\wcpCallToLtName _{\cmdWCP@var@anchorRow}
+	\left[ \begin{array}{ll}
+			\utt{Rel. row offset:}        & \cmdWCP@var@relOffset \\
+			\utt{First argument (high):}  & \cmdWCP@var@argOneHi  \\
+			\utt{First argument (low):}   & \cmdWCP@var@argOneLo  \\
+			\utt{Second argument (high):} & \cmdWCP@var@argTwoHi  \\
+			\utt{Second argument (low):}  & \cmdWCP@var@argTwoLo  \\
+		\end{array} \right]
+}
+
+% "call to EQ" macro
+\newcommand{\wcpCallToEqName} {\texttt{wcpCallToEQ}}
+\newcommand{\wcpCallToEq} [1] {
+	\setkeys[WCP]{var}{#1}
+	\wcpCallToEqName _{\cmdWCP@var@anchorRow}
+	\left[ \begin{array}{ll}
+			\utt{Rel. row offset:}        & \cmdWCP@var@relOffset \\
+			\utt{First argument (high):}  & \cmdWCP@var@argOneHi  \\
+			\utt{First argument (low):}   & \cmdWCP@var@argOneLo  \\
+			\utt{Second argument (high):} & \cmdWCP@var@argTwoHi  \\
+			\utt{Second argument (low):}  & \cmdWCP@var@argTwoLo  \\
+		\end{array} \right]
+}
+
+% "call to ISZERO" macro
+\newcommand{\wcpCallToIszeroName} {\texttt{wcpCallToISZERO}}
+\newcommand{\wcpCallToIszero} [1] {
+	\setkeys[WCP]{var}{#1}
+	\wcpCallToIszeroName _{\cmdWCP@var@anchorRow}
+	\left[ \begin{array}{ll}
+			\utt{Rel. row offset:} & \cmdWCP@var@relOffset \\
+			\utt{Argument (high):} & \cmdWCP@var@argOneHi  \\
+			\utt{Argument (low):}  & \cmdWCP@var@argOneLo  \\
+		\end{array} \right]
+}
+
+\makeatother

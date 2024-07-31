@@ -1,0 +1,16 @@
+Transaction processing doesn't require \evm{}-execution precisely when: 
+\begin{itemize}
+	\item the transaction is a \textbf{message call} and the recipient account has \textbf{empty code}
+	\item the transaction is a \textbf{contract deployment} with \textbf{empty initialization code};
+\end{itemize}
+In other words whenever $\txIsDeployment = 0$ (i.e. $T_\text{t} \neq \varnothing$) and $\sigma[\txTo]_c = \emptyKeccak$ or $\txIsDeployment = 1$ (i.e. $T_\text{t} = \varnothing$) and $\txDataSize = 0$. When $\txSkip$ is set transaction processing requires five rows in the hub trace: four rows to perform account changes (transfer value and gas cost deduction from sender balance, adding transfer value to recipient, reimbursing left over gas to the sender, paying the coinbase address in gas fees) and one row containing transaction data (e.g. various gas prices or transfer values.)
+
+\saNote{} The present version of the \zkEvm{} forbids transactions which are message calls to a precompile.
+
+\saNote{} There is a similar distinction for \inst{CALL}-type and \inst{CREATE}-type instructions.
+Indeed we distinguish between
+\inst{CALL}'s to addresses that have nonempty byte code and 
+\inst{CALL}'s to addresses with empty bytecode (and among those we further distinguish between \inst{CALL}'s to \textsc{eoa}'s in a transaction that actually requires \textsc{evm}-execution.)
+Similarly we distinguish between
+\inst{CREATE}'s which are provided with empty initialization code and 
+\inst{CREATE}'s i.e. those that are provided with nonempty initialization code i.e. the nontrivial ones.

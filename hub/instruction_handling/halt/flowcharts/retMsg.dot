@@ -1,0 +1,164 @@
+# http://www.graphviz.org/content/cluster
+
+digraph G {
+
+  node [fontname = "Handlee"];
+  node [shape=plaintext];
+  edge [fontname = "Handlee"];
+
+  return_from_message_call [label=<
+    <TABLE BGCOLOR="WHITE" BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
+    <TR>
+    <TD><FONT POINT-SIZE="40">RETURN from message call</FONT></TD>
+    </TR>
+    </TABLE>>];
+
+  triggerMMU [
+  label = <
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="10">
+    <TR>
+    <TD ALIGN="LEFT" ><FONT POINT-SIZE="20"><B>DEPLOYS</B> = <B>0</B></FONT></TD>
+    </TR>
+    <TR>
+    <TD><FONT POINT-SIZE="20"><B>trigger_MMU</B> = [ R@C &middot; size_lo &ne; 0 ]</FONT></TD>
+    </TR>
+    </TABLE>>;
+  shape = rect;
+  style = filled;
+  fillcolor = "YELLOW";
+  color = "BLUE";
+  ]
+  will_write_to_ram [
+    label = "\nWill write to RAM\ni.e. trigger_MMU = 1\n ";
+  shape = diamond;
+  style = filled;
+  fillcolor = "LIGHTGREEN";
+  color = "BLUE";
+  ];
+  wont_write_to_ram [
+    label = "\nWon't write to RAM\ni.e. trigger_MMU = 0\n ";
+  shape = diamond;
+  style = filled;
+  fillcolor = "LIGHTGREEN";
+  color = "BLUE";
+  ];
+
+  {
+    rank=same;
+    will_write_to_ram; will_write_to_ram_rows;
+  }
+  {
+    rank=same;
+    wont_write_to_ram; wont_write_to_ram_rows;
+  }
+
+  return_from_message_call       -> will_write_to_ram     ;
+  will_write_to_ram              -> will_write_to_ram_rows;
+  will_write_to_ram              -> wont_write_to_ram     ;
+  wont_write_to_ram              -> wont_write_to_ram_rows;
+
+
+wont_write_to_ram_rows [label=<
+<TABLE BGCOLOR="LIGHTGRAY" BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>i - 1</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>excavate stack items: <FONT COLOR="BLUE"><B>offset</B></FONT>, <FONT COLOR="GREEN"><B>size</B></FONT></TD>
+  </TR>
+  <TR>
+    <TD COLSPAN="1">i</TD>
+    <TD BGCOLOR="salmon" COLSPAN="1">SCN</TD>
+    <TD BGCOLOR="salmon" COLSPAN="2">RETURN/MESSAGE_CALL_WONT_WRITE_TO_RAM</TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>CON</TD>
+    <TD>current</TD>
+    <TD>read: <B>I<sub>a</sub></B> , <B>DEPLOYS</B> = <B>0</B>, <B>R@O</B>, <B>R@C</B>, </TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="3">i + 2</TD>
+    <TD ROWSPAN="3">MISC</TD>
+    <TD ROWSPAN="3"></TD>
+    <TD ROWSPAN="1">MXP🏴 = <B>1</B>, MXPX = <B><FONT COLOR="GREEN">0</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE" ROWSPAN="1">MMU🏴 = <B><FONT COLOR="SALMON">trigger_MMU (=0)</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">OOB🏴 = <B>DEPLOYS</B>, EVENT = <B><FONT COLOR="GREEN">0</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE">i + 3</TD>
+    <TD BGCOLOR="WHITE">CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD BGCOLOR="WHITE">RD: <B>RDO</B> = <FONT COLOR="BLUE"><B>offset</B></FONT>, <B>RDS</B> = <FONT COLOR="GREEN"><B>size</B></FONT></TD>
+  </TR>
+</TABLE>>];
+
+will_write_to_ram_rows [label=<
+<TABLE BGCOLOR="LIGHTGRAY" BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>i - 1</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>excavate stack items: <FONT COLOR="BLUE"><B>offset</B></FONT>, <FONT COLOR="GREEN"><B>size</B></FONT></TD>
+  </TR>
+  <TR>
+    <TD COLSPAN="1">i</TD>
+    <TD BGCOLOR="salmon" COLSPAN="1">SCN</TD>
+    <TD BGCOLOR="salmon" COLSPAN="2">RETURN/MESSAGE_CALL_WILL_WRITE_TO_RAM</TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>CON</TD>
+    <TD>current</TD>
+    <TD>read: <B>I<sub>a</sub></B> , <B>DEPLOYS</B> = <B>0</B>, <B>R@O</B>, <B>R@C</B>, </TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="4">i + 2</TD>
+    <TD ROWSPAN="4">MISC</TD>
+    <TD ROWSPAN="4"></TD>
+    <TD ROWSPAN="1">MXP🏴 = <B>1</B>, MXPX = <B><FONT COLOR="GREEN">0</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE" ROWSPAN="1">MMU🏴 = <B><FONT COLOR="SALMON">trigger_MMU (= 1)</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE" ROWSPAN="1">MMU_INST = writeReturnDataSlice </TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">OOB🏴 = <B>DEPLOYS</B>, EVENT = <B><FONT COLOR="GREEN">0</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE">i + 3</TD>
+    <TD BGCOLOR="WHITE">CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD BGCOLOR="WHITE">RD: <B>RDO</B> = <FONT COLOR="BLUE"><B>offset</B></FONT>, <B>RDS</B> = <FONT COLOR="GREEN"><B>size</B></FONT></TD>
+  </TR>
+</TABLE>>];
+
+}

@@ -1,0 +1,43 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below are written under the assumption that } 
+			\left\{ \begin{array}{lcl}
+				\peekScenario _{i} & = & 1 \\
+				\scenCallPrc  _{i} & = & 1 \\
+			\end{array} \right.
+			}
+\end{center}
+\begin{description}
+	\item[\underline{Setting the first half of peeking flags:}]
+		we use the following shorthand
+		\[
+			\nsrPrecompilesFH
+			\define
+			\left[ \begin{array}{lrcl}
+				+ & (\callPrcFailureSecondScenarioRowOffset           + 1)  & \!\!\! \cdot \!\!\! & \scenCallPrcFailure            _{i} \\
+				+ & (\callPrcSuccessWillRevertSecondScenarioRowOffset + 1)  & \!\!\! \cdot \!\!\! & \scenCallPrcSuccessWillRevert  _{i} \\
+				+ & (\callPrcSuccessWontRevertSecondScenarioRowOffset + 1)  & \!\!\! \cdot \!\!\! & \scenCallPrcSuccessWontRevert  _{i} \\
+			\end{array} \right]
+		\]
+		and use it to set the first few non stack-rows of \inst{CALL}'s to precompiles:
+		\[
+			\hspace*{-2cm}
+			\left[ \begin{array}{lrcl}
+				+ \!\!\! & \peekingSumPrcFailureFH             & \!\!\! \cdot \!\!\! & \scenCallPrcFailure             _{i} \\
+				+ \!\!\! & \peekingSumPrcSuccessWillRevertFH   & \!\!\! \cdot \!\!\! & \scenCallPrcSuccessWillRevert   _{i} \\
+				+ \!\!\! & \peekingSumPrcSuccessWontRevertFH   & \!\!\! \cdot \!\!\! & \scenCallPrcSuccessWontRevert   _{i} \\
+			\end{array} \right]
+			=
+			\nsrPrecompilesFH
+		\]
+	\item[\underline{Propagating the current \hubStamp:}]
+		we impose that the current \hubStamp{} remain valid at least for a while:
+		\[
+			\left[ \begin{array}{lrcl}
+				+ \!\!\! & \Big[ \hubStamp_{i + \callPrcFailureSecondScenarioRowOffset          } - \hubStamp_{i - \callFirstStackRowOffset} \Big]   & \!\!\! \cdot \!\!\! & \scenCallPrcFailure             _{i} \vspace{2mm} \\
+				+ \!\!\! & \Big[ \hubStamp_{i + \callPrcSuccessWillRevertSecondScenarioRowOffset} - \hubStamp_{i - \callFirstStackRowOffset} \Big]   & \!\!\! \cdot \!\!\! & \scenCallPrcSuccessWillRevert   _{i} \vspace{2mm} \\
+				+ \!\!\! & \Big[ \hubStamp_{i + \callPrcSuccessWontRevertSecondScenarioRowOffset} - \hubStamp_{i - \callFirstStackRowOffset} \Big]   & \!\!\! \cdot \!\!\! & \scenCallPrcSuccessWontRevert   _{i}              \\
+			\end{array} \right] = 0
+		\]
+\end{description}
+

@@ -1,0 +1,151 @@
+Due to the sheer number of different functions it fulfills, the \hubMod{} module contains a large amount of columns.
+Its traces are therefore very \textbf{wide}, in fact, the \hubMod{} module is the widest module in our arithmetization.
+With instruction processing typically requiring several rows in the \hubMod{} trace\footnote{usually one to five, though on rare occasions that number can go up to about twenty, see the processing of \inst{CALL}'s to the \inst{MODEXP} precompile, section (\ref{hub: instruction handling: call: precompiles: modexp: success})} its traces are also very \textbf{deep}.
+As a consequence a typical trace for the \hubMod{} module occupies a large surface area (as measured by the number of cells that make up the trace matrix.)
+On the other hand, most opcodes can be processed using only a fraction of the data available to the \hubMod{} module at any point in time.
+
+\textbf{Column blending} allows the arithmetization to save space by packing more data into a given ``trace footprint'', thereby reducing redundancy.
+The idea is simple: certain ``physical'' columns \col{X} in the trace output ought to be understood as ``\textbf{the row-wise blending of several row-disjoint sparse virtual columns}'' $\col{C}^1, \col{C}^2, \col{C}^3, \dots{}$.
+Concretely we mean that such a column \col{X} is constructed from other columns as follows:
+(\emph{a}) there is a collection of sparse columns of depth $d$, say $\col{C}^1, \col{C}^2, \col{C}^3, \dots{}$ with the property that for any row-index $i$ at most one of the values $\col{C}^1_{i}, \col{C}^2_{i}, \col{C}^3_{i}, \dots{}$ is nonzero and
+(\emph{b}) the column $\col{X}$, also of depth $d$, is such that
+(\emph{i})  for any row-index $i$ there is some column-index $j$ with $\col{X}_{i} = \col{C}^{j}_{i}$ and
+(\emph{ii}) $\col{X}_{i} = \col{C}^{j}_{i}$ whenever $\col{C}^{j}_{i} \neq 0$.
+Traces will contain many such blended columns.
+
+The actual setup is a slight generalization of the above.
+We will work with a small number $r$ of \textbf{perspectives}, i.e. families of sparse columns,
+$\big \{ \col{C}^{1, k} \big| 1\leq k \leq n_{1}\big \}$,
+$\big \{ \col{C}^{2, k} \big| 1\leq k \leq n_{2}\big \}$,
+\dots,
+$\big \{ \col{C}^{r, k} \big| 1\leq k \leq n_{r}\big \}$
+with the property any two members from different families are row-disjoint as defined above.
+The \hubMod{} module traces will contain a great many columns obtained through blending of columns from these families.
+\saNote{} For the above to make sense it is not necessary to require that all perspectives contain the same number of columns.
+And as will become apparent when we introduce the various perspectives below, some perspectives contain more columns than others.
+
+The groupings of (virtual) columns which together define the various perspectives are such that they group related data together.
+The idea being that, together, the columns of a perspective provide insight into a particular subcomponent of the \evm{}, whence the name ``perspective.''
+For instance we will introduce a \textbf{storage} perspective made up of several (virtual) columns which house data related to \textbf{storage} (e.g. storage keys, original, current and updated storage values, storage key warmth, \dots{}).
+Another perspective we will introduce will contain data related to \textbf{execution contexts} (e.g. return data / call data pointers, underlying account addresses, call values, static bits etc\dots).
+Yet another perspective we will introduce will contain data related to \textbf{inter module communication} (e.g. complex data to be sent to other modules such as the \textsc{ram} preprocessing module \mmuMod{}, the out of bounds module \oobMod{}, the stipend module \stpMod{} etc\dots).
+\saNote{} A direct corollary of this approach is that we will define far more (virtual) columns than there are ``physical'' columns in the traces.
+
+While blended columns are plentiful in the traces, we will thankfully never have to manipulate them by hand.
+Nor will we ever explicitly define which columns are blended together to define the associated ``physical'' columns in the trace.
+We will consistently work with the underlying virtual columns belonging to the relevant perspective.
+The only requirement for this approach to work is for the mapping taking any one (virtual) column from a given perspective to the blended column ``containing it as a subcolumn'' to be \textbf{set in stone in the circuit}, which it is.
+\saNote{} There are various criteria and optimizations one may want to take into account when defining which columns to blend together in the traces.
+One may, for instance, want to form blended columns of the same type i.e. by blending binary or byte columns together as much as posible, say.
+
+This puts a burden on the specification itself as we will have to ensure that whenever we refer to the value in a (virtual) column from a given perspective at a given point in time (i.e. on a given row $i$) we are certain that the corresponding value is the value present in the associated blended column.
+We will make sure of this as follows.
+Perspectives will be associated with \textbf{eponymous exclusive binary flags} $\peekAccount, \peekContext, \peekMisc, \peekScenario, \peekStack, \peekStorage, \peekTransaction$.
+Exclusivity means that at most one of these may be on (i.e. $=1$) on any row.
+Thus to ensure that the correct data will be available at the right place we will often enforce constraints which impose, given some precondition, that a certain sum of these shifted flags be equal to the number of terms intervening in this sum. For instance a constraint terminating with, e.g.
+\[
+	\left[ \begin{array}{cr}
+		+ & \peekAccount_{i} \\
+		+ & \peekMisc   _{i + 1} \\
+		+ & \peekMisc   _{i + 2} \\
+		+ & \peekContext_{i + 3} \\
+	\end{array} \right]
+	=
+	4
+\]
+will make sure that, given the right preconditions, row $n^\circ~i$ is an account row, the following two rows are miscellaneous-rows followed by a context-row.
+Enforcing such constraints legitimizes our usage of values from columns in the account perspective on row $i$ such as $\accAddressHi_{i}, \accNonce_{i}, \accWarmth_{i}$,
+values from the miscellaneous perspective on rows $i + 1$ and $i + 2$, e.g. $\miscMmuInst_{i + 1}$ or $\miscStpGasStipend_{i + 2}$,
+as well as values from the context perspective on row $i + 3$, e.g. $\cnCdo_{i + 3}$, $\cnCodeCfi_{i + 3}$ etc\dots{}
+\saNote{} Perspectives have associated symbols which we use to prefix columns from that perspective and disambiguate columns which otherwise may have the same or very similar names (address columns are a prime example of this.)
+Thus the names of (virtual) columns belonging to e.g. context perspective are of the form $\contextSignifier\col{ABC}$, scenario columns are of the form $\scenarioSignifier\col{ABC}$ and similarly for all other perspectives.
+
+The exclusive binary flags which we mentioned earlier are examples of so-called \textbf{shared} columns, i.e. ``standard'' or ``unblended'' columns.
+The contents of such columns are available on every row of the trace and their interpretation is context independent.
+They comprise data which is of constant use such as the \hubMod{} stamp \hubStamp{}, the current program counter \pc{}, the code fragment index \cfi{} of the code which is currently executing or gas parameters such as $\gasCost$ and $\gasActual$.
+We shall begin by introducing these shared columns.
+
+\begin{figure}
+	\[
+		\renewcommand{\arraystretch}{1.3}
+		\begin{array}{%
+				|c|c|				% batch & tx
+				|c|c|c|c|			% TX phases (except for TX_SKIP_EXECUTION)
+				|c|c|c|c|c|c|c|c|	% data columns
+				|c|c|c|c|c|			% peeking columns
+				|c|}				% hub stamp
+				\hline
+				\col{bt\#} & 
+				\col{tx\#} & 
+				%
+				\cellcolor{solarized-magenta!\lllight} \col{tw} & 
+				\cellcolor{solarized-magenta!\llight} \col{ti} & 
+				\cellcolor{solarized-magenta!\light} \col{te} & 
+				\cellcolor{solarized-magenta} \col{tf} & 
+				%
+				\!\star\! &
+				\!\star\! &
+				\!\star\! &
+				\!\star\! &
+				\!\star\! &
+				\!\star\! &
+				\!\star\! &
+				\!\star\! &
+				%
+				\cellcolor{solarized-cyan}		\col{con}^\eye	& 
+				\cellcolor{solarized-yellow}	\col{stk}^\eye	& 
+				\cellcolor{solarized-green}		\col{acc}^\eye	& 
+				\cellcolor{solarized-blue}		\col{sto}^\eye	& 
+				\cellcolor{solarized-orange}	\col{tx}^\eye	& \hubStamp \\\hline
+				\multicolumn{2}{c}{\vdots}
+				&
+				\multicolumn{4}{c}{\vdots}
+				&
+				\multicolumn{8}{c}{\vdots}
+				&
+				\multicolumn{5}{c}{\vdots}
+				&
+				\multicolumn{1}{c}{\vdots}
+				\\
+				\btP	& \allCdots & 12		\\\hline\hline
+				\bt		& \twRow	& \accRow & 13	\\\hline
+				\bt		& \twRow	& \stoRow & 13	\\\hline
+				\bt		& \twDots	& \allVdots	\\\hline
+				\bt		& \twRow	& \stoRow & 13	\\\hline
+				\bt		& \twRow	& \accRow & 13	\\\hline
+				\bt		& \twRow	& \accRow & 13	\\\hline
+				\bt		& \twRow	& \stoRow & 13	\\\hline\hline
+				\bt		& \tiRow	& \accRow & 14	\\\hline
+				\bt		& \tiRow	& \accRow & 14	\\\hline
+				\bt		& \tiRow	& \conRow & 14	\\\hline
+				\bt		& \tiRow	& \txnRow & 14	\\\hline\hline
+				\bt		& \teRow	& \stkRow & 15	\\\hline
+				\bt		& \teRow	& \stkRow & 16	\\\hline
+				\bt		& \teRow	& \accRow & 16	\\\hline
+				\bt		& \teRow	& \stkRow & 17	\\\hline
+				\bt		& \teRow	& \conRow & 17	\\\hline
+				\bt		& \teRow	& \accRow & 17	\\\hline
+				\btDots & \teDots	& \allVdots	\\\hline
+				\bt		& \teRow	& \stkRow & 79	\\\hline
+				\bt		& \teRow	& \stoRow & 79	\\\hline
+				\bt		& \teRow	& \stkRow & 80	\\\hline
+				\bt		& \teRow	& \txnRow & 80	\\\hline
+				\bt		& \teRow	& \stkRow & 81	\\\hline
+				\bt		& \teRow	& \accRow & 81	\\\hline
+				\bt		& \teRow	& \accRow & 81	\\\hline
+				\bt		& \teRow	& \stkRow & 82	\\\hline
+				\bt		& \teRow	& \stkRow & 83	\\\hline
+				\bt		& \teRow	& \conRow & 83	\\\hline\hline
+				\bt		& \tfRow	& \accRow & 84	\\\hline
+				\bt		& \tfRow	& \accRow & 84	\\\hline
+				\bt		& \tfRow	& \txnRow & 84	\\\hline\hline
+				\btPP	& \allCdots	& 85 \\
+			\end{array}
+			\]
+			\caption{Graphical representation of
+			\colorbox{solarized-cyan}{\textbf{context-rows}},
+			\colorbox{solarized-yellow}{\textbf{stack-rows}},
+			\colorbox{solarized-green}{\textbf{account-rows}},
+			\colorbox{solarized-blue}{\textbf{storage-rows}} and
+			\colorbox{solarized-orange}{\textbf{transaction-rows}}.}
+		\end{figure}

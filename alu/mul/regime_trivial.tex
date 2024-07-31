@@ -1,0 +1,64 @@
+As stated in section~\ref{subsec (alu/exp): columns}
+the goal is to have $\oli = 1$ whenever the output of an instruction is clear without computation.
+By construction, $\oli = 1$ \emph{iff} \big($\iArgOne \in \{0,1\}$ \OR $\iArgTwo \in \{0,1\}$\big).
+Thus whenever $\oli = 1$ one can deduce the result on sight.
+% We can easily constrain the result, both for $\inst{MUL}$ and $\inst{EXP}$ instructions, when $\oli = 1$ i.e. when
+% $\tinyExponent = 1$ or 
+% $\tinyBase = 1$. Indeed
+%if
+Indeed, if one of the arguments of a \inst{MUL} instruction is $0$ or $1$ then the output is $0$ or the other argument.
+Similarly, if the exponent $\iArgTwo$ of an \inst{EXP} instruction is zero then $\iRes = 1$;
+if the exponent is one then $\iRes = \iArgOne$; if the exponent is $\neq 0, 1$ but the base $\iArgOne$ is equal to $0$ or $1$ then $\iRes = \iArgOne$.
+\begin{center}
+\framebox{All constraints in this section assume that $\oli_{i} = 1$.}
+\end{center}
+We thus impose the following constraints:
+%\begin{center}
+%\framebox{All constraints in the present section are written under the assumption that $\oli_{i} = 1$.}
+%\end{center}
+\begin{enumerate}
+	\item \If $\iInst_{i} = \inst{MUL}$\footnote{given that $\oli_{i} = 1$ and thus $\iMulStamp_{i} \neq 0$ this is equivalent to $\iInst_{i} \neq \inst{EXP}$} \Then
+	\begin{enumerate}
+		\item \If $\tinyExponent_{i} = 1$ (i.e. $\iArgTwo = \iArgTwoLo \in \{ 0, 1 \}$) \Then
+		\[
+		\begin{cases}
+			\iResHi_{i} = \iArgTwoLo_{i} \cdot \iArgOneHi_{i} \\
+			\iResLo_{i} = \iArgTwoLo_{i} \cdot \iArgOneLo_{i} \\
+		\end{cases}
+		\]
+		\item \If $\tinyBase_{i} = 1$ (i.e. $\iArgOne = \iArgOneLo \in \{ 0, 1 \}$) \Then
+		\[
+		\begin{cases}
+			\iResHi_{i} = \iArgOneLo_{i} \cdot \iArgTwoHi_{i} \\
+			\iResLo_{i} = \iArgOneLo_{i} \cdot \iArgTwoLo_{i} \\
+		\end{cases}
+		\]
+	\end{enumerate}
+	\item \If $\iInst_{i} = \inst{EXP}$\footnote{given that $\oli_{i} = 1$ and thus $\iMulStamp_{i} \neq 0$ this is equivalent to $\iInst_{i} \neq \inst{MUL}$} \Then
+	\begin{enumerate}
+		\item \If $\tinyExponent_{i} = 1$ \Then
+		\begin{enumerate}
+			\item \If $\iArgTwoLo_{i} = 0$\footnote{in the implementation we can replace this with \If $\iArgTwoLo_{i} \neq 1$} \Then 
+			\[
+			\begin{cases}
+				\iResHi_{i} = 0 \\
+				\iResLo_{i} = 1 \\
+			\end{cases}
+			\]
+			\item \If $\iArgTwoLo_{i} = 1$\footnote{in the implementation we can replace this with \If $\iArgTwoLo_{i} \neq 0$} \Then 
+			\[
+			\begin{cases}
+				\iResHi_{i} = \iArgOneHi_{i} \\
+				\iResLo_{i} = \iArgOneLo_{i} \\
+			\end{cases}
+			\]
+		\end{enumerate}
+		\item \If $\tinyExponent_{i} = 0$\footnote{and thus $\tinyBase_{i} = 1$} \Then
+		\[
+		\begin{cases}
+			\iResHi_{i} = \iArgOneHi_{i} \\
+			\iResLo_{i} = \iArgOneLo_{i} \\
+		\end{cases}
+		\]
+	\end{enumerate}
+\end{enumerate}

@@ -1,0 +1,57 @@
+The purpose of (the context-constant columns)
+\begin{multicols}{4}
+        \begin{enumerate}
+                \item \cnGetsRev{}
+                \item \cnSelfRev{}
+                \item \cnWillRev{}
+                \item \cnRevStamp{}
+        \end{enumerate}
+\end{multicols}
+\noindent
+is to record several facts about the potential roll backs of execution contexts.
+The present section explains the logic governing these columns.
+The purpose of (the binary flag) \cnWillRev{} is to record whether an execution context reverts --- whatever the reason.
+The purpose of (the binary flag) \cnSelfRev{} is to record whether an execution context reverts for ``self-inflicted'' reasons.
+The purpose of (the binary flag) \cnGetsRev{} is to record whether an execution context gets reverted by virtue of its parent context reverting.
+Finally, the purpose of \cnRevStamp{} is to record the time stamp (i.e. the \hubStamp{}) at which the revert happens (with the convention that it is set to $0$ if the context doesn't revert.)
+
+To simplify the discussion we introduce a fictitious \textbf{bedrock context} \locBedrockContext{} which will serve as the parent context of the \textbf{root context} \locRootContext{} of the transaction.
+We impose, for that context
+\[
+	\left\{ \begin{array}{lcl}
+		\cnGetsRev  (\locBedrockContext) & \longleftarrow & \locFalse \\
+		\cnSelfRev  (\locBedrockContext) & \longleftarrow & \locFalse \\
+		\cnWillRev  (\locBedrockContext) & \longleftarrow & \locFalse \\
+		\cnRevStamp (\locBedrockContext) & \longleftarrow & 0         \\
+	\end{array} \right.
+\]
+Now consider an arbitrary execution context \locCurrentContext{} spawned during transaction processing (starting with the root context \locRootContext) with parent context \locParentContext{}.
+We impose that
+\[
+	\cnGetsRev(\locCurrentContext)  \longleftarrow  \cnWillRev(\locParentContext)
+\]
+If at $\hubStamp = \locRevertStamp$ the execution context \locCurrentContext{} raises an exception or executes the \inst{REVERT} opcode we set
+\[
+	\left\{ \begin{array}{lcl}
+		\cnSelfRev  (\locCurrentContext) & \longleftarrow & \locTrue         \\
+		\cnRevStamp (\locCurrentContext) & \longleftarrow & \locRevertStamp \\
+	\end{array} \right.
+\]
+otherwise (i.e. if during the lifetime of the execution context \locCurrentContext{} no exception is raised and no \inst{REVERT} opcode is executed) we set 
+\[
+	\left\{ \begin{array}{lcl}
+		\cnSelfRev  (\locCurrentContext) & \longleftarrow & \locFalse                 \\
+		\cnRevStamp (\locCurrentContext) & \longleftarrow & \cnRevStamp(\locParentContext) \\
+	\end{array} \right.
+\]
+Furthermore an execution context \locCurrentContext{} reverts \emph{iff} its parent reverts or it self-reverts, therefore
+\[
+	\cnWillRev(\locCurrentContext) \longleftarrow \cnGetsRev(\locCurrentContext) \vee \cnSelfRev(\locCurrentContext)
+\]
+The following sections implement the above in terms of constraints.
+
+\saNote{}
+An important feature of these columns is that they are ``execution-environment constant'', see section~(\ref{hub: consistencies: environment}).
+This means that it is sufficient to set their values \textbf{once per execution context}.
+This ``one time setting'' must happen at very specific points in time.
+We describe the process in the upcoming sections.

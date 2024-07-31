@@ -1,0 +1,37 @@
+The present section describes the data layout for the \inst{CALL} case. As such:
+\[
+	\boxed{\text{All constraints in this subsection further assume } \oobInstIsXcall_{i} = 1}
+\]
+We remind the reader that purpose of the \oobInstXcall{} instruction is to detect nonzero value transfers for \inst{CALL} instructions.
+These are liable to trigger a \staticxSH{}.
+
+We introduce the following shorthands:
+\[
+	\left\{ \begin{array}{lclr}
+		\locValueHi      & \define & \oobDataCol{1} _{i} \\
+		\locValueLo      & \define & \oobDataCol{2} _{i} \\
+		%                & \define & \oobDataCol{3} _{i} \\
+		%                & \define & \oobDataCol{4} _{i} \\
+		%                & \define & \oobDataCol{5} _{i} \\
+		%                & \define & \oobDataCol{6} _{i} \\
+		\locNonzeroValue & \define & \oobDataCol{7} _{i}  & \prediction \\
+		\locZeroValue    & \define & \oobDataCol{8} _{i}  & \prediction \\
+	\end{array} \right.
+\]
+We impose the following constraints:
+\begin{description}
+	\item[\underline{Row n°$(i)$:}] we impose the following:
+		\[
+			\oobCallToIszero
+			{i}{0}
+			{\locValueHi}{\locValueLo}
+		\]
+	\item[\underline{Justifying the \hubMod's prediction:}]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\locNonzeroValue & = & 1 - \outgoingResLo _{i} \\
+				\locZeroValue    & = & \outgoingResLo _{i}     \\
+			\end{array} \right.
+		\]
+\end{description}

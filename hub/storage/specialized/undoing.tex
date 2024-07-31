@@ -1,0 +1,24 @@
+The following collections of constraints undo changes made to warmth and or value:
+\[
+	\left\{ \begin{array}{lcl}
+		\stoUndoWarmthUpdate {i}{\reluo}{\reldo} & \iff &
+		\left\{	\begin{array}{lclr}
+			\stoWarmth    _{i + \reluo} & \!\!\! = \!\!\! & \stoWarmth\new_{i + \reldo} & \quad (\trash)             \\
+			\stoWarmth\new_{i + \reluo} & \!\!\! = \!\!\! & \stoWarmth    _{i + \reldo}     \\
+		\end{array}	\right.	\vspace{2mm}	\\
+		\stoUndoValueUpdate {i}{\reluo}{\reldo} & \iff &
+		\left\{	\begin{array}{lclr}
+			\stoCurrValueHi_{i + \reluo} & \!\!\! = \!\!\! & \stoNextValueHi_{i + \reldo}  & \quad (\trash)             \\
+			\stoCurrValueLo_{i + \reluo} & \!\!\! = \!\!\! & \stoNextValueLo_{i + \reldo}  & \quad (\trash)\vspace{2mm} \\
+			\stoNextValueHi_{i + \reluo} & \!\!\! = \!\!\! & \stoCurrValueHi_{i + \reldo} \\
+			\stoNextValueLo_{i + \reluo} & \!\!\! = \!\!\! & \stoCurrValueLo_{i + \reldo} \\
+		\end{array}	\right.	\vspace{2mm}	\\
+		\stoUndoWarmthAndValueUpdate {i}{\reluo}{\reldo} & \iff &
+		\left\{	\begin{array}{lcl}
+			\stoUndoWarmthUpdate {i}{\reluo}{\reldo} \\
+			\stoUndoValueUpdate  {i}{\reluo}{\reldo} \\
+		\end{array}	\right.	\\
+	\end{array} \right.
+\]
+\saNote{} This constraint should only be applied when $\peekStorage_{i} = \peekStorage_{i - 1} = 1$.
+There are no scenarios where changes made to storage must be undone where the changes in question are further apart than on the previous row.

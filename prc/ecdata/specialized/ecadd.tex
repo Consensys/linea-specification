@@ -1,0 +1,64 @@
+\[
+    \boxed{\text{All constraints in this subsection assume }
+        \left\{ \begin{array}{lcl}
+            \isEcaddData_{i} & =    & 1               \\
+            \ecdataId_{i}    & \neq & \ecdataId_{i-1} \\
+        \end{array} \right.
+    }
+\]
+
+We introduce the following (local) shorthands:
+\[
+    \left\{ \begin{array}{lclr}
+        \locPXHi & \define & \ecdataLimb_{i}   \\
+        \locPXLo & \define & \ecdataLimb_{i+1} \\
+        \locPYHi & \define & \ecdataLimb_{i+2} \\
+        \locPYLo & \define & \ecdataLimb_{i+3} \\
+    \end{array} \right.
+    \qquad
+    \left\{ \begin{array}{lclr}
+        \locQXHi & \define & \ecdataLimb_{i+4} \\
+        \locQXLo & \define & \ecdataLimb_{i+5} \\
+        \locQYHi & \define & \ecdataLimb_{i+6} \\
+        \locQYLo & \define & \ecdataLimb_{i+7} \\
+    \end{array} \right.
+\]
+
+We set the following constraints:
+
+\begin{description}
+    \item[\underline{Row $n^°(i)$:}]
+          we impose
+          \[
+              \callToCOneMembership
+              {i}{0}
+              {\locPXHi}{\locPXLo}{\locPYHi}{\locPYLo}
+          \]
+          as well as define the shorthand
+          \[
+              \locCOneMembershipFirstPoint  \define \hurdle_{i}
+          \]
+    \item[\underline{Row $n^°(i+4)$:}]
+          we impose
+          \[
+              \callToCOneMembership
+              {i}{4}
+              {\locQXHi}{\locQXLo}{\locQYHi}{\locQYLo}
+          \]
+          as well as define the shorthand
+          \[
+              \locCOneMembershipSecondPoint  \define \hurdle_{i+4}
+          \]
+    \item[\underline{Justifying the \ecdataSuccessBit{}:}]
+          we define the following shorthands
+          \[
+              \locInternalChecksPassed \define \hurdle_{i+\indexMaxEcaddData}
+          \]
+          and impose the following constraints
+          \[
+              \left\{ \begin{array}{lcl}
+                  \locInternalChecksPassed & = & \locCOneMembershipFirstPoint \cdot \locCOneMembershipSecondPoint \\
+                  \ecdataSuccessBit_{i}    & = & \locInternalChecksPassed                                         \\
+              \end{array} \right.
+          \]
+\end{description}

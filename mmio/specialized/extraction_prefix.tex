@@ -1,0 +1,44 @@
+Suppose we are given:
+\begin{itemize}
+	\item a byte column \byte{},
+	\item \col{X} a binary column,
+	\item an ``accumulator column'' \ACC{},
+	\item a ``counter column'' \ct{}.
+\end{itemize}
+In all applications
+\byte{} will arise as the byte decomposition of a counter-constant column \source{} and
+$\col{X}$ will satisfy a plateau constraint with jump at some $\col{C} < \llarge$.
+The goal is for \ACC{} to accumulate (a portion of) said bytes, namely those bytes $\byte_{i}$ of $\source$ for which $i < \col{C}$ holds.
+
+Consider he following set of constraints:
+\begin{enumerate}
+	\item \If $\ct_{i} = 0$ \Then
+		\[
+		\begin{cases}
+			\If \col{X}_{i} = 0~\Then \ACC{}_{i} = \byte{}_{i} \\
+			\If \col{X}_{i} = 1~\Then \ACC{}_{i} = 0 \\
+		\end{cases}
+	\]
+	\item \If $\ct_{i}\neq 0$ \Then
+	\[
+		\begin{cases}
+			\If \col{X}_{i} = 0~\Then \ACC{}_{i} = 256 \cdot \ACC{}_{i-1} + \byte{}_{i}\\
+			\If \col{X}_{i} = 1~\Then \ACC{}_{i} = \ACC{}_{i-1}
+		\end{cases}
+	\]
+\end{enumerate}
+We encapsulate these constraints in the following relation
+\[
+	\compPrefix(\ACC{}, \byte{}, \col{X}; \ct{})
+\]
+%we also abbreviate under $\compChunk(\ACC{}, \byte{}, \col{X}, \col{Y})$ the following constraints
+%\begin{enumerate}
+%	\item \If $\col{X}_{i} = 0$ \Then $\ACC{}_{i} = 0$
+%	\item \If $\col{X}_{i} = 1$ \Then
+%	\[
+%		\begin{cases}
+%			\If \col{Y}_{i} = 0~\Then \ACC{}_{i} = 256 \cdot \ACC{}_{i-1} + \byte{}_{i} \\
+%			\If \col{Y}_{i} = 1~\Then \ACC{}_{i} = \ACC{}_{i-1}
+%		\end{cases}
+%	\]
+%\end{enumerate}

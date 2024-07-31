@@ -1,0 +1,17 @@
+Below we define some simple constraint systems.
+In particular we define a parametrized family of constraints $\accUndoNonceUpdate {i}{\reluo}{\reldo}$.
+This family is parametrized in terms of parameters $\reluo$, $\reldo$ which are (small, nonnegative) integers.
+The interpretation of $\accUndoNonceUpdate {i}{\reluo}{\reldo}$ is that this constraint peeks $\reluo$ rows into the future (relative to the present row) and undoes changes performed $\reldo$ rows from now (relative to the present row.)
+\[
+	\left\{ \begin{array}{lcl}
+		\accSameNonce          {i}{\relof}         & \!\!\! \iff \!\!\! & \accNonce\new_{i + \relof} = \accNonce_{i + \relof}     \\
+		\accIncrementNonce     {i}{\relof}         & \!\!\! \iff \!\!\! & \accNonce\new_{i + \relof} = \accNonce_{i + \relof} + 1 \\
+		\accUndoNonceUpdate    {i}{\reluo}{\reldo} & \!\!\! \iff \!\!\! &
+		\left\{\begin{array}{lcl}
+			\accNonce    _{i + \reluo} & \!\!\! = \!\!\! & \accNonce\new_{i + \reldo} \\
+			\accNonce\new_{i + \reluo} & \!\!\! = \!\!\! & \accNonce    _{i + \reldo} \\
+		\end{array}\right.\\
+	\end{array} \right.
+\]
+These constraints should only be applied when $\peekAccount_{i + \relof} = 1$ 
+and $\peekAccount_{i + \reluo} = \peekAccount_{i + \reldo} = 1$ (and the underlying account is the same on both rows.)

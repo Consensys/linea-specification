@@ -1,0 +1,120 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below assume that }
+		\left\{ \begin{array}{lcl}
+			\peekScenario             _{i} & = & 1 \\
+			\scenBlake                _{i} & = & 1 \\
+			\scenPrcFailureKnownToHub _{i} & = & 0 \\
+		\end{array} \right.
+		}
+\end{center}
+We are thus considering the first row of the second phase of the \hubMod{}'s processing of a \inst{CALL} to the \inst{BLAKE2f} precompile.
+We are further assuming that the \hubMod{} module didn't detect an exceptional \inst{CALL} to the \inst{BLAKE2f} precompile (i.e. $\cds = \locBlakeCallDataSize$.)
+The call may still fail in \textsc{ram} (or succeed.)
+We fix the behaviour of the next row, i.e. row $n^°(i + \prcBlakeSecondMiscRowOffset)$:
+\begin{description}
+	\item[\underline{Miscellaneous-row $n^°(i + \prcBlakeSecondMiscRowOffset)$:}] 
+		\begin{description}
+			\item[\underline{Setting lookup flags:}]
+				we impose
+				\[
+					\weightedMiscFlagSum
+					{i}{\prcBlakeSecondMiscRowOffset}
+					=
+					\left[ \begin{array}{crcl}
+						+ & \miscMmuWeight  & \!\!\! \cdot \!\!\! & \locOobResultRamSuccess \\
+						+ & \miscOobWeight \\
+					\end{array} \right]
+				\]
+				in other words
+				\[
+					\left\{ \begin{array}{lclr}
+						\miscExpFlag _{i + \prcBlakeSecondMiscRowOffset} & = & \gZero                                       & (\trash) \\
+						\miscMmuFlag _{i + \prcBlakeSecondMiscRowOffset} & = & \undefinedStar \quad \locOobResultRamSuccess & (\trash) \\
+						\miscMxpFlag _{i + \prcBlakeSecondMiscRowOffset} & = & \rZero                                       & (\trash) \\
+						\miscOobFlag _{i + \prcBlakeSecondMiscRowOffset} & = & \one                                         & (\trash) \\
+						\miscStpFlag _{i + \prcBlakeSecondMiscRowOffset} & = & \gZero                                       & (\trash) \\
+					\end{array} \right.
+				\]
+				We are thus always calling the \oobMod{} and only calling the \mmuMod{} if the call to the \oobMod{} 
+
+				\saNote{} The shorthand \locOobResultRamSuccess{} which we label with $\undefinedStar$ will be set below.
+			\item[\underline{Setting \oobMod{} values and shorthands:}] 
+				we impose the following constraints
+				\[
+					\setOobInstructionBlakeParams {
+						anchorRow = i                            ,
+						relOffset = \prcBlakeSecondMiscRowOffset ,
+						callGas   = \locPrcCallGas               ,
+						blakeR    = \locBlakeR                   ,
+						blakeF    = \locBlakeF                   ,
+					}
+					\label{hub: instruction handling: call: precompiles: blake: hub success call}
+				\]
+				We also define the following shorthands
+				\[
+					\left\{ \begin{array}{lcl} \label{hub: instruction handling: call: precompiles: blake: shorthands}
+						% & \define & \miscOobDataCol{1}_{i + \prcBlakeSecondMiscRowOffset} \\
+						% & \define & \miscOobDataCol{2}_{i + \prcBlakeSecondMiscRowOffset} \\
+						% & \define & \miscOobDataCol{3}_{i + \prcBlakeSecondMiscRowOffset} \\
+						\locOobResultRamSuccess      & \define & \miscOobDataCol{4}_{i + \prcBlakeSecondMiscRowOffset} \\
+						\locOobResultReturnGas       & \define & \miscOobDataCol{5}_{i + \prcBlakeSecondMiscRowOffset} \\
+						% \locOobResultExtractCallData & \define & \miscOobDataCol{6}_{i + \prcBlakeSecondMiscRowOffset} \\
+						% \locOobResultEmptyCallData   & \define & \miscOobDataCol{7}_{i + \prcBlakeSecondMiscRowOffset} \\
+						% \locOobResultNonzeroRac      & \define & \miscOobDataCol{8}_{i + \prcBlakeSecondMiscRowOffset} \\
+					\end{array} \right.
+				\]
+				\saNote{} We have, by construction and by the computation in the \oobMod{} module, the following relations:
+				\[
+					\locOobResultRamSuccess \equiv \text{binary} 
+				\]
+			\item[\underline{Setting \mmuMod{} values:}]
+				\If $\miscMmuFlag_{i + \prcBlakeSecondMiscRowOffset} = 1$ \Then
+				\[
+					\setMmuInstructionParametersRamToExoWithPadding {
+						anchorRow       = i                                ,
+						relOffset       = \prcBlakeSecondMiscRowOffset     ,
+						sourceId        = \cn_{i}                          ,
+						targetId        = 1 + \hubStamp_{i}                ,
+						auxiliaryId     = \nothing                         ,
+						sourceOffsetLo  = \locPrcCdo + \locBlakeRparamSize ,
+						size            = \locBlakeHmtDataSize             ,
+						referenceSize   = \locBlakeHmtDataSize             ,
+						successBit      = \nothing                         ,
+						exoSum          = \exoWeightBlakeModexp            ,
+						phase           = \phaseBlakeData                  ,
+					}
+				\]
+				\saNote{} Recall that the \inst{BLAKE2f} precompile fails unless $\cds \equiv \locBlakeCallDataSize$.
+				Also $\locBlakeCallDataSize = \locBlakeRparamSize + \locBlakeHmtDataSize + \locBlakeFparamSize$, with
+				the ``rounds'' parameter occupying the first $\locBlakeRparamSize$ bytes and
+				the ``f''      parameter occupying the last  $\locBlakeFparamSize$ bytes, i.e. the final byte.
+				The above step thus extracts the $\locBlakeHmtDataSize = 13 \cdot \llarge$ bytes in between contains 
+				``\texttt{h}'',
+				``\texttt{m}'',
+				``\texttt{t\_max}'' and
+				``\texttt{t\_min}''.
+		\end{description}
+	\item[\underline{Setting \scenPrcFailureKnownToHub{}:}] 
+		we impose
+		\[
+			\left\{ \begin{array}{lclr}
+				\scenPrcSuccess           _{i} & = & \locOobResultRamSuccess     \\
+				\scenPrcFailureKnownToRam _{i} & = & 1 - \locOobResultRamSuccess  & (\trash) \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		With this we have set all success / failure flags.
+
+		\saNote{}
+		It is enough to impose \textbf{one} of the preceding constraints.
+	\item[\underline{Justifying return gas prediction:}]
+		we impose
+		\[
+			\locPrcReturnGas
+			=
+			\scenPrcSuccess_{i}
+			\cdot
+			\locOobResultReturnGas.
+		\]
+\end{description}

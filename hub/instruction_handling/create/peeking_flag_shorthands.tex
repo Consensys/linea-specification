@@ -1,0 +1,166 @@
+We centralize in this section all computations relative to the number of non-stack-rows and the associated peeking flags.
+We start by defining a series of peeking flag shorthands:
+\begin{description}
+	\item[\underline{Standard flag sum prefix:}]
+		we define
+		\[
+			\peekingSumStandardPrefix
+			\define
+			\left[ \begin{array}{ll}
+				+ & \peekScenario     _{i}     \\
+				+ & \peekContext      _{i + \createCurrentContextRowOffset} \\
+				+ & \peekMisc         _{i + \createMiscRowOffset} \\
+			\end{array} \right]
+		\]
+	\item[\underline{Exception: \staticxSH{}:}]
+		we define
+		\[
+			\peekingSumStaticx
+			\define
+			\left[ \begin{array}{ll}
+				+ & \peekingSumStandardPrefix  \\
+				+ & \peekContext      _{i + \createExceptionCallerContextRowOffset} \\
+			\end{array} \right]
+		\]
+	\item[\underline{Exception: \mxpxSH{}:}]
+		we define
+		\[
+			\peekingSumMxpx
+			\define
+			\left[ \begin{array}{ll}
+				+ & \peekingSumStandardPrefix  \\
+				+ & \peekContext      _{i + \createExceptionCallerContextRowOffset} \\
+			\end{array} \right]
+		\]
+	\item[\underline{Exception: \oogxSH{}:}]
+		we define
+		\[
+			\peekingSumOogx
+			\define
+			\left[ \begin{array}{ll}
+				+ & \peekingSumStandardPrefix  \\
+				+ & \peekContext      _{i + \createExceptionCallerContextRowOffset} \\
+			\end{array} \right]
+		\]
+	\item[\underline{Aborted:}]
+		we define
+		\[
+			\peekingSumAbort
+			\define
+			\left[ \begin{array}{ll}
+				+ & \peekingSumStandardPrefix  \\
+				+ & \peekAccount      _{i + \createFirstCreatorAccountRowOffset} \\
+				+ & \peekContext      _{i + \createAbortCurrentContextRowOffset} \\
+			\end{array} \right]
+		\]
+	\item[\underline{Failure condition \& execution will  revert:}]
+		we define
+		\[
+			\peekingSumFCondWillRevert
+			\define
+			\left[ \begin{array}{ll}
+				+ & \peekingSumStandardPrefix  \\
+				+ & \peekAccount      _{i + \createFirstCreatorAccountRowOffset} \\
+				+ & \peekAccount      _{i + \createFirstCreateeAccountRowOffset} \\
+				+ & \peekAccount      _{i + \createSecondCreatorAccountRowOffset} \\
+				+ & \peekAccount      _{i + \createSecondCreateeAccountRowOffset} \\
+				+ & \peekContext      _{i + \createFCondWillRevertCurrentContextRowOffset} \\
+			\end{array} \right]
+		\]
+	\item[\underline{Failure condition \& execution won't revert:}]
+		we define
+		\[
+			\peekingSumFCondWontRevert
+			\define
+			\left[ \begin{array}{ll}
+				+ & \peekingSumStandardPrefix  \\
+				+ & \peekAccount      _{i + \createFirstCreatorAccountRowOffset} \\
+				+ & \peekAccount      _{i + \createFirstCreateeAccountRowOffset} \\
+				+ & \peekContext      _{i + \createFCondWontRevertCurrentContextRowOffset} \\
+			\end{array} \right]
+		\]
+\end{description}
+We shall label a \inst{CREATE}-type instruction that neither provokes an exception, nor is aborted, nor raises a failure condition as \textbf{sanctioned}. We may alternatively say that this instruction \textbf{gets executed}.
+\begin{description}
+	\item[\underline{Sanctioned \inst{CREATE} flag sum prefix:}]
+		we define
+		\[
+			\peekingSumSanctionedCreatePrefix
+			\define
+			\left[ \begin{array}{ll}
+				+ & \peekingSumStandardPrefix  \\
+				+ & \peekAccount      _{i + \createFirstCreatorAccountRowOffset} \\
+				+ & \peekAccount      _{i + \createFirstCreateeAccountRowOffset} \\
+			\end{array} \right]
+		\]
+	\item[\underline{Empty init code   \& execution will  revert:}]
+		we define
+		\[
+			\peekingSumEmptyInitCodeWillRevert
+			\define
+			\left[ \begin{array}{ll}
+				+ & \peekingSumSanctionedCreatePrefix \\
+				+ & \peekAccount      _{i + \createSecondCreatorAccountRowOffset}        \\
+				+ & \peekAccount      _{i + \createSecondCreateeAccountRowOffset}        \\
+				+ & \peekContext      _{i + \createEmptyInitCodeWillRevertCurrentContextRowOffset}        \\
+			\end{array} \right]
+		\]
+	\item[\underline{Empty init code   \& execution won't revert:}]
+		we define
+		\[
+			\peekingSumEmptyInitCodeWontRevert
+			\define
+			\left[ \begin{array}{ll}
+				+ & \peekingSumSanctionedCreatePrefix \\
+				+ & \peekContext      _{i + \createEmptyInitCodeWontRevertCurrentContextRowOffset} \\
+			\end{array} \right]
+		\]
+	\item[\underline{Nonempty init code \& deployment failure \& execution will  revert:}]
+		we define
+		\[
+			\peekingSumNonEmptyInitCodeFailureWillRevert
+			\define
+			\left[ \begin{array}{ll}
+				+ & \peekingSumSanctionedCreatePrefix \\
+				+ & \peekAccount      _{i + \createSecondCreatorAccountRowOffset}        \\
+				+ & \peekAccount      _{i + \createSecondCreateeAccountRowOffset}        \\
+				+ & \peekAccount      _{i + \createThirdCreatorAccountRowOffset}        \\
+				+ & \peekAccount      _{i + \createThirdCreateeAccountRowOffset}        \\
+				+ & \peekContext      _{i + \createNonemptyInitCodeFailureWillRevertNewContextRowOffset}        \\
+			\end{array} \right]
+		\]
+	\item[\underline{Nonempty init code \& deployment failure \& execution won't revert:}]
+		we define
+		\[
+			\peekingSumNonEmptyInitCodeFailureWontRevert
+			\define
+			\left[ \begin{array}{ll}
+				+ & \peekingSumSanctionedCreatePrefix \\
+				+ & \peekAccount      _{i + \createSecondCreatorAccountRowOffset} \\
+				+ & \peekAccount      _{i + \createSecondCreateeAccountRowOffset} \\
+				+ & \peekContext      _{i + \createNonemptyInitCodeFailureWontRevertNewContextRowOffset} \\
+			\end{array} \right]
+		\]
+	\item[\underline{Nonempty init code \& deployment success \& execution will  revert:}]
+		we define
+		\[
+			\peekingSumNonEmptyInitCodeSuccessWillRevert
+			\define
+			\left[ \begin{array}{ll}
+				+ & \peekingSumSanctionedCreatePrefix \\
+				+ & \peekAccount      _{i + \createSecondCreatorAccountRowOffset} \\
+				+ & \peekAccount      _{i + \createSecondCreateeAccountRowOffset} \\
+				+ & \peekContext      _{i + \createNonemptyInitCodeSuccessWillRevertNewContextRowOffset} \\
+			\end{array} \right]
+		\]
+	\item[\underline{Nonempty init code \& deployment success \& execution won't revert:}]
+		we define
+		\[
+			\peekingSumNonEmptyInitCodeSuccessWontRevert
+			\define
+			\left[ \begin{array}{ll}
+				+ & \peekingSumSanctionedCreatePrefix \\
+				+ & \peekContext      _{i + \createNonemptyInitCodeSuccessWontRevertNewContextRowOffset} \\
+			\end{array} \right]
+		\]
+\end{description}

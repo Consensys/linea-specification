@@ -1,0 +1,73 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\usepackage{../../../../../pkg/draculatheme}
+
+\setmonofont{JetBrains Mono NF Regular}[ RawFeature={fallback=emojifallback} ]
+
+\begin{document}
+\begin{verbatim}
+
+                   ███████\  ████████\ ██\    ██\ ████████\ ███████\ ████████\ 
+                   ██  __██\ ██  _____|██ |   ██ |██  _____|██  __██\\__██  __|
+                   ██ |  ██ |██ |      ██ |   ██ |██ |      ██ |  ██ |  ██ |   
+                   ███████  |█████\    \██\  ██  |█████\    ███████  |  ██ |   
+                   ██  __██< ██  __|    \██\██  / ██  __|   ██  __██<   ██ |   
+                   ██ |  ██ |██ |        \███  /  ██ |      ██ |  ██ |  ██ |   
+                   ██ |  ██ |████████\    \█  /   ████████\ ██ |  ██ |  ██ |   
+                   \__|  \__|\________|    \_/    \________|\__|  \__|  \__|
+
+
+
+                                                          |   _)                       | 
+            |   |  __ \    _ \ \ \  /   __|   _ \  __ \   __|  |   _ \   __ \    _` |  | 
+            |   |  |   |   __/  `  <   (      __/  |   |  |    |  (   |  |   |  (   |  | 
+           \__,_| _|  _| \___|  _/\_\ \___| \___|  .__/  \__| _| \___/  _|  _| \__,_| _| 
+                                                  _|
+
+
+|-------+---------+--------------------------------------------+---------------------------------------------|
+| Row   | Persp.  | Action                                     | Comments                                    |
+|-------+---------+--------------------------------------------+---------------------------------------------|
+| i     | STACK   | ⇒ offset, size                             |                                             |
+|-------+---------+--------------------------------------------+---------------------------------------------|
+| i + 1 | MISC    |                                            |                                             |
+|       |         | MXP module:                                | MXP module is always triggered              |
+|       |         | ===========                                |                                             |
+|       |         |                                            |                                             |
+|       |         | .   ⇒ MXP/MXPX                             |                                             |
+|       |         | .   ⇒ MXP/MXP_GAS                          |                                             |
+|       |         |                                            |                                             |
+|       |         | MMU module:                                | MMU module triggered  ⇔  trigger_MMU = true |
+|       |         | ===========                                |                                             |
+|       |         |                                            |                                             |
+|       |         | trigger_MMU  ≡   [XAHOY           ≡ false] |                                             |
+|       |         | .              ∧ [context/IS_ROOT ≡ false] |                                             |
+|       |         | .              ∧ [context/r@c     ≠ 0]     |                                             |
+|       |         | .              ∧ [size            ≠ 0]     |                                             |
+|       |         |                                            |                                             |
+|-------+---------+--------------------------------------------+---------------------------------------------|
+| i + 2 | CONTEXT | readContextData( current_context )         |
+|       |         |                                            |
+|       |         | ⇒ context/IS_ROOT                          |
+|       |         | ⇒ context/r@o                              |
+|       |         | ⇒ context/r@c                              |
+|-------+---------+--------------------------------------------|
+| i + 3 | CONTEXT |                                            |
+|       |         | If [context/IS_ROOT ≡ true]                |
+|       |         | .   readContextData()                      |
+|       |         |                                            |
+|       |         | If [context/IS_ROOT ≡ false]               |
+|       |         | .   executionProvidesReturnData()          |
+|       |         | .   (caller context ⇐ return data)         |
+|-------+---------+--------------------------------------------|
+
+\end{verbatim}
+\end{document}

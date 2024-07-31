@@ -1,0 +1,59 @@
+\begin{enumerate}
+	\item \microInst:
+		contains a so-called micro-instruction (or more aptly: an \mmioMod{}-instruction);
+	\item \microSize:
+		may contain a size parameter of that instruction;
+	\item \microSlo:
+		may contain a ``source limb offset'' parameter of that instruction;
+	\item \microSbo:
+		may contain a ``source byte offset'' parameter of that instruction;
+	\item \microTlo:
+		may contain a ``target limb offset'' parameter of that instruction;
+	\item \microTbo:
+		may contain a ``target byte offset'' parameter of that instruction;
+\end{enumerate}
+For the \mmioMod{} to deal with an offset parameter, say \col{offset}, these must first be broken up into a so-called \textbf{limb offset} \col{limb\_offset} and a \textbf{byte offset} \col{byte\_offset}.
+These are related by a euclidean division relation
+\[
+	\begin{cases}
+		\col{offset} = \llarge \cdot \col{limb\_offset} + \col{byte\_offset} \\
+		\col{byte\_offset} \in \Big\{ 0, 1, \dots, \llargeMO \Big\} \\
+	\end{cases}
+\]
+The limb offset tells the \mmioMod{} which data limb to excavate (either as a data source or for modification) and
+the byte offset tells the \mmioMod{} either at which internal offset to start reading data or carry out modifications.
+One of the purposes of the lookup to the \eucMod{} module is to provide the current module with such euclidean divisions.
+\begin{enumerate}[resume]
+	\item \microLimb{}:
+		may contain data limb;
+\end{enumerate}
+These data limbs are used e.g. by
+\inst{MLOAD},
+\inst{MSTORE},
+\inst{MSTORE8} and
+\inst{CALLDATALOAD}.
+Other use cases include
+the leading byte of nonempty bytecode to deploy,
+byte size parameters and the leading exponent word required to price the
+\inst{MODEXP} precompile,
+the ``r'' and ``f'' parameter of the
+\inst{BLAKE2f} precompile.
+\begin{enumerate}[resume]
+	\item \microCns:
+		may contain a ``source context number'';
+	\item \microCnt:
+		may contain a ``target context number'';
+	\item \microSuccessBit:
+		may contain a copy of \macroSuccessBit{} (or an independently crafted value);
+	\item \microExoSum:
+		may contain a copy of \macroExoSum{} (or an independently crafted value);
+	\item \microPhase:
+		may contain a copy of \macroPhase{} (or an independently crafted value);
+	\item \microIdOne{} and \microIdTwo:
+		utilized by \mmuMod{} instructions that provide data to two exogenous data stores simultaneously;
+	\item \microTotalSize:
+		may contain some ``total size'';
+\end{enumerate}
+Examples of the above include \inst{CREATE2}'s or byte code deployments through \inst{RETURN} which simulatneously ship initialization code to the \romMod{} and \kecMod{} modules.
+
+\saNote{} The \microTotalSize{} column will typically contain the size in bytes of a message to hash or a slice of bytes to deploy.

@@ -1,0 +1,64 @@
+The present section describes the data layout for the first way in which the \oobMod{} module may interact with the \inst{BLAKE2f} precompile.
+\[
+	\boxed{\text{All constraints in this subsection further assume } \oobInstIsBlakeParams_{i} = 1 }
+\]
+We remind the reader that the objective of the \oobMod{} module in this particular case is to
+\green{(\emph{a})} compare the \locCallGas{} to the number of rounds \locBlakeR{}
+\green{(\emph{b})} verify that $\locBlakeF{} \in \{0, 1\}$
+\green{(\emph{c})} verify the \hubMod{}'s prediction as to the (non)vanishing of \locRac{}
+\green{(\emph{d})} justify the failure / success of the precompile
+\green{(\emph{e})} computed the \locRemainingGas{}.
+
+We thus introduce the following (local) shorthands:
+\[
+	\left\{ \begin{array}{lclr}
+		\locCallGas    & \define & \oobDataCol {1} _{i}               \\
+		%              & \define & \oobDataCol {2} _{i} \\
+		%              & \define & \oobDataCol {3} _{i} \\
+		\locRamSuccess & \define & \oobDataCol {4} _{i} & \prediction \\
+		\locReturnGas  & \define & \oobDataCol {5} _{i} & \prediction \\
+		\locBlakeR     & \define & \oobDataCol {6} _{i}               \\
+		\locBlakeF     & \define & \oobDataCol {7} _{i}               \\
+		%              & \define & \oobDataCol {8} _{i} \\
+	\end{array} \right.
+\]
+
+We impose the following constraints:
+\begin{description}
+	\item[\underline{Row n°$(i)$ and n°$(i + 1)$:}] we impose the following:
+	      \[
+		      \left\{ \begin{array}{l}
+			      \oobCallToLt
+			      {i}{0}
+			      {0}{\locCallGas}
+			      {0}{\locBlakeR}
+			      \vspace{2mm} \\
+			      \oobCallToEq
+			      {i}{1}
+			      {0}{\locBlakeF}
+			      {0}{\locBlakeF \cdot \locBlakeF}
+			      \vspace{2mm} \\
+		      \end{array} \right.
+	      \]
+	      we define the following shorthands
+	      \[
+		      \left\{ \begin{array}{lcl}
+			      \locSufficientGas & \define & 1 - \outgoingResLo _{i} \\
+			      \locFisABit       & \define & \outgoingResLo _{i + 1} \\
+		      \end{array} \right.
+	      \]
+	      It follows that $\locInsufficientGas = 1 \iff \locCallGas < \locBlakeR$ i.e. if and only if the \inst{BLAKE2f} precompile was provided with insufficient gas.
+	      It follows that $\locFNotABit = 1 \iff \locBlakeF \notin \{0, 1\}$.
+	      \saNote{} There is no issue with \locBlakeR{} overflowing the \wcpMod{} as that parameter will have been extracted from \textsc{ram} as a 4-Byte integer.
+	      \saNote{} The parameter \locBlakeF{} will have been extracted from \textsc{ram} as a single byte. There is no danger of overflowing the \wcpMod{} by providing it with the square of \locBlakeF{} as one of its inputs.
+	\item[\underline{Justifying \hubMod{} predictions:}]
+	      we impose
+	      \[
+		      \locRamSuccess = \locSufficientGas \cdot \locFisABit
+	      \]
+	      we further impose that
+	      \begin{enumerate}
+		      \item \If $\locRamSuccess = 1$ \Then \( \locReturnGas = \locCallGas - \locBlakeR \);
+		      \item \If $\locRamSuccess = 0$ \Then \( \locReturnGas = 0 \).
+	      \end{enumerate}
+\end{description}

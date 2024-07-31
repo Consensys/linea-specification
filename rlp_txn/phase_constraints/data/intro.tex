@@ -1,0 +1,37 @@
+The \rlp{}-ization of data, when present, proceeds through three distinct phases.
+The first phase occupies 8 rows and computes the \rlp{} prefix of the data slice; this phase is characterized by $\isprefix=1$ and $\ispadding=0$.
+The second phase is a succession of $\llarge$-row loops where the data bytes are concatenated into $\llarge$-byte data limbs; this phase is characterized by $\isprefix=0$ and $\ispadding=0$.
+The third phase occupies two rows and pertains to padding; it is characterized by $\ispadding=1$.
+With each row of the concatenation the $\phasesize$ decrements by one until it reaches $0$\footnote{Decrementing \textbf{after} the row implies that if $\phasesize \equiv 0 \pmod{\llarge}$ then $\phasesize$ will be equal to one on the last row of the concatenation loop.}
+
+When the transaction provides no data payload to \rlp{}-ize the arithmetization of that phase occupies a single row for the insertion of $\rlp(\varnothing)$ followed by one row of padding.
+The table below is a depiction of the nontrivial case i.e. the case where data is present.
+\begin{figure}
+\[
+    \renewcommand{\arraystretch}{1.5}
+    \begin{array}{|c|c|c|c|c|c|} \hline
+        \isprefix & \ispadding & \ct             & \phasesize & \lc    & \indexData     \\ \hline
+        1         & 0          & 0               & init       & 0      & 0              \\ \hline
+        \vdots    & \vdots     & \vdots          &            & \vdots & \vdots         \\ \hline
+        \vdots    & \vdots     & 6               &            & 0      & 0              \\ \hline
+        1         & \vdots     & 7               &            & 1      & 0              \\ \hline \hline \hline
+        0         & \vdots     & 0               & -=1        & 0      & 0              \\ \hline
+        \vdots    & \vdots     & \vdots          & \vdots     & \vdots & \vdots         \\ \hline
+        \vdots    & \vdots     & 15              & \vdots     & 1      & 0              \\ \hline \hline
+        \vdots    & \vdots     & 0               & \vdots     & 0      & 1              \\ \hline
+        \vdots    & \vdots     & \vdots          & \vdots     & \vdots & \vdots         \\ \hline
+        \vdots    & \vdots     & 15              & \vdots     & 1      & 1              \\ \hline \hline
+        \vdots    & \vdots     & \vdots          & \vdots     & \vdots & \vdots         \\ \hline \hline
+        \vdots    & \vdots     & 0               & \vdots     & 0      & init // 16     \\ \hline
+        \vdots    & \vdots     & \vdots          & \vdots     & \vdots & \vdots         \\ \hline
+        \vdots    & \vdots     & \vdots          & -=1        & \vdots & \vdots         \\ \hline
+        \vdots    & \vdots     & (init \% 16) -1 & 0          & \vdots & \vdots         \\ \hline
+        \vdots    & \vdots     & \vdots          & \vdots     & \vdots & \vdots         \\ \hline
+        \vdots    & 0          & 15              & 0          & 1      & init // 16     \\ \hline \hline \hline
+        \vdots    & 1          & 0               & 0          & 0      & (init // 16)+1 \\ \hline
+        0         & 1          & 1               & 0          & 0      & (init // 16)+2 \\ \hline
+    \end{array}
+\]
+\caption{Loop structure for \ob{TODO}}
+\label{Phase 9 loop}
+\end{figure}

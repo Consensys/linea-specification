@@ -1,0 +1,32 @@
+The binary flag $\ynmo$ indicates whether a $\decMxpType{4}$ instruction has any chance of triggering the \mmuMod{} module (i.e. of touching \textsc{ram}.)
+The main question is that of whether these instructions ``actually require touching \textsc{ram}''.
+Note that \textbf{exceptional} instructions almost never require touching \textsc{ram}, the exception being \inst{RETURN}'s attempting to deploy bytecode starting with \texttt{0x\,EF} thus raising the \icpxSH{}\footnote{as well as \inst{CALL}'s to precompiles which cna ``fail in \textsc{ram}''; the analysis below explicitly \textbf{excludes} the memory operations that may be triggered by calls to precompiles; such \inst{CALL}'s follow a completely separate ``biphasic'' or ``first half/second half'' or ``two scenarios'' regime which is of no relevance to the present analysis}
+But instructions raising the \mxpxSH{} exception \textbf{never} trigger the \mmuMod{} module.
+Below we assume instructions don't raise the \mxpxSH{}.
+\begin{description}
+    \item[$\decMxpType{1}$ operations:]\footnote{that is, \inst{MSIZE}}
+        \textbf{never} touch \textsc{ram} at all;
+    \item[$\decMxpType{2}$ operations:]
+        \textbf{always} touch \textsc{ram} (if \textbf{unexceptional});
+    \item[$\decMxpType{3}$ operations:]
+        \textbf{always} touch \textsc{ram} (if \textbf{unexceptional});
+    \item[$\decMxpType{5}$ operations:]\footnote{that is, \inst{CALL}-type opcodes}
+        \textbf{never} touch \textsc{ram} at all\footnote{};
+    \item[$\decMxpType{4}$ operations:] may or may not touch \textsc{ram} depending on whether a relevant ``size paramater'' is zero or not;
+\end{description}
+For the \hubMod{} module to decide whether an \textbf{unexceptional} $\decMxpType{4}$ operation should trigger the \mmuMod{} it must know whether some size parameter is nonzero or not.
+This information is essentially relayed to the \hubMod{} by means of the \ynmo{} flag.
+
+We thus impose the following
+\begin{enumerate}
+    \item \ynmo{} is binary \quad (\trash)
+    \item \If $\decMxpType{4}_{i} = 1$ \Then
+          \begin{enumerate}
+              \item \If $\mxpx = 1$ \Then $\ynmo = 0$
+              \item \If $\mxpx = 0$ \Then
+                    \begin{enumerate}
+                        \item  \If $\sizeLo{1} =    0$ \Then $\ynmo = 0$
+                        \item  \If $\sizeLo{1} \neq 0$ \Then $\ynmo = 1$
+                    \end{enumerate}
+          \end{enumerate}
+\end{enumerate}

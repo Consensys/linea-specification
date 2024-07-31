@@ -1,0 +1,33 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{../../../pkg/draculatheme}
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NF Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\begin{document}
+\begin{verbatim}
+White cells ⬜ represent 0.
+Black cells ⬛ represent 1.
+
+CT    ≡  0 1 2 3 4 5 6 7      ...      15  counter column
+⟦1⟧   ≡ ⬜⬜⬜⬜⬜⬜⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛  s.t. Plateau(⟦1⟧, TM,        CT)
+⟦2⟧   ≡ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬛⬛⬛⬛⬛  s.t. Plateau(⟦2⟧  TM + SIZE, CT)
+
+S     ≡ 🏻🏻🏻🏻🏻🏻🟩🟩🟩🟩🟩🏻🏻🏻🏻🏻
+                                      
+                        ↧          
+
+S_new ≡ 🏻🏻🏻🏻🏻🏻⬜⬜⬜⬜⬜🏻🏻🏻🏻🏻
+\end{verbatim}
+
+\end{document}

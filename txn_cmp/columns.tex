@@ -1,0 +1,27 @@
+\begin{enumerate}
+	\item $\ct$: initially hovers around $0$ and then perpetually cycles from $0$ to $\mmediumMO$ and resets
+	\item $\absTxNum$:
+	counter-constant column which initially stagnates around $0$ and then increases by $1$ with every new counter-cycle;
+	\item $\txGasLimit$:
+	counter-constant column containing the gas limit as specified in the transaction;
+	\item $\txMaxFee$:
+	counter-constant column containing the gas price of type 0 and type 1 transaction; \texttt{max\_fee\_per\_gas} for type 2 transactions;
+	\item $\txMaxTip$:
+	counter-constant column containing the undefined for type 0 and type 1 transaction; \texttt{max\_priority\_fee\_per\_gas} for type 2 transactions;
+	\item $\txGasPrice$:
+	counter-constant column containing the gas price as returned by the \inst{GASPRICE} opcode;
+	\item $\txPriorityFeePerGas$:
+	counter-constant column containing the gas price at which the \inst{COINBASE} address is paid in fees;
+	\item $\txInitialGasCost$:
+	counter-constant column containing the \textbf{intrinsic gas cost} of a transaction\footnote{``the amount of
+gas this transaction requires to be paid prior to execution'', see \ob{TODO: add reference ot EYP, page 9}};
+	\item $\txBasefee$:
+	counter-constant column containing the base fee;
+	\item $\txIsTypeTwo$: 
+	counter-constant binary column which $=1$ \emph{if and only if} the transaction has $\txType = 2$
+	\item $\txFullTip$: 
+	counter-constant binary column which $=1$ \emph{if and only if}
+	\[\txBasefee + \txMaxTip \leq \txMaxFee;\]
+	\item $\byteCol{k}$ and $\acc{k}$, $k=1, 2,\dots,\nByteColumns$: byte columns and associated accumulator columns;
+\end{enumerate}
+\saNote{} All columns which are preceded by the ``transaction data symbol'' $\transactionSignifier$ are imports from the transaction data module.

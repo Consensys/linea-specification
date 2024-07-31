@@ -1,0 +1,108 @@
+\begin{center}
+	\boxed{%
+		\text{The pre-processing presented below assumes that }
+		\left\{ \begin{array}{lcl}
+			\isMacro                 _{i}      & = & 1 \\
+			\mmuInstFlagMstore       _{i}      & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+We constrain the number of rows of the pre-processing and micro-instruction-writing phase:
+\begin{enumerate}
+	\item $\ppTotNT_{i} = 2$
+	\item $\ppTotLZ_{i} = 0$
+	\item $\ppTotRZ_{i} = 0$
+\end{enumerate}
+We advance to the actual pre-processing and micro-instruction-writing phases.
+We deal with \mmuInstMstore{}'s in a fixed number of rows.
+This allows us to deal both with pre-processing and micro-instruction-writing from a single vantage point. 
+\begin{description}
+	\item[Preprocessing row $\bm{n^\circ 1}$:] 
+		we impose that
+		\[
+			\left\{ \begin{array}{l}
+				\callToEuc   
+				{i}{1}
+				{\macroTgtOffsetLo_{i}}
+				{\llarge}
+				\vspace{2mm} \\
+				\callToIszero
+				{i}{1}
+				{0}{\locTbo}
+				\\
+			\end{array} \right.
+		\]
+		where we define (and have already used) the following shorthands:
+		\[
+			\left\{ \begin{array}{lcl}
+				\locAligned    & \define & \ppWcpRes    _{i + 1} \\
+				\locTlo        & \define & \ppEucQuot   _{i + 1} \\
+				\locTbo        & \define & \ppEucRem    _{i + 1} \\
+			\end{array} \right.
+		\]
+	\item[Setting micro-instruction-writing-constant values:]
+		\[
+			\left\{ \begin{array}{lcl}		
+			% \microInst        _{i + \nppMmuInstMstoreValuePO} & = & \locMicroInst  \\
+			% \microSize        _{i + \nppMmuInstMstoreValuePO} & = & \nothing \\
+			% \microSlo         _{i + \nppMmuInstMstoreValuePO} & = & \nothing \\
+			% \microSbo         _{i + \nppMmuInstMstoreValuePO} & = & \nothing \\
+			% \microTlo         _{i + \nppMmuInstMstoreValuePO} & = & \locTlo \\
+			% \microTbo         _{i + \nppMmuInstMstoreValuePO} & = & \locTbo \\
+			% \microLimb        _{i + \nppMmuInstMstoreValuePO} & = & \macroLimbOne_{i} \\
+			\microCns         _{i + \nppMmuInstMstoreValuePO} & = & \nothing \\
+			\microCnt         _{i + \nppMmuInstMstoreValuePO} & = & \macroTgtId_{i} \\
+			\microSuccessBit  _{i + \nppMmuInstMstoreValuePO} & = & \nothing \\
+			\microExoSum      _{i + \nppMmuInstMstoreValuePO} & = & \rZero \\
+			\microPhase       _{i + \nppMmuInstMstoreValuePO} & = & \nothing \\
+			\microIdOne       _{i + \nppMmuInstMstoreValuePO} & = & \nothing \\
+			\microIdTwo       _{i + \nppMmuInstMstoreValuePO} & = & \nothing \\
+			\microTotalSize   _{i + \nppMmuInstMstoreValuePO} & = & \nothing \\
+		\end{array} \right.
+		\]
+	\item[First micro-instruction writing:]
+		\[ \left\{ \begin{array}{lcl}		
+			\microInst        _{i + \nppMmuInstMstoreValuePO} & = & \locMicroInst  \\
+			\microSize        _{i + \nppMmuInstMstoreValuePO} & = & \llarge \\
+			\microSlo         _{i + \nppMmuInstMstoreValuePO} & = & \nothing \\
+			\microSbo         _{i + \nppMmuInstMstoreValuePO} & = & \nothing \\
+			\microTlo         _{i + \nppMmuInstMstoreValuePO} & = & \locTlo \\
+			\microTbo         _{i + \nppMmuInstMstoreValuePO} & = & \locTbo \\
+			\microLimb        _{i + \nppMmuInstMstoreValuePO} & = & \macroLimbOne_{i} \\
+			% \microCns         _{i + \nppMmuInstMstoreValuePO} & = & \nothing \\
+			% \microCnt         _{i + \nppMmuInstMstoreValuePO} & = & \macroTgtId_{i} \\
+			% \microSuccessBit  _{i + \nppMmuInstMstoreValuePO} & = & \nothing \\
+			% \microExoSum      _{i + \nppMmuInstMstoreValuePO} & = & \nothing \\
+			% \microPhase       _{i + \nppMmuInstMstoreValuePO} & = & \nothing \\
+			% \microIdOne       _{i + \nppMmuInstMstoreValuePO} & = & \nothing \\
+			% \microIdTwo       _{i + \nppMmuInstMstoreValuePO} & = & \nothing \\
+			% \microTotalSize   _{i + \nppMmuInstMstoreValuePO} & = & \nothing \\
+		\end{array} \right.
+		\]
+
+	\item[Second micro-instruction writing:]
+		\[
+			\left\{ \begin{array}{lcl}		
+			\microInst        _{i + \nppMmuInstMstoreValuePT} & = & \locMicroInst  \\
+			\microSize        _{i + \nppMmuInstMstoreValuePT} & = & \llarge \\
+			\microSlo         _{i + \nppMmuInstMstoreValuePT} & = & \nothing \\
+			\microSbo         _{i + \nppMmuInstMstoreValuePT} & = & \nothing \\
+			\microTlo         _{i + \nppMmuInstMstoreValuePT} & = & \locTlo + 1\\
+			\microTbo         _{i + \nppMmuInstMstoreValuePT} & = & \locTbo \\
+			\microLimb        _{i + \nppMmuInstMstoreValuePT} & = & \macroLimbTwo_{i} \\
+			% \microCns         _{i + \nppMmuInstMstoreValuePT} & = & \nothing \\
+			% \microCnt         _{i + \nppMmuInstMstoreValuePT} & = & \macroTgtId_{i} \\
+			% \microSuccessBit  _{i + \nppMmuInstMstoreValuePT} & = & \nothing \\
+			% \microExoSum      _{i + \nppMmuInstMstoreValuePT} & = & \nothing \\
+			% \microPhase       _{i + \nppMmuInstMstoreValuePT} & = & \nothing \\
+			% \microIdOne       _{i + \nppMmuInstMstoreValuePT} & = & \nothing \\
+			% \microIdTwo       _{i + \nppMmuInstMstoreValuePT} & = & \nothing \\
+			% \microTotalSize   _{i + \nppMmuInstMstoreValuePT} & = & \nothing \\
+		\end{array} \right.
+		\]
+		where we \locMicroInst{} is a shorthand defined as follows:
+		\begin{enumerate}
+			\item \If $\locAligned = 1$ \Then $\locMicroInst \define \mmioInstLimbToRamTransplant $
+			\item \If $\locAligned = 0$ \Then $\locMicroInst \define \mmioInstLimbToRamTwoTarget$
+		\end{enumerate} 
+\end{description}

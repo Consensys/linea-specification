@@ -1,0 +1,90 @@
+In this section, we provide a visual representation of the branching behaviour implemented by the constraints for dealing with an \inst{ECPAIRING} call
+with inputs $(\locA_1,\locB_1),\dots,(\locA_n,\locB_n)$.
+
+\begin{figure}[htb]
+    \centering
+    \begin{tikzpicture}[sibling distance=15em,
+                        level distance=6em,
+                        every node/.style = {align=center, font=\scriptsize},
+                        edge from parent/.style = {draw, -},
+                        level 1/.style={sibling distance=15em},
+                        level 2/.style={sibling distance=15em},
+                        level 3/.style={sibling distance=15em},
+                        level 4/.style={sibling distance=7.5em},
+                        level 5/.style={sibling distance=15em},
+                        level 6/.style={sibling distance=15em}
+                        ]
+        \node {$\{(\locA_1,\locB_1),\dots,(\locA_n,\locB_n)\}$}
+            child { node[coordinate] {}
+                child { node {\begin{tabular}{lcl} 
+                                \ecdataSuccessBit & = & 0 \\ 
+                                \csGTwo           & = & 1 \text{ for } $\locB_{k_0}$\\ 
+                                \csEcpairing      & = & 0 \\
+                              \end{tabular}}
+                    edge from parent node[midway, above left] {$\exists k_0,~\locB_{k_0} \notin G_2$}
+                }
+                child { node[coordinate] {}
+                    child { node[coordinate] {}
+                        child {node[coordinate] {} 
+                            edge from parent node[midway, above left] {$1$}
+                            edge from parent node[midway, above right]  {$~~~~\dots$}
+                        }
+                        child { node[coordinate] {}
+                            child { node[coordinate] {}
+                                child { node {\begin{tabular}{lcl} 
+                                                \ecdataSuccessBit & = & 1 \\ 
+                                                \csGTwo           & = & 0 \\ 
+                                                \csEcpairing      & = & 1 \\
+                                              \end{tabular}}
+                                    edge from parent node[midway, above left] {$\locA \neq \infty$}
+                                }
+                                child { node {\begin{tabular}{lcl} 
+                                                \ecdataSuccessBit & = & 1 \\ 
+                                                \csGTwo           & = & 1 \\ 
+                                                \csEcpairing      & = & 0 \\
+                                              \end{tabular}}
+                                    edge from parent node[midway, above right] {$\locA = \infty$}
+                                }
+                                edge from parent node[midway, above left] {$\locB_k \neq \infty$}
+                            }
+                            child { node {\begin{tabular}{lcl} 
+                                            \ecdataSuccessBit & = & 1 \\ 
+                                            \csGTwo           & = & 0 \\ 
+                                            \csEcpairing      & = & 0 \\
+                                          \end{tabular}}
+                                edge from parent node[midway, above right] {$\locB_k = \infty$}
+                            }
+                            edge from parent node[midway, above left] {$k$}
+                        }
+                        child {node[coordinate] {} 
+                            edge from parent node[midway, above right] {$n$}
+                            edge from parent node[midway, above left]  {$\dots~~~~$}
+                        }    
+                        edge from parent node[midway, above left] {$\exists k,~\locB_k \neq \infty$}
+                    }
+                    child { node {\begin{tabular}{lcl} 
+                                    \ecdataSuccessBit & = & 1 \\ 
+                                    \csGTwo           & = & 0 \\ 
+                                    \csEcpairing      & = & 0 \\
+                                    \trivialPairing   & = & 1 \\
+                                  \end{tabular}}
+                        edge from parent node[midway, above right] {$\forall k,~\locB_k = \infty$}
+                    }
+                    edge from parent node[midway, above right] {$\forall k,~\locB_k \in G_2$}
+                }
+                edge from parent node[midway, above left] {$\internalChecksPassed = 1$}
+            }
+            child { node {\begin{tabular}{lcl} 
+                            \ecdataSuccessBit & = & 0 \\ 
+                            \csGTwo           & = & 0 \\ 
+                            \csEcpairing      & = & 0 \\
+                          \end{tabular}}
+                edge from parent node[midway, above right] {$\internalChecksPassed = 0$}
+            };
+    \end{tikzpicture}
+    \caption{%
+        Visual representation of the branching behaviour of \inst{ECPAIRING}. In the imeplementation, $\locB_{k_0} \notin G_2$ is the first one appearing in the input.}
+    \label{fig:visual_representation}
+\end{figure}
+
+

@@ -1,0 +1,29 @@
+This section contains describes the desired layout of data in certain columns when $\mli \equiv 1$.
+\begin{figure}[!h]
+\[
+\renewcommand{\arraystretch}{1.5}
+\begin{array}{|c|c|c|c|c|c|c|}
+\hline
+\ct{} & \cmp{1} & \cmp{2} & \msb{1} & \msb{2} &
+\byteCol{1\_3} & \byteCol{2\_3} \\ \hline
+0          & \col{lt}_{0}                   & \col{eq}_{0}                   & \col{sgn}_{1} & \col{sgn}_{2} & \col{B}_{7}               & \col{B}_{7}' \\ \hline
+1          & \col{lt}_{1}                   & \col{eq}_{1}                   & \col{b}_{6}   & \col{b}_{6}'  & \multirow{6}{*}{$\vdots$} & \multirow{6}{*}{$\vdots$} \\ \cline{1-5}
+2          & \col{lt}_{2}                   & \col{eq}_{2}                   & \col{b}_{5}   & \col{b}_{5}'  &                           & \\ \cline{1-5}
+3          & \col{lt}_{3}                   & \col{eq}_{3}                   & \col{b}_{4}   & \col{b}_{4}'  &                           & \\ \hhline{|-|-|-|-|-|}
+4          & {\cellcolor{solarized-orange}} & \alpha 	                     & \col{b}_{3}   & \col{b}_{3}'  &                           & \\ \hhline{|-|-|-|-|-|}
+5          & {\cellcolor{solarized-orange}} & \beta_{0}	                     & \col{b}_{2}   & \col{b}_{2}'  &                           & \\ \hhline{|-|-|-|-|-|}
+6          & {\cellcolor{solarized-orange}} & \beta_{1}	                     & \col{b}_{1}   & \col{b}_{1}'  &                           & \\ \hline
+\mmediumMO & {\cellcolor{solarized-orange}} & {\cellcolor{solarized-orange}} & \col{b}_{0}   & \col{b}_{0}'  & \col{B}_{0}               & \col{B}_{0}' \\ \hline
+\end{array}
+\]
+\caption{%
+The above represents the desired layout of data across the 
+$\cmp{1}$, $\cmp{2}$, $\msb{1}$, $\msb{2}$ columns.
+The binary columns $\cmp{1}$, $\cmp{2}$ contain bits encoding information relative to certain comparisons (the $\col{lt}_{k}$'s and $\col{eq}_{k}$'s) as well as certain bits that capture overflows ($\alpha$ and $\beta_{0}$, $\beta_{1}$.)
+$\byteCol{1\_3}$ and $\byteCol{2\_3}$ contain the byte decomposition of $\argOne_{3}$ and $\argTwo_{3}$ respectively (both of which are $\mmedium$-byte integers.)
+$\msb{1}$ and $\msb{1}$ contain the bit decomposition of $\argOne$ and $\argTwo$'s most significant byte, written here $\col{B}_{7}$ and $\col{B}_{7}'$ respectively.
+Our notation singles out their respective most significant bit.
+Thus $\col{sgn}_{1}$ and $\col{sgn}_{2}$ are the sign bit of $\argOne$ and $\argTwo$ respectively.
+The sign bits play a role whenever the instruction's arguments are to be understood as 2's complement signed integers. \\
+The orange cells are left unused.}
+\end{figure}

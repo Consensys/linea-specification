@@ -1,0 +1,74 @@
+We impose the following
+\begin{enumerate}
+        \item $\blkMdxStamp_{0} = 0$
+        \item \If $\blkMdxStamp_{i} = 0$\footnote{The condition ``\If $\blkMdxStamp_{i} = 0$'' could be remplaced by the lower degree condition ``\If $\flagSum_{i} = 0$''.} \Then 
+                \[
+                        \left\{ \begin{array}{lclr}
+                                \modexpBlakeId _{i}     & = & 0 \\
+                                \index         _{i}     & = & 0 \\
+                                \index         _{i + 1} & = & 0 \\
+                                \indexMax      _{i}     & = & 0  & (\trash) \\
+                        \end{array} \right.
+                \]
+        \item $\blkMdxStamp_{i + 1} \in \{ \blkMdxStamp_{i}, 1 + \blkMdxStamp_{i} \}$ \quad (\trash)
+        \item we impose
+                \(
+                        \blkMdxStamp_{i + 1}
+                        =
+                        \blkMdxStamp_{i}
+                        +
+                        \locStampIncrement
+                \)
+                where
+                \[
+                        \locStampIncrement 
+                        \define
+                        \left[ \begin{array}{crcl}
+                                + & (1 - \isModexpBase _{i}) & \!\!\!\cdot\!\!\! & \isModexpBase _{i + 1} \\
+                                + & (1 - \isBlakeData  _{i}) & \!\!\!\cdot\!\!\! & \isBlakeData  _{i + 1} \\
+                        \end{array} \right]
+                \]
+\end{enumerate}
+\saNote{} \locStampIncrement{} is binary by construction.
+
+We define the following ``transition bit'' shorthand
+\[
+        \locTransitionBit_{i}
+        \define
+        \left[ \begin{array}{crcl}
+                + & \isModexpBase     _{i} & \!\!\!\cdot\!\!\! & \isModexpExponent   _{i + 1}                                            \\
+                + & \isModexpExponent _{i} & \!\!\!\cdot\!\!\! & \isModexpModulus    _{i + 1}                                            \\
+                + & \isModexpModulus  _{i} & \!\!\!\cdot\!\!\! & \isModexpResult     _{i + 1}                                            \\
+                + & \isModexpResult   _{i} & \!\!\!\cdot\!\!\! & \Big[ \isModexpBase _{i + 1} + \isBlakeData _{i + 1} \Big] \vspace{2mm} \\
+                + & \isBlakeData      _{i} & \!\!\!\cdot\!\!\! & \isBlakeParams      _{i + 1}                                            \\
+                + & \isBlakeParams    _{i} & \!\!\!\cdot\!\!\! & \isBlakeResult      _{i + 1}                                            \\
+                + & \isBlakeResult    _{i} & \!\!\!\cdot\!\!\! & \Big[ \isModexpBase _{i + 1} + \isBlakeData _{i + 1} \Big] \vspace{2mm} \\
+        \end{array} \right]
+\]
+\begin{enumerate}[resume]
+        \item \If $\blkMdxStamp_{i} \neq 0$ \Then
+                \begin{enumerate}
+                        \item \If $\index_{i} \neq \indexMax_{i}$ \Then
+                                \[
+                                        \left\{ \begin{array}{lclr}
+                                                \index_{i + 1}        & = & 1 + \index_{i} \\
+                                                \locTransitionBit_{i} & = & 0               & (\trash) \\
+                                        \end{array} \right.
+                                \] 
+                        \item \If $\index_{i} =    \indexMax_{i}$ \Then
+                                \[
+                                        \left\{ \begin{array}{lclr}
+                                                \index_{i + 1}        & = & 0  & (\trash) \\
+                                                \locTransitionBit_{i} & = & 1 \\
+                                        \end{array} \right.
+                                \] 
+                \end{enumerate}
+        \item \If $\blkMdxStamp_{N} \neq 0$ \Then
+                \[
+                        \left\{ \begin{array}{lcl}
+                                \index          _{N}                        = \indexMax_{N} & \quad(\trash) \\
+                                \isModexpResult _{N} + \isBlakeResult  _{N} = 1             & \quad(\trash) \\
+                        \end{array} \right.
+                \]
+                \saNote{}\label{blkmdx: finalization constraints are useless} These finalization constraints may be dropped as the only way the results may find their way into \textsc{ram} is by being fully loaded into \textsc{ram}, which requires the index to reach its maximal value in the present module.
+\end{enumerate}

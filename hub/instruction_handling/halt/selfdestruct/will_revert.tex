@@ -1,0 +1,55 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints below assume }
+		\left\{ \begin{array}{lcl}
+			\peekScenario                _{i} & = & 1 \\
+			\scenSelfdestructWillRevert  _{i} & = & 1 \\
+		\end{array} \right.}
+\end{center}
+We impose the following
+\begin{description}
+	\item[\underline{Undoing account updates:}] 
+		\[
+			\left\{ \begin{array}{lcl}
+				\accRomLexFlag     _{i + \locFirstAccountUndoingRow} & = & \nothing \\
+				\accTrmFlag        _{i + \locFirstAccountUndoingRow} & = & \nothing \\
+				\multicolumn{3}{l}{\accSameAddr                                 {i}{\locFirstAccountUndoingRow}{\locFirstAccountRow}}              \\
+				\multicolumn{3}{l}{\accUndoBalanceUpdate                        {i}{\locFirstAccountUndoingRow}{\locFirstAccountRow}}              \\
+				\multicolumn{3}{l}{\accUndoNonceUpdate                          {i}{\locFirstAccountUndoingRow}{\locFirstAccountRow}}              \\
+				\multicolumn{3}{l}{\accUndoWarmthUpdate                         {i}{\locFirstAccountUndoingRow}{\locFirstAccountRow}}              \\
+				\multicolumn{3}{l}{\accUndoCodeUpdate                           {i}{\locFirstAccountUndoingRow}{\locFirstAccountRow}}              \\
+				\multicolumn{3}{l}{\accUndoDeploymentStatusAndNumberUpdate      {i}{\locFirstAccountUndoingRow}{\locFirstAccountRow}}              \\
+				\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag            {i}{\locFirstAccountUndoingRow}} \vspace{2mm} \\
+				\multicolumn{3}{l}{
+					\revertDomSubStamps {
+						anchorRow = i,
+						relOffset = \locFirstAccountUndoingRow,
+						subOffset = 2,
+						}
+					} \\
+					% \revertDomSubStamps {i}{\locFirstAccountUndoingRow}{2}}              \\
+			\end{array} \right.
+		\]
+	\item[\underline{Undoing account updates:}] 
+		\[
+			\left\{ \begin{array}{lcl}
+				\accRomLexFlag     _{i + \locSecondAccountUndoingRow} & = & \nothing \\
+				\accTrmFlag        _{i + \locSecondAccountUndoingRow} & = & \nothing \\
+				\multicolumn{3}{l}{\accSameAddr                               {i}{\locSecondAccountUndoingRow}{\locSecondAccountRow}}              \\
+				\multicolumn{3}{l}{\accUndoBalanceUpdate                      {i}{\locSecondAccountUndoingRow}{\locSecondAccountRow}}              \\
+				\multicolumn{3}{l}{\accUndoNonceUpdate                        {i}{\locSecondAccountUndoingRow}{\locSecondAccountRow}}              \\
+				\multicolumn{3}{l}{\accUndoWarmthUpdate                       {i}{\locSecondAccountUndoingRow}{\locSecondAccountRow}}              \\
+				\multicolumn{3}{l}{\accUndoCodeUpdate                         {i}{\locSecondAccountUndoingRow}{\locSecondAccountRow}}              \\
+				\multicolumn{3}{l}{\accUndoDeploymentStatusAndNumberUpdate    {i}{\locSecondAccountUndoingRow}{\locSecondAccountRow}}              \\
+				\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag          {i}{\locSecondAccountUndoingRow}} \vspace{2mm} \\
+				\multicolumn{3}{l}{
+					\revertDomSubStamps {
+						anchorRow = i,
+						relOffset = \locSecondAccountUndoingRow,
+						subOffset = 3,
+						}
+					} \\
+					% \revertDomSubStamps                        {i}{\locSecondAccountUndoingRow}{3}}              \\
+			\end{array} \right.
+		\]
+\end{description}

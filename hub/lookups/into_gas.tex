@@ -1,0 +1,33 @@
+The present section details at which points in time we check gas.
+We exclude from this analysis
+(\emph{a}) the gas check performed at the onset of a transaction
+(\emph{b}) the gas check performed with every \inst{SSTORE}-instruction (i.e. checking that the currently available gas is $> G_{\text{callstipend}} = 2300$.)
+The first happens in the \txnDataMod{} module.
+The second is triggered automatically with every \inst{SSTORE} instruction (that doesn't raise simpler exceptions such as \suxSH{} or \staticxSH{} first.)
+It is carried out by the \oobMod{} module which thereby justifes the \sstorexSH{}.
+
+\saNote{} We don't perform a ``full'' gas check if the \mxpxSH{} is triggered (i.e. $\mxpx = 1$.)
+All we check in this case is that the gas is nonnegative.
+The point of the \mxpxSH{} (which really is a subcase of the \oogxSH{}) and its associated exception flag $\stackMxpx$ is to avoid comparisons against potentially large integers which may appear because of the quadratic part of memory expansion costs.
+
+The present section describes the lookup between the \hubMod{} and the \gasMod{} module. 
+\begin{description}
+	\item[Selector column:] we use the following selector: $\col{sel} \define \cmc \cdot \peekStack$
+	\item[Source columns:] ---
+		\begin{multicols}{3}
+			\begin{enumerate}
+				\item $\gasActual$
+				\item $\gasCost$
+				\item $\stackOogx$
+			\end{enumerate}
+		\end{multicols}
+	\item[Target columns:] ---
+		\begin{multicols}{3}
+			\begin{enumerate}
+				\item $\gasActual$
+				\item $\gasCost$
+				\item $\oogx$
+			\end{enumerate}
+		\end{multicols}
+\end{description}
+\saNote{} We require the lookup to happen on stack-rows (raising the \cmc{} flag) since stack-rows are where the \zkEvm{} can access the \stackOogx{} flag. 

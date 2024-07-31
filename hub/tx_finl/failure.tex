@@ -1,0 +1,118 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below assume }
+		\left\{ \begin{array}{lcl}
+			\txExec    _{i - 1} & = & 1 \\
+			\txFinl    _{i}     & = & 1 \\
+			\cnWillRev _{i - 1} & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+The constraints that follow pertain to transaction finalization when the underlying transaction exited with status code $0$.
+\begin{description}
+	\item[\underline{\underline{Account row n$^°{(i + \locTxFinlSuccessSenderAccountOffset)}$:}}]
+		we impose the following to the \textbf{sender account}:
+		\[
+			\left\{\begin{array}{lcl}
+				\accAddress\high _{i + \locTxFinlFailureSenderAccountOffset} & = & \txFrom\high _{i + \locTxFinlFailureTransactionRowOffset} \\
+				\accAddress\low  _{i + \locTxFinlFailureSenderAccountOffset} & = & \txFrom\low  _{i + \locTxFinlFailureTransactionRowOffset} \\
+				\multicolumn{3}{l}{\accIncrementBalance               {i}{\locTxFinlFailureSenderAccountOffset}{\locFinlFailureSenderRefund}} \\
+				\multicolumn{3}{l}{\accSameNonce                      {i}{\locTxFinlFailureSenderAccountOffset}  } \\
+				\multicolumn{3}{l}{\accSameCode                       {i}{\locTxFinlFailureSenderAccountOffset}} \\
+				\multicolumn{3}{l}{\accSameDeployment                 {i}{\locTxFinlFailureSenderAccountOffset}} \\
+				\multicolumn{3}{l}{\accSameWarmth                     {i}{\locTxFinlFailureSenderAccountOffset}} \\
+				\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag  {i}{\locTxFinlFailureSenderAccountOffset}} \\
+				\multicolumn{3}{l}{
+					\standardDomSubStamps {
+						anchorRow        = i,
+						relOffset        = \locTxFinlFailureSenderAccountOffset,
+						domOffset        = 0,
+					}
+				} \\
+					% \standardDomSubStamps              {i}{\locTxFinlFailureSenderAccountOffset}{0}}   \\
+			\end{array}\right.
+		\]
+		where
+		\[
+			\locFinlFailureSenderRefund \define
+			\txGasPrice_{i + \locTxFinlFailureTransactionRowOffset}
+			\cdot \txEffectiveRefund_{i + \locTxFinlFailureTransactionRowOffset}
+			+ \txValue_{i + \locTxFinlFailureTransactionRowOffset}
+		\]
+	\item[\underline{\underline{Account row n$^°{(i + \locTxFinlFailureRecipientAccountOffset)}$:}}]
+		we impose the following to the \textbf{recipient account}:
+		\[
+			\left\{\begin{array}{lcl}
+				\accAddress\high _{i + \locTxFinlFailureRecipientAccountOffset} & = & \txTo\high _{i + \locTxFinlFailureTransactionRowOffset} \\
+				\accAddress\low  _{i + \locTxFinlFailureRecipientAccountOffset} & = & \txTo\low  _{i + \locTxFinlFailureTransactionRowOffset} \\
+				\multicolumn{3}{l}{\accDecrementBalance               {i}{\locTxFinlFailureRecipientAccountOffset}{\txValue_{i + \locTxFinlFailureTransactionRowOffset}}} \\
+				\multicolumn{3}{l}{\accSameNonce                      {i}{\locTxFinlFailureRecipientAccountOffset}} \\
+				\multicolumn{3}{l}{\accSameCode                       {i}{\locTxFinlFailureRecipientAccountOffset}} \\
+				\multicolumn{3}{l}{\accSameDeployment                 {i}{\locTxFinlFailureRecipientAccountOffset}} \\
+				\multicolumn{3}{l}{\accSameWarmth                     {i}{\locTxFinlFailureRecipientAccountOffset}} \\
+				\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag  {i}{\locTxFinlFailureRecipientAccountOffset}} \\
+				\multicolumn{3}{l}{
+					\standardDomSubStamps {
+						anchorRow        = i,
+						relOffset        = \locTxFinlFailureRecipientAccountOffset,
+						domOffset        = 1,
+					}
+				} \\
+					% \standardDomSubStamps              {i}{\locTxFinlFailureRecipientAccountOffset}{1}}   \\
+				% \multicolumn{3}{l}{\accOpening  {\locTxFinlFailureSenderAccountOffset} _{i}} \\
+			\end{array}\right.
+		\]
+	\item[\underline{\underline{Account row n$^°{(i + \locTxFinlFailureCoinbaseAccountOffset)}$:}}]
+		we impose the following to the \textbf{coinbase account}:
+		\[
+			\left\{\begin{array}{lcl}
+				\accAddress\high _{i + \locTxFinlFailureCoinbaseAccountOffset} & = & \txCoinbase\high  _{i + \locTxFinlFailureTransactionRowOffset} \\
+				\accAddress\low  _{i + \locTxFinlFailureCoinbaseAccountOffset} & = & \txCoinbase\low   _{i + \locTxFinlFailureTransactionRowOffset} \\
+				\multicolumn{3}{l}{\accIncrementBalance               {i}{\locTxFinlFailureCoinbaseAccountOffset}{\locFinlFailureCoinbaseReward}} \\
+				\multicolumn{3}{l}{\accSameNonce                      {i}{\locTxFinlFailureCoinbaseAccountOffset}  } \\
+				\multicolumn{3}{l}{\accSameCode                       {i}{\locTxFinlFailureCoinbaseAccountOffset}} \\
+				\multicolumn{3}{l}{\accSameDeployment                 {i}{\locTxFinlFailureCoinbaseAccountOffset}} \\
+				\multicolumn{3}{l}{\accSameWarmth                     {i}{\locTxFinlFailureCoinbaseAccountOffset}} \\
+				\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag  {i}{\locTxFinlFailureCoinbaseAccountOffset}} \\
+				\multicolumn{3}{l}{
+					\standardDomSubStamps {
+						anchorRow        = i,
+						relOffset        = \locTxFinlFailureCoinbaseAccountOffset,
+						domOffset        = 2,
+					}
+				} \\
+					% \standardDomSubStamps              {i}{\locTxFinlFailureCoinbaseAccountOffset}{2} }  \\
+			\end{array}\right.
+		\]
+		where \locFinlFailureCoinbaseReward{} is a shorthand defined as follows:
+		\[
+			\locFinlFailureCoinbaseReward \define
+			\left[ \begin{array}{cl}
+				\cdot & \txPriorityFeePerGas_{i + \locTxFinlFailureCoinbaseAccountOffset}                                                            \\
+				\cdot & (\txGasLimit_{i + \locTxFinlFailureCoinbaseAccountOffset} - \txEffectiveRefund_{i + \locTxFinlFailureCoinbaseAccountOffset}) \\
+			\end{array} \right]
+		\]
+		% \begin{enumerate}
+		% 	\item \If $\txIsTypeTwo_{i + \locTxFinlFailureTransactionRowOffset} = 0$ \Then
+		% 		\[
+		% 			\locFinlFailureCoinbaseReward \define
+		% 			\txGasPrice_{i + \locTxFinlFailureTransactionRowOffset}
+		% 			\cdot (\txGasLimit_{i + \locTxFinlFailureTransactionRowOffset} - \txEffectiveRefund_{i + \locTxFinlFailureTransactionRowOffset})
+		% 		\]
+		% 	\item \If $\txIsTypeTwo_{i + \locTxFinlFailureTransactionRowOffset} = 1$ \Then
+		% 		\[
+		% 			\locFinlFailureCoinbaseReward \define
+		% 			(\txGasPrice_{i + \locTxFinlFailureTransactionRowOffset} - \txBasefee_{i + \locTxFinlFailureTransactionRowOffset})
+		% 			\cdot (\txGasLimit_{i + \locTxFinlFailureTransactionRowOffset} - \txEffectiveRefund_{i + \locTxFinlFailureTransactionRowOffset})
+		% 		\]
+		% \end{enumerate}
+	\item[\underline{\underline{Transaction row n$^°{(i + \locTxFinlFailureTransactionRowOffset)}$:}}]
+		we load transaction data to have access to relevant fields but also to confirm data predicted in the \txnDataMod{}:
+		\[
+			\left\{\begin{array}{lcll}
+				\txStatusCode         _{i + \locTxFinlFailureTransactionRowOffset} & = & \rZero            \\
+				\txFinalRefundCounter _{i + \locTxFinlFailureTransactionRowOffset} & = & \refund  _{i - 1} \\
+				\txLeftoverGas        _{i + \locTxFinlFailureTransactionRowOffset} & = & \gasNext _{i - 1} \\
+			\end{array}\right.
+		\]
+\end{description}

@@ -1,0 +1,72 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below are written under the assumption that}
+		\left\{ \begin{array}{lclr}
+			\peekScenario     _{i}                & = & 1 \\
+			\scenCreateSum    _{i}                & = & 1 \\
+		\end{array} \right.}
+\end{center}
+With the shorthands defined in section~(\ref{hub: instruction handling: create: peeking flags shorthands}) we impose the following constraints:
+\begin{description}
+	\item[\underline{Setting \nonStackRows{}:}]
+		we set \nonStackRows{} once and for all, though we will set it again at later points to clarify:
+		\[
+			\nonStackRows_{i - \createFirstStackRowOffset}
+			=
+			\left[ \begin{array}{lrcl}
+				+ & (1 + \createExceptionCallerContextRowOffset                     ) & \!\!\! \cdot \!\!\! & \scenCreateException                            _{i} \\
+				+ & (1 + \createAbortCurrentContextRowOffset                        ) & \!\!\! \cdot \!\!\! & \scenCreateAbort                                _{i} \\
+				+ & (1 + \createFCondWillRevertCurrentContextRowOffset              ) & \!\!\! \cdot \!\!\! & \scenCreateFCondWillRevert                      _{i} \\
+				+ & (1 + \createFCondWontRevertCurrentContextRowOffset              ) & \!\!\! \cdot \!\!\! & \scenCreateFCondWontRevert                      _{i} \\
+				+ & (1 + \createEmptyInitCodeWillRevertCurrentContextRowOffset      ) & \!\!\! \cdot \!\!\! & \scenCreateEmptyInitCodeWillRevert              _{i} \\
+				+ & (1 + \createEmptyInitCodeWontRevertCurrentContextRowOffset      ) & \!\!\! \cdot \!\!\! & \scenCreateEmptyInitCodeWontRevert              _{i} \\
+				+ & (1 + \createNonemptyInitCodeFailureWillRevertNewContextRowOffset) & \!\!\! \cdot \!\!\! & \scenCreateNonEmptyInitCodeFailureWillRevert    _{i} \\
+				+ & (1 + \createNonemptyInitCodeFailureWontRevertNewContextRowOffset) & \!\!\! \cdot \!\!\! & \scenCreateNonEmptyInitCodeSuccessWillRevert    _{i} \\
+				+ & (1 + \createNonemptyInitCodeSuccessWillRevertNewContextRowOffset) & \!\!\! \cdot \!\!\! & \scenCreateNonEmptyInitCodeFailureWontRevert    _{i} \\
+				+ & (1 + \createNonemptyInitCodeSuccessWontRevertNewContextRowOffset) & \!\!\! \cdot \!\!\! & \scenCreateNonEmptyInitCodeSuccessWontRevert    _{i} \\
+			\end{array} \right]
+		\]
+	\item[\underline{Setting the peeking flags:}]
+		we set \nonStackRows{} once and for all, though we will set it again at later points to clarify:
+		\[
+			\hspace*{-2.8cm}
+			\nonStackRows_{i - \createFirstStackRowOffset}
+			=
+			\left[ \begin{array}{lrcl}
+				+ \!\!\! & \peekingSumStaticx                            & \!\!\! \cdot \!\!\! & \locStaticx                                         \\
+				+ \!\!\! & \peekingSumMxpx                               & \!\!\! \cdot \!\!\! & \locMxpx                                            \\
+				+ \!\!\! & \peekingSumOogx                               & \!\!\! \cdot \!\!\! & \locOogx                                            \\
+				+ \!\!\! & \peekingSumAbort                              & \!\!\! \cdot \!\!\! & \scenCreateAbort                                _{i}\\
+				+ \!\!\! & \peekingSumFCondWillRevert                    & \!\!\! \cdot \!\!\! & \scenCreateFCondWillRevert                      _{i}\\
+				+ \!\!\! & \peekingSumFCondWontRevert                    & \!\!\! \cdot \!\!\! & \scenCreateFCondWontRevert                      _{i}\\
+				+ \!\!\! & \peekingSumEmptyInitCodeWillRevert            & \!\!\! \cdot \!\!\! & \scenCreateEmptyInitCodeWillRevert              _{i}\\
+				+ \!\!\! & \peekingSumEmptyInitCodeWontRevert            & \!\!\! \cdot \!\!\! & \scenCreateEmptyInitCodeWontRevert              _{i}\\
+				+ \!\!\! & \peekingSumNonEmptyInitCodeFailureWillRevert  & \!\!\! \cdot \!\!\! & \scenCreateNonEmptyInitCodeFailureWillRevert    _{i}\\
+				+ \!\!\! & \peekingSumNonEmptyInitCodeFailureWontRevert  & \!\!\! \cdot \!\!\! & \scenCreateNonEmptyInitCodeSuccessWillRevert    _{i}\\
+				+ \!\!\! & \peekingSumNonEmptyInitCodeSuccessWillRevert  & \!\!\! \cdot \!\!\! & \scenCreateNonEmptyInitCodeFailureWontRevert    _{i}\\
+				+ \!\!\! & \peekingSumNonEmptyInitCodeSuccessWontRevert  & \!\!\! \cdot \!\!\! & \scenCreateNonEmptyInitCodeSuccessWontRevert    _{i}\\
+			\end{array} \right]
+		\]
+\end{description}
+\saNote{}
+We set the value of $\nonStackRows$ on the \textbf{previous row} (i.e. we constrain $\nonStackRows_{i - 1}$) so as to connect back to the stack rows, thus preventing an attacker to set the previous value to \nonStackRows{} to $0$, say. Note that this isn't strictly speaking necessary since every new \hubStamp{} of the execution phase starts with one or two stack rows and the present row is a scenario row.
+
+Below are the concreate values of \nonStackRows{} depending on the \inst{CREATE}-type instruction scenario: 
+\begin{center}
+	\begin{tabular}{|l|l|c|} \hline
+		\multicolumn{2}{|l|}{\textsc{Scenario}}                                        & \nonStackRows{} \\ \hline \hline
+		\scenCreateException{}                                        & \suxSH{}       & $1$               \\ \hline
+		\scenCreateException{}                                        & \staticxSH{}   & $1 + \createExceptionCallerContextRowOffset                      $ \\ \hline
+		\scenCreateException{}                                        & \mxpxSH{}      & $1 + \createExceptionCallerContextRowOffset                      $ \\ \hline
+		\scenCreateException{}                                        & \oogxSH{}      & $1 + \createExceptionCallerContextRowOffset                      $ \\ \hline \hline
+		\multicolumn{2}{|l|}{\scenCreateAbort}                                         & $1 + \createAbortCurrentContextRowOffset                         $ \\ \hline \hline
+		\multicolumn{2}{|l|}{\scenCreateFCondWillRevert}                               & $1 + \createFCondWillRevertCurrentContextRowOffset               $ \\ \hline
+		\multicolumn{2}{|l|}{\scenCreateFCondWontRevert}                               & $1 + \createFCondWontRevertCurrentContextRowOffset               $ \\ \hline \hline
+		\multicolumn{2}{|l|}{\scenCreateEmptyInitCodeWillRevert}                       & $1 + \createEmptyInitCodeWillRevertCurrentContextRowOffset       $ \\ \hline
+		\multicolumn{2}{|l|}{\scenCreateEmptyInitCodeWontRevert}                       & $1 + \createEmptyInitCodeWontRevertCurrentContextRowOffset       $ \\ \hline \hline
+		\multicolumn{2}{|l|}{\scenCreateNonEmptyInitCodeFailureWillRevert}             & $1 + \createNonemptyInitCodeFailureWillRevertNewContextRowOffset $ \\ \hline
+		\multicolumn{2}{|l|}{\scenCreateNonEmptyInitCodeSuccessWillRevert}             & $1 + \createNonemptyInitCodeFailureWontRevertNewContextRowOffset $ \\ \hline
+		\multicolumn{2}{|l|}{\scenCreateNonEmptyInitCodeFailureWontRevert}             & $1 + \createNonemptyInitCodeSuccessWillRevertNewContextRowOffset $ \\ \hline
+		\multicolumn{2}{|l|}{\scenCreateNonEmptyInitCodeSuccessWontRevert}             & $1 + \createNonemptyInitCodeSuccessWontRevertNewContextRowOffset $ \\ \hline
+	\end{tabular}
+\end{center}

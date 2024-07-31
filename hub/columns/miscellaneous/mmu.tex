@@ -1,0 +1,46 @@
+\begin{enumerate}[resume]
+	\item \miscMmuInst{}:
+		custom \mmuMod{} instruction column;
+	\item \miscMmuSrcId{}:
+		a ``source ID'' column;
+	\item \miscMmuTgtId{}:
+		a ``target ID'' column;
+	\item \miscMmuAuxId{}:
+		an ``auxiliary ID'' column;
+	\item \miscMmuSrcOffsetHi{} and \miscMmuSrcOffsetLo{}:
+		high and low part of a (relative) source offset;
+	\item \miscMmuTgtOffsetLo{}:
+		low part of a (relative) target offset;
+	\item \miscMmuSize{}:
+		size parameter;
+	\item \miscMmuRefOffset{}:
+		may contain a ``reference offset''
+	\item \miscMmuRefSize{}:
+		may contain a ``reference size''
+	\item \miscMmuSuccessBit{}:
+		binary column;
+	\item \miscMmuLimbOne{} and \miscMmuLimbTwo{}:
+		may contain data limbs;
+	\item \miscMmuExoSum{}:
+		weighted sum of certain ``exo flags'';
+		the \mmioMod{} may interpret it as a bitfield;
+	\item \miscMmuPhase{}:
+		may contain a ``phase number'';
+\end{enumerate}
+Depending on circumstances the data limbs may either be interpreted
+as traveling from the \hubMod{} module to the \mmuMod{} module (e.g. in case of an \inst{MSTORE} or \inst{MSTORE8}) or
+as traveling in the opposite direction from the \mmuMod{} module to the  \hubMod{} module (e.g. in case of an \inst{MLOAD}, \inst{CALLDATALOAD}.)
+These data limbs don't necessarily contain the high and low parts of a \evm{} word (as the previous examples may suggest.)
+The \hubMod{}'s processing of \inst{CALL}'s to precompiles also makes use of these columns. 
+For instance the \inst{MODEXP} precompile uses these fields to transfer various values from \textsc{ram} to the \hubMod{} for further processing
+(e.g. byte size parameters $\locBase$, $\locExponent$, $\locModulus$ but also the leading word of the exponent.)
+Similarly the \inst{BLAKE} precompile uses these fields to transit
+the rounds parameter $r = I_\textbf{d}[0\text{..}4]$ and
+the final block indicator flag $f = I_\textbf{d}[212]$
+to the \hubMod{} module.
+
+\miscMmuExoSum{} and \miscMmuPhase{} are used in communication with so-called \textbf{exo data stores}.
+These are ``data-modules'' with which the \mmioMod{} module can exchange data.
+The first of these columns serves as an identifier for \textbf{(zero,) one or more} target/source exo modules. 
+
+\saNote{} We don't include a miscellaneous \mmuStamp{} column: such a column is readily available at all times as a shared column.

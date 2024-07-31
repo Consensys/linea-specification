@@ -1,0 +1,111 @@
+This section computes memory expansion in case both maximal offsets are in bounds. The first point is to establish this bound assertion. We then compare the two maximal offsets and store the greatest of the two in $\maxOffset$.
+\[
+	\boxed{\text{All constraints in this subsection further assume that }
+	\left\{
+		\begin{array}{lcl}
+			\ct_{i} & \!\!\! = \!\!\! & \ssmallMO \\
+			\mxpx_{i} & \!\!\! = \!\!\! & 0 \\
+		\end{array}
+		\right.}
+\]
+\begin{enumerate}
+	\item For instructions that may require it, the \zkEvm{} computes the number of evm-words $\lceil \col{size}/32 \rceil$ the data to hash or copy occupies:
+		\[
+			\If \decMxpType{4}_{i} = 1 ~ \Then
+			\left\{ \begin{array}{lcrcr}
+				\sizeLo{1} 				& \!\!\! = \!\!\! &
+				32 \cdot \acc{W}_{i} 	& \!\!\! - \!\!\! & \byteCol{R}_{i} \\
+				\byteCol{R}_{i - 1}		& \!\!\! = \!\!\! &
+				(256 - 32) 				& \!\!\! + \!\!\! & \byteCol{R}_{i} \\
+			\end{array} \right.
+		\]
+		Note that the bytehood constraint on $\byteCol{R}$ enforces $\byteCol{R}_{i} \in \{ 0, 1, \dots, 31\}$.
+	\item The \zkEvm{} confirms smallness of both $\lastOffset{1}$ and $\lastOffset{2}$:
+		\[
+			\left[ \begin{array}{c}
+				\text{Confirmation} \\
+				\text{of }\mxpx \equiv 0 \\
+			\end{array} \right]
+			\iff
+			\left\{ \begin{array}{lcl}
+				\acc{1}_{i} & \!\!\! = \!\!\! & \lastOffset{1}_{i} \\
+				\acc{2}_{i} & \!\!\! = \!\!\! & \lastOffset{2}_{i} \\
+			\end{array} \right.
+		\]
+		In other words, $\lastOffset{1}$ and $\lastOffset{2}$ are both $\ssmall$-byte integers;
+	\item The \zkEvm{} compares $\lastOffset{1}$ and $\lastOffset{2}$:
+		\[
+			\acc{3}_{i} + (1 - \comp_{i})
+			=
+			\big(\lastOffset{1}_{i} - \lastOffset{2}_{i}\big)\cdot(2\cdot\comp_{i} - 1)
+		\]
+		In other words:
+		\[
+			\left\{ \begin{array}{lcl}
+				\comp{} = 1 & \!\!\! \iff \!\!\! & \lastOffset{1} \geq \lastOffset{2} \\
+				\comp{} = 0 & \!\!\! \iff \!\!\! & \lastOffset{1}   <  \lastOffset{2} \\
+			\end{array} \right.
+		\]
+	\item The \zkEvm{} sets $\maxOffset_{i}$ to be the maximum of the two max offsets:
+		\[
+			\maxOffset_{i} = \comp_{i} \cdot \lastOffset{1}_{i} + (1 - \comp_{i}) \cdot \lastOffset{2}_{i}
+		\]
+		In other words,
+		\[
+			\left\{ \begin{array}{lcl}
+				\If \lastOffset{1} \geq \lastOffset{2} ~ \Then \maxOffset = \lastOffset{1}\\
+				\If \lastOffset{1} < \lastOffset{2}    ~ \Then \maxOffset = \lastOffset{2}\\
+			\end{array} \right.
+		\]
+	\item We compute the index of the EVM word in memory containing the byte at offset $\maxOffset$:
+		\[
+			\left\{ \begin{array}{lcrcr}
+				\maxOffset_{i} + 1		& \!\!\! = \!\!\! &
+				32 \cdot \acc{A}_{i}	& \!\!\! - \!\!\! & \byteCol{R}_{i - 2} \\
+				\byteCol{R}_{i - 3}		& \!\!\! = \!\!\! &
+				(256 - 32) 				& \!\!\! + \!\!\! & \byteCol{R}_{i - 2} \\
+			\end{array} \right.
+		\]
+		Again, bytehood constraints for $\byteCol{R}$ and the previous constraint impose $\byteCol{R}_{i - 2} \in \{0, 1, \dots, 31 \}$. This verifies eq.~(\ref{eq: euclidean division by 32})
+	\item The \zkEvm{} decides whether a memory expansion event took place
+		\[
+			\acc{4}_{i} + \mexpEvent_{i}
+			=
+			\big( \acc{A}_{i} - \memSize_{i} \big) \cdot ( 2 \cdot \mexpEvent_{i} - 1 ).
+		\]
+		In other words,
+		\[
+			\left[ \begin{array}{c}
+				\text{Confirmation} \\
+				\text{of }\mxpx \equiv 0
+			\end{array} \right]
+			\iff
+			\left\{ \begin{array}{lcl}
+				\mexpEvent{} = 1 & \!\!\! \iff \!\!\! & \acc{A}		>		\memSize \\
+				\mexpEvent{} = 0 & \!\!\! \iff \!\!\! & \acc{A}		\leq	\memSize \\
+			\end{array} \right.
+		\]
+		%	\item Some parameters are updated
+		%	\begin{enumerate}
+		%		\item \If $\mexpEvent_{i} = 0$ \Then
+		%		\[
+		%			\left\{
+		%			\begin{array}{lcl}
+		%				\memSize_{i}\new & \!\!\! = \!\!\! & \memSize_{i}, \\
+		%				\expCost_{i}\new & \!\!\! = \!\!\! & \expCost_{i}, \\
+		%			\end{array}
+		%			\right.	
+		%		\]
+		%		In other words: if no memory expansion took place then $\memSize$ and $\expCost$ don't change.
+		%		\item \If $\mexpEvent_{i} = 1$ \Then
+		%		\[
+		%			\left\{
+		%			\begin{array}{lcl}
+		%				\memSize_{i}\new & \!\!\! = \!\!\! & \acc{A}_{i} \\
+		%				\expCost_{i}\new & \!\!\! = \!\!\! & \text{\dots{} next section \dots{}} \\
+		%			\end{array}
+		%			\right.	
+		%		\]
+		%		in other words, if memory expansion took place then we update the memory size; the updated expansion cost will be computed in the following section.
+		%	\end{enumerate}
+\end{enumerate}

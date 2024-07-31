@@ -1,0 +1,59 @@
+\[
+	\boxed{\text{All constraints in this subsection further assume } \oobInstIsModexpCds_{i} = 1}
+\]
+The present instruction aims to provide the \hubMod{} module with the following information:
+\green{(\emph{a})} whether $ 0 < \locCds$,
+\green{(\emph{b})} whether $32 < \locCds$,
+\green{(\emph{c})} whether $64 < \locCds$.
+
+Comparisons of the form ``$32\cdot n < \locCds$'' allow the \hubMod{} module to know when extraction of a \textbf{byte size parameter} from \textsc{ram} is necessary.
+Recall that the first 96 (padded) bytes of call data of a \inst{CALL} to the \inst{MODEXP} precompiles are to be interpreted as the
+the base byte size \locBbs,
+the exponent byte size \locEbs,
+the modulus byte size \locMbs{} respectively,
+alternatively, using notations from the \cite{EYP},
+$\locBase$, $\locExponent$ and $\locModulus$ respectively.
+
+\noindent We use the shorthands defined below:
+\[
+	\left\{ \begin{array}{lclr}
+		\locCds        & \define & \oobDataCol {2}   _{i}     \\
+		\locExtractBbs & \define & \oobDataCol {3}   _{i}  &  \prediction    \\
+		\locExtractEbs & \define & \oobDataCol {4}   _{i}  &  \prediction    \\
+		\locExtractMbs & \define & \oobDataCol {5}   _{i}  &  \prediction    \\
+	\end{array} \right.
+\]
+\saNote{} The decorator `` $\prediction{}$ '' stands for ``\hubMod{} prediction.''
+
+We impose the following constraints:
+\begin{description}
+	\item[\underline{Rows n°$(i)$, $n^\circ(i + 1)$ and $n^\circ(i + 2)$:}] we impose
+		\[
+			\left\{ \begin{array}{l}
+				\oobCallToLt
+				{i}{0}
+				{0}{0}
+				{0}{\locCds}
+				\\vspace{2mm} \\
+				\oobCallToLt
+				{i}{1}
+				{0}{32}
+				{0}{\locCds}
+				\vspace{2mm} \\
+				\oobCallToLt
+				{i}{2}
+				{0}{64}
+				{0}{\locCds}
+				\\
+			\end{array} \right.
+		\]
+	\item[\underline{Justifying \hubMod{} predictions:}] we impose
+		we further impose 
+		\[
+			\left\{ \begin{array}{lcl}
+				\locExtractBbs & = & \outgoingResLo_{i}       \\
+				\locExtractEbs & = & \outgoingResLo_{i + 1}   \\
+				\locExtractMbs & = & \outgoingResLo_{i + 2}   \\
+			\end{array} \right.
+		\]
+\end{description}

@@ -1,0 +1,24 @@
+The present section constrains the \logStamp{} and partially constrains the \stackLogFlag{} column;
+We shall impose the following constraints:
+\begin{enumerate}
+	\item $\logStamp_{0} = 0$
+	\item $\logStamp_{i} \in \{ \logStamp_{i - 1}, 1 + \logStamp_{i - 1} \}$ (\trash)
+	\item \logStamp{} is \hubStamp{}-constant
+	\item \If $\hubStamp_{i} \neq \hubStamp_{i - 1}$ \Then $\logStamp_{i} = \logStamp_{i - 1} + \peekStack_{i} \cdot \stackLogFlag_{i}$
+\end{enumerate}
+In other words the $\logStamp$ may only change from its previous value when the \hubStamp{} changes and then only if the current row is a stack-row raising the \stackLogFlag{} flag.
+
+We now provide some details pertaining to that flag:
+\begin{enumerate}[resume]
+	\item \If $\peekStack_{i} = 1$ \Then
+		\begin{enumerate}
+			\item \stackLogFlag{} is binary (\trash)
+			\item \If $\xAhoy_{i}           = 1$ \Then $\stackLogFlag_{i} = 0$ \quad (\trash)
+			\item \If $\cnWillRev_{i}       = 1$ \Then $\stackLogFlag_{i} = 0$ \quad (\trash)
+			\item \If $\stackDecLogFlag_{i} = 0$ \Then $\stackLogFlag_{i} = 0$ \quad (\trash)
+			\item we impose $\stackLogFlag_{i} = \stackDecLogFlag_{i} \cdot \Big( 1 - \cnWillRev_{i} \Big)$
+		\end{enumerate}
+\end{enumerate}
+\saNote{} 
+In other words: a \inst{LOG}-type instruction only ``counts'' if it isn't undone at a later point by a rollback.
+Furthermore \textbf{all such logging operations count} (though not all need be processed by \texttt{ram}.

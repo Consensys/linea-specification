@@ -1,0 +1,81 @@
+In this section we describe the desired behaviour of \inst{ECADD}, \inst{ECMUL} and \inst{ECPAIRING} which \textbf{don't fail in the \hubMod{} but are provided with empty call data}.
+In the \hubMod{} this is measured \emph{exactly} by
+\[
+	\locOobResultEmptyCallData \equiv 1
+\]
+see
+section~(\ref{oob: precompiles: common precompiles: generalities}) and
+section~(\ref{oob: precompiles: common precompiles: one row precompiles})
+in the \oobMod{} chapter.
+Recall that in case of a call with \textbf{zero call data size} the callee's call data is the ``infinite\footnote{Or nearly so: it remains addressable with offsets and sizes that are in the range $\mathbb{N}_{256}$.} slice of 0 bytes'' $I_\textbf{d} \equiv [\utt{00},
+\utt{00},
+\utt{00}, \dots]$;
+
+We claim that such calls are necessarily successful (and thus don't fail in \textsc{ram}.)
+Indeed
+\begin{description}
+	\item[The \inst{ECADD} case:] 
+		the precompile extracts from $I_\textbf{d}$ two inputs
+		\begin{enumerate}
+		        \item $
+				\utt{00} \;
+				\utt{00} \; \cdots \;
+				\utt{00} \in \mathbb{B}_{\smallCurvePointSize}$
+		        \item $
+				\utt{00} \;
+				\utt{00} \; \cdots \;
+				\utt{00} \in \mathbb{B}_{\smallCurvePointSize}$
+		\end{enumerate}
+		by \evm{} convention, both are considered valid curve points and are both understood to represent the \textbf{point at infinity} on the \texttt{altbn} curve;
+		this input data is therefore well-formed and cannot trigger $\scenPrcFailureKnownToRam$; 
+		furthermore, the return data is (the \evm{} encoding of) the point at infinity
+		$
+		\utt{00} \;
+		\utt{00} \;
+		\utt{00} \; \cdots \;
+		\utt{00} \in \mathbb{B}_{\smallCurvePointSize}$;
+	\item[The \inst{ECMUL} case:] 
+		the precompile extracts from $I_\textbf{d}$ two inputs
+		\begin{enumerate}
+		        \item $
+				\utt{00} \;
+				\utt{00} \; \cdots \;
+				\utt{00} \in \mathbb{B}_{\evmWordSize}$
+		        \item $
+				\utt{00} \;
+				\utt{00} \; \cdots \;
+				\utt{00} \in \mathbb{B}_{\smallCurvePointSize}$
+		\end{enumerate}
+		the first one is interpreted as the zero integer $\in \mathbb{N}_{256}$;
+		the second one is interpreted, by \evm{} convention and as already explained, as the \textbf{point at infinity} on the \texttt{altbn} curve;
+		this input data is therfore well-formed and cannot trigger $\scenPrcFailureKnownToRam$; 
+		furthermore, the return data is (the \evm{} encoding of) the point at infinity
+		$
+		\utt{00} \;
+		\utt{00} \;
+		\utt{00} \; \cdots \;
+		\utt{00} \in \mathbb{B}_{\smallCurvePointSize}$;
+	\item[The \inst{ECPAIRING} case:]
+		empty call data leads to the ``empty pairing'' which, in accordance with \evm{} specification and standard mathematical practice, evaluates to ``\texttt{true}'';
+		as such the return data is
+		$
+		\utt{00} \;
+		\utt{00} \; \cdots \;
+		\utt{01} \in \mathbb{B}_{\evmWordSize}$;
+\end{description}
+\saNote{}
+For both \inst{ECADD} and \inst{ECMUL} return data in the empty call data case is 
+$\utt{00} \;
+\utt{00} \; \cdots \;
+\utt{00} \in \mathbb{B}_{\smallCurvePointSize}$.
+Since \textsc{ram} is initialized as empty in the \mmuMod{} module there is no requirement for us to transfer this return data to its dedicated execution context.
+That execution context already contains it by default.
+For \inst{ECPAIRING} things are different.
+Since return data is nontrivial
+$\utt{00} \;
+\utt{00} \; \cdots \;
+\utt{01} \in \mathbb{B}_{\evmWordSize}$;
+and in particular \textbf{nonzero} it must be transferred to its dedicated \textsc{ram} context.
+The arithmetization sets this value ``by hand'' i.e. without interacting with the \ecDataMod{} module.
+This the \zkEvm{} does through a dedicated \mmuInstMstore{} instruction, see section~(\ref{hub: instruction handling: call: precompiles: ecadd, ecmul and ecpairing: success}).
+

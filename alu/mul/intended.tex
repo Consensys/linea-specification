@@ -1,0 +1,45 @@
+The intended behaviour of the unfolding of an $\inst{EXP}$ instruction is captured in the figure~\ref{fig: intention of mul heartbeat}.
+\begin{figure}
+\centering
+\[
+	\begin{array}{|c|c|c|c|c|c|}
+	\hline
+	\iInst{} & \ct{} & \nBits{} & \mul{} & \snm{} & \ACC{} \\ \hline
+	& & & & & \\ 
+	\multicolumn{5}{c}{} \\
+	\vdots & \vdots & 12 & \vdots &  \vdots & \col{c} \\ \hline\hline
+	\inst{EXP} & 0 & 13 & {\cellcolor{\stackCol} 0} & {\cellcolor{\ramCol} \bm{0} } & 2 \col{c} \\ \hline
+	\inst{EXP} & 1 & 13 & {\cellcolor{\stackCol} 0} & {\cellcolor{\ramCol} \bm{0} } & 2 \col{c} \\ \hline
+	\inst{EXP} & 2 & 13 & {\cellcolor{\stackCol} 0} & {\cellcolor{\ramCol} \bm{0} } & 2 \col{c} \\ \hline
+	\vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\ \hline
+	\inst{EXP} & 6 & 13 & {\cellcolor{\stackCol} 0} & {\cellcolor{\ramCol} \bm{0} } & 2 \col{c} \\ \hline
+	\inst{EXP} & \mmediumMO & 13 & {\cellcolor{\stackCol} 0} & {\cellcolor{\ramCol} \bm{0} } & 2 \col{c} \\ \hline\hline
+	\vdots & 0 & 14 & 0 & \vdots & 4  \col{c} \\ \hline
+	& & & & & \\ 
+	\end{array}
+	\qquad
+	\begin{array}{|c|c|c|c|c|c|}
+	\hline
+	\iInst{} & \ct{} & \nBits{} & \mul{} & \snm{} & \ACC{} \\ \hline
+	& & & & & \\ 
+	\multicolumn{5}{c}{} \\
+	\vdots & \vdots & 96 & \vdots &  \vdots & \col{c} \\ \hline\hline
+	\inst{EXP} & 0 & 97 & {\cellcolor{\stackCol} 0} & {\cellcolor{\ramCol} \bm{1}} & 2 \col{c} \\ \hline
+	\inst{EXP} & 1 & 97 & {\cellcolor{\stackCol} 0} & {\cellcolor{\ramCol} \bm{1}} & 2 \col{c} \\ \hline
+	\inst{EXP} & 2 & 97 & {\cellcolor{\stackCol} 0} & {\cellcolor{\ramCol} \bm{1}} & 2 \col{c} \\ \hline
+	\vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\ \hline
+	\inst{EXP} & 6 & 97 & {\cellcolor{\stackCol} 0} & {\cellcolor{\ramCol} \bm{1}} & 2 \col{c} \\ \hline
+	\inst{EXP} & \mmediumMO & 97 & {\cellcolor{\stackCol} 0} & {\cellcolor{\ramCol} \bm{1}} & 2 \col{c} \\ \hline\hline
+	\inst{EXP} & 0 & 97 & {\cellcolor{\romCol} \bm{1}} & {\cellcolor{\ramCol} \bm{1}} & 2 \col{c} + 1 \\ \hline
+	\inst{EXP} & 1 & 97 & {\cellcolor{\romCol} \bm{1}} & {\cellcolor{\ramCol} \bm{1}} & 2 \col{c} + 1 \\ \hline
+	\inst{EXP} & 2 & 97 & {\cellcolor{\romCol} \bm{1}} & {\cellcolor{\ramCol} \bm{1}} & 2 \col{c} + 1 \\ \hline
+	\vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\ \hline
+	\inst{EXP} & 6 & 97 & {\cellcolor{\romCol} \bm{1}} & {\cellcolor{\ramCol} \bm{1}} & 2 \col{c} + 1 \\ \hline
+	\inst{EXP} & \mmediumMO & 97 & {\cellcolor{\romCol} \bm{1}} & {\cellcolor{\ramCol} \bm{1}} & 2 \col{c} + 1 \\ \hline\hline
+	\vdots & 0 & 98 & 0 & \vdots & 4 \col{c} + 2 \\ \hline
+	& & & & & \\ 
+	\end{array}
+\]
+\caption{The above represents two intermediate steps of computing an exponentiation. On the left hand side the ``13th bit'' of the exponent (which can mean several things depending on context) is $0$ so that $\snm \equiv 0$. As such the first (and only) computation associated with that bit is a \textbf{squaring}. It is taken care of in the course of $\mmedium$ lines (characterized by $\mul \equiv 0$.) On the right hand side the ``97th bit'' is $1$ so that $\snm \equiv 1$. As such the this intermediate step requires two computations. The first is a squaring. It is characterized by $\mul \equiv 0$ and takes place over $\mmedium$ lines. The second is a multiplication by the base. It is characterized by $\mul \equiv 1$ and (again) takes place over $\mmedium$ lines.}
+\label{fig: intention of mul heartbeat}
+\end{figure}

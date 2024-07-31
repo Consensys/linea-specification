@@ -1,0 +1,47 @@
+60 60		PUSH1 60	|60]
+60 40		PUSH1 40	|60|40]
+52 			MSTORE		|]
+34 			CALLVALUE	|val]
+15 			ISZERO		|(val == 0)]
+60 0e		PUSH1 0e 	|(val == 0)|0e]
+57 			JUMPI		|] 		// we jump to 0e if (val == 00); if (val != 0) we continue
+60 00		PUSH1 00 	|00]
+80 			DUP1		|00|00]
+fd 			REVERT		|] -> exit the program as if nothing happened
+----------------------------------- // potential exit point
+5b 			JUMPDEST	// byte offset = 0x0e = 14 (decimal) (we start counting at 0)
+5b 			JUMPDEST	// serves no discernable purpose
+60 01		PUSH1 01	|01]
+60 00		PUSH1 00	|01|00]
+81 			DUP2		|01|00|01]
+90 			SWAP1		|01|01|00]
+55 			SSTORE		|01] 		// stored 01 at address 00
+50 			POP			|
+5b 			JUMPDEST	(nothing happens)
+5b 			JUMPDEST	(nothing happens)
+60 36		PUSH1 36 	|36]
+80 			DUP1		|36|36]
+60 26		PUSH1 26	|36|36|26]
+60 00		PUSH1 00	|36|36|26|00] // 36 | size | codeOffset | destOffset ]
+39 			CODECOPY	|36] // copying code from ROM
+60 00		PUSH1 00	|36|00]
+f3 			RETURN		// return 0x36 = 54 bytes from RAM starting at offset 0x26 = 38
+00			STOP		// offset <- fucking nailed it ^^
+=================================== // end of init code
+=================================== \\ start of actual bytecode to deploy ...
+60 60		PUSH1 60
+60 40		PUSH1 40
+52 			MSTORE
+5b			JUMPDEST
+60 00		PUSH1 00
+80 			DUP1
+fd			REVERT
+00			STOP
+=================================== // 11 bytes so far
+=================================== \\ 43 bytes below; 11 + 43 = 54! We copy this shit into the bytecode ... what the hell ? It's not runnable! The 10th byte, af, it's not an opcode ...
+auxData:
+0xa165627a7a72305820af3193f6fd31031a0e0d2de1ad2c27352b1ce081b4f3c92b5650ca4dd542bb770029
+a1 65
+62 7a 7a 72 30 // b z z 0 r
+5820af3193f6fd31031a0e0d2de1ad2c27352b1ce081b4f3c92b5650ca4dd542bb77
+00 29

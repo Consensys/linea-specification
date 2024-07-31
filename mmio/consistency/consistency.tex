@@ -1,0 +1,83 @@
+\begin{enumerate}
+	\item There are no constraints when $\order{\cnABC}_{i} = 0$
+	\item \If $\order{\cnABC}_{i} \neq 0$:
+	\begin{enumerate}
+		\item \If
+		\[
+			\begin{cases}
+				\order{\cnABC}_{i+1}=\order{\cnABC}_{i} \\
+				\quad\et\\
+				\order{\indexABC}_{i+1}=\order{\indexABC}_{i} \\
+				\quad\et\\
+				\order{\mst^{\cc3}}_{i+1} \neq \order{\mst^{\cc3}}_{i}
+			\end{cases}
+		\]
+		\Then $\order{\valABC}_{i+1}=\order{\valABC\new_{i}}$
+		\item \If
+		\[
+			\begin{cases}
+				\order{\cnABC}_{i+1}\neq\order{\cnABC}_{i} \\
+				\quad\OR\\
+				\order{\indexABC}_{i+1}\neq\order{\indexABC}_{i}
+			\end{cases}
+		\]
+		\Then $\order{\valABC}_{i+1} = 0$.
+	\end{enumerate}
+\end{enumerate}
+
+In other words after reordering $\valABC$ and $\valABC{}\new{}$ as explained above we have, for constant $\order{\cnABC}$ and $\order{\indexABC}$
+\begin{figure}
+\[
+	\begin{array}{|l|c|c|c|c|c|}
+	\hline
+	& \order{\cnABC} & \order{\indexABC} & \order{\mst^{\cc3}} & \phantom{\bigg|}\order{\valABC}\phantom{\bigg|} & \phantom{\bigg|}\order{\valABC\new}\phantom{\bigg|}\\
+	\hline
+	0\phantom{\Big|} & 0  & ? & 28 & ? & ? \\
+	\hline
+	1\phantom{\Big|} & 0  & ? & 55 & ? & ? \\
+	\hline
+	2\phantom{\Big|} & 0  & ? & 117 & ? & ? \\
+	\hline
+	\vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+	\hline
+	i     \phantom{\Big|} & c & k & 12 & \bm{0} & \bluem{\spadesuit} \\
+	\hline
+	i + 1 \phantom{\Big|} & c & k & 19 & \bluem{\spadesuit} & \bluem{\star} \\
+	\hline
+	i + 2 \phantom{\Big|} & c & k & 20 & \bluem{\star} & \bluem{\Box}\\
+	\hline
+	i + 3 \phantom{\Big|} & c & k & 38 & \bluem{\square} & \bluem{\heartsuit} \\
+	\hline
+	i + 4 \phantom{\Big|} & c' & l & 23 & \bm{0} & \greenm{\dagger} \\
+	\hline
+	i + 5 \phantom{\Big|} & c' & l & {\cellcolor{\romCol}27} & \greenm{\dagger} & \greenm{\Diamond} \\
+	\hline
+	i + 6 \phantom{\Big|} & c' & l + 1 & 24 & \bm{0} & \redm{\bowtie} \\
+	\hline
+	i + 7 \phantom{\Big|} & c' & l + 1 & {\cellcolor{\romCol}27} & \redm{\bowtie} & \redm{\ddagger} \\
+	\hline
+	i + 8 \phantom{\Big|} & c' & l + 1 & {\cellcolor{\stackCol}33} & \redm{\ddagger} & \redm{\ddagger} \\
+	\hline
+	i + 9 \phantom{\Big|} & c' & l + 1 & 36 & \redm{\ddagger} & \redm{\clubsuit} \\
+	\hline
+	i + 10 \phantom{\Big|} & c' & l + 1 & 37 & \redm{\clubsuit} & \redm{\circledcirc} \\
+	\hline
+	i + 11 \phantom{\Big|} & c' & l + 2 & 25 & \bm{0} & \yellowm{\bigstar} \\
+	\hline
+	i + 12 \phantom{\Big|} & c' & l + 2 & 26 & \yellowm{\bigstar} & \yellowm{\blacktriangle} \\
+	\hline
+	i + 13 \phantom{\Big|} & c' & l + 2 & {\cellcolor{\romCol}27} & \yellowm{\blacktriangle} & \yellowm{\sharp} \\
+	\hline
+	i + 14 \phantom{\Big|} & c' & l + 2 & {\cellcolor{\stackCol}33} & \yellowm{\sharp} & \yellowm{\sharp} \\
+	\hline
+	i + 15 \phantom{\Big|} & c' & l + 2 & 43 & \yellowm{\sharp} & \yellowm{\sphericalangle} \\
+	\hline
+	\vdots & \vdots & \vdots & \vdots & \vdots & \vdots
+	\end{array}
+\]
+\caption{%
+$\MST{} = 27$ appears thrice (as is to be expected) and the three rows in question ($i+5, i+7, i+13$) the values are taken from the same execution context ($c'$) in consecutive limbs ($l$, $l+1$, $l+2$) and the values in RAM are changed%
+($\greenm{\dagger} \rightsquigarrow \greenm{\Diamond}$, $\redm{\bowtie} \rightsquigarrow \redm{\ddagger}$ and%
+$\yellowm{\blacktriangle} \rightsquigarrow \yellowm{\sharp}$). This is compatible with the 27th micro RAM operation being a non aligned \inst{MSTORE} (in theory it could also be part of a non aligned \inst{(EXT)CODECOPY}.) In a similar vein, note that the 33rd micro RAM operation (i.e. $\MST{} = 33$) touches two consecutive RAM locations ($l+2$ and $l+2$) in that same execution context $c'$ without modifying their values ($\redm{\ddagger} \rightsquigarrow \redm{\ddagger}$ and $\yellowm{\sharp} \rightsquigarrow \yellowm{\sharp}$). This could be part of an aligned or non aligned logging operation, an aligned or non aligned \inst{MLOAD}, a successful \inst{RETURN} in a deployment context ($\cType = 1$) among other options. (If we wanted to more information we would have to find what other context is activated at $\MST{} = 33$, or better yet: consult the non reordered exeuction trace).
+}
+\end{figure}

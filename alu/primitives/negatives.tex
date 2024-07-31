@@ -1,0 +1,85 @@
+Let $y$ be an integer in the range $\big[\!\!\!\:\big[-2^{255}, 2^{255}\big[\!\!\!\:\big[$. Recall that under \emph{overflow semantics}\footnote{\ob{TODO: reference the \inst{SDIV} specification of the yellow paper}} its negative $y.\col{Neg()}\in \big[\!\!\!\:\big[-2^{255}, 2^{255}\big[\!\!\!\:\big[$ is defined as follows:
+\[
+	\begin{cases}
+		\If y    = -2^{255}:& y.\col{Neg()} = -2^{255}, \\
+		\If y \neq -2^{255}:& y.\col{Neg()} = - y. \\
+	\end{cases}
+\]
+Note that $-2^{255}$ is its own negative\footnote{as is $0$.}.
+
+\begin{lem}[negatives]
+Let
+$\colm{Y} \equiv [\colm{Y}\high \,\|\, \colm{Y}\low]$ and
+$\colm{Z} \equiv [\colm{Z}\high \,\|\, \colm{Z}\low]$ be $256$-bit integers where $\colm{Y}$, interpreted as a $2$'s complement signed integer, represents an integer $\imported{\colm{Y}} \in \big[\!\!\!\:\big[-2^{255}, 2^{255}\big[\!\!\!\:\big[$. The following are equivalent
+\begin{enumerate}
+	\item $\colm{Z}$, interpreted as a $2$'s complement signed integer, represents an integer ``$\imported{\colm{Y}}.\colm{Neg()}$''
+	\item the following system of constraints is satisfied:
+	\begin{enumerate}
+		\item \If $\colm{Y}\low \neq 0$ \Then
+		\[
+			\begin{cases}
+				\colm{Z}\high = \theta^2 - \colm{Y}\high - 1\\
+				\colm{Z}\low  = \theta^2 - \colm{Y}\low \\
+			\end{cases}
+		\]
+		\item \If $\colm{Y}\low =    0$:
+		\begin{enumerate}
+			\item \If \Big($\colm{Y}\high = 0$ \OR $\colm{Y}\high = 2^{127}$\Big) \Then
+			\[
+				\begin{cases}
+					\colm{Z}\high = \colm{Y}\high \\
+					\colm{Z}\low  = 0 \\
+				\end{cases}
+			\]
+			\item \If \Big($\colm{Y}\high \neq 0$ \et $\colm{Y}\high \neq 2^{127}$\Big) \Then
+			\[
+				\begin{cases}
+					\colm{Z}\high = \theta^2 - \colm{Y}\high \\
+					\colm{Z}\low  = 0 \\
+				\end{cases}
+			\]
+		\end{enumerate}
+	\end{enumerate}
+\end{enumerate}
+\end{lem}
+\iffalse
+Now let $\col{Y} \equiv [\col{Y}\high\,\|\, \col{Y}\low]$ be a $256$-bit integer.
+Interpreted as a $2$'s complement signed integer it represents an integer $\imported{\col{Y}} \in \big[\!\!\!\:\big[-2^{255}, 2^{255}\big[\!\!\!\:\big[$.
+The $256$-bit integer $\col{Z}\equiv [ \col{Z}\high \,\|\, \col{Z}\low ]$ representing its negative  satisfies the following:
+\begin{enumerate}
+	\item \If $\col{Y}\low \neq 0$ \Then
+	\[
+		\begin{cases}
+			\col{Z}\high = \theta^2 - \col{Y}\high - 1\\
+			\col{Z}\low  = \theta^2 - \col{Y}\low \\
+		\end{cases}
+	\]
+	\item \If $\col{Y}\low =    0$:
+	\begin{enumerate}
+		\item \If \Big($\col{Y}\high = 0$ \OR $\col{Y}\high = 2^{127}$\Big) \Then
+		\[
+			\begin{cases}
+				\col{Z}\high = \col{Y}\high \\
+				\col{Z}\low  = 0 \\
+			\end{cases}
+		\]
+		\item \If \Big($\col{Y}\high \neq 0$ \et $\col{Y}\high \neq 2^{127}$\Big) \Then
+		\[
+			\begin{cases}
+				\col{Z}\high = \theta^2 - \col{Y}\high \\
+				\col{Z}\low  = 0 \\
+			\end{cases}
+		\]
+	\end{enumerate}
+\end{enumerate}
+\fi
+We subsume the preceding constraints under the name \setNegative{} and write
+\[
+	\setNegative
+	\Big(
+		\col{Z}\high,
+		\col{Z}\low;
+		\col{Y}\high,
+		\col{Y}\low
+	\Big)
+\]

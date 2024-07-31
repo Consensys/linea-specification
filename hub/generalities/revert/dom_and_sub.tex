@@ -1,0 +1,137 @@
+We collect certain collections of constraints which may apply to the $(\domStamp, \subStamp)$ pair at certain times. Let \col{c} some value, in practice a small constant (e.g. $1, 2, 3, 4, \dots$) and let $\col{revst}$ represent an arbitrary ($\llarge$-byte integer) ``revert stamp.''
+\[
+	% TODO update the macros !
+	\left\{ \begin{array}{l}
+		\zeroDomSubStamps {i}{\relof}
+		\vspace{2mm} \\ \qquad \qquad \iff
+		\left\{\begin{array}{lcl}
+			\domStamp_{i + \relof}		& \!\!\! = \!\!\! & 0 \\
+			\subStamp_{i + \relof}		& \!\!\! = \!\!\! & 0 \\
+		\end{array}\right.
+	\end{array} \right.
+\]
+and
+\[
+	\left\{ \begin{array}{l}
+		\standardDomSubStamps {
+			anchorRow        = i,
+			relOffset        = \relof,
+			domOffset        = \col{d},
+		}
+		\vspace{2mm} \\ \qquad \qquad \iff
+		\left\{\begin{array}{lcl}
+			\domStamp_{i + \relof}		& \!\!\! = \!\!\! & \hubLambda \cdot \hubStamp_{i} + \col{d} \\
+			\subStamp_{i + \relof}		& \!\!\! = \!\!\! & 0 \\
+		\end{array}\right.
+	\end{array} \right.
+\]
+and
+\[
+	\left\{ \begin{array}{l}
+		\genericUndoingDomSubStamps {
+			anchorRow   = i,
+			relOffset   = \relof,
+			revertStamp = \rho,
+			domOffset   = \epsilon,
+			subOffset   = \col{s},
+		}
+		% \genericUndoingDomSubStamps {\relof} \big[\rho, \epsilon, \col{s}\big]_{i}
+		\vspace{2mm} \\ \qquad \qquad \iff
+		\left\{\begin{array}{lcl}
+			\domStamp_{i + \relof}		& \!\!\! = \!\!\! & \hubLambda \cdot \rho + \epsilon \\
+			\subStamp_{i + \relof}		& \!\!\! = \!\!\! & \hubLambda \cdot \hubStamp_{i} + \col{s} \\
+		\end{array}\right.
+	\end{array} \right.
+\]
+and
+\[
+	\left\{ \begin{array}{l}
+		\revertDomSubStamps {
+			anchorRow        = i,
+			relOffset        = \relof,
+			subOffset        = \col{s},
+			}
+		\vspace{2mm} \\ \qquad \qquad \iff
+		\genericUndoingDomSubStamps {
+			anchorRow   = i,
+			relOffset   = \relof,
+			revertStamp = \cnRevStamp_{i},
+			domOffset   = \revertEpsilon,
+			subOffset   = \col{s},
+		}
+		% \genericUndoingDomSubStamps\big[\cnRevStamp_{i}, \revertEpsilon, \col{s}\big]_{i}
+	\end{array} \right.
+\]
+and
+\[
+	\left\{ \begin{array}{l}
+		\revertWithChildFailureDomSubStamps {
+			anchorRow        = i,
+			relOffset        = \relof,
+			subOffset        = \col{s},
+			childRevertStamp = \col{revst},
+		}
+		\vspace{2mm} \\ \qquad \qquad \iff
+		\genericUndoingDomSubStamps {
+			anchorRow   = i,
+			relOffset   = \relof,
+			revertStamp = \col{revst},
+			domOffset   = \revertEpsilon,
+			subOffset   = \col{s},
+		}
+		% \genericUndoingDomSubStamps\big[\col{revstp}, \revertEpsilon, \col{s}\big]_{i}
+	\end{array} \right.
+\]
+and
+\[
+	\left\{ \begin{array}{l}
+		\selfdestructDomSubStamps {i}{\relof}
+		\vspace{2mm} \\ \qquad \qquad \iff
+		\genericUndoingDomSubStamps {
+			anchorRow   = i,
+			relOffset   = \relof,
+			revertStamp = \txEndStamp _{i},
+			domOffset   = \selfdestructEpsilon,
+			subOffset   = 0,
+		}
+		% \genericUndoingDomSubStamps {\relof} \big[\txEndStamp_{i}, \selfdestructEpsilon, 0 \big]_{i} \\
+	\end{array} \right.
+\]
+Some form of 
+\[ 
+	\standardDomSubStamps {
+		anchorRow        = i,
+		relOffset        = \relof,
+		domOffset        = \col{d},
+		}
+\]
+applies to all rows in need of the $\domStamp$ and $\subStamp$.
+\[ 
+\revertDomSubStamps {
+	anchorRow        = i,
+	relOffset        = \relof,
+	subOffset        = \col{s},
+	}
+\]
+(typically) allows us to schedule the undoing of certain modifications for execution at a later point.
+The $\selfdestructDomSubStamps{i}{\relof}$ follows the same principle; it's only use case is for scheduling a \inst{SELFDESTRUCT}. \saNote{} Given that the \zkEvm{} uses the $(+,-)$ lexicographic ordering of the pair $\big[\domStamp, \subStamp\big]$\footnote{whereby $[\col{d}, \col{s}] \prec [\col{d'}, \col{s'}] \iff \col{d} < \col{d'}$ or $\col{d} = \col{d'}$ and \col{s} > \col{s'}} it follows that (for a given \hubStamp)
+\begin{itemize}
+	\item the larger \col{d}, the \textbf{later} the command labeled with the $(\domStamp, \subStamp)$ time stamp
+		\[ 
+			\standardDomSubStamps {
+				anchorRow        = i,
+				relOffset        = \relof,
+				domOffset        = \col{d},
+			}
+		\]
+		is carried out;
+	\item the larger \col{s}, the \textbf{earlier} the command labeled with the $(\domStamp, \subStamp)$ time stamp
+		\[ 
+		\revertDomSubStamps {
+			anchorRow        = i,
+			relOffset        = \relof,
+			subOffset        = \col{s},
+		}
+		\]
+		is carried out;
+\end{itemize}

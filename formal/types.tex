@@ -1,0 +1,11 @@
+Type safety properties must be investigated to a degree where we can ensure the correct behaviour of the \zkEvm{}. The first point is that of \textbf{data provenance}. Data arrives into the \zkEvm{} from different places:
+\begin{description}
+    \item[Block header:] time stamps, coinbase address, block number etc \dots{} arrive through the block data module where they are byte decomposed to prove smallness and well-formedness;
+    \item[Transactions:] the constraints of the \rlpTxnMod{} ensure that all data contained in the \rlp{} of a transaction are well formed: nonces are $8$-byte integers, addresses are comprised of a $4$-byte high part and a $16$-byte low part, values are $12$-byte integers, gas parameters are $8$ byte integers, call data is split into $16$-byte integers left aligned on the $16$-th byte, transaction types are $0$, $1$ or $2$ (no support for blob transactions), etc \dots{}
+    \item[State:] and within state data there are several sources:
+    \begin{description}
+        \item[Byte code:] upon loading (e.g. in case of a message call transaction into the account, or a \inst{CALL}-type instruction, or a gas-funded \inst{EXTCODECOPY} instruction) relevant bytecode into the \romMod{} it is systematically byte decomposed (to access the bytes directly, label them with the appropriate program counter and perform jump destination analysis);
+        \item[Account data:] e.g. nonce, balance, codehash, codesize (which we add to the state);
+        \item[Storage values:] these aren't byte decomposed when loading them; the idea is that the values that end up in storage are either values extracted from the previous state (which are assumed to be fine) or values produced during execution (where all modules that produce data are required to produce data in high and low parts that are $\llarge$-byte integers);
+    \end{description}
+\end{description}

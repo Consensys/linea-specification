@@ -1,0 +1,43 @@
+The present section describes the processing of \inst{CALL}'s to the \inst{MODEXP} precompile.
+The \inst{MODEXP} precompile is by far the most complex in terms of its \hubMod{}-processing.
+The complexity stems from the fact that
+\textbf{pricing} is a multi-step process requiring the extraction and complex processing of various byte size arguments from \textsc{ram} (as well as the leading word of the exponent),
+\textbf{the actual computation} requires the extraction of the functional parameters (base, exponent and modulus) in distcinct interactions with \textsc{ram}.
+Only then does processing start aligning with standard precompile processing.
+The \zkEvm{} performs a \textbf{full copy the results} to a dedicated \textsc{ram} segment
+and, potentially, a \textbf{(partial) transfer of the result} to the current context's \textsc{ram}.
+
+More precisely the pricing alone (which is the only dimension along which this particular precompile may fail) requires
+\begin{itemize}
+	\item performing various comparisons of \locPrcCds{} against $0$, $32$, $64$, in order to decide which byte size parameters to extract;
+\end{itemize}
+This first step requires a call to the \oobMod{} module.
+This allows us to decide which (byte size) parameters are to be extracted.
+Byte sizes (see below) are to be extracted in all cases except for the trivial cases (when the underlying \inst{CALL} is provided with a small ``call data size'' parameter.)
+The next step requires, \textbf{when appropriate}, the extraction of various byte size parameters:
+\begin{itemize}
+	\item \textbf{extracting the base     byte size}, $\locBase$;
+	\item \textbf{extracting the exponent byte size}, $\locExponent$;
+	\item \textbf{extracting the modulus  byte size}, $\locModulus$;
+	\item \textbf{extracting the leading  word of the exponent};
+\end{itemize}
+The above steps are done by triggering, \textbf{when appropriate}, a ``\inst{CALLDATALOAD}''-like instruction which extracts a right zero padded \evm{} word from memory.
+In order to price the instruction the next step is computing the base two logarithm of the leading word previously extracted
+\begin{itemize}
+	\item compute $\locExponentLogEYP$;
+\end{itemize}
+This step is performed by the \expMod{} module.
+At this point the processing is in position to compute the gas cost of the \inst{MODEXP} precompile and thus deciding whether the precompile succeeds or fails.
+This step is carried out by the \oobMod{} module.
+
+If the precompile is provided with insufficient gas the next and final step updates the caller context's return data.
+If, on the other hand, the precompile is provided with sufficient gas processing continues.
+The next step is to extract \textbf{base}, \textbf{exponent} and \textbf{modulus} from \textsc{ram} and provide to the appropriate exo data module.
+This, again, is done in three separate steps.
+Special care must be taken to deal with the case where one of the byte size parameters is zero.
+The final steps are more or less the same as for the common precompiles, perform \textbf{when appropriate}:
+\begin{itemize}
+	\item a \textbf{full transfer} of the result to a dedicated execution context's \textsc{ram};
+	\item a \textbf{partial transfer} of the result to the current excecution context's \textsc{ram};
+\end{itemize}
+The first of these steps is necessary if and only if the modulus byte size is nonzero.

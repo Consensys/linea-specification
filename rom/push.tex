@@ -1,0 +1,94 @@
+\subsection{Constraints related to \inst{PUSH} instructions}
+
+The constraints below construct (the high and low parts of) the \PV{} for \inst{PUSH} instructions. We start by describing the ``non push data'' case: % We have an equivalence between the binary \IPD{} and the nullity of \CP{}.
+\begin{enumerate}
+    \item \If $\IPD_{i}=0$ \Then:
+        \begin{enumerate}
+            \item $\CP_{i}=0$
+            \item $\opc_{i}=\PBCB_{i}$
+                % \item \If $\IP_{i}=0$ \Then $\IPD_{i + 1}=0$
+        \end{enumerate}
+\end{enumerate}
+We now deal with the ``push data'' case.
+Constraints when not in a \inst{PUSH} instruction:
+Initialisation of a \inst{PUSH} instruction: 
+\begin{enumerate}[resume]
+    \item We impose $\IP_{i} \cdot \IPD_{i} = 0$
+    \item We impose $(1 - \IP_{i}) \cdot (1 - \PFB_{i}) = 0$ \quad (\trash)
+    \item \If $\IP_{i}=1$ \Then $\IPD_{i + 1}=1$
+    \item \If $\IPD_{i}=1$ \Then \Big($\IPD_{i-1} + \IP_{i-1} = 1$\Big)
+\end{enumerate}
+We further initialize some data when encountering a \inst{PUSHX} instruction:
+\begin{enumerate}[resume]
+    \item \If $\IP_{i}=1$ \Then:
+        \begin{enumerate}
+            \item $\PP_{i} = \opc_{i} - \inst{PUSH1} + 1 \in \{ 1, 2, \dots, 31, 32 \}$
+            \item $\PVA_{i}=0$
+            \item $\pfb_{i} + \pfb_{i + 1} = 0$
+        \end{enumerate}
+\end{enumerate}
+Construction of (the high and low parts of) the \PV{}:
+\begin{enumerate}[resume]
+    \item \If $\IPD_{i}=1$ \Then
+        \begin{enumerate}
+            \item $\opc_i=\inst{INVALID}$;
+            \item $\CP_{i}=\CP_{i-1}+1$
+            \item \If $\CP_{i} + \llarge \ne \PP_{i}$ \Then:
+                \begin{enumerate}
+                    \item \If $\ipd_{i + 1} = 1$ \Then $\pfb_{i + 1}=\pfb_{i}$
+                \end{enumerate}
+            \item \If $\CP_{i} + \llarge = \PP_{i}$ \Then:
+                \begin{enumerate}
+                    \item $\pfb_{i + 1} = 1 + \pfb_{i}$\footnote{i.e., since \pfb{} is push-incrementing, $\pfb_{i} = 0$ \et $\pfb_{i + 1}=1$ or alternatively $\pfb_{i} + \pfb_{i + 1}=1$}
+                        % \item $\PVA_{i + 1} = \PBCB_{i + 1}$
+                    \item $\PVA_{i}=\PV\high_{i}$
+                \end{enumerate}
+            \item \If ($\pfb_{i} =    \pfb_{i - 1}$) \Then $\pva_{i} = 256 \cdot \pva_{i - 1} + \pbcb_{i}$
+            \item \If ($\pfb_{i} \neq \pfb_{i - 1}$) \Then $\pva_{i} = \pbcb_{i}$
+            \item \If $\CP_{i} = \PP_{i}$ \Then:
+                \begin{enumerate}
+                    \item \If $\PFB_{i} = 0$ \Then $\PV\high_{i} = 0$
+                    \item $\PVA_{i}=\PV\low_{i}$
+                    \item $\IPD_{i + 1}=0$
+                \end{enumerate}
+        \end{enumerate}
+\end{enumerate}
+% We prevent an unwanted switch to \IPD{}:
+% \begin{enumerate}[resume]
+% \end{enumerate}
+Note that we have implicitly
+\begin{enumerate}[resume]
+    \item \If $\IPD_{i}=1$ \Then $\CP_{i} \ne 0$ \quad (\trash)
+\end{enumerate}
+
+
+The table below shows two exemples, for \inst{PUSH4} and \inst{PUSH20}.
+
+\[
+\begin{array}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+\opc           & \ip{} & \pp{} & \ipd{} & \cp{} & \pbcb{}         & \pfb{} & \pva                 & \pv\high{} & \pv\low{}         \\\hline
+\inst{PUSH4}   & 1     & 4     & 0      & 0     & \mathtt{0x\,63} & 0      & 0                    & 0          & \mathtt{0x\,abcd} \\\hline
+\inst{INVALID} & 0     & 4     & 1      & 1     & \mathtt{0x\,a}  & 0      & \mathtt{0x\,a}       & 0          & \mathtt{0x\,abcd} \\\hline
+\inst{INVALID} & 0     & 4     & 1      & 2     & \mathtt{0x\,b}  & 0      & \mathtt{0x\,ab}      & 0          & \mathtt{0x\,abcd} \\\hline
+\inst{INVALID} & 0     & 4     & 1      & 3     & \mathtt{0x\,c}  & 0      & \mathtt{0x\,abc}     & 0          & \mathtt{0x\,abcd} \\\hline
+\inst{INVALID} & 0     & 4     & 1      & 4     & \mathtt{0x\,d}  & 0      & \mathtt{0x\,abcd}    & 0          & \mathtt{0x\,abcd} \\\hline
+\end{array}
+\]
+
+
+\[
+\begin{array}{|c|c|c|c|c|c|c|c|c|c|} \hline
+\opc           & \ip{}  & \pp{} & \ipd{} & \cp{}  & \pbcb{}         & \pfb{} & \pva                                                 & \pv\high{}                             & \pv\low{}                   \\ \hline
+\inst{PUSH20}  & 1      & 20    & 0      & 0      & \mathtt{0x\,73} & 0      & 0                                                  & \mathtt{0x\,abcd}                      & \mathtt{0x\,efghijklmnopqrst} \\ \hline
+\inst{INVALID} & 0      & 20    & 1      & 1      & \mathtt{0x\,a}  & 0      & \mathtt{0x\,a}                                     & \mathtt{0x\,abcd}                      & \mathtt{0x\,efghijklmnopqrst} \\ \hline
+\inst{INVALID} & 0      & 20    & 1      & 2      & \mathtt{0x\,b}  & 0      & \mathtt{0x\,ab}                                    & \mathtt{0x\,abcd}                      & \mathtt{0x\,efghijklmnopqrst} \\ \hline
+\inst{INVALID} & 0      & 20    & 1      & 3      & \mathtt{0x\,c}  & 0      & \mathtt{0x\,abc}                                   & \mathtt{0x\,abcd}                      & \mathtt{0x\,efghijklmnopqrst} \\ \hline
+\inst{INVALID} & 0      & 20    & 1      & 4      & \mathtt{0x\,d}  & 0      & {\cellcolor{\romCol}\mathtt{0x\,abcd}}             & {\cellcolor{\romCol}\mathtt{0x\,abcd}} & \mathtt{0x\,efghijklmnopqrst} \\ \hline
+\inst{INVALID} & 0      & 20    & 1      & 5      & \mathtt{0x\,e}  & 1      & \mathtt{0x\,e}                                     & \mathtt{0x\,abcd}                      & \mathtt{0x\,efghijklmnopqrst} \\ \hline
+\inst{INVALID} & 0      & 20    & 1      & 6      & \mathtt{0x\,f}  & 1      & \mathtt{0x\,ef}                                    & \mathtt{0x\,abcd}                      & \mathtt{0x\,efghijklmnopqrst} \\ \hline
+\vdots         & \vdots & 20    & \vdots & \vdots & \vdots          & \vdots & \vdots                                             & \vdots                                 & \vdots                        \\ \hline
+\inst{INVALID} & 0      & 20    & 1      & 19     & \mathtt{0x\,s}  & 1      & \mathtt{0x\,efghijklmnopqrs}                       & \mathtt{0x\,abcd}                      & \mathtt{0x\,efghijklmnopqrst} \\ \hline
+\inst{INVALID} & 0      & 20    & 1      & 20     & \mathtt{0x\,t}  & 1      & {\cellcolor{\romCol}\mathtt{0x\,efghijklmnopqrst}} & \mathtt{0x\,abcd}                      & {\cellcolor{\romCol}\mathtt{0x\,efghijklmnopqrst}} \\ \hline
+\end{array}
+\]

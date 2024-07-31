@@ -1,0 +1,32 @@
+The order in which stack items are removed / inserted is important for the stack consistency argument, see section~(\ref{hub: consistencies: stack}).
+To simplify things we impose a total order on all times at which a stack item is touched.
+Every stack item has its dedicated stamp column $\stackItemStamp{k}$, $k = 1, 2, 3, 4$.
+These stamps are pegged against the \hubStamp{}.
+Thus one will find many a constraint of the form
+\[
+	\stackItemStamp{k}_{i} = 
+	\hubTau \cdot \hubStamp_{i} + \texttt{a}
+\]
+where \texttt{a} is small as we will make precise below. We also describe the constraints that the (as of yet undefined) parameter $\hubTau$ has to obey.
+
+The only constraints which the $\hubTau$ constant must abide by are
+(\emph{a}) for a given instruction and a given \hubStamp{} we may choose sufficiently many distinct \texttt{a}'s so as to be able to provide each and every touched stack item its own unique $\stackItemStamp{k}$
+(\emph{b}) two different instructions may never provide two touched stack items the same $\stackItemStamp{k}$.
+
+The most stack items any instruction touches is \textbf{eight} (achieved both by \inst{CALL} and \inst{CALLCODE}).
+Also the $\hubStamp$ grows by 1 from one instruction to the next, see section\ref{hub: heartbeat: hub stamp}.
+As such setting
+\[
+	\hubTau \define 8
+\]
+is enough, and we may always choose \col{a} from $0 \leq \texttt{a} < \hubTau$ (i.e. $\texttt{a} \in \{0, 1, 2, \dots, 7 \}$.)
+
+The operations performed on \textbf{nonempty} stack items at time $\hubStamp$ are labeled with a $\stackItemStamp{k}$ chosen from the set below:
+\[
+	\stackItemStamp{k} \in
+	\left\{ \begin{array}{r}
+		\hubTau \cdot \hubStamp + 0, \hubTau \cdot \hubStamp + 1, \hubTau \cdot \hubStamp + 2, \hubTau \cdot \hubStamp + 3, \\
+		\hubTau \cdot \hubStamp + 4, \hubTau \cdot \hubStamp + 5, \hubTau \cdot \hubStamp + 6, \hubTau \cdot \hubStamp + 7, \\
+	\end{array} \right\}
+\]
+This achieves a total oder on the $\stackItemStamp{k}$ for \textbf{nontrivial} stack item operations.

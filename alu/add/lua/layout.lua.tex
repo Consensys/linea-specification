@@ -1,0 +1,62 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NF Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\usepackage{../../../pkg/draculatheme}
+
+\begin{document}
+\begin{verbatim}
+|-------+--------+-----+------|
+| ADD_ | CT_MAX | CT  | INST |
+|-------+--------+-----+------|
+| 0     | 0      | 0   | 0    |
+| ...   | ...    | ... | ...  |
+| 0     | 0      | 0   | 0    |
+|-------+--------+-----+------|
+| 1     | 3      | 0   | ADD  |
+| 1     | 3      | 1   | ADD  |
+| 1     | 3      | 2   | ADD  |
+| 1     | 3      | 3   | ADD  |
+|-------+--------+-----+------|
+| 2     | 1      | 0   | SUB  |
+| 2     | 1      | 1   | SUB  |
+|-------+--------+-----+------|
+| 3     | 1      | 0   | ADD  |
+| 3     | 1      | 1   | ADD  |
+|-------+--------+-----+------|
+| 4     | 15     | 0   | ADD  |
+| 4     | 15     | 1   | ADD  |
+| 4     | 15     | 2   | ADD  |
+| ...   | ...    | ... | ...  |
+| 4     | 15     | 14  | ADD  |
+| 4     | 15     | 15  | ADD  |
+|-------+--------+-----+------|
+| 5     | 2      | 0   | ADD  |
+| 5     | 2      | 1   | ADD  |
+| 5     | 2      | 2   | ADD  |
+|-------+--------+-----+------|
+| 6     | 7      | 0   | SUB  |
+| 6     | 7      | 1   | SUB  |
+| 6     | 7      | 2   | SUB  |
+| ...   | ...    | ... | ...  |
+| 6     | 7      | 6   | SUB  |
+| 6     | 7      | 7   | SUB  |
+|-------+--------+-----+------|
+| ...   | ...    | ... | ...  |
+Recall that on non-padding rows
+we impose CT_MAX ≠ 0. Thus all
+instructions take anywhere from
+2 to 16 rows.
+\end{verbatim}
+\end{document}

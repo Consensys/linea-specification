@@ -1,0 +1,50 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NF Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\usepackage{../../../pkg/draculatheme}
+
+\begin{document}
+\begin{verbatim}
+|-------+--------+-----+------+---------+---------+---------+---------+--------+--------+-------+-------|
+| ADD_ | CT_MAX |  CT | INST | ARG1_HI | ARG1_LO | ARG2_HI | ARG2_LO | RES_HI | RES_LO | ACC_1 | ACC_2 |
+|------:+:------:+----:+:----:+--------:+--------:+--------:+--------:+-------:+-------:+------:+------:|
+|   ... |   ...  | ... |  ... |     ... |     ... |     ... |     ... |    ... |    ... |   ... |   ... |
+|-------+--------+-----+------+---------+---------+---------+---------+--------+--------+-------+-------|
+|    12 |    1   |   0 |  ADD |      01 |      01 |      09 |      0f |     0a |     10 |     0 |     0 |
+|    12 |    1   |   1 |  ADD |      01 |      01 |      09 |      0f |     0a |     10 |    0a |    10 |
+|-------+--------+-----+------+---------+---------+---------+---------+--------+--------+-------+-------|
+|    13 |    7   |   0 |  ADD |      01 |      01 |      09 |      0f |     0a |     10 |     0 |     0 |
+|    13 |    7   |   1 |  ADD |      01 |      01 |      09 |      0f |     0a |     10 |     0 |     0 |
+|    13 |    7   |   2 |  ADD |      01 |      01 |      09 |      0f |     0a |     10 |     0 |     0 |
+|    13 |    7   |   3 |  ADD |      01 |      01 |      09 |      0f |     0a |     10 |     0 |     0 |
+|    13 |    7   |   4 |  ADD |      01 |      01 |      09 |      0f |     0a |     10 |     0 |     0 |
+|    13 |    7   |   5 |  ADD |      01 |      01 |      09 |      0f |     0a |     10 |     0 |     0 |
+|    13 |    7   |   6 |  ADD |      01 |      01 |      09 |      0f |     0a |     10 |     0 |     0 |
+|    13 |    7   |   7 |  ADD |      01 |      01 |      09 |      0f |     0a |     10 |    0a |    10 |
+|-------+--------+-----+------+---------+---------+---------+---------+--------+--------+-------+-------|
+|   ... |   ...  | ... |  ... |     ... |     ... |     ... |     ... |    ... |    ... |   ... |   ... |
+
+
+The above represents two LEGITIMATE ways of performing the addition of two (very sparse) hex integers:
+
+  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 09 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0f (ARG2)
++ 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 (ARG1)
+--------------------------------------------------------------------------------------------------------
+= 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0a 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 10  (RES) 
+
+The first method takes up two rows, the second method occupies eight rows, making the first more efficient.
+Implementions are free to choose the most efficient way of performing additions / subtractions. 
+\end{verbatim}
+\end{document}

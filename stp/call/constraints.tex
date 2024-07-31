@@ -1,0 +1,115 @@
+\[
+	\boxed{\text{The constaints below assume that }
+	\begin{cases}
+		\stpStamp_{i} \neq \stpStamp_{i - 1} \\
+		\isCall  _{i} =    1                 \\
+	\end{cases} }
+\]
+
+The present section defines the layout of the data to be used in the lookups to the \wcpMod{} and \modMod{}. The resulting values of the computation are sufficient to justify the \gasStipend{} column. The first two instructions are common to both types of instructions: we make sure that the gas cost does not exceed the available gas and compute the $1/64^{\text{th}}$ of the difference. 
+\begin{description}
+	\item[\underline{Row n$°i$:}] we impose the following:
+		\[
+			\left\{ \begin{array}{lclc}
+				\wcpLookupFlag_{i} & = & 1 \\
+				\divLookupFlag_{i} & = & 0 & (\trash) \\
+				\argOneHi_{i}      & = & 0 \\
+				\argOneLo_{i}      & = & \locGasActl \\
+				\argTwoLo_{i}      & = & 0 \\
+				\resLo_{i}         & = & \zeroRes \\
+				\exoInst_{i}       & = & \inst{LT} \\
+			\end{array} \right.
+		\]
+		These constraints ensure that $\gasActual_{i} \geq 0$.
+	\item[\underline{Row n$°(i + 1)$:}] we impose the following:
+		\[
+			\left\{ \begin{array}{lclc}
+				\wcpLookupFlag_{i + 1} & = & \cctv_{i} \\
+				\divLookupFlag_{i + 1} & = & 0 \\
+				\argOneHi_{i + 1}      & = & \valHi_{i} \\
+				\argOneLo_{i + 1}      & = & \valLo_{i} \\
+				\argTwoLo_{i + 1}      & = & 0  \quad (\trash) \\
+				\exoInst_{i + 1}       & = & \inst{ISZERO} \\
+			\end{array} \right.
+		\]
+		These constraints establish whether the value fields are zero or not; indeed, given that $\cctv_{i} = 1$, we have
+		\[
+			\underbrace{\phantom{\Big|}\locZeroValue\phantom{\Big|}}_{=\resLo_{i + 1}} = 1 \iff \Big(\valHi_{i} = \valLo_{i} = 0 \Big)
+		\]
+	\item[\underline{Row n$°(i + 2)$:}] we impose the following:
+		\[
+			\left\{ \begin{array}{lclc}
+				\wcpLookupFlag_{i + 2} & = & 1 \\
+				\divLookupFlag_{i + 2} & = & 0 & (\trash) \\
+				\argOneHi_{i + 2}      & = & 0 \\
+				\argOneLo_{i + 2}      & = & \locGasActl \\
+				\argTwoLo_{i + 2}      & = & \locGasUpfrontCall \\
+				\resLo_{i + 2}         & = & \locOogx \\
+				\exoInst_{i + 2}       & = & \inst{LT} \\
+			\end{array} \right.
+		\]
+		% Where we use the following shorthand:
+		% \[
+		% 	\left[ \begin{array}{lcl}
+		% 		\locGasUpfrontCall       & := & \gasMxp_{i} + \locGasXtra \\
+		% 		\locGasXtra              & := & \locGasAccess + \locGasNewAcc + \locGasTransfer \\
+		% 		\locGasAccess            & := & \warm_{i} \cdot G_{\text{warmaccess}} \\
+		% 		                         &    & ~ + (1 - \warm_{i}) \cdot G_{\text{coldaccountaccess}} \\
+		% 		\locGasNewAcc            & := & \cctv_{i} \cdot (1 - \resLo_{i + 1}) \cdot (1 - \existence_{i})  \cdot G_{\text{newaccount}} \\
+		% 		\locGasTransfer          & := & \cctv_{i} \cdot (1 - \resLo_{i + 1}) \cdot G_{\text{callvalue}} \\
+		% 	\end{array} \right]
+		% \]
+\end{description}
+These constraints thus establish $\oogx$; indeed
+\[
+	\underbrace{\phantom{\Big|}\locOogx\phantom{\Big|}}_{= \oogx_{i}} = 1 \iff \locGasActl < \locGasUpfrontCall.
+\]
+The constraints below are written under the further assumption that no \oogxSH{} has occurred, as such: 
+\[
+	\boxed{\text{The constaints below further assume that } \locOogx = 0.}
+\]
+\begin{description}
+	\item[\underline{Row n$°(i + 3)$:}] we impose the following:
+		\[
+			\left\{ \begin{array}{lclr}
+				\wcpLookupFlag_{i + 3} & = & 0 & (\trash) \\
+				% \divLookupFlag_{i + 3} & = & 1 - \oogx_{i} \\
+				\divLookupFlag_{i + 3} & = & 1 \\
+				\argOneHi_{i + 3}      & = & 0 \\
+				\argOneLo_{i + 3}      & = & \locDiff \\
+				\argTwoLo_{i + 3}      & = & 64 \\
+				\exoInst_{i + 3}       & = & \inst{DIV} \\
+			\end{array} \right.
+		\]
+		In case where there is no \oogxSH{} (i.e. $\oogx_{i} = 0$) these constraints compute 
+		\[
+			\underbrace{\phantom{\Big|}\locOneSixtyFourth\phantom{\Big|}}_{= \resLo_{i + 3}}
+			=
+			\left\lfloor\frac{\locDiff}{64} \right\rfloor
+		\]
+	\item[\underline{Row n$°(i + 4)$:}] we impose the following:
+		\[
+			\left\{ \begin{array}{lclr}
+				\wcpLookupFlag_{i + 4} & = & 1 \\
+				\divLookupFlag_{i + 4} & = & 0 & (\trash) \\
+				\argOneHi_{i + 4}      & = & \gasHi_{i} \\
+				\argOneLo_{i + 4}      & = & \gasLo_{i} \\
+				\argTwoLo_{i + 4}      & = & \locLOfGasDiff \\
+				\exoInst_{i + 4}       & = & \inst{LT} \\
+			\end{array} \right.
+		\]
+		\saNote{} By definition we have 
+		\begin{IEEEeqnarray*}{LCL}
+			\locLOfGasDiff
+			& = & \locDiff - \locOneSixtyFourth \\
+			& = & \locDiff - \left\lfloor\frac{\locDiff}{64} \right\rfloor \\
+			& = & L(\locDiff)
+		\end{IEEEeqnarray*}
+		These above constraints enforce that
+		\[
+			\underbrace{\phantom{\Big|}\locGasCompBit\phantom{\Big|}}_{= \resLo_{i + 4}}
+			= 1
+			\iff 
+			\texttt{<CALL\_instruction\_gas\_parameter>} < L(\locDiff)
+		\]
+\end{description}

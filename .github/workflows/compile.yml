@@ -1,0 +1,31 @@
+name: Build & Upload the Specification
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  archive-build-spec:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install JetBrainsMono # https://www.guyrutenberg.com/2020/01/29/install-jetbrains-mono-in-debian-ubuntu/
+        run: mkdir JetBrainsMono
+             && cd JetBrainsMono
+             && wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/JetBrainsMono.zip
+             && unzip JetBrainsMono.zip
+             && sudo mv JetBrainsMono*.ttf /usr/share/fonts/
+             && cd -
+      - name: Install fontawesome
+        run: sudo apt-get install fonts-font-awesome
+      - name: Install tectonic
+        run: curl --proto '=https' --tlsv1.2 -fsSL https://drop-sh.fullyjustified.net |sh
+      - name: Install lualatex
+        # run: sudo apt-get install texlive-latex-base && sudo apt install texlive-luatex && sudo apt-get install texlive-latex-extra
+        run: sudo apt install texlive-full
+      - name: Compile Specification
+        run: make ospec
+      - name: Upload the Specification
+        uses: actions/upload-artifact@v3
+        with:
+          name: specification.pdf
+          path: spec/_all_spec.pdf

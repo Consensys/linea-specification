@@ -1,0 +1,20 @@
+We use the following conventions/abbreviations:
+\begin{description}
+	\item[\qquad$\relof$:] 
+		short for \texttt{relative offset};
+	\item[\qquad$\reldo$:] 
+		short for \texttt{relative ``doing'' offset};
+	\item[\qquad$\reluo$:] 
+		short for \texttt{relative ``undoing'' offset};
+\end{description}
+They are placeholder variables that are replaced with small nonnegative integers in applications.
+In applications we will have
+\[
+	0 \leq \relof, \qquad 0\leq \reldo < \reluo
+\]
+small nonnegative integers. With instructions that take two parameters, typically written
+\[
+	\texttt{perspectiveNameUndoXxxUpdate}\big[\reluo, \reldo\big]_{i}
+\]
+the interpretation is that such constraints $\reluo$ppend a row at row index $i + \reluo$ that $\reldo$eprecates the action performed at row $i + \reldo$ on some \texttt{xxx} field belonging to some given perspective.
+It will implicitly require that both rows in question belong to a particular perspective where said operations make sense.

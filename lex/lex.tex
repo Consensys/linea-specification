@@ -1,0 +1,125 @@
+The present section describes two constraint systems: \weakLexConstraint{} and \strictLexConstraint{} which establishe, respectively, weak and strict versions of lexicographic ordering of the rows a collection of columns with respect to some fixed lexicographic order $\underset{\epsilon_\bullet}{\prec}$. We consider a module $\module$ containing the following: 
+\begin{itemize}
+	\item $\ord^1, \dots, \ord^p$: a family of $p\geq 2$ columns assumed to contain $\llarge$-byte integers;
+	\item $[\colm{@}_{1}], \dots, [\colm{@}_{p}], [\colm{Eq}]$: $p + 1$ many bit columns;
+	\item $\byteCol{$\llargeMO$},\dots,\byteCol{1},\byteCol{0}$: $\llarge$ many byte columns;
+\end{itemize}
+The constraint system will ensure that for $\ell \in \{1,\dots,p\}$,
+\begin{IEEEeqnarray*}{RCL}
+	[\col{@}_\ell]_{i} = 1
+	& \iff &
+	\begin{cases}
+		\ord^{k}_{i} = \ord^{k}_{i - 1}, \quad 1\leq k < \ell \\
+		\If \epsilon_\ell = + ~ \Then \ord^{\ell}_{i} > \ord^{\ell}_{i - 1} \\
+		\If \epsilon_\ell = - ~ \Then \ord^{\ell}_{i} < \ord^{\ell}_{i - 1} \\
+	\end{cases} \\
+	& \iff &
+	\begin{cases}
+		\sum_{0 \leq k < \ell}^{p} [\col{@}_k]_{i} = 0 \\
+		\If \epsilon_\ell = + ~ \Then \ord^{\ell}_{i} > \ord^{\ell}_{i - 1} \\
+		\If \epsilon_\ell = - ~ \Then \ord^{\ell}_{i} < \ord^{\ell}_{i - 1} \\
+	\end{cases} \\
+\end{IEEEeqnarray*}
+(where we set, for convenience, $[\col{@}_0] \equiv 0$) and
+\begin{IEEEeqnarray*}{RCL}
+	[\col{Eq}]_{i} = 1 & \iff & \ord^{\ell}_{i} = \ord^{\ell}_{i - 1}, \quad 1\leq \ell \leq p \\
+	& \iff & \sum_{\ell = 1}^{p} [\col{@}_\ell]_{i} = 0 \\
+\end{IEEEeqnarray*}
+This is arithmetized as follows:
+We subsume under the moniker
+\[
+	\weakLexConstraint
+	\left(
+	\begin{array}{c}
+		\ord^{1},
+		\ord^{2},
+		\dots,
+		\ord^{p} \\
+		{[\col{@}_{1}]}, [\col{@}_{2}], \dots, [\col{@}_{p}], [\col{Eq}]; \\
+		\byteCol{$\llargeMO$}, \dots, \byteCol{1}, \byteCol{0}; \\
+	\end{array}
+	\right)
+\]
+the following collection of constraints where we write $\Delta \equiv \sum_{k=0}^{\llargeMO} 256^k \cdot \byteCol{k}$.
+\begin{enumerate}
+	\item $[\col{@}_{1}]_{i} + \cdots + [\col{@}_{p}]_{i} + [\col{Eq}]_{i} = 1$ i.e. precisely one of these binary flags is on at any given time;
+	\item for $\ell = 1, \dots, p$ we ask that
+		\If $\sum_{k = 0}^{\ell-1} [\col{@}_{k}]_{i} \neq 1$ \Then 
+		\begin{itemize}
+			\item  \If $[\col{@}_{\ell}]_{i} = 1$ \Then $\ord^\ell_{i} \neq \ord^\ell_{i - 1}$,
+			\item  \If $[\col{@}_{\ell}]_{i} = 0$ \Then $\ord^\ell_{i} =    \ord^\ell_{i - 1}$;
+		\end{itemize}
+		where, for greater uniformity, we define $[\col{@}_0]$ to be the $0$ column.
+	\item \If $\col{Eq}_i = 0$ \Then
+		\[
+			\begin{array}{lcl}
+				1 + \Delta_{i}
+				& = & 
+				\displaystyle
+				\phantom{+} \sum_{\substack{1\leq \ell \leq p\\\epsilon_\ell = +}}
+				[\col{@}_{\ell}]_{i}
+				\cdot
+				\Big(
+				\ord^\ell_{i} - \ord^\ell_{i - 1}
+				\Big) \\
+				& &
+				\displaystyle
+				-
+				\sum_{\substack{1\leq \ell \leq p\\\epsilon_\ell = -}}
+				[\col{@}_{\ell}]_{i}
+				\cdot
+				\Big(
+				\ord^\ell_{i} - \ord^\ell_{i - 1}
+				\Big)
+			\end{array}
+		\]
+\end{enumerate}
+We similarly subsume under the moniker
+\[
+	\strictLexConstraint
+	\left(
+	\begin{array}{c}
+		\ord^{1},
+		\ord^{2},
+		\dots,
+		\ord^{p} \\
+		{[\col{@}_{1}]}, [\col{@}_{2}], \dots, [\col{@}_{p}]; \\
+		\byteCol{$\llargeMO$}, \dots, \byteCol{1}, \byteCol{0}; \\
+	\end{array}
+	\right)
+\]
+the following collection of constraints:
+\begin{enumerate}
+	\item $[\col{@}_{1}]_{i} + \cdots + [\col{@}_{p}]_{i} = 1$ i.e. precisely one of these binary flags is on at any given time;
+	\item for $\ell = 1, \dots, p$ we ask that
+		\If $\sum_{k = 0}^{\ell-1} [\col{@}_{k}]_{i} \neq 1$ \Then 
+		\begin{itemize}
+			\item  \If $[\col{@}_{\ell}]_{i} = 1$ \Then $\ord^\ell_{i} \neq \ord^\ell_{i - 1}$,
+			\item  \If $[\col{@}_{\ell}]_{i} = 0$ \Then $\ord^\ell_{i} =    \ord^\ell_{i - 1}$;
+		\end{itemize}
+		where, again, we set $[\col{@}_0] \equiv 0$.
+	\item unconditionally
+		\[
+			\begin{array}{lcl}
+				1 + \Delta_{i}
+				& = & 
+				\displaystyle
+				\phantom{+} \sum_{\substack{1\leq \ell \leq p\\\epsilon_\ell = +}}
+				[\col{@}_{\ell}]_{i}
+				\cdot
+				\Big(
+				\ord^\ell_{i} - \ord^\ell_{i - 1}
+				\Big) \\
+				& &
+				\displaystyle
+				-
+				\sum_{\substack{1\leq \ell \leq p\\\epsilon_\ell = -}}
+				[\col{@}_{\ell}]_{i}
+				\cdot
+				\Big(
+				\ord^\ell_{i} - \ord^\ell_{i - 1}
+				\Big)
+			\end{array}
+		\]
+\end{enumerate}
+% \ob{Obsolete! Note that the sum = 1 constraint is incompatible with naive padding. There is a way around it which uses the fact that in all scenarios of interest the padding rows can be left at the start of the reordered versions. Thus all conditions beyond the bytehood constraint can, if we prefer, be made conditional to ``\If $\module\stamp_{i} \neq 0$ \Then'' (yes, the \emph{unordered} version of $\module\stamp$); alternatively we can pad with $\col{Eq} \equiv 1$.}

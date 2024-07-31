@@ -1,0 +1,30 @@
+The present section deals with the $\expInstModexpLog$ instruction.
+Its purpose is as follows.
+One is given the following data:
+(\emph{a}) an \evm{} word $\locRawLeadingWord \in \mathbb{B}_{32}$ split into high and low parts, \locRawLeadingWordHi{} and \locRawLeadingWordLo{} respectively
+(\emph{b}) two integers $\locCdsCutoff$ and $\locEbsCutoff$ which are guaranteed to be in the range $[\![ 1, 32\, ]\!]$
+one is tasked with computing $\lfloor \log_{2}(\locLeadingWord) \rfloor$ where we define $\locLeadingWord$ using the following slice of bytes:
+\[
+	\left\{ \begin{array}{l}
+		\locLeadingWord \in \mathbb{B}_{\locEbsCutoff} \\
+		\locLeadingWord[i]  =
+		\begin{cases}
+			\If i <    \locCdsCutoff: & \locRawLeadingWord[i] \\
+			\If i \geq \locCdsCutoff: & 0                      \\
+		\end{cases}
+	\end{array} \right.
+	\quad\text{and}\quad
+	\begin{cases}
+		\locTrim \in \mathbb{B}_{\evmWordSize} \\
+		\locTrim[i]  =
+		\begin{cases}
+			\If i <    \locEbsCutoff: & \locLeadingWord[i] \\
+			\If i \geq \locEbsCutoff: & 0                  \\
+		\end{cases}
+	\end{cases}
+\]
+using the standard convention that $\log_{2}(0)  = 0$ and where we use the notation $\col{B}[i]$ to access the $i$-th byte of a slice of bytes $\col{B}\in\mathbb{B}^*$.
+
+\saNote{} There are two different cutoff: \locEbsCutoff{} and \locCdsCutoff{}. The present module will have to compare the two.
+
+\saNote{} The value which we are building with \compTrimAcc{} targets a $\llarge$-byte integer which is either the high or the low part of \locTrim{} depending on context.

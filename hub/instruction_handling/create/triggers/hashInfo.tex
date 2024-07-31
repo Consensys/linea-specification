@@ -1,0 +1,44 @@
+We impose the following:
+\begin{enumerate}
+	\item \If 
+		\(
+		\left[ \begin{array}{ll}
+			+ & \scenCreateException              _{i} \\
+			+ & \scenCreateAbort                  _{i} \\
+			+ & \scenCreateExecutionEmptyInitCode _{i} \\
+		\end{array} \right] = 1
+		\)
+		\Then
+		\( \locTriggerHashInfo \define \gZero \)
+	\item \If $\scenCreateFCond = 1$ \Then $\locTriggerHashInfo \define \locMxpMtntop \cdot \locIsCreateTwo$
+
+		\saNote{} In other words
+		\begin{enumerate}
+			\item \If $\locSizeLo \neq 0$ \Then $\locTriggerHashInfo \define \locIsCreateTwo$ (\trash)
+			\item \If $\locSizeLo =    0$ \Then $\locTriggerHashInfo \define \gZero$          (\trash)
+		\end{enumerate}
+	\item \If $\scenCreateExecutionNonEmptyInitCode = 1$ \Then $\locTriggerHashInfo \define \locIsCreateTwo$
+\end{enumerate}
+\saNote{}
+One \emph{may} subsume the above into a single constraint
+\[
+	\locTriggerHashInfo
+	\define
+	\locIsCreateTwo
+	\cdot
+	\left[ \begin{array}{cr}
+		+ & \scenCreateFCond \cdot \locMxpMtntop \\
+		+ & \scenCreateExecutionNonEmptyInitCode \\
+	\end{array} \right]
+\]
+\saNote{} The \hashInfoMod{} is called by \inst{CREATE2} instructions to compute the \textbf{initialization code hash};
+this is required to compute the \textbf{deployment address};
+this is necessary \emph{iff} the following conditions are met: 
+(\emph{a}) the instruction is a \inst{CREATE2}
+(\emph{b}) the instruction doesn't raise an exception
+(\emph{c}) the instruction isn't aborted
+(\emph{d}) the initialization code is nonempty;
+
+\saNote{} Hashing the initialization code \textbf{is required} in case of a failure condition (as it requires us computing the deployment address to confirm that it has either a nonzero nonce or nonempty code).
+
+\saNote{} The only difference between the \locTriggerMmu{} and \locTriggerHashInfo{} flags is that the \mmuMod{} module is \emph{always} triggered in case of a deployment of nonempty bytecode, while in similar circumstances the \hashInfoMod{} module is only triggered if the instruction is a \inst{CREATE2}. 

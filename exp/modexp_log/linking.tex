@@ -1,0 +1,34 @@
+\[
+    \boxed{\text{All constraints in this subsection assume }
+        \begin{cases}
+            \isModexpLog _{i} = 1 \\
+            \isMacro     _{i} = 1 \\
+        \end{cases}}
+\]
+We are now in position to enforce some constraints which connect the preprocessing to the computation:
+\begin{enumerate}
+    \item \If $\locMinCutoffLEQSixteen = 1$ \Then
+        \[
+            \left\{ \begin{array}{lcl}
+                    \compRawAcc_{i - 1}     & = & \locRawLeadingWordHi \\
+                    \compPlateauJmp_{i - 1} & = & \locMinCutoff        \\
+            \end{array} \right.
+        \]
+    \item \If $\locMinCutoffLEQSixteen = 0$ \Then
+          \begin{enumerate}
+              \item \If  $\locRawHiIsZero = 0$ \Then
+                  \[
+                      \left\{ \begin{array}{lcl}
+                          \compRawAcc_{i - 1}     & = & \locRawLeadingWordHi \\
+                          \compPlateauJmp_{i - 1} & = & \llarge              \\
+                      \end{array} \right.
+                  \]
+              \item \If  $\locRawHiIsZero = 1$ \Then
+                  \[
+                      \left\{ \begin{array}{lcl}
+                          \compRawAcc_{i - 1}     & = & \locRawLeadingWordLo    \\
+                          \compPlateauJmp_{i - 1} & = & \locMinCutoff - \llarge \\
+                      \end{array} \right.
+                  \]
+          \end{enumerate}
+\end{enumerate}

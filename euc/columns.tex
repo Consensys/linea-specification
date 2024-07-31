@@ -1,0 +1,42 @@
+We list the named columns of the \eucMod{} module. The first few are useful for the (simple) heartbeat.
+\begin{enumerate}
+    \item \iomf:
+	monotonous bit column that lights up for non-padding rows;
+    \item \ct:
+	counter column; 
+	counts continuously from 0 to \maxCt whereupon it resets to 0;
+    \item \maxCt:
+	counter-constant column;
+	indicates the value at which \ct must reset;
+    \item \done:
+	bit column that lights up precisely at the last row of all counter-loop;
+\end{enumerate}
+The following columns contain input values (at rows where $\done_{i}=1$).
+\begin{enumerate}[resume]
+    \item \dividend:
+	assumed to be less than 8 bytes long
+    \item \divisor:
+	assumed to be less than 8 bytes long
+\end{enumerate}
+The following columns contain output of the computation (at rows where $\done_{i}=1$).
+\begin{enumerate}[resume]
+    \item \quotient:
+    \item \remainder:
+    \item \ceiling:
+	computes the ceiling $\left\lceil \dividend / \divisor \right \rceil$;
+\end{enumerate}
+\saNote{} The previous columns are actually byte accumulator columns.
+Only the value present on the final row of the counter-cycle (characterized by $\done \equiv 1$) can be interpreted as the eponymous \dividend{} / \divisor{} / \quotient{} / \remainder{} of the euclidean division.
+Note furthermore that, while \ceiling{} is deduced from \quotient{} and \remainder{}, the only value that is explicitly constrained is its final value along counter-cycles.
+
+\noindent The following columns contain the bytes that the previous columns accumulate:
+\begin{enumerate}[resume]
+    \item
+	\divisorByte,
+	\quotientByte{} and
+	\remainderByte:
+	byte columns containing the bytes accumulated by
+	\divisor,
+	\quotient{} and
+	\remainder respectively;
+\end{enumerate}

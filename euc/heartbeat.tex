@@ -1,0 +1,39 @@
+\begin{enumerate}
+	\item $\iomf_{0} = 0$
+	\item \If $\iomf_{i} = 0$ \Then 
+	\begin{enumerate}
+		\item $\done_{i}=0$
+		\item $\ct_{i+1}=0$ 
+	\end{enumerate}
+	\item \If $\iomf_{i} = 1$ \Then
+	\begin{enumerate}
+		\item \label{euc: heartbeat: iomf monotony} $\iomf_{i+1} = 1$
+		\item \If $\ct_{i} \neq \maxCt_{i}$ \Then
+			\begin{enumerate}
+			    \item $\done_{i} = 0$
+			    \item $\ct_{i + 1} = 1 + \ct_{i}$
+			\end{enumerate}
+		\item \If $\ct_{i} = \maxCt_{i}$ \Then
+			\begin{enumerate}
+			    \item $\done_{i} = 1$
+			    \item $\ct_{i + 1} = 0$
+			\end{enumerate}
+	\end{enumerate}
+\item \label{euc: heartbeat: ct not 8} $\ct_{i} \neq \mmedium$
+	\item \If $\iomf_{N} = 1$ \Then $\done_{N} = 1$ \quad (\trash)
+\end{enumerate}
+\saNote{} It isn't strictly speaking necessary to enforce that ``\If $\iomf_{N} = 1$ \Then $\done_{N} = 1$.''
+Indeed, if this constraint is omitted the final computation may only be partially performed yet will remain inaccessible to any lookup targeting the \eucMod{} module as such lookups are systematically required to land on rows where $\done \equiv 1$.
+
+The constraint~(\ref{euc: heartbeat: iomf monotony}) enforces that \iomf{} be monotonous (in the sense of \textbf{nondecreasing}.)
+We say that a row with row index $i$ is a 
+\textbf{non-padding-row} if $\iomf_{i} = 1$ and that it is a
+\textbf{padding-row} if $\iomf_{i} = 0$.
+
+The constraint~(\ref{euc: heartbeat: ct not 8}) on the other hand enforces, in conjunction with the remaining heartbeat constraints and the counter-constancy of \ctMax, that on non-padding-rows one always has:
+\[
+	\left\{ \begin{array}{l}
+		0 \leq \ct \leq \maxCt \\
+		\ct < \mmedium \\
+	\end{array} \right.
+\]

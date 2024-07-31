@@ -1,0 +1,65 @@
+Consider the case of an \textbf{unexceptional}, \textbf{unaborted} \inst{CREATE}-type instruction which is provided with \textbf{nonempty initialization code}.
+Given this premise the \mmuMod{} module may get invoked for several disctint reasons and serves different purposes each time.
+These purposes are as follows:
+\begin{description}
+	\item[\underline{The $\locHashInitCode \equiv \rOne \phantom{\big|}\!\!$ case:}]
+		to compute the initialization code hash for \inst{CREATE2} instructions that raise the failure condition $\yellowPaperFailureCondition$
+	\item[\underline{The $\locHashInitCodeAndSendToRom \equiv \rOne \phantom{\big|}\!\!$ case:}]
+		to compute the initialization code hash for \inst{CREATE2} instructions that don't raise the failure condition $\yellowPaperFailureCondition$ and also send this initialization code to the \romMod{} module
+	\item[\underline{The $\locSendInitCodeToRom \equiv \rOne \phantom{\big|}\!\!$ case:}]
+		to send the initialization code to the \romMod{} module for unexceptional, unaborted \inst{CREATE} instructions that don't raise the failure condition $\yellowPaperFailureCondition$
+\end{description}
+We refer the reader to \cite{EYP} for the definition of the failure condition $\yellowPaperFailureCondition$.
+
+We provide below the specification of the \locTriggerMmu{} flag which determines whether or not the \mmuMod{} gets triggered or not.
+In light of the previous discussion we split this flag into \emph{de facto} exclusive binary flags which light up precisely for one of the previously described cases (and are zero in all other cases.)
+\begin{enumerate}
+	\item we impose a threefold decomposition
+		\[
+			\locTriggerMmu \define
+			\left[ \begin{array}{ll}
+				+ \!\!\! & \locHashInitCode             \\
+				+ \!\!\! & \locHashInitCodeAndSendToRom \\
+				+ \!\!\! & \locSendInitCodeToRom        \\
+			\end{array} \right]
+		\]
+	\item \If 
+		\(
+		\left[ \begin{array}{ll}
+			+ \!\!\! & \scenCreateException              _{i} \\
+			+ \!\!\! & \scenCreateAbort                  _{i} \\
+			+ \!\!\! & \scenCreateExecutionEmptyInitCode _{i} \\
+		\end{array} \right] = 1
+		\)
+		\Then
+		\[
+			\left\{ \begin{array}{lclr}
+				\locTriggerMmu               & \define & \gZero & (\trash) \\
+				\locHashInitCode             & \define & \gZero \\
+				\locHashInitCodeAndSendToRom & \define & \gZero \\
+				\locSendInitCodeToRom        & \define & \gZero \\
+			\end{array} \right.
+		\]
+	\item \If $\scenCreateFCond = 1$ \Then 
+		\[
+			\left\{ \begin{array}{lclr}
+				\locTriggerMmu               & \define & \locMxpMtntop \cdot \locIsCreateTwo  & (\trash) \\
+				\locHashInitCode             & \define & \locMxpMtntop \cdot \locIsCreateTwo \\
+				\locHashInitCodeAndSendToRom & \define & \gZero                              \\
+				\locSendInitCodeToRom        & \define & \gZero                              \\
+			\end{array} \right.
+		\]
+		% \begin{enumerate}
+		% 	\item \If $\locSizeLo \neq 0$ \Then $\locTriggerMmu = \locIsCreateTwo$
+		% 	\item \If $\locSizeLo =    0$ \Then $\locTriggerMmu = 0$
+		% \end{enumerate}
+	\item \If $\scenCreateExecutionNonEmptyInitCode = 1$ \Then
+		\[
+			\left\{ \begin{array}{lclr}
+				\locTriggerMmu               & \define & \rOne            & (\trash) \\
+				\locHashInitCode             & \define & \gZero          \\
+				\locHashInitCodeAndSendToRom & \define & \locIsCreateTwo \\
+				\locSendInitCodeToRom        & \define & \locIsCreate    \\
+			\end{array} \right.
+		\]
+\end{enumerate}

@@ -1,0 +1,267 @@
+\makeatletter
+ 
+\define@cmdkey [OOB] {var} {anchorRow}        {}
+\define@cmdkey [OOB] {var} {relOffset}        {}
+\define@cmdkey [OOB] {var} {valueHi}          {}
+\define@cmdkey [OOB] {var} {valueLo}          {}
+\define@cmdkey [OOB] {var} {balance}          {}
+\define@cmdkey [OOB] {var} {nonce}            {}
+\define@cmdkey [OOB] {var} {hasCode}          {}
+\define@cmdkey [OOB] {var} {callStackDepth}   {}
+\define@cmdkey [OOB] {var} {oobInstruction}   {}
+\define@cmdkey [OOB] {var} {callGas}          {}
+\define@cmdkey [OOB] {var} {callDataSize}     {}
+\define@cmdkey [OOB] {var} {returnAtCapacity} {}
+\define@cmdkey [OOB] {var} {xbsHi}            {}
+\define@cmdkey [OOB] {var} {xbsLo}            {}
+\define@cmdkey [OOB] {var} {ybsLo}            {}
+\define@cmdkey [OOB] {var} {bbsLo}            {}
+\define@cmdkey [OOB] {var} {ebsLo}            {}
+\define@cmdkey [OOB] {var} {mbsLo}            {}
+\define@cmdkey [OOB] {var} {computeMax}       {}
+\define@cmdkey [OOB] {var} {blakeR}           {}
+\define@cmdkey [OOB] {var} {blakeF}           {}
+\define@cmdkey [OOB] {var} {exponentLog}      {}
+\define@cmdkey [OOB] {var} {maxMbsBbs}        {}
+
+
+\presetkeys    [OOB] {var} {
+    anchorRow        = \missingParameter,
+    relOffset        = \missingParameter,
+    valueHi          = \missingParameter,
+    valueLo          = \missingParameter,
+    balance          = \missingParameter,
+    nonce            = \missingParameter,
+    hasCode          = \missingParameter,
+    callStackDepth   = \missingParameter,
+    oobInstruction   = \missingParameter,
+    callGas          = \missingParameter,
+    callDataSize     = \missingParameter,
+    returnAtCapacity = \missingParameter,
+    xbsHi            = \missingParameter,
+    xbsLo            = \missingParameter,
+    ybsLo            = \missingParameter,
+    computeMax       = \missingParameter,
+    bbsLo            = \missingParameter,
+    ebsLo            = \missingParameter,
+    mbsLo            = \missingParameter,
+    blakeR           = \missingParameter,
+    blakeF           = \missingParameter,
+    exponentLog      = \missingParameter,
+    maxMbsBbs        = \missingParameter,
+}{}
+
+% misc OOB instructions
+% opcode related
+\newcommand{\oobInstructionNamePrefix        } {\miscSignifier\texttt{setOobInstruction}}
+\newcommand{\setOobInstructionJumpName       } {\oobInstructionNamePrefix\texttt{Jump}}
+\newcommand{\setOobInstructionJumpIName      } {\oobInstructionNamePrefix\texttt{Jumpi}}
+\newcommand{\setOobInstructionRdcName        } {\oobInstructionNamePrefix\texttt{Rdc}}
+\newcommand{\setOobInstructionCdlName        } {\oobInstructionNamePrefix\texttt{Cdl}}
+\newcommand{\setOobInstructionXcallName      } {\oobInstructionNamePrefix\texttt{Xcall}}
+\newcommand{\setOobInstructionCallName       } {\oobInstructionNamePrefix\texttt{Call}}
+\newcommand{\setOobInstructionCreateName     } {\oobInstructionNamePrefix\texttt{Create}}
+\newcommand{\setOobInstructionSstoreName     } {\oobInstructionNamePrefix\texttt{Sstore}}
+\newcommand{\setOobInstructionDeploymentName } {\oobInstructionNamePrefix\texttt{Deployment}}
+
+\newcommand{\setOobInstruction } [1] {\oobInstructionNamePrefix _{#1}}
+
+\newcommand{\setOobInstructionJump  } [2] {\setOobInstructionJumpName       _{#1}   \big[ \, #2 \, \big]}
+\newcommand{\setOobInstructionJumpI } [2] {\setOobInstructionJumpIName      _{#1}   \big[ \, #2 \, \big]}
+\newcommand{\setOobInstructionRdc   } [2] {\setOobInstructionRdcName        _{#1}   \big[ \, #2 \, \big]}
+\newcommand{\setOobInstructionCdl   } [2] {\setOobInstructionCdlName        _{#1}   \big[ \, #2 \, \big]}
+
+\newcommand{\setOobInstructionXcall } [1] {
+    \setkeys[OOB]{var}{#1}
+    \setOobInstructionXcallName _{\cmdOOB@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:} & \cmdOOB@var@relOffset \\
+        \utt{Value high:}      & \cmdOOB@var@valueHi   \\
+        \utt{Value low:}       & \cmdOOB@var@valueLo   \\
+    \end{array} \right]
+}
+
+\newcommand{\setOobInstructionCall           }       [1]       {
+    \setkeys[OOB]{var}{#1}
+    \setOobInstructionCallName _{\cmdOOB@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}  & \cmdOOB@var@relOffset      \\
+        \utt{Value high:}       & \cmdOOB@var@valueHi        \\
+        \utt{Value low:}        & \cmdOOB@var@valueLo        \\
+        \utt{Balance:}          & \cmdOOB@var@balance        \\
+        \utt{Call stack depth:} & \cmdOOB@var@callStackDepth \\
+    \end{array} \right]
+}
+
+\newcommand{\setOobInstructionCreate         }       [1]       {
+    \setkeys[OOB]{var}{#1}
+    \setOobInstructionCreateName _{\cmdOOB@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}  & \cmdOOB@var@relOffset      \\
+        \utt{Value high:}       & \cmdOOB@var@valueHi        \\
+        \utt{Value low:}        & \cmdOOB@var@valueLo        \\
+        \utt{Balance:}          & \cmdOOB@var@balance        \\
+        \utt{Createe nonce:}    & \cmdOOB@var@nonce          \\
+        \utt{Createe has code:} & \cmdOOB@var@hasCode        \\
+        \utt{Call stack depth:} & \cmdOOB@var@callStackDepth \\
+    \end{array} \right]
+}
+
+\newcommand{\setOobInstructionSstore     } [2] {\setOobInstructionSstoreName     _{#1} \big[ \, #2 \, \big]}
+\newcommand{\setOobInstructionDeployment } [2] {\setOobInstructionDeploymentName _{#1} \big[ \, #2 \, \big]}
+
+% precompile related
+\newcommand{\setOobInstructionCommonName        } {\oobInstructionNamePrefix\texttt{Common}}
+\newcommand{\setOobInstructionBlakeCdsName      } {\oobInstructionNamePrefix\texttt{Blake/Cds}}
+\newcommand{\setOobInstructionBlakeParamsName   } {\oobInstructionNamePrefix\texttt{Blake/Params}}
+\newcommand{\setOobInstructionModexpCdsName     } {\oobInstructionNamePrefix\texttt{Modexp/Cds}}
+\newcommand{\setOobInstructionModexpXbsName     } {\oobInstructionNamePrefix\texttt{Modexp/Xbs}}
+\newcommand{\setOobInstructionModexpLeadName    } {\oobInstructionNamePrefix\texttt{Modexp/Lead}}
+\newcommand{\setOobInstructionModexpPricingName } {\oobInstructionNamePrefix\texttt{Modexp/Pricing}}
+\newcommand{\setOobInstructionModexpExtractName } {\oobInstructionNamePrefix\texttt{Modexp/Extract}}
+
+\newcommand{\setOobInstructionCommon}       [1]       {
+    \setkeys[OOB]{var}{#1}
+    \setOobInstructionCommonName  _{\cmdOOB@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}    & \cmdOOB@var@relOffset        \\
+        \utt{OOB instruction:}    & \cmdOOB@var@oobInstruction   \\
+        \utt{Call gas:}           & \cmdOOB@var@callGas          \\
+        \utt{Call data size:}     & \cmdOOB@var@callDataSize     \\
+        \utt{Return at capacity:} & \cmdOOB@var@returnAtCapacity \\
+    \end{array} \right]
+}
+
+\newcommand{\setOobInstructionBlakeCds} [1] {
+    \setkeys[OOB]{var}{#1}
+    \setOobInstructionBlakeCdsName  _{\cmdOOB@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}    & \cmdOOB@var@relOffset        \\
+        \utt{Call data size:}     & \cmdOOB@var@callDataSize     \\
+        \utt{Return at capacity:} & \cmdOOB@var@returnAtCapacity \\
+    \end{array} \right]
+}
+
+% \setOobInstructionBlakeCds {
+%     anchorRow        = ,
+%     relOffset        = ,
+%     callDataSize     = ,
+%     returnAtCapacity = ,
+% }
+
+\newcommand{\setOobInstructionBlakeParams   } [1] {
+    \setkeys[OOB]{var}{#1}
+    \setOobInstructionBlakeParamsName  _{\cmdOOB@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}             & \cmdOOB@var@relOffset \\
+        \utt{Call gas:}                    & \cmdOOB@var@callGas   \\
+        \utt{Rounds ``r'':}                & \cmdOOB@var@blakeR    \\
+        \utt{Final block indicator ``f'':} & \cmdOOB@var@blakeF    \\
+    \end{array} \right]
+}
+
+% \setOobInstructionBlakeParams {
+%     anchorRow        = ,
+%     relOffset        = ,
+%     callGas          = ,
+%     blakeR           = ,
+%     blakeF           = ,
+% }
+
+\newcommand{\setOobInstructionModexpCds     } [1] {
+    \setkeys[OOB]{var}{#1}
+    \setOobInstructionModexpCdsName _{\cmdOOB@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}    & \cmdOOB@var@relOffset        \\
+        \utt{Call data size:}     & \cmdOOB@var@callDataSize     \\
+    \end{array} \right]
+}
+
+% \setOobInstructionModexpCds {
+%     anchorRow    = ,
+%     relOffset    = ,
+%     callDataSize = ,
+% }
+
+\newcommand{\setOobInstructionModexpXbs} [1] {
+    \setkeys[OOB]{var}{#1}
+    \setOobInstructionModexpXbsName _{\cmdOOB@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}       & \cmdOOB@var@relOffset  \\
+        \utt{``xbs'' high:}          & \cmdOOB@var@xbsHi      \\
+        \utt{``xbs'' low:}           & \cmdOOB@var@xbsLo      \\
+        \utt{``ybs'' low:}           & \cmdOOB@var@ybsLo      \\
+        \utt{Extra computation bit:} & \cmdOOB@var@computeMax \\
+    \end{array} \right]
+}
+
+% \setOobInstructionModexpXbs {
+%     anchorRow    = ,
+%     relOffset    = ,
+%     xbsHi        = ,
+%     xbsLo        = ,
+%     ybsLo        = ,
+%     computeMax   = ,
+% }
+
+\newcommand{\setOobInstructionModexpLead} [1] {
+    \setkeys[OOB]{var}{#1}
+    \setOobInstructionModexpLeadName _{\cmdOOB@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}    & \cmdOOB@var@relOffset    \\
+        \utt{Base byte size:}     & \cmdOOB@var@bbsLo        \\
+        \utt{Call data size:}     & \cmdOOB@var@callDataSize \\
+        \utt{Exponent byte size:} & \cmdOOB@var@ebsLo        \\
+    \end{array} \right]
+}
+
+% \setOobInstructionModexpLead {
+%     anchorRow    = ,
+%     relOffset    = ,
+%     bbsLo        = ,
+%     callDataSize = ,
+%     ebsLo        = ,
+% }
+
+\newcommand{\setOobInstructionModexpPricing} [1] {
+    \setkeys[OOB]{var}{#1}
+    \setOobInstructionModexpPricingName _{\cmdOOB@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}    & \cmdOOB@var@relOffset        \\
+        \utt{Call gas:}           & \cmdOOB@var@callGas          \\
+        \utt{Return at capacity:} & \cmdOOB@var@returnAtCapacity \\
+        \utt{Exponent log:}       & \cmdOOB@var@exponentLog      \\
+        \utt{Max(mbs, bbs):}      & \cmdOOB@var@maxMbsBbs        \\
+    \end{array} \right]
+}
+
+% \setOobInstructionModexpPricing {
+%     relOffset        = ,
+%     callGas          = ,
+%     returnAtCapacity = ,
+%     exponentLog      = ,
+%     maxMbsBbs        = ,
+% }
+
+\newcommand{\setOobInstructionModexpExtract} [1] {
+    \setkeys[OOB]{var}{#1}
+    \setOobInstructionModexpExtractName _{\cmdOOB@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}    & \cmdOOB@var@relOffset    \\
+        \utt{Call data size:}     & \cmdOOB@var@callDataSize \\
+        \utt{Base byte size:}     & \cmdOOB@var@bbsLo        \\
+        \utt{Exponent byte size:} & \cmdOOB@var@ebsLo        \\
+        \utt{Modulus byte size:}  & \cmdOOB@var@mbsLo        \\
+    \end{array} \right]
+}
+
+% \setOobInstructionModexpExtract {
+%     anchorRow    = ,
+%     relOffset    = ,
+%     callDataSize = ,
+%     bbsLo        = ,
+%     ebsLo        = ,
+%     mbsLo        = ,
+% }
+
+\makeatother

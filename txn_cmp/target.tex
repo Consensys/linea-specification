@@ -1,0 +1,38 @@
+We impose the following target constraints:
+\begin{enumerate}
+	\item \If $\ct_{i} = \mmediumMO$ \Then
+	\begin{enumerate}
+		\item The following must always hold
+		\[
+		\left\{
+		\begin{array}{lclcl}
+			\txGasLimit_{i}		& \!\!\! = \!\!\! & \acc{1}_{i} \\
+			\txInitialGasCost_{i}	& \!\!\! = \!\!\! & \acc{2}_{i} \\
+			\txBasefee_{i}		& \!\!\! = \!\!\! & \acc{3}_{i} \vspace{2mm} \\
+			\txGasLimit_{i}		& \!\!\! = \!\!\! & \txInitialGasCost	& \!\!\! + \!\!\! & \acc{4}_{i} \\
+		\end{array}
+		\right.
+		\]
+		\item \If $\txIsTypeTwo_{i} = 1$ \Then we further ask that
+		\[
+		\left\{
+		\begin{array}{lclcl}
+			\txMaxFee_{i}		& \!\!\! = \!\!\! & \acc{5}_{i} \\
+			\txMaxTip_{i}		& \!\!\! = \!\!\! & \acc{6}_{i} \vspace{2mm} \\
+			\txMaxFee_{i}		& \!\!\! = \!\!\! & \txBasefee_{i}	& \!\!\! + \!\!\! & \acc{7}_{i} \\
+			\txMaxFee_{i}		& \!\!\! = \!\!\! & \txMaxTip_{i}	& \!\!\! + \!\!\! & \acc{8}_{i} \\
+			\txGasLimit_{i}		& \!\!\! = \!\!\! & \txInitialGasCost	& \!\!\! + \!\!\! & \acc{9}_{i} \vspace{2mm} \\
+			\multicolumn{5}{l}{%
+			(2 \txFullTip_{i} - 1)
+			\cdot
+			\Big(
+				\txMaxFee_{i}
+				- \big( \txBasefee_{i} + \txMaxTip_{i} \big)
+			\Big)} \\
+			& \!\!\! = \!\!\! &
+			\multicolumn{3}{l}{(1 - \txFullTip_{i}) + \acc{10}_{i}} \\
+		\end{array}
+		\right.
+		\]
+	\end{enumerate}
+\end{enumerate}

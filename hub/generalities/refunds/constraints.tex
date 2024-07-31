@@ -1,0 +1,38 @@
+
+The constraints below enforce the behavior described above.
+\begin{enumerate}
+	\item \If $\txExec_{i}     = 0$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\refund_{i}     & = & 0 \\
+				\refund\new_{i} & = & 0 \\
+			\end{array} \right.
+		\]
+	\item \If $\hubStamp_{i} \neq \hubStamp_{i - 1}$ \et $\txExec_{i} = 1$ \Then $\refund_{i} = \refund\new_{i - 1}$
+\end{enumerate}
+The above is the transition constraint for gas refunds.
+Recall that \textbf{along stack-rows} one has
+\[
+	\begin{cases}
+		\stackDecStoFlag \cdot \decFlag{1} \equiv 1  & \text{precisely for \inst{SSTORE},       see section~\ref{hub: instruction handling: sto};}  \\
+		\stackDecHaltFlag \cdot \decFlag{4} \equiv 1 & \text{precisely for \inst{SELFDESTRUCT}, see section~\ref{hub: instruction handling: halt};} \\
+	\end{cases}
+\]
+and that $\stackDecStoFlag$ and $\stackDecHaltFlag$ are mutually exclusive binary flags.
+\begin{enumerate}[resume]
+	\item \If $\cnWillRev_{i} = 1$ \Then $\refund\new_{i} = \refund_{i}$
+	\item \If $\peekStack_{i} = 1$ \et $
+		\left[ \begin{array}{cr}
+			+ & \stackDecStoFlag  _{i} \cdot \decFlag{1}_{i} \\
+			+ & \stackDecHaltFlag _{i} \cdot \decFlag{4}_{i} \\
+		\end{array} \right]
+		= 0$ \Then $\refund\new_{i} = \refund_{i}$
+	\item \If $\cnWillRev_{i} = 0$ \et $\peekStack_{i} = 1$ \Then
+		\begin{enumerate}
+			\item \If $\stackDecStoFlag_{i} \cdot \decFlag{1}_{i}  = 1$ \Then \dots{} see section~(\ref{hub: instruction handling: sto})
+			\item \If $\stackDecHaltFlag_{i} \cdot \decFlag{4}_{i} = 1$ \Then \dots{} see section~(\ref{hub: instruction handling: halt})
+		\end{enumerate}
+\end{enumerate}
+\saNote{} In the implementation one may replace condition
+``\If $\stackDecStoFlag_{i} \cdot \decFlag{1}_{i} + \stackDecHaltFlag_{i} \cdot \decFlag{4}_{i} = 0$'' with condition
+``\If $\stackDecStoFlag_{i} \cdot \decFlag{1}_{i} + \stackDecHaltFlag_{i} \cdot \decFlag{4}_{i} \neq 1$''.

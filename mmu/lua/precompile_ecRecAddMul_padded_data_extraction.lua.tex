@@ -1,0 +1,98 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{../../pkg/draculatheme}
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NF Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\begin{document}
+\begin{verbatim}
+We describe a MMU instruction called 
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                                    ;;
+;;    MMU_INST_rightPaddedPrecompileDataExtraction    ;;
+;;                                                    ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+This MMU instruction will be used to extract the data for
+- ECRECOVER
+- ECADD
+- ECMUL
+
+The inputs of this instruction are
+- ID_SRC = cn
+- ID_TGT = 1 + HUB_
+- REF_SIZE
+- SRC_OFFSET = cdo
+- SIZE = cds
+- PHASE_NUMBER 
+- Q_0
+
+The Q_0 parameter will be set by the HUB and is either 8 or 6 depending on the precompile.
+
+NOTE. it is sufficient to send either the REFERENCE_SIZE or Q_0 as
+        
+        REFERENCE_SIZE = 16  •  Q_0
+
+NOTE. the reference size REF_SIZE will be set by the HUB in terms of the precompile
+according to the table below:
+
+|------------+----------------+-----|
+| precompile | reference size | Q_0 |
+|------------+----------------+----:|
+| ECRECOVER  | 128            |   8 |
+| ECADD      | 128            |   8 |
+| ECmul      | 96             |   6 |
+|------------+----------------+-----|
+
+The MMU needs to perform the following:
+- cdo = 16 • q + r
+- cds = 16 • Q + R
+- r = 0 ?
+        * false (0) case: Q times [Ram to Exo limb transplant] 
+        * true  (1) case: Q times [2 => 1 Ram to Exo surgery] 
+- R = 0 ?
+        * may determine whether the boundary between data and padding is messy 
+        * if R ≠ 0 then there may be some paddedExoFromXXX (unless Q ≥ 8)
+- Q = 0 ?
+        * if Q = 0 then R ≠ 0 and we will jump straight into the boundary
+          case separating padding from nonpadding;
+        * if Q ≠ 0 there will be a full limb transfer initially
+                * if r ≠ 0 the do Q many [2 => 1 Exo from Ram]
+                * if r ≠ 0 the do Q many [Ram to Exo Transplant]
+- if R ≠ 0:
+  - r + (R - 1) < 16 ?
+        * determine whether the bounardy term between data and padding
+          can be done with
+            * false (0) case: paddedExoFromTwo
+            * true  (1) case: paddedExoFromOne
+- Anser the question whether
+  - ECRECOVER and ECADD:
+    - Q = 0:
+      - r + (cds - 1) > 15:
+        - no:  paddedExoFromOne
+        - yes: paddedExoFromTwo
+      - 0 < Q < Q_0
+    - Q ≥ Q_0:
+      - Q_0 times the same instruction
+        * if R = 0: [Ram to Exo limb transplant]
+        * if R ≠ 0: [2 => 1 Ram to Exo]
+
+Full padding:
+  * sissi [Q < 7] ∨ ([Q = 7] ∧ [R = 0])
+  * sissi ([Q ≤ 7] ∧ [R = 0]) ∨ ([Q ≤ 6] ∧ [R ≠ 0])
+\end{verbatim}
+\end{document}

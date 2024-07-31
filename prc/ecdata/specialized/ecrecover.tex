@@ -1,0 +1,163 @@
+\[
+    \boxed{\text{All constraints in this subsection assume }
+        \left\{ \begin{array}{lcl}
+            \isEcrecoverData_{i} & =    & 1               \\
+            \ecdataId_{i}        & \neq & \ecdataId_{i-1} \\
+        \end{array} \right.
+    }
+\]
+
+We introduce the following (local) shorthands:
+\[
+    \left\{ \begin{array}{lclr}
+        \locHHi & \define & \ecdataLimb_{i}     \\
+        \locHLo & \define & \ecdataLimb_{i + 1} \\
+        \locVHi & \define & \ecdataLimb_{i + 2} \\
+        \locVLo & \define & \ecdataLimb_{i + 3} \\
+        \locRHi & \define & \ecdataLimb_{i + 4} \\
+        \locRLo & \define & \ecdataLimb_{i + 5} \\
+        \locSHi & \define & \ecdataLimb_{i + 6} \\
+        \locSLo & \define & \ecdataLimb_{i + 7} \\
+    \end{array} \right.
+\]
+
+We set the following constraints:
+
+\begin{description}
+    \item[\underline{Row $n^°(i)$:}]
+          we impose
+          \[
+              %   \callToLt
+              %   {i}
+              %   {\locRHi}{\locRLo}
+              %   {$\secpNHi$}{$\secpNLo$}
+              \wcpCallToLt {
+                  anchorRow = i             ,
+                  relOffset = 0             ,
+                  argOneHi  = \locRHi       ,
+                  argOneLo  = \locRLo       ,
+                  argTwoHi  = \secpNHi      ,
+                  argTwoLo  = \secpNLo      ,
+              }
+          \]
+          as well as define the shorthand
+          \[
+              \locRIsInRange \define \wcpRes_{i}
+          \]
+    \item[\underline{Row $n^°(i + 1)$:}]
+          we impose
+          \[
+              %   \callToLt
+              %   {i + 1}
+              %   {0}{0}
+              %   {\locRHi}{\locRLo}
+              \wcpCallToLt {
+                  anchorRow = i             ,
+                  relOffset = 1             ,
+                  argOneHi  = 0             ,
+                  argOneLo  = 0             ,
+                  argTwoHi  = \locRHi       ,
+                  argTwoLo  = \locRLo       ,
+              }
+          \]
+          as well as define the shorthand
+          \[
+              \locRIsPositive \define \wcpRes_{i + 1}
+          \]
+    \item[\underline{Row $n^°(i + 2)$:}]
+          we impose
+          \[
+              %   \callToLt
+              %   {i + 2}
+              %   {\locSHi}{\locSHi}
+              %   {$\secpNHi$}{$\secpNLo$}
+              \wcpCallToLt {
+                  anchorRow = i             ,
+                  relOffset = 2             ,
+                  argOneHi  = \locSHi       ,
+                  argOneLo  = \locSHi       ,
+                  argTwoHi  = \secpNHi      ,
+                  argTwoLo  = \secpNLo      ,
+              }
+          \]
+          as well as define the shorthand
+          \[
+              \locSIsInRange  \define \wcpRes_{i + 2}
+          \]
+    \item[\underline{Row $n^°(i + 3)$:}]
+          we impose
+          \[
+              %   \callToLt
+              %   {i + 3}
+              %   {0}{0}
+              %   {\locSHi}{\locSLo}
+              \wcpCallToLt {
+                  anchorRow = i             ,
+                  relOffset = 3             ,
+                  argOneHi  = 0             ,
+                  argOneLo  = 0             ,
+                  argTwoHi  = \locSHi       ,
+                  argTwoLo  = \locSLo       ,
+              }
+          \]
+          as well as define the shorthand
+          \[
+              \locSIsPositive \define \wcpRes_{i + 3}
+          \]
+    \item[\underline{Row $n^°(i + 4)$:}]
+          we impose
+          \[
+              %   \callToEq
+              %   {i + 4}
+              %   {\locVHi}{\locVLo}
+              %   {0}{27}
+              \wcpCallToEq {
+                  anchorRow = i             ,
+                  relOffset = 4             ,
+                  argOneHi  = \locVHi       ,
+                  argOneLo  = \locVLo       ,
+                  argTwoHi  = 0             ,
+                  argTwoLo  = 27            ,
+              }
+          \]
+          as well as define the shorthand
+          \[
+              \locVIsTwentyseven \define \wcpRes_{i + 4}
+          \]
+    \item[\underline{Row $n^°(i + 5)$:}]
+          we impose
+          \[
+              %   \callToEq
+              %   {i + 5}
+              %   {\locVHi}{\locVLo}
+              %   {0}{28}
+              \wcpCallToEq {
+                  anchorRow = i             ,
+                  relOffset = 5             ,
+                  argOneHi  = \locVHi       ,
+                  argOneLo  = \locVLo       ,
+                  argTwoHi  = 0             ,
+                  argTwoLo  = 28            ,
+              }
+          \]
+          as well as define the shorthand
+          \[
+              \locVIsTwentyeight \define \wcpRes_{i + 5}
+          \]
+    \item[\underline{Justifying the \ecdataSuccessBit{}:}]
+          we define the following shorthand
+          \[
+              \locInternalChecksPassed \define \hurdle_{i+\indexMaxEcrecoverData} \\
+          \]
+          and impose the following constraints
+          \[
+              \left\{ \begin{array}{lcl}
+                  \hurdle_{i}                  & = & \locRIsInRange \cdot \locRIsPositive                                \\
+                  \hurdle_{i + 1}              & = & \locSIsInRange  \cdot \locSIsPositive                               \\
+                  \hurdle_{i + 2}              & = & \hurdle_{i} \cdot \hurdle_{i + 1}                                   \\
+                  \locInternalChecksPassed     & = & \hurdle_{i + 2} \cdot (\locVIsTwentyseven  +  \locVIsTwentyeight)   \\
+                  \If \locInternalChecksPassed & = & 0 ~ \Then \ecdataSuccessBit _{i} = 0                                \\
+                  \If \locInternalChecksPassed & = & 1 ~ \Then \ecdataSuccessBit _{i} \equiv \justifiedByExternalCircuit \\
+              \end{array} \right.
+          \]
+\end{description}

@@ -1,0 +1,76 @@
+\begin{center}
+\boxed{%
+\text{The constraints presented only make sense given that }
+\peekStorage_{i} = 1.}
+\end{center}
+
+The present section (partially) constrains the following columns:
+$\stoOrigValueIsZero$,
+$\stoCurrValueIsZero$, 
+$\stoCurrValueIsOrig$, 
+$\stoNextValueIsCurr$,
+$\stoNextValueIsZero$. As already mentioned, their purpose is to serve in the gas cost computation of \inst{SSTORE} instructions.
+\begin{enumerate}
+	\item 
+	$\stoOrigValueIsZero$,
+	$\stoCurrValueIsOrig$,
+	$\stoCurrValueIsZero$,
+	$\stoNextValueIsCurr$,
+	$\stoNextValueIsZero$,
+	$\stoNextValueIsOrig$
+	are binary columns;
+	\item we constrain $\stoOrigValueIsZero$:
+	\begin{enumerate}
+		\item \If $\stoOrigValueHi_{i} \neq 0$ \Then $\stoOrigValueIsZero_{i} = 0$
+		\item \If $\stoOrigValueHi_{i} = 0$ \Then
+		\begin{enumerate}
+			\item \If $\stoOrigValueLo_{i} \neq	0$ \Then $\stoOrigValueIsZero_{i} = 0$
+			\item \If $\stoOrigValueLo_{i}	=	0$ \Then $\stoOrigValueIsZero_{i} = 1$
+		\end{enumerate}
+	\end{enumerate}
+	\item we constrain $\stoCurrValueIsZero$:
+	\begin{enumerate}
+		\item \If $\stoCurrValueHi_{i} \neq 0$ \Then $\stoCurrValueIsZero_{i} = 0$
+		\item \If $\stoCurrValueHi_{i} = 0$ \Then
+		\begin{enumerate}
+			\item \If $\stoCurrValueLo_{i} \neq	0$ \Then $\stoCurrValueIsZero_{i} = 0$
+			\item \If $\stoCurrValueLo_{i}	=	0$ \Then $\stoCurrValueIsZero_{i} = 1$
+		\end{enumerate}
+	\end{enumerate}
+	\item we constrain $\stoNextValueIsZero$:
+	\begin{enumerate}
+		\item \If $\stoNextValueHi_{i} \neq 0$ \Then $\stoNextValueIsZero_{i} = 0$
+		\item \If $\stoNextValueHi_{i} = 0$ \Then
+		\begin{enumerate}
+			\item \If $\stoNextValueLo_{i} \neq	0$ \Then $\stoNextValueIsZero_{i} = 0$
+			\item \If $\stoNextValueLo_{i}	=	0$ \Then $\stoNextValueIsZero_{i} = 1$
+		\end{enumerate}
+	\end{enumerate}
+	\item we constrain $\stoCurrValueIsOrig$:
+	\begin{enumerate}
+		\item \If $\stoCurrValueHi_{i} \neq \stoOrigValueHi_{i}$ \Then $\stoCurrValueIsOrig_{i} = 0$
+		\item \If $\stoCurrValueHi_{i} 	= \stoOrigValueHi_{i}$ \Then
+		\begin{enumerate}
+			\item \If $\stoCurrValueLo_{i} \neq	\stoOrigValueLo_{i}$ \Then $\stoCurrValueIsOrig_{i} = 0$
+			\item \If $\stoCurrValueLo_{i}	=	\stoOrigValueLo_{i}$ \Then $\stoCurrValueIsOrig_{i} = 1$
+		\end{enumerate}
+	\end{enumerate}
+	\item we constrain $\stoNextValueIsCurr$:
+	\begin{enumerate}
+		\item \If $\stoCurrValueHi_{i} \neq \stoNextValueHi_{i}$ \Then $\stoNextValueIsCurr_{i} = 0$
+		\item \If $\stoCurrValueHi_{i} 	= \stoNextValueHi_{i}$ \Then
+		\begin{enumerate}
+			\item \If $\stoCurrValueLo_{i} \neq	\stoNextValueLo_{i}$ \Then $\stoNextValueIsCurr_{i} = 0$
+			\item \If $\stoCurrValueLo_{i}	=	\stoNextValueLo_{i}$ \Then $\stoNextValueIsCurr_{i} = 1$
+		\end{enumerate}
+	\end{enumerate}
+	\item we constrain $\stoNextValueIsOrig$:
+	\begin{enumerate}
+		\item \If $\stoNextValueHi_{i} \neq	\stoOrigValueHi_{i}$ \Then $\stoNextValueIsOrig_{i} = 0$
+		\item \If $\stoNextValueHi_{i} =		\stoOrigValueHi_{i}$ \Then
+		\begin{enumerate}
+			\item \If $\stoNextValueLo_{i} \neq	\stoOrigValueLo_{i}$ \Then $\stoNextValueIsOrig_{i} = 0$
+			\item \If $\stoNextValueLo_{i}	=	\stoOrigValueLo_{i}$ \Then $\stoNextValueIsOrig_{i} = 1$
+		\end{enumerate}
+	\end{enumerate}
+\end{enumerate}

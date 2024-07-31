@@ -1,0 +1,30 @@
+We impose the following constraints:
+\begin{enumerate}
+	\item $\addStamp_{0} = 0$
+	\item \If $\addStamp_{i} = 0$ \Then
+		\[
+			\left\{ \begin{array}{lclr}
+				\INST_{i}  & = & 0 \\
+				\maxCt_{i} & = & 0 & (\trash) \\
+				\ct_{i}    & = & 0 & (\trash) \\
+			\end{array} \right.
+		\]
+	\item $\addStamp_{i + 1} \in \{ \addStamp_{i}, 1 + \addStamp_{i} \}$
+	\item \If $\addStamp_{i + 1} \neq \addStamp_{i}$ \Then $\ct_{i + 1} = 0$
+	\item \If $\addStamp_{i} \neq 0$ \Then
+		\begin{enumerate}
+			\item $\INST_{i} \in \{ \inst{ADD}, \inst{SUB} \}$
+			\item \If $\ct_{i} \neq \maxCt_{i}$ \Then $\ct_{i + 1} = 1 + \ct_{i}$
+			\item \If $\ct_{i} =    \maxCt_{i}$ \Then $\addStamp_{i + 1} = 1 + \addStamp_{i}$
+			\item $\big( \ct_{i} - \llarge \big) \cdot \maxCt_{i} \neq 0$
+		\end{enumerate}
+	\item $\ct_{N} = \maxCt_{N}$
+\end{enumerate}
+\saNote{} The above enforces that both
+(\emph{a}) on all rows $0 \leq \ct_i \leq \maxCt_i < \llarge$ and
+(\emph{b}) on non-padding rows $\maxCt_i \not\equiv 0$.
+Recall that a row with row index $i$ is deemed
+a \textbf{padding-row} if $\wcpStamp_{i} = 0$ and
+a \textbf{non-padding-row} if $\wcpStamp_{i} \neq 0$.
+The latter constraint is there to prevent one instruction's ``overflow'' bits to pollute the next instruction.
+This could happen whenever the next instruction is e.g. the addition of two bytes.

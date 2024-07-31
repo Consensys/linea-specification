@@ -1,0 +1,38 @@
+\[
+	\hspace*{-1.5cm}
+	\begin{array}{|l||c||c|c|c|c|c||c|c|} \hline
+		\INST                 & \tli  & \stackDecCopyFlag & \decFlag{1} & \decFlag{2} & \decFlag{3} & \decFlag{4} & \mxpFlag \\ \hline\hline
+		\inst{CALLDATACOPY}   & \zero & \oneCell          & \oneCell    & \zero       & \zero       & \zero       & \oneCell \\ \hline
+		\inst{RETURNDATACOPY} & \zero & \oneCell          & \zero       & \oneCell    & \zero       & \zero       & \oneCell \\ \hline
+		\inst{CODECOPY}       & \zero & \oneCell          & \zero       & \zero       & \oneCell    & \zero       & \oneCell \\ \hline
+		\inst{EXTCODECOPY}    & \zero & \oneCell          & \zero       & \zero       & \zero       & \oneCell    & \oneCell \\ \hline
+	\end{array}
+\]
+
+The family of \inst{COPY}-type instructions presents a certain amount of diversity. What follows are some of the peculiarities of the individual instructions.
+\begin{description}
+	\item[\underline{\inst{CALLDATACOPY}:}]
+		is rather straightforward;
+		in all cases the data is located in a \textsc{ram} segment, namely the $\cnCallDataContextNumber$;
+	\item[\underline{\inst{RETURNDATACOPY}:}]
+		is unique among all instructions in that it can raise the \rdcxSH{};
+		this exception is triggered \emph{iff}
+		\[ \col{source\_offset} + \col{size} \geq \col{return\_data\_size} \]
+		(with \col{source\_offset} being the offset with return data from where to start reading.) 
+		The first two parameters are apparent on the stack.
+		The return data size (along with the return data offset) is available in the current execution context.
+	\item[\underline{\inst{CODECOPY}:}]
+		requires copying bytes from the currently executing bytecode;
+		this bytecode fragment is (uniquely) identifiable by means of the currently valid \cfi{};
+		if the \mmuMod{} is to be triggered we also require the associated \col{code\_size}, for which we require peeking into the underlying account.
+	\item[\underline{\inst{EXTCODECOPY}:}]
+		requires trimming the (target) address argument from the stack;
+		may require loading the target bytecode into the \romMod{} module and requesting the associated \accCfi{};
+		its pricing schedule is complicated by the fact that the target account's warmth has to be taken into account and switched if the instruction raises no exception; 
+		its overall handling is further complicated by the fact that this ``switching on the warmth'' may have to be undone at a later point if the current execution context will be reverted.
+\end{description}
+\saNote{} The \rdcxSH{} is triggered \textbf{even if} the \col{size} parameter is zero. See chapter~(\ref{chap: oob}) for more details.
+
+\hypertarget{note: EXT instruction precautions}{\saNote{}
+One has to be cautious of the fact that \inst{EXTCODECOPY} behaves differently depending on whether or not the (trimmed) address whose code is to be copied is currently undergoing deployment or not.
+If it is then, from the point of view of all ``\inst{EXT}'' instructions (i.e. \inst{EXTCODESIZE}, \inst{EXTCODECOPY} and \inst{EXTCODEHASH}) the account is understood to have empty code.}

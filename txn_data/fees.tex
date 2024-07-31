@@ -1,0 +1,27 @@
+The present section constrains various \texttt{Wei / gas} rates.
+\begin{enumerate}
+	\item \If $\txIsTypeTwo_{i} = 0$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\txGasPrice  _{i} & \!\!\! = \!\!\! & \txMaxFee_{i} \\
+				\txPriorityFeePerGas    _{i} & \!\!\! = \!\!\! & \txMaxFee_{i} \\
+			\end{array} \right.
+		\]
+	\item \If $\txIsTypeTwo_{i} = 1$ \Then
+		\begin{enumerate}
+			\item \If $\txFullTip_{i} = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\txGasPrice  _{i} & \!\!\! = \!\!\! & \txBasefee_{i} + \txMaxTip_{i} \\
+						\txPriorityFeePerGas    _{i} & \!\!\! = \!\!\! & \txMaxTip_{i}                  \\
+					\end{array} \right.
+				\]
+			\item \If $\txFullTip_{i} = 0$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\txGasPrice  _{i} & \!\!\! = \!\!\! & \txMaxFee_{i}                  \\
+						\txPriorityFeePerGas    _{i} & \!\!\! = \!\!\! & \txMaxFee_{i} - \txBasefee_{i} \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+\end{enumerate}

@@ -1,0 +1,77 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below are written under the assumption that } 
+		\left\{ \begin{array}{lcl}
+			\peekScenario      _{i + \callFirstScenarioRowOffset}    & = & 1 \\
+			\scenCallNoPrc     _{i + \callFirstScenarioRowOffset}    & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+In other words we consider all \inst{CALL}-type instructions that are either
+(\emph{a}) exceptional,
+(\emph{b}) unexceptional and aborted,
+(\emph{c}) unexceptional, unaborted targeting an externally owned account or a smart contract.
+The only case we \textbf{don't} deal with here is that of
+(\emph{d}) unexceptional, unaborted \inst{CALL}-type instructions targeting a precompile.
+This task will be taken up in \emph{in part} in
+section~(\ref{hub: instruction handling: call: peeking flags and nRows for precompiles first half}).
+\begin{description}
+	\item[\underline{Setting \nonStackRows{} for non precompiles:}]
+		we can set \nonStackRows{} once and for all (as long as we are not entering a precompile, that is):
+		\[
+			\nonStackRows_{i - \callFirstStackRowOffset}
+			=
+			\left[ \begin{array}{lrcl}
+				+ & (\callStaticxUpdateParentContextRowOffset                  + 1) & \!\!\! \cdot \!\!\! & \locStaticx                                                      \\
+				+ & (\callMxpxUpdateParentContextRowOffset                     + 1) & \!\!\! \cdot \!\!\! & \locMxpx                                                         \\
+				+ & (\callOogxUpdateParentContextRowOffset                     + 1) & \!\!\! \cdot \!\!\! & \locOogx                                                         \\
+				+ & (\callAbortWillRevertUpdateCurrentContextRowOffset         + 1) & \!\!\! \cdot \!\!\! & \scenCallAbortWillRevert      _{i + \callFirstScenarioRowOffset} \\
+				+ & (\callAbortWontRevertUpdateCurrentContextRowOffset         + 1) & \!\!\! \cdot \!\!\! & \scenCallAbortWontRevert      _{i + \callFirstScenarioRowOffset} \\
+				+ & (\callEoaWillRevertCallerContextRowOffset                  + 1) & \!\!\! \cdot \!\!\! & \scenCallEoaSuccessWillRevert _{i + \callFirstScenarioRowOffset} \\
+				+ & (\callEoaWontRevertCallerContextRowOffset                  + 1) & \!\!\! \cdot \!\!\! & \scenCallEoaSuccessWontRevert _{i + \callFirstScenarioRowOffset} \\
+				+ & (\callSmcFailureWillRevertInitializeCalleeContextRowOffset + 1) & \!\!\! \cdot \!\!\! & \scenCallSmcFailureWillRevert _{i + \callFirstScenarioRowOffset} \\
+				+ & (\callSmcFailureWontRevertInitializeCalleeContextRowOffset + 1) & \!\!\! \cdot \!\!\! & \scenCallSmcSuccessWillRevert _{i + \callFirstScenarioRowOffset} \\
+				+ & (\callSmcSuccessWillRevertInitializeCalleeContextRowOffset + 1) & \!\!\! \cdot \!\!\! & \scenCallSmcFailureWontRevert _{i + \callFirstScenarioRowOffset} \\
+				+ & (\callSmcSuccessWontRevertInitializeCalleeContextRowOffset + 1) & \!\!\! \cdot \!\!\! & \scenCallSmcSuccessWontRevert _{i + \callFirstScenarioRowOffset} \\
+			\end{array} \right]
+		\]
+	\item[\underline{Setting the peeking flags:}]
+		we set the peeking flags once and for all (as long as we are not entering a precompile, that is):
+		\[
+			\hspace*{-3.8cm}
+			\left[ \begin{array}{lrcl}
+				+ \!\!\! & \peekingSumStaticx              & \!\!\! \cdot \!\!\! & \locStaticx                                                      \\
+				+ \!\!\! & \peekingSumMxpx                 & \!\!\! \cdot \!\!\! & \locMxpx                                                         \\
+				+ \!\!\! & \peekingSumOogx                 & \!\!\! \cdot \!\!\! & \locOogx                                                         \\
+				+ \!\!\! & \peekingSumAbortWillRevert      & \!\!\! \cdot \!\!\! & \scenCallAbortWillRevert      _{i + \callFirstScenarioRowOffset} \\
+				+ \!\!\! & \peekingSumAbortWontRevert      & \!\!\! \cdot \!\!\! & \scenCallAbortWontRevert      _{i + \callFirstScenarioRowOffset} \\
+				+ \!\!\! & \peekingSumEoaWillRevert        & \!\!\! \cdot \!\!\! & \scenCallEoaSuccessWillRevert _{i + \callFirstScenarioRowOffset} \\
+				+ \!\!\! & \peekingSumEoaWontRevert        & \!\!\! \cdot \!\!\! & \scenCallEoaSuccessWontRevert _{i + \callFirstScenarioRowOffset} \\
+				+ \!\!\! & \peekingSumSmcFailureWillRevert & \!\!\! \cdot \!\!\! & \scenCallSmcFailureWillRevert _{i + \callFirstScenarioRowOffset} \\
+				+ \!\!\! & \peekingSumSmcFailureWontRevert & \!\!\! \cdot \!\!\! & \scenCallSmcSuccessWillRevert _{i + \callFirstScenarioRowOffset} \\
+				+ \!\!\! & \peekingSumSmcSuccessWillRevert & \!\!\! \cdot \!\!\! & \scenCallSmcFailureWontRevert _{i + \callFirstScenarioRowOffset} \\
+				+ \!\!\! & \peekingSumSmcSuccessWontRevert & \!\!\! \cdot \!\!\! & \scenCallSmcSuccessWontRevert _{i + \callFirstScenarioRowOffset} \\
+			\end{array} \right]
+			=
+			\nonStackRows_{i - \callFirstStackRowOffset}
+		\]
+\end{description}
+Below are the concrete values of \nonStackRows{} depending on the \inst{CREATE}-type instruction scenario: 
+\[
+	\begin{array}{|l|l|c|} \hline
+		\multicolumn{2}{|l|}{\textsc{Scenario}}                        & \nonStackRows{} \\ \hline \hline
+		\scenCallException{} & \suxSH{}     & 1                                                               \\ \hline
+		\scenCallException{} & \staticxSH{} & (\callStaticxUpdateParentContextRowOffset                        + 1) \\ \hline
+		\scenCallException{} & \mxpxSH{}    & (\callMxpxUpdateParentContextRowOffset                           + 1) \\ \hline
+		\scenCallException{} & \oogxSH{}    & (\callOogxUpdateParentContextRowOffset                           + 1) \\ \hline \hline
+		\multicolumn{2}{|l|}{\scenCallAbortWillRevert}      & (\callAbortWillRevertUpdateCurrentContextRowOffset         + 1) \\ \hline \hline
+		\multicolumn{2}{|l|}{\scenCallAbortWontRevert}      & (\callAbortWontRevertUpdateCurrentContextRowOffset         + 1) \\ \hline \hline
+		\multicolumn{2}{|l|}{\scenCallEoaSuccessWillRevert} & (\callEoaWillRevertCallerContextRowOffset                  + 1) \\ \hline
+		\multicolumn{2}{|l|}{\scenCallEoaSuccessWontRevert} & (\callEoaWontRevertCallerContextRowOffset                  + 1) \\ \hline \hline
+		\multicolumn{2}{|l|}{\scenCallSmcFailureWillRevert} & (\callSmcFailureWillRevertInitializeCalleeContextRowOffset + 1) \\ \hline
+		\multicolumn{2}{|l|}{\scenCallSmcFailureWontRevert} & (\callSmcFailureWontRevertInitializeCalleeContextRowOffset + 1) \\ \hline
+		\multicolumn{2}{|l|}{\scenCallSmcSuccessWillRevert} & (\callSmcSuccessWillRevertInitializeCalleeContextRowOffset + 1) \\ \hline
+		\multicolumn{2}{|l|}{\scenCallSmcSuccessWontRevert} & (\callSmcSuccessWontRevertInitializeCalleeContextRowOffset + 1) \\ \hline
+	\end{array}
+\]
+\saNote{} The ubiquitous ``$+1$'' accounts for the fact that the \nonStackRows{} count must include the scenario row with index $i + \callFirstScenarioRowOffset$.

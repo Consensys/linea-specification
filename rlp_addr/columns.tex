@@ -1,0 +1,73 @@
+The RLP module makes use of the following columns:
+\begin{enumerate}
+	\item $\rlpAddrStamp$: uniquely identifies the current encoding operation and is incremented after each one;
+	\item $\rlpAddrInst$:
+		\godGiven{}
+		\ccc{}; defines which recipe to apply;
+	\item $\recipe{1}$ and $\recipe{2}$
+		\ccbc{}'s; light up for the respective recipes;
+	\item \ct: counter column; 
+%	\item \done: a bit column which lights up at the end of every \ct-cycle;
+\end{enumerate}
+The interpretation of the \recipe{k} columns is that
+$\recipe{1} \equiv 1$ for deployment transactions and deployments triggered by the \inst{CREATE} opcode, while
+$\recipe{2} \equiv 1$ for deployments triggered by the \inst{CREATE2} opcode.
+The counter cycle length depends on which recipe is being executed.
+
+The following colums are useful when $\recipe{1} \equiv 1$:
+\begin{enumerate}[resume]
+	\item \genByte{} and \genByteAcc:
+		bytes column and associated accumulator; together they provide the byte decomposition of the nonce;
+	\item \accsize:
+		computes the size in bytes of the nonce;
+	\item $\col{POWER}$:
+		``powers of $256$ column'';
+		used to perform appropriate byte shifts when constituting the desired byte string;
+	\item $\genBit$ and $\genBitAcc$:
+		binary column and its associated accumulator; used to provide binary decompositions; 
+	\item $\TINYNONZERONONCE$:
+		\ccbc{}
+		equals $1$ if $0 < \nonce < \rlprefixShortInt$, otherwise it equals $0$; abbreviated to \tinyNonzeroNonce{};
+\end{enumerate}
+The following columns are input columns to the module and arrive to it from either the \txnDataMod{} or from the \hubMod{}:
+\begin{enumerate}[resume]
+	\item $\addr\high$ and $\addr\low$: 
+		\godGiven{}
+		\ccc{} containing the high and low parts of the \creator{} address;
+	\item $\depAddr\high$ and $\depAddr\low$: 
+		\godGiven{}
+		\ccc{} containing the high and low parts of the \createe{} address;
+	\item $\rawAddrHi$:
+		\godGiven{}
+		contains the high part of the \texttt{KECCAK} hash of the $\texttt{bs}$ defined in the intrduction, to be interpreted as the high part of an address after trimming;
+\end{enumerate}
+The nonce is used in the first recipe which applies to deployment transactions and to deployments triggered by the \inst{CREATE} opcode:
+\begin{enumerate}[resume]
+	\item $\nonce$:
+		\godGiven{}
+		the nonce of the \creator's account (an $8$ byte integer);
+\end{enumerate}
+The following columns are used in contract deployments triggered by the \inst{CREATE2} opcode:
+\begin{enumerate}[resume]
+	\item $\col{SALT} \high$ and $\col{SALT} \low$:
+		\godGiven{}
+		the high and low parts of the ``salt'' $\zeta$;
+	\item $\col{KEC} \high$ and $\col{KEC} \low$:
+		\godGiven{}
+		the high and low parts of $\texttt{KEC}(\textbf{i})$ where \textbf{i} is the initialization code used during deployment;
+\end{enumerate}
+The columns below provide the output of the present module
+\begin{enumerate}[resume]
+	\item \limb{}:
+		a column containing the output byte string, split in left-aligned, zero-padded 16-bytes limb, starting from the last line of each encoding operation;
+	\item \lc{}:
+		binary column, is one when the \limb{} is usefull for the extraction to create the byte string to hash;
+		short hand for \col{LIMB\_CONSTRUCTED};
+	\item \limbsize{}:
+		the total number of bytes to read from \limb{};
+	\item \index{}:
+		gives the index of the current limb to reconstruct the data to hash (starts at 0);
+	\item \selectorKeccakRes{}:
+		bit column, lights up exactly once for each operation;
+\end{enumerate}
+

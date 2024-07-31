@@ -1,0 +1,61 @@
+\begin{center}
+	\boxed{%
+		\text{The pre-processing presented below assumes that }
+		\left\{ \begin{array}{lcl}
+			\isMacro                                       _{i}      & = & 1 \\
+			\mmuInstFlagAnyToRamWithPaddingPurePadding     _{i}      & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+This section deals with the pre-processing of the \mmuInstAnyToRamWithPadding{} in the 
+``pure padding'' subcase.
+We outline the preprocessing rows
+\begin{description}
+	\item[Total number of right padding operations:]
+		\[
+			\left\{ \begin{array}{lclr}
+				\ppTotLZ    _{i} & = & 0                           \\
+				\ppTotNT    _{i} & = & 0                           \\
+				\ppTotRZ    _{i} & = & \locMaxTlo - \locMinTlo + 1 \\
+			\end{array} \right.
+		\]
+	\def\rowNum{3} \item[Processing row $n^\circ(i + \rowNum)$:]
+		we impose
+		\[
+			\callToEq
+			{i}{\rowNum}
+			{0}{\ppTotRZ_{i}}
+			{1}
+		\]
+		we introduce the following shorthand
+		\[
+			\locTotrzIsOne \define \ppWcpRes_{i + \rowNum}
+		\]
+	\def\rowNum{4} \item[Processing row $n^\circ(i + \rowNum)$:]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\callToIszero
+				{i}{\rowNum}
+				{0}{\locMinTbo}
+				\vspace{2mm} \\
+				\callToEuc
+				{i}{\rowNum}
+				{1 + \locMaxTbo}
+				{\llarge}
+				\\
+			\end{array} \right.
+		\]
+		and we introduce the following shorthands as well as impose constraints:
+		\[
+			\left\{ \begin{array}{lcl}
+				\locFirstPaddingIsFull & \define & \ppWcpRes     _{i + \rowNum}                                    \\
+				\locLastPaddingIsFull  & ~ = ~   & (1 - \locTotrzIsOne) \cdot \ppEucQuot    _{i + \rowNum}                                    \\
+				\locOnlyPaddingIsFull  & \define & \locFirstPaddingIsFull \cdot \locLastPaddingIsFull \vspace{2mm} \\
+				\locFirstPaddingSize   & \define & \llarge - \locMinTbo                                            \\
+				\locLastPaddingSize    & ~ = ~   & (1 - \locTotrzIsOne) \cdot (1 + \locMaxTbo)                                                \\
+				\locOnlyPaddingSize    & \define & \locPaddingSize                                                 \\
+			\end{array} \right.	
+		\]
+		\saNote{} \locLastPaddingIsFull{} and \locLastPaddingSize{} should only contain data when they are needed, i.e. whenever $\ppTotRZ \not \equiv 1$.
+\end{description}

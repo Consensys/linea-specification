@@ -1,0 +1,20 @@
+We provide partial constraints for the $\pc$ and $\pc\new$ colunms.
+These constraints are \emph{partial} in that special care will be taken for \inst{PUSHX}, $\inst{X} = 1, 2, \dots, 32$, and \inst{JUMP(I)} instructions, see
+section~(\ref{hub: instruction handling: pushPop}) and
+section~(\ref{hub: instruction handling: jump}) respectively.
+We also impose consistency conditions on these columns, see
+section~(\ref{hub: consistencies: execution environment: constraints}).
+We impose the general constraints following
+\begin{enumerate}
+	\item $\pc$ and $\pc\new$ are hub-stamp-constant;
+	\item \If $\txExec_{i} = 0$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\pc_{i}     & = & 0 \\
+				\pc\new_{i} & = & 0 \\
+			\end{array} \right.
+		\]
+	\item \If $\peekStack_{i} = 1$ \et $\stackDecPushPopFlag_{i} + \stackDecJumpFlag_{i} = 0$ \Then $\pc\new_{i} = 1 + \pc_{i}$
+	\item \If $\peekStack_{i} = 1$ \et $\stackDecPushPopFlag_{i}                         = 1$ \Then $\pc\new_{i} = \cdots$ see section~(\ref{hub: instruction handling: pushPop})
+	\item \If $\peekStack_{i} = 1$ \et $                           \stackDecJumpFlag_{i} = 1$ \Then $\pc\new_{i} = \cdots$ see section~(\ref{hub: instruction handling: jump})
+\end{enumerate}

@@ -1,0 +1,47 @@
+\def\locUnexceptionalStackRow{\col{unexceptional\_stack\_row}}
+The present section describes the lookup between the \hubMod{} and the \addMod{} module, the \binMod{} module, the \modMod{} module, the \mulMod{} module, the \shfMod{} module and the \wcpMod{} module.
+The structure is the same for all of these, the only difference is the selector.
+\begin{description}
+	\item[Selector column:] we define the following selectors as follows
+		\begin{center}
+			\begin{tabular}{lll}
+				for \textbf{\hubMod{} $\hookrightarrow${} \addMod} & we set & $\col{sel} \define \locUnexceptionalStackRow \cdot \stackDecAddFlag$ \\
+				for \textbf{\hubMod{} $\hookrightarrow${} \binMod} & we set & $\col{sel} \define \locUnexceptionalStackRow \cdot \stackDecBinFlag$ \\
+				for \textbf{\hubMod{} $\hookrightarrow${} \modMod} & we set & $\col{sel} \define \locUnexceptionalStackRow \cdot \stackDecModFlag$ \\
+				for \textbf{\hubMod{} $\hookrightarrow${} \mulMod} & we set & $\col{sel} \define \locUnexceptionalStackRow \cdot \stackDecMulFlag$ \\
+				for \textbf{\hubMod{} $\hookrightarrow${} \shfMod} & we set & $\col{sel} \define \locUnexceptionalStackRow \cdot \stackDecShfFlag$ \\
+				for \textbf{\hubMod{} $\hookrightarrow${} \wcpMod} & we set & $\col{sel} \define \locUnexceptionalStackRow \cdot \stackDecWcpFlag$ \\
+			\end{tabular}
+		\end{center}
+		where $\locUnexceptionalStackRow \define \peekStack \cdot (1 - \xAhoy)$
+	\item[Source columns:] \hubMod{} columns:
+		\begin{multicols}{4}
+			\begin{enumerate}
+				\item $\stackInst$
+				\item[\vspace{\fill}]
+				\item $\stackItemValHi{1}$
+				\item $\stackItemValLo{1}$
+				\item $\stackItemValHi{2}$
+				\item $\stackItemValLo{2}$
+				\item $\stackItemValHi{4}$
+				\item $\stackItemValLo{4}$
+			\end{enumerate}
+		\end{multicols}
+	\item[Target columns:] (relevant module) columns:
+		\begin{multicols}{4}
+			\begin{enumerate}
+				\item $\INST$
+				\item[\vspace{\fill}]
+				\item $\argOneHi$
+				\item $\argOneLo$
+				\item $\argTwoHi$
+				\item $\argTwoLo$
+				\item $\resHi$
+				\item $\resLo$
+			\end{enumerate}
+		\end{multicols}
+\end{description}
+\saNote{}
+The \wcpMod{} doesn't have a ``$\resHi$'' column.
+For that module we omit $\stackItemValHi{4}$ from the source and ``$\resHi$'' from the target.
+Recall from section~(\ref{hub: instruction handling: stateless: wcp high part is zero}) that for \wcpMod{}-instructions we impose the vanishing of the ``result's'' high part.

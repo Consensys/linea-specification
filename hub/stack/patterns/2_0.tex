@@ -1,0 +1,69 @@
+\subsubsection{Constraints}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+We let $\twoZeroSP_{i}$ stand for the following collection of constraints:
+\begin{description}
+	\item[\underline{Stack Item $n^\circ\,1$:}] ---
+	\[
+	\left\{
+		\begin{array}{lcl}
+			\stackItemHeight{1}_{i}	& = & \stackHeight_{i}, \\
+			\stackItemPop{1}_{i}	& = & 1, \\
+			\stackItemStamp{1}_{i}	& = & \hubTau \cdot \hubStamp_{i}
+		\end{array}
+	\right.
+	\]
+	\item[\underline{Stack Item $n^\circ\,2$:}] ---
+	\[
+	\left\{
+		\begin{array}{lcl}
+			\stackItemHeight{2}_{i}	& = & \stackHeight_{i} - 1 \\
+			\stackItemPop{2}_{i}	& = & 1 \\
+			\stackItemStamp{2}_{i}	& = & \hubTau \cdot \hubStamp_{i} + 1
+		\end{array}
+	\right.
+	\]
+	\item[\underline{Stack Item $n^\circ\,3$:}] is empty: $\emptyStackItem{3}_{i}$;
+	\item[\underline{Stack Item $n^\circ\,4$:}] is empty: $\emptyStackItem{4}_{i}$;
+	\item[\underline{Height update:}] $\stackHeight{}\new{}_{i} = \stackHeight{}_{i} - 2$,
+\end{description}
+% For this set of instructions the interpretation of $\decFlag{1}$ is that it equals $1$ for storing instructions and $0$ for loading instructions.
+
+
+
+\subsubsection{Graphical representation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\noindent The following is the associated graphical representation:
+\begin{figure}[h!]
+\[
+	\begin{array}{|l|r|r|c|c|}
+	\cline{2-5}
+	\multicolumn{1}{c|}{} &
+	\multicolumn{1}{c|}{\text{Stack}} &
+	\multicolumn{1}{c|}{\text{Stack}} &
+	\multicolumn{1}{c|}{\text{Stack}} &
+	\multicolumn{1}{c|}{\text{Stack}} \\
+	\multicolumn{1}{c|}{} &
+	\multicolumn{1}{c|}{\text{Item 1}} &
+	\multicolumn{1}{c|}{\text{Item 2}} &
+	\multicolumn{1}{c|}{\text{Item 3}} &
+	\multicolumn{1}{c|}{\text{Item 4}} \\
+	\hline
+	\stackItemHeight{k}_{i} & \col{h} & \col{h} - 1 & \graym{\varnothing} & \graym{\varnothing} \\
+	\hline 
+	\stackItemValHi{k}_{i} / \stackItemValLo{k}_{i} & \col{arg1} & \col{arg2} & \graym{\varnothing} & \graym{\varnothing} \\
+	\hline
+	\stackItemPop{k}_{i} & 1 & 1 & \graym{\varnothing} & \graym{\varnothing} \\
+	\hline
+	\stackItemStamp{k}_{i} & \hubTau \cdot \col{st} & \hubTau \cdot \col{st} + 1 & \graym{\varnothing} & \graym{\varnothing} \\
+	\hline
+	\end{array}
+\]
+\caption{%
+Graphical representation of $\twoZeroSP_{i}$.
+We write $\col{h} := \stackHeight_{i}$ and $\col{st} := \hubStamp_{i}$.}
+\end{figure}

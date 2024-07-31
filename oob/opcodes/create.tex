@@ -1,0 +1,83 @@
+The present section describes the data layout for the \inst{CREATE} case. As such:
+\[
+	\boxed{\text{All constraints in this subsection further assume } \oobInstIsCreate_{i} = 1}
+\]
+We remind the reader that the objective of the \oobMod{} module in this particular case is to perform the following tasks.
+First it detects aborting conditions for \inst{CREATE}-type instructions:
+\green{(\emph{a})} compare \col{value} and \col{balance}, where \col{value} represents the transfer value (if any) of the instruction
+\green{(\emph{b})} compare \col{callstackdepth} and $1024$.
+Next it detects failure conditions for \inst{CREATE}-type instructions:
+\green{(\emph{c})} the createe already has nonzero nonce
+\green{(\emph{d})} the createe has nonempty byte code.
+
+\noindent The interpretation of the \oobDataCol{k}'s is the following:
+\[
+	\left\{ \begin{array}{lclr}
+		\locValueHi            & \define & \oobDataCol  {1}  _{i} \\
+		\locValueLo            & \define & \oobDataCol  {2}  _{i} \\
+		\locBalance            & \define & \oobDataCol  {3}  _{i} \\
+		\locNonce              & \define & \oobDataCol  {4}  _{i} \\
+		\locHasCode            & \define & \oobDataCol  {5}  _{i} \\
+		\locCallStackDepth     & \define & \oobDataCol  {6}  _{i} \\
+		\locAbortingCondition  & \define & \oobDataCol  {7}  _{i} & \prediction \\
+		\locFailureCondition   & \define & \oobDataCol  {8}  _{i} & \prediction \\
+	\end{array} \right.
+\]
+We impose the following constraints:
+\begin{description}
+	\item[\underline{Rows n°$(i)$, n°$(i + 1)$ and n°$(i + 2)$:}] 
+		this row compares the balance to the value to transfer:
+		\[
+			\left\{ \begin{array}{l}
+				\oobCallToLt
+				{i}{0}
+				{0}{\locBalance}
+				{\locValueHi}{\locValueLo}
+				\vspace{2mm} \\
+				\oobCallToLt
+				{i}{1}
+				{0}{\locCallStackDepth}
+				{0}{1024}
+				\vspace{2mm} \\
+				\oobCallToIszero
+				{i}{2}
+				{0}{\locNonce}
+				\\
+			\end{array} \right.
+		\]
+		and we introduce the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locBalanceAbort  & \define & \outgoingResLo          _{i    } \\
+				\locCsdAbort      & \define & 1 - \outgoingResLo      _{i + 1} \\
+				\locNonzeroNonce  & \define & 1 - \outgoingResLo      _{i + 2} \\
+			\end{array} \right.
+		\]
+		Thus by construction
+		$\locBalanceAbort = 1 \iff \locBalance        <    \locValue $,
+		$\locCsdAbort     = 1 \iff \locCallStackDepth \geq \col{1024}$ and
+		$\locNonzeroNonce = 1 \iff \locNonce          \neq 0$.
+	\item[\underline{Justifying \hubMod{} predictions:}] 
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\locAbortingCondition & = &
+				\left[ \begin{array}{crcl}
+					+ & \locBalanceAbort       \\
+					+ & (1 - \locBalanceAbort)  & \cdot & \locCsdAbort \\
+				\end{array} \right] \vspace{2mm} \\
+				\locFailureCondition  & = &
+				(1 - \locAbortingCondition) \cdot
+				\left[ \begin{array}{crcl}
+					+ & \locHasCode       \\
+					+ & (1 - \locHasCode)  & \cdot & \locNonzeroNonce \\
+				\end{array} \right] \\
+			\end{array} \right.	
+		\]
+		\saNote{} In other words
+		$\locAbortingCondition$ tracks the \textbf{aborting conditions} for \inst{CREATE}'s instructions (which are the same as for \inst{CALL}-type instructions) while
+		$\locFailureCondition$  tracks the \textbf{failure conditions} for \inst{CREATE}'s.
+
+		\saNote{} By construction $\locAbortingCondition$ and $\locFailureCondition$ are \textbf{mutually exclusive binary flags}.
+\end{description}
+

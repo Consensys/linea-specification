@@ -1,0 +1,102 @@
+We introduce some specialized constraints for context-rows.
+The first specialized constraint of interest is that which allows us to \textbf{read context data without affecting any change}.
+This constraint applies whenever context data is required (e.g. when acting on a \inst{RETURNDATASIZE}, \inst{RETURNDATACOPY}, \inst{CALLER}, \dots{})
+Recall that all context data is immutable with the exception of ``return data and returner context'' related context data.
+As such the following suffices:
+\[
+	\readContextData {i}{\relof}{\col{context\_number}} 
+	\iff
+	\left\{ \begin{array}{lcl}
+		\cnCn    _{i + \relof} & \!\!\! = \!\!\! & \col{context\_number} \\
+		\cnUpdate_{i + \relof} & \!\!\! = \!\!\! & \rZero              \\
+	\end{array} \right.
+\]
+The next specialized constraint is the opposite of the preceding, it allows us to \textbf{modify return data related fields}:
+\[
+	\left\{ \begin{array}{l}
+		\provideReturnData {
+			anchorRow          = i             ,
+			relOffset          = \relof        ,
+			returnDataReceiver = \col{rcv\_cn} ,
+			returnDataProvider = \col{pvd\_cn} ,
+			returnDataOffset   = \col{rdo}     ,
+			returnDataSize     = \col{rds}     ,
+		}
+		% \provideReturnData
+		% {i}{\relof} 
+		% {\col{rcv\_cn}}         % Return data receiver
+		% {\col{pvd\_cn}}         % Return data provider
+		% {\col{rdo}    }             % Return data offset
+		% {\col{rds}    }             % Return data size 
+		\vspace{4mm} \\
+		\qquad\qquad\qquad \iff
+		\left\{ \begin{array}{lcl}
+			\cnCn        _{i + \relof} & \!\!\! = \!\!\! & \col{rcv\_cn} \\
+			\cnUpdate    _{i + \relof} & \!\!\! = \!\!\! & \one          \\
+			\cnReturner  _{i + \relof} & \!\!\! = \!\!\! & \col{pvd\_cn} \\
+			\cnRdo       _{i + \relof} & \!\!\! = \!\!\! & \col{rdo}     \\
+			\cnRds       _{i + \relof} & \!\!\! = \!\!\! & \col{rds}     \\
+		\end{array} \right.
+	\end{array} \right.
+\]
+The following special cases are of interest:
+\[
+	\left\{ \begin{array}{lcl}
+		\executionProvidesEmptyReturnData {i}{\relof}  \\
+		\qquad\qquad\qquad \iff
+		\provideReturnData {
+			anchorRow          = i             ,
+			relOffset          = \relof        ,
+			returnDataReceiver = \caller_{i}   ,
+			returnDataProvider = \cn_{i}       ,
+			returnDataOffset   = \rZero        ,
+			returnDataSize     = \rZero        ,
+		}
+		% \provideReturnData
+		% {i}{\relof} 
+		% {\caller_{i}}         % Return data receiver
+		% {\cn_{i}    }         % Return data provider
+		% {\rZero     }         % Return data offset
+		% {\rZero     }         % Return data size 
+	\end{array} \right.
+\]
+and
+\[
+	\left\{ \begin{array}{lcl}
+		\nonContextProvidesEmptyReturnData {i}{\relof} \\
+		\qquad\qquad\qquad \iff
+		\provideReturnData {
+			anchorRow          = i                 ,
+			relOffset          = \relof            ,
+			returnDataReceiver = \cn_{i}           ,
+			returnDataProvider = 1 + \hubStamp_{i} ,
+			returnDataOffset   = \rZero            ,
+			returnDataSize     = \rZero            ,
+		}
+		% \provideReturnData
+		% {i}{\relof} 
+		% {\cn_{i}          }         % Return data receiver
+		% {1 + \hubStamp_{i}}         % Return data provider
+		% {\rZero           }         % Return data offset
+		% {\rZero           }         % Return data size 
+		\\
+	\end{array} \right.
+\]
+We provide some details.
+%
+The $\executionProvidesEmptyReturnData {i}{\relof}$ constraint system is useful whenever an execution context halts through either an exception or a halting instruction which returns no return data (i.e. \inst{STOP} and \inst{SELFDESTRUCT}) and its parent resumes execution with the thusly updated return data.
+%
+The $\nonContextProvidesEmptyReturnData {i}{\relof}$ constraint system is useful whenever a \inst{CALL}-type or \inst{CREATE}-type instruction produces no exception in its current execution context but the operation is aborted for other reasons. \saNote{} Had this instruction not been aborted it would have spawned an execution context with $\cn = 1 + \hubStamp$.
+That is, when \inst{CALL}'ing an account and not failing at the (\inst{CALL}-type) instruction level
+(i.e. no \suxSH{}, \oogxSH{}, \staticxSH{})
+but instead encountering an aborting condition
+(\csdAbortSH{},
+\balAbortSH{},
+\precAbortSH{},
+\dots{})
+the present execution context resumes execution with empty return data.
+The same happens
+when \inst{CREATE}'ing an account and not failing at the (\inst{CREATE}-type) instruction level
+(i.e. no \suxSH{}, \oogxSH{}, \staticxSH{})
+but instead encountering an aborting condition
+(\csdAbortSH{}, \balAbortSH{}, \deadAbortSH{}, \dots{})

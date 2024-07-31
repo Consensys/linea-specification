@@ -1,0 +1,152 @@
+% WORD COMPARISON module
+\newcommand{\CT}{\col{COUNTER}}
+\newcommand{\ct}{\col{CT}}
+\newcommand{\MI}{\col{MODULE\_INDEX}} % with values in {0, 1, 2}
+\newcommand{\mi}{\col{MI}} % with values in {0, 1, 2}
+\newcommand{\metn}{\col{NMET}} % number of the instruction of that module
+\newcommand{\romn}{\col{NROM}} % number of the instruction of that module
+\newcommand{\ston}{\col{NSTO}} % number of the instruction of that module
+\newcommand{\WCTS}{\col{WC\_TIME\_STAMP}}
+\newcommand{\wcts}{\col{WCTS}}
+\newcommand{\SWF}{\col{SWITCH\_FLAG}}
+\newcommand{\swf}{\col{SWF}}
+\newcommand{\EQF}{\col{EQ\_FLAG}}
+\newcommand{\eqf}{\col{EQF}}
+% comp
+\newcommand{\CMPH}{\col{COMP}\HIGH}
+\newcommand{\cmph}{\col{CMP}\high}
+\newcommand{\CMPL}{\col{COMP}\LOW}
+\newcommand{\cmpl}{\col{CMP}\low}
+\newcommand{\CMP}{\col{COMP}}
+\newcommand{\cmp}{\col{CMP}}
+% eq
+\newcommand{\EQH}{\col{EQ}\HIGH}
+\newcommand{\EQL}{\col{EQ}\LOW}
+\newcommand{\EQ}{\col{EQ}}
+\newcommand{\eqh}{\col{EQ}\high}
+\newcommand{\eql}{\col{EQ}\low}
+\newcommand{\eq}{\col{EQ}}
+%
+\newcommand{\R}{\col{RES}}
+% inputs
+\newcommand{\IO}{\col{INPUT\_1}}
+\newcommand{\IT}{\col{INPUT\_2}}
+% input 1 high
+\newcommand{\IOH}{\col{INPUT\_1}\HIGH}
+\newcommand{\ioh}{\col{I1}\high}
+\newcommand{\BOH}{\col{BYTE\_1}\HIGH}
+\newcommand{\boh}{\col{B1}\high}
+\newcommand{\POH}{\col{PREFIX\_1}\HIGH}
+\newcommand{\poh}{\col{P1}\high}
+% input 1 low
+\newcommand{\IOL}{\col{INPUT\_1}\LOW}
+\newcommand{\iol}{\col{I1}\low}
+\newcommand{\BOL}{\col{BYTE\_1}\LOW}
+\newcommand{\bol}{\col{B1}\low}
+\newcommand{\POL}{\col{PREFIX\_1}\LOW}
+\newcommand{\pol}{\col{P1}\low}
+% input 2 high
+\newcommand{\ITH}{\col{INPUT\_2}\HIGH}
+\newcommand{\ith}{\col{I2}\high}
+\newcommand{\BTH}{\col{BYTE\_2}\HIGH}
+\newcommand{\bth}{\col{B2}\high}
+\newcommand{\PTH}{\col{PREFIX\_2}\HIGH}
+\newcommand{\pth}{\col{P2}\high}
+% input 2 low
+\newcommand{\ITL}{\col{INPUT\_2}\LOW}
+\newcommand{\itl}{\col{I2}\low}
+\newcommand{\BTL}{\col{BYTE\_2}\LOW}
+\newcommand{\btl}{\col{B2}\low}
+\newcommand{\PTL}{\col{PREFIX\_2}\LOW}
+\newcommand{\ptl}{\col{P2}\low}
+% delta high
+\renewcommand{\DH}{\Delta\col{\_HIGH}}
+\renewcommand{\dh}{\Delta\high}
+\newcommand{\BDH}{\col{BYTES}\_\Delta\HIGH}
+\newcommand{\PDH}{\col{PREFIX}\_\Delta\HIGH}
+\newcommand{\bdh}{\col{B}\Delta\high}
+\newcommand{\pdh}{\col{P}\Delta\high}
+% delta low
+\newcommand{\DL}{\Delta\col{\_LOW}}
+\newcommand{\dl}{\Delta\low}
+\newcommand{\BDL}{\col{BYTES}\_\Delta\LOW}
+\newcommand{\PDL}{\col{PREFIX}\_\Delta\LOW}
+\newcommand{\bdl}{\col{B}\Delta\low}
+\newcommand{\pdl}{\col{P}\Delta\low}
+% MET imported inputs
+\newcommand{\iometh}{\met\_\col{1}\high}
+\newcommand{\iometl}{\met\_\col{1}\low}
+\newcommand{\itmeth}{\met\_\col{2}\high}
+\newcommand{\itmetl}{\met\_\col{2}\low}
+% MET imported inputs
+\newcommand{\romh}{\rom\high}
+\newcommand{\roml}{\rom\low}
+% MET imported inputs
+\newcommand{\addrh}{\col{ADDR}\high}
+\newcommand{\addrl}{\col{ADDR}\low}
+\newcommand{\keyh}{\col{KEY}\high}
+\newcommand{\keyl}{\col{KEY}\low}
+
+\newcommand{\INST}{\col{INST}}
+
+\newcommand{\bit}[1]{[\![#1]\!]}
+\newcommand{\negbit}[1]{\bit{#1}^\vee}
+
+\newcommand{\HIGH}{\col{\_HIGH}}
+\newcommand{\LOW}{\col{\_LOW}}
+\newcommand{\high}{^\col{\,hi}}
+\newcommand{\low}{^\col{\,lo}}
+
+\newcommand{\LT}{\inst{LT}}
+\newcommand{\GT}{\inst{GT}}
+\newcommand{\SLT}{\inst{SLT}}
+\newcommand{\SGT}{\inst{SGT}}
+
+\newcommand{\met}{\col{MET}}
+\newcommand{\rom}{\col{ROM}}
+\newcommand{\sto}{\col{STO}}
+\newcommand{\adr}{\col{Addr}}
+\newcommand{\key}{\col{Key}}
+
+
+\def\leftCol{gray!60}
+\def\rightCol{gray!10}
+
+\newcommand{\shadedRect}[1]{
+	\draw[
+        shading = axis,
+        rectangle,
+        left color=\leftCol,
+        right color=\rightCol,
+        %shading angle=135,
+        %anchor=north,
+        %minimum width=\paperwidth,
+        %minimum height=5.5cm,
+        ] (#1 + #1 + #1 + 0.05,0) rectangle (3 - 0.05 + #1 + #1 + #1,0.5)
+}
+
+\def\CTcycle{
+	\!\!\!\!
+	\begin{array}{|c|c|c|c|c|c|c|}
+    \hline
+    15&14&\cdots&2&1&0\\
+    \hline    
+    \end{array}
+}
+
+\def\CTcycles{
+	\begin{array}{%
+	|c|c|c|c|c|c||%
+	c|c|c|c|c|c||%
+	%c|c|c|c|c|c||%
+	c||%
+	c|c|c|c|c|c|}
+    \hline
+    \redm{15}&14&\cdots&2&1&0&
+    \redm{15}&14&\cdots&2&1&0&
+    %\bm{15}&14&\cdots&2&1&0&
+    \qquad\phantom{\Big|}\cdots\phantom{\Big|}\qquad&
+    \redm{15}&14&\cdots&2&1&0\\
+    \hline    
+    \end{array}
+}

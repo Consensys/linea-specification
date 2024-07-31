@@ -1,0 +1,74 @@
+We now go on to consistency constraints proper.
+\begin{description}
+	\item[Setting the original storage value:]
+		\If $\stoFirst_{i} = 1$ \Then
+		we impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\order{\stoOrigValueHi}_{i} & = & \order{\stoCurrValueHi}_{i} \\
+				\order{\stoOrigValueLo}_{i} & = & \order{\stoCurrValueLo}_{i} \\
+			\end{array} \right.
+		\]
+	\item[Resetting and resetting the original storage value:]
+		\If $\order{\peekStorage}_{i} = 1$ \et $\stoFirst_{i} = 0$ \Then
+		\begin{enumerate}
+			\item \If $\order{\absTxNum}_{i} =    \order{\absTxNum}_{i - 1}$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\order{\stoOrigValueHi}_{i} & = & \order{\stoOrigValueHi}_{i - 1} \\
+						\order{\stoOrigValueLo}_{i} & = & \order{\stoOrigValueLo}_{i - 1} \\
+					\end{array} \right.
+				\]
+			\item \If $\order{\absTxNum}_{i} \neq \order{\absTxNum}_{i - 1}$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\order{\stoOrigValueHi}_{i} & = & \order{\stoCurrValueHi}_{i} \\
+						\order{\stoOrigValueLo}_{i} & = & \order{\stoCurrValueLo}_{i} \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+	\item[Setting and resetting of storage values:]
+		we impose that
+		\begin{enumerate}
+			\item \If $\stoFirst_{i} = 1$ \Then
+				\begin{enumerate}
+					\item \If $\order{\stoDeploymentNumber}_{i} \neq 0$ \Then
+						\[
+							\left\{ \begin{array}{lcl}
+								\order{\stoCurrValueHi}_{i} & = & 0 \\
+								\order{\stoCurrValueLo}_{i} & = & 0 \\
+							\end{array} \right.
+						\]
+				\end{enumerate}
+			\item \If $\order{\peekStorage}_{i} = 1$ \et $\stoFirst_{i} = 0$ \Then
+				\begin{enumerate}
+					\item \If $\order{\stoDeploymentNumber}_{i} \neq \order{\stoDeploymentNumber}_{i - 1}$ \Then
+						\[
+							\left\{ \begin{array}{lcl}
+								\order{\stoCurrValueHi}_{i} & = & 0 \\
+								\order{\stoCurrValueLo}_{i} & = & 0 \\
+							\end{array} \right.
+						\]
+					\item \If $\order{\stoDeploymentNumber}_{i} = \order{\stoDeploymentNumber}_{i - 1}$ \Then
+						\[
+							\left\{ \begin{array}{lcl}
+								\order{\stoCurrValueHi}_{i} & = & \order{\stoNextValueHi}_{i - 1} \\
+								\order{\stoCurrValueLo}_{i} & = & \order{\stoNextValueLo}_{i - 1} \\
+							\end{array} \right.
+						\]
+				\end{enumerate}
+		\end{enumerate}
+	\item[Setting and resetting of storage key warmth:]
+		we impose that
+		\begin{enumerate}
+			\item \If $\stoFirst_{i} = 1$ \Then $\order{\stoWarmth}_{i} = 0$
+			\item \If $\order{\peekStorage}_{i} = 1$ \et $\stoFirst_{i} = 0$ \Then
+				\begin{enumerate}
+					\item \If $\order{\absTxNum}_{i} =    \order{\absTxNum}_{i - 1}$ \Then $ \order{\stoWarmth}_{i} = \order{\stoWarmth\new}_{i - 1} $
+					\item \If $\order{\absTxNum}_{i} \neq \order{\absTxNum}_{i - 1}$ \Then $ \order{\stoWarmth}_{i} = 0 $
+				\end{enumerate}
+		\end{enumerate}
+	\item[Maintaining the final deployment number:]
+		we impose that
+			\item \If $\order{\peekStorage}_{i} = 1$ \et $\stoFirst_{i} = 0$ \Then $ \order{\stoDeploymentNumber^\infty}_{i} = \order{\stoDeploymentNumber^\infty}_{i - 1} $
+\end{description}

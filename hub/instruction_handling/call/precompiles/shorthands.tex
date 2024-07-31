@@ -1,0 +1,31 @@
+The present section introduces some shorthands relevant to the second phase of the arithmetization of \inst{CALL}-type instructions targeting a precompiled contract.
+The justification for these notations is
+section~(\ref{hub: instruction handling: call: specialized: specialized precompile scenario row}) and
+section~(\ref{hub: instruction handling: call: finishing: cases: prc}).
+\[
+	\left\{ \begin{array}{lclr}
+		\locPrcCallerGas & \define & \scenPrcCurrentlyValidCallerGas _{i} \\
+		\locPrcCallGas   & \define & \scenPrcGasAllowance            _{i} \\
+		\locPrcReturnGas & \define & \scenPrcGasOwedToCaller         _{i}  & \prediction \\
+		\locPrcCdo       & \define & \scenPrcCdo                     _{i} \\
+		\locPrcCds       & \define & \scenPrcCds                     _{i} \\
+		\locPrcRao       & \define & \scenPrcRao                     _{i} \\
+		\locPrcRac       & \define & \scenPrcRac                     _{i} \\
+	\end{array} \right.
+\]
+\saNote{}
+We preface some shorthands with the prefix \col{dup\_} to remind the reader that these are values that were \col{duplicated} in the scenario-row $i$ from previous values extracted from the stack (or elsewhere.)
+We preface other shorthands with the prefix \col{prd\_} to let the reader know that these are \col{predicted} values.
+We also remind the reader that \locPrcReturnGas{} is meant to contain
+\[
+	\locPrcReturnGas \equiv
+	\begin{cases}
+		\text{precompile failure:} & 0 \\
+		\text{precompile success:} & \locPrcCallGas - \col{prc\_gas\_cost} \\	
+	\end{cases}
+\]
+The precise meaning of ``precompile failure'' and ``precompile success'' is that of 
+section~(\ref{hub: instruction handling: call: precompiles: failures vs. successes}) and
+section~(\ref{hub: instruction handling: call: precompiles: failure classification}).
+Also computing determining failure conditions for precompiles (which in particular involves, but is generally not limited to, computing \col{prc\_gas\_cost} and comparing it to \locPrcCallGas{}) is complex, as is determining the associated cost.
+Realizing the above requires some preparation. 

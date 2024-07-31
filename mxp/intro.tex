@@ -1,0 +1,23 @@
+The \textbf{memory expansion module} serves several different purposes:
+(\emph{a})
+it tracks and updates, when appropriate, ``the active number of words in memory (counting continuously from position $0$)'' i.e. $\bm{\mu}_\text{i}$ in the Ethereum Yellow Paper \ob{TODO: add reference to the spec})
+\[
+	\memSize\rightsquigarrow\memSize\new
+\]
+(\emph{b})
+it tracks and updates, when appropriate, the associated memory cost i.e. $C_\text{mem}(\bm{\mu}_\text{i})$ in the Ethereum Yellow Paper \ob{TODO: add reference to the spec},
+\[
+	\expCost\rightsquigarrow\expCost\new
+\]
+(\emph{c})
+it justifies the $\mxpX$ ($\mxpx$ for short) i.e. it recognizes grossly out of bounds memory operations 
+(\emph{d})
+it computes, when necessary, the quadratic memory expansion cost 
+(\mxpQuadGas) associated with certain memory expanding instructions as well as any ``linear costs'' that the instruction may incur 
+(\mxpLinGas). 
+
+\saNote{} We remind the reader that what we have dubbed \mxpxSH{} is a \emph{sub-exception} of the \oogxSH{}. It corresponds to a case where the quadratic cost of memory expansion is large enough as to produce an \oogxSH{} regardless of other extra costs that may stack on top of it. See 
+
+\saNote{} These ``linear costs'' are either proportional to the number of bytes in a certain (input) memory range or to the minimum number of \text{evm} words needed to contain a certain (input) memory range. 
+
+The idea behind the binary $\mxpx$ flag is simple: the hub module uses it to recognize scenarios when an out of gas exception is bound to happen; what we call ``\mxpxSH{}'' can be thought of as a refinement/subcase of the \oogxSH{} in the sense that the former is a sufficient condition to trigger the latter.

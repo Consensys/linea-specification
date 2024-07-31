@@ -1,0 +1,180 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NF Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\usepackage{../../../../../pkg/draculatheme}
+
+\begin{document}
+\begin{verbatim}
+
+        ██████\   ██████\  ██\       ██\          ██\
+       ██  __██\ ██  __██\ ██ |      ██ |         ██ |
+       ██ /  \__|██ /  ██ |██ |      ██ |       ██████\   ██\   ██\  ██████\   ██████\
+       ██ |      ████████ |██ |      ██ |██████\\_██  _|  ██ |  ██ |██  __██\ ██  __██\
+       ██ |      ██  __██ |██ |      ██ |\______| ██ |    ██ |  ██ |██ /  ██ |████████ |
+       ██ |  ██\ ██ |  ██ |██ |      ██ |         ██ |██\ ██ |  ██ |██ |  ██ |██   ____|
+       \██████  |██ |  ██ |████████\ ████████\    \████  |\███████ |███████  |\███████\
+        \______/ \__|  \__|\________|\________|    \____/  \____██ |██  ____/  \_______|
+                                                          ██\   ██ |██ |
+                                                          \██████  |██ |
+                                                           \______/ \__|
+
+
+                                                      |   _)                       |
+        |   |  __ \    _ \ \ \  /   __|   _ \  __ \   __|  |   _ \   __ \    _` |  |
+        |   |  |   |   __/  `  <   (      __/  |   |  |    |  (   |  |   |  (   |  |
+       \__,_| _|  _| \___|  _/\_\ \___| \___|  .__/  \__| _| \___/  _|  _| \__,_| _|  )
+                                              _|                                     /
+
+                             |                   |              |
+        |   |  __ \    _` |  __ \    _ \    __|  __|   _ \   _` |
+        |   |  |   |  (   |  |   |  (   |  |     |     __/  (   |
+       \__,_| _|  _| \__,_| _.__/  \___/  _|    \__| \___| \__,_|
+
+
+|-----------+--------+---------------------------------------------------------------------+---------------------------------+-----------------------------------+-----------------------------------------------------+-----------+-----------|
+| Row index | Persp. | Actions                                                             |                                 |                                   | Notes                                               | DOM_STAMP | SUB_STAMP |
+|:---------:+--------+---------------------------------------------------------------------+---------------------------------+-----------------------------------+-----------------------------------------------------+-----------+-----------|
+|   i - 2   | STACK  |                                                                     |                                 |                                   | required:                                           |
+|   i - 1   | STACK  |                                                                     |                                 |                                   | * stack/STATICX ≡ 0                                 |
+|           |        |                                                                     |                                 |                                   | * stack/MXPX    ≡ 0                                 |
+|           |        |                                                                     |                                 |                                   | * stack/OOGX    ≡ 0                                 |
+|           |        |                                                                     |                                 |                                   | .      => XAHOY ≡ 0                                 |
+|-----------+--------+---------------------------------------------------------------------+---------------------------------+-----------------------------------+-----------------------------------------------------|
+|     i     | SCEN   |  CALL/entry ≡ 1     👋                                             |                                 |                                   |                                                     |
+|           |        | ^^^^^^^^^^^^^^^^                                                    |                                 |                                   |                                                     |
+|           |        |                                                                     |                                 |                                   |                                                     |
+|           |        |  CALL/precompile               <==  callee_is_precompile        👋 |                                 |                                   |                                                     |
+|           |        |  CALL/externally_owned_account <==     ¬ callee_is_precompile      |                                 |                                   |                                                     |
+|           |        | .                                     ∧ ¬ callee_has_code        👋 |                                 |                                   |                                                     |
+|           |        |  CALL/smart_contract           <==  callee_has_code             👋 |                                 |                                   |                                                     |
+|           |        |                                                                     |                                 |                                   | Impose that:                                        |
+|           |        |                                                                     |                                 |                                   | ============                                        |
+|           |        |                                                                     |                                 |                                   | .    CALL/EXCEPTION ≡ XAHOY                        |
+|-----------+--------+---------------------------------------------------------------------+---------------------------------+-----------------------------------+-----------------------------------------------------|
+|   i + 1   | CON    | readContextData( current context )                                  |                                 |                                   |                                                     |
+|           |        |                                                                     |                                 |                                   |                                                     |
+|           |        |                                                                     |                                 |                                   | Provides:                                           |
+|           |        |                                                                     |                                 |                                   | =========                                           |
+|           |        |                                                                     |                                 |                                   | .   context/IS_STATIC                               |
+|           |        |                                                                     |                                 |                                   | .   context/CALL_STACK_DEPTH                        |
+|           |        |                                                                     |                                 |                                   | .   context/ACCOUNT_ADDRESS                         |
+|-----------+--------+---------------------------------------------------------------------+---------------------------------+-----------------------------------+-----------------------------------------------------|
+|   i + 2   | MISC   | misc/OOB🚩    ≡ is_CALL                                             |                                 |                                   |                                                     |
+|           |        | misc/OOB_INST ≡ OOB_INST_call     ✅                                |                                 |                                   |                                                     |
+|           |        |                                                                     |                                 |                                   |                                                     |
+|           |        |                                                                     |                                 |                                   | Provides:                                           |
+|           |        |                                                                     |                                 |                                   | =========                                           |
+|           |        |                                                                     |                                 |                                   | * OOB_nonzero_value                                 |
+|           |        |                                                                     |                                 |                                   | * OOB_aborting_condition                            |
+|           |        |                                                                     |                                 |                                   |                                                     |
+|           |        |                                                                     |                                 |                                   | Impose that:                                        |
+|           |        |                                                                     |                                 |                                   | ============                                        |
+|           |        |                                                                     |                                 |                                   |                                                     |
+|           |        |                                                                     |                                 |                                   | .   stack/STATICX ≡    is_CALL                      |
+|           |        |                                                                     |                                 |                                   | .                    ∧ OOB_nonzero_value            |
+|           |        |                                                                     |                                 |                                   | .                    ∧ context/IS_STATIC            |
+|           |        |                                                                     |                                 |                                   | .                 ≡  0     ✅                       |
+|           |        |                                                                     |                                 |                                   |                                                     |
+|           |        |                                                                     |                                 |                                   | .    CALL/ABORT  ≡  OOB_aborting_condition         |
+|           |        |                                                                     |                                 |                                   | .                 ≡  0     ✅                       |
+|           |        |                                                                     |                                 |                                   |                                                     |
+|           |        |                                                                     | misc/MXP🚩    ≡ 1               |                                   |                                                     |
+|           |        |                                                                     | misc/MXP_INST ≡ MXP_INST_TYPE_5 |                                   |                                                     |
+|           |        |                                                                     |                                 |                                   |                                                     |
+|           |        |                                                                     |                                 |                                   | Provides:                                           |
+|           |        |                                                                     |                                 |                                   | =========                                           |
+|           |        |                                                                     |                                 |                                   | * misc/MXP_MXPX <== MXPX_memory_expansion_exception |
+|           |        |                                                                     |                                 |                                   | * misc/MXP_GAS  <== MXPX_memory_expansion_gas       |
+|           |        |                                                                     |                                 |                                   |                                                     |
+|           |        |                                                                     |                                 |                                   | Impose that:                                        |
+|           |        |                                                                     |                                 |                                   | ============                                        |
+|           |        |                                                                     |                                 |                                   | .   stack/MXPX ≡ MXPX_memory_expansion_exception    |
+|           |        |                                                                     |                                 |                                   | .              ≡ 0     ✅                           |
+|           |        |                                                                     |                                 |                                   |                                                     |
+|           |        |                                                                     |                                 | misc/STP🚩    ≡ 1                 |                                                     |
+|           |        |                                                                     |                                 | misc/STP_INST ≡ stack/INSTRUCTION |                                                     |
+|           |        |                                                                     |                                 |                                   |                                                     |
+|           |        |                                                                     |                                 |                                   | Provides:                                           |
+|           |        |                                                                     |                                 |                                   | =========                                           |
+|           |        |                                                                     |                                 |                                   | * misc/STP_UPFRONT_GAS_COST                         |
+|           |        |                                                                     |                                 |                                   | * misc/STP_OOGX                                     |
+|           |        |                                                                     |                                 |                                   | * misc/STP_GAS_POOP                                 |
+|           |        |                                                                     |                                 |                                   | * misc/STP_GAS_STPD                                 |
+|           |        |                                                                     |                                 |                                   |                                                     |
+|           |        |                                                                     |                                 |                                   | Impose that:                                        |
+|           |        |                                                                     |                                 |                                   | ============                                        |
+|           |        |                                                                     |                                 |                                   | .   stack/OOGX ≡ misc/STP_OOGX                      |
+|           |        |                                                                     |                                 |                                   | .              ≡ 0     ✅                           |
+|           |        |                                                                     |                                 |                                   |                                                     |
+|-----------+--------+---------------------------------------------------------------------+---------------------------------+-----------------------------------+-----------------------------------------------------+-----------+-----------|
+|   i + 3   | ACC    | load( context/ACCOUNT_ADDRESS )                                     |                                 |                                   |                                                     | τ ∙ h + 0 | 0         |
+|           |        |                                                                     |                                 |                                   |                                                     |           |           |
+|           |        |                                                                     |                                 |                                   | Provides:                                           |           |           |
+|           |        |                                                                     |                                 |                                   | =========                                           |           |           |
+|           |        |                                                                     |                                 |                                   | * acc/BALANCE                                       |           |           |
+|-----------+--------+---------------------------------------------------------------------+---------------------------------+-----------------------------------+-----------------------------------------------------+-----------+-----------|
+|   i + 4   | ACC    | acc/TRM🚩     ≡ 1                         👋                        |                                 |                                   |                                                     | τ ∙ h + 1 | 0         |
+|           |        | acc/ROM_LEX🚩 ≡  CALL/smart_contract     👋                        |                                 |                                   |                                                     |           |           |
+|           |        | load( trimmed_target_address )            👋                        |                                 |                                   |                                                     |           |           |
+|           |        |                                                                     |                                 |                                   |                                                     |           |           |
+|           |        |                                                                     |                                 |                                   | Provides:                                           |           |           |
+|           |        |                                                                     |                                 |                                   | =========                                           |           |           |
+|           |        |                                                                     |                                 |                                   | * acc/ADDRESS_HI   (<== trimmed high part)          |           |           |
+|           |        |                                                                     |                                 |                                   | * acc/HAS_CODE      <== callee_has_code             |           |           |
+|           |        |                                                                     |                                 |                                   | * acc/EXISTS        <== callee_exists               |           |           |
+|           |        |                                                                     |                                 |                                   | * acc/IS_PRECOMPILE <== callee_is_precompile        |           |           |
+|           |        |                                                                     |                                 |                                   | * If acc/ROM_LEX🚩 ≡ 1: acc/CODE_FRAGMENT_INDEX     |           |           |
+|           |        |                                                                     |                                 |                                   | .                   <== callee_cfi                  |           |           |
+|-----------+--------+---------------------------------------------------------------------+---------------------------------+-----------------------------------+-----------------------------------------------------+-----------+-----------|
+
+
+NOTE. We use the following shorthands
+
+        * h ≡ HUB_STAMP
+
+NOTE. The above depicts the layout of the first 3 NON_STACK_ROWS of ANY unexceptional, unaborted CALL-type instruction.
+The above also depitcts the first set of 2 account-rows (which is present in ALL unexceptional, unaborted CALL-type instruction handlings.)
+
+NOTE. The account-rows that are required to deal with (unexceptional, unaborted) CALL-type instructions are:
+
+    *  CALL/externally_owned_account ≡ 1:
+        - 2 or 4 extra account-rows followed by a context-row
+        - the context-row updates (i.e. resets) the current context's return data
+
+    *  CALL/smart_contract ≡ 1:
+        - 2, 4 or 5 account-rows followed by a context-row
+        - the context row INITIALIZES the execution context where execution of the callee will take place;
+
+    *  CALL/precompile ≡ 1:
+        - 2 or 4 account-rows followed by a scenario-row
+        - the scenario-row remembers which precompile processing is required:
+            ∙  PRC/ECRECOVER
+            ∙  PRC/SHA2-256
+            ∙  PRC/RIPEMD-160
+            ∙  PRC/IDENTITY
+            ∙  PRC/MODEXP
+            ∙  PRC/ECADD
+            ∙  PRC/ECMUL
+            ∙  PRC/ECPAIRING
+            ∙  PRC/BLAKE2f
+        - the scenario-row carries a PREDICTION of which precompile scenario will play out
+            ∙  PRC/FAILURE_KNOWN_TO_HUB
+            ∙  PRC/FAILURE_KNOWN_TO_RAM
+            ∙  PRC/SUCCESS_WILL_REVERT
+            ∙  PRC/SUCCESS_WONT_REVERT
+        - beyond that point the 'second phase of precompile processing' sets in
+
+\end{verbatim}
+\end{document}

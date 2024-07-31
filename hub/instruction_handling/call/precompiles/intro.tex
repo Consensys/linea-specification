@@ -1,0 +1,20 @@
+The present section deals with precompiles from the point of view of the \hubMod{} module.
+For the purposes of the \hubMod{} ``dealing with precompiles'' means dealing with \textbf{pricing}, \textbf{control flow} and triggering certain \textsc{ram} instructions \textbf{extracting input data} and \textbf{writing output data} to the caller's \textsc{ram}.
+Concretely this \emph{may} involve any the following:
+\begin{enumerate}
+	\item extracting pricing parameters from \textsc{ram};
+	\item extracting input data from \textsc{ram} to detect either malformed / wellformed call data;
+	\item extracting input data from \textsc{ram} to provide as input to relevant modules;
+	\item transferring output data (i.e. return data) from the relevant exogenous data module to a special execution context's \textsc{ram};
+	\item copying the relevant section of return data from said special execution context's \textsc{ram} to the current execution context's \textsc{ram};
+\end{enumerate}
+\saNote{} The first point applies only to \inst{MODEXP} and \inst{BLAKE2f} for which one must extract, respectively,
+the relevant \textbf{base byte size}, \textbf{exponent byte size}, \textbf{modulus byte size} and the leading word of the exponent i.e.
+$\locBase$, $\locExponent$, $\locModulus$ and $\locExponentLogEYP$ using notations from the \cite{EYP},
+the \textbf{rounds} parameter $\col{r}$ and the \textbf{final block indicator flag} $\col{f}$.
+
+\saNote{}
+The exogenous data modules in question, i.e. \shakiraMod{}, \ecDataMod{} and \blkMdxMod{}, may perform some preliminary data vetting before serving the requests to the relevant precompile circuits.
+
+\saNote{} Precompile processing \textbf{does not} mean that we provide a constraint system / circuit for these operations.
+This is not the perview of our arithmetization and is the responsability of a different component of the system. 

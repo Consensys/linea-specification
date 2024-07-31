@@ -1,0 +1,24 @@
+The present section describes the lookup between the \hubMod{} and the \romMod{} module. 
+\begin{description}
+	\item[Selector column:] we use the following selector: $\col{sel} \define \peekStack \cdot \stackJumpDestinationVetting$
+		\saNote{} We refer the reader to section~(\ref{hub: generalities: setting the jump destination vetting flag}) for the specification of the $\stackJumpDestinationVetting$ flag.
+	\item[Source columns:] ---
+		\begin{multicols}{3}
+			\begin{enumerate}
+				\item \cfi{}
+				\item $\stackItemValLo{1}$
+				\item $1 - \stackJumpx$
+			\end{enumerate}
+		\end{multicols}
+	\item[Target columns:] ---
+		\begin{multicols}{3}
+			\begin{enumerate}
+				\item \cfi{}
+				\item \pc{}
+				\item \ISVALIDJUMPDESTINATION{}
+			\end{enumerate}
+		\end{multicols}
+\end{description}
+\saNote{}
+For \inst{JUMP}-type instructions the (potential) new jump destination is stored in the first stack item.
+If its high part is nonzero the \oobMod{} throws an exception and the above isn't triggered.

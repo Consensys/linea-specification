@@ -1,0 +1,126 @@
+\begin{center}
+	\boxed{%
+		\text{The pre-processing presented below assumes that }
+		\left\{ \begin{array}{lcl}
+			\isMacro                                      _{i}      & = & 1 \\
+			\mmuInstFlagRightPaddedWordExtraction{}       _{i}      & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+We constrain the number of rows of the pre-processing and micro-instruction-writing phase:
+\begin{enumerate}
+	\item $\ppTotNT_{i}  = 2$
+	\item $\ppTotLZ_{i}  = 0$
+	\item $\ppTotRZ_{i}  = 0$
+\end{enumerate}
+We advance to the actual pre-processing.
+We deal with \mmuInstRightPaddedWordExtraction{}'s in a fixed number of rows.
+\begin{description}
+	\def\rowNum{1} \item[Preprocessing row $\bm{n^\circ \rowNum}$:] 
+		we impose that
+		\[
+			\callToLt
+			{i}{\rowNum}
+			{0}{\macroSrcOffsetLo_{i} + \evmWordSize}
+			{\macroRefSize_{i}}
+		\]
+		we define the following shorthands:
+		\[
+			\left\{ \begin{array}{lcl}
+				\locSecondLimbPadded & \define & 1 - \ppWcpRes    _{i + \rowNum} \\
+				\locExtractionSize         & \define &
+				\begin{cases}
+					\If \locSecondLimbPadded = 1: & \macroRefSize_{i} - \macroSrcOffsetLo_{i} \\
+					\If \locSecondLimbPadded = 0: & \evmWordSize \\
+				\end{cases} \\
+			\end{array} \right.
+		\]
+	\def\rowNum{2} \item[Preprocessing row $\bm{n^\circ \rowNum}$:] 
+		we impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\callToLt
+				{i}{\rowNum}
+				{0}{\locExtractionSize}
+				{\llarge}
+				\vspace{2mm} \\
+				\callToEuc
+				{i}{\rowNum}
+				{\locFirstLimbByteSize}
+				{\llarge}
+				\\
+			\end{array} \right.
+		\]
+		where we define (and have already used) some shorthands as follows:
+		\begin{enumerate}
+			\item $\locFirstLimbPadded \define \ppWcpRes_{i + \rowNum}$
+			\item we define $\locSecondLimbByteSize$ as follows:
+			\begin{enumerate}
+				\item \If $\locSecondLimbPadded = 0$ \Then $\locSecondLimbByteSize \define \llarge$ 
+				\item \If $\locSecondLimbPadded = 1$ \Then 
+				\begin{enumerate}
+					\item \If $\locFirstLimbPadded = 0$ \Then $\locSecondLimbByteSize \define  \locExtractionSize - \llarge$
+					\item \If $\locFirstLimbPadded = 1$ \Then $\locSecondLimbByteSize \define 0$
+				\end{enumerate}
+			\end{enumerate}
+			\item we define $\locFirstLimbByteSize$ as follows:
+			\begin{enumerate}
+				\item \If $\locFirstLimbPadded = 0$ \Then $\locFirstLimbByteSize \define \llarge$
+				\item \If $\locFirstLimbPadded = 1$ \Then $\locFirstLimbByteSize \define \locExtractionSize$
+			\end{enumerate}
+			\item $\locFirstLimbIsFull \define \ppEucQuot_{i + \rowNum}$
+		\end{enumerate}
+\end{description}
+\saNote{} By construction we have $1 \leq \locFirstLimbByteSize \leq \llarge$ whence $\locFirstLimbIsFull \in \{ 0, 1 \}$ and furthermore
+$\locFirstLimbIsFull = 1 \iff \locFirstLimbByteSize = \llarge$
+\begin{description}
+	\def\rowNum{3} \item[Preprocessing row $\bm{n^\circ \rowNum}$:] 
+		we impose that
+		\[
+			\callToEuc
+			{i}{\rowNum}
+			{\macroSrcOffsetLo_{i} + \macroRefOffset{}_{i}}
+			{\llarge}
+		\]
+		we define the following shorthands:
+		\[
+			\left\{ \begin{array}{lcl}
+				\locSlo        & \define & \ppEucQuot   _{i + \rowNum} \\
+				\locSbo        & \define & \ppEucRem    _{i + \rowNum} \\
+			\end{array} \right.
+		\]
+		we impose that
+		\[
+			\callToLt
+			{i}{\rowNum}
+			{0}{\locSbo + \locFirstLimbByteSize}
+			{\llarge + 1}
+		\]
+		we define the following shorthands:
+		\[
+				\locFirstLimbSingleSource  \define \ppWcpRes   _{i + \rowNum}
+		\]
+	\def\rowNum{4} \item[Preprocessing row $\bm{n^\circ \rowNum}$:] 
+		we impose that
+		\[
+			\callToLt
+			{i}{\rowNum}
+			{0}{\locSbo + \locSecondLimbByteSize}
+			{\llarge + 1}
+		\]
+		we define the following shorthands:
+		\[
+				\locSecondLimbSingleSource  \define \ppWcpRes   _{i + \rowNum}
+		\]
+	\def\rowNum{5} \item[Preprocessing row $\bm{n^\circ \rowNum}$:] 
+		we impose that
+		\[
+			\callToIszero
+			{i}{\rowNum}
+			{0}{\locSecondLimbByteSize}
+		\]
+		we define the following shorthands:
+		\[
+				\locSecondLimbVoid  \define \ppWcpRes   _{i + \rowNum}
+		\]
+\end{description}

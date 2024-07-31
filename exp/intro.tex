@@ -1,0 +1,42 @@
+The \expMod{} module is a tiny module which carries out several computations required either by the \inst{EXP} opcode or the \inst{MODEXP} precompile.
+Despite its name it carries out neither the \inst{EXP} instruction nor the modular exponentiation of \inst{MODEXP}.
+Most of what it does is actually somewhat the polar opposite of computing an exponentiation, i.e. computing logs.
+We give a brief overview of the computations carried out in the present module.
+\begin{description}
+	\item[Dynamic gas cost of \inst{EXP} opcode:]
+		recall the definition of the (dynamic) cost of \inst{EXP} instructions with exponent $\exponent \in \mathbb{B}_{\evmWordSize}$ (i.e. $(\ehi, \elo)$ in terms of its high and low parts):
+		\[
+			\locDynamicCost \equiv G_\text{expbyte} \cdot \col{size\_in\_bytes}
+		\]
+		the present module is tasked with computing this quantity;
+		the main task is thus to compute \col{size\_in\_bytes} as defined by
+		\begin{IEEEeqnarray*}{LCL}
+			\col{size\_in\_bytes}
+			& \equiv  &
+			\left\{ \begin{array}{ll}
+				0                                         & \If \exponent =    0 \\
+				1 + \lfloor \log_{256}(\exponent) \rfloor & \If \exponent \neq 0 \\
+			\end{array} \right. \\
+			& \equiv  &
+			\left\{ \begin{array}{ll}
+				0                                              & \If \big(\ehi = 0 ~ \et \elo = 0\big)    \\
+				1 + \lfloor \log_{256}(\elo) \rfloor           & \If \big(\ehi = 0 ~ \et \elo \neq 0\big) \\
+				1 + \lfloor \log_{256}(\ehi) \rfloor + \llarge & \If \ehi \neq 0                          \\
+			\end{array} \right. \\
+		\end{IEEEeqnarray*}
+\end{description}
+\saNote{} Recall that $G_{\text{expbyte}} = 50$.
+
+\saNote{} The above \textbf{deliberately doesn't include} the static cost $G_\text{exp} = 10$.
+\begin{description}
+	\item[Base $2$ log of leading word of exponent for \inst{MODEXP}:]
+		still for \inst{MODEXP} pricing requires one to compute $\locExponentLogEYP = \lfloor \log_{2}(\col{lead}) \rfloor$ of the leading word of the exponent;
+		one is initially provided with a raw \evm{} word $\col{raw\_lead} \in \mathbb{B}_{32}$ and two cutoff parameters:
+		\locEbsCutoff{} and \locCdsCutoff{};
+		both are in the range $[\![ 1, 32 ]\!]$;
+		one must then compute the (rounded up) $\log_{2}$ of the word of size \locEbsCutoff{} extracted from \col{raw\_lead} by considering only the first \locCdsCutoff{} bytes of \col{raw\_lead} and setting to \utt{00} all bytes of the resulting word with index $\geq \locCdsCutoff{}$;
+\end{description}
+
+\input{vision/_table}
+
+We then define $\locMinCutoff \define \min{(\locCdsCutoff,\locEbsCutoff)}$.

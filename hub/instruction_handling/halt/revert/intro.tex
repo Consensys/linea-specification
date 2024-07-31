@@ -1,0 +1,9 @@
+We deal in this section with the handling of the \inst{REVERT} instruction.
+This instruction bears some superficial resemblance with the \inst{RETURN} instruction, but its handling is \textbf{much} simpler.
+In particular its behaviour does not depend on whether or not the current execution context is a deployment context. \vspace{1mm}
+
+\saNote{} In  message call context a \inst{REVERT} instruction may write a portion of return data to the caller context's \textsc{ram} (on top of providing said data as return data.) In a deployment context, no return data will be written to the caller context's \textsc{ram} and the \mmuMod{} won't be triggered (but return data will be provided, regardless.) The present arithmetization deals with these disparate behaviours uniformly.
+Whether or not the caller context's \textsc{ram} is touched or not is controlled by the 
+\locTriggerMmu{} flag, see~(\ref{hub: instruction handling: halt: revert: representation}), which is computed in terms of
+the current context's \RAC{}, i.e. \locRac{}, see section~(\ref{hub: instruction handling: halt: revert: shorthands}), and the instruction's size parameter \locSize{}, see~(\ref{hub: instruction handling: halt: revert: shorthands}). To be precise, it is absence of an exception and the vanishing of either parameters (i.e. of their product) that dictates \locTriggerMmu, see~(\ref{hub: instruction handling: halting: revert: trigger_MMU definition}).
+For deployment contexts and root contexts $\locRac \equiv 0$, so that our arithmetization works in both deployment and message call contexts.

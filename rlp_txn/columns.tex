@@ -1,0 +1,102 @@
+\begin{enumerate}
+    \item Output columns:
+        \begin{enumerate}
+            \item $\limb$:
+                output of the module, contains 16 bytes data.
+            \item $\limbsize$:
+                number of meaningful bytes of the $\limb$. Those bytes are shifted to the left with $\llarge - \limbsize$ zeros on the right;
+            \item \col{LIMB\_CONSTRUCTED}:
+                binary column; equals $1$ when the $\limb$ is in one of the two RLP bytestring $\widetilde{L}_{\mathrm{T}}$ or $\widetilde{L}_{\mathrm{X}}$, otherwise equals $0$;
+                abbreviated to $\lc$;
+            \item $\lt$:
+                binary column; equals $1$ when the constructed $\limb$ is in $\widetilde{L}_{\mathrm{T}}$, otherwise equals $0$;
+            \item $\lx$:
+                binary column; equals $1$ when the constructed $\limb$ is in $\widetilde{L}_{\mathrm{X}}$, otherwise equals $0$;
+            \item $\indext$:
+                index of the current limb within the current string of $\widetilde{L}_{\mathrm{T}}$. Starts at 0 when starting a new transaction and increments by 1 when $\lc$ and $\lt$ are one; 
+            \item $\indexx$:
+                index of the current limb within the current string of $\widetilde{L}_{\mathrm{X}}$. Starts at 0 when starting a new transaction and increments by 1 when $\lc$ and $\lx$ are one;
+            \item \toHashByProver{}:
+                binary column; equals $\lc \cdot \lx$; is a selector to extract data for the prover. 
+        \end{enumerate} 
+    \item Columns used exclusively for lookup connexion with other modules:
+        \begin{enumerate}
+            \item $\absTxNum$:
+		transaction number column, starts at 0 and is incremented by one when starting a new transaction.
+            \item $\outgoingDataSymb\high$ and $\outgoingDataSymb\low$:
+		used for lookup with the transaction data module.
+            \item \CFI{}: 
+                an unique (block)-identifier of a code fragment;
+            \item \txRequiresEvmExecution{}:
+                binary column; is 1 when the transaction requires evm execution (ie when calling a smart contract, or when a contract creation with a non-empty init code)
+            \item \Phase{}:
+        column used as an identifier for the lookups;
+        \end{enumerate}
+    \item Columns used for heartbeat
+        \begin{enumerate}
+            \item $\phaseRlpPrefix{}, \dots, \phaseS{}$:
+                exclusive binary columns which light up in the corresponding phase.
+            \item $\phasend$:
+                binary column; equals $1$ on the last row of any phase, $0$ elsewhere;
+            \item \txType{}:
+                defines the type of transaction, can be $0$, $1$ or $2$. The phase heartbeat depends of the \transactionType{} of the transaction.
+            \item \CT{}, abbreviated $\ct$:
+                internal counter, byte column. Counts from 0 to $\nbstep - 1$ and resets.
+            \item $\done$:
+                binary column; equal to $1$ on the final row of every \ct{} cycle; equal to $0$ otherwise;
+        \end{enumerate}
+    \item Columns used in several phase for computation
+        \begin{enumerate}
+            \item $\nbstep$:
+                byte column, with value between 1 and $\llarge$.
+            \item $\Input k$, $k=1,2$:
+                0-16 bytes data.
+            \item $\byteCol{k}$, $k=1,2$:
+                byte columns used for byte decompositions, and its accumulators $\acc{k}$.
+            \item $\accsize$:
+                byte column used to count the bytesize of one of the two $\acc{k}$.
+            \item \genBit{}:
+                bit columns and its accumulator \genBitAcc{}, used for bit decomposition.
+            \item \Power{} abbreviate with $P$, to calculate the offset (left shifting) for the $\limb$.
+            \item $\rlptsize$:
+                number of bytes of $L_{\mathrm{T}}$ of the current transaction, used in \phaseRlpPrefix{} to verify the RLP prefix. Decreases by $\limbsize$ when $\lc$ and $\lt$ are one, must be 0 at the end of the transaction.
+            \item $\rlpxsize$:
+                number of bytes of $L_{\mathrm{X}}$ of the current transaction, used in \phaseRlpPrefix{} to verify the RLP prefix. Decreases by $\limbsize$ when $\lc$ and $\lx$ are one, must be 0 at the end of the transaction.
+        \end{enumerate}
+    \item Columns used only at certain phases, are null outside those phases.
+        \begin{enumerate}
+            \item Used when \phaseRlpPrefix{}, \phaseData{} or \phaseBeta{} are $\equiv 1$:
+                \begin{enumerate}
+                    \item \ispadding:
+                        bit column, used to declare when there is no limb constructed in the $\ct$-loop.
+                \end{enumerate}
+            \item Used when \phaseData{} or \phaseAccessList{} are $\equiv 1$:
+                \begin{enumerate}
+                    \item \isprefix:
+                        bit column, to declare when to compute a RLP prefix.
+                    \item $\phasesize$:
+                        similar to $\rlptsize$. Size (in bytes) of the bytestring of this phase. Usefull to compute the RLP prefix of the byte string of this phase.
+                \end{enumerate}
+            \item Used in \phaseData{}
+                \begin{enumerate}
+                    \item \indexData{}:
+                        similar to \index. Index of the given limb in the data phase (phase 9). Starts at 0 at the begining of the data phase and increments by 1 after $\lc = 1$.
+                    \item \dataGasCost{}:
+                        gas cost of the Data. Decreases during \phase9, must be 0 at the end of the \phase9.
+                \end{enumerate}
+            \item Used in \phaseAccessList{} 
+                \begin{enumerate}
+                    \item $\Depth1$ and $\Depth2$:
+                        binary columns to define loop intrication.
+                    \item $\col{Addr}\high$ and $\col{Addr}\low$ used to store high and low part of the address of an \textbf{accessList} item during the \textbf{accessList} phase.
+                    \item \col{ACCESS\_TUPLE\_BYTESIZE}:
+                        similar to $\rlptsize$. Size (in bytes) of an \textbf{accessList} tuple.
+                    \item $\nbAddr$:
+                        number of Address in the \textbf{accessList}. Decreases during \phase{10}, must be 0 at the end of the \phase{10}.
+                    \item $\nStorageKeysInAccessList$:
+                        total number of StorageKey in the \textbf{accessList}. Decreases during \phase{10}, must be 0 at the end of the \phase{10}.
+                    \item $\nStorageKeysInAccessEntry$:
+                        number of StorageKey in an \textbf{accessList} tuple.
+                \end{enumerate}
+        \end{enumerate}
+\end{enumerate}

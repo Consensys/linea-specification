@@ -1,0 +1,73 @@
+% modifying one target limb (surgery)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\modifyOneLimb}{\texttt{modifyOneLimb}}
+\newcommand{\modifyOneLimbConstraints}{%
+\left\{
+\begin{array}{l}
+	\If \precomputation_{i} = \typeFourCC
+	~ \Then
+	\microInst_{i} = \ExoToRamSlideChunk \\
+	\If \precomputation_{i} = \typeFourRD
+	~ \Then
+	\microInst_{i} = \RamToRamSlideChunk \\
+	\If \precomputation_{i} = \typeFourCD
+	~ \Then
+	\begin{cases}
+		\If \iInfoBit{} = 0
+		~ \Then
+		\microInst_{i} = \RamToRamSlideChunk \\
+		\If \iInfoBit{} = 1
+		~ \Then
+		\microInst_{i} = \ExoToRamSlideChunk \\
+	\end{cases}
+\end{array}
+\right.
+}
+
+% modifying two target limbs (surgery)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\modifyTwoLimbs}{\texttt{modifyTwoLimbs}}
+\newcommand{\modifyTwoLimbsConstraints}{%
+\left\{
+\begin{array}{l}
+	\If \precomputation_{i} = \typeFourCC
+	~ \Then
+	\microInst_{i} = \ExoToRamSlideOverlappingChunk \\
+	\If \precomputation_{i} = \typeFourRD
+	~ \Then
+	\microInst_{i} = \RamToRamSlideOverlappingChunk \\
+	\If \precomputation_{i} = \typeFourCD
+	~ \Then
+	\begin{cases}
+		\If \iInfoBit{} = 0
+		~ \Then
+		\microInst_{i} = \RamToRamSlideOverlappingChunk \\
+		\If \iInfoBit{} = 1
+		~ \Then
+		\microInst_{i} = \ExoToRamSlideOverlappingChunk \\
+	\end{cases}
+\end{array}
+\right.
+}
+
+% modifying one target limb (transplant)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\swapOneLimb}{\texttt{swapOneLimb}}
+\newcommand{\swapOneLimbConstraints}{%
+\left\{
+\begin{array}{l}
+	\If \precomputation_{i} = \typeFourCC ~ \Then
+		\microInst_{i} = \exoToRam \\
+	\If \precomputation_{i} = \typeFourRD ~ \Then
+		\microInst_{i} = \ramToRam \\
+	\If \precomputation_{i} = \typeFourCD ~ \Then
+		\begin{cases}
+			\If \iInfoBit_i = 0 ~ \Then \microInst_{i} = \ramToRam \\
+			\If \iInfoBit_i = 1 ~ \Then \microInst_{i} = \exoToRam \\
+		\end{cases} \\
+\end{array}
+\right.
+}

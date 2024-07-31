@@ -1,0 +1,25 @@
+The present section deals with the \inst{CALL} instruction family processing i.e. the processing of
+\inst{CALL}, \inst{CALLCODE}, \inst{DELEGATECALL} and \inst{STATICCALL} instructions.
+These are among the most complex instructions in the \evm{} and certainly in the present arithmetization.
+Their complexity stems from the following main reasons:
+(\emph{a}) the manifold ways in which \inst{CALL}-type instructions may raise an exception
+(\emph{b}) the possibility for unexceptional instrutions to be aborted yet
+(\emph{c}) the possibility for unexceptional, unaborted \inst{CALL}-type instructions to be reverted later.
+Furthermore
+(\emph{d}) instruction-processing must differentiate the case where the target is an \textbf{externally owned account} (which leads to no code execution), a \textbf{smart contract} or a \textbf{precompile}.
+
+\textbf{Precompile} calls in particular lead to further complications still and \inst{CALL}'s to them require a second processing-phase.
+Indeed
+(\emph{e.1})) precompiles each follow their own gas schedule
+(\emph{e.2})) the pricing of certain precompiles (\inst{MODEXP} and \inst{BLAKE2f}) requires interacting with \textsc{ram}
+(\emph{e.3})) precompiles may fail in complex ways beyond being provided with insufficient gas (in particular \textsc{Elliptic Curve} operations) and detecting those failures may require interacting with \textsc{ram}
+(\emph{e.4})) when successful they require up to three distinct memory operations (and far more in the case of \inst{MODEXP}).
+
+We will provide more ample details as to what these memory operations entail in section~(\ref{hub: instruction handling: call: precompiles: intro}).
+The general principle is that
+the first operation is used to extract the call data and serve it to the relevant ``data module'' (e.g. \shakiraMod{}, \ecDataMod{}, \blkMdxMod{}),
+the second operation is used to copy the return data \textbf{in full} to a dedicated \textsc{ram} segment (associated with a unique, unclaimed context number) and
+the third (optional) operation copies parts of the return data to the caller's own \textsc{ram}.
+Further (preliminary) memory operations are required for the precompile call processing of both \inst{MODEXP} and \inst{BLAKE2f}.
+
+At this point let us just remark that the pricing of most precompiles will be handled in the \oobMod{} module. Let us also remark that the second phase of processing require by \inst{CALL}'s to precompiles will be dealt with almost separately. 

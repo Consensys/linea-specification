@@ -1,0 +1,106 @@
+We explain how to extract the base $\theta^2$-representation of the absolute value of an integer given in its $2$'s complement representation as a $256$-bit integer. Suppose $\col{X} \equiv [\col{X}\high \,\|\, \col{X}\low]$ is $256$-bit integer. Interpreted as a signed integer it represents the number $\tilde{\col{X}}$
+\begin{IEEEeqnarray*}{RCL}
+	\tilde{\col{X}}
+	& = & 
+	\displaystyle
+	- 2^{255} \cdot \col{sgn}
+	+
+	\Big(
+		\theta^2 \cdot (\col{X}\high - 2^{127} \cdot \col{sgn})
+		+ \col{X}\low
+	\Big) \\
+	& = &
+	\displaystyle
+	- \theta^4 \cdot \col{sgn}
+	+ \theta^2 \cdot \col{X}\high
+	+ \col{X}\low
+	\in
+	\big[\!\!\!\:\big[-2^{255}, 2^{255}\big[\!\!\!\:\big[
+\end{IEEEeqnarray*}
+where $\col{sgn} \in \{ 0, 1 \}$ is the most significant bit of $\col{X}\high$ defined by
+\[
+	\col{sgn} = 1 \iff \col{X}\high \geq 2^{127}
+\]
+It follows that
+\begin{IEEEeqnarray*}{RCL}
+	| \tilde{\col{X}} |
+	& = & 
+	\begin{cases}
+		\If \col{sgn} = 0 ~ \Then &
+		\theta^2 \cdot \col{X}\high + \col{X}\low \\
+		\If \col{sgn} = 1 ~ \Then &
+		\theta^2 \cdot (\theta^2 - \col{X}\high) - \col{X}\low
+	\end{cases} \vspace{2mm} \\
+	& = & 
+	\begin{cases}
+		\If \phantom{\big(} \col{sgn} = 0 \phantom{\big(} ~ \Then &
+		\theta^2 \cdot \col{X}\high + \col{X}\low \\
+		\If \big( \col{sgn} = 1 ~ \et \col{X}\low = 0 \big) ~ \Then &
+		\theta^2 \cdot (\theta^2 - \col{X}\high) \\
+		\If \big( \col{sgn} = 1 ~ \et \col{X}\low \neq 0 \big) ~ \Then &
+		\theta^2 \cdot (\theta^2 - \col{X}\high - 1) + (\theta^2 - \col{X}\low) \\
+	\end{cases}
+\end{IEEEeqnarray*}
+Therefore
+\[
+	\begin{cases}
+		\If \phantom{\big(}\col{sgn} = 0 \phantom{\big(} ~ \Then
+		& | \tilde{\col{X}} | \equiv [\col{X}\high \,\|\, \col{X}\low] \\
+		\If \big(\col{sgn} = 1 ~ \et \col{X}\low =    0\big) ~ \Then
+		& | \tilde{\col{X}} | \equiv [\theta^2 - \col{X}\high \,\|\, 0] \\
+		\If \big(\col{sgn} = 1 ~ \et \col{X}\low \neq 0\big) ~ \Then
+		& | \tilde{\col{X}} | \equiv [\theta^2 - \col{X}\high - 1 \,\|\, \theta^2 - \col{X}\low] \\
+	\end{cases}
+\]
+\begin{lem}[absolute values]
+Let
+$\colm{X} \equiv [\colm{X}\high \,\|\, \colm{X}\low]$ and
+$\colm{A} \equiv [\colm{A}\high \,\|\, \colm{A}\low]$ be $256$-bit integers and let $\colm{sgn}$ be the sign bit of $\colm{X}$\footnote{i.e. the most significant bit of $\colm{X}\high$}. The following are equivalent
+\begin{enumerate}
+	\item $\colm{A}$ represents the absolute value of the signed integer represented by $\colm{X}$
+	\item the following set of constraints is satisfied
+	\begin{enumerate}
+		\item \If $\colm{sgn} = 0$ \Then
+		\[
+		\begin{cases}
+			\colm{A}\high = \colm{X}\high \\
+			\colm{A}\low = \colm{X}\low \\
+		\end{cases}
+		\]
+		\item \If $\colm{sgn} = 1$ \Then
+		\begin{enumerate}
+			\item \If $\colm{X}\low = 0$
+			\[
+			\begin{cases}
+				\colm{A}\high = \theta^2 - \colm{X}\high \\
+				\colm{A}\low = 0 \\
+			\end{cases}
+			\]
+			\item \If $\colm{X}\low \neq 0$
+			\[
+			\begin{cases}
+				\colm{A}\high = \theta^2 - \colm{X}\high - 1 \\
+				\colm{A}\low = \theta^2 - \colm{X}\low \\
+			\end{cases}
+			\]
+		\end{enumerate}
+	\end{enumerate}
+\end{enumerate}
+\end{lem}
+We subsume these constraints under the moniker
+\[
+	\setAbsoluteValue\Big(
+	\col{A}\high,
+	\col{A}\low;
+	\col{X}\high,
+	\col{X}\low,
+	\col{sgn}
+	\Big)
+\]
+\saNote{} There are \emph{implicit assumptions} that aren't part of the constraint itself:
+\begin{enumerate}
+	\item $\colm{X}\high$ and $\colm{X}\low$ are $\llarge$-byte integers;
+	\item $\colm{A}\high$ and $\colm{A}\low$ are $\llarge$-byte integers;
+	\item $\colm{sgn}$ is a bit and represents $\colm{X}$'s sign bit;
+\end{enumerate}
+Everytime the $\setAbsoluteValue$ will be invoked in the sequel the assumption on $\colm{X}\high$ and $\colm{X}\low$ will be met (it's a stack item) and re-verified in a byte decomposition. This byte decomposition is then used to justify the value of $\colm{sgn}$. The above constraint is used to \emph{set} $\colm{A}\high$ and $\colm{A}\low$. The smallness constraint will thus automatically be satisfied.

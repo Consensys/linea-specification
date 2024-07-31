@@ -1,0 +1,15 @@
+This section describes the consistency constraints that ensure that any stack item excavated from the stack of a given execution context at a given height coincides with the last stack item pushed onto the same execution context's stack at the same height.
+We now introduce some interleaved columns:
+\[
+	\left\{ \begin{array}{lcl}
+		\peekStackFour                & \define & \peekStack           \cc \peekStack           \cc \peekStack           \cc \peekStack           \\
+		\cn             ^{\cc4}       & \define & \cn                  \cc \cn                  \cc \cn                  \cc \cn                  \\
+		\stackItemHeight {\col{1234}} & \define & \stackItemHeight {1} \cc \stackItemHeight {2} \cc \stackItemHeight {3} \cc \stackItemHeight {4} \\
+		\stackItemStamp  {\col{1234}} & \define & \stackItemStamp  {1} \cc \stackItemStamp  {2} \cc \stackItemStamp  {3} \cc \stackItemStamp  {4} \\
+		\stackItemPop    {\col{1234}} & \define & \stackItemPop    {1} \cc \stackItemPop    {2} \cc \stackItemPop    {3} \cc \stackItemPop    {4} \\
+		\stackItemValHi  {\col{1234}} & \define & \stackItemValHi  {1} \cc \stackItemValHi  {2} \cc \stackItemValHi  {3} \cc \stackItemValHi  {4} \\
+		\stackItemValLo  {\col{1234}} & \define & \stackItemValLo  {1} \cc \stackItemValLo  {2} \cc \stackItemValLo  {3} \cc \stackItemValLo  {4} \\
+	\end{array} \right.
+\]
+Since on every row the stack is available through four different stack items a consistency proof for the stack must take all four of these views into the stack into account.
+This is achieved by interleaving columns as indicated above.

@@ -1,0 +1,185 @@
+% this allows us to have text mu's
+\usepackage{textcomp}
+%
+\newcommand{\mmuMacroInstructionSymbol}                     {\texttt{MACRO}}
+\newcommand{\mmuPreprocessingSymbol}                        {\texttt{PRPRC}}
+\newcommand{\mmuMicroInstructionSymbol}                     {\texttt{MICRO}}
+%
+\newcommand{\mmuMacroInstructionColumn}        [1]          {\mmuMacroInstructionSymbol\separator{\col{#1}}}
+\newcommand{\mmuPreprocessingColumn}           [1]          {\mmuPreprocessingSymbol\separator{\col{#1}}}
+\newcommand{\mmuMicroInstructionColumn}        [1]          {\mmuMicroInstructionSymbol\separator{\col{#1}}}
+
+% SHARED columns
+% \newcommand{\mmuStamp}      {\col{}}
+\newcommand{\microStamp}      {\col{{\textmu}INST}\stamp}
+\newcommand{\isMacro}         {\mmuMacroInstructionSymbol ^\eye}
+\newcommand{\isPreprocessing} {\mmuPreprocessingSymbol    ^\eye}
+\newcommand{\isMicro}         {\mmuMicroInstructionSymbol ^\eye}
+\newcommand{\ppOutputCol}    [1] {\col{OUT\_#1}}
+\newcommand{\ppOutputColBin} [1] {\col{BIN\_#1}}
+
+% % MACRO INST columns
+\newcommand{\SOURCE}                {SRC}
+\newcommand{\TARGET}                {TGT}
+\newcommand{\AUXILIARY}             {AUX}
+\newcommand{\ID}                    {ID}
+\newcommand{\OFFSET}                {OFFSET}
+\newcommand{\SIZE}                  {SIZE}
+\newcommand{\REFERENCE}             {REF}
+\newcommand{\HI}                    {HI}
+\newcommand{\LO}                    {LO}
+%
+\newcommand{\macroInst}             {\mmuMacroInstructionColumn{\INST}}
+\newcommand{\macroSrcId}            {\mmuMacroInstructionColumn{\SOURCE\_\ID}}
+\newcommand{\macroTgtId}            {\mmuMacroInstructionColumn{\TARGET\_\ID}}
+\newcommand{\macroAuxId}            {\mmuMacroInstructionColumn{\AUXILIARY\_\ID}}
+\newcommand{\macroSrcOffsetHi}      {\mmuMacroInstructionColumn{\SOURCE\_\OFFSET\_\HI}}
+\newcommand{\macroSrcOffsetLo}      {\mmuMacroInstructionColumn{\SOURCE\_\OFFSET\_\LO}}
+\newcommand{\macroTgtOffsetLo}      {\mmuMacroInstructionColumn{\TARGET\_\OFFSET\_\LO}}
+\newcommand{\macroSize}             {\mmuMacroInstructionColumn{\SIZE}}
+\newcommand{\macroRefOffset}        {\mmuMacroInstructionColumn{\REFERENCE\_\OFFSET}}
+\newcommand{\macroRefSize}          {\mmuMacroInstructionColumn{\REFERENCE\_\SIZE}}
+\newcommand{\macroSuccessBit}       {\mmuMacroInstructionColumn{\successBit}}
+\newcommand{\macroLimbOne}          {\mmuMacroInstructionColumn{LIMB\_1}}
+\newcommand{\macroLimbTwo}          {\mmuMacroInstructionColumn{LIMB\_2}}
+\newcommand{\macroPhase}            {\mmuMacroInstructionColumn{\Phase}}
+\newcommand{\macroExoSum}           {\mmuMacroInstructionColumn{\exoSum}}
+
+% % DECODING columns
+% \newcommand{\}      {\mmuDecodingColumn{}}
+\newcommand{\mmuInstFlag}            [1]                        {\col{IS\_#1}}
+\newcommand{\mmuInstFlagMload}                                  {\mmuInstFlag{MLOAD}}
+\newcommand{\mmuInstFlagMstore}                                 {\mmuInstFlag{MSTORE}}
+\newcommand{\mmuInstFlagMstoreEight}                            {\mmuInstFlag{MSTORE\_8}}
+\newcommand{\mmuInstFlagInvalidCodePrefix}                      {\mmuInstFlag{INVALID\_CODE\_PREFIX}}
+\newcommand{\mmuInstFlagRightPaddedWordExtraction}              {\mmuInstFlag{RIGHT\_PADDED\_WORD\_EXTRACTION}}
+\newcommand{\mmuInstFlagRamToExoWithPadding}                    {\mmuInstFlag{RAM\_TO\_EXO\_WITH\_PADDING}}
+\newcommand{\mmuInstFlagRamToRamSansPadding}                    {\mmuInstFlag{RAM\_TO\_RAM\_SANS\_PADDING}}
+\newcommand{\mmuInstFlagAnyToRamWithPadding}                    {\mmuInstFlag{any\_to\_ram\_with\_padding}}
+% \newcommand{\mmuInstFlagAnyToRamWithPaddingPureData}            {\mmuInstFlag{ANY\_TO\_RAM\_WITH\_PADDING\_PURE\_DATA}}
+% \newcommand{\mmuInstFlagAnyToRamWithPaddingMixed}               {\mmuInstFlag{ANY\_TO\_RAM\_WITH\_PADDING\_MIXED}}
+\newcommand{\mmuInstFlagAnyToRamWithPaddingSomeData}            {\mmuInstFlag{ANY\_TO\_RAM\_WITH\_PADDING\_SOME\_DATA}}
+\newcommand{\mmuInstFlagAnyToRamWithPaddingPurePadding}         {\mmuInstFlag{ANY\_TO\_RAM\_WITH\_PADDING\_PURE\_PADDING}}
+\newcommand{\mmuInstFlagExoToRamTransplants}                    {\mmuInstFlag{EXO\_TO\_RAM\_TRANSPLANTS}}
+\newcommand{\mmuInstFlagModexpZero}                             {\mmuInstFlag{MODEXP\_ZERO}}
+\newcommand{\mmuInstFlagModexpData}                             {\mmuInstFlag{MODEXP\_DATA}}
+\newcommand{\mmuInstFlagBlake}                                  {\mmuInstFlag{BLAKE\_PARAM}}
+
+% % PRE PROCESSING columns
+\newcommand{\ppCt}                 {\mmuPreprocessingColumn{CT}}
+\newcommand{\ppEucFlag}            {\mmuPreprocessingColumn{\eucFlag}}
+\newcommand{\ppEucA}               {\mmuPreprocessingColumn{\eucMod\_A}}
+\newcommand{\ppEucB}               {\mmuPreprocessingColumn{\eucMod\_B}}
+\newcommand{\ppEucQuot}            {\mmuPreprocessingColumn{\eucMod\_QUOT}}
+\newcommand{\ppEucRem}             {\mmuPreprocessingColumn{\eucMod\_REM}}
+\newcommand{\ppEucCeil}            {\mmuPreprocessingColumn{\eucMod\_CEIL}}
+\newcommand{\ppWcpFlag}            {\mmuPreprocessingColumn{\wcpFlag}}
+\newcommand{\ppWcpArgOneHi}        {\mmuPreprocessingColumn{\wcpMod\_ARG\_1\_HI}}
+\newcommand{\ppWcpArgOneLo}        {\mmuPreprocessingColumn{\wcpMod\_ARG\_1\_LO}}
+\newcommand{\ppWcpArgTwoHi}        {\mmuPreprocessingColumn{\wcpMod\_ARG\_2\_HI}}
+\newcommand{\ppWcpArgTwoLo}        {\mmuPreprocessingColumn{\wcpMod\_ARG\_2\_LO}}
+\newcommand{\ppWcpRes}             {\mmuPreprocessingColumn{\wcpMod\_RES}}
+\newcommand{\ppWcpInst}            {\mmuPreprocessingColumn{\wcpMod\_INST}}
+
+\newcommand{\callEuc}            {\texttt{callToEUC}}
+\newcommand{\callLt}             {\texttt{callToLT}}
+\newcommand{\callEq}             {\texttt{callToEQ}}
+\newcommand{\callIszero}         {\texttt{callToISZERO}}
+
+\newcommand{\callToEuc}  [4]   {%
+        \callEuc _{#1}
+        \left[ \begin{array}{ll}
+                \utt{Rel. row offset:} & #2 \\
+                \utt{Dividend:}   & #3 \\
+                \utt{Divisor:}    & #4 \\
+        \end{array} \right]}
+
+\newcommand{\callToLt}[5]{
+        \callLt_{#1}
+        \left[ \begin{array}{ll}
+                \utt{Rel. row offset:}    & #2 \\
+                \utt{Argument 1 hi:} & #3 \\
+                \utt{Argument 1 lo:} & #4 \\
+                \utt{Argument 2 lo:} & #5 \\
+        \end{array} \right]}
+
+\newcommand{\callToEq}[5]{
+        \callEq_{#1}
+        \left[ \begin{array}{ll}
+                \utt{Rel. row offset:}    & #2 \\
+                \utt{Argument 1 hi:} & #3 \\
+                \utt{Argument 1 lo:} & #4 \\
+                \utt{Argument 2 lo:} & #5 \\
+        \end{array} \right]}
+
+\newcommand{\callToIszero}[4]{
+        \callIszero_{#1}
+        \left[ \begin{array}{ll}
+                \utt{Rel. row offset:}    & #2 \\
+                \utt{Argument 1 hi:} & #3 \\
+                \utt{Argument 1 lo:} & #4 \\
+        \end{array} \right]}
+
+
+% % MICRO INST columns
+% internal:
+% \newcommand{\micro}      {\mmuMicroInstructionColumn{}}
+\newcommand{\ppTot}                {\col{TOT}}
+\newcommand{\ppTotLZ}              {\col{TOTLZ}}
+\newcommand{\ppTotNT}              {\col{TOTNT}}
+\newcommand{\ppTotRZ}              {\col{TOTRZ}}
+%
+\newcommand{\microInst}            {\mmuMicroInstructionColumn{INST}}
+\newcommand{\microSize}            {\mmuMicroInstructionColumn{\size}}
+\newcommand{\microSlo}             {\mmuMicroInstructionColumn{\slo}}
+\newcommand{\microSbo}             {\mmuMicroInstructionColumn{\sbo}}
+\newcommand{\microTlo}             {\mmuMicroInstructionColumn{\tlo}}
+\newcommand{\microTbo}             {\mmuMicroInstructionColumn{\tbo}}
+\newcommand{\microCns}             {\mmuMicroInstructionColumn{\cnS}}
+\newcommand{\microCnt}             {\mmuMicroInstructionColumn{\cnT}}
+\newcommand{\microLimb}            {\mmuMicroInstructionColumn{\limb}}
+\newcommand{\microSuccessBit}      {\mmuMicroInstructionColumn{\successBit}}
+\newcommand{\microExoSum}          {\mmuMicroInstructionColumn{\exoSum}}
+\newcommand{\microPhase}           {\mmuMicroInstructionColumn{\Phase}}
+\newcommand{\microIdOne}           {\mmuMicroInstructionColumn{\idOne}}
+\newcommand{\microIdTwo}           {\mmuMicroInstructionColumn{\idTwo}}
+\newcommand{\microTotalSize}       {\mmuMicroInstructionColumn{\totalSize}}
+
+\newcommand{\idOne}                {\col{EXO\_ID}}
+\newcommand{\idTwo}                {\col{KEC\_ID}}
+\newcommand{\totalSize}            {\col{TOTAL\_SIZE}}
+
+
+% micro instruction writing rows more granularity
+\newcommand{\leftPaddingRow}           {\texttt{leftPaddingRow}}
+\newcommand{\nontrivialRow}            {\texttt{nonTrivialRow}}
+\newcommand{\rightPaddingRow}          {\texttt{rightPaddingRow}}
+\newcommand{\firstTerm}                {\texttt{firstTerm}}
+\newcommand{\middleTerm}               {\texttt{middleTerm}}
+\newcommand{\lastTerm}                 {\texttt{lastTerm}}
+
+\newcommand{\mmuInstFlagSum}           {\col{inst\_flag\_sum}}
+\newcommand{\mmuInstWeightedSum}       {\col{wght\_flag\_sum}}
+
+% row type binary columns
+\newcommand{\isLEFTZERO}    {\col{IS\_LEFT\_ZERO\_ROW}}
+\newcommand{\isONLY}        {\col{IS\_ONLY\_NONTRIVIAL\_ROW}}
+\newcommand{\isFIRST}       {\col{IS\_FIRST\_NONTRIVIAL\_ROW}}
+\newcommand{\isMIDDLE}      {\col{IS\_MIDDLE\_NONTRIVIAL\_ROW}}
+\newcommand{\isLAST}        {\col{IS\_LAST\_NONTRIVIAL\_ROW}}
+\newcommand{\isRIGHTZERO}   {\col{IS\_RIGHT\_ZERO\_ROW}}
+
+\newcommand{\isLeftZero}       {\col{LZRO}^\rho}
+\newcommand{\isNontrivial}     {\col{ntrv}^\rho}
+\newcommand{\isOnlyNT}         {\col{NT\_ONLY}^\rho}
+\newcommand{\isFirstNT}        {\col{NT\_FRST}^\rho}
+\newcommand{\isMiddleNT}       {\col{NT\_MDDL}^\rho}
+\newcommand{\isLastNT}         {\col{NT\_LAST}^\rho}
+\newcommand{\isRightZero}      {\col{rzro}^\rho}
+\newcommand{\isOnlyRZ}         {\col{RZ\_ONLY}^\rho}
+\newcommand{\isFirstRZ}        {\col{RZ\_FRST}^\rho}
+\newcommand{\isMiddleRZ}       {\col{RZ\_MDDL}^\rho}
+\newcommand{\isLastRZ}         {\col{RZ\_LAST}^\rho}
+\newcommand{\isZero}           {\col{zero}^\rho}
+
+\newcommand{\stdProgression}   {\texttt{stdProgression}}

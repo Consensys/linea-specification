@@ -1,0 +1,76 @@
+More \inst{CALL}-related scenarios. But the following scenarios will be used to deal with the \textsc{ram} operations triggered by precompiles: 
+\begin{enumerate}[resume]
+	\item \scenEcrecover:
+		binary column; lights up whenever the \zkEvm{} is about to deal with the memory operations pertaining to the \texttt{ECRECOVER} precompile;
+	\item \scenShaTwo:
+		binary column; lights up whenever the \zkEvm{} is about to deal with the memory operations pertaining to the \texttt{SHATWO} precompile;
+	\item \scenRipemd:
+		binary column; lights up whenever the \zkEvm{} is about to deal with the memory operations pertaining to the \texttt{RIPEMD} precompile;
+	\item \scenIdentity:
+		binary column; lights up whenever the \zkEvm{} is about to deal with the memory operations pertaining to the \texttt{IDENTITY} precompile;
+	\item \scenModexp:
+		binary column; lights up whenever the \zkEvm{} is about to deal with the memory operations pertaining to the \texttt{MODEXP} precompile;
+	\item \scenEcadd:
+		binary column; lights up whenever the \zkEvm{} is about to deal with the memory operations pertaining to the \texttt{ECADD} precompile;
+	\item \scenEcmul:
+		binary column; lights up whenever the \zkEvm{} is about to deal with the memory operations pertaining to the \texttt{ECMUL} precompile;
+	\item \scenEcpairing:
+		binary column; lights up whenever the \zkEvm{} is about to deal with the memory operations pertaining to the \texttt{ECPAIRING} precompile;
+	\item \scenBlake:
+		binary column; lights up whenever the \zkEvm{} is about to deal with the memory operations pertaining to the \texttt{BLAKE} precompile;
+\end{enumerate}
+We continue with columns that will be made to contain a local copy of data relevant to the pricing and execution of precompiles.
+\begin{enumerate}[resume]
+	\item \scenPrcCurrentlyValidCallerGas:
+		contains the currently valid gas amount of the caller context; 
+	\item \scenPrcGasAllowance           :
+		contains the gas amount available to the execution of the precompile;
+	\item \scenPrcGasOwedToCaller        :
+		contains the gas amount owed to the caller context after the precompile is done executing; 
+\end{enumerate}
+\def\hereInitial      {\col{initial}}
+\def\hereUpfront      {\col{upfront}}
+\def\herePoop         {\col{poop}}
+\def\hereStipend      {\col{stipend}}
+\def\hereOwed         {\col{owed}}
+\def\herePostCall     {\col{post}}
+These column descriptions require more ample detail.
+Let us set up some context.
+Suppose that
+(\emph{a}) \emph{prior} to the \inst{CALL}-type instruction the caller context was in possession of \hereInitial{} gas
+(\emph{b}) the instruction has an upfront gas cost of \hereUpfront{} (which \hereInitial{} is able to cover i.e. $\hereInitial \geq \hereUpfront$)
+(\emph{c}) the caller provides the callee (a precompile) an amount \herePoop{} of gas ``paid out of pocket''
+(\emph{d}) the callee receives a ``gas stipend'' \hereStipend{} (either $G_\text{callstipend} = 2300$ or $0$ depending on whether the call transfers value or not)
+(\emph{e}) execution leaves the precompile in possession of \hereOwed{} gas (a quantity which is necessarily \emph{nonnegative}, $0$ being the correct value in case of a ``precompile specific failure'') 
+(\emph{f}) as the \inst{CALL} is done the caller context resumes execution with \gasNext{} gas.
+Then the spec will ensure that
+\[
+	\left\{ \begin{array}{lcl}
+		\scenPrcCurrentlyValidCallerGas      & \longleftarrow & \hereInitial - \big[ \hereUpfront + \herePoop \big]                                \\
+		\scenPrcGasAllowance                 & \longleftarrow & \herePoop + \hereStipend                                                           \\
+		\scenPrcGasOwedToCaller              & \longleftarrow & \hereOwed{}                                                                        \\
+		\gasNext                             & \longleftarrow & \Big[ \hereInitial - \big[ \hereUpfront + \herePoop \big] \Big] + \hereOwed{}      \\
+	\end{array} \right.
+\]
+Let us further assume that execution of the precompile costs leaves the callee context with \hereOwed{}
+Then we we will have 
+\begin{enumerate}[resume]
+	\item \scenPrcCdo:
+		contains the \CDO{} as defined by the \inst{CALL} instruction;
+	\item \scenPrcCds:
+		contains the \CDS{} as defined by the \inst{CALL} instruction;
+	\item \scenPrcRao:
+		contains the \RAO{} as defined by the \inst{CALL} instruction;
+	\item \scenPrcRac:
+		contains the \RAC{} as defined by the \inst{CALL} instruction;
+	\item \scenPrcFailureKnownToHub:
+		\textbf{prediction} that the precompile will fail and that the \hubMod{} can justify this failure without digging into \textsc{ram}; 
+	\item \scenPrcFailureKnownToRam:
+		\textbf{prediction} that the precompile will fail but that justifying this failure will require interacting with \textsc{ram};
+	\item \scenPrcSuccessWillRevert:
+		\textbf{prediction} that the precompile will succeed plus the information that the caller will revert;
+	\item \scenPrcSuccessWontRevert:
+		\textbf{prediction} that the precompile will succeed plus the information that the caller won't revert;
+\end{enumerate}
+\saNote{} We explain the meaning we ascribe to \textbf{precompile failure} and \textbf{precompile success} in definitions found in section~(\ref{hub: instruction handling: call: precompiles: failures vs. successes}).
+We deliberately didn't choose the term ``exception'' to avoid any overlap with the standard \evm{} exceptions. 

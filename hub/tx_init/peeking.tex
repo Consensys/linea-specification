@@ -1,0 +1,26 @@
+\begin{center}
+	\boxed{\text{All constraints in this subsection assume that $\txInit_{i - 1} = 0$ and $\txInit_{i} = 1$.}}
+\end{center}
+In other words we assume row $i$ is the first row of the initialization phase.
+This phase peeks into 
+(\emph{a}) the \texttt{from} account
+(\emph{b}) the \texttt{to} account
+(\emph{c}) it may transfer transaction call data to \textsc{ram} under the context number $\hubStamp_{i}$
+(\emph{d}) it then \emph{defines} context data
+(\emph{e}) and then peeks into transaction data.
+This is ensured by the following constraint:
+\[
+	\left[ \begin{array}{l} 
+		+ \peekAccount              _{i + \locTxInitSenderAccountRowOffset   }  \\
+		+ \peekAccount              _{i + \locTxInitRecipientAccountRowOffset}  \\
+		+ \peekMisc                 _{i + \locTxInitMiscRowOffset            }  \\
+		+ \peekContext              _{i + \locTxInitContextRowOffset         }  \\
+		+ \peekTransaction          _{i + \locTxInitTransactionRowOffset     }  \\
+	\end{array} \right] =
+	\nsrTransactionInitializationPhase
+\]
+\saNote{} Given the heartbeat constraints, the above has several \emph{implicit} consequences\footnote{which the implemenation need \textbf{not} enforce through new constraints}. The following are some of them.
+\begin{itemize}
+	\item $\batchNum_{j}$, $\txNum_{j}$, $\hubStamp_{j}$, $\txSkip_{j}$ remain constant on the rows $i \leq j < i + \nsrTransactionInitializationPhase$;
+	\item $\txExec_{i + \nsrTransactionInitializationPhase} = 1$ and $\hubStamp_{i + \nsrTransactionInitializationPhase} = 1 + \hubStamp_{i}$;
+\end{itemize}

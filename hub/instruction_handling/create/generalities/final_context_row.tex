@@ -1,0 +1,149 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below are written under the assumption that}
+		\left\{ \begin{array}{lclr}
+			\peekScenario     _{i}                & = & 1 \\
+			\scenCreateSum    _{i}                & = & 1 & (\trash) \\
+		\end{array} \right.}
+\end{center}
+The present section deals with the final row of \inst{CREATE}-type instructions.
+Given that such instructions trigger the $\CONTEXTMAYCHANGE$ flag, see section~(\ref{hub: generalities: context: cmc flag}), the final row of the instruction must be a context row, see section~(\ref{}).
+We now specify the contents of said row.
+We will now (at last) deal with ``proper'' deployments i.e. deployments whose processing requires spawning a new execution environment wherein to execute the (from here on out) nonempty intialization code. We remind the reader that in the present case (characterized by $\scenCreateExecutionNonEmptyInitCode \equiv 1$) the initialization code is necessarily nonempty, see section~(\ref{hub: instruction handling: create: intro}). We need to do the following in the current section:
+\begin{itemize}
+	\item justify the failure / success of the upcoming deployment context;
+	\item justify the associated revert time;
+	\item perform the relevant account updates and rollbacks;
+	\item initialize the deployment execution context; 
+	\item provide the new deployment context with its initial balance, code fragment index, program counter; 
+\end{itemize}
+
+We impose the following
+\begin{enumerate}
+	\item \If $\scenCreateException                         _{i} = 1$ \Then \[ \executionProvidesEmptyReturnData  {i} {\createExceptionCallerContextRowOffset} \]
+	\item \If $\scenCreateAbort                             _{i} = 1$ \Then \[ \nonContextProvidesEmptyReturnData {i} {\createAbortCurrentContextRowOffset                  } \]
+	\item \If $\scenCreateFCondWillRevert                   _{i} = 1$ \Then \[ \nonContextProvidesEmptyReturnData {i} {\createFCondWillRevertCurrentContextRowOffset        } \]
+	\item \If $\scenCreateFCondWontRevert                   _{i} = 1$ \Then \[ \nonContextProvidesEmptyReturnData {i} {\createFCondWontRevertCurrentContextRowOffset        } \]
+	\item \If $\scenCreateEmptyInitCodeWillRevert           _{i} = 1$ \Then \[ \nonContextProvidesEmptyReturnData {i} {\createEmptyInitCodeWillRevertCurrentContextRowOffset} \]
+	\item \If $\scenCreateEmptyInitCodeWontRevert           _{i} = 1$ \Then \[ \nonContextProvidesEmptyReturnData {i} {\createEmptyInitCodeWontRevertCurrentContextRowOffset} \]
+\end{enumerate}
+The remaining cases (characterized by $\scenCreateExecutionNonEmptyInitCode \equiv 1$) require setting up the upcoming execution context.
+We introduce a number of numerical constants to that end:
+\[
+	\left\{ \begin{array}{lcl}
+		% \relofCreateException                  & \define & \createExceptionCallerContextRowOffset                      \\
+		% \relofCreateAbort                      & \define & \createAbortCurrentContextRowOffset                         \\
+		% \relofCreateFailureConditionWillRevert & \define & \createFCondWillRevertCurrentContextRowOffset               \\
+		% \relofCreateFailureConditionWontRevert & \define & \createFCondWontRevertCurrentContextRowOffset               \\
+		% \relofCreateEmptyCodeWontRevert        & \define & \createEmptyInitCodeWillRevertCurrentContextRowOffset       \\
+		% \relofCreateEmptyCodeWillRevert        & \define & \createEmptyInitCodeWontRevertCurrentContextRowOffset       \\
+		\relofCreateNonEmptyFailureWillRevert  & \define & \createNonemptyInitCodeFailureWillRevertNewContextRowOffset \\
+		\relofCreateNonEmptyFailureWontRevert  & \define & \createNonemptyInitCodeFailureWontRevertNewContextRowOffset \\
+		\relofCreateNonEmptySuccessWillRevert  & \define & \createNonemptyInitCodeSuccessWillRevertNewContextRowOffset \\
+		\relofCreateNonEmptySuccessWontRevert  & \define & \createNonemptyInitCodeSuccessWontRevertNewContextRowOffset \\
+	\end{array} \right.
+\]
+These will serve for the final phase of the above, i.e. initialzing the upcoming (deployment) context.
+
+	% \item \If $\scenCreateNonEmptyInitCodeFailureWillRevert _{i} = 1$ \Then \[ \]
+	% \item \If $\scenCreateNonEmptyInitCodeSuccessWillRevert _{i} = 1$ \Then \[ \]
+	% \item \If $\scenCreateNonEmptyInitCodeFailureWontRevert _{i} = 1$ \Then \[ \]
+	% \item \If $\scenCreateNonEmptyInitCodeSuccessWontRevert _{i} = 1$ \Then \[ \]
+The final steps in dealing with \inst{CREATE}-type instructions satisfying $\scenCreateExecutionNonEmptyInitCode \equiv 1$ are as follows:
+\begin{enumerate}
+        \item initialize the upcoming execution context;
+	\item justify earlier predictions pertaining to the (temporary) success / self-induced failure of the child frame;
+	\item set some shared environment variables of the child context;
+\end{enumerate}
+This is what we do below by invoking certain parametrized constraint systems that achieve the desired goals:
+\begin{enumerate}
+	\item \If $\scenCreateNonEmptyInitCodeFailureWillRevert_{i} = 1$ \Then 
+		\[
+			\begin{cases}
+				\initializeDeploymentContext          {i}{\relofCreateNonEmptyFailureWillRevert} \\
+				\firstRowOfDeployment                 {i}{\relofCreateNonEmptyFailureWillRevert} \\
+				\justifyCreateeRevertData             {i}{\relofCreateNonEmptyFailureWillRevert} \\
+			\end{cases}
+		\]
+	\item \If $\scenCreateNonEmptyInitCodeFailureWontRevert_{i} = 1$ \Then
+		\[
+			\begin{cases}
+				\initializeDeploymentContext          {i}{\relofCreateNonEmptyFailureWontRevert} \\
+				\firstRowOfDeployment                 {i}{\relofCreateNonEmptyFailureWontRevert} \\
+				\justifyCreateeRevertData             {i}{\relofCreateNonEmptyFailureWontRevert} \\
+			\end{cases}
+		\]
+	\item \If $\scenCreateNonEmptyInitCodeSuccessWillRevert_{i} = 1$ \Then
+		\[
+			\begin{cases}
+				\initializeDeploymentContext          {i}{\relofCreateNonEmptySuccessWillRevert} \\
+				\firstRowOfDeployment                 {i}{\relofCreateNonEmptySuccessWillRevert} \\
+				\justifyCreateeRevertData             {i}{\relofCreateNonEmptySuccessWillRevert} \\
+			\end{cases}
+		\]
+	\item \If $\scenCreateNonEmptyInitCodeSuccessWontRevert_{i} = 1$ \Then 
+		\[ 
+		\begin{cases}
+			\initializeDeploymentContext                  {i}{\relofCreateNonEmptySuccessWontRevert} \\
+			\firstRowOfDeployment                         {i}{\relofCreateNonEmptySuccessWontRevert} \\
+			\justifyCreateeRevertData                     {i}{\relofCreateNonEmptySuccessWontRevert} \\
+		\end{cases}
+		\]
+\end{enumerate}
+
+It remains for us to define the parametrized constraint systems used above.
+We define a family of constraints (parametrized by a positive integer $\relof$)
+\[
+	\underbrace{%
+		\begin{array}{l}
+			\initializeContext{
+				anchorRow                   = i                                                           ,
+				relOffset                   = \relof                                                      ,
+				contextNumber               = 1 + \hubStamp_{i}                                           ,
+				callStackDepth              = \locCsd + 1                                                 ,
+				isRoot                      = 0                                                           ,
+				isStatic                    = 0                                                           ,
+				accountAddressHigh          = \locCreateeAddressHi                                        ,
+				accountAddressLow           = \locCreateeAddressLo                                        ,
+				accountDeploymentNumber     = \accDepNumber\new_{i + \createFirstCreateeAccountRowOffset} ,
+				byteCodeAddressHi           = \locCreateeAddressHi                                        ,
+				byteCodeAddressLo           = \locCreateeAddressLo                                        ,
+				byteCodeDeploymentNumber    = \accDepNumber\new_{i + \createFirstCreateeAccountRowOffset} ,
+				byteCodeDeploymentStatus    = 1                                                           ,
+				byteCodeCodeFragmentIndex   = \locDepCfi                                                  ,
+				callerAddressHi             = \locCreatorAddressHi                                        ,
+				callerAddressLo             = \locCreatorAddressLo                                        ,
+				callValue                   = \locValueLo                                                 ,
+				callDataContextNumber       = \cn_{i}                                                     ,
+				callDataOffset              = 0                                                           ,
+				callDataSize                = 0                                                           ,
+				returnAtOffset              = 0                                                           ,
+				returnAtCapacity            = 0                                                           ,
+			}
+			\vspace{2mm} \\
+		\end{array}
+		}_{\displaystyle \define \initializeDeploymentContext {i}{\relof}}
+	\]
+	We further set
+	\[
+		\firstRowOfDeployment {i}{\relof}
+		\iff
+		\left\{ \begin{array}{lclr}
+			% \cn\new_{i}                      & \!\!\! = \!\!\! & \cnCn_{i + \relof} \\
+			\cn            _{i + \relof + 1} & \!\!\! = \!\!\! & \cnCn       _{i + \relof}  & (\trash) \\
+			\caller        _{i + \relof + 1} & \!\!\! = \!\!\! & \cn         _{i + \relof} \\
+			\cfi           _{i + \relof + 1} & \!\!\! = \!\!\! & \cnCodeCfi  _{i + \relof} \\
+			\pc            _{i + \relof + 1} & \!\!\! = \!\!\! & 0                         \\
+			\gasExpected   _{i + \relof + 1} & \!\!\! = \!\!\! & \locStpGasPoop            \\
+		\end{array} \right.
+	\]
+	and
+	\[
+		\justifyCreateeRevertData {i}{\relof}
+		\iff
+		\left\{ \begin{array}{lcl}
+			\locCreateeSelfReverts & = & \cnSelfRev  _{i + \relof + 1} \\
+			\locCreateeRevertStamp & = & \cnRevStamp _{i + \relof + 1} \\
+		\end{array} \right.
+	\]
+	With this definition in hand we proceed to initializing the upcoming execution context:

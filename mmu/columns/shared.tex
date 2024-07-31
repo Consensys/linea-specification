@@ -1,0 +1,89 @@
+\begin{enumerate}
+	\item $\mmuStamp$:
+		macro-instruction stamp column; increases by one with every (macro) instrution processed by the \mmuMod{} module; 
+	\item $\microStamp$:
+		micro-instruction stamp column; a single macro-instruction may give rise to several micro-instructions dealt with in the \mmioMod{} module;
+\end{enumerate}
+The following are \textbf{exclusive binary columns}.
+They indicate which processing phase the \mmuMod{} is in.
+Dealing with a single macro-instruction provided by the \hubMod{} module requires going through several of these phases.
+\begin{enumerate}[resume]
+	\item $\isMacro$:
+		binary column;
+		\mmuMacroInstructionSymbol{} stands for ``macro-instruction'';
+	\item $\isPreprocessing$:
+		binary column;
+		\mmuPreprocessingSymbol{} stands for ``preprocessing'';
+	\item $\isMicro$:
+		binary column;
+		\mmuMicroInstructionSymbol{} stands for ``micro-instruction''
+\end{enumerate}
+We say that a row $i$ with
+$\mmuStamp_{i} =    0$ is a \textbf{padding-row} and that 
+$\mmuStamp_{i} \neq 0$ is a \textbf{non-padding-row}.
+We say that a row $i$ with  $\isMacro_{i} = 1$         is a \textbf{macro-instruction-row},
+that a row $i$ with         $\isMicro_{i} = 1$         is a \textbf{preprocessing-row}
+and that a row $i$ with     $\isPreprocessing_{i} = 1$ is a \textbf{miro-instruction-writing-row}.
+Macro-instruction rows receive ``macro-instructions'' from the \hubMod{}. These are high level instructions which the \mmuMod{} breaks down into smaller so-called \textbf{micro-instructions}.
+Preprocessing-rows carry out certain comparisons and euclidean divisions that are required to decide the sequence of micro-instructions.
+Micro-instruction-writing rows contain the actual sequence of micro-instructions that form the sequence of instructions of the \mmioMod{} module. 
+
+The following columns are are initially computed during the pre-processing phase of dealing with an \mmuMod{} instruction.
+During the micro-instruction-writing phase they get decremented according to rules laid out in section~(\ref{mmu: constraints: heartbeat}).
+The descriptions provided below provide the desired interpretation of the values computed during pre-processing. 
+\begin{enumerate}[resume]
+	\item \ppTot:
+		total number of micro-instructions required by the current macro-instruction;	
+	\item \ppTotLZ:
+		total number of ``left zero paddings'' required by the current macro-instruction;	
+	\item \ppTotNT:
+		total number of ``nontrivial limb operations'' required by the current macro-instruction;
+	\item \ppTotRZ:
+		total number of ``right zero paddings'' required by the current macro-instruction;	
+\end{enumerate}
+The following columns are also computed during the initial pre-processing phase.
+Contrary to the previous batch of columns their values remain constant throught processing, see section~(\ref{mmu: constraints: constancies}).
+\begin{enumerate}[resume]
+	\item \ppOutputCol{k}{} for $k=1, 2, \dots$:
+		stamp-constant columns containing the relevant outputs of the pre-processing step;
+	\item \ppOutputColBin{k}{} for $k=1, 2, \dots$:
+		stamp-constant binary columns containing the relevant outputs of the pre-processing step;
+\end{enumerate}
+What folows are a collection of stamp-constant exclusive binary columns.
+These instruction flags help the \mmuMod{} decide on the sequence of micro-instructions to write in terms of other parameters. 
+\begin{enumerate}[resume]
+	\item \mmuInstFlagMload{}:
+	\item \mmuInstFlagMstore{}:
+	\item \mmuInstFlagMstoreEight{}:
+	\item \mmuInstFlagInvalidCodePrefix{}:
+	\item \mmuInstFlagRightPaddedWordExtraction{}:
+	\item \mmuInstFlagRamToExoWithPadding{}:
+	\item \mmuInstFlagExoToRamTransplants{}:
+	\item \mmuInstFlagRamToRamSansPadding{}:
+	\item \mmuInstFlagAnyToRamWithPaddingSomeData{}:
+	\item \mmuInstFlagAnyToRamWithPaddingPurePadding{}:
+	\item \mmuInstFlagModexpZero{}:
+	\item \mmuInstFlagModexpData{}:
+	\item \mmuInstFlagBlake{}:
+\end{enumerate}
+We introduce binary columns that will help us orient ourselves within the micro-instrution-writing-rows.
+\begin{enumerate}[resume]
+	\item $\isLeftZero$:
+		binary column that lights up for ``left zero rows''; 
+	\item $\isOnlyNT$:
+		binary column that lights up for ``only nontrivial rows''; 
+	\item $\isFirstNT$:
+		binary column that lights up for ``first nontrivial rows''; 
+	\item $\isMiddleNT$:
+		binary column that lights up for ``middle nontrivial rows''; 
+	\item $\isLastNT$:
+		binary column that lights up for ``last nontrivial rows''; 
+	\item $\isOnlyRZ$:
+		binary column that lights up for ``only nontrivial rows''; 
+	\item $\isFirstRZ$:
+		binary column that lights up for ``first nontrivial rows''; 
+	\item $\isMiddleRZ$:
+		binary column that lights up for ``middle nontrivial rows''; 
+	\item $\isLastRZ$:
+		binary column that lights up for ``last nontrivial rows''; 
+\end{enumerate}

@@ -1,0 +1,379 @@
+# http://www.graphviz.org/content/cluster
+
+digraph G {
+
+  node [fontname = "Handlee"];
+  node [shape=plaintext];
+  edge [fontname = "Handlee"];
+
+  deploy [label=<
+    <TABLE BGCOLOR="WHITE" BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
+    <TR>
+    <TD><FONT POINT-SIZE="40">Bytecode deployment</FONT></TD>
+    </TR>
+    </TABLE>>];
+
+  triggerMMU [
+  label = <
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="10">
+    <TR>
+    <TD ALIGN="LEFT" ><FONT POINT-SIZE="20"><B>DEPLOYS</B> = <B>1</B></FONT></TD>
+    </TR>
+    <TR>
+    <TD><FONT POINT-SIZE="20"><B>trigger_MMU</B> = [ size_lo &ne; 0 ]</FONT></TD>
+    </TR>
+    </TABLE>>;
+  shape = rect;
+  style = filled;
+  fillcolor = "YELLOW";
+  color = "BLUE";
+  ]
+  deploy_empty_bytecode_will_revert [
+    label = "\nDeploy empty code\ni.e. trigger_MMU = 0\n WILL revert\n ";
+  shape = diamond;
+  style = filled;
+  fillcolor = "LIGHTGREEN";
+  color = "BLUE";
+  ];
+  deploy_empty_bytecode_wont_revert [
+    label = "\nDeploy empty code\ni.e. trigger_MMU = 0\n WON'T revert\n ";
+  shape = diamond;
+  style = filled;
+  fillcolor = "LIGHTGREEN";
+  color = "BLUE";
+  ];
+  deploy_nonempty_bytecode_will_revert [
+    label = "\nDeploy nonempty code\ni.e. trigger_MMU = 1\n WILL revert\n ";
+  shape = diamond;
+  style = filled;
+  fillcolor = "LIGHTGREEN";
+  color = "BLUE";
+  ];
+  deploy_nonempty_bytecode_wont_revert [
+    label = "\nDeploy nonempty code\ni.e. trigger_MMU = 1\n WON'T revert\n ";
+  shape = diamond;
+  style = filled;
+  fillcolor = "LIGHTGREEN";
+  color = "BLUE";
+  ];
+
+  {
+    rank=same;
+    deploy_empty_bytecode_will_revert; deploy_empty_bytecode_will_revert_rows;
+  }
+  {
+    rank=same;
+    deploy_empty_bytecode_wont_revert; deploy_empty_bytecode_wont_revert_rows;
+  }
+  {
+    rank=same;
+    deploy_nonempty_bytecode_will_revert; deploy_nonempty_bytecode_will_revert_rows;
+  }
+  {
+    rank=same;
+    deploy_nonempty_bytecode_wont_revert; deploy_nonempty_bytecode_wont_revert_rows;
+  }
+
+  deploy                                            -> deploy_empty_bytecode_will_revert     ;
+  deploy_empty_bytecode_will_revert                 -> deploy_empty_bytecode_will_revert_rows;
+  deploy_empty_bytecode_will_revert                 -> deploy_empty_bytecode_wont_revert     ;
+  deploy_empty_bytecode_wont_revert                 -> deploy_empty_bytecode_wont_revert_rows;
+
+  deploy_empty_bytecode_wont_revert                 -> deploy_nonempty_bytecode_will_revert     ;
+  deploy_nonempty_bytecode_will_revert              -> deploy_nonempty_bytecode_will_revert_rows;
+  deploy_nonempty_bytecode_will_revert              -> deploy_nonempty_bytecode_wont_revert     ;
+  deploy_nonempty_bytecode_wont_revert              -> deploy_nonempty_bytecode_wont_revert_rows;
+
+
+deploy_empty_bytecode_will_revert_rows [label=<
+<TABLE BGCOLOR="LIGHTGRAY" BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i - 1</TD>
+    <TD ROWSPAN="2">STACK</TD>
+    <TD ROWSPAN="2">CT = 0</TD>
+    <TD ROWSPAN="1">excavate stack items: <FONT COLOR="BLUE"><B>offset</B></FONT>, <FONT COLOR="GREEN"><B>size</B></FONT></TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE" ROWSPAN="1"> <B>HASH_INFO🏴</B> = <B>0</B> </TD>
+  </TR>
+  <TR>
+    <TD COLSPAN="1">i</TD>
+    <TD BGCOLOR="salmon" COLSPAN="1">SCN</TD>
+    <TD BGCOLOR="salmon" COLSPAN="2">RETURN/DEPLOY_EMPTY_BYTECODE_WILL_REVERT &nbsp; </TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>CON</TD>
+    <TD>current</TD>
+    <TD>read: <B>I<sub>a</sub></B> , <B>DEPLOYS</B> = <B>1</B>, </TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="3">i + 2</TD>
+    <TD ROWSPAN="3">MISC</TD>
+    <TD ROWSPAN="3"></TD>
+    <TD ROWSPAN="1">MXP🏴 = <B>1</B>, MXPX = <B><FONT COLOR="GREEN">0</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE" ROWSPAN="1">MMU🏴 = <B><FONT COLOR="SALMON">trigger_MMU (= 0)</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">OOB🏴 = <B>DEPLOYS</B>, EVENT = <B><FONT COLOR="GREEN">0</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE">i + 3</TD>
+    <TD BGCOLOR="WHITE">ACC</TD>
+    <TD BGCOLOR="#33FFCC"><B>I<sub>a</sub></B></TD>
+    <TD BGCOLOR="WHITE">depStatus: <B>1 ↘ 0</B>, <B>CODESIZE<sup>&nu;</sup> ← size_lo (=0)</B>, <B>CODEHASH<sup>&nu;</sup> ← KEC(∅)</B> </TD>
+    <TD BGCOLOR="WHITE">τ · h + 0</TD>
+    <TD BGCOLOR="WHITE">0</TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE">i + 4</TD>
+    <TD BGCOLOR="WHITE">ACC</TD>
+    <TD BGCOLOR="#33FFCC"><B>I<sub>a</sub></B></TD>
+    <TD BGCOLOR="WHITE">↶  undo everything ↶ </TD>
+    <TD BGCOLOR="WHITE">τ · ρ + ε</TD>
+    <TD BGCOLOR="WHITE">τ · h + 0</TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE">i + 5</TD>
+    <TD BGCOLOR="WHITE">CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD BGCOLOR="WHITE">update return data: &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+deploy_empty_bytecode_wont_revert_rows [label=<
+<TABLE BGCOLOR="LIGHTGRAY" BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i - 1</TD>
+    <TD ROWSPAN="2">STACK</TD>
+    <TD ROWSPAN="2">CT = 0</TD>
+    <TD ROWSPAN="1">excavate stack items: <FONT COLOR="BLUE"><B>offset</B></FONT>, <FONT COLOR="GREEN"><B>size</B></FONT></TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE" ROWSPAN="1"> <B>HASH_INFO🏴</B> = <B>0</B> </TD>
+  </TR>
+  <TR>
+    <TD COLSPAN="1">i</TD>
+    <TD BGCOLOR="salmon" COLSPAN="1">SCN</TD>
+    <TD BGCOLOR="salmon" COLSPAN="2">RETURN/DEPLOY_EMPTY_BYTECODE_WONT_REVERT &nbsp; </TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>CON</TD>
+    <TD>current</TD>
+    <TD>read: <B>I<sub>a</sub></B> , <B>DEPLOYS</B> = <B>1</B>, </TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="3">i + 2</TD>
+    <TD ROWSPAN="3">MISC</TD>
+    <TD ROWSPAN="3"></TD>
+    <TD ROWSPAN="1">MXP🏴 = <B>1</B>, MXPX = <B><FONT COLOR="GREEN">0</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE" ROWSPAN="1">MMU🏴 = <B><FONT COLOR="SALMON">trigger_MMU (=0)</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">OOB🏴 = <B>DEPLOYS</B>, EVENT = <B><FONT COLOR="GREEN">0</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE">i + 3</TD>
+    <TD BGCOLOR="WHITE">ACC</TD>
+    <TD BGCOLOR="#33FFCC"><B>I<sub>a</sub></B></TD>
+    <TD BGCOLOR="WHITE">depStatus: <B>1 ↘ 0</B>, <B>CODESIZE<sup>&nu;</sup> ← size_lo (=0)</B>, <B>CODEHASH<sup>&nu;</sup> ← KEC(∅)</B> </TD>
+    <TD BGCOLOR="WHITE">τ · h + 0</TD>
+    <TD BGCOLOR="WHITE">0</TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE">i + 4</TD>
+    <TD BGCOLOR="WHITE">CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD BGCOLOR="WHITE">update return data: &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+
+deploy_nonempty_bytecode_will_revert_rows [label=<
+<TABLE BGCOLOR="LIGHTGRAY" BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i - 1</TD>
+    <TD ROWSPAN="2">STACK</TD>
+    <TD ROWSPAN="2">CT = 0</TD>
+    <TD ROWSPAN="1">excavate stack items: <FONT COLOR="BLUE"><B>offset</B></FONT>, <FONT COLOR="GREEN"><B>size</B></FONT></TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE" ROWSPAN="1"> <B>HASH_INFO🏴</B> = <B>1</B>, <B>KEC(code)</B> (hi/lo), <B>HASH_STAMP</B> </TD>
+  </TR>
+  <TR>
+    <TD COLSPAN="1">i</TD>
+    <TD BGCOLOR="salmon" COLSPAN="1">SCN</TD>
+    <TD BGCOLOR="salmon" COLSPAN="2">RETURN/DEPLOY_NONEMPTY_BYTECODE_WILL_REVERT &nbsp; </TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>CON</TD>
+    <TD>current</TD>
+    <TD>read: <B>I<sub>a</sub></B> , <B>DEPLOYS</B> = <B>1</B>, </TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="4">i + 2</TD>
+    <TD ROWSPAN="4">MISC</TD>
+    <TD ROWSPAN="4"></TD>
+    <TD ROWSPAN="1">MXP🏴 = <B>1</B>, MXPX = <B><FONT COLOR="GREEN">0</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE" ROWSPAN="1">MMU🏴 = <B><FONT COLOR="SALMON">trigger_MMU (= 1)</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE" ROWSPAN="1">MMU_INST = confirmInvalidCodePrefix, <B>INFO</B> = <B><FONT COLOR="GREEN">0</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">OOB🏴 = <B>DEPLOYS</B>, EVENT = <B><FONT COLOR="GREEN">0</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2" BGCOLOR="WHITE">i + 3</TD>
+    <TD ROWSPAN="2" BGCOLOR="WHITE">ACC</TD>
+    <TD ROWSPAN="2" BGCOLOR="#33FFCC"><B>I<sub>a</sub></B></TD>
+    <TD ROWSPAN="1" BGCOLOR="WHITE">depStatus: <B>1 ↘ 0</B>, <B>CODESIZE<sup>&nu;</sup> ← size_lo</B>, <B>CODEHASH<sup>&nu;</sup> ← KEC(code)</B> </TD>
+    <TD ROWSPAN="2" BGCOLOR="WHITE">τ · h + 0</TD>
+    <TD ROWSPAN="2" BGCOLOR="WHITE">0</TD>
+  </TR>
+  <TR>
+  <TD ROWSPAN="1" BGCOLOR="WHITE"><B>CFI_REQ</B> = <B>1</B>, <B>CFI</B> ← <B>ROM_LEX</B> </TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE">i + 4</TD>
+    <TD BGCOLOR="WHITE">ACC</TD>
+    <TD BGCOLOR="#33FFCC"><B>I<sub>a</sub></B></TD>
+    <TD BGCOLOR="WHITE">↶  undo everything ↶ </TD>
+    <TD BGCOLOR="WHITE">τ · ρ + ε</TD>
+    <TD BGCOLOR="WHITE">τ · h + 0</TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE" ROWSPAN="2">i + 5</TD>
+    <TD BGCOLOR="WHITE" ROWSPAN="2">MISC</TD>
+    <TD BGCOLOR="WHITE" ROWSPAN="2"></TD>
+    <TD BGCOLOR="WHITE" ROWSPAN="1">MMU🏴 = <B>1</B>; MMU_INST = deployAndHash; </TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE" ROWSPAN="1"> <B>CFI</B> and <B>HASH_STAMP</B> </TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE">i + 6</TD>
+    <TD BGCOLOR="WHITE">CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD BGCOLOR="WHITE">update return data: &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+deploy_nonempty_bytecode_wont_revert_rows [label=<
+<TABLE BGCOLOR="LIGHTGRAY" BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i - 1</TD>
+    <TD ROWSPAN="2">STACK</TD>
+    <TD ROWSPAN="2">CT = 0</TD>
+    <TD ROWSPAN="1">excavate stack items: <FONT COLOR="BLUE"><B>offset</B></FONT>, <FONT COLOR="GREEN"><B>size</B></FONT></TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE" ROWSPAN="1"> <B>HASH_INFO🏴</B> = <B>1</B>, <B>KEC(code)</B> (hi/lo), <B>HASH_STAMP</B> </TD>
+  </TR>
+  <TR>
+    <TD COLSPAN="1">i</TD>
+    <TD BGCOLOR="salmon" COLSPAN="1">SCN</TD>
+    <TD BGCOLOR="salmon" COLSPAN="2">RETURN/DEPLOY_NONEMPTY_BYTECODE_WONT_REVERT &nbsp; </TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>CON</TD>
+    <TD>current</TD>
+    <TD>read: <B>I<sub>a</sub></B> , <B>DEPLOYS</B> = <B>1</B>, </TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="4">i + 2</TD>
+    <TD ROWSPAN="4">MISC</TD>
+    <TD ROWSPAN="4"></TD>
+    <TD ROWSPAN="1">MXP🏴 = <B>1</B>, MXPX = <B><FONT COLOR="GREEN">0</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE" ROWSPAN="1">MMU🏴 = <B><FONT COLOR="SALMON">trigger_MMU (=1)</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE" ROWSPAN="1">MMU_INST = confirmInvalidCodePrefix, <B>INFO</B> = <B><FONT COLOR="GREEN">0</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">OOB🏴 = <B>DEPLOYS</B>, EVENT = <B><FONT COLOR="GREEN">0</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2" BGCOLOR="WHITE">i + 3</TD>
+    <TD ROWSPAN="2" BGCOLOR="WHITE">ACC</TD>
+    <TD ROWSPAN="2" BGCOLOR="#33FFCC"><B>I<sub>a</sub></B></TD>
+    <TD ROWSPAN="1" BGCOLOR="WHITE">depStatus: <B>1 ↘ 0</B>, <B>CODESIZE<sup>&nu;</sup> ← size_lo</B>, <B>CODEHASH<sup>&nu;</sup> ← KEC(code)</B> </TD>
+    <TD ROWSPAN="2" BGCOLOR="WHITE">τ · h + 0</TD>
+    <TD ROWSPAN="2" BGCOLOR="WHITE">0</TD>
+  </TR>
+  <TR>
+  <TD ROWSPAN="1" BGCOLOR="WHITE"><B>CFI_REQ</B> = <B>1</B>, <B>CFI</B> ← <B>ROM_LEX</B> </TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE" ROWSPAN="2">i + 4</TD>
+    <TD BGCOLOR="WHITE" ROWSPAN="2">MISC</TD>
+    <TD BGCOLOR="WHITE" ROWSPAN="2"></TD>
+    <TD BGCOLOR="WHITE" ROWSPAN="1">MMU🏴 = <B>1</B>; MMU_INST = deployAndHash; </TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE" ROWSPAN="1"> <B>CFI</B> and <B>HASH_STAMP</B> </TD>
+  </TR>
+  <TR>
+    <TD BGCOLOR="WHITE">i + 5</TD>
+    <TD BGCOLOR="WHITE">CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD BGCOLOR="WHITE">update return data: &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+}

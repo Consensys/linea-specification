@@ -1,0 +1,138 @@
+\begin{center}
+	\boxed{\text{In all this section, it is assumed that $\recipe{1}_{i} = 1$.}}
+\end{center}
+
+We remind the reader that
+\genByte{} and \genByteAcc{} satisfy byte decomposition constraints while
+\genBit{}  and \genBitAcc{}  satisfy bit  decomposition constraints.
+
+The first batch of constraints concerns the first row of the counter-cycle:
+\begin{enumerate}
+	\item \If $\ct_{i}=0$ \Then
+		\begin{enumerate}
+			\item We initialize the (counter-incrementing) \index{} column: \( \index_{i} = 0 \);
+			\item \If $\genByteAcc_{i} = 0$ \Then 
+				\[
+					\left\{ \begin{array}{lcl}
+						\accsize_{i}      & = & 0       \\
+						\col{POWER}_{i}   & = & 256^{8} \\
+					\end{array} \right.
+				\]
+			\item \If $\genByteAcc_{i} \ne 0$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\accsize_{i}      & = & 1       \\
+						\col{POWER}_{i}   & = & 256^{7} \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+\end{enumerate}
+We next tackle intermediate rows (including the final row) of the counter-cycle:
+\begin{enumerate}[resume]
+	\item \If $\ct_{i} \ne 0$ \Then
+		\begin{enumerate}
+			\item \If $\genByteAcc_{i} = 0$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\accsize_{i}      & = & \accsize_{i - 1}              \\
+						\col{POWER}_{i}   & = & 256 \cdot \col{POWER}_{i - 1} \\
+					\end{array} \right.
+				\]
+			\item \If $\genByteAcc_{i} \ne 0$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\accsize_{i}      & = & 1 + \accsize_{i - 1} \\
+						\col{POWER}_{i}   & = & \col{POWER}_{i - 1}  \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+\end{enumerate}
+The final batch of constraints pertain the the construction of the limbs which carry the \rlp{} prefixes and underlying data. The table below describes the size in bytes of the \rlp{}-ization of the nonce, an integer in the range $[\![\,0, 256^\redm{8} \,[\![$.
+We will use the following shorthand (only on the final row of the counter-cycle, i.e. the row with $\ct_{i} = \mediumPO$)
+\[
+	\locRlpNonceSize = \accsize_{i} + (1 - \tinyNonzeroNonce_{i})
+\]
+which gives the bytesize of RLP(nonce) for the three different cases.
+\begin{table}[h] \label{fig: rlp of nonce cases}
+	\centering
+	\renewcommand{\arraystretch}{1.3}
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		\nonce                                 & \accsize               & \tinyNonzeroNonce & \locRlpNonceSize    \\ \hline
+		0                                      & 0                      & $\zero$           & 1                   \\ \hline
+		$0 < \col{nonce} < 128$                & 1                      & $\one $           & 1                   \\ \hline
+		$128 \leq \col{nonce} < 256^\redm{8}$  & \col{acc\_size}        & $\zero$           & \col{acc\_size} + 1 \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{enumerate}[resume]
+	\item \If $\ct_{i}=\mediumPO$ \Then:
+		\begin{description}
+			\item[Target constraints:] we impose 
+				\[
+					\left\{ \begin{array}{lcl}
+						\genByteAcc_{i}  & = & \nonce_{i}   \\
+						\genBitAcc_{i}   & = & \genByte_{i} \\
+					\end{array} \right.
+				\]
+			\item[Setting \TINYNONZERONONCE:]
+				\If ($\accsize_{i}=1$ \et $\genBit_{i-\mediumPO}=0$) \Then $\tinyNonzeroNonce_{i}=1$ \Else $\tinyNonzeroNonce_{i}=0$
+			\item[The last few rows contain data limbs:] we set 
+				\[ \lc_{i-4}+\lc_{i-3}=1 \]
+				In other words, by monotony, the final 4 rows have $\lc \equiv 1$;
+			\item[Setting the global \rlp{} prefix:] We impose
+				\[
+					\begin{cases}
+						\limb_{i-3} = (\rlprefixShortList + (1 + 20) + \locRlpNonceSize ) \cdot 256^{\llargeMO} \\
+						\limbsize_{i-3} = 1 \\
+						\index_{i-3} = 0 \\
+					\end{cases}
+				\]
+				\saNote{}
+				The byte length of the concatenation $\rlp(s) \cdot \rlp(n)$ of the \rlp{}-izations of an address ($s$) and a nonce ($n$) is $(1 + 20) + \locRlpNonceSize$
+			\item[\rlp{} prefix of the address and its first 4 bytes:]
+				\[
+					\begin{cases}
+						\limb_{i-2} = (\rlprefixShortInt+20) \cdot 256^{\llargeMO} + \addr \high _{i} \cdot 256^{11} \\
+						\limbsize_{i-2} = 5 \\
+						\index_{i-2} = 1 (\trash) \\
+					\end{cases}
+				\]
+			\item[The remaining $\llarge$ bytes of the address:]
+				\[
+					\begin{cases}
+						\limb_{i-1} = \addr \low _{i} \\
+						\limbsize_{i-1} = \llarge \\
+						\index_{i-1} = 2 (\trash) \\
+					\end{cases}
+				\]
+			\item[\rlp{} of the nonce:] we must distinguish between three cases for the \rlp{}-ization of the nonce, see figure~(\ref{fig: rlp of nonce cases}):
+				\[
+					\begin{cases}
+						\limbsize_{i} = \locRlpNonceSize \\
+						\index_{i} = 3  \\
+					\end{cases}
+				\]
+				\saNote{} Given that $\index$ is counter-incrementing, was initialized at $0$ when $\ct_{j} = 0$, $j = i - \mediumPO$, set to $0$ at $i - 3$ and to $3$ at the current $i$, this implies that it takes on the values from 0 to 3 on the last 4 rows of the counter-cycle.
+			\item \If $\nonce_{i}=0$ \Then $\limb_{i}= \rlprefixShortInt \cdot 256^{\llargeMO}$
+			\item \If $\nonce_{i} \ne 0$ \Then:
+				\begin{enumerate}
+					\item \If $\TINYNONZERONONCE_{i} = 1$ \Then $\limb_{i}= \nonce_{i} \cdot 256^{\llargeMO}$
+					\item \If $\TINYNONZERONONCE_{i} = 0$ \Then $\limb_{i}= (\rlprefixShortInt + \accsize_{i}) \cdot 256^{\llargeMO} + \nonce_{i} \cdot \col{POWER}_{i}$
+				\end{enumerate}
+		\end{description}
+\end{enumerate}
+
+The following table summarizes the value of the outputs for the last rows:
+\begin{figure}[h]
+	\centering
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		\ct  & \limb                                                       & \limbsize        & \index \\ \hline
+		4    & \rlp{} Prefix                                               & 1                & 0      \\ \hline
+		5    & \rlp{} prefix of an address concatenated with $\addr \high$ & 5                & 1      \\ \hline
+		6    & $\addr \low$                                                & $\llarge$        & 2      \\ \hline
+		7    & \rlp{}(\col{nonce})                                         & \locRlpNonceSize & 3      \\ \hline
+	\end{tabular}
+	\caption{The above summarizes the final 4 rows wherein the byte string is constructed according to the \textbf{first recipe}}
+\end{figure}

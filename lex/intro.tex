@@ -1,0 +1,57 @@
+The present section provides an explanation of lexicographic ordering constraints and their necessity.  Such constraints are ubiquitous throughout the \zkEvm{} specification: they are fused in consistency constraints involving a permutation argument and at other times to ensure uniqueness of data where the columns being ordered serve as a kind of generalized ``stamp''. we illustrate both use cases below.
+
+One often considers a row permutation $\col{X}\rightsquigarrow \order{\col{X}} =: \col{Y}$\footnote{Where $\col{X}, \col{Y}$ are column vectors with $n$ rows for some $n$ and there exists a permutation $\sigma\in\mathfrak{S}_n$ such that $\col{Y}_i = \col{X}_{\sigma^{-1}(i)}$ for all $0\leq i < n$.} defined\footnote{typically, non uniquely} in terms of its effect on a fixed set of columns $\lex^{1},\dots,\lex^{q}$. Generally the desired effect is that (after row permutation) the rows of $\order{\lex^{1}},\dots,\order{\lex^{q}}$ are listed according to some pre-specified lexicographic order. Whenever such permutations are applied the set of constraints presented in this section is implicitly applied, generally the weak kind of lexicographic consraints which allows for repetitions. The columns that are required to make the argument function are generally omitted from the columns section of the module specification.
+
+The other prominent usecase for (strong) lexicographic ordering is to ensure uniqueness of data which is identified by a multi-column label, as opposed to a single stamp column that grows monotonically with increments of $1$. An example thereof appears in the \romMod{} where code fragments (either initialization code or deployed code) are identified by an address (which occupies two columns: high and low part), a deployment number and a deployment status.
+
+\saNote{} This section will present \emph{strict} and \emph{weak} lexicographic ordering constraints
+
+\saNote{} In the present module we directly work with supposedly reordered columns. The column names from here on out are therefore $\ord^k$ rather than, say, $\order{\lex^{k}}$.  
+
+\begin{figure}
+\centering
+\[
+\def\colS{LimeGreen}
+\def\colL{RoyalBlue}
+\def\lightgray{gray}
+\begin{array}{|c|c|c|c|}
+\hline
+\lex^{1} & \lex^{2} & \cdots & \lex^{q} \\ \hline
+\cellcolor{\lightgray} & \cellcolor{\lightgray} & \cellcolor{\lightgray} & \cellcolor{\lightgray} \\ \hline
+\cellcolor{\lightgray} & \cellcolor{\lightgray} & \cellcolor{\lightgray} & \cellcolor{\lightgray} \\ \hline
+\cellcolor{\colL!16!\colS}  & \cellcolor{\colL!16!\colS}  & \cellcolor{\colL!16!\colS} \cdots  & \cellcolor{\colL!16!\colS}  \\ \hline
+\cellcolor{\colL!91!\colS}  & \cellcolor{\colL!91!\colS}  & \cellcolor{\colL!91!\colS} \cdots  & \cellcolor{\colL!91!\colS}  \\ \hline
+\cellcolor{\colL!50!\colS}  & \cellcolor{\colL!50!\colS}  & \cellcolor{\colL!50!\colS} \cdots  & \cellcolor{\colL!50!\colS}  \\ \hline
+\cellcolor{\colL!83!\colS}  & \cellcolor{\colL!83!\colS}  & \cellcolor{\colL!83!\colS} \cdots  & \cellcolor{\colL!83!\colS}  \\ \hline
+\cellcolor{\colL!8!\colS}   & \cellcolor{\colL!8!\colS}   & \cellcolor{\colL!8!\colS}  \cdots  & \cellcolor{\colL!8!\colS}   \\ \hline
+\cellcolor{\colL!66!\colS}  & \cellcolor{\colL!66!\colS}  & \cellcolor{\colL!66!\colS} \cdots  & \cellcolor{\colL!66!\colS}  \\ \hline
+\cellcolor{\colL!41!\colS}  & \cellcolor{\colL!41!\colS}  & \cellcolor{\colL!41!\colS} \cdots  & \cellcolor{\colL!41!\colS}  \\ \hline
+\cellcolor{\colL!100!\colS} & \cellcolor{\colL!100!\colS} & \cellcolor{\colL!100!\colS} \cdots & \cellcolor{\colL!100!\colS} \\ \hline
+\cellcolor{\colL!25!\colS}  & \cellcolor{\colL!25!\colS}  & \cellcolor{\colL!25!\colS} \cdots  & \cellcolor{\colL!25!\colS}  \\ \hline
+\cellcolor{\colL!75!\colS}  & \cellcolor{\colL!75!\colS}  & \cellcolor{\colL!75!\colS} \cdots  & \cellcolor{\colL!75!\colS}  \\ \hline
+\cellcolor{\colL!58!\colS}  & \cellcolor{\colL!58!\colS}  & \cellcolor{\colL!58!\colS} \cdots  & \cellcolor{\colL!58!\colS}  \\ \hline
+\cellcolor{\colL!33!\colS}  & \cellcolor{\colL!33!\colS}  & \cellcolor{\colL!33!\colS} \cdots  & \cellcolor{\colL!33!\colS}  \\ \hline
+\end{array}
+\qquad\rightsquigarrow\qquad
+\begin{array}{|c|c|c|c|}
+\hline
+\order{\lex^{1}} & \order{\lex^{2}} & \cdots & \order{\lex^{q}} \\ \hline
+\cellcolor{\lightgray} & \cellcolor{\lightgray} & \cellcolor{\lightgray} & \cellcolor{\lightgray} \\ \hline
+\cellcolor{\lightgray} & \cellcolor{\lightgray} & \cellcolor{\lightgray} & \cellcolor{\lightgray} \\ \hline
+\cellcolor{\colL!8!\colS}   & \cellcolor{\colL!8!\colS}   & \cellcolor{\colL!8!\colS}  \cdots  & \cellcolor{\colL!8!\colS}   \\ \hline
+\cellcolor{\colL!16!\colS}  & \cellcolor{\colL!16!\colS}  & \cellcolor{\colL!16!\colS} \cdots  & \cellcolor{\colL!16!\colS}  \\ \hline
+\cellcolor{\colL!25!\colS}  & \cellcolor{\colL!25!\colS}  & \cellcolor{\colL!25!\colS} \cdots  & \cellcolor{\colL!25!\colS}  \\ \hline
+\cellcolor{\colL!33!\colS}  & \cellcolor{\colL!33!\colS}  & \cellcolor{\colL!33!\colS} \cdots  & \cellcolor{\colL!33!\colS}  \\ \hline
+\cellcolor{\colL!41!\colS}  & \cellcolor{\colL!41!\colS}  & \cellcolor{\colL!41!\colS} \cdots  & \cellcolor{\colL!41!\colS}  \\ \hline
+\cellcolor{\colL!50!\colS}  & \cellcolor{\colL!50!\colS}  & \cellcolor{\colL!50!\colS} \cdots  & \cellcolor{\colL!50!\colS}  \\ \hline
+\cellcolor{\colL!58!\colS}  & \cellcolor{\colL!58!\colS}  & \cellcolor{\colL!58!\colS} \cdots  & \cellcolor{\colL!58!\colS}  \\ \hline
+\cellcolor{\colL!66!\colS}  & \cellcolor{\colL!66!\colS}  & \cellcolor{\colL!66!\colS} \cdots  & \cellcolor{\colL!66!\colS}  \\ \hline
+\cellcolor{\colL!75!\colS}  & \cellcolor{\colL!75!\colS}  & \cellcolor{\colL!75!\colS} \cdots  & \cellcolor{\colL!75!\colS}  \\ \hline
+\cellcolor{\colL!83!\colS}  & \cellcolor{\colL!83!\colS}  & \cellcolor{\colL!83!\colS} \cdots  & \cellcolor{\colL!83!\colS}  \\ \hline
+\cellcolor{\colL!91!\colS}  & \cellcolor{\colL!91!\colS}  & \cellcolor{\colL!91!\colS} \cdots  & \cellcolor{\colL!91!\colS}  \\ \hline
+\cellcolor{\colL!100!\colS} & \cellcolor{\colL!100!\colS} & \cellcolor{\colL!100!\colS} \cdots & \cellcolor{\colL!100!\colS} \\ \hline
+\end{array}
+\]
+	\caption{Row permutation enforcing \emph{some} lexicographic ordering on the rows of $\order{\lex^{1}}$, \dots, $\order{\lex^{q}}$. The gray rows may represent either padding rows to which the constraints may not apply or other rows that are excluded from the constraints by other means (e.g. through row selection.)}
+% \label{}
+\end{figure}

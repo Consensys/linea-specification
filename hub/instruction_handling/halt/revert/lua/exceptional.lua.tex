@@ -1,0 +1,57 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\usepackage{../../../../../pkg/draculatheme}
+
+\setmonofont{JetBrains Mono NF Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\begin{document}
+\begin{verbatim}
+
+                   ███████\  ████████\ ██\    ██\ ████████\ ███████\ ████████\ 
+                   ██  __██\ ██  _____|██ |   ██ |██  _____|██  __██\\__██  __|
+                   ██ |  ██ |██ |      ██ |   ██ |██ |      ██ |  ██ |  ██ |   
+                   ███████  |█████\    \██\  ██  |█████\    ███████  |  ██ |   
+                   ██  __██< ██  __|    \██\██  / ██  __|   ██  __██<   ██ |   
+                   ██ |  ██ |██ |        \███  /  ██ |      ██ |  ██ |  ██ |   
+                   ██ |  ██ |████████\    \█  /   ████████\ ██ |  ██ |  ██ |   
+                   \__|  \__|\________|    \_/    \________|\__|  \__|  \__|
+
+
+
+                                                  |   _)                       | 
+                   _ \ \ \  /   __|   _ \  __ \   __|  |   _ \   __ \    _` |  | 
+                   __/  `  <   (      __/  |   |  |    |  (   |  |   |  (   |  | 
+                 \___|  _/\_\ \___| \___|  .__/  \__| _| \___/  _|  _| \__,_| _| 
+                                          _|
+
+
+|-------+---------+------------------------------------+--------------------------------|
+| Row   | Persp.  | Action                             | Comments                       |
+|-------+---------+------------------------------------+--------------------------------|
+| i     | STACK   | ⇒ offset, size                     | by assumption AHOY = 0         |
+|-------+---------+------------------------------------+--------------------------------|
+| i + 1 | MISC    |                                    |                                |
+|       |         | MXP module:                        | MXP module is always triggered |
+|       |         | ===========                        |                                |
+|       |         |                                    |                                |
+|       |         | .   ⇒ MXP/MXPX                     | either                         |
+|       |         | .   ⇒ MXP/MXP_GAS                  | .   MXPX ≡ 1                   |
+|       |         |                                    | .   OOGX ≡ 1                   |
+|       |         | trigger_MMU  ≡  0                  | MMU module not triggered       |
+|       |         |                                    |                                |
+|-------+---------+------------------------------------+--------------------------------|
+| i + 2 | CONTEXT | executionProvidesEmptyReturnData() |
+|-------+---------+------------------------------------|
+
+\end{verbatim}
+\end{document}

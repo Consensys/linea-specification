@@ -1,0 +1,359 @@
+# http://www.graphviz.org/content/cluster
+
+digraph G {
+
+  node [fontname = "Handlee"];
+  node [shape=plaintext];
+  edge [fontname = "Handlee"];
+
+  inst [label=<
+    <TABLE BGCOLOR="WHITE" BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
+    <TR>
+    <TD><FONT POINT-SIZE="40">RETURN</FONT></TD>
+    </TR>
+    </TABLE>>];
+  sux [
+    label = "\nSUX\n ";
+  shape = diamond;
+  style = filled;
+  fillcolor = "ORANGE";
+  color = "RED";
+  ];
+  mxpx [
+    label = "\nMXPX\n ";
+  shape = diamond;
+  style = filled;
+  fillcolor = "ORANGE";
+  color = "RED";
+  ];
+  oogx [
+  label = "\nOOGX\n ";
+  shape = diamond;
+  style = filled;
+  fillcolor = "ORANGE";
+  color = "RED";
+  ];
+  maxcsx [
+  label = "\nMAXCSX\n ";
+  shape = diamond;
+  style = filled;
+  fillcolor = "ORANGE";
+  color = "RED";
+  ];
+  invcpx [
+  label = "\nINVCPX\n ";
+  shape = diamond;
+  style = filled;
+  fillcolor = "ORANGE";
+  color = "RED";
+  ];
+  unexceptional [
+  label = "\nNo Exception\n ";
+  shape = rect;
+  style = filled;
+  fillcolor = "skyblue";
+  color = "green";
+  ];
+  deployment [
+    label = "Bytecode\ndeployment";
+    fontsize = 30;
+    shape = rect;
+  ];
+  message_call [
+    label = "Return from\nmessage call";
+    fontsize = 30;
+    shape = rect;
+  ];
+
+  {
+    rank=same;
+    sux; sux_rows;
+  }
+  {
+    rank=same;
+    mxpx; mxpx_rows;
+  }
+  {
+    rank=same;
+    oogx; oogx_rows;
+  }
+  {
+    rank=same;
+    maxcsx; maxcsx_rows;
+  }
+  {
+    rank=same;
+    invcpx; invcpx_rows;
+  }
+  {
+    rank=same;
+    unexceptional; unexceptional_rows;
+  }
+
+  inst                   -> sux                   ;
+  sux                    -> sux_rows              ;
+  sux                    -> mxpx                  ;
+  mxpx                   -> mxpx_rows             ;
+  mxpx                   -> oogx                  ;
+  oogx                   -> oogx_rows             ;
+  oogx                   -> maxcsx                ;
+  maxcsx                 -> maxcsx_rows           ;
+  maxcsx                 -> invcpx                ;
+  invcpx                 -> invcpx_rows           ;
+  invcpx                 -> unexceptional         ;
+  unexceptional          -> unexceptional_rows    ;
+  unexceptional          -> message_call          ;
+  unexceptional          -> deployment            ;
+
+sux_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>i - 1</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>empty stack items</TD>
+    <TD>0</TD><TD>0</TD>
+  </TR>
+  <TR>
+    <TD>i</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD COLSPAN="1">Parent: update return data &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+mxpx_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>i - 1</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>excavate stack items: <FONT COLOR="BLUE"><B>offset</B></FONT>, <FONT COLOR="GREEN"><B>size</B></FONT></TD>
+  </TR>
+  <TR>
+    <TD COLSPAN="1">i</TD>
+    <TD BGCOLOR="salmon" COLSPAN="1">SCN</TD>
+    <TD BGCOLOR="salmon" COLSPAN="2">exceptional RETURN scenario</TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="LIGHTGREEN">current</TD>
+    <TD>read: <B>I<sub>a</sub></B> , <B>DEPLOYS</B> = <B>0/1</B> </TD>
+  </TR>
+  <TR>
+    <TD>i + 2</TD>
+    <TD>MISC</TD>
+    <TD></TD>
+    <TD>MXP🏴 = <B>1</B>, MXP/DEPLOYS = <B>DEPLOYS</B>, MXPX = <B><FONT COLOR="RED">1</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD>i + 3</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD>update return data &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+oogx_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>i - 1</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>excavate stack items: <FONT COLOR="BLUE"><B>offset</B></FONT>, <FONT COLOR="GREEN"><B>size</B></FONT></TD>
+  </TR>
+  <TR>
+    <TD COLSPAN="1">i</TD>
+    <TD BGCOLOR="salmon" COLSPAN="1">SCN</TD>
+    <TD BGCOLOR="salmon" COLSPAN="2">exceptional RETURN scenario</TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="LIGHTGREEN">current</TD>
+    <TD>read: <B>I<sub>a</sub></B> , <B>DEPLOYS</B> = <B>0/1</B> </TD>
+  </TR>
+  <TR>
+    <TD>i + 2</TD>
+    <TD>MISC</TD>
+    <TD></TD>
+    <TD>MXP🏴 = <B>1</B>, MXP/DEPLOYS = <B>DEPLOYS</B>, MXPX = <B><FONT COLOR="GREEN">0</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD>i + 3</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD>update return data &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+maxcsx_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>i - 1</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>excavate stack items: <FONT COLOR="BLUE"><B>offset</B></FONT>, <FONT COLOR="GREEN"><B>size</B></FONT></TD>
+  </TR>
+  <TR>
+    <TD COLSPAN="1">i</TD>
+    <TD BGCOLOR="SALMON" COLSPAN="1">SCN</TD>
+    <TD BGCOLOR="SALMON" COLSPAN="2">exceptional RETURN scenario</TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="LIGHTGREEN">current</TD>
+    <TD>read: <B>I<sub>a</sub></B> , <B>DEPLOYS</B> = <B>1</B> </TD>
+  </TR>
+  <TR>
+    <TD>i + 2</TD>
+    <TD>MISC</TD>
+    <TD></TD>
+    <TD>OOB🏴 = <B>1</B>, EVENT = <FONT COLOR="RED"><B>1</B></FONT> </TD>
+  </TR>
+  <TR>
+    <TD>i + 3</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD>update return data &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+invcpx_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>i - 1</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>excavate stack items: <FONT COLOR="BLUE"><B>offset</B></FONT>, <FONT COLOR="GREEN"><B>size</B></FONT></TD>
+  </TR>
+  <TR>
+    <TD COLSPAN="1">i</TD>
+    <TD BGCOLOR="salmon" COLSPAN="1">SCN</TD>
+    <TD BGCOLOR="salmon" COLSPAN="2">exceptional RETURN scenario</TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="LIGHTGREEN">current</TD>
+    <TD>read: <B>I<sub>a</sub></B> , <B>DEPLOYS</B> = <B>1</B> </TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i + 2</TD>
+    <TD ROWSPAN="2">MISC</TD>
+    <TD ROWSPAN="2"></TD>
+    <TD ROWSPAN="1">☢️ MXP🏴 = <B>1</B> ☢️, MXP/DEPLOYS = <B>DEPLOYS</B>, MXPX = <B><FONT COLOR="GREEN">0</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">MMU🏴 = <B>1</B>, MMU_INST = confirmInvalidCodePrefix, <B>INFO</B> = <FONT COLOR="RED"><B>1</B></FONT> </TD>
+  </TR>
+  <TR>
+    <TD>i + 3</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD>update return data &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+unexceptional_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>i - 1</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>excavate stack items: <FONT COLOR="BLUE"><B>offset</B></FONT>, <FONT COLOR="GREEN"><B>size</B></FONT></TD>
+  </TR>
+  <TR>
+    <TD COLSPAN="1">i</TD>
+    <TD BGCOLOR="salmon" COLSPAN="1">SCN</TD>
+    <TD BGCOLOR="salmon" COLSPAN="2">unexceptional RETURN scenario</TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="LIGHTGREEN">current</TD>
+    <TD>read: <B>I<sub>a</sub></B> , <B>DEPLOYS</B></TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="3">i + 2</TD>
+    <TD ROWSPAN="3">MISC</TD>
+    <TD ROWSPAN="3"></TD>
+    <TD ROWSPAN="1">MXP🏴 = <B>1</B>, MXP/DEPLOYS = <B>DEPLOYS</B>, MXPX = <B><FONT COLOR="GREEN">0</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">MMU🏴 = <B><FONT COLOR="SALMON">??? TBD ???</FONT></B> </TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">OOB🏴 = <B>DEPLOYS</B>, EVENT = <B><FONT COLOR="GREEN">0</FONT></B> </TD>
+  </TR>
+</TABLE>>];
+}
+

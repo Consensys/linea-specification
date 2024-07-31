@@ -1,0 +1,14 @@
+The constraint below imposes \textbf{small, positive jumps} (i.e. $0 < \col{jumps} \leq 256^{4}$) in the \ecdataId:
+\begin{enumerate}
+    \item \If $\ecDataStamp_{i + 1} \neq \ecDataStamp_i$ \Then
+	\[
+	    \ecdataId_{i + 1} = \ecdataId_{i} + 1 +
+	    \left[ \begin{array}{rcr}
+		+ 256 ^ {3} &\cdot& \byteCol{$\Delta$}_{i + 1} \\
+		+ 256 ^ {2} &\cdot& \byteCol{$\Delta$}_{i + 2} \\
+		+ 256 ^ {1} &\cdot& \byteCol{$\Delta$}_{i + 3} \\
+		+ 256 ^ {0} &\cdot& \byteCol{$\Delta$}_{i + 4} \\
+	    \end{array} \right]
+	\]
+\end{enumerate}
+\saNote{} We imposed that \ecdataId{} starts out at $0$. This imposes that the entries in the \ecdataId{} column are remain relatively small and be listed in ascending order.

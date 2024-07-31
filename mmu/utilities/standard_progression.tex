@@ -1,0 +1,10 @@
+The following constraint system is recurrent enough to warrant being singled out.
+It applies to micro-instruction limb offset columns (typically $\microTlo$ and / or $\microSlo$) that follow a simple and predictable progression during the micro-instruction phase counting monotonically from $0$ upwards.
+\[
+	\stdProgression_{i} \Big( \isMicro, \col{xlo} \Big)
+	\iff
+	\col{xlo}_{i} =
+	\isMicro_{i - 1}
+	\cdot (1 + \col{xlo}_{i - 1})
+\]
+\saNote{} The above will \textbf{always} be prefaced by a precondition ``\If $\isMicro_{i} = 1$ \Then $\cdots$''

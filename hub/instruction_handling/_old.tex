@@ -1,0 +1,347 @@
+\iffalse
+%%%%%%%%
+
+\subsection{Instructions raising the $\stackDecAddFlag$}
+\label{hub: instruction handling: Add}
+
+\[
+\begin{array}{|l||c||c|}
+	\hline
+	\INST		& \tli	& \stackDecAddFlag	\\ \hline\hline
+	\inst{ADD}	& \zero	& \one			\\ \hline
+	\inst{SUB}	& \zero	& \one			\\ \hline
+\end{array}
+\]
+
+\subsection{Instructions raising the $\stackDecModFlag$}
+\label{hub: instruction handling: Mod}
+
+\[
+\begin{array}{|l||c||c|}
+	\hline
+	\INST		& \tli	& \stackDecModFlag	\\ \hline\hline
+	\inst{DIV}	& \zero & \one			\\ \hline
+	\inst{SDIV}	& \zero & \one			\\ \hline
+	\inst{MOD}	& \zero & \one			\\ \hline
+	\inst{SMOD}	& \zero & \one			\\ \hline
+\end{array}
+\]
+
+\subsection{Instructions raising the $\stackDecMulFlag$}
+\label{hub: instruction handling: Mul}
+
+\[
+\begin{array}{|l||c||c|}
+	\hline
+	\INST			& \tli	& \stackDecMulFlag	\\ \hline\hline
+	\inst{ADDMOD}	& \zero	& \one			\\ \hline
+	\inst{MULMOD}	& \zero	& \one			\\ \hline
+\end{array}
+\]
+
+\subsection{Instructions raising the $\stackDecExtFlag$}
+\label{hub: instruction handling: Ext}
+
+\[
+\begin{array}{|l||c||c|}
+	\hline
+	\INST		& \tli	& \stackDecExtFlag	\\ \hline\hline
+	\inst{MUL}	& \zero & \one			\\ \hline
+	\inst{EXP}	& \zero & \one			\\ \hline
+\end{array}
+\]
+
+\subsection{Instructions raising the $\stackDecWcpFlag$}
+\label{hub: instruction handling: Wcp}
+
+\[
+\begin{array}{|l||c||c|c|}
+	\hline
+	\INST			& \tli	& \stackDecWcpFlag	& \decFlag{1}	\\ \hline\hline
+	\inst{LT}		& \zero & \one			& \zero			\\ \hline
+	\inst{GT}		& \zero & \one			& \zero			\\ \hline
+	\inst{SLT}		& \zero & \one			& \zero			\\ \hline
+	\inst{SGT}		& \zero & \one			& \zero			\\ \hline
+	\inst{EQ}		& \zero & \one			& \zero			\\ \hline
+	\inst{ISZERO}	& \zero & \one			& \one			\\ \hline
+\end{array}
+\]
+\saNote{} $\decFlag{1}$ singles out the only \wcpMod{}-instructions following the \oneZeroSP{}.
+
+\subsection{Instructions raising the $\stackDecBinFlag$}
+\label{hub: instruction handling: Bin}
+
+\[
+\begin{array}{|l||c||c|c|}
+	\hline
+	\INST				& \tli	& \stackDecBinFlag	& \decFlag{1}	\\ \hline\hline
+	\inst{AND}			& \zero	& \one			& \zero 		\\ \hline
+	\inst{OR}			& \zero	& \one			& \zero 		\\ \hline
+	\inst{XOR}			& \zero	& \one			& \zero 		\\ \hline
+	\inst{BYTE}			& \zero	& \one			& \zero 		\\ \hline
+	\inst{SIGNEXTEND}	& \zero	& \one			& \zero 		\\ \hline
+	\inst{NOT}			& \zero	& \one			& \one			\\ \hline
+\end{array}
+\]
+\saNote{} $\decFlag{1}$ singles out the only \binMod{}-instructions following the \oneZeroSP{}
+
+\subsection{Instructions raising the $\stackDecShfFlag$}
+\label{hub: instruction handling: Shf}
+
+\[
+\begin{array}{|l||c||c|}
+	\hline
+	\INST		& \tli	& \stackDecShfFlag	\\ \hline\hline
+	\inst{SHL}	& \zero	& \one			\\ \hline
+	\inst{SHR}	& \zero	& \one			\\ \hline
+	\inst{SAR}	& \zero	& \one			\\ \hline
+\end{array}
+\]
+
+\subsection{Instructions raising the $\stackDecKecFlag$}
+\label{hub: instruction handling: Kec}
+
+\[
+\begin{array}{|l||c||c||c|}
+	\hline
+	\INST		& \tli	& \stackDecKecFlag	& \stackDecMxpFlag	\\ \hline\hline
+	\inst{SHA3}	& \zero & \one			& \one			\\ \hline
+\end{array}
+\]
+
+\subsection{Instructions raising the $\stackDecConFlag$}
+\label{hub: instruction handling: Con}
+
+\[
+\begin{array}{|l||c||c|c|c|c|}
+	\hline
+	\INST					& \tli	& \stackDecConFlag	& \decFlag{1}	& \decFlag{2}	& \decFlag{3}	\\ \hline\hline
+	\inst{ADDRESS}			& \zero & \one			& \zero			& \zero			& \nothing		\\ \hline
+	\inst{CALLER}			& \zero & \one			& \zero			& \one			& \nothing		\\ \hline
+	\inst{CALLVALUE}		& \zero & \one			& \one			& \zero			& \zero			\\ \hline
+	\inst{CALLDATASIZE}		& \zero & \one			& \one			& \zero			& \one			\\ \hline
+	\inst{RETURNDATASIZE}	& \zero & \one			& \one			& \one			& \zero			\\ \hline
+\end{array}
+\]
+
+\subsection{Instructions raising the $\stackDecAccFlag$}
+\label{hub: instruction handling: Acc}
+
+\[
+\begin{array}{|l||c||c|c|c|c||c|}
+	\hline
+	\INST 				& \tli	& \stackDecAccFlag	& \decFlag{1} 	& \decFlag{2} 	& \decFlag{3}	& \trmFlag	\\ \hline\hline
+	\inst{BALANCE}		& \zero & \one			& \zero			& \zero			& \zero			& \one		\\ \hline
+	\inst{EXTCODESIZE}	& \zero & \one			& \zero			& \zero			& \one			& \one		\\ \hline
+	\inst{EXTCODEHASH}	& \zero & \one			& \zero			& \one			& \zero			& \one		\\ \hline
+	\inst{CODESIZE}		& \zero & \one			& \one			& \zero			& \nothing 		& \zero		\\ \hline
+	\inst{SELFBALANCE}	& \zero & \one			& \one			& \one			& \nothing 		& \zero		\\ \hline
+\end{array}
+\]
+
+\subsection{Instructions raising the $\stackDecCopyFlag$}
+\label{hub: instruction handling: Copy}
+
+\[
+\begin{array}{|l||c||c|c|c||c|c|}
+	\hline
+	\INST 					& \tli	& \stackDecCopyFlag	& \decFlag{1} 	& \decFlag{2}	& \stackDecTrmFlag	& \mxpFlag	\\ \hline\hline
+	\inst{CALLDATACOPY}		& \zero & \one			& \zero			& \zero			& \zero			& \one		\\ \hline
+	\inst{RETURNDATACOPY}	& \zero & \one			& \zero			& \one			& \zero			& \one		\\ \hline
+	\inst{CODECOPY}			& \zero & \one			& \one			& \zero			& \zero			& \one		\\ \hline
+	\inst{EXTCODECOPY}		& \zero & \one			& \one			& \one			& \one			& \one		\\ \hline
+\end{array}
+\]
+
+\subsection{Instructions raising the $\stackDecTxnFlag$}
+\label{hub: instruction handling: Txn}
+
+\[
+\begin{array}{|l||c||c|c|}
+	\hline
+	\INST			& \tli	& \stackDecTxnFlag	& \decFlag{1}	\\ \hline\hline
+	\inst{ORIGIN}	& \zero	& \one			& \zero			\\ \hline
+	\inst{GASPRICE}	& \zero	& \one			& \one			\\ \hline
+\end{array}
+\]
+
+\subsection{Instructions raising the $\stackDecBtcFlag$}
+\label{hub: instruction handling: Btc}
+
+\[
+\begin{array}{|l||c||c|c|}
+	\hline
+	\INST				& \tli	& \stackDecBtcFlag	& \decFlag{1}	\\ \hline\hline
+	\inst{COINBASE}		& \zero & \one			& \zero			\\ \hline
+	\inst{TIMESTAMP}	& \zero & \one			& \zero			\\ \hline
+	\inst{NUMBER}		& \zero & \one			& \zero			\\ \hline
+	\inst{PREVRANDAO}	& \zero & \one			& \zero			\\ \hline
+	\inst{GASLIMIT}		& \zero & \one			& \zero			\\ \hline
+	\inst{CHAINID}		& \zero & \one			& \zero			\\ \hline
+	\inst{BASEFEE}		& \zero & \one			& \zero			\\ \hline
+	\inst{BLOCKHASH}	& \zero & \one			& \one			\\ \hline
+\end{array}
+\]
+\saNote{} $\decFlag{1}$ singles out the only \oneOneSP{} instruction.
+
+\subsection{Instructions raising the $\stackDecStackRamFlag$}
+\label{hub: instruction handling: StackRam}
+
+\[
+\begin{array}{|l||c||c|c||c|c|}
+	\hline
+	\INST				& \tli	& \stackDecStackRamFlag	& \decFlag{1}	& \stackDecOobFlag	& \mxpFlag	\\ \hline\hline
+	\inst{CALLDATALOAD} & \zero	& \one				& \zero			& \one			& \zero		\\ \hline
+	\inst{MLOAD} 		& \zero	& \one				& \zero			& \zero			& \one		\\ \hline
+	\inst{MSTORE} 		& \zero	& \one				& \one			& \zero			& \one		\\ \hline
+	\inst{MSTORE8} 		& \zero	& \one				& \one			& \zero			& \one		\\ \hline
+\end{array}
+\]
+\saNote{} The $\stackDecStackRamFlag$-instructions which raise the $\decFlag{1}$ are those that pop two items off the stack.
+
+\subsection{Instructions raising the $\stackDecStoFlag$}
+\label{hub: instruction handling: Sto}
+
+\[
+\begin{array}{|l||c||c|c||c|}
+	\hline
+	\INST			& \tli	& \stackDecStoFlag	& \decFlag{1}	& \decStaticInst	\\ \hline\hline
+	\inst{SLOAD}	& \zero	& \one			& \zero			& \zero				\\ \hline
+	\inst{SSTORE}	& \zero	& \one			& \one			& \one				\\ \hline
+\end{array}
+\]
+\saNote{} Just as in section~\ref{hub: instruction handling: StackRam} the $\stackDecStoFlag$-instructions which raise the $\decFlag{1}$ are those that pop two items off the stack.
+
+\subsection{Instructions raising the $\stackDecJumpFlag$}
+\label{hub: instruction handling: Jump}
+
+\[
+\begin{array}{|l||c||c|c||c|}
+	\hline
+	\INST 			& \tli	& \stackDecJumpFlag	& \decFlag{1}	& \stackDecOobFlag	\\ \hline\hline
+	\inst{JUMP}		& \zero	& \one			& \zero			& \one			\\ \hline
+	\inst{JUMPI}	& \zero	& \one			& \one			& \one			\\ \hline
+\end{array}
+\]
+
+\subsection{Instructions raising the $\stackDecMachineStateFlag$}
+\label{hub: instruction handling: MachineState}
+
+\[
+\begin{array}{|l||c||c|c|c||c|}
+	\hline
+	\INST			& \tli 	& \stackDecMachineStateFlag	& \decFlag{1}	& \decFlag{2}	& \stackDecMxpFlag	\\ \hline\hline
+	\inst{PC}		& \zero & \one					& \zero			& \zero			& \zero			\\ \hline
+	\inst{MSIZE}	& \zero & \one					& \zero			& \one			& \one			\\ \hline
+	\inst{GAS}		& \zero & \one					& \one			& \zero			& \zero			\\ \hline
+	\inst{JUMPDEST}	& \zero & \one					& \one			& \one			& \zero			\\ \hline
+\end{array}
+\]
+
+\subsection{Instructions raising the $\stackDecPushPopFlag$}
+\label{hub: instruction handling: PushPop}
+
+\[
+\begin{array}{|l||c||c|c|}
+	\hline
+	\INST			& \tli	& \stackDecPushPopFlag	& \decFlag{1}	\\ \hline\hline
+	\inst{POP}		& \zero	& \one 				& \zero			\\ \hline
+	\inst{PUSH1-32}	& \zero	& \one				& \one			\\ \hline
+\end{array}
+\]
+
+\subsection{Instructions raising the $\stackDecDupFlag$}
+\label{hub: instruction handling: Dup}
+
+The \inst{DUP\_X}-instructions are all one line instructions (i.e. $\tli = 0$.) For instructions that conform to the \dupSP{} the value of $\inst{X}$ can be derived from the instruction via $\inst{X} = \INST - \inst{DUP1} + 1$. Locally within section~\ref{hub: stack patterns: dup} we use the shorthand $\param := \INST - \inst{DUP1} = \inst{X} - 1$.
+\[
+\begin{array}{|l||c||c|r|}
+	\hline
+	\INST			& \tli	& \stackDecDupFlag	& \param		\\ \hline\hline
+	\inst{DUP1-16}	& \zero	& \one			& \inst{X} - 1	\\ \hline
+\end{array}
+\]
+
+\subsection{Instructions raising the $\stackDecSwapFlag$}
+\label{hub: instruction handling: Swap}
+
+\[
+\begin{array}{|l||c||c|}
+	\hline
+	\INST			& \tli	& \stackDecSwapFlag	\\ \hline\hline
+	\inst{SWAP1-16}	& \zero	& \one			\\ \hline
+\end{array}
+\]
+
+\subsection{Instructions raising the $\stackDecLogFlag$}
+\label{hub: instruction handling: Log}
+
+\[
+\begin{array}{|l||c||c|c|c|c||c|c|}
+	\hline
+	\INST			& \tli	& \stackDecLogFlag	& \decFlag{1}	& \decFlag{2}	& \decFlag{3}	& \decStaticInst	& \stackDecMxpFlag	\\ \hline\hline
+	\inst{LOG0}		& \one	& \one			& \zero			& \zero			& \zero			& \one				& \one			\\ \hline
+	\inst{LOG1}		& \one	& \one			& \one			& \zero			& \zero			& \one				& \one			\\ \hline
+	\inst{LOG2}		& \one	& \one			& \one			& \zero			& \one			& \one				& \one			\\ \hline
+	\inst{LOG3}		& \one	& \one			& \one			& \one			& \zero			& \one				& \one			\\ \hline
+	\inst{LOG4}		& \one	& \one			& \one			& \one			& \one			& \one				& \one			\\ \hline
+\end{array}
+\]
+We treat \inst{LOG}-type instructions as $\TLI$ regardless of the fact that (strictly speaking) only \inst{LOG3} and \inst{LOG4} require 2 stack rows. The $\decFlag{1}$, $\decFlag{2}$, $\decFlag{3}$ flags distinguish between the five \inst{LOG}-type instructions.
+
+\subsection{Instructions raising the $\stackDecCreateFlag$}
+\label{hub: instruction handling: Create}
+
+\[
+\begin{array}{|l||c||c|c||c|c|}
+	\hline
+	\INST			& \tli	& \stackDecCreateFlag 	& \decFlag{1}	& \decStaticInst	& \stackDecMxpFlag	\\ \hline\hline
+	\inst{CREATE}	& \one	& \one				& \zero			& \one				& \one			\\ \hline
+	\inst{CREATE2}	& \one	& \one				& \one			& \one				& \one			\\ \hline
+\end{array}
+\]
+
+\subsection{Instructions raising the $\stackDecCallFlag$}
+\label{hub: instruction handling: Call}
+
+\[
+\begin{array}{|l||c||c|c|c||c|c|}
+	\hline
+	\INST				& \tli	& \stackDecCallFlag 	& \decFlag{1}	& \decFlag{2}	& \stackDecMxpFlag	& \decStaticInst	\\ \hline\hline
+	\inst{DELEGATECALL} & \one	& \one			& \zero			& \zero			& \one			& \zero				\\ \hline
+	\inst{STATICCALL} 	& \one	& \one			& \zero			& \one			& \one			& \zero				\\ \hline
+	\inst{CALL} 		& \one	& \one			& \one			& \zero			& \one			& \one				\\ \hline
+	\inst{CALLCODE} 	& \one	& \one			& \one			& \one			& \one			& \zero				\\ \hline
+\end{array}
+\]
+\saNote{} Within the instructions which raise the $\stackDecCallFlag$, \inst{CALL} and \inst{CALLCODE} (which transfer value and thus require 7 stack arguments) are distinguished by  $\decFlag{1} = 1$.
+
+\subsection{Instructions raising the $\stackDecHaltFlag$}
+\label{hub: instruction handling: Halt}
+
+\[
+\begin{array}{|l||c||c|c|c||c|}
+	\hline
+	\INST 				& \tli	& \stackDecHaltFlag 	& \decFlag{1}	& \decFlag{2}	& \stackDecMxpFlag	\\ \hline\hline
+	\inst{RETURN}		& \zero	& \one			& \zero			& \zero			& \one			\\ \hline
+	\inst{REVERT}		& \zero	& \one			& \zero			& \one			& \one			\\ \hline
+	\inst{STOP}			& \zero	& \one			& \one			& \zero			& \zero			\\ \hline
+	\inst{SELFDESTRUCT}	& \zero	& \one			& \one			& \one			& \zero			\\ \hline
+\end{array}
+\]
+
+\subsection{Instructions raising the $\stackDecInvalidFlag$}
+\label{hub: instruction handling: Invalid}
+
+\[
+\begin{array}{|l||c||c|c|}
+	\hline
+	\INST 				& \tli	& \stackDecInvalidFlag	& \decFlag{1}	\\ \hline\hline
+	\inst{INVALID}		& \zero	& \one				& \zero			\\ \hline
+	\inst{notOpCode}	& \zero	& \one				& \one			\\ \hline
+\end{array}
+\]
+\dots{} where \inst{notOpCode} stands for any byte that isn't an opcode.
+
+\fi
+%%%

@@ -1,0 +1,88 @@
+\[
+    \left\{ \begin{array}{l}
+        \callToWellFormedCoordinates{\relof}{\locBXImHi}{\locBXImLo}{\locBXReHi}{\locBXReLo}{\locBYImHi}{\locBYImLo}{\locBYReHi}{\locBYReLo}   \vspace{4mm} \\
+        \qquad \qquad \iff
+        \left\{ \begin{array}{l}
+                    % \callToLt
+                    % {i + \relof}
+                    % {\locBXImHi}{\locBXImLo}
+                    % {$\bnOuterPrimeHi$}{$\bnOuterPrimeLo$}                   \\
+                    \wcpCallToLt {
+                        anchorRow = i                     ,
+                        relOffset = \relof                ,
+                        argOneHi  = \locBXImHi            ,
+                        argOneLo  = \locBXImLo            ,
+                        argTwoHi  = \bnOuterPrimeHi  ,
+                        argTwoLo  = \bnOuterPrimeLo   ,
+                    }                                                                   \\
+                    \locBXImIsInRange \define \wcpRes_{i+\relof}                        \\
+                    %
+                    % \callToLt
+                    % {i + \relof+1}
+                    % {\locBXReHi}{\locBXReLo}
+                    % {$\bnOuterPrimeHi$}{$\bnOuterPrimeLo$}                   \\
+                    \wcpCallToLt {
+                        anchorRow = i                     ,
+                        relOffset = \relof+1              ,
+                        argOneHi  = \locBXReHi            ,
+                        argOneLo  = \locBXReLo            ,
+                        argTwoHi  = \bnOuterPrimeHi  ,
+                        argTwoLo  = \bnOuterPrimeLo   ,
+                    }                                                                   \\
+                    \locBXReIsInRange \define \wcpRes_{i+\relof+1}                      \\
+                    %
+                    % \callToLt
+                    % {i + \relof+2}
+                    % {\locBYImHi}{\locBYImLo}
+                    % {$\bnOuterPrimeHi$}{$\bnOuterPrimeLo$}                   \\
+                    \wcpCallToLt {
+                        anchorRow = i                     ,
+                        relOffset = \relof+2              ,
+                        argOneHi  = \locBYImHi            ,
+                        argOneLo  = \locBYImLo            ,
+                        argTwoHi  = \bnOuterPrimeHi  ,
+                        argTwoLo  = \bnOuterPrimeLo   ,
+                    }                                                                   \\
+                    \locBYImIsInRange \define \wcpRes_{i+\relof+2}                      \\
+                    %
+                    % \callToLt
+                    % {i+\relof+3}
+                    % {\locBYReHi}{\locBYReLo}
+                    % {$\bnOuterPrimeHi$}{$\bnOuterPrimeLo$}                   \\
+                    \wcpCallToLt {
+                        anchorRow = i                     ,
+                        relOffset = \relof+3              ,
+                        argOneHi  = \locBYReHi            ,
+                        argOneLo  = \locBYReLo            ,
+                        argTwoHi  = \bnOuterPrimeHi  ,
+                        argTwoLo  = \bnOuterPrimeLo   ,
+                    }                                                                   \\
+                    \locBYReIsInRange \define \wcpRes_{i+\relof+3}                      \\
+                    %\vspace{1mm}                                                        \\
+                    %
+                    \locBXIsInRange \define \hurdle_{i + \relof + 2}                    \\
+                    \locBYIsInRange \define \hurdle_{i + \relof + 1}                    \\
+
+                    \locWellFormedCoordinates \define \hurdle_{i + \relof}              \\
+                    \vspace{1mm}
+                    %
+                    \locBXIsInRange = \locBXImIsInRange \cdot \locBXReIsInRange         \\
+                    \locBYIsInRange =  \locBYImIsInRange \cdot \locBYReIsInRange        \\
+                    \locWellFormedCoordinates = \locBXIsInRange \cdot \locBYIsInRange   \\
+                    \vspace{1mm}
+                    %
+                    \locVeryLargeSum  \define
+                    \left[ \begin{array}{r}
+                           + \locBXImHi + \locBXReHi + \locBYImHi + \locBYReHi \\
+                           + \locBXImLo + \locBXReLo + \locBYImLo + \locBYReLo \\
+                       \end{array} \right]          \\
+                    \locBXbYIsInfinity  \define  \isInfinity_{i+\relof}                 \\
+                    \If \locWellFormedCoordinates = 0 ~ \Then \locBXbYIsInfinity = 0    \\
+                    \If \locWellFormedCoordinates = 1 ~ \Then                           \\
+                    \qquad \If \locVeryLargeSum =    0  ~ \Then  \locBXbYIsInfinity = 1 \\
+                    \qquad \If \locVeryLargeSum \neq 0  ~ \Then  \locBXbYIsInfinity = 0 \\
+                \end{array} \right.
+    \end{array} \right.
+\]
+%
+\saNote{} $\hurdle_{\relof}$ is expected to contain the final result. Intermediate results are contained in the subsequents rows, potentially up to $\relof + 5$.

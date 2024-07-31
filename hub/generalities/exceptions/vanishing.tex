@@ -1,0 +1,17 @@
+\begin{center}
+	\boxed{\text{All constraints in this section are written under the assumption } \peekStack_{i} = 1.}
+\end{center}
+What follows are constraints preventing certain instruction families from triggering certain exceptions.
+Thus reducing the complexity of the ``exception analysis'' required in the instruction handling.
+\begin{enumerate}
+	\item $\stackOpcx    _{i} = \stackDecInvalidFlag_{i}$
+	\item \If $\stackDecMxpFlag_{i}     = 0$ \Then $\stackMxpx    _{i} = 0$
+	\item \If $\stackDecJumpFlag_{i}    = 0$ \Then $\stackJumpx   _{i} = 0$
+	\item \If $\decStaticInst_{i}  = 0$ \Then $\stackStaticx _{i} = 0$
+	\item \If $\stackInst_{i} \neq \inst{RETURNDATACOPY}$ \Then $ \stackRdcx_{i}    = 0 $
+	\item \If $\stackInst_{i} \neq \inst{SSTORE}$         \Then $ \stackSstorex_{i} = 0 $
+	\item \If $\stackInst_{i} \neq \inst{RETURN}$         \Then $ \stackIcpx_{i} + \stackMaxcsx_{i} = 0 $
+\end{enumerate}
+\saNote{}
+More details will be given about $\stackIcpx$ and $\stackMaxcsx$ in section~(\ref{hub: instruction handling: halt: revert}). 
+Indeed, these exceptions can only apply in deployment contexts and the first one requires a nonzero \col{size} argument for the \inst{RETURN} instruction. 

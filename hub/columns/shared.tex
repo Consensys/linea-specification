@@ -1,0 +1,165 @@
+\begin{enumerate}
+	\item \absTxNum{}: monotone column containing the \ABSTXNUM{};
+	\item \batchNum{}: transaction-constant column containing the \BATCHNUM{};
+\end{enumerate}
+\saNote{} The \batchNum{} is extracted through a lookup to the \textbf{transaction data} module, see section~\ref{hub: heartbeat: absTxNum and batchNum}.
+
+\noindent The following are binary colums indicating the transaction processing phase currently unfolding.
+\begin{enumerate}[resume]
+	\item \TXSKIP{}:
+		binary column which is on \emph{if and only if} a transaction processing requires no code execution; abbreviated to \txSkip{};
+	\item \TXWARM{}:
+		binary column which is on \emph{if and only if} a transaction is currently is in the prewarming phase; abbreviated to \txWarm{};
+	\item \TXINIT{}:
+		binary column which is on \emph{if and only if} a transaction is currently is in the initialization phase; abbreviated to \txInit{};
+	\item \TXEXEC{}:
+		binary column which is on \emph{if and only if} a transaction is currently is in the execution phase; abbreviated to \txExec{};
+	\item \TXFINL{}:
+		binary column which is on \emph{if and only if} a transaction is currently is in the finalization phase; abbreviated to \txFinl{};
+\end{enumerate}
+Rows $i$ that satisfy $\txSkip_{i} = 1$ are called \textbf{skipping rows}. We similarly define
+\textbf{prewarming rows} ($\txWarm_{i} = 1$),
+\textbf{initialization rows} ($\txInit_{i} = 1$),
+\textbf{execution rows} ($\txExec_{i} = 1$) and
+\textbf{finalization rows} ($\txFinl_{i} = 1$].
+The following columns, starting with $\hubStamp$ provide a finer comb with which to sift through rows. 
+\begin{enumerate}[resume]
+	\item $\hubSTAMP$: module stamp for the hub; abbreviated to \hubStamp{};
+	\item \TXENDSTAMP{}: transaction-constant column logging the final \hubStamp{} which appears in the hub executing a particular transaction; abbreviated to \txEndStamp{};
+\end{enumerate}
+The following columns pertain to execution contexts. Every execution context has a unique identifier, a nonzero context number, and several environment variables. 
+\begin{enumerate}[resume]
+	\item $\CONTEXTMAYCHANGE$:
+		$\hubStamp{}$-constant binary column which turns on \emph{if and only if} the present execution context may change as a result of the present instruction; abbreviated to \cmc{};
+	\item $\XAHOY$:
+		$\hubStamp{}$-constant binary column which turns on \emph{if and only if} the present instruction triggers an exception; abbreviated to $\xAhoy$;
+\end{enumerate}
+Within execution rows context numbers \emph{may} only change when the $\cmc$ flag is set. This happens \emph{precisely} when encountering an \textbf{exceptional halting condition} (henceforth simply \textbf{exception}), a \textbf{halting instruction}, a \textbf{\inst{CALL}-type} or \textbf{\inst{CREATE}-type} instruction, see section~\ref{hub: generalities: execution context may change flag}, executing on a \inst{CREATE} or \inst{CREATE2} instruction.
+
+We introduce stamp columns that pertain to memory expansion and to calls to \textsc{ram}
+\begin{enumerate}[resume]
+	\item $\logStamp$:
+		stamp column; increments with every (unexceptional, unreverted) \inst{LOG}-type instruction; 
+	\item $\mmuStamp$:
+		stamp column; increments when an instruction is launched which triggers the memory management unit module (i.e. the \mmuMod{} module);
+	\item $\mxpStamp$:
+		stamp column; increments when an instruction is launched which triggers the memory expansion module (i.e. the \mxpMod{} module);
+	\item $\domStamp$ and $\subStamp$:
+		pair of stamp columns; used to prepare events for future execution; 
+\end{enumerate}
+The $\oobFlag$ may only turn on for instructions that may go out of bounds. These instructions are
+(\emph{a}) \inst{CALLDATALOAD} where the comparison is done against the call data size;
+(\emph{b}) \inst{RETURNDATALOAD} where the comparison is done against the return data size;
+(\emph{c}) \inst{JUMP} and \inst{JUMPI} where the comparison is done against the code size;
+\ob{TODO: make sure list is exhaustive}
+\begin{enumerate}[resume]
+	\item $\cn{}$ and $\cn{}\new$:
+		$\hubStamp{}$-constant columns containing the current and upcoming context number;
+	\item $\caller{}$:
+		context-constant column containing the context number of the caller;
+\end{enumerate}
+In most circumstances one has $\cn{} = \cn{}\new$: that is: the (execution) context wherein the next instruction is executed coincides with the current one. In fact, unless the \CONTEXTMAYCHANGE{} flag is set the above always holds. The cases where those two differ is whenever properly entering a new execution context (e.g. when starting a transaction, or when entering a new context with a \inst{CREATE}-type or \inst{CALL}-type instruction) or, on the other hand, when (permanently) exiting an execution context (e.g. when encountering an exception or a halting instruction.) 
+\begin{enumerate}[resume]
+	\item $\cnWillRev$, $\cnGetsRev$, $\cnSelfRev$:
+		context-constant binary columns;
+	\item $\cnRevStamp$:
+		context-constant column containing the time stamp at which the present context reverts; $\cnRevStamp \neq 0 \iff \cnWillRev = 1$;
+\end{enumerate}
+We will impose that
+$\cnWillRev = 1$ \emph{iff} the present execution contexts reverts, for one reason or another;
+$\cnGetsRev = 1$ \emph{iff} the parent execution contexts reverts;
+$\cnSelfRev = 1$ \emph{iff} the present execution contexts reverts through its own fault (eiter by encountering an exception or successfully executing on a \inst{REVERT}). We will impose the following constraints:
+\begin{IEEEeqnarray*}{LCL}
+	\cnWillRev = 1 
+	& \iff & \big[\cnGetsRev = 1\big] \vee \big[\cnSelfRev = 1\big] \\
+	& \iff & \cnRevStamp \neq 0
+\end{IEEEeqnarray*}
+Knowing whether a rollback of all changes resulting from the execution of a particular (execution) context is the ``fault'' of that context or of some parent context isn't, \emph{a priori}, as important as knowing whether these changes should be rolled back or not. What \emph{is} important, though, is knowing \emph{when} to undo said changes. This crucial piece of information is deduced, in our arithmetization, from $\cnRevStamp$. The purpose of this colums is to record the $\hubStamp{}$ at the point at which the relevant reverting condition (an exception or the \inst{REVERT} opcode) is encountered. Note that when an execution context ``inherits''  a rollback from a parent context (i.e. $\cnGetsRev = 1$ \et $\cnSelfRev = 0$) \textbf{it inherits its parent's $\cnRevStamp$}. On the other hand when an execution context is ``responsible'' for its own rollback (i.e. $\cnSelfRev = 1$) \textbf{it sets its own $\cnRevStamp$}\footnote{and passes it on to each of its direct descendant context(s) who will similarly revert, either by virtue of their parent reverting or at their own hand.}  Our arithmetization ensures all relevant (i.e. revertible) changes are undone precisely when $\hubStamp = \cnRevStamp$ and in \emph{reverse chronological order of occurrence}. The arithmetization achieves this by earmarking revertible events as they happen. This is the purpose of the $\domStamp{}$ / $\subStamp{}$ pair. 
+\begin{enumerate}[resume]
+	\item \cfi: context-constant column; contains the code fragment index of the bytecode being run in the current execution context; 
+	\item \pc{} and $\pc\new$: stamp-constant columns containing the current \textbf{program counter} and its (expected) next value;
+	\item \height{} and $\height\new$:
+		contains the current and updated stack heights of the current execution context;
+		the height is in the range $\{0,1,\dots,1024\}$; $\stackHeight{}=0$ signifies an empty stack;
+\end{enumerate}
+The \CFI{} is an integer uniquely associated, in the \romLexMod{} module, with an \textbf{address}, a \textbf{deployment number} and a \textbf{deployment status}. It uniquely identifies a code fragment in the \romMod{} module. The $\pc\new$ column is included for sheer convenience. The temporal execution of the \textsc{evm} has all required data to justify the next value of the program counter (which may change non trivially with \inst{JUMP} and \inst{JUMPI} instructions and will need to resume correctly when resuming execution after a \inst{CALL}-type or \inst{CREATE}-type instruction.)
+The following binary columns serve as indicators of what data is on display on any non-padding row. Every row either displays (and may modify) data from one of several data stores:
+(\emph{a}) \textbf{context-rows} display \textbf{context data} and are characterized by $\peekContext \equiv 1$
+(\emph{b}) \textbf{account-rows} display \textbf{account data} and are characterized by $\peekAccount \equiv 1$
+(\emph{c}) \textbf{storage-rows} display \textbf{storage data} and are characterized by $\peekStorage \equiv 1$
+(\emph{d}) \textbf{stack rows} display \textbf{stack data} and are characterized by $\peekStack \equiv 1$
+(\emph{e}) \textbf{transaction-rows} display \textbf{transaction data} and are characterized by $\peekTransaction \equiv 1$
+(\emph{f}) \textbf{miscellaneous-rows} log data to be externalized for further processing to other modules; they are characterized by $\peekMisc \equiv 1$
+(\emph{g}) \textbf{scenario-rows} are used to simplify the control flow of complex instructions.
+\begin{enumerate}[resume]
+	\item $\PEEKSTACK$:
+		binary column which switches on \emph{if and only if} the current row peeks into stack data; 
+		abbreviated to $\peekStack$;
+	\item $\PEEKCONTEXT$:
+		binary column which switches on \emph{if and only if} the current row peeks into context data; 
+		abbreviated to $\peekContext$;
+	\item $\PEEKACCOUNT$:
+		binary column which switches on \emph{if and only if} the current row peeks into account data (from which we \emph{exclude} storage data); 
+		abbreviated to $\peekAccount$;
+	\item $\PEEKSTORAGE$:
+		binary column which switches on \emph{if and only if} the current row peeks into the (presently executing) account's storage; 
+		abbreviated to $\peekStorage$;
+	\item $\PEEKTRANSACTION$:
+		binary column which switches on \emph{if and only if} the current row peeks into transaction data; 
+		abbreviated to $\peekTransaction$;
+	\item $\PEEKMISC$:
+		binary column which switches on \emph{if and only if} the current row peeks into transaction data; 
+		abbreviated to $\peekMisc$;
+	\item $\PEEKSCENARIO$:
+		binary column which switches on \emph{if and only if} the current row peeks into transaction data; 
+		abbreviated to $\peekScenario$;
+\end{enumerate}
+\noindent We list some gas columns:
+\begin{enumerate}[resume]
+	\item $\gasExpected$:
+		stamp-constant column; contains the ``expected'' currently available  gas amount prior to instruction processing;
+	\item $\gasActual$:
+		stamp-constant column; contains the ``actual'' available  gas amount prior to instruction processing;
+	\item $\gasCost$:
+		stamp-constant column; contains the ``upfront'' gas cost of an instruction;
+	\item $\gasNext$:
+		stamp-constant column; contains the gas amount which is expected to remain after instruction processing\footnote{and prior to any ``remaining gas refunds''}
+	\item $\refund$, $\refund\new$:
+		 stamp-constant columns; contain the cumulative gas refund up to this point as well as the updated value;
+\end{enumerate}
+The idea behind these gas columns is as follows.
+Anytime an instruction begins processing the current execution context (CEC) has an expectation as to how much gas it ``currently owns\footnote{i.e. prior to any refunds or expenses}.'' This is $\gasExpected$.
+As we shall explain shortly, this \emph{expected} gas amount may not always reflect to the \emph{actual} gas amount available to the instruction. The $\gasActual$ column thus contains this ``actual gas amount.''
+The $\gasCost$ column holds the \emph{upfront gas cost} of an instruction. This gas cost is the sum of various gas expenses\footnote{Static and dynamic gas costs e.g. memory expansion cost, costs related to address / storage key warmth, any gas endowment passed on to a child contexts spawned by the current instruction \dots{}}. Thus when we check for $\oogxSH$ we shall always compare $\gasActual$ and $\gasCost$.
+The $\gasNext$ column contains the gas amount the CEC expects to have at its disposal the next time an instruction executes. Whenever it makes sense it stores $\gasActual- \gasCost$, but it may also be set to 0 under certain conditions\ob{TODO: now that I've spelled it out in full, it seems this column is completely and utterly useless.}
+Finally the \gasStipend{} column contains the amount of gas which may be provided to a child context spawned through a \inst{CALL}-type or \inst{CREATE}-type instruction. 
+
+We now go into slightly more detail. Whenever a new execution context is spawned $\gasExpected$ is set \emph{manually}. This can happen in two ways: 
+(\emph{a})
+at the start of a transaction
+(\emph{b})
+through a \inst{CALL}-type or \inst{CREATE}-type instruction.
+In all other cases it is set using the previously valid value of $\gasNext$. Let us expand on this point. There are two cases.
+The first (and most common) case is that the current instruction \emph{and} the previously executed instruction take place in the same execution context. In this case we set $\gasExpected$ is set to the previous value of $\gasNext$ (which can be found in the \emph{previous row}.)
+The second (and final) case happens when the present row marks the reprisal of execution\footnote{within the current context} after a direct descendant context encountered a halting condition. In that case the value of $\gasExpected$ is set to $\gasNext$ from the last instruction executed in the present context (and which spawned the execution context from whence execution just returned.) This value (which may be \emph{anywhere among past rows} of the trace) must be confirmed by means of a row permutation. This permutation must juxtapose, in order of ascending context numbers and in chronological order, all rows pertaining to a given execution context.
+We further note that it is the perview of the \stpMod{} module to compute the \gasStipend{} column whenever applicable.
+
+Note that the "the reprisal of execution" case is also when $\gasExpected$ may differ from $\gasActual$, as this is when ``remaining gas refunds'' can be added to $\gasExpected$.
+
+The following are two sets of ``counter/maximal counter value'' columns. Within execution rows the counters $\ct$ and $\nonStackRowsCounter$ impose at what point the \hubStamp{} changes (i.e. increases by $1$.)
+\begin{enumerate}[resume]
+	\item $\tli{}$:
+		stamp-constant binary column;
+	\item $\ct$:
+		binary counter column;
+	\item $\nonStackRows$:
+		stamp-constant column containing the number of non stack-rows required for the present instruction;
+	\item $\nonStackRowsCounter$:
+		counter; remains constant while $\ct\neq\tli$ and the counts up until $\nonStackRows$;
+\end{enumerate}
+The pairs
+$\ct$/$\tli$ and  $\nonStackRowsCounter$/$\nonStackRows$ pairs only matter along execution rows. Along execution rows an instruction occupies precisely
+\[
+	\big( 1 + \tli \big) + \nonStackRows
+\]
+individual rows. $\tli$ is instruction decoded (on stack rows.) It indicates whether dealing with the instruction requires one stack row or two. Thus, along stack rows $\ct$ counts from $0$ to $\tli$. $\nonStackRows$ is constructed by hand on stack rows ($\tli$ is shorthand for $\TLI{}$.) It indicates how many (if any) non stack-rows are required to deal with the instruction at hand. As soon as $\ct$ reaches $\tli$ the $\nonStackRowsCounter$ column starts counting up from $1$ to $\nonStackRows$.

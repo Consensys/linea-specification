@@ -1,0 +1,93 @@
+\documentclass[tikz, border = 1cm]{standalone}
+\usepackage{xcolor}
+\usepackage{fontawesome}
+\usepackage{amsmath}
+\usepackage{../../../../pkg/draculatheme}
+\usepackage{../../../../pkg/common}
+\usepackage{../../../../pkg/env}
+\usepackage{../../../../pkg/exceptions}
+\usepackage{../../../../pkg/flags_stamps_selectors}
+\usetikzlibrary{arrows.meta}
+\begin{document}
+\input{hub/instruction_handling/create/_local}
+\begin{tikzpicture}
+\def\BAS   {-3}
+\def\Bas   {-2.5}
+\def\bas   {-2}
+\def\droite{ 3.5}
+\def\Droite{ 6.5}
+\def\gauche{-3.5}
+\def\Gauche{-6.5}
+
+  \begin{scope}[every node/.style={rectangle, thick, draw, rounded corners = 3pt, inner sep = 6pt, outer sep = 4pt}]
+    \node                                                               [draw=draculapurple] (sux)                           at (0,0)                                                          {\suxSH};
+    \path (sux)                           ++ (0,\Bas)               node[draw=red]           (exception)                     {\begin{tabular}{c} exception\\ $\xAhoy \equiv 1$\end{tabular}};
+    \path (exception)                     ++ (0,\Bas)               node[draw=orange]        (abort)                         {\begin{tabular}{c} aborting condition\\ $\locOobAbortingCondition \equiv 1$\end{tabular}};
+    \path (abort)                         ++ (0,\Bas)               node[draw=yellow]        (failure condition)             {\begin{tabular}{c} failure condition $F$\\ $\locOobFailureCondition \equiv 1$\end{tabular}};
+    \path (failure condition)             ++ (0,\Bas)               node[draw=draculagreen]  (entry)                         {entry};
+    \path (entry)                         ++ (\gauche, \bas)        node[draw=draculagreen]  (empty)                         {\begin{tabular}{c} empty\\init code\end{tabular}};
+    \path (entry)                         ++ (\droite, \bas)        node[draw=draculagreen]  (nonempty)                      {\begin{tabular}{c} nonempty\\init code\end{tabular}};
+  \end{scope}
+
+  \begin{scope}[every node/.style={rectangle, thick, draw, rounded corners = 3pt, inner sep=6pt, outer sep = 4pt}]
+    \path (exception)                     ++ (\Droite,0)                        node [draw = draculacomment] (staticx)                       {\staticxSH};
+    \path (staticx)                       ++ (0,\bas)                           node [draw = draculacomment] (mxpx)                          {\mxpxSH};
+    \path (mxpx)                          ++ (0,\bas)                           node [draw = draculacomment] (oogx)                          {\oogxSH};
+    \path (failure condition)             ++ (\Gauche,0)                        node [draw = draculacomment] (failure condition will revert) {will revert};
+    \path (failure condition will revert) ++ (0,\bas)                           node [draw = draculacomment] (failure condition wont revert) {won't revert};
+    \path (empty)                         ++ (0,\Bas) ++ (0,\Bas) ++ (0,\bas)   node [draw = draculacomment] (empty success)                 {success};
+    \path (empty success)                 ++ (\gauche,0)                        node [draw = draculacomment] (empty success will revert)     {will revert};
+    \path (empty success will revert)     ++ (0,\bas)                           node [draw = draculacomment] (empty success wont revert)     {won't revert};
+    \path (nonempty)                      ++ (0,\Bas)                           node [draw = draculacomment] (nonempty failure)              {failure};
+    \path (nonempty failure)              ++ (\droite,0)                        node [draw = draculacomment] (nonempty failure will revert)  {will revert};
+    \path (nonempty failure will revert)  ++ (0,\bas)                           node [draw = draculacomment] (nonempty failure wont revert)  {won't revert};
+    \path (nonempty failure)              ++ (0,\Bas) ++ (0,\bas)               node [draw = draculacomment] (nonempty success)              {success};
+    \path (nonempty success)              ++ (\droite,0)                        node [draw = draculacomment] (nonempty success will revert)  {will revert};
+    \path (nonempty success will revert)  ++ (0,\bas)                           node [draw = draculacomment] (nonempty success wont revert)  {won't revert};
+\end{scope}
+
+\iffalse
+\ref{hub: instruction handling: create: lua: staticx}
+\ref{hub: instruction handling: create: lua: mxpx}
+\ref{hub: instruction handling: create: lua: oogx}
+\ref{hub: instruction handling: create: lua: unexceptional}
+\ref{hub: instruction handling: create: lua: abort}
+\ref{hub: instruction handling: create: lua: will revert}
+\ref{hub: instruction handling: create: lua: wont revert}
+\ref{hub: instruction handling: create: lua: will revert}
+\ref{hub: instruction handling: create: lua: wont revert}
+\ref{hub: instruction handling: create: lua: failure will revert}
+\ref{hub: instruction handling: create: lua: failure wont revert}
+\ref{hub: instruction handling: create: lua: success will revert}
+\ref{hub: instruction handling: create: lua: success wont revert}
+\fi
+
+\begin{scope}[>={latex[draculacomment]},
+              every node/.style={},
+              every edge/.style={draw=draculacomment,very thick}]
+    \path (sux) ++ (\Gauche, 1) node (create type inst) [color=draculacomment] {\Large{\inst{CREATE}-type instruction}};
+    \path [->] (create type inst.357)                 edge (sux.north west);
+    \path [->] (sux)                                  edge (exception);
+    \path [->] (exception)                            edge (staticx);
+    \path [->] (exception)                            edge (abort);
+    \path [->] (staticx)                              edge (mxpx);
+    \path [->] (mxpx)                                 edge (oogx);
+    \path [->] (abort)                                edge (failure condition);
+    \path [->] (failure condition)                    edge (failure condition will revert);
+    \path [->] (failure condition will revert)        edge (failure condition wont revert);
+    \path [->] (failure condition)                    edge (entry);
+    \path [->] (entry)                                edge (empty);
+    \path [->] (empty)                                edge (empty success);
+    \path [->] (empty success)                        edge (empty success will revert);
+    \path [->] (empty success will revert)            edge (empty success wont revert);
+    \path [->] (entry)                                edge (nonempty);
+    \path [->] (nonempty)                             edge (nonempty failure);
+    \path [->] (nonempty failure)                     edge (nonempty failure will revert);
+    \path [->] (nonempty failure will revert)         edge (nonempty failure wont revert);
+    \path [->] (nonempty failure)                     edge (nonempty success);
+    \path [->] (nonempty success)                     edge (nonempty success will revert);
+    \path [->] (nonempty success will revert)         edge (nonempty success wont revert);
+\end{scope}
+
+\end{tikzpicture}
+\end{document}

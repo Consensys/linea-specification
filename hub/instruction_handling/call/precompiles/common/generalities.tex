@@ -1,0 +1,355 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below assume that }
+		\left\{ \begin{array}{lcl}
+			\peekScenario         _{i} & = & 1 \\
+			\scenPrecompileCommon _{i} & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+We are thus assuming that the present row is the first of the second phase of dealing with the 
+\inst{ECRECOVER},
+\inst{SHA2-256},
+\inst{RIPEMD-160},
+\inst{ECADD},
+\inst{ECMUL} or
+\inst{ECPAIRING}
+precompiles.
+We know that the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcCommonMiscRowOffset)$.
+\begin{description}
+	\item[\underline{Miscellaneous row $n^°(i + \prcCommonMiscRowOffset)$:}] we impose
+		\begin{description}
+			\item[\underline{Setting lookup flags:}]
+				we impose that
+				\[
+					\weightedMiscFlagSum
+					{i}{\prcCommonMiscRowOffset}
+					=
+					\left[ \begin{array}{clcl}
+						+ & \miscMmuWeight & \cdot & \locOobResultExtractCallData \\
+						+ & \miscOobWeight \\
+					\end{array} \right]
+				\]
+				in other words
+				\[
+					\left\{ \begin{array}{lclr}
+						\miscExpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       & (\trash) \\
+						\miscMmuFlag _{i + \prcCommonMiscRowOffset} & = & \locOobResultExtractCallData & (\trash) \\
+						\miscMxpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       & (\trash) \\
+						\miscOobFlag _{i + \prcCommonMiscRowOffset} & = & \one                         & (\trash) \\
+						\miscStpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       & (\trash) \\
+					\end{array} \right.
+				\]
+				\saNote{}
+				The shorthand \locOobResultExtractCallData{} will be defined shortly.
+				It is gleaned from one of the outputs of the call to the \oobMod{} module (which is systematically triggered given the above.)
+			\item[\underline{Setting \oobMod{} instruction:}] 
+				we populate the \oobMod{} columns:
+				\[
+					\setOobInstructionCommon {
+						anchorRow        = i,
+						relOffset        = \prcCommonMiscRowOffset,
+						oobInstruction   = \locOobInst,
+						callGas          = \locPrcCallGas,
+						callDataSize     = \locPrcCds,
+						returnAtCapacity = \locPrcRac,
+					}
+				\]
+				where
+				\[
+					\locOobInst \define
+					\left[ \begin{array}{crcl}
+						+ & \oobInstEcrecover & \cdot & \scenEcrecover     _{i} \\ 
+						+ & \oobInstShaTwo    & \cdot & \scenShaTwo        _{i} \\ 
+						+ & \oobInstRipemd    & \cdot & \scenRipemd        _{i} \\ 
+						+ & \oobInstIdentity  & \cdot & \scenIdentity      _{i} \\ 
+						+ & \oobInstEcadd     & \cdot & \scenEcadd         _{i} \\ 
+						+ & \oobInstEcmul     & \cdot & \scenEcmul         _{i} \\ 
+						+ & \oobInstEcpairing & \cdot & \scenEcpairing     _{i} \\ 
+					\end{array} \right]
+				\]
+			\item[\underline{Defining \oobMod{} shorthands:}] 
+				We also define the following shorthands
+				\[
+					\left\{ \begin{array}{lcl} \label{hub: instruction handling: call: precompiles: common: shorthands}
+						% & \define & \miscOobDataCol{1}_{i + \prcCommonMiscRowOffset} \\
+						% & \define & \miscOobDataCol{2}_{i + \prcCommonMiscRowOffset} \\
+						% & \define & \miscOobDataCol{3}_{i + \prcCommonMiscRowOffset} \\
+						\locOobResultHubSuccess      & \define & \miscOobDataCol{4}_{i + \prcCommonMiscRowOffset} \\
+						\locOobResultReturnGas       & \define & \miscOobDataCol{5}_{i + \prcCommonMiscRowOffset} \\
+						\locOobResultExtractCallData & \define & \miscOobDataCol{6}_{i + \prcCommonMiscRowOffset} \\
+						\locOobResultEmptyCallData   & \define & \miscOobDataCol{7}_{i + \prcCommonMiscRowOffset} \\
+						\locOobResultNonzeroRac      & \define & \miscOobDataCol{8}_{i + \prcCommonMiscRowOffset} \\
+					\end{array} \right.
+				\]
+				\saNote{}
+				We refer the reader to the relevant section in the \oobMod{} module, in particular section~(\ref{oob: populating: common precompiles}).
+
+				\saNote{} We have, by construction and by the computation in the \oobMod{} module, the following relations:
+				\[
+					\left\{ \begin{array}{lclr}
+						\locOobResultHubSuccess      & \equiv & \text{binary} & \quad (\trash)              \\
+						\locOobResultExtractCallData & \equiv & \text{binary} & \quad (\trash)              \\
+						\locOobResultEmptyCallData   & \equiv & \text{binary} & \quad (\trash) \vspace{2mm} \\
+						\multicolumn{3}{l}{\locOobResultExtractCallData + \locOobResultEmptyCallData = \locOobResultHubSuccess} & (\trash) \\
+					\end{array} \right.
+				\]
+			\item[\underline{Setting \mmuMod{} instruction:}]
+				\If $\miscMmuFlag_{i + \prcCommonMiscRowOffset} = 1$ \Then we impose that
+				\begin{enumerate}
+					\item \If $\scenIdentity _{i} = 1$ \Then
+						\[
+							\setMmuInstructionParametersRamToRamSansPadding {
+								anchorRow       = i                       ,
+								relOffset       = \prcCommonMiscRowOffset ,
+								sourceId        = \cn_{i}                 ,
+								targetId        = 1 + \hubStamp_{i}       ,
+								sourceOffsetLo  = \locPrcCdo              ,
+								size            = \locPrcCds              ,
+								referenceOffset = 0                       ,
+								referenceSize   = \locPrcCds              ,
+								}
+						\]
+					\item \If $\scenPrecompileCommonNotIdentity _{i} = 1$ \Then
+						\[
+							\setMmuInstructionParametersRamToExoWithPadding {
+								anchorRow      = i                                   ,
+								relOffset      = \prcCommonMiscRowOffset             ,
+								sourceId       = \cn_{i}                             ,
+								targetId       = 1 + \hubStamp_{i}                   ,
+								auxiliaryId    = \nothing                            ,
+								sourceOffsetLo = \locPrcCdo                          ,
+								size           = \locPrcCds                          ,
+								referenceSize  = \undefinedStar \quad \locMmuRefSize ,
+								successBit     = \relevantValue                      ,
+								exoSum         = \undefinedStar \quad \locMmuExoSum  ,
+								phase          = \undefinedStar \quad \locMmuPhase   ,
+								}
+						\]
+				\end{enumerate}
+				where the shorthands marked with $\undefinedStar$ are as of yet undefined. We define them as follows:
+				\[
+					\locMmuRefSize \define
+					\left[ \begin{array}{crcl}
+						+ & \redm{128} & \cdot & \scenEcrecover _{i}  \\
+						+ & \locPrcCds & \cdot & \scenShaTwo    _{i}  \\
+						+ & \locPrcCds & \cdot & \scenRipemd    _{i}  \\
+						+ & \redm{128} & \cdot & \scenEcadd     _{i}  \\
+						+ & \redm{96}  & \cdot & \scenEcmul     _{i}  \\
+						+ & \locPrcCds & \cdot & \scenEcpairing _{i}  \\
+					\end{array} \right]
+				\]
+				and
+				\[
+					\locMmuExoSum \define
+					\left[ \begin{array}{crcl}
+						+ & \exoWeightEcdata & \cdot & \scenEcrecover _{i}  \\
+						+ & \exoWeightRipSha & \cdot & \scenShaTwo    _{i}  \\
+						+ & \exoWeightRipSha & \cdot & \scenRipemd    _{i}  \\
+						% + & \gZero           & \cdot & \scenIdentity  _{i}  \\
+						+ & \exoWeightEcdata & \cdot & \scenEcadd     _{i}  \\
+						+ & \exoWeightEcdata & \cdot & \scenEcmul     _{i}  \\
+						+ & \exoWeightEcdata & \cdot & \scenEcpairing _{i}  \\
+					\end{array} \right]
+				\]
+				and
+				\[
+					\locMmuPhase \define
+					\left[ \begin{array}{crcl}
+						+ & \phaseEcrecoverData    & \cdot & \scenEcrecover     _{i}  \\
+						+ & \phaseShaTwoData       & \cdot & \scenShaTwo        _{i}  \\
+						+ & \phaseRipemdData       & \cdot & \scenRipemd        _{i}  \\
+						% + & \gZero                 & \cdot & \scenIdentity      _{i}  \\
+						+ & \phaseEcaddData        & \cdot & \scenEcadd         _{i}  \\
+						+ & \phaseEcmulData        & \cdot & \scenEcmul         _{i}  \\
+						+ & \phaseEcpairingData    & \cdot & \scenEcpairing     _{i}  \\
+					\end{array} \right]
+				\]
+				\saNote{}
+				In the implementation of the above \mmuMod{}-instruction setting one may drop the global precondition ``$\scenPrecompileCommon \equiv 1$.''
+				Indeed both constraints impose more stringent preconditions.
+			\item[\underline{Some shorthands for elliptic curve precompiles:}]
+				we will use the following shorthands
+				\begin{description}
+					\item[\underline{\inst{ECRECOVER} specific:}]
+						we set
+						\[
+							\left\{ \begin{array}{lcl}
+								\locAddressRecoveryFailure & \define & 
+								\left[ \begin{array}{clcl}
+									+ & \locOobResultEmptyCallData   \\
+									+ & \locOobResultExtractCallData  & \cdot & (1 - \miscMmuSuccessBit_{i + \prcCommonMiscRowOffset}) \\
+								\end{array} \right] \\
+								\locAddressRecoverySuccess & \define & \locOobResultExtractCallData \cdot \miscMmuSuccessBit_{i + \prcCommonMiscRowOffset} \\
+							\end{array} \right.
+						\]
+						\saNote{} These bits will be used in the processing of \inst{ECRECOVER}.
+						In that context (and given the precompile succedes)
+						\begin{itemize}
+							\item $\locAddressRecoveryFailure \equiv 1$ precisely when return data is empty ($\textbf{o} = ()$)
+							\item $\locAddressRecoverySuccess \equiv 1$ precisely when recovery is successful and return data is nonempty ($\textbf{o} \in \mathbb{B}_{32}$.)
+						\end{itemize}
+
+						\saNote{} We have, by construction, and given that the precompile at hand is \inst{ECRECOVER}, the following relations:
+						\[
+							\left\{ \begin{array}{lclr}
+								\locAddressRecoveryFailure   & \equiv & \text{binary} & \quad (\trash) \\
+								\locAddressRecoverySuccess   & \equiv & \text{binary} & \quad (\trash) \vspace{2mm} \\
+								\multicolumn{3}{l}{\locAddressRecoveryFailure + \locAddressRecoverySuccess = \locOobResultHubSuccess} & \quad (\trash) \\
+							\end{array} \right.
+						\]
+
+						\saNote{} We finish by reminding that from the point of view of the \hubMod{} the bit $\miscMmuSuccessBit_{i + \prcCommonMiscRowOffset}$ is a \textbf{prediction}.
+						This prediction will be borne out in the \ecDataMod{} module.
+					\item[\underline{\inst{ECADD}, \inst{ECMUL} and \inst{ECPAIRING} specific:}]  we set
+						\[
+							\left\{ \begin{array}{lcl}
+								\locMalFormedData  & \define & \locOobResultExtractCallData \cdot (1 - \miscMmuSuccessBit_{i + \prcCommonMiscRowOffset}) \\
+								\locWellFormedData & \define & 
+								\left[ \begin{array}{clcl}
+									+ & \locOobResultEmptyCallData                                        \\
+									+ & \locOobResultExtractCallData & \cdot & \miscMmuSuccessBit_{i + \prcCommonMiscRowOffset} \\
+								\end{array} \right] \\
+							\end{array} \right.
+						\]
+						\saNote{} These bits will be used in the processing of \inst{ECADD}, \inst{ECMUL} and \inst{ECPAIRING}.
+						These precompiles have the property that \textbf{empty call data} is acceptable and produces the following outputs:
+						\begin{center}
+						\begin{tabular}{|ll|}
+							\hline
+							\underline{\inst{ECADD} case:}
+							& $\textbf{o} =
+							\utt{00}\,
+							\utt{00}\, \cdots \,
+							\utt{00} \in \mathbb{B}_{64}$ \\
+							& representing the point at infinity; \\
+							\underline{\inst{ECMUL} case:}
+							& $\textbf{o} =
+							\utt{00}\,
+							\utt{00}\, \cdots \,
+							\utt{00} \in \mathbb{B}_{64}$ \\
+							& representing the point at infinity; \\
+							\underline{\inst{ECPAIRING} case:}
+							& $\textbf{o} =
+							\utt{00}\,
+							\utt{00}\, \cdots \,
+							\utt{01} \in \mathbb{B}_{32}$ \\
+							& representing $\rOne$. \\ \hline
+						\end{tabular}
+						\end{center}
+						\saNote{} We have, by construction, the following relations:
+						\[
+							\left\{ \begin{array}{lclr}
+								\locMalFormedData    & \equiv & \text{binary} & \quad (\trash) \\
+								\locWellFormedData   & \equiv & \text{binary} & \quad (\trash) \vspace{2mm} \\
+								\multicolumn{3}{l}{\locMalFormedData + \locWellFormedData = \locOobResultHubSuccess} & \quad (\trash) \\
+							\end{array} \right.
+						\]
+				\end{description}
+			\item[\underline{Some constraints involving the success bit:}]
+				we may want to impose the following
+				\[
+					\miscMmuSuccessBit_{i + \prcCommonMiscRowOffset} \cdot 
+					\left[ \begin{array}{cl}
+						+ & \scenShaTwo        _{i}  \\
+						+ & \scenRipemd        _{i}  \\
+					\end{array} \right]
+					= 0 \qquad (\trash)
+				\]
+				The above simply means that $\miscMmuSuccessBit_{i + \prcCommonMiscRowOffset}$ must vanish for the following precompiles:
+				\inst{SHA2-256},
+				\inst{RIPEMD-160}.
+
+				\saNote{} We will come back to the interpretation of both
+				\locMmuRecoverSuccess{} and
+				\locMmuWellFormedData{}.
+				As the names suggest \locMmuRecoverSuccess{} lets the \hubMod{} module know whether recovery of a public address was successful in case of a \inst{CALL} to \inst{ECRECOVER}.
+				As the names suggest \locMmuWellFormedData{} lets the \hubMod{} module know whether the input data to \inst{ECADD}, \inst{ECMUL} or \inst{ECPAIRING} is well formed.
+			\item[\underline{Justifying scenario success / failure predictions:}]
+				\scenPrcSuccess{}, \scenPrcFailureKnownToHub{} and \scenPrcFailureKnownToRam{} are, by construction, exclusive binary columns;
+				furthermore we previously imposed that
+				\[
+					\left[ \begin{array}{cr}
+						+ & \scenPrcSuccess           _{i} \\
+						+ & \scenPrcFailureKnownToHub _{i} \\
+						+ & \scenPrcFailureKnownToRam _{i} \\
+					\end{array} \right]
+					= 1 \qquad (\trash)
+				\]
+				recall further that several precompiles have $\scenPrcFailureKnownToRam_{i} \equiv 0$ automatically;
+				we impose the following:
+				\[
+					\scenPrcSuccess_{i} = 
+					\left[ \begin{array}{crcl}
+						+ & \locOobResultHubSuccess & \cdot &
+						\left[ \begin{array}{cl}
+							+ & \scenEcrecover   _{i} \\
+							+ & \scenShaTwo      _{i} \\
+							+ & \scenRipemd      _{i} \\
+							+ & \scenIdentity    _{i} \\
+						\end{array} \right] \vspace{2mm} \\
+						+ & \locWellFormedData & \cdot &
+						\left[ \begin{array}{cl}
+							+ & \scenEcadd       _{i} \\
+							+ & \scenEcmul       _{i} \\
+							+ & \scenEcpairing   _{i} \\
+						\end{array} \right] \\
+					\end{array} \right]
+				\]
+				and
+				\[
+					\scenPrcFailureKnownToHub_{i} = 
+					\left[ \begin{array}{crcl}
+						+ & (1 - \locOobResultHubSuccess) & \cdot &
+						\left[ \begin{array}{cl}
+							+ & \scenEcrecover   _{i} \\
+							+ & \scenShaTwo      _{i} \\
+							+ & \scenRipemd      _{i} \\
+							+ & \scenIdentity    _{i} \\
+							+ & \scenEcadd       _{i} \\
+							+ & \scenEcmul       _{i} \\
+							+ & \scenEcpairing   _{i} \\
+						\end{array} \right] \\
+					\end{array} \right]
+				\]
+				and
+				\[
+					\hspace*{-1.5cm}
+					\scenPrcFailureKnownToRam_{i} = 
+					\left[ \begin{array}{crcl}
+						+ & \gZero & \cdot &
+						\left[ \begin{array}{cl}
+							+ & \scenEcrecover   _{i} \\
+							+ & \scenShaTwo      _{i} \\
+							+ & \scenRipemd      _{i} \\
+							+ & \scenIdentity    _{i} \\
+						\end{array} \right] \vspace{2mm} \\
+						+ & \locMalFormedData & \cdot &
+						\left[ \begin{array}{cl}
+							+ & \scenEcadd       _{i} \\
+							+ & \scenEcmul       _{i} \\
+							+ & \scenEcpairing   _{i} \\
+						\end{array} \right] \\
+					\end{array} \right]
+				\]
+				\saNote{} The above is somewhat redundant. We include the full characterizations of
+				\scenPrcSuccess{},
+				\scenPrcFailureKnownToRam{} and
+				\scenPrcFailureKnownToRam{} for greater clarity.
+			\item[\underline{Justifying return gas prediction:}]
+				we impose
+				\begin{enumerate}
+				        \item \If $\scenPrcFailure_{i} = 1$ \Then $\locPrcReturnGas = 0$
+				        \item \If $\scenPrcSuccess_{i} = 1$ \Then $\locPrcReturnGas = \locOobResultReturnGas$
+				\end{enumerate}
+				\saNote{} The above may be subsumed under
+				\[
+					\locPrcReturnGas
+					=
+					\scenPrcSuccess_{i}
+					\cdot
+					\locOobResultReturnGas
+					\quad (\trash)
+				\]
+		\end{description}
+	\end{description}

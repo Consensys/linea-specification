@@ -1,0 +1,101 @@
+The present section describes computations required in order to determine whether or not to extract the leading word (potentially zero padded) of the exponent.
+The \inst{MODEXP} computes the $\lfloor \log_{2} ( \cdots ) \rfloor$ of this in order to deduce what the \cite{EYP} calls $\locExponentLogEYP$.
+\[
+	\boxed{\text{All constraints in this subsection further assume } \oobInstIsModexpLead_{i} = 1}
+\]
+What the present system of constraints aims to verify the following predictions made in the \hubMod{} module: 
+\green{(\emph{a})} compute the small integer $32\wedge \big[ \locCds - (96 + \locBbs) \big]^+$
+\green{(\emph{b})} compute the bit $[ \locCds > (96 + \locBbs) ] \wedge [ \locEbs \neq 0 ]$.
+
+\noindent We use the shorthands defined below:
+\[
+	\left\{ \begin{array}{lclr}
+		\locBbs               & \define & \oobDataCol   {1}   _{i}  \\
+		\locCds               & \define & \oobDataCol   {2}   _{i}  \\
+		\locEbs               & \define & \oobDataCol   {3}   _{i}  \\
+		\locLoadLeadingWord   & \define & \oobDataCol   {4}   _{i}  & \prediction \\
+		\locCdsCutoff         & \define & \oobDataCol   {6}   _{i}  & \prediction \\
+		\locEbsCutoff         & \define & \oobDataCol   {7}   _{i}  & \prediction \\
+		\locEbsSubThirtyTwo   & \define & \oobDataCol   {8}   _{i}  & \prediction \\
+	\end{array} \right.
+\]
+\saNote{} The decorator `` $\prediction{}$ '' stands for ``\hubMod{} prediction.''
+
+We impose the following constraints:
+\begin{description}
+	\item[\underline{Rows $n^\circ(i)$, $n^\circ(i + 1)$ and $n^\circ(i + 2)$:}]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\oobCallToIszero
+				{i}{0}
+				{0}{\locEbs}
+				\vspace{2mm} \\
+				\oobCallToLt
+				{i}{1}
+				{0}{\locEbs}
+				{0}{32}
+				\vspace{2mm} \\
+				\oobCallToLt
+				{i}{2}
+				{0}{96 + \locBbs}
+				{0}{\locCds}
+			\end{array} \right.
+		\]
+		and define the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locEbsIsZero                         & \define & \outgoingResLo_{i    } \\ 
+				\locEbsLtThirtyTwo                    & \define & \outgoingResLo_{i + 1} \\ 
+				\locCallDataContainsExponentBytes     & \define & \outgoingResLo_{i + 2} \\ 
+			\end{array} \right.
+		\]
+	\item[\underline{Row $n^\circ(i + 3)$:}]
+		\If $\locCallDataContainsExponentBytes = 1$ \Then
+		\[
+			\oobCallToLt
+			{i}{3}
+			{0}{\locCds - \big( 96 + \locBbs \big)}
+			{0}{32}
+		\]
+		we define the following shorthand
+		\[
+			\locCmp \define \outgoingResLo_{i + 3}
+		\]
+	\item[\underline{Justifying \hubMod{} predictions:}] ---
+		\begin{description}
+			\item[Constraining \locLoadLeadingWord{}:] we impose that
+				\[
+					\locLoadLeadingWord
+					=
+					\locCallDataContainsExponentBytes \cdot (1 - \locEbsIsZero)
+				\]
+			\item[Constraining \locCdsCutoff{}:] we impose that
+				\begin{enumerate}
+					\item \If $\locCallDataContainsExponentBytes = 0$ \Then $\locCdsCutoff = 0$
+					\item \If $\locCallDataContainsExponentBytes = 1$ \Then
+						\begin{enumerate}
+							\item \If $\locCmp = 0$ \Then $\locCdsCutoff = 32$
+							\item \If $\locCmp = 1$ \Then $\locCdsCutoff = \locCds - \big( 96 + \locBbs \big)$
+						\end{enumerate}
+				\end{enumerate}
+			\item[Constraining \locEbsCutoff       {}:] we impose that
+				\begin{enumerate}
+					\item \If $\locEbsLtThirtyTwo = 0$ \Then $\locEbsCutoff = 32$ 
+					\item \If $\locEbsLtThirtyTwo = 1$ \Then $\locEbsCutoff = \locEbs$ 
+				\end{enumerate}
+			\item[Constraining \locEbsSubThirtyTwo {}:] we impose that
+				\begin{enumerate}
+					\item \If $\locEbsLtThirtyTwo = 0$ \Then $\locEbsSubThirtyTwo = \locEbs - 32$ 
+					\item \If $\locEbsLtThirtyTwo = 1$ \Then $\locEbsSubThirtyTwo = 0$ 
+				\end{enumerate}
+		\end{description}
+\end{description}
+\saNote{} The above thus computes respectively
+\[
+	\left\{ \begin{array}{lcl}
+		\locCdsCutoff           & \equiv & \Big[ \locCds - \big( 96 + \locBbs \big) \Big] ^ + \wedge \, 32 \\
+		\locEbsCutoff           & \equiv & \locEbs \wedge 32                                               \\
+		\locEbsSubThirtyTwo     & \equiv & \Big[ \locEbs - 32 \Big] ^ +                                    \\
+	\end{array} \right.
+\]

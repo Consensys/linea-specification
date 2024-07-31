@@ -1,0 +1,68 @@
+\begin{center}
+		\boxed{%
+			\text{The constraints below apply whenever }
+			\left\{ \begin{array}{lcl}
+				\peekScenario          _{i + \callFirstScenarioRowOffset}     & = & \one \\
+				\scenCallSmc           _{i + \callFirstScenarioRowOffset}     & = & \one \quad (\trash) \\
+			\end{array} \right.}
+\end{center}
+We indicate $\scenCallSmc \equiv 1$ only for greater clarity but it should be omitted from implementations.
+Indeed, all constraints below are guarded by a more stringent precondition. 
+
+The purpose of this section is to
+\begin{itemize}
+	\item funnel some ``callee context revert data (i.e. justifying $\miscChildSelfReverts$ and $\miscChildRevertStamp$)'' \emph{back} to the current set of rows through some $\initializeContextName$ constraint;
+	\item initialize the callee context through some $\initializeContextName$ constraint;
+	\item set up some parameters on the first row of the new execution context through some $\firstRowOfCallee {i}{\relof}$ constraint;
+\end{itemize}
+We thus impose the following constraints:
+\begin{enumerate}
+	\item \If $\scenCallSmcFailureWillRevert_{i + \callFirstScenarioRowOffset} = \one$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\justifyCalleeRevertData   {i}{\callSmcFailureWillRevertInitializeCalleeContextRowOffset}                                      \\
+				\initializeCalleeContext {
+					anchorRow = i,
+					relOffset = \callSmcFailureWillRevertInitializeCalleeContextRowOffset,
+					initializationParameters = \calleeContextInitializationParameters,
+				} \\
+				\firstRowOfCallee          {i}{\callSmcFailureWillRevertInitializeCalleeContextRowOffset}                                      \\
+			\end{array} \right.
+		\]
+	\item \If $\scenCallSmcFailureWontRevert_{i + \callFirstScenarioRowOffset} = \one$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\justifyCalleeRevertData   {i}{\callSmcFailureWontRevertInitializeCalleeContextRowOffset}                                      \\
+				\initializeCalleeContext {
+					anchorRow = i,
+					relOffset = \callSmcFailureWontRevertInitializeCalleeContextRowOffset,
+					initializationParameters = \calleeContextInitializationParameters,
+				} \\
+				\firstRowOfCallee          {i}{\callSmcFailureWontRevertInitializeCalleeContextRowOffset}                                      \\
+			\end{array} \right.
+		\]
+	\item \If $\scenCallSmcSuccessWillRevert_{i + \callFirstScenarioRowOffset} = \one$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\justifyCalleeRevertData   {i}{\callSmcSuccessWillRevertInitializeCalleeContextRowOffset}                                      \\
+				\initializeCalleeContext {
+					anchorRow = i,
+					relOffset = \callSmcSuccessWillRevertInitializeCalleeContextRowOffset,
+					initializationParameters = \calleeContextInitializationParameters,
+				} \\
+				\firstRowOfCallee          {i}{\callSmcSuccessWillRevertInitializeCalleeContextRowOffset}                                      \\
+			\end{array} \right.
+		\]
+	\item \If $\scenCallSmcSuccessWontRevert_{i + \callFirstScenarioRowOffset} = \one$ \Then
+		\[
+			\left\{ \begin{array}{l}
+				\justifyCalleeRevertData   {i}{\callSmcSuccessWontRevertInitializeCalleeContextRowOffset}                                      \\
+				\initializeCalleeContext {
+					anchorRow = i,
+					relOffset = \callSmcSuccessWontRevertInitializeCalleeContextRowOffset,
+					initializationParameters = \calleeContextInitializationParameters,
+				} \\
+				\firstRowOfCallee          {i}{\callSmcSuccessWontRevertInitializeCalleeContextRowOffset}                                      \\
+			\end{array} \right.
+		\]
+\end{enumerate}

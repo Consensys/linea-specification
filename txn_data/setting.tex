@@ -1,0 +1,50 @@
+\begin{center}
+	\boxed{\text{The constraints below assume that } \locAbs_{i} \neq \locAbs_{i - 1}.}
+\end{center}
+With computations out of the way we move on to set certain variables.
+\begin{description}
+        \item[\underline{Setting the \txInitialGas:}] 
+                we impose that
+                \begin{enumerate}
+                        \item \If $\txIsLegacy _{i} = 1$ \Then
+                                \[ \txInitialGas  _{i} = \locGasLimit - \locLegacyUpfrontGasCost \]
+                        \item \If $\txIsAccessSet _{i} + \txIsTypeTwo _{i} = 1$ \Then
+                                \[ \txInitialGas  _{i} = \locGasLimit - \locAccessUpfrontGasCost \]
+                \end{enumerate}
+        \item[\underline{Setting the \txGasPrice:}] 
+                we impose that
+                \begin{enumerate}
+                        \item \If $\txIsLegacy _{i} + \txIsAccessSet _{i} = 1$ \Then $\txGasPrice  _{i} = \locGasPrice$
+                        \item \If $\txIsTypeTwo_{i} = 1$ \Then
+                                \begin{enumerate}
+                                        \item \If $\locGetFullTip_{i} = 1$ \Then $\txGasPrice  _{i} = \txBasefee_{i} + \locMaxPriorityFee$
+                                        \item \If $\locGetFullTip_{i} = 0$ \Then $\txGasPrice  _{i} = \locMaxFee$
+                                \end{enumerate}
+                \end{enumerate}
+        \item[\underline{Setting the \txPriorityFeePerGas:}] 
+                we impose that
+                \begin{enumerate}
+                        \item \If $\txIsLegacy _{i} + \txIsAccessSet _{i} = 1$ \Then $\txPriorityFeePerGas  _{i} = \locGasPrice$
+                        \item \If $\txIsTypeTwo_{i} = 1$ \Then $\txPriorityFeePerGas  _{i} = \txGasPrice_{i} - \txBasefee_{i}$
+                \end{enumerate}
+        \item[\underline{Setting the \txEffectiveRefund:}]
+                we impose that
+                \begin{enumerate}
+                        \item \If $\locGetFullRefund = 0$ \Then $\txEffectiveRefund _{i} = \txLeftoverGas _{i} + \locRefundLimit$
+                        \item \If $\locGetFullRefund = 1$ \Then $\txEffectiveRefund _{i} = \txLeftoverGas _{i} + \txFinalRefundCounter _{i}$
+                \end{enumerate}
+        \item[\underline{Partially setting \txRequiresEvmExecution{}:}]
+                \If $\txIsDeployment_{i} = 1$ \Then we impose that
+                \[
+                        \txRequiresEvmExecution_{i} = \locNonzeroDataSize
+                \]
+                \saNote{} The above tags deployment transactions as requiring \evm{} execution whenever the associated initialization code is nonempty.
+
+                \saNote{} The message call transaction case (i.e. ``$\txIsDeployment_{i} = 0$'') is settled in the \hubMod{} module.
+        \item[\underline{Setting \txCopyTxcd{}:}]
+                we impose that
+                \[
+                        \txCopyTxcd_{i} = (1 - \txIsDeployment_{i}) \cdot \txRequiresEvmExecution_{i} \cdot \locNonzeroDataSize
+                \]
+\end{description}
+

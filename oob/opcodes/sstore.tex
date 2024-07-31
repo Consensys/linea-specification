@@ -1,0 +1,39 @@
+The present section describes the data layout for the \inst{SSTORE} case. As such:
+\[
+	\boxed{\text{All constraints in this subsection further assume } \oobInstIsSstore_{i} = 1 }
+\]
+We remind the reader that the objective of the \oobMod{} module in this particular case is to perform the comparison
+\( \col{gas} \leq G_\text{callstipend} \define 2300 \).
+
+\noindent We use the following shorthands for the values in the \oobDataCol{k} columns:
+\[
+	\left\{ \begin{array}{lclr}
+		%                   & \define & \oobDataCol  {1} _{i} \\
+		%                   & \define & \oobDataCol  {2} _{i} \\
+		%                   & \define & \oobDataCol  {3} _{i} \\
+		%                   & \define & \oobDataCol  {4} _{i} \\
+		\locSstoreGas       & \define & \oobDataCol  {5} _{i} \\
+		%                   & \define & \oobDataCol  {6} _{i} \\
+		\locSstoreException & \define & \oobDataCol  {7} _{i}  & \prediction \\
+		%                   & \define & \oobDataCol  {8} _{i} \\
+	\end{array} \right.
+\]
+We impose the following constraints:
+\begin{description}
+	\item[\underline{Row n°$(i)$:}] we impose the following:
+		\[
+			\oobCallToLt
+			{i}{0}
+			{0}{G_\text{callstipend}}
+			{0}{\locSstoreGas}
+		\]
+		we define the following shorthand
+		\[
+			\locSstoreSufficientGas \define \outgoingResLo _{i}
+		\]
+		It follows that $\locSstoreSufficientGas = 1 \iff G_\text{callstipend} < \locSstoreGas$.
+	\item[\underline{Justifying \hubMod{} predictions:}] we impose
+		\[
+			\locSstoreException = 1 - \locSstoreSufficientGas \\
+		\]
+\end{description}

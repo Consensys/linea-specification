@@ -1,0 +1,41 @@
+The following define a vast number of \textbf{exclusive binary columns}. The first batch of them deal with \inst{CALL}-type instructions:
+% CALL scenarios:
+\begin{enumerate}
+	\item \scenCallException:
+		turns on for \inst{CALL}-type instructions that raise an exception \emph{other than} \suxSH{};
+	\item \scenCallAbortWillRevert:
+		turns on for unexceptional \inst{CALL}-type instructions that abort and which will be rolled back;
+	\item \scenCallAbortWontRevert:
+		turns on for unexceptional \inst{CALL}-type instructions that abort and which won't be rolled back;
+\end{enumerate}
+The columns below pertain to unexceptional, unaborted \inst{CALL}-type instrutions i.e. \inst{CALL}'s that are entered. 
+For the sake of clarity we provide our working definition of \textbf{precompiles}, \textbf{externally owned accounts} and \textbf{smart contracts}.
+A \textbf{precompile} is an account whose address is in the range $\{\texttt{0x01},\texttt{0x02},\dots, \texttt{0x09}\}$.
+A \textbf{smart contract} is any account with nonempty bytecode.
+An \textbf{externally owned account} is any account that is neither a \textbf{precompile} nor a \textbf{smart contract}. 
+This includes accounts that were created through deployments but whose bytecode is empty.
+Being a smart contract vs. an externally owned account isn't an inherent property of the underlying address but rather a property of an address with respect to the some state. 
+
+\saNote{} The address space is partitioned according to this trichotomy. As a consequence so is the processing of \inst{CALL}-type instructions.
+
+\saNote{} We shall use the acronyms \textsc{prc} (resp. \textsc{smc}, \textsc{eoa}) for columns related to precompile (resp. smart contract, externally owned account) \inst{CALL}-processing.
+\begin{enumerate}[resume]
+	\item \scenCallPrcFailure:
+		turns on for unsuccessful \inst{CALL}'s to precompiles;
+	\item \scenCallPrcSuccessWillRevert:
+		turns on for successful \inst{CALL}'s to precompiles that are rolled back later;
+	\item \scenCallPrcSuccessWontRevert:
+		turns on for successful \inst{CALL}'s to precompiles that aren't rolled back later;
+	\item \scenCallSmcFailureWillRevert:
+		turns on for unsuccessful \inst{CALL}'s to smart contracts that are later rolled back;
+	\item \scenCallSmcFailureWontRevert:
+		turns on for unsuccessful \inst{CALL}'s to smart contracts that aren't later rolled back;
+	\item \scenCallSmcSuccessWillRevert:
+		turns on for successful \inst{CALL}'s to smart contracts that are later rolled back;
+	\item \scenCallSmcSuccessWontRevert:
+		turns on for successful \inst{CALL}'s to smart contracts that aren't later rolled back;
+	\item \scenCallEoaSuccessWillRevert:
+		turns on for (successful) \inst{CALL}'s externally owned accounts that are rolled back later;
+	\item \scenCallEoaSuccessWontRevert:
+		turns on for (successful) \inst{CALL}'s externally owned accounts that aren't rolled back later;
+\end{enumerate}

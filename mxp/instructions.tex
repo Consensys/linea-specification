@@ -1,0 +1,54 @@
+The memory expansion module is triggered by those instructions that raise the (instruction decoded) memory expansion flag (i.e. $\decMxpFlag$).
+The Hub keeps a tally of the number of (potentially) memory expanding operations: the $\mxpStamp$ column.
+This stamp grows by 1 with every (potentially) memory expanding operation.
+The present module imports this stamp along with the instruction and appropriate parameters. Importing the stamp is necessary as the order of operations is important in assessing an instruction's memory expansion cost.
+
+Memory expanding instructions fall into 5 \textbf{memory expansion types}, each requiring specialized computations. These categories are identified using flags which are instruction decoded in the present module according to the following table:
+
+\begin{figure}[h!]
+	\[
+		\def\zero{{\color{gray!60}\bm{0}}}
+		\def\one{{\cellcolor{\romCol} \bm{1}}}
+		\renewcommand{\arraystretch}{1.5}
+		\begin{array}{|l|c|c|c|c|c|c|c|}
+			\hline
+			\INST & \decMxpType{1} & \decMxpType{2} & \decMxpType{3} & \decMxpType{4} & \decMxpType{5} & \decWordCost & \decByteCost \\ \hline\hline
+			0					& \zero & \zero & \zero & \zero & \zero & \zero                                           & \zero                                        \\ \hline
+			\inst{MSIZE}				& \one  & \zero & \zero & \zero & \zero & \zero                                           & \zero                                        \\ \hline
+			\inst{MLOAD}				& \zero & \one 	& \zero & \zero & \zero & \zero                                           & \zero                                        \\
+			\inst{MSTORE}				& \zero & \one 	& \zero & \zero & \zero & \zero                                           & \zero                                        \\ \hline
+			\inst{MSTORE8}				& \zero & \zero	& \one  & \zero & \zero & \zero                                           & \zero                                        \\ \hline
+			\inst{CREATE}				& \zero & \zero & \zero & \one  & \zero & \zero                                           & \zero                                        \\
+			\inst{CREATE2}				& \zero & \zero & \zero & \one  & \zero & {\cellcolor{\ramCol} G_{\text{keccak256word}}}  & \zero                                        \\
+			\inst{RETURN}				& \zero & \zero & \zero & \one  & \zero & \zero                                           & {\cellcolor{\ramCol} G_{\text{codedeposit}}} \\
+			\inst{REVERT}				& \zero & \zero & \zero & \one  & \zero & \zero                                           & \zero                                        \\
+			\inst{LOG}\text{-type}		        & \zero & \zero & \zero & \one  & \zero & \zero                                           & {\cellcolor{\ramCol} G_{\text{logdata}}}     \\
+			\inst{SHA3}				& \zero & \zero & \zero & \one  & \zero & {\cellcolor{\ramCol} G_{\text{keccak256word}}}  & \zero                                        \\
+			\inst{COPY}\text{-type}		        & \zero & \zero & \zero & \one  & \zero & {\cellcolor{\ramCol} G_{\text{copy}}}           & \zero                                        \\ \hline
+			\inst{CALL}\text{-type}		        & \zero & \zero & \zero & \zero & \one  & \zero                                           & \zero                                        \\ \hline
+		\end{array}
+	\]
+	\caption{Where
+	$G_{\text{keccak256word}} = 6$,
+	$G_{\text{copy}} = 3$,
+	$G_{\text{codedeposit}} = 200$,
+	$G_{\text{logdata}} = 8$;
+	\inst{LOG0}-\inst{LOG4} are the
+	\inst{LOG}\text{-type} instructions;
+	\inst{CODECOPY},
+	\inst{EXTCODECOPY},
+	\inst{CALLDATACOPY} and
+	\inst{RETURNDATACOPY}
+	are the \inst{COPY}\text{-type} instructions;
+	\inst{CALL},
+	\inst{CALLCODE},
+	\inst{STATICCALL} and
+	\inst{DELEGATECALL}
+	are the \inst{COPY}\text{-type} instructions.}
+\end{figure}
+
+The \zkEvm{} considers \inst{MSIZE} a \textbf{type 1 instruction} (the only of its kind.) It incurs no memory expansion cost and only retrieves the value of the $\memSize$ column. \textbf{Type 2 and 3 instructions} are those instructions whose memory expansion cost depends purely on an \emph{offset} i.e. instructions with an implicit \emph{size} parameter (32 for \textbf{type 2} and 1 for \textbf{type 3} depending on the instruction):
+\textbf{Type 4 instructions} compute memory expansion in terms on a a single \emph{offset} and \emph{size} pair.
+\textbf{Type 5 instructions} are \inst{CALL}-type instruction. These compute memory expansion in terms on \emph{two} pairs of \emph{offset} and \emph{size} parameters: (\emph{a}) the offset and size defining the call data of the call (\emph{b}) the offset and size defining the memory segment where the callee might write (part of) its return data. The zk-evm needs to determine the maximum value memory expansion cost between the two. The relevant instructions are
+
+The present module deals with memory expansion uniformly. To that effect it first recognizes trivial cases: either when offsets or sizes are far too large or when no memory expansion \emph{can} happen since relevant sizes are zero ($\noop = 1$). In case offsets and sizes satisfy both requirements it produces the maximal offset(s) that may be written to or read from. If there are two sets of offsets

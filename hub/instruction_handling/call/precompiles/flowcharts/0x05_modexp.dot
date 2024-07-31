@@ -1,0 +1,168 @@
+# http://www.graphviz.org/content/cluster
+
+digraph G {
+
+  node [fontname = "Handlee"];
+  node [shape=plaintext];
+  edge [fontname = "Handlee"];
+
+
+failure [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Row index</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Perspective</TD>
+    <TD ROWSPAN="1" COLSPAN="3">Actions</TD>
+  </TR>
+  <TR>
+    <TD>i</TD>
+    <TD BGCOLOR="salmon">SCEN</TD>
+    <TD BGCOLOR="salmon" COLSPAN="3">SCEN/PRC = 1, SCEN/MODEXP = 1</TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>MISC</TD>
+    <TD> <B>MMU🏴</B> = 0 </TD>
+    <TD> <B>EXP🏴</B> = 0 </TD>
+    <TD> <B>OOB🏴</B> = <B>1</B>
+    <BR/> OOB_INST = MODEXP_cds 
+    <BR             /> <B>cds</B>
+    <BR	ALIGN="LEFT"/> <B><FONT COLOR="GREEN">extract_raw_bbs</FONT> </B> = [ <B>cds</B> &gt; 0 ]
+    <BR	ALIGN="LEFT"/> <B><FONT COLOR="GREEN">extract_raw_ebs</FONT> </B> = [ <B>cds</B> &gt; 32 ]
+    <BR	ALIGN="LEFT"/> <B><FONT COLOR="GREEN">extract_raw_mbs</FONT> </B> = [ <B>cds</B> &gt; 64 ]
+    <BR	ALIGN="LEFT"/> <B><FONT COLOR="GREEN">trim_raw_bbs</FONT> </B> = [ <B>cds</B> &gt; 0  ] &#x2227; [ <B>cds</B> &lt; 32  ]
+    <BR	ALIGN="LEFT"/> <B><FONT COLOR="GREEN">trim_raw_ebs</FONT> </B> = [ <B>cds</B> &gt; 32 ] &#x2227; [ <B>cds</B> &lt; 64 ]
+    <BR	ALIGN="LEFT"/> <B><FONT COLOR="GREEN">trim_raw_mbs</FONT> </B> = [ <B>cds</B> &gt; 64 ] &#x2227; [ <B>cds</B> &lt; 96 ]
+    </TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>MISC</TD>
+    <TD> <B>MMU🏴</B> = <B>extract_raw_bbs</B> <BR/> MMU_INST = MLOAD <BR/> offset = <B>cdo</B> </TD>
+    <TD> <B>EXP🏴</B> = <B>trim_raw_bbs</B> <BR/> EXP_INST = trimBytesBeyond</TD>
+    <TD> <B>OOB🏴</B> = <B>extract_raw_bbs</B>
+    <BR             /> <B>bbs</B>
+    <BR ALIGN="LEFT"/> (implicit check) <B>bbs</B> &le; 512
+    <BR ALIGN="LEFT"/> OOB_INST = MODEXP_base 
+    </TD>
+  </TR>
+  <TR>
+    <TD>i + 2</TD>
+    <TD>MISC</TD>
+    <TD> <B>MMU🏴</B> = <B>extract_raw_ebs</B> <BR/> MMU_INST = MLOAD <BR/> offset = <B>cdo + 32</B> </TD>
+    <TD> <B>EXP🏴</B> = <B>trim_raw_ebs</B> <BR/> EXP_INST = trimBytesBeyond</TD>
+    <TD> <B>OOB🏴</B> = <B>extract_raw_ebs</B>
+    <BR             /><B>ebs</B>
+    <BR ALIGN="LEFT"/>(implicit check) <B>ebs</B> &le; 512
+    <BR ALIGN="LEFT"/>OOB_INST = MODEXP_exponent 
+    <BR ALIGN="LEFT"/><B><FONT COLOR="green">diff </FONT></B> := 0 &#x2228; [ebs - 32]
+    <BR ALIGN="LEFT"/><B><FONT COLOR="green">n_ebs_bytes  </FONT></B> := 32 &#x2227; ebs
+    </TD>
+  </TR>
+  <TR>
+    <TD>i + 3</TD>
+    <TD>MISC</TD>
+    <TD> <B>MMU🏴</B> = <B>extract_raw_mbs</B> <BR/> MMU_INST = MLOAD <BR/> offset = <B>cdo + 64</B> </TD>
+    <TD> <B>EXP🏴</B> = <B>trim_raw_mbs</B> <BR/> EXP_INST = trimBytesBeyond</TD>
+    <TD> <B>OOB🏴</B> = <B>extract_raw_mbs</B>
+    <BR             /><B>mbs, bbs</B>
+    <BR ALIGN="LEFT"/>(implicit check) <B>mbs</B> &le; 512
+    <BR ALIGN="LEFT"/>OOB_INST = MODEXP_modulus 
+    <BR ALIGN="LEFT"/><B><FONT COLOR="green">max_bbs_mbs</FONT></B> := <B>bbs </B> &#x2228; <B>mbs</B>
+    </TD>
+  </TR>
+  <TR>
+    <TD>i + 4</TD>
+    <TD>MISC</TD>
+    <TD> <B>MMU🏴</B> = <B>extract_raw_leading_word</B> <BR/> MMU_INST = MLOAD <BR/> offset = <B>cdo + 96</B> </TD>
+    <TD> <B>EXP🏴</B> = <B>extract_raw_leading_word</B> <BR/> EXP_INST = exponentLeadingWordLog</TD>
+    <TD> <B>OOB🏴</B> = <B>1</B>
+    <BR             /><B>cds, ebs, bbs</B>
+    <BR ALIGN="LEFT"/>OOB_INST = MODEXP_leading
+    <BR ALIGN="LEFT"/><B><FONT COLOR="green">n_cds_bytes</FONT></B> := 32 &#x2227; [ 0 &#x2228; [<B>cds </B> - (96 + <B>bbs</B>)]]
+    <BR ALIGN="LEFT"/><B><FONT COLOR="green">extract_raw_leading_word</FONT></B> := [<B>cds</B> &gt; 96 + <B>bbs</B>] &#x2227; [<B>ebs</B> &ne; 0]
+    </TD>
+  </TR>
+  <TR>
+    <TD>i + 5</TD>
+    <TD>MISC</TD>
+    <TD> <B>MMU🏴</B> = <B>0</B> </TD>
+    <TD> <B>EXP🏴</B> = <B>0</B> </TD>
+    <TD> <B>OOB🏴</B> = <B>1</B>
+    <BR             /><B>call_gas, rem_gas, log(E)_approx, max_bbs_mbs, r@c</B>
+    <BR ALIGN="LEFT"/>(implicit check) <B>mbs</B> &le; 512
+    <BR ALIGN="LEFT"/>OOB_INST = MODEXP_pricing 
+    <BR ALIGN="LEFT"/><B><FONT COLOR="green">insufficient_gas</FONT></B> = <B><FONT COLOR="red">1</FONT></B>
+    <BR ALIGN="LEFT"/><B><FONT COLOR="green">[r@c &ne; 0]</FONT></B>
+    <BR ALIGN="LEFT"/><B><FONT COLOR="green">extract_raw_leading_word</FONT></B> := [<B>cds</B> &gt; 96 + <B>bbs</B>] &#x2227; [<B>ebs</B> &ne; 0]
+    </TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>MISC</TD>
+    <TD> <B>MMU🏴</B> = <B>1</B> </TD>
+    <TD> <B>EXP🏴</B> = <B>1</B> </TD>
+    <TD> <B>OOB🏴</B> = <B>1</B> </TD>
+  </TR>
+  <TR>
+    <TD>i - 1</TD>
+    <TD>STACK</TD>
+    <TD>CT = 1</TD>
+    <TD COLSPAN="1">excavate stack items <BR/> success bit = <B>1</B></TD>
+  </TR>
+  <TR>
+    <TD>i</TD>
+    <TD BGCOLOR="salmon">SCN</TD>
+    <TD BGCOLOR="salmon">CALL</TD>
+    <TD BGCOLOR="salmon" COLSPAN="1"> SCEN/CALL/smc_success_will_revert </TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>CON</TD>
+    <TD>current</TD>
+    <TD COLSPAN="1">read context; <B>STATIC🏴</B> = <FONT COLOR="GREEN"><B>0</B></FONT> </TD>
+  </TR>
+  <TR>
+    <TD>i + 2</TD>
+    <TD>MISC</TD>
+    <TD></TD>
+    <TD COLSPAN="1"> <B>MXP🏴</B> = <B>1</B>, <B>MXPX</B> = <FONT COLOR="GREEN"><B>0</B></FONT> <BR/> <B>STP🏴</B> = <B>1</B>, <B>OOGX</B> = <FONT COLOR="GREEN"><B>0</B></FONT> <BR/> <B>OOB🏴</B> = <B>1</B>, <B>OOB_EVENT_1</B> = <FONT COLOR="GREEN"><B>0</B></FONT> <BR/> CCSR🏴 = <B>0</B>, CCRS = <B>0</B></TD>
+  </TR>
+  <TR>
+    <TD>i + 3</TD>
+    <TD>ACC</TD>
+    <TD BGCOLOR="GreenYellow">callee</TD>
+    <TD> bal' += val, warmth' ↗  <BR/> <B>TRM🏴</B> = <B>1</B>, <B>ROMLEX🏴</B> = <B>1</B> <BR/> HAS_CODE = <B>1</B>, IS_PREC = <B>0</B> </TD>
+    <TD>τ · h + 1</TD><TD>0</TD>
+  </TR>
+  <TR>
+    <TD>i + 4</TD>
+    <TD>ACC</TD>
+    <TD BGCOLOR="Gold">caller</TD>
+    <TD>bal -= val, same warmth</TD>
+    <TD>τ · h + 0</TD><TD>0</TD>
+  </TR>
+  <TR>
+    <TD>i + 5</TD>
+    <TD>ACC</TD>
+    <TD BGCOLOR="GreenYellow">callee</TD>
+    <TD>bal' ↶, warmth' ↶ </TD>
+    <TD>τ · ρ + ε</TD><TD>τ · h + 1</TD>
+  </TR>
+  <TR>
+    <TD>i + 6</TD>
+    <TD>ACC</TD>
+    <TD BGCOLOR="Gold">caller</TD>
+    <TD>bal ↶, warmth ↶ </TD>
+    <TD>τ · ρ + ε</TD><TD>τ · h + 0</TD>
+  </TR>
+  <TR>
+    <TD>i + 7</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="turquoise">callee</TD>
+    <TD BGCOLOR="turquoise" COLSPAN="1">initialize callee</TD>
+  </TR>
+</TABLE>>];
+
+
+}

@@ -1,0 +1,41 @@
+\def\locSoxDetectionSelector{\col{sox\_sel}}
+\def\locProjectedHeight{\col{projected\_height}}
+The present section describes the two lookups between the \hubMod{} and the \wcpMod{} module which are used to detect \suxSH{}'s and \soxSH{}'s.
+The lookup below justifies the $\stackSox$ exception flag.
+\begin{description}
+	\item[Selector column:] we define the following selectors as follows
+		\[
+			\locSoxDetectionSelector \define \peekStack \cdot (1 - \stackSux)
+		\]
+	\item[Source columns:] \hubMod{} columns:
+		\begin{multicols}{4}
+			\begin{enumerate}
+				\item $\inst{GT}$
+				\item[\vspace{\fill}]
+				\item $0$
+				\item $\locProjectedHeight$
+				\item $0$
+				\item $1024$
+				\item $\stackSox$
+			\end{enumerate}
+		\end{multicols}
+		where we have used the following shorthand
+		\[
+			\locProjectedHeight
+			\define
+			\height - \stackDelta + \stackAlpha
+		\]
+	\item[Target columns:] \wcpMod{} columns:
+		\begin{multicols}{4}
+			\begin{enumerate}
+				\item $\INST$
+				\item[\vspace{\fill}]
+				\item $\argOneHi$
+				\item $\argOneLo$
+				\item $\argTwoHi$
+				\item $\argTwoLo$
+				\item $\resLo$
+			\end{enumerate}
+		\end{multicols}
+\end{description}
+

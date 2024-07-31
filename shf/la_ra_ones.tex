@@ -1,0 +1,146 @@
+The first two tables below represent the expected $\decoded{\la}$ and $\decoded{\ra}$ computed on a byte with (big endian) bit decomposition \texttt{abcdefgh} according to \LT{} and shift direction. The bottom table combines the two and outputs the expected left aligned suffix and right aligned prefix in terms of $\mshp{}$ (either $\LT$ or $8-\LT$ depending on $\shd$.) It also features the associated $\ONES{}$ column.
+
+\begin{figure}[!h]
+\renewcommand{\arraystretch}{1.2}
+\[
+    \begin{array}{|c|r|l|}
+        \hline
+        \multicolumn{3}{|c|}{\phantom{\Big(}\textsc{left shift}\phantom{\Big(}} \\
+        \hline
+        \LT{} & \multicolumn{1}{c|}{\decoded{\ra}} & \multicolumn{1}{c|}{\decoded{\la}} \\ \hline
+        0
+        &\texttt{\gray{0\,0\,0\,0\,0\,0\,0\,0}}
+        &\texttt{a\,b\,c\,d\,e\,f\,g\,h}
+        \\ \hline
+        1
+        &\texttt{\gray{0\,0\,0\,0\,0\,0\,0}\,a}
+        &\texttt{b\,c\,d\,e\,f\,g\,h\,\gray{0}}
+        \\ \hline
+        2
+        &\texttt{\gray{0\,0\,0\,0\,0\,0}\,a\,b}
+        &\texttt{c\,d\,e\,f\,g\,h\,\gray{0\,0}}
+        \\ \hline
+        3
+        &\texttt{\gray{0\,0\,0\,0\,0}\,a\,b\,c}
+        &\texttt{d\,e\,f\,g\,h\,\gray{0\,0\,0}}
+        \\ \hline
+        4
+        &\texttt{\gray{0\,0\,0\,0}\,a\,b\,c\,d}
+        &\texttt{e\,f\,g\,h\,\gray{0\,0\,0\,0}}
+        \\ \hline
+        5
+        &\texttt{\gray{0\,0\,0}\,a\,b\,c\,d\,e}
+        &\texttt{f\,g\,h\,\gray{0\,0\,0\,0\,0}}
+        \\ \hline
+        6
+        &\texttt{\gray{0\,0}\,a\,b\,c\,d\,e\,f}
+        &\texttt{g\,h\,\gray{0\,0\,0\,0\,0\,0}}
+        \\ \hline
+        7
+        &\texttt{\gray{0}\,a\,b\,c\,d\,e\,f\,g}
+        &\texttt{h\,\gray{0\,0\,0\,0\,0\,0\,0}}
+        \\ \hline
+    \end{array}
+    \qquad
+    \begin{array}{|c|r|l|}
+        \hline
+        \multicolumn{3}{|c|}{\phantom{\Big(}\textsc{right shift}\phantom{\Big(}} \\
+        \hline
+        \LT{} & \multicolumn{1}{c|}{\decoded{\ra}} & \multicolumn{1}{c|}{\decoded{\la}} \\ \hline
+        0
+        &\texttt{a\,b\,c\,d\,e\,f\,g\,h}
+        &\texttt{\gray{0\,0\,0\,0\,0\,0\,0\,0}}
+        \\ \hline
+        1
+        &\texttt{\gray{0\,}a\,b\,c\,d\,e\,f\,g}
+        &\texttt{h\,\gray{0\,0\,0\,0\,0\,0\,0}}
+        \\ \hline
+        2
+        &\texttt{\gray{0\,0\,}a\,b\,c\,d\,e\,f}
+        &\texttt{g\,h\,\gray{0\,0\,0\,0\,0\,0}}
+        \\ \hline
+        3
+        &\texttt{\gray{0\,0\,0\,}a\,b\,c\,d\,e}
+        &\texttt{f\,g\,h\,\gray{0\,0\,0\,0\,0}}
+        \\ \hline
+        4
+        &\texttt{\gray{0\,0\,0\,0\,}a\,b\,c\,d}
+        &\texttt{e\,f\,g\,h\,\gray{0\,0\,0\,0}}
+        \\ \hline
+        5
+        &\texttt{\gray{0\,0\,0\,0\,0\,}a\,b\,c}
+        &\texttt{d\,e\,f\,g\,h\,\gray{0\,0\,0}}
+        \\ \hline
+        6
+        &\texttt{\gray{0\,0\,0\,0\,0\,0\,}a\,b}
+        &\texttt{c\,d\,e\,f\,g\,h\,\gray{0\,0}}
+        \\ \hline
+        7
+        &\texttt{\gray{0\,0\,0\,0\,0\,0\,0\,}a}
+        &\texttt{b\,c\,d\,e\,f\,g\,h\,\gray{0}}
+        \\ \hline
+    \end{array}
+\]
+\centering
+\[
+    \begin{array}{|c|c|c|c|}
+        \hline
+        \mshp{} & \multicolumn{1}{c|}{\decoded{\ra}} & \multicolumn{1}{c|}{\decoded{\la}} & \ONES{} \\ % & \leadingBit{}\\
+        \hline
+        0
+        & \texttt{a\,b\,c\,d\,e\,f\,g\,h}
+        & \texttt{\gray{0\,0\,0\,0\,0\,0\,0\,0}}
+        & \texttt{\gray{0\,0\,0\,0\,0\,0\,0\,0}} \\
+        % & \texttt{a}\\
+        \hline
+        1
+        & \texttt{\gray{0}\,a\,b\,c\,d\,e\,f\,g}
+        & \texttt{h\,\gray{0\,0\,0\,0\,0\,0\,0}}
+        & \texttt{1\,\gray{0\,0\,0\,0\,0\,0\,0}} \\
+        % & \texttt{a}\\
+        \hline
+        2
+        & \texttt{\gray{0\,0}\,a\,b\,c\,d\,e\,f}
+        & \texttt{g\,h\,\gray{0\,0\,0\,0\,0\,0}}
+        & \texttt{1\,1\,\gray{0\,0\,0\,0\,0\,0}} \\
+        % & \texttt{a}\\
+        \hline
+        3
+        & \texttt{\gray{0\,0\,0}\,a\,b\,c\,d\,e}
+        & \texttt{f\,g\,h\,\gray{0\,0\,0\,0\,0}}
+        & \texttt{1\,1\,1\,\gray{0\,0\,0\,0\,0}} \\
+        % & \texttt{a}\\
+        \hline
+        4
+        & \texttt{\gray{0\,0\,0\,0}\,a\,b\,c\,d}
+        & \texttt{e\,f\,g\,h\,\gray{0\,0\,0\,0}}
+        & \texttt{1\,1\,1\,1\,\gray{0\,0\,0\,0}} \\
+        % & \texttt{a}\\
+        \hline
+        5 &\texttt{\gray{0\,0\,0\,0\,0}\,a\,b\,c}
+        & \texttt{d\,e\,f\,g\,h\,\gray{0\,0\,0}}
+        & \texttt{1\,1\,1\,1\,1\,\gray{0\,0\,0}} \\
+        % & \texttt{a}\\
+        \hline
+        6
+        & \texttt{\gray{0\,0\,0\,0\,0\,0}\,a\,b}
+        & \texttt{c\,d\,e\,f\,g\,h\,\gray{0\,0}}
+        & \texttt{1\,1\,1\,1\,1\,1\,\gray{0\,0}} \\
+        % & \texttt{a}\\
+        \hline
+        7
+        & \texttt{\gray{0\,0\,0\,0\,0\,0\,0}\,a}
+        & \texttt{b\,c\,d\,e\,f\,g\,h\,\gray{0}}
+        & \texttt{1\,1\,1\,1\,1\,1\,1\,\gray{0}}\\
+        % & \texttt{a}\\
+        \hline
+        8 &\texttt{\gray{0\,0\,0\,0\,0\,0\,0\,0}}
+        & \texttt{a\,b\,c\,d\,e\,f\,g\,h}
+        & \texttt{\gray{unspecified}} \\
+        % & \texttt{a}\\
+        \hline
+    \end{array}
+\]
+% \caption{}
+\label{fig: split and shift bytes and ones}
+\end{figure}

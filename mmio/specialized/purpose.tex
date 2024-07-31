@@ -1,0 +1,9 @@
+The purpose of the present section is to introduce certain families of constraints which implement elemenary constructions on bits, limbs etc \dots{} Examples of such constructions are:
+\begin{itemize}
+	\item \textbf{\plateau:} produces nondecreasing binary columns with a given jump point,
+	\item \textbf{\power:} produces a desired power of $256$;
+	\item \textbf{\compPrefix:} extracts a ``prefix'' from a limb;
+	\item \textbf{\compSuffix:} extracts a ``suffix'' from a limb;
+	\item \textbf{\compChunk:} extracts a ``chunk'' of contiguous bytes from a limb;
+\end{itemize}
+Columns constrained by a $\plateau$ constraint are typically referred to as ``binary plateaus''. Their purpose is to provide other constraints with an on/off signal e.g. ``do this while this plateau is on and that other plateau is off.'' One use case is for an ``accumulator column'' \ACC{} to accumulate bytes from some byte source while certain conditions are met, with these conditions being expressed in terms of some plateau columns being either turned on or off. Another use case is to constrain ``power columns'' i.e. columns constrained by some $\power$ constraint. The purpose of such ``power columns'' is to produce an adequate power of $256$ which is then used (typically at the end of a counter-cycle, i.e. when $\ct = \llargeMO$) for easy byte-shifting (through multiplication.) Prefixes, suffixes and chunks of a limb are to be understood in terms of the limb's byte decomposition.

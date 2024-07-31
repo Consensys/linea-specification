@@ -1,0 +1,28 @@
+We considered the following toy example for a first hand-written draft. The purpose is to do formal verification of the adder module and the \inst{ADD} operation in particular. When confronting our (trivial) implementation in constraints to what is happening in some big integer \python{} library there is a need to connect the \zkEvm{} variables (i.e. its columns) to \python{} variables. For the toy example we consider the \textbf{toy-example} of $2$-byte integer addition where the high / low parts are single bytes. Then we must have some correspondence à la
+\begin{lstlisting}
+py_arg_1 $~\longleftrightarrow~$  zk_arg_1_hi, zk_arg_1_lo
+py_arg_2 $~\longleftrightarrow~$  zk_arg_2_hi, zk_arg_2_lo
+py_res   $~\longleftrightarrow~$  zk_res_hi, zk_res_lo
+\end{lstlisting}
+We also need to make a connection between the case analysis. Python likely uses some big integer library and does something à la
+\begin{Verbatim}
+py_comp = py_arg_1 + py_arg_2 >= 256 ** 32
+
+if py_comp {
+    py_res = py_arg_1 + py_arg_2 - 256 ** 32
+} else {
+    py_res = py_arg_1 + py_arg_2
+}
+\end{Verbatim}
+While on the \corset{} side we are computing overflows 
+\begin{Verbatim}
+requires(
+    is_binary(zk_of_0)              &&
+    is_binary(zk_of_1)              &&
+    is_small(zk_res_hi, 16)         &&
+    is_small(zk_res_lo, 16)
+)
+
+          zk_arg_1_lo + zk_arg_2_lo = zk_of_0 * 256 ** 16 + zk_res_lo
+zk_of_0 + zk_arg_1_hi + zk_arg_2_hi = zk_of_1 * 256 ** 16 + zk_res_hi
+\end{Verbatim}

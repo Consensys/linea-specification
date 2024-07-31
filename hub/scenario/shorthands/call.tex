@@ -1,0 +1,333 @@
+We define several notational shorthands:
+\[
+	\left\{ \begin{array}{lcl}
+		\scenCallEoa _{i} & \define & 
+		 \left[ \begin{array}{l}
+			% + \scenCallException                   _{i}    \\
+			% + \scenCallAbort                       _{i}    \\
+			+ \scenCallEoaSuccessWontRevert               _{i}    \\
+			+ \scenCallEoaSuccessWillRevert               _{i}    \\
+			% + \scenCallSmcFailureWillRevert        _{i}    \\
+			% + \scenCallSmcFailureWontRevert        _{i}    \\
+			% + \scenCallSmcSuccessWillRevert        _{i}    \\
+			% + \scenCallSmcSuccessWontRevert        _{i}    \\
+			% + \scenCallPrcFailure                  _{i}    \\
+			% + \scenCallPrcSuccessWillRevert        _{i}    \\
+			% + \scenCallPrcSuccessWontRevert        _{i}    \\
+		\end{array} \right] \vspace{2mm} \\
+		%
+		\scenCallSmc _{i} & \define &
+		 \left[ \begin{array}{l}
+			% + \scenCallException                   _{i}    \\
+			% + \scenCallAbort                       _{i}    \\
+			% + \scenCallEoaSuccessWontRevert               _{i}    \\
+			% + \scenCallEoaSuccessWillRevert               _{i}    \\
+			+ \scenCallSmcFailureWillRevert        _{i}    \\
+			+ \scenCallSmcFailureWontRevert        _{i}    \\
+			+ \scenCallSmcSuccessWillRevert        _{i}    \\
+			+ \scenCallSmcSuccessWontRevert        _{i}    \\
+			% + \scenCallPrcFailure                  _{i}    \\
+			% + \scenCallPrcSuccessWillRevert        _{i}    \\
+			% + \scenCallPrcSuccessWontRevert        _{i}    \\
+		\end{array} \right] \vspace{2mm} \\
+		%
+		\scenCallPrc _{i} & \define &
+		 \left[ \begin{array}{l}
+			% + \scenCallException                   _{i}    \\
+			% + \scenCallAbort                       _{i}    \\
+			% + \scenCallEoaSuccessWontRevert               _{i}    \\
+			% + \scenCallEoaSuccessWillRevert               _{i}    \\
+			% + \scenCallSmcFailureWillRevert        _{i}    \\
+			% + \scenCallSmcFailureWontRevert        _{i}    \\
+			% + \scenCallSmcSuccessWillRevert        _{i}    \\
+			% + \scenCallSmcSuccessWontRevert        _{i}    \\
+			+ \scenCallPrcFailure                  _{i}    \\
+			+ \scenCallPrcSuccessWillRevert        _{i}    \\
+			+ \scenCallPrcSuccessWontRevert        _{i}    \\
+		\end{array} \right]
+	\end{array} \right.
+\]
+\saNote{} \inst{CALL}'s to \textbf{externally owned accounts} that raise no exception and aren't aborted amount to a simple value transfer.
+They are \textbf{always} successful (though may be rolled back.)
+
+\noindent We introduce further useful shorthands:
+\[
+	\left\{ \begin{array}{lcl}
+		\scenCallSum _{i} & \define &
+		 \left[ \begin{array}{l}
+			+ \scenCallException                   _{i}    \\
+			+ \scenCallUnexceptional               _{i}    \\
+		\end{array} \right] \vspace{2mm} \\
+		%
+		\scenCallUnexceptional _{i} & \define &
+		 \left[ \begin{array}{l}
+			+ \scenCallAbort                       _{i}    \\
+			+ \scenCallEntry                       _{i}    \\
+		\end{array} \right] \vspace{2mm} \\
+		%
+		\scenCallAbort _{i} & \define &
+		 \left[ \begin{array}{l}
+			+ \scenCallAbortWillRevert             _{i}    \\
+			+ \scenCallAbortWontRevert             _{i}    \\
+		\end{array} \right] \vspace{2mm} \\
+		%
+		\scenCallEntry _{i} & \define &
+		 \left[ \begin{array}{l}
+			+ \scenCallEoa                         _{i}    \\
+			+ \scenCallSmc                         _{i}    \\
+			+ \scenCallPrc                         _{i}    \\
+		\end{array} \right] \vspace{2mm} \\
+		%
+		\scenCallNoPrc _{i} & \define &
+		 \left[ \begin{array}{l}
+			+ \scenCallException                   _{i}    \\
+			+ \scenCallAbort                       _{i}    \\
+			+ \scenCallEoa                         _{i}    \\
+			+ \scenCallSmc                         _{i}    \\
+			% + \scenCallPrc                         _{i}    \\
+		\end{array} \right] \\
+	\end{array} \right. \\
+\]
+\saNote{} The following relation holds $\scenCallPrc_{i} + \scenCallNoPrc_{i} = \scenCallSum_{i}$.
+
+We further define the following shorthands:
+\[
+	\scenCallToPrecompileSuccess _{i} \define
+	 \left[ \begin{array}{l}
+		% + \scenCallException                   _{i}    \\
+		% + \scenCallAbort                       _{i}    \\
+		% + \scenCallEoaSuccessWontRevert               _{i}    \\
+		% + \scenCallEoaSuccessWillRevert               _{i}    \\
+		% + \scenCallSmcFailureWillRevert        _{i}    \\
+		% + \scenCallSmcFailureWontRevert        _{i}    \\
+		% + \scenCallSmcSuccessWillRevert        _{i}    \\
+		% + \scenCallSmcSuccessWontRevert        _{i}    \\
+		% + \scenCallPrcFailure                  _{i}    \\
+		+ \scenCallPrcSuccessWillRevert        _{i}    \\
+		+ \scenCallPrcSuccessWontRevert        _{i}    \\
+	\end{array} \right]
+\]
+and
+\[
+	\scenCallEntryKnownWillRevert _{i} \define
+	 \left[ \begin{array}{l}
+		% + \scenCallException                   _{i}    \\
+		% + \scenCallAbort                       _{i}    \\
+		% + \scenCallEoaSuccessWontRevert               _{i}    \\
+		+ \scenCallEoaSuccessWillRevert               _{i}    \\
+		+ \scenCallSmcFailureWillRevert        _{i}    \\
+		% + \scenCallSmcFailureWontRevert        _{i}    \\
+		+ \scenCallSmcSuccessWillRevert        _{i}    \\
+		% + \scenCallSmcSuccessWontRevert        _{i}    \\
+		% + \scenCallPrcFailure                  _{i}    \\
+		+ \scenCallPrcSuccessWillRevert        _{i}    \\
+		% + \scenCallPrcSuccessWontRevert        _{i}    \\
+	\end{array} \right]
+\]
+and
+\[
+	\scenCallEntryKnownWontRevert _{i} \define
+	 \left[ \begin{array}{l}
+		% + \scenCallException                   _{i}    \\
+		% + \scenCallAbort                       _{i}    \\
+		+ \scenCallEoaSuccessWontRevert               _{i}    \\
+		% + \scenCallEoaSuccessWillRevert               _{i}    \\
+		% + \scenCallSmcFailureWillRevert        _{i}    \\
+		+ \scenCallSmcFailureWontRevert        _{i}    \\
+		% + \scenCallSmcSuccessWillRevert        _{i}    \\
+		+ \scenCallSmcSuccessWontRevert        _{i}    \\
+		% + \scenCallPrcFailure                  _{i}    \\
+		% + \scenCallPrcSuccessWillRevert        _{i}    \\
+		+ \scenCallPrcSuccessWontRevert        _{i}    \\
+	\end{array} \right]
+\]
+\saNote{} The following relation holds
+\[
+	\scenCallEntry_{i}
+	=
+	 \left[ \begin{array}{l}
+	+ \scenCallPrcFailure              _{i} \\
+	+ \scenCallEntryKnownWillRevert    _{i} \\
+	+ \scenCallEntryKnownWontRevert    _{i} \\
+	\end{array} \right]
+\]
+The purpose of the
+\scenCallEntryKnownWillRevert{} and
+\scenCallEntryKnownWontRevert{}
+shorthands is to clearly delineate the ``entry'' scenarios which are known to revert (resp. to not revert.)
+The main point is that \scenCallPrcFailure{} is compatible with both the current context reverting and not reverting.
+
+We continue with the shorthands:
+\[
+	\scenCallSuccess _{i} \define
+	 \left[ \begin{array}{l}
+		% + \scenCallException                   _{i}    \\
+		% + \scenCallAbort                       _{i}    \\
+		+ \scenCallEoaSuccessWontRevert               _{i}    \\
+		+ \scenCallEoaSuccessWillRevert               _{i}    \\
+		% + \scenCallSmcFailureWillRevert        _{i}    \\
+		% + \scenCallSmcFailureWontRevert        _{i}    \\
+		+ \scenCallSmcSuccessWillRevert        _{i}    \\
+		+ \scenCallSmcSuccessWontRevert        _{i}    \\
+		% + \scenCallPrcFailure                  _{i}    \\
+		+ \scenCallPrcSuccessWillRevert        _{i}    \\
+		+ \scenCallPrcSuccessWontRevert        _{i}    \\
+	\end{array} \right]
+\]
+and
+\[
+	\scenCallSmcSuccess _{i} \define
+	 \left[ \begin{array}{l}
+		% + \scenCallException                   _{i}    \\
+		% + \scenCallAbort                       _{i}    \\
+		% + \scenCallEoaSuccessWontRevert               _{i}    \\
+		% + \scenCallEoaSuccessWillRevert               _{i}    \\
+		% + \scenCallSmcFailureWillRevert        _{i}    \\
+		% + \scenCallSmcFailureWontRevert        _{i}    \\
+		+ \scenCallSmcSuccessWillRevert        _{i}    \\
+		+ \scenCallSmcSuccessWontRevert        _{i}    \\
+		% + \scenCallPrcFailure                  _{i}    \\
+		% + \scenCallPrcSuccessWillRevert        _{i}    \\
+		% + \scenCallPrcSuccessWontRevert        _{i}    \\
+	\end{array} \right]
+\]
+and
+\[
+	\scenCallSmcFailure _{i} \define
+	 \left[ \begin{array}{l}
+		% + \scenCallException                   _{i}    \\
+		% + \scenCallAbort                       _{i}    \\
+		% + \scenCallEoaSuccessWontRevert               _{i}    \\
+		% + \scenCallEoaSuccessWillRevert               _{i}    \\
+		+ \scenCallSmcFailureWillRevert        _{i}    \\
+		+ \scenCallSmcFailureWontRevert        _{i}    \\
+		% + \scenCallSmcSuccessWillRevert        _{i}    \\
+		% + \scenCallSmcSuccessWontRevert        _{i}    \\
+		% + \scenCallPrcFailure                  _{i}    \\
+		% + \scenCallPrcSuccessWillRevert        _{i}    \\
+		% + \scenCallPrcSuccessWontRevert        _{i}    \\
+	\end{array} \right]
+\]
+and
+\[
+	\scenCallFailure _{i} \define
+	 \left[ \begin{array}{l}
+ 		+ \scenCallSmcFailure   _{i} \\
+		+ \scenCallPrcFailure   _{i} \\
+	\end{array} \right]
+\]
+We finally set
+\[
+	\scenCallNoContextChange _{i} \define
+	 \left[ \begin{array}{l}
+		+ \scenCallAbort                       _{i}    \\
+		+ \scenCallEoa                         _{i}    \\
+		+ \scenCallPrc                         _{i}    \\
+	\end{array} \right]
+\]
+and
+\[
+	\scenCallRequiresBothAccountsTwice _{i} \define
+	\left[ \begin{array}{l}
+		% + \scenCallException                   _{i}    \\
+		% + \scenCallAbort                       _{i}    \\
+		% + \scenCallEoaSuccessWontRevert               _{i}    \\
+		+ \scenCallEoaSuccessWillRevert               _{i}    \\
+		+ \scenCallSmcFailureWillRevert        _{i}    \\
+		+ \scenCallSmcFailureWontRevert        _{i}    \\
+		+ \scenCallSmcSuccessWillRevert        _{i}    \\
+		% + \scenCallSmcSuccessWontRevert        _{i}    \\
+		% + \scenCallPrcFailure                  _{i}    \\
+		+ \scenCallPrcSuccessWillRevert        _{i}    \\
+		% + \scenCallPrcSuccessWontRevert        _{i}    \\
+	\end{array} \right]
+\]
+The following shorthands are useful in deciding when to turn on the callee's warmth:
+\[
+	\left\{ \begin{array}{lcl}
+		\scenCallCalleeWarmthUpdateNotRequired _{i} & \define & \scenCallException _{i}    \vspace{2mm} \\
+		\scenCallCalleeWarmthUpdateRequired    _{i} & \define &
+		\left[ \begin{array}{l}
+			+ \scenCallAbort _{i} \\
+			+ \scenCallEntry _{i} \\
+		\end{array} \right] \\
+	\end{array} \right.
+\]
+The following shorthands are useful to decide when a \inst{CALL}-type instruction leads to a update in balances and in case those updates have to be undone at what point in time it happens. 
+\[
+	\left\{ \begin{array}{lcl}
+	\scenCallBalanceUpdateNotRequired            _{i} & \define &
+	\left[ \begin{array}{l}
+		+ \scenCallException                   _{i}    \\
+		+ \scenCallAbort                       _{i}    \\
+		% + \scenCallEoaSuccessWontRevert               _{i}    \\
+		% + \scenCallEoaSuccessWillRevert               _{i}    \\
+		% + \scenCallSmcFailureWillRevert        _{i}    \\
+		% + \scenCallSmcFailureWontRevert        _{i}    \\
+		% + \scenCallSmcSuccessWillRevert        _{i}    \\
+		% + \scenCallSmcSuccessWontRevert        _{i}    \\
+		+ \scenCallPrcFailure                  _{i}    \\
+		% + \scenCallPrcSuccessWillRevert        _{i}    \\
+		% + \scenCallPrcSuccessWontRevert        _{i}    \\
+	\end{array} \right] \vspace{2mm} \\
+	%
+	\scenCallBalanceUpdateRequired            _{i} & \define &
+	\left[ \begin{array}{l}
+		+ \scenCallEoa                         _{i}    \\
+		+ \scenCallSmc                         _{i}    \\
+		+ \scenCallToPrecompileSuccess         _{i}    \\
+		% % + \scenCallException                   _{i}    \\
+		% % + \scenCallAbort                       _{i}    \\
+		% + \scenCallEoaSuccessWontRevert               _{i}    \\
+		% + \scenCallEoaSuccessWillRevert               _{i}    \\
+		% + \scenCallSmcFailureWillRevert        _{i}    \\
+		% + \scenCallSmcFailureWontRevert        _{i}    \\
+		% + \scenCallSmcSuccessWillRevert        _{i}    \\
+		% + \scenCallSmcSuccessWontRevert        _{i}    \\
+		% % + \scenCallPrcFailure                  _{i}    \\
+		% + \scenCallPrcSuccessWillRevert        _{i}    \\
+		% + \scenCallPrcSuccessWontRevert        _{i}    \\
+	\end{array} \right] \vspace{2mm} \\
+	%
+	\scenCallBalanceUpdateUndoneWithCalleeFailure   _{i} & \define &
+	\left[ \begin{array}{l}
+		% + \scenCallException                   _{i}    \\
+		% + \scenCallAbort                       _{i}    \\
+		% + \scenCallEoaSuccessWontRevert               _{i}    \\
+		% + \scenCallEoaSuccessWillRevert               _{i}    \\
+		+ \scenCallSmcFailureWillRevert        _{i}    \\
+		+ \scenCallSmcFailureWontRevert        _{i}    \\
+		% + \scenCallSmcSuccessWillRevert        _{i}    \\
+		% + \scenCallSmcSuccessWontRevert        _{i}    \\
+		% + \scenCallPrcFailure                  _{i}    \\
+		% + \scenCallPrcSuccessWillRevert        _{i}    \\
+		% + \scenCallPrcSuccessWontRevert        _{i}    \\
+	\end{array} \right] \vspace{2mm} \\
+	%
+	\scenCallBalanceUpdateUndoneWithCallerRevert    _{i} & \define &
+	\left[ \begin{array}{l}
+		% + \scenCallException                   _{i}    \\
+		% + \scenCallAbort                       _{i}    \\
+		% + \scenCallEoaSuccessWontRevert               _{i}    \\
+		+ \scenCallEoaSuccessWillRevert               _{i}    \\
+		% + \scenCallSmcFailureWillRevert        _{i}    \\
+		% + \scenCallSmcFailureWontRevert        _{i}    \\
+		+ \scenCallSmcSuccessWillRevert        _{i}    \\
+		% + \scenCallSmcSuccessWontRevert        _{i}    \\
+		% + \scenCallPrcFailure                  _{i}    \\
+		+ \scenCallPrcSuccessWillRevert        _{i}    \\
+		% + \scenCallPrcSuccessWontRevert        _{i}    \\
+	\end{array} \right] \vspace{2mm} \\
+	\end{array} \right.
+\]
+\saNote{} \scenCallBalanceUpdateRequired{} is the same as \scenCallSmcFailure{}.
+
+\saNote{}\label{hub: scenario: note: calls that require both accounts twice partition} The reader should observe that the following relation holds:
+\[
+	\scenCallRequiresBothAccountsTwice       _{i}
+	=
+	\left[ \begin{array}{cl}
+		+ & \scenCallBalanceUpdateUndoneWithCalleeFailure  _{i} \\
+		+ & \scenCallBalanceUpdateUndoneWithCallerRevert   _{i} \\
+	\end{array} \right]
+\]

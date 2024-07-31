@@ -1,0 +1,19 @@
+We impose the following constraints:
+\begin{enumerate}
+    \item \internalChecksPassed{} is binary \quad (\trash)
+    \item \internalChecksPassed{} is stamp-constant \quad (\trash)
+    \item \If $\locFlagSum _{i} = 0$ \Then $\internalChecksPassed _{i} = 0$
+    \item \If $\locTransitionToResult _{i} = 1$ \Then
+        \[
+            \left\{ \begin{array}{lcl}
+                \locInternalChecksPassed   & \define & \hurdle _{i}             \\
+                \internalChecksPassed _{i} & =       & \locInternalChecksPassed \\
+            \end{array} \right.
+        \]
+\end{enumerate}
+\saNote{} Each precompile uses the last data row of the \hurdle{} column to write whether the internal checks passed. This value is indicated through the shorthand \locInternalChecksPassed{}. Then, due to \textbf{stamp-constantcy}, \internalChecksPassed{} column is constant and equal to  \locInternalChecksPassed{} for a given \ecDataStamp{}.
+\begin{enumerate}[resume]
+    \item \If $\ecdataSuccessBit _{i} = 1$ \Then $\internalChecksPassed _{i} = 1$ $(\trash)$
+\end{enumerate}
+\saNote{}
+We label the final constraint (imposing that for an operation to be successful it must have passed the internal checks hurdle) with a $(\trash)$ only because it will be imposed explicitly in the sequel for every elliptic curve operation dealt with in the present module.

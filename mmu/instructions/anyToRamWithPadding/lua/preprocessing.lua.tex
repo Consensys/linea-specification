@@ -1,0 +1,317 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{../../../../pkg/draculatheme}
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NF Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\begin{document}
+\begin{verbatim}
+The preprocessing for ⟦MMU_INST_anyToRamWithPadding⟧ has to answer the following questions:
+
+- is it all padding ?                                                        <== all_padd
+- is it mixed (data then) padding) ?                                         <== mixed
+- is it all data ?                                                           <== all_data
+- how many bytes are being transferred from the source to the target ?       <== trsf_size
+
+Nontrivial operations:
+- if all_padd = true
+        - TOTNT = 0
+- if all_padd = false
+        - maybe_frst_src_offset ≡ REF_OFFSET + SRC_OFFSET_LO
+        - maybe_last_src_offset ≡ maybe_frst_src_offset + (trsf_size - 1)
+        - what is TOTNT ?
+        - is TOTNT >= 2 ?                                                    <== totnt_at_least_2
+                - if totnt_at_least_2 = false
+                        - is the only nontrivial limb single target ?
+                - if TOTNT ≠ 1:
+                        - what is the frst source limb byte size ?
+                        - what is the last source limb byte size ?
+                        - is the frst nontrivial limb single target ?
+                        - is the last nontrivial limb single target ?
+        - are we aligned ?
+                - if not, what is mddl_tbo ?
+        - what are init_sbo / init_slo ?
+        - what are frst_tbo / frst_tlo ?
+
+- if there is some padding:
+        - what is TOTRZ ?
+                - if TOTRZ = 1:
+                        - is the only padding excision or killingRam ?
+                        - init_tpo ? size ?
+                - if TOTRZ ≠ 1:
+                        - is the frst padding excision or killingRam ?
+                        - is the last padding excision or killingRam ?
+                        - tbo ? size ? in both cases
+
+We need to establish the following:
+- pure_padding ?
+- mixed ?
+- pure_data ?
+- TOTNT ?
+        - ⟦TOTNT ≥ 2⟧ ?
+        - [P] aligned ?
+- TOTRZ ?
+        - ⟦TOTRZ ≥ 2⟧ ?
+- if pure_padd ≡ false:
+        - frst_slo / frst_sbo
+        - frst_tlo / frst_tbo
+        - frst_size
+        - frst_single_target_limb
+        - if ⟦TOTNT ≥ 2⟧ = true
+                - increment_init_tlo: true / false
+                - mddl_tbo
+                - [P] last_size
+                - [P] last_single_target_limb
+- if pure_data ≡ false
+        - frst_plo
+        - [P] frst_pbo
+        - [P] frst_padd_size
+        - [P] increment_tlo_at_transition
+        - [P] last_padd_size
+
+
+We first impose
+
+                TOTLZ = 0
+
+We define the shorthand
+
+                .
+
+The operations below deal with everything in the source if required i.e. whenever pure_padd ≡ false.
+
+NOTE:
+- SIZE is at most a 4 byte integer (MXPX not triggered)
+- REF_SIZE and REF_OFFSET are of the same order of magnitude
+        + the addition real_src_offset + (trsf_size - 1) is safe.   
+
+We next deal with the over all structure of the macro-instruction:
+- is it all data ?
+- is it all padding ?
+- is it a mix of both ?
+
+|--------+----------------------------------------------+----------------------------------+--------------------------------------------------------------------+---------------------|
+| PP row | WCP                                          | EUC                              | shorthands                                                         | notes               |
+|--------+----------------------------------------------+----------------------------------+--------------------------------------------------------------------+---------------------|
+| i + x  | LT( SRC_OFF_HI, SRC_OFF_LO; 0, REF_SIZE )    | EUC( maybe_frst_src_offset; 16 ) |                                                                    | CARRY OUT euc iff   |
+|        |                                              |                                  |                                                                    | . pure_padd ≡ false |
+|        |                                              |                                  |                                                                    |                     |
+|        |                                              |                                  |                                                                    |                     |
+|        |                                              |                                  |                                                                    |                     |
+|        |                                              |                                  | DEFINE:                                                            |                     |
+|        |                                              |                                  | =======                                                            |                     |
+|        |                                              |                                  |                                                                    |                     |
+|        |                                              |                                  | * pure_padd ≡ 1 - WCP/RES[i + x]                                   |                     |
+|        |                                              |                                  |                                                                    |                     |
+|        |                                              |                                  | * maybe_frst_src_offset ≡                                          |                     |
+|        |                                              |                                  | .    If pure_padd = 1 Then 0                                       |                     |
+|        |                                              |                                  | .    If pure_padd = 0 Then REF_OFFSET + SRC_OFFSET_LO              |                     |
+|        |                                              |                                  | * frst_read_slo ≡ EUC/QUOT[i + x]                                  |                     |
+|        |                                              |                                  | * frst_read_sbo ≡ EUC/REMD[i + x]                                  |                     |
+|--------+----------------------------------------------+----------------------------------+--------------------------------------------------------------------+---------------------|
+| i + x  | LT( 0, max_src_offset_or_zero; 0, REF_SIZE ) | EUC( maybe_last_src_offset; 16 ) |                                                                    | CARRY OUT iff       |
+|        |                                              |                                  |                                                                    | . pure_padd ≡ false |
+|        |                                              |                                  |                                                                    |                     |
+|        |                                              |                                  | DEFINE:                                                            |                     |
+|        |                                              |                                  | =======                                                            |                     |
+|        |                                              |                                  |                                                                    |                     |
+|        |                                              |                                  | * max_src_offset_or_zero ≡                                         |                     |
+|        |                                              |                                  | .    If pure_padd = 1 Then 0                                       |                     |
+|        |                                              |                                  | .    If pure_padd = 0 Then SRC_OFF_LO + (SIZE - 1)                 |                     |
+|        |                                              |                                  | * mixed     ≡ (1 - pure_padd) • (1 - WCP/RES[i + x])               |                     |
+|        |                                              |                                  | * pure_data ≡ (1 - pure_padd) • WCP/RES[i + x]                     |                     |
+|        |                                              |                                  |                                                                    |                     |
+|        |                                              |                                  | * maybe_last_src_offset ≡                                          |                     |
+|        |                                              |                                  | .    If pure_padd = 1 Then 0                                       |                     |
+|        |                                              |                                  | .    If pure_padd = 0 Then maybe_frst_src_offset + (trsf_size - 1) |                     |
+|        |                                              |                                  | * trsf_size ≡                                                      |                     |
+|        |                                              |                                  | .    If pure_padd = 1 Then 0                                       |                     |
+|        |                                              |                                  | .    If pure_padd = 0 Then                                         |                     |
+|        |                                              |                                  | .        If pure_data = 0 Then (REF_SIZE - SRC_OFF_LO)             |                     |
+|        |                                              |                                  | .        If pure_data = 1 Then SIZE                                |                     |
+|        |                                              |                                  | * last_read_slo ≡ EUC/QUOT[i + x]                                  |                     |
+|        |                                              |                                  | * last_read_sbo ≡ EUC/REMD[i + x]                                  |                     |
+|        |                                              |                                  |                                                                    |                     |
+|        |                                              |                                  | NOTE: pure_padd + mixed + pure_data = 1                            |                     |
+|--------+----------------------------------------------+----------------------------------+--------------------------------------------------------------------+---------------------|
+
+We next deal with all reading operations. Reading refers to extracting data from the source data store.
+Such operations are deemed NONTRIVIAL.
+
+|--------+----------------------+-----+---------------------------------------------------------------------+---------------------|
+| PP row | WCP                  | EUC | shorthands                                                          | notes               |
+|--------+----------------------+-----+---------------------------------------------------------------------+---------------------|
+| i + x  | LT( 0, 1; 0, TOTNT ) |     |                                                                     | CARRY OUT iff       |
+|        |                      |     |                                                                     | . pure_padd ≡ false |
+|        |                      |     | IMPOSE:                                                             |                     |
+|        |                      |     | =======                                                             |                     |
+|        |                      |     |                                                                     |                     |
+|        |                      |     | TOTNT =                                                             |                     |
+|        |                      |     | .   If pure_padd = 1 Then 0                                         |                     |
+|        |                      |     | .   If pure_padd = 0 Then last_read_slo - frst_read_slo + 1         |                     |
+|        |                      |     |                                                                     |                     |
+|        |                      |     | DEFINE:                                                             |                     |
+|        |                      |     | =======                                                             |                     |
+|        |                      |     |                                                                     |                     |
+|        |                      |     | * totnt_at_least_2 ≡ WCP/RES[i + x]                                 |                     |
+|        |                      |     | * last_read_src_limb_byte_size ≡                                    |                     |
+|        |                      |     | .    If pure_padd = 1 Then 0                                        |                     |
+|        |                      |     | .    If pure_padd = 0 Then 1 + last_read_sbo                        |                     |
+|        |                      |     | .        If totnt_at_least_2 = 0: last_read_sbo - frst_read_sbo + 1 |                     |
+|        |                      |     | .        If totnt_at_least_2 = 1: last_read_sbo + 1                 |                     |
+|        |                      |     | * frst_read_limb_byte_size ≡                                        |                     |
+|        |                      |     | .    If pure_padd = 1 Then 0                                        |                     |
+|        |                      |     | .    If pure_padd = 0 Then                                          |                     |
+|        |                      |     | .        If totnt_at_least_2 = 0: last_read_sbo - frst_read_sbo + 1 |                     |
+|        |                      |     | .        If totnt_at_least_2 = 1: 16 - frst_read_sbo                |                     |
+|--------+----------------------+-----+---------------------------------------------------------------------+---------------------|
+
+The following deals the extremal offsets of the target range.
+TODO: skip equality checks! We won't use the outputs
+
+|--------+-----+----------------------------+------------------------------------------------+-------|
+| PP row | WCP | EUC                        | shorthands                                     | notes |
+|--------+-----+----------------------------+------------------------------------------------+-------|
+| i + x  |     | EUC( frst_tgt_offset; 16 ) |                                                |       |
+|        |     |                            |                                                |       |
+|        |     |                            |                                                |       |
+|        |     |                            | DEFINE:                                        |       |
+|        |     |                            | =======                                        |       |
+|        |     |                            |                                                |       |
+|        |     |                            | * frst_tgt_offset ≡ TGT_OFFSET_LO              |       |
+|        |     |                            | * frst_tlo ≡ EUC/QUOT[i + x]                   |       |
+|        |     |                            | * frst_tbo ≡ EUC/REMD[i + x]                   |       |
+|        |     |                            | * frst_tbo_iszero ≡ WCP/RES[i + x]             |       |
+|--------+-----+----------------------------+------------------------------------------------+-------|
+| i + x  |     | EUC( last_tgt_offset; 16 ) |                                                |       |
+|        |     |                            |                                                |       |
+|        |     |                            |                                                |       |
+|        |     |                            | DEFINE:                                        |       |
+|        |     |                            | =======                                        |       |
+|        |     |                            |                                                |       |
+|        |     |                            | * last_tgt_offset ≡ TGT_OFFSET_LO + (SIZE - 1) |       |
+|        |     |                            | * last_tlo ≡ EUC/QUOT[i + x]                   |       |
+|        |     |                            | * last_tbo ≡ EUC/REMD[i + x]                   |       |
+|        |     |                            | * last_tbo_is_15 ≡ WCP/RES[i + x]              |       |
+|--------+-----+----------------------------+------------------------------------------------+-------|
+
+The following deals with padding.
+These computatoins are only required if pure_data = false.
+
+|--------+----------------------+----------------------------------------+---------------------------------------------------------------+---------------------|
+| PP row | WCP                  | EUC                                    | shorthands                                                    | notes               |
+|--------+----------------------+----------------------------------------+---------------------------------------------------------------+---------------------|
+| i + x  |                      | EUC( frst_tgt_offset + trsf_size; 16 ) |                                                               | CARRY OUT iff       |
+|        |                      |                                        |                                                               | . pure_data = false |
+|        |                      |                                        |                                                               |                     |
+|        |                      |                                        | DEFINE:                                                       |                     |
+|        |                      |                                        | =======                                                       |                     |
+|        |                      |                                        |                                                               |                     |
+|        |                      |                                        | * frst_plo ≡ EUC/QUOT[i + x]                                  |                     |
+|        |                      |                                        | * frst_pbo ≡ EUC/REMD[i + x]                                  |                     |
+|--------+----------------------+----------------------------------------+---------------------------------------------------------------+---------------------|
+| i + x  | LT( 0, 1; 0, TOTRZ ) |                                        |                                                               | CARRY OUT iff       |
+|        |                      |                                        |                                                               | . pure_data = false |
+|        |                      |                                        | DEFINE:                                                       |                     |
+|        |                      |                                        | =======                                                       |                     |
+|        |                      |                                        |                                                               |                     |
+|        |                      |                                        | * TOTRZ =                                                     |                     |
+|        |                      |                                        | .    If pure_data = 1 Then 0                                  |                     |
+|        |                      |                                        | .    If pure_data = 0 Then last_tlo - frst_plo + 1            |                     |
+|        |                      |                                        | * totrz_at_least_2 ≡ WCP/RES[i + x]                           |                     |
+|        |                      |                                        | * frst_padd_size ≡                                            |                     |
+|        |                      |                                        | .    If pure_data = 1 Then 0                                  |                     |
+|        |                      |                                        | .    If pure_data = 0 Then                                    |                     |
+|        |                      |                                        | .        If totrz_at_least_2 = 1 Then 16 - frst_pbo           |                     |
+|        |                      |                                        | .        If totrz_at_least_2 = 0 Then last_pbo - frst_pbo + 1 |                     |
+|        |                      |                                        | * last_padd_size ≡                                            |                     |
+|        |                      |                                        | .    If pure_data = 1 Then 0                                  |                     |
+|        |                      |                                        | .    If pure_data = 0 Then                                    |                     |
+|        |                      |                                        | .        If totrz_at_least_2 = 1 Then last_pbo + 1            |                     |
+|        |                      |                                        | .        If totrz_at_least_2 = 0 Then last_pbo - frst_pbo + 1 |                     |
+|--------+----------------------+----------------------------------------+---------------------------------------------------------------+---------------------|
+
+The next rows deal with the insertion of the extremal source limbs into the target domain.
+
+|--------+--------------------------------+----------------------------------------------------------+-------------------------------------------------------------------------+---------------------|
+| PP row | WCP                            | EUC                                                      | shorthands                                                              | notes               |
+|--------+--------------------------------+----------------------------------------------------------+-------------------------------------------------------------------------+---------------------|
+| i + x  | EQ( 0, EUC/REM[i + x]; 0, 15 ) | EUC( frst_tbo + (frst_read_src_limb_byte_size - 1); 16 ) |                                                                         | CARRY OUT iff       |
+|        |                                |                                                          |                                                                         | . pure_padd = false |
+|        |                                |                                                          |                                                                         |                     |
+|        |                                |                                                          | DEFINE:                                                                 |                     |
+|        |                                |                                                          | =======                                                                 |                     |
+|        |                                |                                                          |                                                                         |                     |
+|        |                                |                                                          | * frst_trsf_maxes_out_target_limb ≡ WCP/RES[i + x]                      |                     |
+|        |                                |                                                          | * frst_trsf_targets_single_limb   ≡ 1 - EUC/QUOT[i + x]                 |                     |
+|        |                                |                                                          | * mddl_tbo ≡                                                            |                     |
+|        |                                |                                                          | .    If pure_padd = 1 Then 0                                            |                     |
+|        |                                |                                                          | .    If pure_padd = 0 Then                                              |                     |
+|        |                                |                                                          | .        If frst_trsf_maxes_out_target_limb = 0 Then 1 + EUC/REM[i + x] |                     |
+|        |                                |                                                          | .        If frst_trsf_maxes_out_target_limb = 1 Then 0                  |                     |
+|--------+--------------------------------+----------------------------------------------------------+-------------------------------------------------------------------------+---------------------|
+| i + x  | EQ( 0, EUC/REMD[i + x]; 15 )   | EUC( mddl_tbo + (last_read_src_limb_byte_size - 1); 16 ) |                                                                         | CARRY OUT iff       |
+|        |                                |                                                          |                                                                         | . pure_padd = false |
+|        |                                |                                                          |                                                                         |                     |
+|        |                                |                                                          | DEFINE:                                                                 |                     |
+|        |                                |                                                          | =======                                                                 |                     |
+|        |                                |                                                          |                                                                         |                     |
+|        |                                |                                                          | * last_trsf_maxes_out_target_limb ≡ WCP/RES[i + x]                      |                     |
+|        |                                |                                                          | * last_trsf_targets_single_limb   ≡ 1 - EUC/QUOT[i + x]                 |                     |
+|--------+--------------------------------+----------------------------------------------------------+-------------------------------------------------------------------------+---------------------|
+
+We have a final row that allows the MMU module to differentiate between instructions whose
+data source is RAM (e.g. CALLDATCOPY / RETURNDATACOPY) and those whose data source is
+an EXO data store (e.g. CODECOPY / EXTCODECOPY).
+
+|--------+-------------------------------------+-----+------------------------------------+---------------------|
+| PP row | WCP                                 | EUC | shorthands                         | notes               |
+|--------+-------------------------------------+-----+------------------------------------+---------------------|
+| i + x  | EQ( 0, frst_read_sbo; 0, frst_tbo ) |     |                                    | CARRY OUT iff       |
+|        |                                     |     |                                    | . pure_padd = false |
+|        |                                     |     | DEFINE:                            |                     |
+|        |                                     |     | =======                            |                     |
+|        |                                     |     |                                    |                     |
+|        |                                     |     | * aligned ≡ WCP/RES[i + x]         |                     |
+|--------+-------------------------------------+-----+------------------------------------+---------------------|
+| i + x  | ISZERO( 0, MACRO/EXO_SUM )          |     |                                    | USEFUL iff          |
+|        |                                     |     |                                    | . pure_padd = false |
+|        |                                     |     | DEFINE:                            |                     |
+|        |                                     |     | =======                            |                     |
+|        |                                     |     |                                    |                     |
+|        |                                     |     | * data_src_is_ram ≡ WCP/RES[i + x] |                     |
+|--------+-------------------------------------+-----+------------------------------------+---------------------|
+
+
+frst_tlo_increment ≡
+
+* frst_tbo + frst_data_trsf_size       = 16 q  + r
+* frst_tbo + (frst_data_trsf_size - 1) = 16 q' + r'
+
+* frst_tlo_increment:
+        * If pure_padd = 1 Then 0
+        * If pure_padd = 0 Then
+                * If ⟦TOTNT >= 2⟧ ≡ false Then 0
+                * If ⟦TOTNT >= 2⟧ ≡ true  Then q
+.        trns_tlo_increment           ≡ q
+.        frst_padd_tbo                ≡ r
+.        frst_data_trsf_single_target ≡ q'
+.    If ⟦TOTNT ≥ 2⟧ ≡ true  Then
+.        frst_tlo_increment             ≡ q
+.        mddl_tbo                       ≡ r
+.        mddl_tbo + last_data_trsf_size ≡ 16 q'' + r''
+.        trns_tlo_increment             ≡ q''
+.        frst_padd_tbo                  ≡ r''
+\end{verbatim}
+\end{document}
+

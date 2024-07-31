@@ -1,0 +1,161 @@
+% BINARY MODULE
+
+
+\newcommand{\isAnd}                     {\col{IS\_AND}}
+\newcommand{\isOr}                      {\col{IS\_OR}}
+\newcommand{\isXor}                     {\col{IS\_XOR}}
+\newcommand{\isNot}                     {\col{IS\_NOT}}
+\newcommand{\isByte}                    {\col{IS\_BYTE}}
+\newcommand{\isSignextend}              {\col{IS\_SIGNEXTEND}}
+
+%\newcommand{\CT}{\col{COUNTER}}
+%\newcommand{\ct}{\col{CT}}
+\newcommand{\BS}{\col{BINARY\_STAMP}}
+\newcommand{\bs}{\col{BS}}
+\newcommand{\MSHP}{\col{MICRO\_SHIFT\_PARAM}} % micro shift parameter
+\newcommand{\mshp}{\col{$\mu$SHP}}
+\newcommand{\LT}{\col{LOW\_3}} % not a column but still used from time to time
+\newcommand{\IRF}{\col{IN\_RANGE\_FLAG}} % shift parameter in range flag
+\newcommand{\irf}{\col{IRF}}
+\newcommand{\MSHF}{\col{$\mu$SHIFT\_FLAG}}
+\newcommand{\mshf}{\col{$\mu$SHF}}
+\newcommand{\SHF}{\col{SHIFT\_FLAG}}
+\newcommand{\shf}{\col{SHF}}
+\newcommand{\ZB}{\col{ZERO\_BACP}}
+\newcommand{\zb}{\col{ZB}}
+\newcommand{\ZP}{\col{ZERO\_BACP\_PARAM}}
+\newcommand{\zp}{\col{ZP}}
+\newcommand{\SHD}{\col{SHIFT\_DIRECTION}}
+\newcommand{\shd}{\col{SHD}}
+\newcommand{\IO}{\col{INPUT\_1}}
+\newcommand{\io}{\col{I1}}
+\newcommand{\IT}{\col{INPUT\_2}}
+\renewcommand{\it}{\col{I2}}
+\newcommand{\R}{\col{RES}}
+\newcommand{\PB}{\col{PIVOT\_BYTE}}
+\newcommand{\pb}{\col{PB}}
+\newcommand{\BO}{\col{BYTE\_1}}
+\newcommand{\bo}{\col{B1}}
+\newcommand{\BT}{\col{BYTE\_2}}
+\newcommand{\bt}{\col{B2}}
+\newcommand{\BR}{\col{BYTE\_RES}}
+\newcommand{\br}{\col{BR}}
+\newcommand{\PO}{\col{PREFIX\_1}}
+\newcommand{\po}{\col{P1}}
+\newcommand{\PT}{\col{PREFIX\_2}}
+\newcommand{\pt}{\col{P2}}
+\newcommand{\PR}{\col{PREFIX\_RES}}
+\newcommand{\pr}{\col{PR}}
+\newcommand{\BB}{\col{BYTE\_BITS}}
+\newcommand{\bb}{\col{BB}}
+\newcommand{\DB}{\col{DECISION\_BIT}}
+\newcommand{\db}{\col{DB}}
+\newcommand{\NEG}{\col{NEG}} % should rename it to SIGN_BIT / SGN
+\newcommand{\negCol}[1]{\col{NEG\_#1}}
+\newcommand{\eqHi}{\bit{\col{eq\_hi}}}
+\newcommand{\eqLo}{\bit{\col{eq\_lo}}}
+\newcommand{\gtHi}{\bit{\col{gt\_hi}}}
+\newcommand{\gtLo}{\bit{\col{gt\_lo}}}
+\newcommand{\SNSP}{\decoded{\col{SPLIT\_AND\_SHIFTED\_PREFIX}}}
+\newcommand{\snsp}{\decoded{\col{SNS\_PREFIX}}}
+\newcommand{\SNSS}{\decoded{\col{SPLIT\_AND\_SHIFTED\_SUFFIX}}}
+\newcommand{\snss}{\decoded{\col{SNS\_SUFFIX}}}
+\newcommand{\ONES}{\decoded{\col{ONES}}}
+\newcommand{\SGNXF}{\col{SIGNEXTEND\_FLAG}}
+\newcommand{\sgnxf}{\col{SGNXF}}
+\newcommand{\PIVF}{\col{PIVOT\_FLAG}}
+\newcommand{\pivf}{\col{PF}}
+%\newcommand{\INST}{\col{INST}}
+\newcommand{\ANDF}{\col{AND\_FLAG}}
+\newcommand{\andf}{\col{ANDF}}
+\newcommand{\ORF}{\col{OR\_FLAG}}
+\newcommand{\orf}{\col{ORF}}
+\newcommand{\XORF}{\col{XOR\_FLAG}}
+\newcommand{\xorf}{\col{XORF}}
+\newcommand{\NOTF}{\col{NOT\_FLAG}}
+\newcommand{\notf}{\col{NOTF}}
+\newcommand{\SARF}{\col{SAR\_FLAG}}
+\newcommand{\sarf}{\col{SARF}}
+\newcommand{\LEADINGBIT}{\col{LEADING\_BIT}}
+\newcommand{\leadingBit}{\col{LB}}
+\newcommand{\decXXX}[1]{\decoded{\col{XXX\_BYTE\_#1}}}
+\newcommand{\decAND}[1]{\decoded{\col{AND\_BYTE\_#1}}}
+\newcommand{\decNOT}[1]{\decoded{\col{NOT\_BYTE\_#1}}}
+\newcommand{\decOR}[1]{\decoded{\col{OR\_BYTE\_#1}}}
+\newcommand{\decXOR}[1]{\decoded{\col{XOR\_BYTE\_#1}}}
+\newcommand{\lowFour}{\col{LOW\_4}}
+\newcommand{\smallness}{\col{SMALL}}
+\newcommand{\pivotByte}{\col{PIVOT}}
+
+\newcommand{\sgnxParam}{\mathsf{p}}
+
+\newcommand{\SGNX}{\inst{SIGNEXTEND}}
+\newcommand{\sgnx}{\inst{SGNX}}
+
+\newcommand{\BIT}[1]{\col{BIT\_{#1}}}
+%\newcommand{\bit}[1]{[\![{#1}]\!]}
+%\newcommand{\negbit}[1]{\bit{#1}^\vee}
+
+\newcommand{\LSB}{\texttt{LSB}}
+
+\newcommand{\binc}[1]{{#1}_i\cdot(1-{#1}_i) = 0}
+
+\newcommand{\constantBs}[2]{%
+\begin{tikzpicture}
+\draw[fill=#2] (0, 0) rectangle (1, -3);
+\draw (0.5, -0.25) node {#1};
+\draw (0.5, -1.5) node {$\vdots$};
+\draw (0.5, -2.75) node {#1};
+\end{tikzpicture}
+}
+
+
+\def\lightGreen{solarized-green!75}
+
+\newcommand{\bsAndZeros}{%
+\begin{tikzpicture}
+    \draw[fill=\lightGreen] (0, 0) rectangle (1, -1.5);
+    \draw (0,-1.5) rectangle (1, -3);
+    % zeros
+    \draw (0.5, -0.25) node {0};
+    \draw (0.5, -0.75) node {$\vdots$};
+    \draw (0.5, -1.25) node {0};
+    % lsb bits
+    \draw (0.5, -1.75) node {$\texttt{LSB}_7$};
+    \draw (0.5, -2.25) node {$\vdots$};
+    \draw (0.5, -2.75) node {$\texttt{LSB}_0$};
+\end{tikzpicture}}
+
+\def\zeros{%
+\begin{tikzpicture}[scale=1]
+    \draw[fill=\lightGreen] (0, 0) rectangle (1, -3);
+\end{tikzpicture}}
+
+\def\intensity{20}
+
+\def\nscdot{\!\!\!\!\!\cdot\!\!\!\!\!} % no space \cdot
+\def\nsplus{\!\!\!\!\!+\!\!\!\!\!} % no space +
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% SIGNEXTEND full COUNTER-cycle %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\sepr{3.5}
+\def\colH{1.15}
+\def\colV{0.6}
+\def\hori{1}
+\def\verti{0.45}
+\def\fullCol{(1-\colH, 1-\colV) rectangle (1+\colH, 32+\colV)}
+\newcommand{\cell}[1]{(1-\hori, #1-\verti) rectangle (1+\hori, #1+\verti)} % rectangular cell
+\newcommand{\cnt}[2]{(1, #1) node {#2}} % cell content
+\def\psepr{\p*\sepr}
+\def\shift{\draw[shift={(\psepr, 0)}]}
+\newcommand{\shiftfill}[1]{\draw[shift={(\psepr, 0)}, fill=#1]}
+\newcommand{\colName}[1]{\shift \cnt{33.2}{#1};} % column name
+\newcommand{\colCarOne}[1]{\shift \cnt{-0.2}{\textit{#1}};} % column caracteristics
+\newcommand{\colCarTwo}[1]{\shift \cnt{-1.2}{\textit{#1}};} % column caracteristics
+
+\newcommand{\hyp}[1]{\fcolorbox{red}{yellow}{#1}}
+
+\newcommand{\opRequiresByteDecomposition} {\col{op\_requires\_byte\_decomposition}}

@@ -1,0 +1,80 @@
+We require that the following constraints hold:
+\begin{description}
+	\item[Nontrivial contexts:]
+		\If $\order{\peekContext}_{i} = 1$ \Then $\order{\cnCn}_{i} \neq 0$ \quad (\trash)
+	\item[Setting $\conContextFirst$ and $\conContextAgain$:]
+		we impose the following
+		\begin{enumerate}
+		        \item $\conContextFirst$ and $\conContextAgain$ are binary
+			\item $\conContextFirst_{i} + \conContextAgain_{i} = \order{\peekContext}_{i}$
+			\item \If $\order{\peekContext}_{i} = 0$ \Then $\conContextFirst_{i + 1} = \order{\peekContext}_{i + 1}$
+			\item \If $\order{\peekContext}_{i} = 1$ \Then
+				\begin{enumerate}
+				        \item \If $\conContextFirst_{i + 1} = 1$ \Then $\order{\cnCn}_{i + 1} \neq \order{\cnCn}_{i}$
+				        \item \If $\conContextAgain_{i + 1} = 1$ \Then $\order{\cnCn}_{i + 1} =    \order{\cnCn}_{i}$
+				\end{enumerate}
+		\end{enumerate}
+	\item[Immutability constraints:] 
+		\If $\conContextAgain_{i + 1} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				% \order{\cnCn                   }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCn                   }      _{i} \\
+				\order{\cnCsd                  }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCsd                  }      _{i} \\
+				\order{\cnIsRootContext        }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnIsRootContext        }      _{i} \\
+				\order{\cnStatic               }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnStatic               }      _{i} \\
+				\order{\cnAccountAddress\high  }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnAccountAddress\high  }      _{i} \\
+				\order{\cnAccountAddress\low   }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnAccountAddress\low   }      _{i} \\
+				\order{\cnAccDepNum            }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnAccDepNum            }      _{i} \\
+				\order{\cnCodeAddress\high     }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCodeAddress\high     }      _{i} \\
+				\order{\cnCodeAddress\low      }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCodeAddress\low      }      _{i} \\
+				\order{\cnCodeDepNum           }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCodeDepNum           }      _{i} \\
+				\order{\cnCodeDepStatus        }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCodeDepStatus        }      _{i} \\
+				\order{\cnCodeCfi              }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCodeCfi              }      _{i} \\
+				\order{\cnCallerAddress\high   }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCallerAddress\high   }      _{i} \\
+				\order{\cnCallerAddress\low    }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCallerAddress\low    }      _{i} \\
+				\order{\cnCallValue            }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCallValue            }      _{i} \\
+				\order{\cnCallDataContextNumber}     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCallDataContextNumber}      _{i} \\
+				\order{\cnCdo                  }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCdo                  }      _{i} \\
+				\order{\cnCds                  }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCds                  }      _{i} \\
+				\order{\cnRao                  }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnRao                  }      _{i} \\
+				\order{\cnRac                  }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnRac                  }      _{i} \\
+				% \order{\cnUpdate               }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnUpdate               }      _{i} \\
+				% \order{\cnReturner             }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnReturner             }      _{i} \\
+				% \order{\cnRdo                  }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnRdo                  }      _{i} \\
+				% \order{\cnRds                  }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnRds                  }      _{i} \\
+			\end{array} \right.
+		\]
+	\item[Immutability constraints for return data:] 
+		\If $\conContextAgain_{i + 1} = 1$ \et $\order{\cnUpdate}_{i + 1} = 0$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				% \order{\cnCn                   }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCn                   }      _{i} \\
+				% \order{\cnCsd                  }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCsd                  }      _{i} \\
+				% \order{\cnIsRootContext        }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnIsRootContext        }      _{i} \\
+				% \order{\cnStatic               }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnStatic               }      _{i} \\
+				% \order{\cnAccountAddress\high  }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnAccountAddress\high  }      _{i} \\
+				% \order{\cnAccountAddress\low   }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnAccountAddress\low   }      _{i} \\
+				% \order{\cnAccDepNum            }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnAccDepNum            }      _{i} \\
+				% \order{\cnCodeAddress\high     }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCodeAddress\high     }      _{i} \\
+				% \order{\cnCodeAddress\low      }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCodeAddress\low      }      _{i} \\
+				% \order{\cnCodeDepNum           }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCodeDepNum           }      _{i} \\
+				% \order{\cnCodeDepStatus        }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCodeDepStatus        }      _{i} \\
+				% \order{\cnCodeCfi              }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCodeCfi              }      _{i} \\
+				% \order{\cnCallerAddress\high   }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCallerAddress\high   }      _{i} \\
+				% \order{\cnCallerAddress\low    }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCallerAddress\low    }      _{i} \\
+				% \order{\cnCallValue            }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCallValue            }      _{i} \\
+				% \order{\cnCallDataContextNumber}     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCallDataContextNumber}      _{i} \\
+				% \order{\cnCdo                  }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCdo                  }      _{i} \\
+				% \order{\cnCds                  }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCds                  }      _{i} \\
+				% \order{\cnRao                  }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnRao                  }      _{i} \\
+				% \order{\cnRac                  }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnRac                  }      _{i} \\
+				% \order{\cnUpdate               }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnUpdate               }      _{i} \\
+				\order{\cnReturner             }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnReturner             }      _{i} \\
+				\order{\cnRdo                  }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnRdo                  }      _{i} \\
+				\order{\cnRds                  }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnRds                  }      _{i} \\
+			\end{array} \right.
+		\]
+\end{description}
+The above enforces that a given execution context always runs the same code (same address, same deployment number and same deployment status), that its caller context remains constant throughout, and that the data indicating whether or not it will revert (and if so whether it is self induced and/or inherited from a parent context reverting) and at what point in time a revert may trigger --- that all this be constants of the execution context.
+
+\saNote{} Since $\peekContext$ is binary we are thus requiring that all rows with $\peekContext \equiv 0$ be listed consecutively followed by all rows with $\peekContext \equiv 1$.

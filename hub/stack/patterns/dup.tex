@@ -1,0 +1,78 @@
+\subsubsection{Constraints}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Let $\col{param} \in \{ 0, 1, \dots, 15 \}$ be given.
+We let $\dupSP\big[\col{param}\big]_{i}$ stand for the following collection of constraints:
+\begin{description}
+	\item[\underline{Stack Item $n^\circ\,1$:}] this excavates the value to duplicate (``$v_\text{deep}$''):
+	\[
+	\left\{
+		\begin{array}{lcl}
+			\stackItemHeight{1}_{i}	& \!\!\! = \!\!\! & \stackHeight_{i} - \col{param} \\
+			\stackItemPop{1}_{i}	& \!\!\! = \!\!\! & 1 \\
+			\stackItemStamp{1}_{i}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i}
+		\end{array}
+	\right.
+	\]
+	\item[\underline{Stack Item $n^\circ\,2$:}] this re-inserts said value from whence it was taken:
+	\[
+	\left\{
+		\begin{array}{lcl}
+			\stackItemHeight{2}_{i}	& \!\!\! = \!\!\! & \stackHeight_{i} - \col{param} \\
+			\stackItemPop{2}_{i}	& \!\!\! = \!\!\! & 0 \\
+			\stackItemValHi{2}_{i}	& \!\!\! = \!\!\! & \stackItemValHi{1}_{i} \\
+			\stackItemValLo{2}_{i}	& \!\!\! = \!\!\! & \stackItemValLo{1}_{i} \\
+			\stackItemStamp{2}_{i}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} + 1
+		\end{array}
+	\right.
+	\]
+	\item[\underline{Stack Item $n^\circ\,3$:}] is empty: $\emptyStackItem{3}_{i}$;
+	\item[\underline{Stack Item $n^\circ\,4$:}] this inserts said value onto the stack:
+	\[
+	\left\{
+		\begin{array}{lcl}
+			\stackItemHeight{4}_{i}	& \!\!\! = \!\!\! & \stackHeight_{i} + 1 \\
+			\stackItemPop{4}_{i}	& \!\!\! = \!\!\! & 0 \\
+			\stackItemValHi{4}_{i}	& \!\!\! = \!\!\! & \stackItemValHi{1}_{i} \\
+			\stackItemValLo{4}_{i}	& \!\!\! = \!\!\! & \stackItemValLo{1}_{i} \\
+			\stackItemStamp{4}_{i}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} + 2
+		\end{array}
+	\right.
+	\]
+	\item[\underline{Height update:}] $\stackHeight{}\new{}_{i} = \stackHeight{}_{i} + 1$; 
+\end{description}
+
+
+\subsubsection{Graphical representation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+The figure below represents the $\dupSP\big[\col{param}\big]_{i}$ stack pattern:
+\begin{figure}[h!]
+\[
+	\begin{array}{|l|r|c|r|r|}
+	\cline{2-5}
+	\multicolumn{1}{c}{} &
+	\multicolumn{1}{|c|}{\text{Stack}} &
+	\multicolumn{1}{c|}	{\text{Stack}} &
+	\multicolumn{1}{c|}	{\text{Stack}} &
+	\multicolumn{1}{c|}	{\text{Stack}} \\
+	\multicolumn{1}{c}{} &
+	\multicolumn{1}{|c|}{\text{Item 1}}	&
+	\multicolumn{1}{c|}	{\text{Item 2}}	&
+	\multicolumn{1}{c|}	{\text{Item 3}}	&
+	\multicolumn{1}{c|}	{\text{Item 4}}	\\ \hline
+	\stackItemHeight{k}_{i} 				& \col{h} - \col{param}	& \col{h} - \col{param}			& \graym{\varnothing} & \col{h} + 1 	\\ \hline
+	\stackItemValHi{k}/\stackItemValLo{k}	& v_\text{deep} 		& v_\text{deep} 				& \graym{\varnothing} & v_\text{deep} 	\\ \hline
+	\stackItemPop{k}_{i} 					& 1 					& 0 							& \graym{\varnothing} & 0 			\\ \hline
+	\stackItemStamp{k}_{i}					& \hubTau \cdot \col{st}& \hubTau \cdot \col{st} + 1	& \graym{\varnothing} & \hubTau \cdot \col{st} + 2	\\ \hline
+	\end{array}
+\]
+\label{fig: dup stack pattern}
+\caption{%
+Graphical representation of $\dupSP\big[\col{param}\big]_{i}$.
+In applications this stack pattern applies to \inst{DUPX} instructions having set $\col{param} := \INST_{i} - \inst{DUP1}$.
+Thus for \inst{DUPX} instructions $\col{param} = \inst{X} - 1$.
+We write $\col{h} := \stackHeight_{i}$ and $\col{st} := \hubStamp_{i}$.}
+\end{figure}

@@ -1,0 +1,142 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below assume that }
+		\left\{ \begin{array}{lcl}
+			\peekScenario   _{i} & = & 1 \\
+			\scenBlake      _{i} & = & 1 \\
+			\scenPrcSuccess _{i} & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+We are thus considering the first row of the second phase of the \hubMod{}'s processing of a \inst{CALL} to the \inst{BLAKE2f} precompile.
+We are in the success case.
+We still need to copy the result of the precompile over to a designated \textsc{ram} slot and to potentially do a partial transfer of that result to the current execution context's \textsc{ram}.
+\begin{description}
+	\item[\underline{\underline{Miscellaneous-row $n^°(i + \prcBlakeThirdMiscRowOffset)$:}}]
+		\begin{description}
+			\item[\underline{Setting lookup flags:}]
+				we impose
+				\[
+					\weightedMiscFlagSum
+					{i}{\prcBlakeThirdMiscRowOffset}
+					=
+					\miscMmuWeight
+				\]
+				in other words
+				\[
+					\left\{ \begin{array}{lclr}
+						\miscExpFlag _{i + 3} & = & \gZero & (\trash) \\
+						\miscMmuFlag _{i + 3} & = & \one   & (\trash) \\
+						\miscMxpFlag _{i + 3} & = & \gZero & (\trash) \\
+						\miscOobFlag _{i + 3} & = & \gZero & (\trash) \\
+						\miscStpFlag _{i + 3} & = & \gZero & (\trash) \\
+					\end{array} \right.
+				\]
+			\item[\underline{\mmuMod{} data:}]
+				we impose
+				\[
+					\setMmuInstructionParametersExoToRamTransplants {
+						anchorRow = i                     ,
+						relOffset = 3                     ,
+						sourceId  = 1 + \hubStamp_{i}     ,
+						targetId  = 1 + \hubStamp_{i}     ,
+						size      = \blakeReturnDataSize  ,
+						exoSum    = \exoWeightBlakeModexp ,
+						phase     = \phaseBlakeResult     ,
+						}
+					% \left\{ \begin{array}{lcl}
+					% 	\miscMmuInst          _{i + 3} & = & \mmuInstExoToRamTransplants \\
+					% 	\miscMmuSrcId         _{i + 3} & = & 1 + \hubStamp_{i}           \\
+					% 	\miscMmuTgtId         _{i + 3} & = & 1 + \hubStamp_{i}           \\
+					% 	\miscMmuAuxId         _{i + 3} & = & \nothing                    \\
+					% 	\miscMmuSrcOffsetHi   _{i + 3} & = & \nothing                    \\
+					% 	\miscMmuSrcOffsetLo   _{i + 3} & = & \nothing                    \\
+					% 	\miscMmuTgtOffsetLo   _{i + 3} & = & 0                           \\
+					% 	\miscMmuSize          _{i + 3} & = & \redm{64}                   \\
+					% 	\miscMmuRefOffset     _{i + 3} & = & \nothing                    \\
+					% 	\miscMmuRefSize       _{i + 3} & = & \nothing                    \\
+					% 	\miscMmuSuccessBit    _{i + 3} & = & \nothing                    \\
+					% 	\miscMmuLimbOne       _{i + 3} & = & \nothing                    \\
+					% 	\miscMmuLimbTwo       _{i + 3} & = & \nothing                    \\
+					% 	\miscMmuExoSum        _{i + 3} & = & \exoWeightBlakeModexp       \\
+					% 	\miscMmuPhase         _{i + 3} & = & \phaseBlakeResult           \\
+					% \end{array} \right.
+				\]
+				\saNote{} The output of a successful call to the \inst{BLAKE2f} precompile has length $\blakeReturnDataSize$.
+		\end{description}
+	\item[\underline{\underline{Miscellaneous-row $n^°(i + \prcBlakeFourthMiscRowOffset)$:}}]
+		the next step is to proceed (when relevant) to a (partial) transfer of return data to the caller context:
+		\begin{description}
+			\item[\underline{Setting lookup flags:}]
+				we impose
+				\[
+					\weightedMiscFlagSum
+					{i}{\prcBlakeFourthMiscRowOffset}
+					=
+					\miscMmuWeight
+					\cdot
+					\locOobResultNonzeroRac
+				\]
+				in other words
+				\[
+					\left\{ \begin{array}{lclr}
+						\miscExpFlag _{i + \prcBlakeFourthMiscRowOffset} & = & \gZero                  & (\trash) \\
+						\miscMmuFlag _{i + \prcBlakeFourthMiscRowOffset} & = & \locOobResultNonzeroRac & (\trash) \\
+						\miscMxpFlag _{i + \prcBlakeFourthMiscRowOffset} & = & \gZero                  & (\trash) \\
+						\miscOobFlag _{i + \prcBlakeFourthMiscRowOffset} & = & \gZero                  & (\trash) \\
+						\miscStpFlag _{i + \prcBlakeFourthMiscRowOffset} & = & \gZero                  & (\trash) \\
+					\end{array} \right.
+				\]
+			\item[\underline{\mmuMod{} data:}]
+				\If $\miscMmuFlag_{i + \prcBlakeFourthMiscRowOffset} = 1$ \Then we impose
+				\[
+					\setMmuInstructionParametersRamToRamSansPadding {
+						anchorRow       = i                            ,
+						relOffset       = \prcBlakeFourthMiscRowOffset ,
+						sourceId        = 1 + \hubStamp_{i}            ,
+						targetId        = \cn_{i}                      ,
+						sourceOffsetLo  = 0                            ,
+						size            = \blakeReturnDataSize         ,
+						referenceOffset = \locPrcRao                   ,
+						referenceSize   = \locPrcRac                   ,
+					}
+				\]
+				% \[
+				% 	\left\{ \begin{array}{lcl}
+				% 		\miscMmuInst        _{i + \prcBlakeFourthMiscRowOffset} & = & \mmuInstRamToRamSansPadding \\
+				% 		\miscMmuSrcId       _{i + \prcBlakeFourthMiscRowOffset} & = & 1 + \hubStamp_{i}           \\
+				% 		\miscMmuTgtId       _{i + \prcBlakeFourthMiscRowOffset} & = & \cn_{i}                     \\
+				% 		\miscMmuAuxId       _{i + \prcBlakeFourthMiscRowOffset} & = & \nothing                    \\
+				% 		\miscMmuSrcOffsetHi _{i + \prcBlakeFourthMiscRowOffset} & = & \nothing                    \\
+				% 		\miscMmuSrcOffsetLo _{i + \prcBlakeFourthMiscRowOffset} & = & 0                           \\
+				% 		\miscMmuTgtOffsetLo _{i + \prcBlakeFourthMiscRowOffset} & = & \nothing                    \\
+				% 		\miscMmuSize        _{i + \prcBlakeFourthMiscRowOffset} & = & \blakeReturnDataSize        \\
+				% 		\miscMmuRefOffset   _{i + \prcBlakeFourthMiscRowOffset} & = & \locPrcRao                  \\
+				% 		\miscMmuRefSize     _{i + \prcBlakeFourthMiscRowOffset} & = & \locPrcRac                  \\
+				% 		\miscMmuSuccessBit  _{i + \prcBlakeFourthMiscRowOffset} & = & \nothing                    \\
+				% 		\miscMmuLimbOne     _{i + \prcBlakeFourthMiscRowOffset} & = & \nothing                    \\
+				% 		\miscMmuLimbTwo     _{i + \prcBlakeFourthMiscRowOffset} & = & \nothing                    \\
+				% 		\miscMmuExoSum      _{i + \prcBlakeFourthMiscRowOffset} & = & \nothing                    \\
+				% 		\miscMmuPhase       _{i + \prcBlakeFourthMiscRowOffset} & = & \nothing                    \\
+				% 	\end{array} \right.
+				% \]
+		\end{description}
+	\item[\underline{\underline{Context-row $n^°(i + \prcBlakeSuccessCallerContextRowOffset)$:}}] 
+		we impose \
+		\[
+			\provideReturnData {
+				anchorRow          = i                                      ,
+				relOffset          = \prcBlakeSuccessCallerContextRowOffset ,
+				returnDataReceiver = \cn_{i}                                ,
+				returnDataProvider = 1 + \hubStamp_{i}                      ,
+				returnDataOffset   = 0                                      ,
+				returnDataSize     = \blakeReturnDataSize                   ,
+			}
+			% \provideReturnData
+			% {i}{4} 
+			% {\cn_{i}          }         % Return data receiver
+			% {1 + \hubStamp_{i}}         % Return data provider
+			% {0                }         % Return data offset
+			% {\redm{64}        }         % Return data size 
+		\]
+\end{description}

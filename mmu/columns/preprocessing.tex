@@ -1,0 +1,37 @@
+The following columns are used for pre-processing purposes.
+They can be broadly grouped into three groups.
+The first is just \ppCt{} which dictates the number of pre-processing rows required by a particular \mmuMod{} module instruction.
+This number is ``hardcoded'' and only depends on the underlying \mmuMod{}-instruction.
+\begin{enumerate}
+	\item \ppCt:
+\end{enumerate}
+The second batch pertains to euclidean divisions that may be required at various stages of the pre-processing.
+\begin{enumerate}[resume]
+	\item \ppEucFlag:
+		binary column;
+		lights up precisely on those pre-processing-rows that require the \eucMod{} to perform a euclidean division;
+	\item \ppEucA:
+		contains the dividend of a requested euclidean division;
+	\item \ppEucB:
+		contains the divisor of a requested euclidean division;
+	\item \ppEucQuot:
+		contains the associated quotient $\displaystyle \left\lfloor \frac{\ppEucA}{\ppEucB} \right\rfloor$;
+	\item \ppEucRem:
+		contains the associated remainder $\ppEucA \mod \ppEucB$;
+	\item \ppEucCeil:
+		contains the associated ceiling $\displaystyle \left\lceil \frac{\ppEucA}{\ppEucB} \right\rceil$;
+\end{enumerate}
+The third batch pertains to word comparison operations that may be required at various stages of the pre-processing.
+\begin{enumerate}[resume]
+	\item \ppWcpFlag:
+		binary column;
+		lights up precisely on those pre-processing-rows that require the \wcpMod{} to perform a comparison;
+	\item \ppWcpArgOneHi{} and \ppWcpArgOneLo{}:
+		high and low parts of the first argument to send to the \wcpMod{} module;
+	\item \ppWcpArgTwoLo{}:
+		low part of the second argument to send to the \wcpMod;
+	\item \ppWcpRes:
+		result of the instruction (0 or 1);
+	\item \ppWcpInst:
+		may contain a \wcpMod{} instruction, e.g. \inst{LT}, \inst{EQ} or \inst{ISZERO};
+\end{enumerate}

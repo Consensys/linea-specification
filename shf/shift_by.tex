@@ -1,0 +1,120 @@
+This section contains the desription of two families of constraints: $\rightShiftBy_{k}$ and $\leftShiftBy_{k}$ indexed by $k\in\{1,\dots,\llargeMO\}$.
+Their ``signatures'' differ slightly because \rightShiftBy{} is used both by \inst{SHR} and \inst{SAR}.
+
+\subsubsection{\leftShiftBy{} constraints}
+
+Suppose we are given an integer $k\in\{1,\dots,\llargeMO\}$ and
+\begin{enumerate}
+	\item a locally-constant binary column $\bit{b}$;
+	\item a binary column $\bit{1}$;
+	\item two byte columns $\byteCol{1}$ and $\byteCol{2}$;
+	\item two byte columns $\byteCol{1}^\sigma$ and $\byteCol{2}^\sigma$;
+\end{enumerate}
+The desired interpretation is as follows:
+$\bit{b}$ is either all $1$'s or all $0$'s;
+$\bit{b}$ decides if a left shift is to take place or not;
+$\bit{1}$ satisfies a plateau constraint with jump at $\ct = \llarge - k$;
+$\byteCol{1}$ and $\byteCol{2}$ contain ``source bytes'';
+together they make up the byte decomposition of two limbs (the high and low parts respectively of some EVM word);
+$\byteCol{1}^\sigma$ and $\byteCol{2}^\sigma$ either coincide with $\byteCol{1}$ and $\byteCol{2}$
+(if $\bit{b} = 0$) or contain the bytes of the two limbs which represent the high and low part respectively of the left shift by $k$ bytes of the previously mentioned EVM word (if $\bit{b} = 1$.)
+
+We collect under the moniker $\leftShiftBy_{k}$ the following constraints:
+\begin{description}
+	\item[Plateau constraint.] We impose $\plateau(\bit{1}, \llarge - k)$
+	\item[Shifts / non shifts.] We impose that,
+	\begin{enumerate}
+		\item \If $\bit{b}_{i} = 0$ \Then
+		\[
+		\begin{cases}
+			\byteCol{1}^\sigma_{i} = \byteCol{1}_{i} \\
+			\byteCol{2}^\sigma_{i} = \byteCol{2}_{i} \\
+		\end{cases}
+		\]
+		\item \If $\bit{b}_{i} = 1$ \Then
+		\[
+		\left\{
+		\begin{array}{lcl}
+			\If \bit{1}_{i} = 0 ~ \Then \byteCol{1}^\sigma_{i} & \!\!\! = \!\!\! & \byteCol{1}_{i + k} \\
+			\If \bit{1}_{i} = 1 ~ \Then \byteCol{1}^\sigma_{i} & \!\!\! = \!\!\! & \byteCol{2}_{i - (\llarge - k)} \vspace{2mm} \\
+			\If \bit{1}_{i} = 0 ~ \Then \byteCol{2}^\sigma_{i} & \!\!\! = \!\!\! & \byteCol{2}_{i + k} \\
+			\If \bit{1}_{i} = 1 ~ \Then \byteCol{2}^\sigma_{i} & \!\!\! = \!\!\! & 0 \\
+		\end{array}
+		\right.
+		\]
+	\end{enumerate}
+\end{description}
+We subsume the preceding constraints in the expression
+\[
+	\leftShiftBy_{k}
+	\left(
+	\begin{array}{c}
+	\bit{b}, \bit{1}; \\
+	\byteCol{1}, \byteCol{2}; \\
+	\byteCol{1}^\sigma, \byteCol{2}^\sigma; \\
+	\end{array}
+	\right)
+\]
+Again, the dependence on $\ct$ is implicit.
+
+\subsubsection{\rightShiftBy{} constraints}
+
+Suppose we are given an integer $k\in\{1,\dots,\llargeMO\}$ and
+\begin{enumerate}
+	\item a locally-constant binary column $\bit{b}$;
+	\item a locally-constant binary column $\col{N}$;
+	\item a locally-constant column $\INST$;
+	\item a binary column $\bit{1}$;
+	\item two byte columns $\byteCol{1}$ and $\byteCol{2}$;
+	\item two byte columns $\byteCol{1}^\sigma$ and $\byteCol{2}^\sigma$;
+\end{enumerate}
+The desired interpretation is as follows:
+$\bit{b}$ is either all $1$'s or all $0$'s;
+$\bit{b}$ decides whether a right shift is to take place or not;
+the locally-constant binary $\col{N}$ column is a ``sign bit'';
+the locally-constant column $\INST$ equals either \inst{SHR} or \inst{SAR};
+$\bit{1}$ satisfies a plateau constraint with jump at $\ct = k$;
+$\byteCol{1}$ and $\byteCol{2}$ contain ``source bytes'';
+together they make up the byte decomposition of two limbs (the high and low parts respectively of some EVM word);
+if $\bit{b} \equiv 0$ then $\byteCol{1}^\sigma$ and $\byteCol{2}^\sigma$ coincide with $\byteCol{1}$ and $\byteCol{2}$;
+if $\bit{b} \equiv 1$ then $\byteCol{1}^\sigma$ and $\byteCol{2}^\sigma$ contain the bytes of the two limbs which represent the high and low part respectively of the right shift by $k$ bytes of the previously mentioned EVM word padded with $\texttt{11111111} = \texttt{0x\;ff}$'s if the ``sign bit'' $\col{N}$ is one and the ``instruction column'' $\INST$ equals \inst{SAR}.
+Note that the constraints depend (implicitly) on the $\ct$ column.
+
+We collect under the moniker $\rightShiftBy_{k}$ the following constraints:
+\begin{description}
+	\item[Plateau constraint.] We impose $\plateau(\bit{1}, k)$
+	\item[Non shifts.] We impose that, \If $\bit{b}_{i} = 0$ \Then
+	\[
+	\begin{cases}
+		\byteCol{1}^\sigma_{i} = \byteCol{1}_{i} \\
+		\byteCol{2}^\sigma_{i} = \byteCol{2}_{i} \\
+	\end{cases}
+	\]
+	\item[Shifts.] We impose that, \If $\bit{b}_{i} = 1$ \Then
+	\[
+	\left\{
+	\begin{array}{lcl}
+		\If \bit{1}_{i} = 0 ~ \Then \byteCol{1}^\sigma_{i} & \!\!\! = \!\!\! & 
+		\begin{cases}
+		\If \INST_{i} \neq \inst{SAR}:& 0 \\
+		\If \INST_{i} \neq \inst{SHR}:& 255 \cdot \col{N}_{i} \\
+		\end{cases} \\
+		\If \bit{1}_{i} = 1 ~ \Then \byteCol{1}^\sigma_{i} & \!\!\! = \!\!\! & \byteCol{1}_{i - k} \vspace{2mm} \\
+		\If \bit{1}_{i} = 0 ~ \Then \byteCol{2}^\sigma_{i} & \!\!\! = \!\!\! & \byteCol{1}_{i + (\llarge - k)} \\
+		\If \bit{1}_{i} = 1 ~ \Then \byteCol{2}^\sigma_{i} & \!\!\! = \!\!\! & \byteCol{2}_{i - k} \\
+	\end{array}
+	\right.
+	\]
+\end{description}
+We subsume the preceding constraints in the expression
+\[
+	\rightShiftBy_{k}
+	\left(
+	\begin{array}{c}
+	\bit{b}, \bit{1}, \col{N}, \INST{}; \\
+	\byteCol{1}, \byteCol{2}; \\
+	\byteCol{1}^\sigma, \byteCol{2}^\sigma; \\
+	\end{array}
+	\right)
+\]
+Again, the dependence on $\ct$ is implicit.

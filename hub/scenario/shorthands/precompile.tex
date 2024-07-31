@@ -1,0 +1,105 @@
+We define some useful shorthands for precompiles.
+In our treatment of calls to precompiles we are able to provide a mostly unified treatment for most precompiles with the exception of \inst{MODEXP} and \inst{BLAKE2f}.
+We label all other precompiles as ``common'' precompiles.
+\[
+	\scenPrecompileCommonNotIdentity _{i}
+	\define
+	\left[ \begin{array}{l}
+		+ \scenEcrecover _{i} \\
+		+ \scenShaTwo    _{i} \\
+		+ \scenRipemd    _{i} \\
+		% + \scenIdentity  _{i} \\
+		% + \scenModexp    _{i} \\
+		+ \scenEcadd     _{i} \\
+		+ \scenEcmul     _{i} \\
+		+ \scenEcpairing _{i} \\
+		% + \scenBlake     _{i} \\
+	\end{array} \right]
+\]
+and
+\[
+	\scenPrecompileCommon _{i}
+	\define
+	\left[ \begin{array}{l}
+		+ \scenPrecompileCommonNotIdentity _{i} \\
+		+ \scenIdentity                    _{i} \\
+	\end{array} \right]
+\]
+and
+\[
+	\scenPrecompileSum_{i}
+	\define
+	\left[ \begin{array}{l}
+		+ \scenPrecompileCommon _{i} \\
+		+ \scenModexp           _{i} \\
+		+ \scenBlake            _{i} \\
+	\end{array} \right]
+\]
+We further define
+\[
+	\scenPrecompileMayOnlyFailInHub _{i}
+	\define
+	\left[ \begin{array}{l}
+		+ \scenEcrecover _{i} \\
+		+ \scenShaTwo    _{i} \\
+		+ \scenRipemd    _{i} \\
+		+ \scenIdentity  _{i} \\
+		% + \scenModexp    _{i} \\
+		% + \scenEcadd     _{i} \\
+		% + \scenEcmul     _{i} \\
+		% + \scenEcpairing _{i} \\
+		% + \scenBlake     _{i} \\
+	\end{array} \right]
+\]
+and
+\[
+	\scenPrecompileMayOnlyFailInRam _{i}
+	\define
+	\left[ \begin{array}{l}
+		% + \scenEcrecover _{i} \\
+		% + \scenShaTwo    _{i} \\
+		% + \scenRipemd    _{i} \\
+		% + \scenIdentity  _{i} \\
+		+ \scenModexp    _{i} \\
+		% + \scenEcadd     _{i} \\
+		% + \scenEcmul     _{i} \\
+		% + \scenEcpairing _{i} \\
+		% + \scenBlake     _{i} \\
+	\end{array} \right]
+\]
+and
+\[
+	\scenPrecompileWeightedSum _{i}
+	\define
+	\left[ \begin{array}{l}
+		+ \; 1 \cdot \scenEcrecover  _{i} \\
+		+ \; 2 \cdot \scenShaTwo     _{i} \\
+		+ \; 3 \cdot \scenRipemd     _{i} \\
+		+ \; 4 \cdot \scenIdentity   _{i} \\
+		+ \; 5 \cdot \scenModexp     _{i} \\
+		+ \; 6 \cdot \scenEcadd      _{i} \\
+		+ \; 7 \cdot \scenEcmul      _{i} \\
+		+ \; 8 \cdot \scenEcpairing  _{i} \\
+		+ \; 9 \cdot \scenBlake      _{i} \\
+	\end{array} \right]
+\]
+We also define the following
+\[
+	\left\{ \begin{array}{lcl}
+		\scenPrcFailure _{i} & \define &
+		\left[ \begin{array}{l}
+			+ \scenPrcFailureKnownToHub  _{i} \\
+			+ \scenPrcFailureKnownToRam  _{i} \\
+		\end{array} \right] \vspace{2mm} \\
+		\scenPrcSuccess _{i} & \define &
+		\left[ \begin{array}{l}
+			+ \scenPrcSuccessWillRevert  _{i} \\
+			+ \scenPrcSuccessWontRevert  _{i} \\
+		\end{array} \right] \vspace{2mm} \\
+		\scenPrcScenarioSum _{i} & \define & 
+		\left[ \begin{array}{l}
+			+ \scenPrcFailure  _{i} \\
+			+ \scenPrcSuccess  _{i} \\
+		\end{array} \right]
+	\end{array} \right.
+\]

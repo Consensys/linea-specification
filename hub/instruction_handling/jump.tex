@@ -1,0 +1,252 @@
+\subsubsection{Supported instructions and flags}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\[
+\begin{array}{|l||c||c|c|c|} \hline
+	\INST        & \tli  & \stackDecJumpFlag & \decFlag{1} & \decFlag{2} \\ \hline\hline
+	\inst{JUMP}  & \zero & \oneCell          & \oneCell    & \zero       \\ \hline
+	\inst{JUMPI} & \zero & \oneCell          & \zero       & \oneCell    \\ \hline
+\end{array}
+\]
+
+
+\subsubsection{Constraints}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{center}
+	\boxed{%
+		\text{The stack constraints presented below assume }
+		\begin{cases}
+			\peekStack    _{i} = 1 \\
+			\stackDecJumpFlag  _{i} = 1 \\
+			\stackSux     _{i} + \stackSox   _{i} = 0 \\
+		\end{cases}}
+\end{center}
+
+We use the following (more expressive) shorthands:
+\[
+	\left\{ \begin{array}{lcl}
+		\locNewPcHi            & \define & \stackItemValHi      {1}  _{i}     \\
+		\locNewPcLo            & \define & \stackItemValLo      {1}  _{i}     \\
+		\locJumpConditionHi    & \define & \stackItemValHi      {2}  _{i}     \\
+		\locJumpConditionLo    & \define & \stackItemValLo      {2}  _{i}     \\
+		\locIsJump             & \define & \decFlag             {1}  _{i}     \\
+		\locIsJumpi            & \define & \decFlag             {2}  _{i}     \\
+		\locByteCodeAddressHi  & \define & \cnCodeAddress\high       _{i + 1} \\
+		\locByteCodeAddressLo  & \define & \cnCodeAddress\low        _{i + 1} \\
+		\locCodeSize           & \define & \accCodesize              _{i + 2} \\
+	\end{array} \right.
+	\quad\text{and}\quad
+	\left\{ \begin{array}{lcl}
+		\locJumpGuaranteedException  & \define & \miscOobDataCol  {7}  _{i + 3}              \\
+		\locJumpMustBeAttempted      & \define & \miscOobDataCol  {8}  _{i + 3} \vspace{2mm} \\
+		\locJumpiNotAttempted        & \define & \miscOobDataCol  {6}  _{i + 3}              \\
+		\locJumpiGuaranteedException & \define & \miscOobDataCol  {7}  _{i + 3}              \\
+		\locJumpiMustBeAttempted     & \define & \miscOobDataCol  {8}  _{i + 3}              \\
+	\end{array} \right.
+\]
+\saNote{}
+We refer the reader to section~(\ref{fig: oob: jump case interpretation of oob events}) for the interpretation of
+$\miscOobDataCol{6}$,
+$\miscOobDataCol{7}$ and $\miscOobDataCol{8}$ in the case of \inst{JUMP}-type \oobMod{} module instructions.
+
+\saNote{}
+There is deliberate redundancy in the shorthands pertaining to ``\miscOobDataCol{X}'' columns.
+
+We now proceed to write down relevant constraints:
+\begin{description}
+	\item[\underline{Setting the stack pattern:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\locIsJump      = 1$ \Then $\oneZeroSP_{i}$
+			\item \If $\locIsJumpi     = 1$ \Then $\twoZeroSP_{i}$
+		\end{enumerate}
+	\item[\underline{Setting allowable exceptions:}]
+		we impose that $\xAhoy_{i} = \stackOogx_{i} + \stackJumpx_{i}$ ~ (\trash);
+	\item[\underline{Setting the gas cost:}]
+		we impose that $\gasCost_{i} = \decStaticGas_{i}$;
+	\item[\underline{Setting $\nonStackRows$:}]
+		we impose
+		\begin{enumerate}
+			\item \If $\stackOogx_{i} = 1$ \Then $\nonStackRows_{i} = \cmc_{i}~(=1)$
+			\item \If $\stackOogx_{i} = 0$ \Then $\nonStackRows_{i} = 3 + \cmc_{i}$;
+		\end{enumerate}
+		\saNote{} For instructions raising the $\stackDecJumpFlag$ one has $\cmc \equiv \xAhoy$.
+	\item[\underline{Setting the peeking flags:}]
+		we impose 
+		\begin{enumerate}
+			\item \If $\stackOogx_{i} = 1$ \Then $ \peekContext_{i + 1} = \nonStackRows_{i} $
+			\item \If $\stackOogx_{i} = 0$ \Then
+				\[
+					\left[ \begin{array}{r}
+						+ \peekContext_{i + 1}             \\
+						+ \peekAccount_{i + 2}             \\
+						+ \peekMisc_{i + 3}                \\
+						+ \cmc_{i} \cdot \peekContext_{i + 4} \\
+					\end{array} \right]
+					= \nonStackRows_{i}
+				\]
+		\end{enumerate}
+	\item[\underline{Context-row n$^°(i + 1)$:}]
+		we impose
+		\begin{enumerate}
+			\item \If $\stackOogx_{i} = 1$ \Then $\executionProvidesEmptyReturnData {i}{1} $ \quad (\trash);
+			\item \If $\stackOogx_{i} = 0$ \Then $\readContextData {i}{1}{\cn_{i}}$;
+		\end{enumerate}
+\end{description}
+The constraints that follow are written under the following further stronger hypothesis:
+\begin{center}
+	\boxed{%
+		\text{The stack constraints presented below assume }
+		\left\{ \begin{array}{lcl}
+			\peekStack    _{i}                    & = & 1 \\
+			\stackDecJumpFlag  _{i}               & = & 1 \\
+			\stackSux     _{i} + \stackSox   _{i} & = & 0 \\
+			\stackOogx_{i}                        & = & 0 \\
+		\end{array} \right.}
+\end{center}
+\begin{description}
+	\item[\underline{Account-row n$^°(i + 2)$:}]
+		we peek into the account owning the byte code currently executing:
+		\[
+			\left\{ \begin{array}{lcl}
+				\accAddressHi_{i + 2} = \locByteCodeAddressHi \\
+				\accAddressLo_{i + 2} = \locByteCodeAddressLo \\
+			\end{array} \right.
+		\]
+		we don't impose any modifications:
+		\[
+			\left\{ \begin{array}{lcl}
+				\accSameBalance                      {i}{2} \\
+				\accSameNonce                        {i}{2} \\
+				\accSameCode                         {i}{2} \\
+				\accSameDeployment                   {i}{2} \\
+				\accSameWarmth                       {i}{2} \\
+				\accSameMarkedForSelfdestructFlag    {i}{2} \\
+				\standardDomSubStamps {
+					anchorRow        = i,
+					relOffset        = 2,
+					domOffset        = 0,
+				}
+				% \standardDomSubStamps                {i}{2}{0}       \\
+			\end{array} \right.
+		\]
+	\item[\underline{Miscellaneous-row n$^°(i + 3)$:}]
+		we make a call to the \oobMod{} module
+		\[
+			\weightedMiscFlagSum {i}{3}
+			=
+			\miscOobWeight
+		\]
+		in other words
+		\[
+			\left\{ \begin{array}{lclr}
+				\miscExpFlag  _{i + 3} & = & \gZero & (\trash) \\
+				\miscMmuFlag  _{i + 3} & = & \rZero & (\trash) \\
+				\miscMxpFlag  _{i + 3} & = & \rZero & (\trash) \\
+				\miscOobFlag  _{i + 3} & = & \rOne  & (\trash) \\
+				\miscStpFlag  _{i + 3} & = & \gZero & (\trash) \\
+			\end{array} \right.
+		\]
+	\item[\underline{Miscellaneous-row n$^°(i + 3)$:}]
+		we populate the \oobMod{} columns:
+		\begin{enumerate}
+		        \item \If $\locIsJump = 1$ \Then
+				\[
+					\setOobInstructionJump {i}{3}
+					\left[ \begin{array}{llr}
+						\utt{New program counter (high part):} & \locNewPcHi      \\
+						\utt{New program counter (low  part):} & \locNewPcLo      \\
+						\utt{Code size:}                       & \locCodeSize     \\
+					\end{array} \right] \vspace{2mm} \\
+				\]
+		        \item \If $\locIsJumpi = 1$ \Then
+				\[
+					\setOobInstructionJumpI {i}{3}
+					\left[ \begin{array}{llr}
+						\utt{New program counter (high part):} & \locNewPcHi         \\
+						\utt{New program counter (low  part):} & \locNewPcLo         \\
+						\utt{Jump condition (high part):}      & \locJumpConditionHi \\
+						\utt{Jump condition (low  part):}      & \locJumpConditionLo \\
+						\utt{Code size:}                       & \locCodeSize        \\
+					\end{array} \right]
+				\]
+		\end{enumerate}
+		% \issue{Make sure the logic is still the same with recent \oobMod{} updates.}
+	\item[\underline{Setting $\pc\new$ and \stackJumpDestinationVetting{}:}] setting the new program counter depends on the instruction and the presence of a \jumpxSH{}:
+		\begin{enumerate}
+			\item \If $\locIsJump  = 1$ \Then 
+				\begin{enumerate}
+					\item \If $\locJumpGuaranteedException = 1$ \Then
+						\[
+							\left\{ \begin{array}{lcl}
+								\stackJumpDestinationVetting_{i} & = & 0        \\
+								\stackJumpx_{i}                  & = & 1        \\
+								\pc\new_{i}                      & = & \nothing \\
+							\end{array} \right.
+						\]
+					\item \If $\locJumpMustBeAttempted = 1$ \Then
+						\[
+							\left\{ \begin{array}{lcl}
+								\stackJumpDestinationVetting_{i} & = & \rOne          \\
+								\stackJumpx_{i}                  & = & \relevantValue \\
+								\multicolumn{3}{l}{\If \xAhoy_{i} = 0 ~ \Then \pc\new_{i} = \locNewPcLo} \\
+							\end{array} \right.
+						\]
+						The above implicitly justifies $\stackJumpx_{i}$ through the ``jump destination vetting'' lookup to the  \romMod{} module, see section~(\ref{hub: lookups: into rom: jump destination vetting}).
+				\end{enumerate}
+			\item \If $\locIsJumpi = 1$ \Then 
+				\begin{enumerate}
+					\item \If $\locJumpiNotAttempted = 1$ \Then
+						\[
+							\left\{ \begin{array}{lcl}
+								\stackJumpDestinationVetting_{i} & = & 0           \\
+								\stackJumpx_{i}                  & = & 0           \\
+								\pc\new_{i}                      & = & 1 + \pc_{i} \\
+							\end{array} \right.
+						\]
+					\item \If $\locJumpiGuaranteedException = 1$ \Then
+						\[
+							\left\{ \begin{array}{lcl}
+								\stackJumpDestinationVetting_{i} & = & 0        \\
+								\stackJumpx_{i}                  & = & 1        \\
+								\pc\new_{i}                      & = & \nothing \\
+							\end{array} \right.
+						\]
+					\item \If $\locJumpiMustBeAttempted = 1$ \Then
+						\[
+							\left\{ \begin{array}{lcl}
+								\stackJumpDestinationVetting_{i} & = & \rOne          \\
+								\stackJumpx_{i}                  & = & \relevantValue \\
+								\multicolumn{3}{l}{\If \xAhoy_{i} = 0 ~ \Then \pc\new_{i} = \locNewPcLo} \\
+							\end{array} \right.
+						\]
+						\saNote{}
+						Again, the above implicitly justifies $\stackJumpx_{i}$ through the ``jump destination vetting'' lookup to the  \romMod{} module, see section~(\ref{hub: lookups: into rom: jump destination vetting}).
+					% \item \If $\oobDataCol{8}_{i + 3} = 0$ \Then
+					% 	\[
+					% 		\left\{ \begin{array}{lcl}
+					% 			\stackJumpDestinationVetting_{i} & = & 0           \\
+					% 			\stackJumpx_{i}                  & = & 0           \\
+					% 			\pc\new_{i}                      & = & 1 + \pc_{i} \\
+					% 		\end{array} \right.
+					% 	\]
+					% \item \If \Big($\oobDataCol{2}_{i + 3} = 0$ \et $\oobDataCol{7}{1}_{i + 3} = 0$\Big) \Then
+					% 	\[
+					% 		\left\{ \begin{array}{lcl}
+					% 			\stackJumpDestinationVetting_{i} & = & 1                      \\
+					% 			\multicolumn{3}{l}{\If \xAhoy_{i} = 0 ~ \Then \pc\new_{i} = \locNewPcLo} \\
+					% 		\end{array} \right.
+					% 	\]
+					% \item \If $\oobDataCol{7}_{i + 3} = 1$ \Then
+					% 	\[
+					% 		\left\{ \begin{array}{lcl}
+					% 			\stackJumpx_{i}                  & = & 1 \\
+					% 			\stackJumpDestinationVetting_{i} & = & 0 \\
+					% 		\end{array} \right.
+					% 	\]
+				\end{enumerate}
+		\end{enumerate}
+\end{description}

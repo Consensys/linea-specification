@@ -1,0 +1,58 @@
+The present section introduces some very useful collections of conditions which allow us to characterize and name micro-instruction-writing-rows with greater specificity.
+It is understood that the constraints below will only ever apply to micro-instruction-rows i.e. rows $i$ satisfying $\isMicro_{i} = 1$.
+Such safeguards will systematically be present when the conditions defined below are in use.
+
+We say that $i$ is a
+\textbf{left-zero-padding-row} if it satisfies
+\[
+	\leftPaddingRow_{i} \equiv \Big[\ppTotLZ_{i - 1} \neq 0 \Big]
+\]
+a \textbf{nontrivial-row} if it satisfies
+\[
+	\nontrivialRow_{i} \equiv \Big[\ppTotNT_{i - 1} \neq \ppTotNT_{i} \Big]
+\]
+and a \textbf{right-zero-padding-row} if it satisfies
+\[
+	\rightPaddingRow_{i} \equiv \Big[\ppTotRZ_{i - 1} \neq \ppTotRZ_{i} \Big]
+\]
+
+The following conditions on a row $i$ provide more detail still for nontrivial-rows.
+Thus the above conditions should be applied \textbf{on top} of the \nontrivialRow{} condition.
+We say that a (nontrivial-row) $i$ is a
+\textbf{first-term-row}  if it satisfies
+\[
+	\firstTerm_{i} 
+	\equiv 
+	\Big[ \ppTotNT_{i - 2} = \ppTotNT_{i - 1} \Big]
+	% \begin{cases}
+	% 	\nontrivialRow_{i} & \et \\
+	% 	\ppTotNT_{i - 2} = \ppTotNT_{i - 1}  & \\
+	% \end{cases}
+\]
+\textbf{middle-term-row}  if it satisfies
+\[
+	\middleTerm_{i}
+	\equiv 
+	\begin{cases}
+		% \nontrivialRow_{i} & \et \\
+		\ppTotNT_{i - 2} \neq \ppTotNT_{i - 1}  & \et \\
+		\ppTotNT_{i}     \neq 0 & \\
+	\end{cases}
+\]
+\textbf{last-term-row}  if it satisfies
+\[
+	\lastTerm_{i}
+	\equiv 
+	\Big[ \ppTotNT_{i} = 0 \Big]
+	% \begin{cases}
+	% 	\nontrivialRow_{i} & \et \\
+	% 	\ppTotNT_{i}   = 0 & \\
+	% \end{cases}
+\]
+\saNote{}
+If the \textbf{initial value} of \ppTotNT{} is $>1$ then these conditions are disjoint.
+The condition \middleTerm{} may only be achieved if \ppTotNT{} is $>2$.
+
+\saNote{}
+If the \textbf{initial value} of \ppTotNT{} is $=1$ then the conditions
+\firstTerm{} and \lastTerm{} are identical and \nontrivialRow{} is a void condition.

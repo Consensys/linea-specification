@@ -1,0 +1,76 @@
+We explain how to verify an addition and a subtraction instruction of the \textsc{evm}. Recall that these operations are carried out $\mod 2^{256}$.
+\begin{lem}[addition and subtraction]
+Let
+$\colm{A} \equiv [\colm{A}\high \,\|\, \colm{A}\low]$,
+$\colm{B} \equiv [\colm{B}\high \,\|\, \colm{B}\low]$ and
+$\colm{R} \equiv [\colm{R}\high \,\|\, \colm{R}\low]$
+be $256$-bit integers. The following are equivalent
+\begin{enumerate}
+	\item $\colm{R}$ represents the sum $\col{A} + \col{B}$ i.e. $\col{A} + \col{B} = \col{R} \mod 2^{256}$;
+	\item there exists two bits $\epsilon,\eta\in\{0,1\}$ such that the following constraints are satisfied:
+	\[
+	\begin{cases}
+		\col{A}\low + \col{B}\low = \col{R}\low + \epsilon \theta^2 \\
+		\col{A}\high + \col{B}\high + \epsilon = \col{R}\high + \eta \theta^2 \\
+	\end{cases}
+	\]
+%	for some bits $\epsilon,\eta\in\{0,1\}$
+%	i.e. $\col{A}\low + \col{B}\low \equiv [\epsilon \,\|\, \col{R}\low]$
+%	and  $\col{A}\high + \col{B}\high + \epsilon \equiv [\eta \,\|\, \col{R}\high]$;
+\end{enumerate}
+Similarly we have
+\begin{enumerate}
+	\item $\colm{R}$ represents the difference $\col{A} - \col{B}$ i.e. $\col{A} - \col{B} = \col{R} \mod 2^{256}$;% i.e. $\col{R} + \col{B} = \col{A} \mod 2^{256}$;
+	\item there exists two bits $\epsilon,\eta\in\{0,1\}$ such that the following constraints are satisfied:
+	\[
+	\begin{cases}
+		\col{R}\low + \col{B}\low = \col{A}\low + \epsilon \theta^2 \\
+		\col{R}\high + \col{B}\high + \epsilon = \col{A}\high + \eta \theta^2 \\
+	\end{cases}
+	\]
+%	for some bits $\epsilon,\eta\in\{0,1\}$
+%	i.e. $\col{R}\low + \col{B}\low \equiv [\epsilon \,\|\, \col{A}\low]$
+%	and  $\col{R}\high + \col{B}\high + \epsilon \equiv [\eta \,\|\, \col{A}\high]$.
+\end{enumerate}
+\end{lem}
+We subsume these constraints under the respective monikers
+\[
+	\setAddition\Big(
+	\begin{array}{c}
+	\col{A}\high,
+	\col{A}\low,
+	\col{B}\high,
+	\col{B}\low; \\
+	\col{R}\high, \col{R}\low;
+	\epsilon,
+	\eta;
+	\end{array}
+	\Big)
+	\quad\text{and}\quad
+	\setSubtraction\Big(
+	\begin{array}{c}
+	\col{A}\high,
+	\col{A}\low,
+	\col{B}\high,
+	\col{B}\low; \\
+	\col{R}\high, \col{R}\low;
+	\epsilon,
+	\eta;
+	\end{array}
+	\Big)
+\]
+\saNote{} There are \emph{implicit assumptions} that aren't part of the constraint itself:
+\begin{enumerate}
+	\item $\colm{A}\high$ and $\colm{A}\low$ are $\llarge$-byte integers;
+	\item $\colm{B}\high$ and $\colm{B}\low$ are $\llarge$-byte integers;
+	\item $\colm{R}\high$ and $\colm{R}\low$ are $\llarge$-byte integers;
+	\item $\epsilon$ and $\eta$ are bits;
+\end{enumerate}
+Everytime either
+$\setAddition$ or
+$\setSubtraction$
+will be invoked in the sequel the assumptions will be enforced by other constraints. More explicitly 
+$\colm{A}\high$, $\colm{A}\low$ and
+$\colm{B}\high$, $\colm{B}\low$
+will be imports of the high and low part of stack items;
+$\colm{R}\high$ and $\colm{R}\low$ will be provided with a byte decomposition to verify that, indeed, they are $\llarge$-byte integers, and $\epsilon$ and $\eta$ will be extracted from a binary column.

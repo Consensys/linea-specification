@@ -1,0 +1,39 @@
+The heartbeat of the present module falls in line with that of many other modules: it has a stamp that counts monotonically up from 0 jumping by 1 every time an instruction has been dealt with. We further have a counter column with a (variable) cycle length of $\maxCt$.
+
+\begin{enumerate}
+	\item $\stpStamp_{0} = 0$
+	\item $\stpStamp_{i + 1} \in \{\stpStamp_{i}, 1 + \stpStamp_{i}\}$
+	\item \If $\stpStamp_{i} = 0$ \Then
+		\[
+			\begin{cases}
+				\ct_{i} = 0                                 \\
+				\maxCt_{i} = 0                              \\
+				\wcpLookupFlag_{i} + \divLookupFlag_{i} = 0 \\
+			\end{cases}
+		\]
+	\item \If $\stpStamp_{i} \neq \stpStamp_{i + 1}$ \Then $\ct_{i + 1} = 0$;
+	\item \If $\stpStamp_{i} \neq 0$ \Then we impose
+		\begin{enumerate}
+			\item \If $\ct_{i} \neq \maxCt_{i}$ \Then $\ct_{i + 1} = 1 + \ct_{i}$
+			\item \If $\ct_{i} = \maxCt_{i}$    \Then $\stpStamp_{i + 1} = 1 + \stpStamp_{i}$
+		\end{enumerate}
+		We further set the value of $\maxCt$ which marks the cut-off point for $\ct$:
+		\begin{enumerate}[resume]
+			\item we impose
+				\[
+					\begin{cases}
+						\left. \begin{array}{l}
+							\If \isCall  _{i} = 1 ~ \et \oogx_{i} = 0 ~ \Then \maxCt_{i} = 4 \\
+							\If \isCall  _{i} = 1 ~ \et \oogx_{i} = 1 ~ \Then \maxCt_{i} = 2 \\
+						\end{array} \right\} & \text{\inst{CALL}-type instruction} \vspace{2mm} \\
+						\left. \begin{array}{l}
+							\If \isCreate_{i} = 1 ~ \et \oogx_{i} = 0 ~ \Then \maxCt_{i} = 2 \\
+							\If \isCreate_{i} = 1 ~ \et \oogx_{i} = 1 ~ \Then \maxCt_{i} = 1 \\
+						\end{array} \right\} & \text{\inst{CREATE}-type instruction}
+					\end{cases}
+				\]
+		\end{enumerate}
+	\item \If $\stpStamp_{N} \neq 0$ \Then $\ct_{N} = \maxCt_{N}$
+\end{enumerate}
+In other words
+

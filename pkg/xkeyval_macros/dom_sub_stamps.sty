@@ -1,0 +1,109 @@
+\makeatletter
+ 
+\define@cmdkey [DOMSUB] {var} {anchorRow}                      {}
+\define@cmdkey [DOMSUB] {var} {relOffset}                      {}
+\define@cmdkey [DOMSUB] {var} {domOffset}                      {}
+\define@cmdkey [DOMSUB] {var} {subOffset}                      {}
+\define@cmdkey [DOMSUB] {var} {revertStamp}                    {}
+\define@cmdkey [DOMSUB] {var} {childRevertStamp}               {}
+
+
+\presetkeys    [DOMSUB] {var} {
+  anchorRow        = \missingParameter,
+  relOffset        = \missingParameter,
+  revertStamp      = \missingParameter,
+  childRevertStamp = \missingParameter,
+  domOffset        = \missingParameter,
+  subOffset        = \missingParameter,
+}{}
+
+% \cmdDOMSUB@var@anchorRow  
+% \cmdDOMSUB@var@relOffset  
+% \cmdDOMSUB@var@domOffset  
+% \cmdDOMSUB@var@subOffset  
+% \cmdDOMSUB@var@revertStamp
+% \cmdDOMSUB@var@childRevertStamp
+
+% anchorRow        = ,
+% relOffset        = ,
+% domOffset        = ,
+% subOffset        = ,
+% revertStamp      = ,
+% childRevertStamp = ,
+
+% \standardDomSubStamps {
+%   anchorRow        = ,
+%   relOffset        = ,
+%   domOffset        = ,
+%   }
+
+\newcommand{\standardDomSubStampsName} {\stampSignifier\texttt{standardDomSubStamps}}
+\newcommand{\standardDomSubStamps} [1] {
+  \setkeys[DOMSUB]{var}{#1}
+  \standardDomSubStampsName _{\cmdDOMSUB@var@anchorRow}
+  \left[ \begin{array}{ll}
+    \utt{Rel. row offset:} & \cmdDOMSUB@var@relOffset \\
+    \utt{Dom offset:} & \cmdDOMSUB@var@domOffset \\
+  \end{array} \right]
+}
+
+\newcommand{\genericUndoingDomSubStampsName} {\stampSignifier\texttt{genericUndoingDomSubStamps}}
+\newcommand{\genericUndoingDomSubStamps} [1] {
+  \setkeys[DOMSUB]{var}{#1}
+  \genericUndoingDomSubStampsName _{\cmdDOMSUB@var@anchorRow}
+  \left[ \begin{array}{ll}
+    \utt{Rel. row offset:}   & \cmdDOMSUB@var@relOffset   \\
+    \utt{Revert stamp:} & \cmdDOMSUB@var@revertStamp \\
+    \utt{Dom offset:}   & \cmdDOMSUB@var@domOffset   \\
+    \utt{Sub offset:}   & \cmdDOMSUB@var@subOffset   \\
+  \end{array} \right]
+}
+
+% \genericUndoingDomSubStamps {
+%   anchorRow        = ,
+%   relOffset        = ,
+%   revertStamp      = ,
+%   domOffset        = ,
+%   subOffset        = ,
+%   }
+
+\newcommand{\revertDomSubStampsName} {\stampSignifier\texttt{revertDomSubStamps}}
+\newcommand{\revertDomSubStamps} [1] {
+  \setkeys[DOMSUB]{var}{#1}
+  \revertDomSubStampsName _{\cmdDOMSUB@var@anchorRow}
+  \left[ \begin{array}{ll}
+    \utt{Rel. row offset:}   & \cmdDOMSUB@var@relOffset   \\
+    \utt{Sub offset:}   & \cmdDOMSUB@var@subOffset   \\
+  \end{array} \right]
+}
+
+% \revertDomSubStamps {
+%   anchorRow        = ,
+%   relOffset        = ,
+%   subOffset        = ,
+% }
+
+\newcommand{\revertWithChildFailureDomSubStampsName} {\stampSignifier\texttt{revertWithChildFailureDomSubStamps}}
+\newcommand{\revertWithChildFailureDomSubStamps} [1] {
+	\setkeys[DOMSUB]{var}{#1}
+	\revertWithChildFailureDomSubStampsName _{\cmdDOMSUB@var@anchorRow}
+\left[ \begin{array}{ll}
+    \utt{Rel. row offset:}         & \cmdDOMSUB@var@relOffset \\
+    \utt{Child revert stamp:} & \cmdDOMSUB@var@childRevertStamp \\
+    \utt{Sub offset:}         & \cmdDOMSUB@var@subOffset \\
+\end{array} \right]
+}
+
+% \revertWithChildFailureDomSubStamps {
+%   anchorRow        = ,
+%   relOffset        = ,
+%   childRevertStamp = ,
+%   subOffset        = ,
+%   }
+
+  % \stampSignifier\texttt{childContextRevertsDomSubStamps} _{#1} \big[ #2 \big] \big[ #3, #4 \big]}
+\newcommand{\selfdestructDomSubStamps}          [2] {\stampSignifier\texttt{selfdestructDomSubStamps}        _{#1} \big[\utt{Rel. row offset:} ~ #2\big]}
+
+\newcommand{\zeroDomSubStamps}                  [2] {\stampSignifier\texttt{zeroDomSubStamps}                _{#1} \big[\utt{Rel. row offset:} ~ #2\big]}
+
+\makeatother

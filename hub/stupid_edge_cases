@@ -1,0 +1,12 @@
+edge cases à la con
+
+- tx which is a message call to a precompile: WE DON'T DEAL WITH THOSE AT ALL (they would skip and in the skip part we impose that IS_PRECOMPILE = 0)
+
+- including one's own address in the addresses to prewarm
+
+- using IS_PRECOMPILE we can make it so that in the reordered version of events precompiles are always warm OR that in computing the gas cost of operations we take this flag into account e.g.
+	- IF IS_PRECOMPILE = 1 [one gas computation]
+	- IF IS_PRECOMPILE = 0 [another depending on WARM]
+- des gens incluent leur propre adresse dans les trucs à prewarmer; je crois que pour nous sauver de ces conneries il suffit de ne pas imposer la valeur de WARM dans la phase d'initialization et d'imposer au contraire, dans la version ordonnée par [block_num, tx_num, addr_hi, addr_lo, dom->, <-sub] que la première apparition de WARM vale 0;
+- il y a des répétitions dans les addresses à prewarmer; ça je ne veux pas vraiment le résoudre; pour moi l'opérateur devrait juste rejeter ces transactions; il est possible de filtrer à la fin grâce à une 2 sided plookup inclusion proof vers un module qui impose des conditions d'ordre lex. strict.
+- l'adresse COINBASE fait un SELFDESTRUCT pendant la transaction: qu'est-ce qui se passe ? J'imagine que le SELFDESTRUCT l'emporte et que les fees sont tuées.

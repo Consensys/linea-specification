@@ -1,0 +1,158 @@
+\begin{center}
+	\boxed{ \text{The constriants presented below assumes that } \mmuInstFlagRamToRamSansPadding  _{i} = 1. }
+\end{center}
+\begin{description}
+	\item[Progression:]
+		we impose that
+		\begin{enumerate}
+			\item \If $\isFirstNT_{i}  + \isMiddleNT_{i} = 1$ \Then $\microTlo_{i + 1} = \microTlo_{i} + 1$
+			\item \If $\isFirstNT_{i} = 1$  \Then $\microSlo_{i + 1} = \microSlo_{i} + \locMicroSloIncrement$
+			\item \If $\isMiddleNT_{i} = 1$ \Then $\microSlo_{i + 1} = \microSlo_{i} + 1$
+				% \[
+				% 	\left\{ \begin{array}{lcl}
+				% 		\microSbo_{i + 1} & = & \locMiddleSbo_{i} \vspace{2mm}  \\
+				% 		\microTlo_{i + 1} & = & 1 + \microTlo_{i}               \\
+				% 		\microTbo_{i + 1} & = & 0                               \\
+				% 	\end{array} \right.
+				% \]
+			% \item \If $\isFirstNT_{i}  + \isMiddleNT_{i} = 1$ \Then $\microSbo_{i + 1} = \locMiddleSbo_{i}$
+				% \[
+				% 	\left\{ \begin{array}{lcl}
+				% 		\microTlo_{i + 1} & = & 1 + \microTlo_{i} \\
+				% 	\end{array} \right.
+				% \]
+			% \item \If $\isMiddleNT_{i} + \isLastNT_{i}   = 1$ \Then
+			% 	\[
+			% 		\left\{ \begin{array}{lcl}
+			% 			\microSbo_{i} & = & \locMiddleSbo_{i}        \\
+			% 			\microTbo_{i} & = & 0                        \\
+			% 			\microTlo_{i} & = & 1 + \microTlo_{i - 1}    \\
+			% 		\end{array} \right.
+			% 	\]
+		\end{enumerate}
+	\item[Only nontrivial row:] 
+		\If $\isOnlyNT_{i}$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst        _{i} & = & \locOnlyMicroInst  \\
+				\microSize        _{i} & = & \alreadySet \\
+				\microSlo         _{i} & = & \alreadySet \\
+				\microSbo         _{i} & = & \alreadySet \\
+				\microTlo         _{i} & = & \alreadySet \\
+				\microTbo         _{i} & = & \alreadySet \\
+				\microLimb        _{i} & = & \nothing \\
+				% \microCns         _{i} & = & \macroSrcId_{i} \\
+				% \microCnt         _{i} & = & \macroTgtId_{i}  \\
+				% \microSuccessBit  _{i} & = & \nothing \\
+				% \microExoSum      _{i} & = & \nothing \\
+				% \microPhase       _{i} & = & \nothing \\
+				% \microIdOne       _{i} & = & \nothing \\
+				% \microIdTwo       _{i} & = & \nothing \\
+			\end{array} \right.
+		\]
+		where we define the \locOnlyMicroInst{} shorthand as follows:
+		\begin{enumerate}
+			\item \If $\locFastLastLimb = 1$ \Then $\locOnlyMicroInst \define \mmioInstRamToRamTransplant$
+			\item \If $\locFastLastLimb = 0$ \Then
+				\begin{enumerate}
+					\item \If $\locLastLimbSingleSource = 1$ \Then \[ \locOnlyMicroInst \define \mmioInstRamToRamPartial \]
+					\item \If $\locLastLimbSingleSource = 0$ \Then \[ \locOnlyMicroInst \define \mmioInstRamToRamTwoSource \]
+				\end{enumerate}
+		\end{enumerate}
+		\saNote{} We remind the reader about note~(\ref{mmu: instructions: ram to ram sans padding: fast_last_limb is useful for totnt = 1}) which justifies the use of \locFastLastLimb{} in the $\isOnlyNT \equiv 1$ case.
+	\item[First nontrivial row:] 
+		\If $\isFirstNT_{i} = 1$ \Then
+		\begin{description}
+			\item[Micro-instruction:]
+				we impose
+				\[
+					\left\{ \begin{array}{lcl}
+						\microInst        _{i} & = & \locFirstMicroInst  \\
+						\microSize        _{i} & = & \alreadySet \\
+						\microSlo         _{i} & = & \alreadySet \\
+						\microSbo         _{i} & = & \alreadySet \\
+						\microTlo         _{i} & = & \alreadySet \\
+						\microTbo         _{i} & = & \alreadySet \\
+						\microLimb        _{i} & = & \nothing \\
+						% \microCns         _{i} & = & \macroSrcId_{i} \\
+						% \microCnt         _{i} & = & \macroTgtId_{i}  \\
+						% \microSuccessBit  _{i} & = & \nothing \\
+						% \microExoSum      _{i} & = & \nothing \\
+						% \microPhase       _{i} & = & \nothing \\
+						% \microIdOne       _{i} & = & \nothing \\
+						% \microIdTwo       _{i} & = & \nothing \\
+					\end{array} \right.
+				\]
+				where we define the \locFirstMicroInst{} shorthand as follows:
+				\begin{enumerate}
+					\item \If $\locFastFirstLimb = 1$ \Then $\locFirstMicroInst \define \mmioInstRamToRamTransplant$
+					\item \If $\locFastFirstLimb = 0$ \Then
+						\begin{enumerate}
+							\item \If $\locFirstLimbSingleSource = 1$ \Then \[ \locFirstMicroInst \define \mmioInstRamToRamPartial            \]
+							\item \If $\locFirstLimbSingleSource = 0$ \Then \[ \locFirstMicroInst \define \mmioInstRamToRamTwoSource \]
+						\end{enumerate}
+				\end{enumerate}
+		\end{description}
+	\item[Middle nontrivial rows:] 
+		\If $\isMiddleNT_{i} = 1$ \Then
+		\begin{description}
+			\item[Micro-instruction:]
+				we impose
+				\[
+					\left\{ \begin{array}{lcl}
+						\microInst        _{i} & = & \locMiddleMicroInst  \\
+						\microSize        _{i} & = & \llarge \\
+						\microSlo         _{i} & = & \alreadySet \\
+						\microSbo         _{i} & = & \locMiddleSbo_{i} \\
+						\microTlo         _{i} & = & \alreadySet \\
+						\microTbo         _{i} & = & 0 \\
+						\microLimb        _{i} & = & \nothing \\
+						% \microCns         _{i} & = & \macroSrcId_{i} \\
+						% \microCnt         _{i} & = & \macroTgtId_{i}  \\
+						% \microSuccessBit  _{i} & = & \nothing \\
+						% \microExoSum      _{i} & = & \nothing \\
+						% \microPhase       _{i} & = & \nothing \\
+						% \microIdOne       _{i} & = & \nothing \\
+						% \microIdTwo       _{i} & = & \nothing \\
+					\end{array} \right.
+				\]
+				where we define the \locMiddleMicroInst{} shorthand as follows:
+				\begin{enumerate}
+					\item \If $\locAligned = 1$ \Then $\locMiddleMicroInst \define \mmioInstRamToRamTransplant$
+					\item \If $\locAligned = 0$ \Then $\locMiddleMicroInst \define \mmioInstRamToRamTwoSource$
+				\end{enumerate}
+		\end{description}
+	\item[Last nontrivial row:] 
+		\If $\isLastNT_{i} = 1$ \Then
+		\begin{description}
+			\item[Micro-instruction:]
+				we impose
+				\[
+					\left\{ \begin{array}{lcl}
+						\microInst        _{i} & = & \locLastMicroInst  \\
+						\microSize        _{i} & = & \locLastLimbByteSize_{i} \\
+						\microSlo         _{i} & = & \alreadySet \\
+						\microSbo         _{i} & = & \locMiddleSbo_{i} \\
+						\microTlo         _{i} & = & \alreadySet \\
+						\microTbo         _{i} & = & 0 \\
+						\microLimb        _{i} & = & \nothing \\
+						% \microCns         _{i} & = & \macroSrcId_{i} \\
+						% \microCnt         _{i} & = & \macroTgtId_{i}  \\
+						% \microSuccessBit  _{i} & = & \nothing \\
+						% \microExoSum      _{i} & = & \nothing \\
+						% \microPhase       _{i} & = & \nothing \\
+						% \microIdOne       _{i} & = & \nothing \\
+						% \microIdTwo       _{i} & = & \nothing \\
+					\end{array} \right.
+				\]
+				where we set
+				\begin{enumerate}
+					\item \If $\locFastLastLimb = 1$ \Then $\locLastMicroInst \define \mmioInstRamToRamTransplant$
+					\item \If $\locFastLastLimb = 0$ \Then
+						\begin{enumerate}
+							\item \If $\locLastLimbSingleSource = 1$ \Then $\locLastMicroInst \define \mmioInstRamToRamPartial$
+							\item \If $\locLastLimbSingleSource = 0$ \Then $\locLastMicroInst \define \mmioInstRamToRamTwoSource$
+						\end{enumerate}
+				\end{enumerate}
+		\end{description}
+\end{description}

@@ -1,0 +1,65 @@
+// SELFBALANCE		// self check out
+// POP
+
+PUSH1 0x02
+
+// reference address
+// currently: SHA2-256 precompile
+// precompile doesn't EXIST in the state trie
+// precompile doesn't EXIST in the state trie
+
+DUP1
+BALANCE
+DUP2
+EXTCODESIZE
+DUP3
+EXTCODEHASH
+				
+
+POP				// clean up
+POP				// clean up
+POP				// clean up
+
+PUSH1 5			// rds
+PUSH1 0			// rdo
+PUSH1 0			// cds
+PUSH1 0			// cdo
+PUSH1 0x0a		// value
+DUP6			// to = reference address
+PUSH2 0xffff	// gas
+CALL
+POP				// clean up
+
+// RETURNDATASIZE
+// POP				// clean up
+// 
+// SELFBALANCE
+// POP				// clean up
+// 
+// PUSH1 0x02
+// BALANCE
+// POP				// clean up
+
+DUP1
+BALANCE
+DUP2
+EXTCODESIZE
+DUP3
+EXTCODEHASH
+
+POP				// clean up
+POP				// clean up
+POP				// clean up
+
+// empty account vs empty code
+
+ADDRESS
+EXTCODEHASH		// will never return KEC(()) since can only be run if account has *some* code
+
+ADDRESS
+PUSH1 0x01
+ADD
+EXTCODEHASH
+
+POP				// clean up
+POP				// clean up

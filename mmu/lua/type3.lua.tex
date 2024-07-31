@@ -1,0 +1,61 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NF Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\usepackage{../../pkg/draculatheme}
+
+\begin{document}
+\begin{verbatim}
+We define an MMU instruction
+
+        MMU_INST_arbitriraryLengthInputRamToExo
+
+It takes as inputs
+- SRC_ID: cn
+- SRC_OFF: cdo
+- SIZE: cds
+- TGT_ID
+- EXO_SUM
+- AUX_ID
+
+|-----------------+--------+-------------+----------+---------------------+-----------+------|
+| hub instruction | SRC_ID | TGT_ID      | AUX_ID   | EXO_SUM             | PHASE_NUM | SIZE |
+|-----------------+--------+-------------+----------+---------------------+-----------+------|
+| LOGX            | CN     | ABS_LOG_NUM | ∅        | 1 << log            | ∅         | cds  |
+| RETURN (dep.)   | CN     | CFI         | HASH_NUM | 1 << rom + 1 << kec | ∅         | cds  |
+| SHA3            | CN     | ∅           | HASH_NUM | 1 << kec            | ∅         | cds  |
+| CREATE          | CN     | CFI         | ∅        | 1 << rom            | ∅         | cds  |
+| CREATE2         | CN     | CFI         | HASH_NUM | 1 << rom + 1 << kec | ∅         | cds  |
+|-----------------+--------+-------------+----------+---------------------+-----------+------|
+| SHA2-256        | CN     | 1 + h       | ∅        | 1 << sha2           | rel. val. | cds  |
+| RIPEMD-160      | CN     | 1 + h       | ∅        | 1 << ripe           | rel. val. | cds  |
+| ECPAIRING       | CN     | 1 + h       | ∅        | 1 << ecdata         | rel. val. | cds  |
+| BLAKE2f         | CN     | 1 + h       | ∅        | 1 << blake          | rel. val. | ∅    |
+|-----------------+--------+-------------+----------+---------------------+-----------+------|
+
+NOTE. we use the following shorthands
+
+        * h ≡ HUB_STAMP
+
+NOTE. the relevant value is particularly important for the ECPAIRING case and both the
+SHA2-256 and RIPEMD cases, as these modules are located in data modules which collect 
+the inputs and outputs of several different precompiles:
+
+- ECDATA does ECRECOVER, ECADD, ECMUL, ECPAIRING;
+- RIPSHA does SHA2-256, RIPEMD-160;
+
+NOTE. the PHASE_NUM is produced by the HUB at the moment the MMU instruction is crafted
+\end{verbatim}
+\end{document}
+

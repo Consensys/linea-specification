@@ -1,0 +1,29 @@
+\textbf{Annotations} already exist in \corset{} e.g. for types. These may serve different purposes: simplify constraint systems, provide implicit assumptions to the prover for specialized verification. See below. But we could add more annotations. For instance we could add annotations to help the transpiler to set up theorem stumps and prove intermeidary lemmas by itself:
+\begin{Verbatim}[commandchars=\\\{\}]
+(module toy-example)
+
+(defcolumns
+        COMP            \textcolor{gray!75}{:boolean}
+	                \textcolor{gray!75}{;; \color{solarized-yellow}{helps \corset{} simplify constraints}}
+			
+	( BYTES [5] )   \textcolor{gray!75}{:byte}
+	                \textcolor{gray!75}{;; \color{solarized-yellow}{helps \prover{} identify implicit range proofs}}
+
+	ARG_1_HI        \textcolor{gray!75}{:hint (god-given CT 0)}
+	                \textcolor{gray!75}{:hint (module-requires-smallness 16)}
+	ARG_1_LO        \textcolor{gray!75}{:hint (god-given CT 0)}
+	                \textcolor{gray!75}{:hint (module-requires-smallness 16)}
+	                \textcolor{gray!75}{;; \color{solarized-yellow}{should help theorem prover find entry points}}
+	                \textcolor{gray!75}{;; \color{solarized-yellow}{and make module specific assumptions}}
+	                \textcolor{gray!75}{;; \color{solarized-yellow}{these columns should be believed whenever CT_i = 0}}
+
+	ARG_2_HI        \textcolor{gray!75}{;; \color{solarized-yellow}{same}}
+	ARG_2_LO        \textcolor{gray!75}{;; \color{solarized-yellow}{same}}
+
+	RES_HI          \textcolor{gray!75}{:hint (module-ensures-smallness 16)}
+	                \textcolor{gray!75}{:hint (module-ensures-uniqueness)}
+	RES_LO          \textcolor{gray!75}{:hint (module-ensures-smallness 16)}
+	                \textcolor{gray!75}{:hint (module-ensures-uniqueness)}
+	                \textcolor{gray!75}{;; \color{solarized-yellow}{should help theorem prover deduce which theorems to prove}}
+)
+\end{Verbatim}

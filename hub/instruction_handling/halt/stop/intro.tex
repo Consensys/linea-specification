@@ -1,0 +1,10 @@
+We deal in this section with the instruction handling of the \inst{STOP} instruction. This instruction is in many ways straightforward: no exceptions are possible, it has constant gas cost (equal to 0.) The complexity that this instruction exhibits is fully concentrated in its interaction with deployments and rollbacks. Thus there are three scenarios for \inst{STOP} instructions:
+\begin{enumerate}
+        \item the current execution context \textbf{isn't} a deployment context;
+        \item the current execution context \textbf{is} a deployment context and
+		\begin{enumerate}
+		        \item \inst{STOP} triggers a deployment (with empty bytecode) which \textbf{will} be reverted by a parent context reverting 
+		        \item \inst{STOP} triggers a deployment (with empty bytecode) which \textbf{won't} be reverted by a parent context reverting.
+		\end{enumerate}
+\end{enumerate}
+Thus when processing a \inst{STOP} instruction we require access to the account address, the datum of whether or not it is currently under deployment or not, and if it is under deployment, we require access to the account \emph{proper}.

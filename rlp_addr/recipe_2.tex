@@ -1,0 +1,43 @@
+\begin{center}
+  \boxed{\text{In all this section, it is assumed that $\recipe{2}_{i} = 1$.}}
+\end{center}
+
+The \textbf{second recipe} requires no byte decompositions, byte counting or simila procedures. It furthermore produces a byte string of fixed length (85). The data is laid out according to the following schemata:
+\begin{table}[h!]
+  \renewcommand{\arraystretch}{1.3}
+  \[ \begin{array}{|c|c|c|c|}
+      \hline
+      \ct & \limb                                              & \limbsize & \index \\ \hline
+      0   & \texttt{0xff}\text{ concatenated with }\addr \high & 5         & 0      \\ \hline
+      1   & \addr \low                                         & \llarge   & 1      \\ \hline
+      2   & \salt \high                                        & \llarge   & 2      \\ \hline
+      3   & \salt \low                                         & \llarge   & 3      \\ \hline
+      4   & \kec \high                                         & \llarge   & 4      \\ \hline
+      5   & \kec \low                                          & \llarge   & 5      \\ \hline
+    \end{array}
+  \]
+\end{table}
+
+The corresponding constraints are as follows: 
+\begin{enumerate}
+	\item $\index_{i}=\ct_{i}$
+	\item \If $\ct_{i}=\mediumMO$ \Then:
+	\begin{enumerate}
+		\item $\lc_{i-5}=1$
+		
+		  \saNote{} This imposes that the counter-incrementing binary column \lc{} remains $\equiv 1$ throughout the current counter-cycle;
+		\item $\limb_{i-5} = \mathtt{0xff} \cdot 256^{\llargeMO} + \addr \high _{i} \cdot 256^{11}$
+		\item $\limbsize_{i-5} = 5$
+		\item $\limb_{i-4} = \addr \low _{i}$
+		\item $\limbsize_{i-4}=\llarge$
+		\item $\limb_{i-3} = \salt \high _{i}$
+		\item $\limbsize_{i-3}=\llarge$
+		\item $\limb_{i-2} = \salt \low _{i}$
+		\item $\limbsize_{i-2}=\llarge$
+		\item $\limb_{i-1} = \kec \high _{i}$
+		\item $\limbsize_{i-1}=\llarge$
+		\item $\limb_{i} = \kec \low _{i}$
+		\item $\limbsize_{i}=\llarge$
+	\end{enumerate}
+\end{enumerate}
+

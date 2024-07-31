@@ -1,0 +1,124 @@
+\[
+	\boxed{\text{All constraints in this subsection further assume } \oobInstIsModexpPricing_{i} = 1}
+\]
+We use the shorthands defined below:
+\[
+	\left\{ \begin{array}{lclr}
+		\locCallGas      & \define & \oobDataCol{1}_{i}                     \\
+		% \locCds                 & \define & \oobDataCol{2}_{i} \\
+		\locRac                 & \define & \oobDataCol{3}_{i} \\
+		\locRamSuccess          & \define & \oobDataCol{4}_{i} & \quad \prediction \\
+		\locReturnGas           & \define & \oobDataCol{5}_{i} & \quad \prediction \\
+		\locExponentLog         & \define & \oobDataCol{6}_{i} \\
+		\locMaxMbsBbs           & \define & \oobDataCol{7}_{i} \\
+		\locRacIsNonzero        & \define & \oobDataCol{8}_{i} & \quad \prediction \\
+	\end{array} \right.
+\]
+\saNote{} The decorator `` $\prediction{}$ '' stands for ``\hubMod{} prediction.''
+
+\saNote{}
+The intended interpretation is that $\locExponentLog$ contain $\locExponentLogEYP$ as defined in the \cite{EYP}.
+The value of \locExponentLog{} will be computed in the \expMod{} module using a specialized instruction.
+
+We impose the following:
+\begin{description}
+	\item[\underline{Rows n°$(i)$, $n^\circ(i + 1)$ and $n^\circ(i + 2)$:}] we impose
+	      we impose that
+	      \[
+		      \left\{ \begin{array}{l}
+			      \oobCallToIszero
+			      {i}{0}
+			      {0}{\locRac}
+			      \vspace{2mm} \\
+			      \oobCallToIszero
+			      {i}{1}
+			      {0}{\locExponentLog}
+			      \vspace{2mm} \\
+			      \oobCallToDiv
+			      {i}{2}
+			      {0}{\locMax \cdot \locMax + 7}
+			      {0}{8}
+			      \\
+		      \end{array} \right.
+	      \]
+	      we define the following associated shorthands
+	      \[
+		      \left\{ \begin{array}{lcl}
+			      \locExponentLogIsZero & \define & \outgoingResLo_{i + 1} \\
+			      \locFOfMax            & \define & \outgoingResLo_{i + 2} \\
+		      \end{array} \right.
+	      \]
+\end{description}
+\saNote{} $\locFOfMax$ computes $\displaystyle f\big(\max(\locBase, \locModulus)\big) = \left\lceil\frac{\max(\locBase, \locModulus)^2}{8}\right\rceil$.
+\begin{description}
+	\item[\underline{Row $n^°(i + 3)$:}]
+		we impose that
+		\[
+			\oobCallToDiv
+			{i}{3}
+			{0}{\locProduct}
+			{0}{G_\text{quaddivisor}}
+		\]
+		where $G_\text{quaddivisor} = 3$ and we have used the following shorthand
+		\[
+			\left\{ \begin{array}{lcl}
+				\locProduct & \define &
+				\begin{cases}
+					\If \locExponentLogIsZero = 0 ~ \Then : & \locFOfMax \cdot \locExponentLog \\
+					\If \locExponentLogIsZero = 1 ~ \Then : & \locFOfMax
+				\end{cases}  \\
+				\locBigQuotient & \define & \outgoingResLo_{i + 3} \\
+			\end{array} \right.
+		\]
+\end{description}
+\saNote{} Thus $\locProduct$ computes, in the notations of the \cite{EYP}, $\displaystyle f\big(\max(\locBase, \locModulus)\big) \cdot \max(\locExponentLogEYP, 1)$.
+It follows that $\locBigQuotient$ computes
+\[
+	\left\lfloor\frac{f\big(\max(\locBase, \locModulus)\big) \cdot \max(\locExponentLogEYP, 1)}{G_\text{quaddivisor}}\right\rfloor.
+\]
+\begin{description}
+	\item[\underline{Rows $n^°(i + 4)$ and $n^°(i + 5)$:}]
+	      we impose that
+	      \[
+		      \left\{ \begin{array}{l}
+			      \oobCallToLt
+			      {i}{4}
+			      {0}{\locBigQuotient}
+			      {0}{200}
+			      \vspace{2mm} \\
+			      \oobCallToLt
+			      {i}{5}
+			      {0}{\locCallGas}
+			      {0}{\locPrecompileCost}
+			      \\
+		      \end{array} \right.
+	      \]
+	      we define the \locBigQuotientLtTwoHundred{} shorthand
+	      \[
+		      \locBigQuotientLtTwoHundred \define \outgoingResLo_{i + 4}
+	      \]
+	      from which we define the \locPrecompileCost{} shorthand used above
+	      \begin{enumerate}
+		      \item \If \locBigQuotientLtTwoHundred = 0 \Then $\locPrecompileCost \define \locBigQuotient$
+		      \item \If \locBigQuotientLtTwoHundred = 1 \Then $\locPrecompileCost \define 200$
+	      \end{enumerate}
+	\item[\underline{Justifying \hubMod{} predictions:}] we impose that
+		\begin{description}
+			\item[{Constraining \locRamSuccess:}]
+				we impose that
+				\[
+					\locRamSuccess = 1 - \outgoingResLo_{i + 5}
+				\]
+			\item[{Constraining \locReturnGas:}]
+				we impose that
+				\begin{enumerate}
+					\item \If $\locRamSuccess = 0$ \Then $\locReturnGas = 0$
+					\item \If $\locRamSuccess = 1$ \Then $\locReturnGas = \locCallGas - \locPrecompileCost$
+				\end{enumerate}
+			\item[{Constraining \locRacIsNonzero:}]
+				we impose that
+				\[
+					\locRacIsNonzero = 1 - \outgoingResLo_{i}
+				\]
+		\end{description}
+\end{description}

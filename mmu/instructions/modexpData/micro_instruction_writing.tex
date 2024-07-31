@@ -1,0 +1,197 @@
+\begin{center} \boxed{ \text{The pre-processing presented below assumes that } \mmuInstFlagModexpData  _{i} = 1 }
+\end{center}
+We impose the following:
+\begin{description}
+	\item[Progression:] \label{mmu: instructions: modexpdata: micro instrution writing: tlo progression}
+		we impose generally \If $\isMicro_{i} = 1$ \Then $\stdProgression_{i}\Big[\isMicro, \microTlo \Big]$
+\end{description}
+\saNote{} \label{mmu: modexData: microTLO explanation} Recall that in the present case (\mmuInstFlagModexpData{} instruction) the we have
+initially\footnote{i.e. during the pre-processing phase} $\ppTot \equiv 32$,
+see~(\ref{mmu: instructions: modexpdata: preprocessing: tot = 32 initially}),
+and intially\footnote{i.e. on the first micro-instruction-writing row}, again, $\microTlo \equiv 0$,
+see~(\ref{mmu: instructions: modexpdata: initialize: tlo is initially 0}).
+The above therefore enforces that \microTlo{} will count monotonically and without gaps from $0$ to $31$ during the micro-instruction-writing phase.
+And indeed the goal of the present \mmuMod{}-instruction is to copy over up to $512 = 32 \times \llarge$ (potentially left and/or right zero padded) bytes of data i.e. $32$ data limbs.
+\begin{description}
+	\item[Zero padding rows:] 
+		\If $\isZero_{i} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst        _{i} & = & \mmioInstLimbVanishes \\
+				\microSize        _{i} & = & \nothing \\
+				\microSlo         _{i} & = & \nothing \\
+				\microSbo         _{i} & = & \nothing \\
+				\microTlo         _{i} & = & \alreadySet \\
+				\microTbo         _{i} & = & \nothing \\
+				\microLimb        _{i} & = & \nothing \\
+				% \microCns         _{i} & = & \nothing \\
+				% \microCnt         _{i} & = & \nothing \\
+				% \microExoSum      _{i} & = & \nothing \\
+				% \microPhase       _{i} & = & \nothing \\
+				% \microIdOne       _{i} & = & \nothing \\
+				% \microIdTwo       _{i} & = & \nothing or \alreadySet \\
+			\end{array} \right.
+		\]
+	\item[Only nontrivial row:] 
+		\If $\isOnlyNT_{i}$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst        _{i} & = & \locOnlyMicroInst \\
+				\microSize        _{i} & = & \locFirstLimbByteSize \\
+				\microSlo         _{i} & = & \locInitSlo \\
+				\microSbo         _{i} & = & \locInitSbo \\
+				\microTlo         _{i} & = & \alreadySet \\
+				\microTbo         _{i} & = & \locInitTbo \\
+				\microLimb        _{i} & = & \relevantValue \\
+				% \microCns         _{i} & = & \nothing \\
+				% \microCnt         _{i} & = & \nothing \\
+				% \microExoSum      _{i} & = & \nothing \\
+				% \microPhase       _{i} & = & \nothing \\
+				% \microIdOne       _{i} & = & \nothing \\
+				% \microIdTwo       _{i} & = & \nothing or \alreadySet \\
+			\end{array} \right.
+		\]
+		where
+		\begin{description}
+			\item[Defining \locOnlyMicroInst:] ---
+				\begin{enumerate}
+					\item \If $\locFirstLimbSingleSource = 0$ \Then \[ \locOnlyMicroInst = \mmioInstRamToLimbTwoSource \]
+					\item \If $\locFirstLimbSingleSource = 1$ \Then \[ \locOnlyMicroInst = \mmioInstRamToLimbOneSource \]
+				\end{enumerate}
+		\end{description}
+	\item[First nontrivial row:] 
+		\If $\isFirstNT_{i} = 1$ \Then
+		\begin{description}
+			\item[Micro-instruction:] 
+				\[
+					\left\{ \begin{array}{lcl}
+						\microInst        _{i} & = & \locFirstMicroInst            \\
+						\microSize        _{i} & = & \locFirstLimbByteSize         \\
+						\microSlo         _{i} & = & \locInitSlo                   \\
+						\microSbo         _{i} & = & \locInitSbo                   \\
+						\microTlo         _{i} & = & \alreadySet                   \\
+						\microTbo         _{i} & = & \locInitTbo                   \\
+						\microLimb        _{i} & = & \relevantValue                \\
+						% \microCns         _{i} & = & \nothing \\
+						% \microCnt         _{i} & = & \nothing \\
+						% \microExoSum      _{i} & = & \nothing \\
+						% \microPhase       _{i} & = & \nothing \\
+						% \microIdOne       _{i} & = & \nothing \\
+						% \microIdTwo       _{i} & = & \nothing or \alreadySet \\
+					\end{array} \right.
+				\]
+				where we have made use of the shorthand \locFirstMicroInst{} defined below:
+				\begin{description}
+					\item[Defining \locFirstMicroInst:] ---
+						\begin{enumerate}
+							\item \If $\locFirstLimbSingleSource = 0$ \Then \[ \locFirstMicroInst = \mmioInstRamToLimbTwoSource \]
+							\item \If $\locFirstLimbSingleSource = 1$ \Then \[ \locFirstMicroInst = \mmioInstRamToLimbOneSource \]
+						\end{enumerate}
+				\end{description}
+			\item[Paying forward of \microSlo{}:]
+				we impose that
+				\begin{enumerate}
+					\item \If $\locAligned_{i} = 1$ \Then $\microSlo_{i + 1} = 1 + \microSlo_{i}$
+					\item \If $\locAligned_{i} = 0$ \Then 
+						\begin{enumerate}
+							\item \If $\locFirstLimbSingleSource = 0$ \Then $\microSlo_{i + 1} = 1 + \microSlo_{i}$
+							\item \If $\locFirstLimbSingleSource = 1$ \Then $\microSlo_{i + 1} = \microSlo_{i}$
+						\end{enumerate}
+				\end{enumerate}
+				\saNote{} The above may be implemented more efficiently as
+				\[ \microSlo_{i + 1} = \locMicroSloIncrement  + \microSlo_{i} \]
+				where
+				\[
+					\locMicroSloIncrement \define
+					\left[ \begin{array}{cr}
+						+ & \locAligned_{i}                                             \\
+						+ & (1 - \locAligned_{i}) \cdot (1 - \locFirstLimbSingleSource) \\
+					\end{array} \right]
+				\]
+			\item[Paying forward of \microSbo{}:]
+				we impose that
+				\begin{enumerate}
+					\item \If $\locAligned_{i} = 1$ \Then $\microSbo_{i + 1} = 0$ \quad(\trash)
+					\item \If $\locAligned_{i} = 0$ \Then
+						\begin{enumerate}
+							\item \If $\locFirstLimbSingleSource = 0$ \Then $\microSbo_{i + 1} = \microSbo_{i} + \microSize_{i} - \llarge$
+							\item \If $\locFirstLimbSingleSource = 1$ \Then $\microSbo_{i + 1} = \microSbo_{i} + \microSize_{i}$
+						\end{enumerate}
+				\end{enumerate}
+				\saNote{} We really only need to specify the \microSbo{} update in the non-aligned case.
+				\saNote{} We could have used the shorthand \locMiddleSbo, stored in a $\ppOutputCol{6}$, but that would create a sixth column, only for this (almost never) used instruction. 
+			\item[Paying forward of \microTbo{}:]
+				we impose that $\microTbo_{i + 1} = 0$
+		\end{description}
+	\item[Middle nontrivial row:] 
+		\If $\isMiddleNT_{i} = 1$ \Then
+		\begin{description}
+			\item[Micro-instruction:]
+				\[
+					\left\{ \begin{array}{lcl}
+						\microInst        _{i} & = & \locMiddleMicroInst           \\
+						\microSize        _{i} & = & \llarge                      \\
+						\microSlo         _{i} & = & \alreadySet                   \\
+						\microSbo         _{i} & = & \alreadySet                   \\
+						\microTlo         _{i} & = & \alreadySet                   \\
+						\microTbo         _{i} & = & \alreadySet                   \\
+						\microLimb        _{i} & = & \relevantValue                      \\
+						% \microCns         _{i} & = & \nothing \\
+						% \microCnt         _{i} & = & \nothing \\
+						% \microExoSum      _{i} & = & \nothing \\
+						% \microPhase       _{i} & = & \nothing \\
+						% \microIdOne       _{i} & = & \nothing \\
+						% \microIdTwo       _{i} & = & \nothing or \alreadySet \\
+					\end{array} \right.
+				\]
+				where
+				\begin{description}
+					\item[Defining \locMiddleMicroInst:] ---
+						\begin{enumerate}
+							\item \If $\locAligned = 0$ \Then \( \locMiddleMicroInst = \mmioInstRamToLimbTwoSource    \)
+							\item \If $\locAligned = 1$ \Then \( \locMiddleMicroInst = \mmioInstRamToLimbTransplant \)
+						\end{enumerate}
+				\end{description}
+			\item[Paying forward of \microSlo{}:]
+				the next source limb is the next limb in the source: $\microSlo_{i + 1} = 1 + \microSlo_{i}$
+			\item[Paying forward of \microSbo{}:]
+				remains unchanged: $\microSbo_{i + 1} = \microSbo_{i}$
+			\item[Paying forward of \microTbo{}:]
+				remains unchanged: $\microTbo_{i + 1} = \microTbo_{i}$
+		\end{description}
+	\item[Last nontrivial row:] 
+		\If $\isLastNT_{i} = 1$ \Then
+		\begin{description}
+			\item[Micro-instruction:]
+				we impose
+				\[
+					\left\{ \begin{array}{lcl}
+						\microInst        _{i} & = & \locLastMicroInst             \\
+						\microSize        _{i} & = & \locLastLimbByteSize          \\
+						\microSlo         _{i} & = & \alreadySet                   \\
+						\microSbo         _{i} & = & \alreadySet                   \\
+						\microTlo         _{i} & = & \alreadySet                   \\
+						\microTbo         _{i} & = & \alreadySet                   \\
+						\microLimb        _{i} & = & \relevantValue                \\
+						% \microCns         _{i} & = & \nothing \\
+						% \microCnt         _{i} & = & \nothing \\
+						% \microExoSum      _{i} & = & \nothing \\
+						% \microPhase       _{i} & = & \nothing \\
+						% \microIdOne       _{i} & = & \nothing \\
+						% \microIdTwo       _{i} & = & \nothing or \alreadySet \\
+					\end{array} \right.
+				\]
+				where
+				\begin{description}
+					\item[Defining \locLastMicroInst:] ---
+						\begin{enumerate}
+							\item \If $\locLastLimbSingleSource = 0$ \Then \( \locLastMicroInst = \mmioInstRamToLimbTwoSource \)
+							\item \If $\locLastLimbSingleSource = 1$ \Then \( \locLastMicroInst = \mmioInstRamToLimbOneSource \)
+						\end{enumerate}
+				\end{description}
+		\end{description}
+\end{description}
+\saNote{} Let us say a few words on the ``\textbf{multiple nontrivial rows case}'' and in particular let us address the matter of the 
+\microSlo, \microSbo, \microTlo{} and \microTbo{} supposedly being already set (except for on the first nontrivial row.)
+This results from the fact that the first nontrivial row and all middle rows \textbf{pay forward} in terms of \microSlo, \microSbo, and \microTbo{}.
+When it comes to \microTlo{} the behavior of this column was already settled at the start, see here~(\ref{mmu: instructions: modexpdata: micro instrution writing: tlo progression}).

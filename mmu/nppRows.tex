@@ -1,0 +1,46 @@
+We settle the number of pre-processing rows per macro-instruction.
+To this end let us define the following shorthand:
+\[
+	\hspace*{-1.5cm}
+	\begin{array}{l}
+		\locInitialCtSum_{i} \define \vspace{4mm} \\
+		\qquad
+		\left[ \begin{array}{crcl}
+			+ & ( \nppMmuInstMload                              - 1 ) & \!\!\!\cdot\!\!\! & \mmuInstFlagMload                                  _{i} \vspace{1mm} \\
+			+ & ( \nppMmuInstMstore                             - 1 ) & \!\!\!\cdot\!\!\! & \mmuInstFlagMstore                                 _{i} \vspace{1mm} \\
+			+ & ( \nppMmuInstMstoreEight                        - 1 ) & \!\!\!\cdot\!\!\! & \mmuInstFlagMstoreEight                            _{i} \vspace{1mm} \\
+			+ & ( \nppMmuInstInvalidCodePrefix                  - 1 ) & \!\!\!\cdot\!\!\! & \mmuInstFlagInvalidCodePrefix                      _{i} \vspace{1mm} \\
+			+ & ( \nppMmuInstRightPaddedWordExtraction          - 1 ) & \!\!\!\cdot\!\!\! & \mmuInstFlagRightPaddedWordExtraction              _{i} \vspace{1mm} \\
+			+ & ( \nppMmuInstRamToExoWithPadding                - 1 ) & \!\!\!\cdot\!\!\! & \mmuInstFlagRamToExoWithPadding                    _{i} \vspace{1mm} \\
+			+ & ( \nppMmuInstExoToRamTransplants                - 1 ) & \!\!\!\cdot\!\!\! & \mmuInstFlagExoToRamTransplants                    _{i} \vspace{1mm} \\
+			+ & ( \nppMmuInstRamToRamSansPadding                - 1 ) & \!\!\!\cdot\!\!\! & \mmuInstFlagRamToRamSansPadding                    _{i} \vspace{1mm} \\
+			+ & ( \nppMmuInstAnyToRamWithPaddingSomeData        - 1 ) & \!\!\!\cdot\!\!\! & \mmuInstFlagAnyToRamWithPaddingSomeData            _{i} \vspace{1mm} \\
+			+ & ( \nppMmuInstAnyToRamWithPaddingPurePadding     - 1 ) & \!\!\!\cdot\!\!\! & \mmuInstFlagAnyToRamWithPaddingPurePadding         _{i} \vspace{1mm} \\
+			+ & ( \nppMmuInstModexpZero                         - 1 ) & \!\!\!\cdot\!\!\! & \mmuInstFlagModexpZero                             _{i} \vspace{1mm} \\
+			+ & ( \nppMmuInstModexpData                         - 1 ) & \!\!\!\cdot\!\!\! & \mmuInstFlagModexpData                             _{i} \vspace{1mm} \\
+			+ & ( \nppMmuInstBlake                              - 1 ) & \!\!\!\cdot\!\!\! & \mmuInstFlagBlake                                  _{i} \\
+		\end{array} \right] \\
+	\end{array}
+\]
+where we define the numerical values on the left as follows:
+\[
+	\left\{ \begin{array}{lcl}
+		\nppMmuInstMload                           & \define & \nppMmuInstMloadValue                           \\
+		\nppMmuInstMstore                          & \define & \nppMmuInstMstoreValue                          \\
+		\nppMmuInstMstoreEight                     & \define & \nppMmuInstMstoreEightValue                     \\
+		\nppMmuInstInvalidCodePrefix               & \define & \nppMmuInstInvalidCodePrefixValue               \\
+		\nppMmuInstRightPaddedWordExtraction       & \define & \nppMmuInstRightPaddedWordExtractionValue       \\
+		\nppMmuInstRamToExoWithPadding             & \define & \nppMmuInstRamToExoWithPaddingValue             \\
+		\nppMmuInstExoToRamTransplants             & \define & \nppMmuInstExoToRamTransplantsValue             \\
+		\nppMmuInstRamToRamSansPadding             & \define & \nppMmuInstRamToRamSansPaddingValue             \\
+		\nppMmuInstAnyToRamWithPaddingSomeData     & \define & \nppMmuInstAnyToRamWithPaddingSomeDataValue     \\
+		\nppMmuInstAnyToRamWithPaddingPurePadding  & \define & \nppMmuInstAnyToRamWithPaddingPurePaddingValue  \\
+		\nppMmuInstModexpZero                      & \define & \nppMmuInstModexpZeroValue                      \\
+		\nppMmuInstModexpData                      & \define & \nppMmuInstModexpDataValue                      \\
+		\nppMmuInstBlake                           & \define & \nppMmuInstBlakeValue                           \\
+	\end{array} \right.
+\]
+We further impose the following:
+\begin{enumerate}
+	\item \If $\isMacro_{i} = 1$ \Then \( \ppCt_{i + 1} = \locInitialCtSum_{i} \)
+\end{enumerate}

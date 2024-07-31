@@ -1,0 +1,131 @@
+% call stack
+\newcommand{\TXNUM}{\col{RELATIVE\_TRANSACTION\_NUMBER}} % \geq 0, context ``number''
+\newcommand{\txNum}{\col{REL\_TX\_NUM}}
+\newcommand{\relTxNumMax}{\txNum^\infty}
+\newcommand{\iTxNum}{\imported{\txNum}}
+
+\newcommand{\ABSTXNUM}{\col{ABSOLUTE\_TRANSACTION\_NUMBER}}
+\newcommand{\TOTTXNUM}{\col{TOTAL\_TRANSACTION\_NUMBER}}
+\newcommand{\absTxNum}{\col{ABS\_TX\_NUM}}
+\newcommand{\absTxNumMax}{\col{ABS\_TX\_NUM}^\infty}
+%
+\newcommand{\outgoingDataSymb}            {\col{OUTGOING}}
+\newcommand{\outgoingData}           [1]  {\outgoingDataSymb\col{\_#1}}
+\newcommand{\outgoingDataHi}              {\outgoingDataSymb\col{\_HI}}
+\newcommand{\outgoingDataLo}              {\outgoingDataSymb\col{\_LO}}
+
+\newcommand{\oobCallToAdd   }        [6]  {\texttt{callToADD}    _{#1}
+\left[ \begin{array}{ll}
+    \utt{Rel. row offset:}        & #2 \\
+    \utt{Argument one high:} & #3 \\
+    \utt{Argument one low:}  & #4 \\
+    \utt{Argument two high:} & #5 \\
+    \utt{Argument two low:}  & #6 \\
+\end{array} \right]}
+\newcommand{\oobCallToDiv   }        [6]  {\texttt{callToDIV}    _{#1}
+\left[ \begin{array}{ll}
+    \utt{Rel. row offset:}    & #2 \\
+    \utt{Dividend high:} & #3 \\
+    \utt{Dividend low:}  & #4 \\
+    \utt{Divisor high:}  & #5 \\
+    \utt{Divisor low:}   & #6 \\
+\end{array} \right]}
+\newcommand{\oobCallToMod   }        [6]  {\texttt{callToMOD}    _{#1}
+\left[ \begin{array}{ll}
+    \utt{Rel. row offset:}    & #2 \\
+    \utt{Dividend high:} & #3 \\
+    \utt{Dividend low:}  & #4 \\
+    \utt{Divisor high:}  & #5 \\
+    \utt{Divisor low:}   & #6 \\
+\end{array} \right]}
+\newcommand{\oobCallToEq    }        [6]  {\texttt{callToEQ}     _{#1}
+\left[ \begin{array}{ll}
+    \utt{Rel. row offset:}        & #2 \\
+    \utt{Argument one high:} & #3 \\
+    \utt{Argument one low:}  & #4 \\
+    \utt{Argument two high:} & #5 \\
+    \utt{Argument two low:}  & #6 \\
+\end{array} \right]}
+\newcommand{\oobCallToLt    }        [6]  {\texttt{callToLT}     _{#1}
+\left[ \begin{array}{ll}
+    \utt{Rel. row offset:}           & #2 \\
+    \utt{Left hand side high:}  & #3 \\
+    \utt{Left hand side low:}   & #4 \\
+    \utt{Right hand side high:} & #5 \\
+    \utt{Right hand side low:}  & #6 \\
+\end{array} \right]}
+\newcommand{\oobCallToGt    }        [6]  {\texttt{callToGT}     _{#1}
+\left[ \begin{array}{ll}
+    \utt{Rel. row offset:}           & #2 \\
+    \utt{Left hand side high:}  & #3 \\
+    \utt{Left hand side low:}   & #4 \\
+    \utt{Right hand side high:} & #5 \\
+    \utt{Right hand side low:}  & #6 \\
+\end{array} \right]}
+\newcommand{\oobCallToIszero}        [4]  {\texttt{callToISZERO} _{#1}
+\left[ \begin{array}{ll}
+    \utt{Rel. row offset:}    & #2 \\
+    \utt{Argument high:} & #3 \\
+    \utt{Argument low:}  & #4 \\
+\end{array} \right]}
+\newcommand{\oobNoCall}              [2]  {\texttt{noCall} _{#1} \big[ \utt{Rel. row offset:} \; #2 \big]}
+
+\newcommand{\phaseNum}{\col{PHASE}}
+
+\newcommand{\CN}{\col{CONTEXT\_NUMBER}} % \geq 0, context ``number''
+\newcommand{\cn}{\col{CN}}
+
+\newcommand{\CTYPE}{\col{CONTEXT\_TYPE}} % binary flag that equals 1 for init code and zero otherwise
+\newcommand{\cType}{\col{CTYPE}}
+
+\newcommand{\CSTAT}{\col{CONTEXT\_STATIC}} % binary flag that equals 1 for init code and zero otherwise
+\newcommand{\staticContext}{\col{STATIC\_CN}}
+% staticContext
+
+\newcommand{\CALLER}{\col{CALLER\_CONTEXT}}
+\newcommand{\caller}{\col{CALLER\_CONTEXT\_NUMBER}}
+% \newcommand{\CDO}{\col{CALLDATA\_OFFSET}} % offset in the caller's RAM
+% \newcommand{\cdo}{\col{CDO}}
+% \newcommand{\CDS}{\col{CALLDATA\_SIZE}}
+% \newcommand{\cds}{\col{CDS}}
+
+\newcommand{\RETATOFF}{\col{RETURN@OFFSET}}
+\newcommand{\retAtOff}{\col{R@O}}
+\newcommand{\CODEADDR}{\col{BYTECODE\_ADDRESS}}
+\newcommand{\codeAddr}{\col{BC\_ADDR}}
+\newcommand{\STORAGEADDR}{\col{STORAGE\_ADDRESS}}
+\newcommand{\storageAddr}{\col{STO\_ADDR}}
+
+\newcommand{\RETATCAP}{\col{RETURN@CAPACITY}}
+\newcommand{\retAtCap}{\col{R@C}}
+
+\newcommand{\RETURNER}{\col{RETURN\_CONTEXT}}
+\newcommand{\returner}{\col{RETURN\_DATA\_CONTEXT\_NUMBER}}
+% \newcommand{\RDO}{\col{RETURNDATA\_OFFSET}} % offset in the returner's RAM
+% \newcommand{\rdo}{\col{RDO}}
+% \newcommand{\RDS}{\col{RETURNDATA\_SIZE}}
+% \newcommand{\rds}{\col{RDS}}
+
+\newcommand{\CRC}{\col{CONTEXT\_REVERTS\_BY\_CHOICE}}
+\newcommand{\crc}{\col{CREVC}}
+
+\newcommand{\CRF}{\col{CONTEXT\_REVERTS\_BY\_FORCE}}
+\newcommand{\crf}{\col{CREVF}}
+
+\newcommand{\COOG}{\col{CONTEXT\_RUNS\_OUT\_OF\_GAS}}
+\newcommand{\coog}{\col{COOG}}
+
+\newcommand{\CERR}{\col{CONTEXT\_ERROR}}
+\newcommand{\cerr}{\col{CERR}}
+
+\newcommand{\CREV}{\col{CONTEXT\_REVERTS}}
+\newcommand{\crev}{\col{CREV}}
+
+\newcommand{\CREVST}{\col{CONTEXT\_REVERT\_STORAGE\_STAMP}}
+\newcommand{\crevst}{\col{CREVST}}
+
+\newcommand{\MAXC}{\col{MAXIMUM\_CONTEXT}}
+\newcommand{\maxCn}{\col{MAX\_CN}}
+
+\newcommand{\CSTACKXFLAG}{\col{CALLSTACK\_EXCEPTION\_FLAG}}
+\newcommand{\cstackXFlag}{\col{CS}\mathscr{X}\col{F}}

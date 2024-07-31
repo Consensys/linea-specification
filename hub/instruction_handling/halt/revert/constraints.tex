@@ -1,0 +1,170 @@
+\begin{center}
+	\boxed{%
+		\text{The stack constraints presented below assume }
+		\left\{ \begin{array}{lcl}
+			\peekStack                 _{i} & \!\!\! = \!\!\! & 1 \\
+			\stackDecHaltFlag          _{i} & \!\!\! = \!\!\! & 1 \\
+			\decFlag                {2}_{i} & \!\!\! = \!\!\! & 1 \\
+			\stackSux _{i} + \stackSox _{i} & \!\!\! = \!\!\! & 0 \\
+		\end{array} \right.}
+\end{center}
+The present section deals with handling \inst{REVERT} instructions.
+\begin{description}
+	\item[\underline{Setting the stack pattern:}]
+		we impose $\twoZeroSP_{i}$;
+	\item[\underline{Allowable exceptions:}]
+		we impose
+		\[
+			\xAhoy _{i}
+			=
+			\left[ \begin{array}{cl}
+				+ & \stackMxpx _{i} \\ 
+				+ & \stackOogx _{i} \\ 
+			\end{array} \right]
+			\quad (\trash)
+		\]
+	\item[\underline{Setting $\nonStackRows$:}]
+		we impose $\nonStackRows_{i} = 2 + (1-\xAhoy_{i})$
+	\item[\underline{Setting the peeking flags:}]
+		we impose the following
+		\begin{enumerate}
+			\item \If $\xAhoy_{i} = 1$ \Then we impose
+				\[
+					\left[ \begin{array}{r}
+						+ \peekMisc       _{i + \locRevertMiscRowOffset          } \\
+						+ \peekContext    _{i + \locRevertCurrentContextRowOffset} \\
+					\end{array} \right]
+					= \nonStackRows_{i}
+				\]
+			\item \If $\xAhoy_{i} = 0$ \Then we impose
+				\[
+					\left[ \begin{array}{r}
+						+ \peekMisc       _{i + \locRevertMiscRowOffset          } \\
+						+ \peekContext    _{i + \locRevertCurrentContextRowOffset} \\
+						+ \peekContext    _{i + \locRevertParentContextRowOffset } \\
+					\end{array} \right]
+					= \nonStackRows_{i}
+				\]
+		\end{enumerate}
+	\item[\underline{Setting the context rows:}]
+		we impose the following
+		\begin{enumerate}
+			\item \If $\xAhoy_{i} = 1$ \Then we impose
+				\[ \executionProvidesEmptyReturnData {i}{\locRevertCurrentContextRowOffset} \quad (\trash) \]
+			\item \If $\xAhoy_{i} = 0$ \Then we impose
+				\begin{enumerate}
+					\item $\readContextData {i}{\locRevertCurrentContextRowOffset}{\locCurrentContext}$
+					\item \If $\locCurrentContextIsRoot = 1$ \Then $\readContextData {i}{\locRevertParentContextRowOffset}{\locCallerContext}$
+					\item \If $\locCurrentContextIsRoot = 0$ \Then
+						\[
+							\provideReturnData {
+								anchorRow          = i                                ,
+								relOffset          = \locRevertParentContextRowOffset ,
+								returnDataReceiver = \locCallerContext                ,
+								returnDataProvider = \locCurrentContext               ,
+								returnDataOffset   = \locOffsetLo                     ,
+								returnDataSize     = \locSizeLo                       ,
+							}
+							% \provideReturnData
+							% {i}{\locRevertParentContextRowOffset} 
+							% {\locCallerContext }         % Return data receiver
+							% {\locCurrentContext}         % Return data provider
+							% {\locOffsetLo      }         % Return data offset
+							% {\locSizeLo        }         % Return data size 
+						\]
+						In other words: execution provides return data to its caller context provided that it isn't the root context.
+				\end{enumerate}
+		\end{enumerate}
+	\item[\underline{Setting \locTriggerMmu{}:}] 
+		we impose the following:
+		\begin{enumerate}
+			\item \If $\xAhoy           _{i} = 1$ \Then $\locTriggerMmu = 0$
+			\item \If $\locCurrentContextIsRoot = 1$ \Then $\locTriggerMmu = 0$
+			\item \If \Big($\xAhoy      _{i} = 0$ \et $\cnIsRootContext _{i} = 0$\Big) \Then
+				\begin{enumerate}
+					\item \If $\locSizeLo \cdot \locRac =    0$ \Then $\locTriggerMmu = 0$
+					\item \If $\locSizeLo \cdot \locRac \neq 0$ \Then $\locTriggerMmu = 1$
+				\end{enumerate}
+		\end{enumerate}
+		\saNote{} \label{hub: instruction handling: halting: revert: trigger_MMU definition}
+		In order to trigger the \mmuMod{} module a \inst{REVERT} instruction must trigger no exception, have nonzero size parameter and arise in a context with nonzero \cnRac{}. In particular this cannot happen
+		(\emph{a}) in the root context of a transaction nor
+		(\emph{b}) in a context that was spawned through a \inst{CREATE}-type instruction. Indeed in both cases it holds that $\cnRac \equiv 0$. 
+	\item[\underline{The miscellaneous-row $n^°(i + \locRevertMiscRowOffset)$:}]
+		we impose
+		\[
+			\weightedMiscFlagSum {i}{\locRevertMiscRowOffset}
+			=
+			\left[ \begin{array}{crcl}
+				+ & \miscMmuWeight  & \!\!\!\cdot\!\!\! & \locTriggerMmu \\
+				+ & \miscMxpWeight \\
+			\end{array} \right]
+		\]
+		i.e.
+		\[
+			\left\{ \begin{array}{lclr}
+				\miscExpFlag  _{i + \locRevertMiscRowOffset} & = & \gZero         & (\trash) \\
+				\miscMmuFlag  _{i + \locRevertMiscRowOffset} & = & \locTriggerMmu & (\trash) \\
+				\miscMxpFlag  _{i + \locRevertMiscRowOffset} & = & \rOne          & (\trash) \\
+				\miscOobFlag  _{i + \locRevertMiscRowOffset} & = & \gZero         & (\trash) \\
+				\miscStpFlag  _{i + \locRevertMiscRowOffset} & = & \gZero         & (\trash) \\
+			\end{array} \right.
+		\]
+	\item[\underline{Setting the \mxpMod{} data:}]
+		we impose
+		\[
+			\setMxpInstructionTypeFour {i}{\locRevertMiscRowOffset}
+			\left[ \begin{array}{ll}
+				\utt{Instruction:}       & \locInst     \\
+				\utt{Deploys byte code:} & 0            \\
+				\utt{Offset high part:}  & \locOffsetHi \\
+				\utt{Offset low  part:}  & \locOffsetLo \\
+				\utt{Size high part:}    & \locSizeHi   \\
+				\utt{Size low  part:}    & \locSizeLo   \\
+			\end{array} \right]
+		\]
+	\item[\underline{Setting $\stackMxpx _{i}$:}]
+		we impose that
+		\[
+			\stackMxpx  _{i}
+			=
+			\miscMxpMxpx  _{i + \locRevertMiscRowOffset}
+		\]
+	\item[\underline{Setting the \mmuMod{} data:}]
+		we impose \If $\miscMmuFlag_{i + \locRevertMiscRowOffset} = 1$ \Then
+		\[
+			\setMmuInstructionParametersRamToRamSansPadding {
+				anchorRow       = i                       ,
+				relOffset       = \locRevertMiscRowOffset ,
+				sourceId        = \locCurrentContext      ,
+				targetId        = \locCallerContext       ,
+				sourceOffsetLo  = \locOffsetLo            ,
+				size            = \locSizeLo              ,
+				referenceOffset = \locRao                 ,
+				referenceSize   = \locRac                 ,
+				}
+			% \setMmuInstructionParametersRamToRamSansPadding {i}{\locRevertMiscRowOffset}
+			% \left[ \begin{array}{ll}
+			% 	\utt{Source ID:}            & \locCurrentContext    \\
+			% 	\utt{Target ID:}            & \locCallerContext     \\
+			% 	% \utt{Auxiliary ID:}       & \col{aux\_id}         \\
+			% 	% \utt{Source offset high:} & \col{src\_offset\_hi} \\
+			% 	\utt{Source offset low:}    & \locOffsetLo          \\
+			% 	% \utt{Target offset low:}  & \col{tgt\_offset\_lo} \\
+			% 	\utt{Size:}                 & \locSizeLo            \\
+			% 	\utt{Reference offset:}     & \locRao               \\
+			% 	\utt{Reference size:}       & \locRac               \\
+			% 	% \utt{Success bit:}        & \col{success\_bit}    \\
+			% 	% \utt{Limb one:}           & \col{limb\_1}         \\
+			% 	% \utt{Limb two:}           & \col{limb\_2}         \\
+			% 	% \utt{Exo sum:}            & \col{exo\_sum}        \\
+			% 	% \utt{Phase:}              & \col{phase}           \\
+			% \end{array} \right]
+		\]
+	\item[\underline{Setting the gas cost:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\stackMxpx _{i} = 1$ \Then $\gasCost_{i} = 0$
+			\item \If $\stackMxpx _{i} = 0$ \Then $\gasCost_{i} = \staticGas_{i} + \locMxpGas$
+		\end{enumerate}
+\end{description}

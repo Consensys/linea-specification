@@ -1,0 +1,47 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints below are written under assuming that } \peekStack_{i} = 1.}
+\end{center}
+We define the conditions under which an execution context may raise the \cnSelfRev{} flag.
+This can only happen if it encounters an exception and/or executes the \inst{REVERT} opcode.
+It is easiest to detect the latter of these conditions along stack-rows (whence the overarching initial assumption.)
+Indeed, \textbf{on stack rows} we have
+\[
+	\stackInst = \inst{REVERT} \iff \stackDecHaltFlag \cdot \decFlag{2} \equiv 1,
+\]
+see section~\ref{hub: instruction handling: halt: instruction flags}.
+Either of these conditions happening is therefore captured by (the conjuction of $\peekStack_{i} = 1$ and) $\xAhoy_{i} + \stackDecHaltFlag_{i} \cdot \decFlag{2}_{i} \neq 0$.
+
+We introduce the following shorthand
+\[
+	\locSelfRevertTrigger_{i}
+	\define
+	\left[ \begin{array}{cr}
+		+ & \xAhoy_{i} \\
+		+ & \stackDecHaltFlag_{i} \cdot \decFlag{2}_{i} \\
+		- & \xAhoy_{i} \cdot \stackDecHaltFlag_{i} \cdot \decFlag{2}_{i} \\
+	\end{array} \right]
+\]
+\saNote{} \textbf{On stack rows} all terms in sight are binary; the above therefore computes the logical \OR{} of both self-revert conditions; its value is binary.
+\begin{enumerate}
+	\item \If $\locSelfRevertTrigger_{i} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\cnSelfRev_{i}  & \!\!\! = \!\!\! & 1             \\
+				\cnRevStamp_{i} & \!\!\! = \!\!\! & \hubStamp_{i} \\
+			\end{array} \right.
+		\]
+	\item \If 
+		\[
+			\left\{ \begin{array}{lclr}
+				\stackDecHaltFlag_{i}          & \!\!\! = \!\!\! & 1 \\
+				\locSelfRevertTrigger_{i} & \!\!\! = \!\!\! & 0 \\
+			\end{array} \right.
+		\]
+		\Then $\cnSelfRev_{i} = 0$;
+\end{enumerate}
+\saNote{} Given that the present row is a stack-row ($\peekStack_{i} = 1$) we have $\stackDecHaltFlag_{i} \cdot \decFlag{2}_{i} \in \{0, 1\}$ with 
+(\emph{a})
+an exception occurred (and/) or
+(\emph{b})
+the the current instruction is a \inst{REVERT}.

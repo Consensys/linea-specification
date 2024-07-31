@@ -1,0 +1,42 @@
+The $\ecdataTotalSize$ varies depending on the precompile, if data or results are considered and whether the call is successful (if it fails, $\ecdataTotalSize = 0$). In the case of $\inst{ECPAIRING}$, the total size is influenced by the number of pairings.
+
+We define the following module constants
+\[
+    \left\{ \begin{array}{lcl}
+        \totalSizeEcrecoverData    & \!\!\! \define \!\!\! & \redm{128} \\
+        \totalSizeEcaddData        & \!\!\! \define \!\!\! & \redm{128} \\
+        \totalSizeEcmulData        & \!\!\! \define \!\!\! & \redm{96}  \\
+        \totalSizeEcpairingDataMin & \!\!\! \define \!\!\! & \redm{192} \\
+        \totalSizeEcrecoverResult  & \!\!\! \define \!\!\! & \redm{32}  \\
+        \totalSizeEcaddResult      & \!\!\! \define \!\!\! & \redm{64}  \\
+        \totalSizeEcmulResult      & \!\!\! \define \!\!\! & \redm{64}  \\
+        \totalSizeEcpairingResult  & \!\!\! \define \!\!\! & \redm{32}  \\
+    \end{array} \right.
+\]
+Thus we impose the following constraints:
+\[
+    \ecdataTotalSize _{i}
+    =
+    \left[ \begin{array}{crcccl}
+        + & \isEcrecoverData   _{i} & \cdot & \totalSizeEcrecoverData    \\
+        + & \isEcaddData       _{i} & \cdot & \totalSizeEcaddData        \\
+        + & \isEcmulData       _{i} & \cdot & \totalSizeEcmulData        \\
+        + & \isEcpairingData   _{i} & \cdot & \totalSizeEcpairingDataMin  & \cdot & \totalPairings    _{i} \\
+        + & \isEcrecoverResult _{i} & \cdot & \totalSizeEcrecoverResult   & \cdot & \ecdataSuccessBit _{i} \\
+        + & \isEcaddResult     _{i} & \cdot & \totalSizeEcaddResult       & \cdot & \ecdataSuccessBit _{i} \\
+        + & \isEcmulResult     _{i} & \cdot & \totalSizeEcmulResult       & \cdot & \ecdataSuccessBit _{i} \\
+        + & \isEcpairingResult _{i} & \cdot & \totalSizeEcpairingResult   & \cdot & \ecdataSuccessBit _{i} \\
+    \end{array} \right]
+\]
+
+\saNote{} The above translates to the following:
+\begin{enumerate}
+    \item \If $\isEcrecoverData$   \Then $\ecdataTotalSize = \totalSizeEcrecoverData$
+    \item \If $\isEcaddData$       \Then $\ecdataTotalSize = \totalSizeEcaddData$
+    \item \If $\isEcmulData$       \Then $\ecdataTotalSize = \totalSizeEcmulData$
+    \item \If $\isEcpairingData$   \Then $\ecdataTotalSize = \totalSizeEcpairingDataMin \cdot \totalPairings$    % we provide it ... it's a little strange
+    \item \If $\isEcrecoverResult$ \Then $\ecdataTotalSize = \totalSizeEcrecoverResult \cdot \ecdataSuccessBit$
+    \item \If $\isEcaddResult$     \Then $\ecdataTotalSize = \totalSizeEcaddResult     \cdot \ecdataSuccessBit$
+    \item \If $\isEcmulResult$     \Then $\ecdataTotalSize = \totalSizeEcmulResult     \cdot \ecdataSuccessBit$
+    \item \If $\isEcpairingResult$ \Then $\ecdataTotalSize = \totalSizeEcpairingResult \cdot \ecdataSuccessBit$
+\end{enumerate}

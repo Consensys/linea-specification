@@ -1,0 +1,15 @@
+\begin{center}
+	\boxed{\text{All constraints in this section are written under the assumption } \peekStack_{i} = 1.}
+\end{center}
+We specify the \stackJumpDestinationVetting{} flag. The idea is that this flag should only light up for \inst{JUMP}-type instructions that
+(\emph{a}) don't produce a \suxSH{}
+(\emph{b}) don't produce an \oogxSH{}
+(\emph{c}) don't produce an ``out of bounds event'' (i.e. whenever the proposed new program counter \col{pnpc} satisfies $\col{pnpc} \geq \col{code\_size}$.)
+The constraints are as follows:
+\begin{enumerate}
+	\item \stackJumpDestinationVetting{} is binary ~ (\trash);
+	\item \If $\stackDecJumpFlag_{i} = 0$ \Then $\stackJumpDestinationVetting_{i} = 0$;
+	\item \If $\stackSux_{i} + \stackSox_{i} + \stackOogx_{i} \neq 0$ \Then $\stackJumpDestinationVetting_{i} = 0$;
+	\item \If $\stackDecJumpFlag_{i} = 1$ \Then see section~(\ref{hub: instruction handling: jump});
+\end{enumerate}
+For the remaining case ``\If \Big($\stackDecJumpFlag_{i} = 1$ \et $\stackSux_{i} + \stackSox_{i} + \stackOogx_{i} = 0$\Big)'' see section~(\ref{hub: instruction handling: jump}).

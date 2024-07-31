@@ -1,0 +1,37 @@
+Consider a row permutation $\col{X}\rightsquigarrow\order{\col{X}}$ with the property that the row-permuted pair of columns
+\[
+	\Big( \order{\cn} , \order{\hubStamp} \Big)
+\]
+has its entries $(+,+)$-lexicographically ordered. We require that the following constraints hold:
+\begin{description}
+	\item[Constancy constraints:] 
+		\If $\order{\cn}_{i} \neq 0$ \et $\order{\cn}_{i + 1} = \order{\cn}_{i}$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\order{\cfi          } _{i + 1} & \!\!\! = \!\!\! & \order{\cfi        } _{i} \\
+				\order{\caller       } _{i + 1} & \!\!\! = \!\!\! & \order{\caller     } _{i} \\
+				\order{\cnWillRev    } _{i + 1} & \!\!\! = \!\!\! & \order{\cnWillRev  } _{i} \\
+				\order{\cnGetsRev    } _{i + 1} & \!\!\! = \!\!\! & \order{\cnGetsRev  } _{i} \\
+				\order{\cnSelfRev    } _{i + 1} & \!\!\! = \!\!\! & \order{\cnSelfRev  } _{i} \\
+				\order{\cnRevStamp   } _{i + 1} & \!\!\! = \!\!\! & \order{\cnRevStamp } _{i} \\
+			\end{array} \right.
+		\]
+	\item[Linking constraints:] 
+		\If $\order{\cn}_{i} \neq 0$ \et $\order{\cn}_{i + 1} = \order{\cn}_{i}$ \et $\order{\hubStamp}_{i + 1} \neq \order{\hubStamp}_{i}$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\order{\pc           } _{i + 1} & \!\!\! = \!\!\! & \order{\pc\new     } _{i} \\
+				\order{\height       } _{i + 1} & \!\!\! = \!\!\! & \order{\height\new } _{i} \\
+				\order{\gasExpected  } _{i + 1} & \!\!\! = \!\!\! & \order{\gasNext    } _{i} \\
+			\end{array} \right.
+		\]
+	\item[Initialization constraints:] 
+		\If $\order{\cn}_{i + 1} \neq \order{\cn}_{i}$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\order{\pc           } _{i + 1} & \!\!\! = \!\!\! & 0 \\
+				\order{\height       } _{i + 1} & \!\!\! = \!\!\! & 0 \\
+			\end{array} \right.
+		\]
+\end{description}
+The above enforces that a given execution context always runs the same code (same address, same deployment number and same deployment status), that its caller context remains constant throughout, and that the data indicating whether or not it will revert (and if so whether it is self induced and/or inherited from a parent context reverting) and at what point in time a revert may trigger --- that all this be constants of the execution context.

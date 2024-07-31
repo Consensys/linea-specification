@@ -1,0 +1,56 @@
+\begin{center}
+\boxed{\text{All constraints in this subsection assume that $\locAbs_{i} \neq 0$.}}
+\end{center}
+We constrain the gas columns.
+\begin{enumerate}
+	\item We constrain the intrinsic gas:
+	\[
+		\begin{array}{lcl}
+			\txInitialGasCost_{i} & \!\!\! = \!\!\! & \phantom{+} ~ \txDataCost_{i}  \vspace{1mm} \\
+			& & + ~ \, G_{\text{transaction}}                                        \vspace{1mm} \\
+			& & + ~ \txIsDeployment_{i} \cdot G_{\text{txcreate}}                           \vspace{1mm} \\
+			& & + ~ \relTxPrewarmAddr \cdot G_{\text{accesslistaddress}}             \vspace{1mm} \\
+			& & + ~ \relTxPrewarmKeys \cdot G_{\text{accessliststorage}}                          \\
+		\end{array} 
+	\]
+	\item We constrain the initial gas available in the transaction:
+	\[
+		\txInitialGas_{i}
+		=
+		\txGasLimit_{i} - \txInitialGasCost_{i}
+	\]
+\end{enumerate}
+Where
+\[
+\left\{
+\begin{array}{lcr}
+	G_\text{transaction} 		& \!\!\! = \!\!\! & 21\,000 \\
+	G_\text{create} 			& \!\!\! = \!\!\! & 32\,000 \\
+	G_\text{accesslistaddress}	& \!\!\! = \!\!\! & 2\,400 \\
+	G_\text{accessliststorage}	& \!\!\! = \!\!\! & 1\,900 \\
+\end{array}
+\right.
+\]
+and
+$\txInitialGasCost$,
+$\relTxPrewarmAddr$,
+$\relTxPrewarmKeys$
+are justified elsewhere.
+
+We now justify the cumulative gas column.
+\begin{enumerate}
+	\item \If $\block_{i - 1} \neq \block_{i}$ \Then
+	\[
+	\txCumulativeConsumedGas_{i}
+	=
+	\txCumulativeConsumedGas_{i - 1}
+	+
+	(\txGasLimit_{i} - \txEffectiveRefund_{i})
+	\]
+	\item \If $\block_{i - 1} = \block_{i}$ \Then
+	\[
+	\txCumulativeConsumedGas_{i}
+	=
+	\txGasLimit_{i} - \txEffectiveRefund_{i}
+	\]
+\end{enumerate}

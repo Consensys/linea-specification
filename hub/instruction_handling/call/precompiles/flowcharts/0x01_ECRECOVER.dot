@@ -1,0 +1,172 @@
+# http://www.graphviz.org/content/cluster
+
+digraph G {
+
+  node [fontname = "Handlee"];
+  node [shape=plaintext];
+  edge [fontname = "Handlee"];
+
+  precompiles [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
+    <TR>
+    <TD><FONT POINT-SIZE="40"> ECRECOVER <BR/> ECADD <BR/> ECMUL <BR/> ECPAIRING </FONT></TD>
+    </TR>
+    </TABLE>>];
+  insufficient_gas [
+    label = "\nInsufficient\ngas exception\n ";
+  shape = diamond;
+  style = filled;
+  fillcolor = "ORANGE";
+  color = "RED";
+  ];
+  malformed_data [
+    label = "\nMalformed\ndata\n ";
+  shape = diamond;
+  style = filled;
+  fillcolor = "yellow";
+  color = "ORANGE";
+  ];
+  success [
+    label = "\nSuccess\n ";
+  shape = rect;
+  style = filled;
+  fillcolor = "LIGHTGREEN";
+  color = "GREEN";
+  ];
+
+  {
+    rank=same;
+    insufficient_gas; insufficient_gas_rows;
+  }
+  {
+    rank=same;
+    malformed_data; malformed_data_rows;
+  }
+  {
+    rank=same;
+    success; success_rows;
+  }
+
+  precompiles      -> insufficient_gas;
+  insufficient_gas -> insufficient_gas_rows;
+  insufficient_gas -> malformed_data;
+  malformed_data   -> malformed_data_rows;
+  malformed_data   -> success;
+  success -> success_rows;
+
+insufficient_gas_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>j</TD>
+    <TD BGCOLOR="SALMON">SCN</TD>
+    <TD BGCOLOR="SALMON" COLSPAN="2">CREATE/EXCEPTION</TD>
+  </TR>
+  <TR>
+    <TD>j + 1</TD>
+    <TD>MISC</TD>
+    <TD></TD>
+    <TD> OOB🏴 = <B>1</B>, OOB_EVENT = <FONT COLOR="RED"><B>1</B></FONT> </TD>
+  </TR>
+  <TR>
+    <TD>j + 2</TD>
+    <TD>Con</TD>
+    <TD>parent</TD>
+    <TD COLSPAN="1">Caller: update return data &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+malformed_data_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>j</TD>
+    <TD BGCOLOR="SALMON">SCN</TD>
+    <TD BGCOLOR="SALMON" COLSPAN="2">CREATE/EXCEPTION</TD>
+  </TR>
+  <TR>
+    <TD>j + 1</TD>
+    <TD>MISC</TD>
+    <TD></TD>
+    <TD>
+    	OOB🏴 = <B>1</B>, OOB_EVENT = <FONT COLOR="GREEN"><B>0</B></FONT> <BR/>
+	MMU🏴 = <B>1</B>, extractXxxData; INFO = <FONT COLOR="RED"><B >1</B></FONT>;
+    </TD>
+  </TR>
+  <TR>
+    <TD>j + 2</TD>
+    <TD>Con</TD>
+    <TD>parent</TD>
+    <TD COLSPAN="1">Caller: update return data &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+success_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>j</TD>
+    <TD BGCOLOR="SALMON">SCN</TD>
+    <TD BGCOLOR="SALMON" COLSPAN="2">CREATE/EXCEPTION</TD>
+  </TR>
+  <TR>
+    <TD>j + 1</TD>
+    <TD>MISC</TD>
+    <TD></TD>
+    <TD>
+    	OOB🏴 = <B>1</B>, OOB_EVENT = <FONT COLOR="GREEN"><B>0</B></FONT> <BR/>
+	MMU🏴 = <B>1</B>, extractXxxData; INFO = <FONT COLOR="GREEN"><B >0</B></FONT>;
+    </TD>
+  </TR>
+  <TR>
+    <TD>j + 2</TD>
+    <TD>MISC</TD>
+    <TD></TD>
+    <TD> MMU🏴 = <B>1</B>, copyXxxResult </TD>
+  </TR>
+  <TR>
+    <TD>j + 3</TD>
+    <TD>MISC</TD>
+    <TD></TD>
+    <TD> MMU🏴 = <B>[R@C &ne; 0]</B>, transferXxxResult; <I>iff</I> ; </TD>
+  </TR>
+  <TR>
+    <TD>j + 4</TD>
+    <TD>Con</TD>
+    <TD>parent</TD>
+    <TD COLSPAN="1">Caller: update return data &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← <B>RDO</B>,  <B>RDS</B> </TD>
+  </TR>
+</TABLE>>];
+
+}
+

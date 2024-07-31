@@ -1,0 +1,34 @@
+The purpose of the paragraph below is for us to transition from proofs $\pi$ to traces $\fullTrace$.
+
+Proofs of \zkEvm{} execution are built using polynomial commitment schemes. The prover is supposed to commit to large matrices, and the proof verifies that they satisfy specific constraints. Given a \textbf{valid} \zkEvm{} proof $\pi$ transitioning the \zkEvm{} from a valid initial state to some other state it seems reasonable to conclude that, unless some cryptographic assumptions are broken:
+\begin{description}
+	\item[\quad \underline{Underlying valid trace assumption:}] take on faith that 
+		\begin{description}
+			\item[\quad Trace existence:] $\pi$ was constructed from an underlying trace \fullTrace{};
+			\item[\quad Constraint satisfaction:] this trace should be a solution to the \zkEvm{} constraint system; 
+			\item[\quad Size bounds:] this trace should satisfy appropriate (verifier circuit imposed) size bounds; 
+		\end{description}
+\end{description}
+These propositions should be consequences of the following facts: 
+(\emph{a})
+proofs are built on top of \textbf{polynomial commitment schemes} and likely require random openings from which \textbf{knowledge}, and existence in particular, of an underlying trace object \fullTrace{} should follow
+(\emph{b})
+standard arguments based on randomized openings and collisions (i.e. Schwartz-Zippel etc\dots{}) say that unless constraints are satisfied, the proof shouldn't go through,
+(\emph{c})
+prover circuits have limited capacity (so-called \textbf{limits}) from which size bounds should follow.
+
+The \zkEvm{} constraint system $\fullConstraints$ is made of autonomous constraint systems (i.e. \textbf{modules} \moduleName{}) that apply to associated traces and lookup arguments to transfer data from one place to another. Traces that are accepted $\fullTrace$ have the following form:
+\[ \fullTrace \equiv (\moduleTrace_{\moduleName})_{\moduleName \in \modules} \]
+We continue deducing reasonable consequences for the underlying traces:
+\begin{description}
+	\item[\quad \underline{Well formedness assumption:}] \fullTrace{} should be a collection of matrices with coefficients in the arithmetization's prime field $\mathbb{F}$ and having the right format:
+		\begin{description}
+			\item[\quad Depth:] all columns within a give module have the same depth;
+			\item[\quad Width:] the number of columns in $\moduleTrace_{\moduleName}$ is determined by the module $\moduleName$ and coincides with that from the relevant module specification\footnote{alternatively: that produced by Corset after trace expansion; though using this as our starting point is undesirable since it depends on implementation details of Corset wrt how it performs trace expansion etc\dots{}};
+			\item[\quad Identification:] we have, for every module $\moduleName$ a one-to-one mapping from the columns between the columns of $\moduleTrace_\moduleName$ and those in the specification which is compatible with the associated constraints;
+		\end{description}
+\end{description}
+In any case, we may as well take these hypothesis for granted, otherwise we wouldn't get very far.
+
+
+

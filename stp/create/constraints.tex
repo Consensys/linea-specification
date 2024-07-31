@@ -1,0 +1,63 @@
+\[
+	\boxed{\text{The constaints below assume that }
+	\begin{cases}
+		\stpStamp_{i} \neq \stpStamp_{i - 1} \\
+		\isCreate_{i} =    1                 \\
+	\end{cases} }
+\]
+
+The present section defines the layout of the data to be used in the lookups to the \wcpMod{} and \modMod{} for \inst{CREATE}-type instructions. The resulting values of the computation are sufficient to justify the \gasStipend{} column. We refer the reader to the explanation and diagrams from section~(\ref{stp: lookups: create rep})
+\begin{description}
+	\item[\underline{Row n$°i$:}] we ensure that $\gasActual_{i} \geq 0$:
+		\[
+			\left\{\begin{array}{lclc}
+				\wcpLookupFlag_{i} & = & 1 \\
+				\divLookupFlag_{i} & = & 0 & (\trash) \\
+				\argOneHi_{i}      & = & 0 \\
+				\argOneLo_{i}      & = & \locGasActl \\
+				\argTwoLo_{i}      & = & 0 \\
+				\resLo_{i}         & = & \zeroRes \\
+				\exoInst_{i}       & = & \inst{LT} \\
+			\end{array}\right.
+		\]
+	\item[\underline{Row n$°(i + 1)$:}] we establish \oogx:
+		\[
+			\left\{\begin{array}{lclc}
+				\wcpLookupFlag_{i + 1} & = & 1 \\
+				\divLookupFlag_{i + 1} & = & 0 & (\trash) \\
+				\argOneHi_{i + 1}      & = & 0 \\
+				\argOneLo_{i + 1}      & = & \locGasActl \\
+				\argTwoLo_{i + 1}      & = & \locGasUpfrontCreate \\
+				\resLo_{i + 1}         & = & \locOogx \\
+				\exoInst_{i + 1}       & = & \inst{LT} \\
+			\end{array}\right.
+		\]
+		\saNote{} These constraints indeed establish $\oogx$ since by construction:
+		\begin{IEEEeqnarray*}{LCLCL}
+			\locOogx = 1
+			& \iff & \locGasActl    & < & \locGasUpfrontCreate            \\
+		\end{IEEEeqnarray*}
+\end{description}
+These constitute the preliminary gas checks. The constraints below assume that no \oogxSH{} has occurred:
+\[
+	\boxed{\text{The constaints below further assume that } \locOogx = 0.}
+\]
+\begin{description}
+	\item[\underline{Row n$°(i + 2)$:}] we impose the following:
+		\[
+			\left\{\begin{array}{lclr}
+				\wcpLookupFlag_{i + 2} & = & 0 & (\trash) \\
+				\divLookupFlag_{i + 2} & = & 1 \\
+				\argOneHi_{i + 2}      & = & 0 \\
+				\argOneLo_{i + 2}      & = & \locDiff  \\
+				\argTwoLo_{i + 2}      & = & 64 \\
+				\exoInst_{i + 2}       & = & \inst{DIV} \\
+			\end{array}\right.
+		\]
+		In case of no \oogxSH{} (i.e. $\oogx_{i} = 0$) these constraints compute
+		\[
+			\underbrace{\phantom{\Big|}\locOneSixtyFourth\phantom{\Big|}}_{\displaystyle = \resLo_{i + 2}}
+			=
+			\left\lfloor\frac{\locDiff}{64}\right\rfloor
+		\]
+\end{description}

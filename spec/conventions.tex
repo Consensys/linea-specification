@@ -1,0 +1,34 @@
+Throughout the document we use a number of notational conventions which we explain here. These conventions apply to column names and are meant to clarify the origin and purpose of certain columns within a given trace. Others should be viewed as constructors which define new columns from existing ones.
+
+\paragraph{Module stamps.} Module stamps count calls to a given module; most modules have a single stamp though the hub and ALU have several. Stamp columns are adorned with a $\stamp$, thus the $\stoStamp$ is the module stamp of the storage module. Module stamps are typically computed/updated in the hub module whose main purpose is to dispatch (paid for an otherwise valid) instructions to the module(s) that are equipped to carry them out. Associating a unique identifier (i.e. stamp) to such ``module-calls'' is crucial when the order of operations matters. This is the case for instructions pertaining to (address) warmth (i.e. the \wrmMod{} module), required gas computations (i.e. \gasMod{}), RAM (i.e. \mmuMod{} and \ramMod{}), the stack (i.e. \hubMod{}), storage (i.e. \stoMod{}), $\dots{}$ to cite a few. Stateless modules such as the modules handling arithmetic (i.e. the \aluMod{} module), binary (i.e. \binMod{}) or word comparison (i.e. \wcpMod{}) opcodes don't \emph{require} a time stamp \emph{per se} yet are given one nonetheless.
+
+\paragraph{Imported columns.} Angular parentheses $\langle\,\cdots\rangle$
+signal columns whose contents are \textbf{imported} from other modules by
+means of a lookup argument. By way of example: all
+modules\footnote{which are connected to the hub} import their module stamp from the hub. 
+Modules tasked with executing certain opcodes will typically import values from the stack
+(e.g. pairs of stack values $\isValHi{k}, \isValLo{k}$, for various $k\in\{1,2,3,4\}$.)
+Many modules also imports values that aren't borrowed from the stack.
+E.g. the hub module imports the instruction $\iInst{}$ from the ROM,
+e.g. the \gasMod{} module imports the current, new and endowment gas values
+($\gasCur$, $\gasNew$  and $\gasEnd$ respectively) from the hub, e.g. the \oobMod{}
+module imports execution context dependent data such exception flags,
+the size of return data $\iRds{}$, the size of call data $\iCds$ or the code
+size $\iCodeSize$.
+
+\paragraph{Decoded columns.} A particular case of the above arises with \textbf{decoded columns}. Those are columns whose contents are extracted from a hardcoded collection of columns using a lookup argument. They are adorned with a lozenge as in $\decoded{\col{COL}}$. By way of example: the hub contains various instruction decoded flag columns but also a $\PATTERN$ column whose contents are deduced from an immutable reference table called the \textbf{instruction decoder}. Similarly the binary module imports the results of binary operations performed on pairs of bytes (and injects the relevant one into the result.)
+
+\paragraph{Flag columns.} Among the instruction decoded columns on finds various binary flags columns (e.g. $\decAluFlag$, $\decMmuFlag$, $\decExpFlag$, $\dots{}$). These serve several purposes. The first is to provide an \emph{indication} as to when modules \emph{may} be sollicited by the hub to carry out an instruction. Thus arithmetic instructions raise the $\decAluFlag$, instructions that involve the RAM raise the $\decMmuFlag$ etc $\dots$ Other flags trigger particular behaviours. For instance the $\pushFlag$ and the $\jumpFlag$ trigger the expected behaviour of the program counter in the hub.
+
+\paragraph{Module selector columns.} When an instruction raises an instruction flag the associated module \emph{may} get triggered. The actual trigger is usually deduced form this flag and exception flags. Such columns are tagged with a $\select$ symbol
+
+\paragraph{Interleaved columns.} Certain arguments require us to merge columns of the same size into a single column. We use $\cc$ to signify the formation of such interleaved columns. E.g. starting with columns $\col{A}$, $\col{B}$ and $\col{C}$ of size $n$ we may form the column $\col{X} := \col{A}\cc\col{B}\cc\col{C}$ defined as having length $3n$ and values
+\[
+	\begin{cases}
+		\col{X}_{3\cdot i + 0} = \col{A}_{i} \\
+		\col{X}_{3\cdot i + 1} = \col{B}_{i} \\
+		\col{X}_{3\cdot i + 2} = \col{C}_{i} \\
+	\end{cases}
+\]
+
+\paragraph{Row permutations.} Our arithmetization requires row permutation arguments. These usually take the following form: we are given a small family of reference columns $\col{REF}_1,\dots,\col{REF}_p$ of equal size $n$ (which we view as the columns of a $n\times p$ reference matrix $\col{REF}$). We are further given the description of an essentially unique permutation of the set $\{0,1,\dots,n-1\}$ of rows indices, e.g. ``(the essentially unique) row permutation of the matrix $\col{REF}$ under which its rows appear lexicographically sorted''. We then write $\col{AUX}_j\mapsto\order{\col{AUX}_j}$ for the mapping which takes an arbitrary column of the same size and applies the aforementioned row permutation to its rows.

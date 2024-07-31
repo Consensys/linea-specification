@@ -1,0 +1,72 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below assume that }
+		\left\{ \begin{array}{lcl}
+			\peekScenario     _{i}      & = & 1 \\
+			\scenIdentity     _{i}      & = & 1 \\
+			\scenPrcSuccess   _{i}      & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+We are thus (again) assuming that the present row is the first of the second phase of dealing with the 
+\inst{IDENTITY} precompile.
+However, this time we are also assuming that $\scenPrcSuccess \equiv 1$.
+\begin{description}
+	\item[\underline{Miscellaneous-row $n^°(i + \prcStandardSuccessSecondMiscRowOffset)$:}]
+		\begin{description}
+			\item[\underline{Setting lookup flags:}]
+				we impose
+				\[
+					\weightedMiscFlagSum
+					{i}{\prcStandardSuccessSecondMiscRowOffset}
+					=
+					\miscMmuWeight
+					\cdot
+					\left[ \begin{array}{cl}
+						\cdot & \locOobResultExtractCallData \\
+						\cdot & \locOobResultNonzeroRac      \\
+					\end{array} \right]
+				\]
+				in other words:
+				\[
+					\left\{ \begin{array}{lclr}
+						\miscExpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                                                     & (\trash) \\
+						\miscMmuFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locOobResultExtractCallData \cdot \locOobResultNonzeroRac & (\trash) \\
+						\miscMxpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \rZero                                                     & (\trash) \\
+						\miscOobFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                                                     & (\trash) \\
+						\miscStpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                                                     & (\trash) \\
+					\end{array} \right.
+				\]
+				\saNote{} In other words the ``partial data copy'' step of a call to the \inst{IDENTITY} is only required if the call is
+				(\emph{a}) successful (i.e. is given sufficient gas)
+				(\emph{b}) provided with nonempty call data
+				(\emph{c}) provided with nonzero \rac{}.
+				Recall that the first two points are equivalent to $\locOobResultExtractCallData \equiv 1$.
+			\item[\underline{\mmuMod{} data:}]
+				\If $\miscMmuFlag_{i + \prcStandardSuccessSecondMiscRowOffset} = 1$ \Then we impose
+				\[
+					\setMmuInstructionParametersRamToRamSansPadding {
+						anchorRow       = i                                      ,
+						relOffset       = \prcStandardSuccessSecondMiscRowOffset ,
+						sourceId        = 1 + \hubStamp_{i}                      ,
+						targetId        = \cn_{i}                                ,
+						sourceOffsetLo  = 0                                      ,
+						size            = \locPrcCds                             ,
+						referenceOffset = \locPrcRao                             ,
+						referenceSize   = \locPrcRac                             ,
+						}
+				\]
+		\end{description}
+	\item[\underline{Context-row $n^°(i + \prcStandardSuccessThirdMiscRowOffset)$:}] 
+		we impose \
+		\[
+			\provideReturnData {
+				anchorRow          = i                                            ,
+				relOffset          = \prcIdentitySuccessCallerContextRowRowOffset ,
+				returnDataReceiver = \cn_{i}                                      ,
+				returnDataProvider = 1 + \hubStamp_{i}                            ,
+				returnDataOffset   = 0                                            ,
+				returnDataSize     = \locPrcCds                                   ,
+			}
+		\]
+\end{description}

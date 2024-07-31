@@ -1,0 +1,42 @@
+The purpose of the \cnWillRev{} flag is to record whether or not the current context will revert or not, either because its parent reverts or because it reverts on its own (or possibly both.)
+In other words we wish to enforce that
+\[
+	\Big[\cnWillRev = 1\Big]
+	\iff
+	\Big[ \cnGetsRev = 1 \Big] \vee
+	\Big[ \cnSelfRev = 1 \Big].	
+\]
+The constraints are as follows:
+\begin{enumerate}
+	\item the following columns are binary
+		\begin{multicols}{3}
+			\begin{enumerate}
+				\item \cnWillRev{} \quad(\trash)
+				\item \cnGetsRev{}
+				\item \cnSelfRev{}
+			\end{enumerate}
+		\end{multicols}
+	\item \If $\txExec_{i} = 0$ \Then 
+		\[
+			\left[ \begin{array}{cl}
+				+ & \cnGetsRev_{i} \\
+				+ & \cnSelfRev_{i} \\
+			\end{array} \right]
+			= 0
+		\]
+	\item we unconditionnally impose
+		\[
+			\cnWillRev_{i} =
+			\left[ \begin{array}{cl}
+				+ & \cnGetsRev_{i}                      \\
+				+ & \cnSelfRev_{i}                      \\
+				- & \cnGetsRev_{i} \cdot \cnSelfRev_{i} \\
+			\end{array} \right]
+		\]
+	\item \If $\cnWillRev_{i} = 0$ \Then $\cnRevStamp_{i} = 0$
+\end{enumerate}
+\saNote{} Binaryness of
+\cnGetsRev{},
+\cnSelfRev{} and
+\cnWillRev{}
+entails the desired property for \cnWillRev{}.

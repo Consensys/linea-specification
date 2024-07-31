@@ -1,0 +1,71 @@
+code to deploy:
+===============
+
+	PUSH1 0x00
+	CALLDATALOAD
+	SELFDESTUCT
+
+	==> 0x600035ff
+
+init code:
+==========
+
+	PUSH4 	0x600035ff
+	PUSH1	0xe0 			[0xe0 = 8 * 28, 38 = 32 - 4, 4 from PUSH4]
+	SHL
+	PUSH1	0x00
+	MSTORE					[mem = 0x60 00 35 ff 00 00 00 00 ...]
+	PUSH1 	0x04
+	PUSH1 	0x00
+	RETURN
+
+	==> 0x 63 60 00 35 ff 60 e0 1b 60 00 52 60 04 60 00 f3
+
+PUSH16		0x63600035ff60e01b60005260046000f3
+PUSH1 		0x80
+SHL
+PUSH1 		0x00
+MSTORE
+
+PUSH1 0x10 		// init code size
+PUSH1 0x00 		// init code offset
+PUSH1 0x10		// value
+CREATE
+
+DUP1
+BALANCE
+
+DUP2
+EXTCODEHASH
+
+DUP3
+EXTCODESIZE
+
+DUP4
+
+PUSH1 0x00 		// rds
+PUSH1 0x00 		// rdo
+PUSH1 0x10		// cds
+PUSH1 0x00 		// cdo
+PUSH1 0x10		// value
+DUP6			// address
+PUSH2 0xffff	// gas
+
+// stack now = | addr | 0 | 0 | 16 | 0 | 16 | addr | 0xffff ]
+
+CALL
+
+// stack now = | addr | 1 ]
+
+POP
+
+DUP1
+BALANCE
+
+DUP2
+EXTCODEHASH
+
+DUP3
+EXTCODESIZE
+
+Running this on the [evm.codes playground](https://www.evm.codes/playground) produces the following stack

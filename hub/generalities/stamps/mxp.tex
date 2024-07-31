@@ -1,0 +1,7 @@
+The \mxpSTAMP{} (abbreviated to \mxpStamp{}) keeps a running tally of all the times a (potentially) memory expanding instruction was carried out and required a call to the \mxpMod{} module. The present section lays down some general constraints for the \mxpStamp{}. We mostly specify when \emph{not} to increment it.
+\begin{enumerate}
+	\item $\mxpStamp_{0} = 0$;
+	\item $\mxpStamp_{i + 1} \in \{ \mxpStamp_{i}, 1 + \mxpStamp_{i} \}$ (\trash)
+	\item $\mxpStamp_{i} = \mxpStamp_{i - 1} + \peekMisc_{i} \cdot \miscMxpFlag_{i}$
+\end{enumerate}
+In other words, the only time the \mxpStamp{} \emph{may} change is when dealing with a memory expansion inducing instruction that isn't squashed by a \suxSH{} or \soxSH{}. The precise conditions which lead to an increment in $\mxpStamp$ will be dealt with in a case by case fashion in section~\ref{hub: classifiers}.

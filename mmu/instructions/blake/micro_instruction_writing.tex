@@ -1,0 +1,44 @@
+\begin{center}
+	\boxed{%
+		\text{The pre-processing presented below assumes that }
+		\left\{ \begin{array}{lcl}
+			\isMacro          _{i} & = & 1 \\
+			\mmuInstFlagBlake _{i} & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+We now do the initialization of the micro-instruction-writing phase.
+\begin{description}
+	\item[First micro-instruction-writing-row:] \label{mmu: instructions: exoToRamTransplants: initialize: slo and tlo is initially 0}
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst        _{i + \nppMmuInstBlakeValuePO} & = & \locFirstMicroInst  \\
+				\microSize        _{i + \nppMmuInstBlakeValuePO} & = & 4                   \\
+				\microSlo         _{i + \nppMmuInstBlakeValuePO} & = & \locSloBlakeR       \\
+				\microSbo         _{i + \nppMmuInstBlakeValuePO} & = & \locSboBlakeR       \\
+				\microTlo         _{i + \nppMmuInstBlakeValuePO} & = & 0                   \\
+				\microTbo         _{i + \nppMmuInstBlakeValuePO} & = & \llarge - 4         \\
+				\microLimb        _{i + \nppMmuInstBlakeValuePO} & = & \locPredictedBlakeR \\
+			\end{array} \right.
+		\]
+		where we define the shorthand \locFirstMicroInst{} as follows:
+		\begin{enumerate}
+			\item \If $\locSingleSourceBlakeR = 0$ \Then $\mmioInstRamToLimbTwoSource$
+			\item \If $\locSingleSourceBlakeR = 1$ \Then $\mmioInstRamToLimbOneSource$
+		\end{enumerate}
+	\item[Second micro-instruction-writing-row:] \label{mmu: instructions: exoToRamTransplants: initialize: slo and tlo is initially 0}
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst        _{i + \nppMmuInstBlakeValuePT} & = & \mmioInstRamToLimbOneSource \\
+				\microSize        _{i + \nppMmuInstBlakeValuePT} & = & 1                                 \\
+				\microSlo         _{i + \nppMmuInstBlakeValuePT} & = & \locSloBlakeF                     \\
+				\microSbo         _{i + \nppMmuInstBlakeValuePT} & = & \locSboBlakeF                     \\
+				\microTlo         _{i + \nppMmuInstBlakeValuePT} & = & 1                                 \\
+				\microTbo         _{i + \nppMmuInstBlakeValuePT} & = & \llarge - 1                       \\
+				\microLimb        _{i + \nppMmuInstBlakeValuePT} & = & \locPredictedBlakeF               \\
+			\end{array} \right.
+		\]
+\end{description}
+\saNote{} The target limb offsets are required as they will be set to the exogenous data limb offsets.

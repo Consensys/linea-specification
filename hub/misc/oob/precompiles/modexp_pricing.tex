@@ -1,0 +1,35 @@
+\saNote{} The $\setOobInstructionModexpPricingName _{i} \big[~\relof~\big]$ constraints may only be used on rows with row index $i + \relof$ that are \textbf{miscellaneous-rows}.
+\[
+        \left\{ \begin{array}{l}
+                \setOobInstructionModexpPricing {
+                        anchorRow        = i               ,
+                        relOffset        = \relof          ,
+                        callGas          = \locCallGas     ,
+                        returnAtCapacity = \locRac         ,
+                        exponentLog      = \locExponentLog ,
+                        maxMbsBbs        = \locMaxMbsBbs   ,
+                        }
+                % \setOobInstructionModexpPricing {\relof} _{i}
+                % \left[ \begin{array}{ll}
+                %         \utt{Call gas:}           & \locCallGas     \\
+                %         \utt{Return at capacity:} & \locRac         \\
+                %         \utt{Exponent log:}       & \locExponentLog \\
+                %         \utt{Max(mbs, bbs):}      & \locMaxMbsBbs   \\
+                % \end{array} \right]
+                \vspace{2mm} \\
+                \qquad \qquad \define
+                \setOobInstruction{i}
+                \left[ \begin{array}{llr}
+                        \multicolumn{3}{l}{\utt{\oobMod{} instruction:} \quad \oobInstModexpPricing} \\
+                        \multicolumn{3}{l}{\utt{Rel. row offset:}            \quad \relof}         \vspace{2mm} \\
+                        \utt{Data 1:} & \locCallGas      \\
+                        \utt{Data 2:} & \nothing         \\
+                        \utt{Data 3:} & \locRac          \\
+                        \utt{Data 4:} & \locRamSuccess   & \prediction \\
+                        \utt{Data 5:} & \locReturnGas    & \prediction \\
+                        \utt{Data 6:} & \locExponentLog  \\
+                        \utt{Data 7:} & \locMaxMbsBbs    \\
+                        \utt{Data 8:} & \locRacIsNonzero & \prediction \\
+                \end{array} \right] \\
+        \end{array} \right.
+\]

@@ -1,0 +1,73 @@
+\makeatletter
+ 
+\define@cmdkey [MXP] {var} {anchorRow}            {}
+\define@cmdkey [MXP] {var} {relOffset}            {}
+\define@cmdkey [MXP] {var} {instruction}          {}
+\define@cmdkey [MXP] {var} {callDataOffsetHi}     {}
+\define@cmdkey [MXP] {var} {callDataOffsetLo}     {}
+\define@cmdkey [MXP] {var} {callDataSizeHi}       {}
+\define@cmdkey [MXP] {var} {callDataSizeLo}       {}
+\define@cmdkey [MXP] {var} {returnAtOffsetHi}     {}
+\define@cmdkey [MXP] {var} {returnAtOffsetLo}     {}
+\define@cmdkey [MXP] {var} {returnAtCapacityHi}   {}
+\define@cmdkey [MXP] {var} {returnAtCapacityLo}   {}
+
+
+\presetkeys    [MXP] {var} {
+	anchorRow          = \missingParameter,
+	relOffset          = \missingParameter,
+        instruction        = \missingParameter,
+        callDataOffsetHi   = \missingParameter,
+        callDataOffsetLo   = \missingParameter,
+        callDataSizeHi     = \missingParameter,
+        callDataSizeLo     = \missingParameter,
+        returnAtOffsetHi   = \missingParameter,
+        returnAtOffsetLo   = \missingParameter,
+        returnAtCapacityHi = \missingParameter,
+        returnAtCapacityLo = \missingParameter,
+}{}
+
+% misc/MXP instruction names
+\newcommand{\setMxpInstructionTypeOneName  }   {\texttt{setMxpInstructionType\_1}}
+\newcommand{\setMxpInstructionTypeTwoName  }   {\texttt{setMxpInstructionType\_2}}
+\newcommand{\setMxpInstructionTypeThreeName}   {\texttt{setMxpInstructionType\_3}}
+\newcommand{\setMxpInstructionTypeFourName }   {\texttt{setMxpInstructionType\_4}}
+\newcommand{\setMxpInstructionTypeFiveName }   {\texttt{setMxpInstructionType\_5}}
+
+% misc/MXP instructions
+\newcommand{\setMxpInstructionTypeOne}      [2]     {\setMxpInstructionTypeOneName   _{#1} \big[\;#2\;]}
+\newcommand{\setMxpInstructionTypeTwo}      [2]     {\setMxpInstructionTypeTwoName   _{#1} \big[\;#2\;]}
+\newcommand{\setMxpInstructionTypeThree}    [2]     {\setMxpInstructionTypeThreeName _{#1} \big[\;#2\;]}
+\newcommand{\setMxpInstructionTypeFour}     [2]     {\setMxpInstructionTypeFourName  _{#1} \big[\;#2\;]}
+\newcommand{\setMxpInstructionTypeFive}     [1]     {
+    \setkeys[MXP]{var}{#1}
+    \setMxpInstructionTypeFiveName _{\cmdMXP@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}                   & \cmdMXP@var@relOffset          \\
+        \utt{Instruction:}                  & \cmdMXP@var@instruction        \\
+        \utt{Call data offset high part:}   & \cmdMXP@var@callDataOffsetHi   \\
+        \utt{Call data offset low  part:}   & \cmdMXP@var@callDataOffsetLo   \\
+        \utt{Call data size high part:}     & \cmdMXP@var@callDataSizeHi     \\
+        \utt{Call data size low  part:}     & \cmdMXP@var@callDataSizeLo     \\
+        \utt{Return at offset high part:}   & \cmdMXP@var@returnAtOffsetHi   \\
+        \utt{Return at offset low  part:}   & \cmdMXP@var@returnAtOffsetLo   \\
+        \utt{Return at capacity high part:} & \cmdMXP@var@returnAtCapacityHi \\
+        \utt{Return at capacity low  part:} & \cmdMXP@var@returnAtCapacityLo \\
+    \end{array} \right]
+}
+
+\iffalse
+\setMxpInstructionTypeFive {
+    anchorRow          = ,
+    relOffset          = ,
+    instruction        = ,
+    callDataOffsetHi   = ,
+    callDataOffsetLo   = ,
+    callDataSizeHi     = ,
+    callDataSizeLo     = ,
+    returnAtOffsetHi   = ,
+    returnAtOffsetLo   = ,
+    returnAtCapacityHi = ,
+    returnAtCapacityLo = ,
+    }
+\fi

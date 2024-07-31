@@ -1,0 +1,292 @@
+\includepdf[fitpaper=true, pages={1}]{instruction_handling/call/precompiles/modexp/lua/success.pdf}
+
+\begin{center}
+	\boxed{%
+		\text{The constraints apply whenever }
+		\left\{ \begin{array}{lcl}
+			\peekScenario   _{i} & = & 1 \\
+			\scenModexp     _{i} & = & 1 \\
+			\scenPrcSuccess _{i} & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+At this point the \inst{MODEXP} call is known to be successful and it remains to
+(\emph{a}) potentially extract the base
+(\emph{b}) potentially extract the exponent
+(\emph{c}) potentially extract the modulus
+(\emph{d}) potentially transfer the output of the precompile to a dedicated execution context's \textsc{ram}
+(\emph{e}) potentially copy part of the ouput to the current exeuction context's \textsc{ram}.
+\begin{description}
+	\item[\underline{\underline{Miscellaneous row $n^°(i + \prcModexpSuccessExtractBaseRowOffset)$:}}]
+		the \zkEvm{} triggers the \oobMod{} instruction \oobInstModexpExtract{};
+		this instruction determines whether or not to extract the base, exponent and modulus;
+		this information finds itself in the (as of yet undefined) shorthands
+		\locExtractBase{}, \locExtractExponent{} and \locExtractModulus{};
+		furthermore it either extracts the base from \textsc{ram} or sets it to zero if the base byte size is zero;
+
+		\saNote{} There is no need to extract \textbf{anything} if the modulus doesn't get extracted (i.e. $\locExtractModulus \equiv 0$).
+		In this case the modulus value used in the \inst{MODEXP} computation is $0$ and the result is $0$, too, or
+		$\utt{0x} \,
+		\utt{00} \,
+		\utt{00} \, \cdots \,
+		\utt{00} \in \mathbb{B}_{\locMbs}$
+		to be precise
+		The \textbf{type} of extraction of the base being performed depends on \locExtractBase{}.
+		The same remarks apply to the following miscellaneous row with \locExtractExponent{}.
+
+		\begin{description}
+			\item[\underline{Setting lookup flags:}]
+				we impose
+				\[
+					\weightedMiscFlagSum
+					{i}{\prcModexpSuccessExtractBaseRowOffset}
+					=
+					\left[ \begin{array}{crcl}
+						\miscMmuWeight  & \cdot & \locExtractModulus \\
+					        \miscOobWeight \\
+					\end{array} \right]
+				\]
+				in other words
+				\[
+					\left\{ \begin{array}{lclr}
+						\miscExpFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \gZero                                  & (\trash) \\
+						\miscMmuFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \undefinedStar \quad \locExtractModulus & (\trash) \\
+						\miscMxpFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \rZero                                  & (\trash) \\
+						\miscOobFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \one                                    & (\trash) \\
+						\miscStpFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \gZero                                  & (\trash) \\
+					\end{array} \right.
+				\]
+				\saNote{} The $\locExtractModulus$ shorthand marked with $\undefinedStar$ will be defined below.
+			\item[\underline{Setting the \oobMod{} instruction:}] 
+				we impose
+				\[
+					\setOobInstructionModexpExtract {
+						anchorRow    = i                                     ,
+						relOffset    = \prcModexpSuccessExtractBaseRowOffset ,
+						callDataSize = \locPrcCds                            ,
+						bbsLo        = \locBbsLo                             ,
+						ebsLo        = \locEbsLo                             ,
+						mbsLo        = \locMbsLo                             ,
+						}
+				\]
+			\item[\underline{Setting some shorthands:}] 
+				we define
+				\[
+					\left\{ \begin{array}{lcl}
+						\locExtractBase     & \define & \miscOobDataCol{6} _{i + \prcModexpSuccessExtractBaseRowOffset} \\
+						\locExtractExponent & \define & \miscOobDataCol{7} _{i + \prcModexpSuccessExtractBaseRowOffset} \\
+						\locExtractModulus  & \define & \miscOobDataCol{8} _{i + \prcModexpSuccessExtractBaseRowOffset} \\
+					\end{array} \right.
+				\]
+			\item[\underline{Setting the \mmuMod{} instruction:}] 
+				\If $\miscMmuFlag_{i + \prcModexpSuccessExtractBaseRowOffset} = 1$ \Then we impose
+				\begin{enumerate}
+				        \item \If $\locExtractBase = 0$ \Then
+						\[
+							\setMmuInstructionParametersModexpZero {
+								anchorRow = i                                     ,
+								relOffset = \prcModexpSuccessExtractBaseRowOffset ,
+								targetId  = 1 + \hubStamp_{i}                     ,
+								phase     = \phaseModexpBase                      ,
+								}
+						\]
+					\item \If $\locExtractBase = 1$ \Then
+						\[
+							\setMmuInstructionParametersModexpData {
+								anchorRow       = i                                     ,
+								relOffset       = \prcModexpSuccessExtractBaseRowOffset ,
+								sourceId        = \cn_{i}                               ,
+								targetId        = 1 + \hubStamp_{i}                     ,
+								sourceOffsetLo  = 96                                    ,
+								size            = \locBbsLo                             ,
+								referenceOffset = \locPrcCdo                            ,
+								referenceSize   = \locPrcCds                            ,
+								phase           = \phaseModexpBase                      ,
+								}
+						\]
+				\end{enumerate}
+				\saNote{} Some of the above constraints are independent of the value of $\locExtractBase$ and may be ``merged into one'' in the implementation.
+		\end{description}
+	\end{description}
+	The above thus either extracts some data from \textsc{ram} and serves it to the \modexpMod{} module as the``base'' argument or sets its ``base'' to zero.
+	\begin{description}
+	\item[\underline{\underline{Miscellaneous row $n^°(i + \prcModexpSuccessExtractExponentRowOffset)$:}}]
+		we impose
+		\begin{description}
+			\item[\underline{Setting lookup flags:}]
+				we impose
+				\[
+					\weightedMiscFlagSum
+					{i}{\prcModexpSuccessExtractExponentRowOffset}
+					=
+					\miscMmuWeight \cdot \locExtractModulus
+				\]
+				in other words
+				\[
+					\left\{ \begin{array}{lclr}
+						\miscExpFlag  _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \gZero             & (\trash) \\
+						\miscMmuFlag  _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \locExtractModulus & (\trash) \\
+						\miscMxpFlag  _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \rZero             & (\trash) \\
+						\miscOobFlag  _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \gZero             & (\trash) \\
+						\miscStpFlag  _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \gZero             & (\trash) \\
+					\end{array} \right.
+				\]
+			\item[\underline{Setting the \mmuMod{} instruction:}] 
+				\If $\miscMmuFlag_{i + \prcModexpSuccessExtractExponentRowOffset} = 1$ \Then we impose
+				\begin{enumerate}
+				        \item \If $\locExtractExponent = 0$ \Then
+						\[
+							\setMmuInstructionParametersModexpZero {
+								anchorRow = i                                         ,
+								relOffset = \prcModexpSuccessExtractExponentRowOffset ,
+								targetId  = 1 + \hubStamp_{i}                         ,
+								phase     = \phaseModexpExponent                      ,
+								}
+						\]
+					\item \If $\locExtractExponent = 1$ \Then
+						\[
+							\setMmuInstructionParametersModexpData {
+								anchorRow       = i                                         ,
+								relOffset       = \prcModexpSuccessExtractExponentRowOffset ,
+								sourceId        = \cn_{i}                                   ,
+								targetId        = 1 + \hubStamp_{i}                         ,
+								sourceOffsetLo  = 96 + \locBbsLo                            ,
+								size            = \locEbsLo                                 ,
+								referenceOffset = \locPrcCdo                                ,
+								referenceSize   = \locPrcCds                                ,
+								phase           = \phaseModexpExponent                      ,
+							}
+						\]
+				\end{enumerate}
+				\saNote{} Some of the above constraints are independent of the value of $\locExtractExponent$ and may be ``merged into one'' in the implementation.
+		\end{description}
+\end{description}
+The above thus either extracts some data from \textsc{ram} and serves it to the \modexpMod{} module as the``exponent'' argument or sets its ``exponent'' to zero.
+\begin{description}
+	\item[\underline{\underline{Miscellaneous row $n^°(i + \prcModexpSuccessExtractModulusRowOffset)$:}}]
+		\begin{description}
+			\item[\underline{Setting lookup flags:}]
+				we impose
+				\[
+					\weightedMiscFlagSum
+					{i}{\prcModexpSuccessExtractModulusRowOffset}
+					=
+					\miscMmuWeight \cdot \locExtractModulus
+				\]
+				in other words
+				\[
+					\left\{ \begin{array}{lclr}
+						\miscExpFlag _{i + \prcModexpSuccessExtractModulusRowOffset} & = & \gZero             & (\trash) \\
+						\miscMmuFlag _{i + \prcModexpSuccessExtractModulusRowOffset} & = & \locExtractModulus & (\trash) \\
+						\miscMxpFlag _{i + \prcModexpSuccessExtractModulusRowOffset} & = & \rZero             & (\trash) \\
+						\miscOobFlag _{i + \prcModexpSuccessExtractModulusRowOffset} & = & \gZero             & (\trash) \\
+						\miscStpFlag _{i + \prcModexpSuccessExtractModulusRowOffset} & = & \gZero             & (\trash) \\
+					\end{array} \right.
+				\]
+			\item[\underline{Setting the \mmuMod{} instruction:}] 
+				\If $\miscMmuFlag_{i + \prcModexpSuccessExtractModulusRowOffset} = 1$ \Then we impose
+				\[
+					\setMmuInstructionParametersModexpData {
+						anchorRow       = i                                        ,
+						relOffset       = \prcModexpSuccessExtractModulusRowOffset ,
+						sourceId        = \cn_{i}                                  ,
+						targetId        = 1 + \hubStamp_{i}                        ,
+						sourceOffsetLo  = 96 + \locBbsLo + \locEbsLo               ,
+						size            = \locMbsLo                                ,
+						referenceOffset = \locPrcCdo                               ,
+						referenceSize   = \locPrcCds                               ,
+						phase           = \phaseModexpModulus                      ,
+					}
+				\]
+		\end{description}
+\end{description}
+The above thus either extracts some data from \textsc{ram} and serves it to the \modexpMod{} module as the``modulus'' argument. There is no ``zeroing out the modulus'' case.
+\begin{description}
+	\item[\underline{\underline{Miscellaneous row $n^°(i + \prcModexpSuccessTransferResultRowOffset)$:}}]
+		we impose 
+		\begin{description}
+			\item[\underline{Setting lookup flags:}]
+				we impose
+				\[
+					\weightedMiscFlagSum
+					{i}{\prcModexpSuccessTransferResultRowOffset}
+					=
+					\miscMmuWeight \cdot \locExtractModulus
+				\]
+				in other words
+				\[
+					\left\{ \begin{array}{lclr}
+						\miscExpFlag _{i + \prcModexpSuccessTransferResultRowOffset} & = & \gZero             & (\trash) \\
+						\miscMmuFlag _{i + \prcModexpSuccessTransferResultRowOffset} & = & \locExtractModulus & (\trash) \\
+						\miscMxpFlag _{i + \prcModexpSuccessTransferResultRowOffset} & = & \rZero             & (\trash) \\
+						\miscOobFlag _{i + \prcModexpSuccessTransferResultRowOffset} & = & \gZero             & (\trash) \\
+						\miscStpFlag _{i + \prcModexpSuccessTransferResultRowOffset} & = & \gZero             & (\trash) \\
+					\end{array} \right.
+				\]
+			\item[\underline{Setting the \mmuMod{} instruction:}] 
+				\If $\miscMmuFlag_{i + \prcModexpSuccessTransferResultRowOffset} = 1$ \Then we impose
+				\[
+					\setMmuInstructionParametersExoToRamTransplants {
+						anchorRow = i                                        ,
+						relOffset = \prcModexpSuccessTransferResultRowOffset ,
+						sourceId  = 1 + \hubStamp_{i}                        ,
+						targetId  = 1 + \hubStamp_{i}                        ,
+						size      = 512                                      ,
+						exoSum    = \exoWeightBlakeModexp                    ,
+						phase     = \phaseModexpResult                       ,
+						}
+				\]
+		\end{description}
+	\item[\underline{\underline{Miscellaneous row $n^°(i + \prcModexpSuccessPartialCopyOfResultsRowOffset)$:}}]
+		we impose 
+		\begin{description}
+			\item[\underline{Setting lookup flags:}]
+				we impose
+				\[
+					\weightedMiscFlagSum
+					{i}{\prcModexpSuccessPartialCopyOfResultsRowOffset}
+					=
+					\miscMmuWeight \cdot
+					\left[ \begin{array}{l}
+						\cdot \, \locMbsIsNonzero \\
+						\cdot \, \locRacIsNonzero \\
+					\end{array} \right]
+				\]
+				in other words
+				\[
+					\left\{ \begin{array}{lclr}
+						\miscExpFlag _{i + \prcModexpSuccessPartialCopyOfResultsRowOffset} & = & \gZero                                  & (\trash) \\
+						\miscMmuFlag _{i + \prcModexpSuccessPartialCopyOfResultsRowOffset} & = & \locMbsIsNonzero \cdot \locRacIsNonzero & (\trash) \\
+						\miscMxpFlag _{i + \prcModexpSuccessPartialCopyOfResultsRowOffset} & = & \rZero                                  & (\trash) \\
+						\miscOobFlag _{i + \prcModexpSuccessPartialCopyOfResultsRowOffset} & = & \gZero                                  & (\trash) \\
+						\miscStpFlag _{i + \prcModexpSuccessPartialCopyOfResultsRowOffset} & = & \gZero                                  & (\trash) \\
+					\end{array} \right.
+				\]
+			\item[\underline{Setting the \mmuMod{} instruction:}] 
+				\If $\miscMmuFlag_{i + \prcModexpSuccessPartialCopyOfResultsRowOffset} = 1$ \Then we impose
+				\[
+					\setMmuInstructionParametersRamToRamSansPadding {
+						anchorRow       = i                                              ,
+						relOffset       = \prcModexpSuccessPartialCopyOfResultsRowOffset ,
+						sourceId        = 1 + \hubStamp_{i}                              ,
+						targetId        = \cn_{i}                                        ,
+						sourceOffsetLo  = 512 - \locMbs                                  ,
+						size            = \locMbs                                        ,
+						referenceOffset = \locPrcRao                                     ,
+						referenceSize   = \locPrcRac                                     ,
+						}
+				\]
+		\end{description}
+	\item[\underline{\underline{Context row $n^°(i + \prcModexpSuccessUpdatingCallerReturnData)$:}}]
+		we impose that
+		\[
+			\provideReturnData {
+				anchorRow          = i                    ,
+				relOffset          = \prcModexpSuccessUpdatingCallerReturnData              ,
+				returnDataReceiver = \cn_{i}              ,
+				returnDataProvider = 1    + \hubStamp_{i} ,
+				returnDataOffset   = 512  - \locMbs       ,
+				returnDataSize     = \locMbs              ,
+			}
+		\]
+\end{description}

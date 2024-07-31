@@ -1,0 +1,81 @@
+Consider the following: introduce extra columns like so:
+
+* lz
+* first
+* middle
+* last
+* only
+* rz
+
+We maintain the mechanics of TOT, TOTLZ, TOTNT, TOTRZ and we impose
+* all are binary
+	<> 6 degree 2 constraints
+* sum = isMicro
+	<> 1 degree 1 constraints
+* nt := first + middle + last + only
+	<> 1 degree 1 constraints
+* If lz[i] = 1    Then TOTLZ[i - 1] = - 1 + TOTLZ[i]
+	<> 1 degree 1 constraints
+* If nz[i] = 1    Then TOTNT[i - 1] = - 1 + TOTNT[i]
+	<> 1 degree 1 constraints
+* If rz[i] = 1    Then TOTRZ[i - 1] = - 1 + TOTRZ[i]
+	<> 1 degree 1 constraints
+* If only[i] = 1  Then
+	* TOTNT[i - 2] = 1
+	* TOTNT[i]     = 0
+		<> 2 degree 2 constraints
+* If first[i] = 1 Then
+	* TOTNT[i - 2] = TOTNT[i - 1]
+	* TOTNT[i - 2] ≠ 1
+		<> 1 degree 2 constraints
+		<> 1 degree 3 constraints
+* If middle[i] = 1 Then
+	* nt[i - 1] = 1
+	* TOTNT[i] ≠ 0
+		<> 1 degree 2 constraints
+		<> 1 degree 3 constraints
+* If last[i] = 1 Then
+	* TOTNT[i - 2] = 2
+	* TOTNT[i] = 0
+		<> 2 degree 2 constraints
+
+We get a one time cost of these constraints but then we get a
+benefit for all other constraints that follow. 
+
+With this our constraints become 
+
+If
+	* isModexpdata🏴 = 1
+	* first = 1
+	Then ... (degree d constraint)
+
+as opposed to
+
+If	
+	* isModexpdata🏴 = 1
+	* isMicro = 1
+	* NT[i - 1] ≠ NT[i]
+	* NT[i - 2] = NT[i - 1]            (<== degree 2)
+	Then ... (degree d constraint)
+
+So we go from degree d + 5 to d + 2. And this reduction will hold
+for all families of MMU instructions.
+For a total of:
+
+* 6 columns
+* 19 constraints
+	-  2  of degree 3
+		<> 1 degree 3 constraints
+		<> 1 degree 3 constraints
+	- 12 of degree 2
+		<> 6 degree 2 constraints
+		<> 2 degree 2 constraints
+		<> 2 degree 2 constraints
+		<> 1 degree 2 constraints
+		<> 1 degree 2 constraints
+	-  5 of degree 1
+		<> 1 degree 1 constraints
+		<> 1 degree 1 constraints
+		<> 1 degree 1 constraints
+		<> 1 degree 1 constraints
+		<> 1 degree 1 constraints

@@ -1,0 +1,26 @@
+The \binMod{} module requires two lookups to a \textbf{binary reference table}.
+Both lookups follow the same structure.
+The first lookup deals with the bytes from the high parts of both arguments, the second with the low parts.
+We thus require the following lookups for both pairs 
+\begin{description}
+	\item[\underline{Selector:}] we use the selector $\col{sel}_{i} = \big( \isAnd_{i} + \isOr_{i} + \isXor_{i} + \isNot_{i} \big)$;
+	\item[\underline{Source columns:}] ---
+	\begin{multicols}{2}
+		\begin{enumerate}
+			\item $\INST_{i}$
+			\item $\decXXX{HI/LO}_{i}$
+			\item $\byteCol{a}_{i}$
+			\item $\byteCol{b}_{i}$
+		\end{enumerate}
+	\end{multicols}
+		\saNote{} We use $(a,b) = (1,3)$ for the lookup associated to the \col{HI}-parts and $(a,b) = (2,4)$ for the lookup associated to the \col{LO}-parts.
+	\item[\underline{Target columns:}] ---
+	\begin{multicols}{2}
+		\begin{enumerate}
+			\item $\INST_{j}$
+			\item $\col{RESULT\_BYTE}_{j}$
+			\item $\col{INPUT\_BYTE\_1}_{j}$
+			\item $\col{INPUT\_BYTE\_2}_{j}$
+		\end{enumerate}
+	\end{multicols}
+\end{description}

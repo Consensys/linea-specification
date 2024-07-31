@@ -1,0 +1,29 @@
+The only instructions which \emph{may} trigger the \stackHashInfoFlag{} flag are
+(\emph{a}) \inst{SHA3} (self explanatory)
+(\emph{b}) \inst{CREATE2} (for computing the \inst{KECCAK} hash of the initialization code)
+(\emph{c}) \inst{RETURN} (for computing the \inst{KECCAK} hash of a newly deployed bytecode fragment.)
+
+We provide some details pertaining to the \stackHashInfoFlag{} flag: 
+\begin{enumerate}[resume]
+	\item \If $\peekStack_{i} = 1$ \Then
+		\begin{enumerate}
+			\item \stackHashInfoFlag{} is binary;
+			\item \If $\stackHashInfoFlag_{i} = 1$ \Then
+				\[
+					\left[ \begin{array}{r}
+						+ \stackDecKecFlag_{i}                                 \\
+						+ \stackDecCreateFlag_{i}     \cdot \decFlag{2}_{i}    \\
+						+ \stackDecHaltFlag_{i}       \cdot \decFlag{1}_{i}    \\
+					\end{array} \right]
+					\cdot \big(1 - \xAhoy_{i} \big)
+					= 1
+				\]
+		\end{enumerate}
+\end{enumerate}
+\saNote{} 
+In other words: in order to raise the $\stackHashInfoFlag$ it is \textbf{necessary (though not sufficient)} that the instruction be \textbf{unexceptional} and one of \inst{SHA3}, \inst{CREATE2} or \inst{RETURN}.
+The \inst{SHA3} case is self explanatory.
+The \inst{CREATE2} case corresponds to hashing the initialization code.
+The \inst{RETURN} case corresponds to deployments at which point it may be necessary to compute a code hash.
+We will provide more details on the triggering of this flag in the relevant sections.
+\ob{TODO! make sure it's up to date, too.}

@@ -1,0 +1,130 @@
+Suppose we are given:
+\begin{enumerate}
+	\item a ``counter'' column $\col{ct}{}$,
+	\item a ``bytes'' column $\col{bytes}$,
+	\item a binary colum $\col{bits}$,
+	\item a ``constant'' column $\col{cst}$,
+	\item other columns
+	$\col{X}$,
+	$\col{Y}$,
+	$\Sigma\col{X}$,
+	$\Sigma\col{Y}$.
+\end{enumerate}
+The interpreation/desired behaviour is as follows:
+$\col{ct}{}$ is expected to count from $0$ to $\mmediumMO$ i.e. we will work within a given counter-cycle;
+$\col{bytes}$ contains the byte decomposition of some $\mmedium$-byte integer $\col{A}$;
+in applications $\col{bytes}$ will either be $\byteCol{A\_1}$ or $\byteCol{A\_0}$;
+$\col{X}$ and $\col{Y}$ will both be \emph{nondecreasing}\footnote{within the current counter-cycle} binary columns which start off at $0$;
+$\Sigma\col{X}$ and
+$\Sigma\col{Y}$ will contain the running total of the 
+$\col{X}$ and
+$\col{Y}$ columns;
+$\col{cst}$ will be required to be constant along the present counter-cycle;
+the value of the $\col{cst}$ column is set as the value of $\col{bytes}$ at the index at which $\col{X}$ jumps from $0$ to $1$ (or, if $\col{X}_{i} = 0$ throughout, the final value of $\col{bytes}$);
+\col{bits} will be a binary column containing the bit decomposition of the value within $\col{cst}$.
+
+The conclusion is then as follows: if \col{bytes} contains the byte decomposition of a nonzero $\mmedium$-byte integer $\col{A}$ then the value
+\( \relof := \mmedium \cdot \Sigma\col{X}_{i} + \Sigma\col{Y}_{i} \),
+computed at row $i$ where $\col{ct}_{i} = \mmediumMO$, has
+\[
+	\relof \leq \nu_{2}(\col{A}).
+\]
+
+\noindent We formalize this in the following constraint system:
+\begin{enumerate}
+	\item $\col{X}$ and $\Sigma\col{X}$ satisfy the following:
+	\begin{enumerate}
+		\item $\col{X}_{i}\cdot(1-\col{X}_{i}) = 0$;
+		\item \If $\col{ct}_{i} = 0$ \Then
+		\[
+			\begin{cases}
+				\col{X}_{i} = 0 \\
+				\Sigma\col{X}_{i} = 0 \\
+			\end{cases}
+		\]
+		\item \If $\col{ct}_{i} \neq \mmediumMO$ \Then 
+		\[
+			\begin{cases}
+				\col{X}_{i + 1} \in \{\col{X}_{i}, 1+ \col{X}_{i}\} \\
+				\Sigma\col{X}_{i + 1} = \Sigma\col{X}_{i} + \col{X}_{i + 1} \\
+			\end{cases}
+		\]
+	\end{enumerate}
+	in other words $\col{X}$ is binary nondecreasing (along the counter-cycle), starts off at $0$ and $\Sigma\col{X}$ is its running total;
+	\item $\col{Y}$ and $\Sigma\col{Y}$ satisfy the same collection of constraints;
+	\item \If $\col{X}_{i} = 1$ \Then $\col{bytes}_{i} = 0$
+	\item \If $\col{Y}_{i} = 1$ \Then $\col{bits}_{i} = 0$
+	\item \If $\col{ct}_{i} \neq \mmediumMO$ \Then $\col{cst}_{i + 1} = \col{cst}_{i}$
+	\item \If \Big($\col{ct}_{i} \neq \mmediumMO$ \et $\col{X}_{i} = 0$ \et $\col{X}_{i + 1} = 1$\Big) \Then
+	\[
+		\col{cst}_{i} = \col{bytes}_{i}
+	\]
+	\item \If $\col{ct}_{i} = \mmediumMO$
+	\begin{enumerate}
+		\item \If $\col{X}_{i} = 0$ \Then
+		\[
+			\col{cst}_{i} = \col{bytes}_{i}
+		\]
+		\item we have the bit decomposition
+		\[
+			\col{cst}_{i}
+			=
+			\sum_{a = 0}^{\mmediumMO}
+			2^a \cdot \col{bits}_{i - a}
+		\]
+	\end{enumerate}
+\end{enumerate}
+
+\begin{figure}
+\[
+\begin{array}{|c|c|c|c|c|c|c|c|}
+\hline
+\col{ct}{} & \Sigma\colm{X} & \col{X}  & \col{bytes} & \col{cst}  & \col{bits}  & \col{Y}  & \Sigma\colm{Y}
+\\\hline
+0 & 0 & 0 & \cdots & {\cellcolor{\romCol}\clubsuit} &
+\col{b}_{7} & 0 & 0 
+\\ \hline
+1 & 0 & 0 & \cdots & {\cellcolor{\romCol}\clubsuit} &
+\col{b}_{6} & 0 & 0 
+\\ \hline
+2 & 0 & 0 & \cdots & {\cellcolor{\romCol}\clubsuit} &
+{\cellcolor{\ramCol} 0} & {\cellcolor{\ramCol} 1} & {\cellcolor{\ramCol} 1}
+\\ \hline
+3 & 0 & 0 & \cdots & {\cellcolor{\romCol}\clubsuit} &
+{\cellcolor{\ramCol} 0} & {\cellcolor{\ramCol} 1} & {\cellcolor{\ramCol} 2}
+\\ \hline
+4 & 0 & 0 & \cdots & {\cellcolor{\romCol}\clubsuit} &
+{\cellcolor{\ramCol} 0} & {\cellcolor{\ramCol} 1} & {\cellcolor{\ramCol} 3}
+\\ \hline
+5 & 0 & 0 & {\cellcolor{\romCol}\clubsuit} & {\cellcolor{\romCol}\clubsuit} &
+{\cellcolor{\ramCol} 0} & {\cellcolor{\ramCol} 1} & {\cellcolor{\ramCol} 4}
+\\ \hline
+6 & {\cellcolor{\stackCol}~1~} & {\cellcolor{\stackCol}1} & {\cellcolor{\stackCol}0} & {\cellcolor{\romCol}\clubsuit} &
+{\cellcolor{\ramCol} 0} & {\cellcolor{\ramCol} 1} & {\cellcolor{\ramCol} 5}
+\\ \hline
+\mmediumMO & {\cellcolor{\stackCol}~\bm{2}~} & {\cellcolor{\stackCol}1} & {\cellcolor{\stackCol}0} & {\cellcolor{\romCol}\clubsuit} &
+{\cellcolor{\ramCol} 0} & {\cellcolor{\ramCol} 1} & {\cellcolor{\ramCol} ~\bm{6}~}
+\\ \hline
+\end{array}
+\]
+\caption{The \col{bytes} column contains the byte decomposition of some $\mmedium$-byte integer \col{A}. In applications \col{A} will either be $\col{A}_{0}$ or $\col{A}_{1}$ where
+$\argOne\equiv [\col{A}_{3} \,|\, \col{A}_{2} \,|\, \col{A}_{1} \,|\, \col{A}_{0}]$. In the example above its $\redm{2}$ least significant bytes are $=0$, and the third least significant byte (whose value is represented by $\redm{\clubsuit}$ in the above) has its $\redm{6}$ least significant bits of of its bit decomposition are $=0$. As such a \emph{lower bound} for the $2$-adicity of $\col{A}$ is given by $8\cdot \redm{2} + \redm{6}$. \\
+Note that we don't enforce nonzeroness on either $\redm{\clubsuit}$ or $\col{b}_6$.
+If the ``jump points'' (\red{2} and \red{6} respectively in the example above) of the nondecreasing binary columns $\col{X}$ and $\col{Y}$ are chosen appropriately one may extract the exact $2$-adicity of $\col{A}$. This isn't necessary for our present purpose but could easily be enforced through extra constraints enforcing nonzero-ness of both the byte $\redm{\clubsuit}$ and of the bit $\col{b}_6$.}
+\end{figure}
+\noindent We collect this collection of constraints under the moniker $\prepareLowerBoundOnTwoAdicity$ and write
+\[
+	\prepareLowerBoundOnTwoAdicity
+	\left(
+	\begin{array}{c}
+	\col{bytes},
+	\col{cst},
+	\col{bits}; \\
+	\col{X},
+	\Sigma\col{X};
+	\col{Y},
+	\Sigma\col{Y};
+	\col{ct}{};
+	\end{array}
+	\right)
+\]

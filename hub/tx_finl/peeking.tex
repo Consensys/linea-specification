@@ -1,0 +1,51 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below assume }
+		\left\{ \begin{array}{lcl}
+			\txExec _{i - 1} & = & 1 \\
+			\txFinl _{i}     & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+In other words we assume row $i$ is the first row of the transaction finalization phase.
+The purpose of this transaction processing phase is to proceed to gas refunds for the sender address and pay the coinbase address.
+In case of a transaction with status code $=0$ the sender address is reimbursed the transaction value (and the recipient sees its balance reduced by the same amount.)
+As such we shall peek into
+(\emph{a})
+the \texttt{from} account to proceed to the gas refund
+(\emph{b})
+the \texttt{coinbase} account to proceed to gas payment.
+What follows depends on whether the transaction succeeds or fails. If the transaction succeeds the above is sufficient.
+The \zkEvm{} finishes by loading a single transaction row to confirm data. If the transaction fails we insert two extra rows:
+(\emph{c})
+we again peek into the sender account and proceed to undo the initial value transfer by crediting the account in question with the transaction value; 
+(\emph{d})
+we peek into the transaction recipient account and decrement its balance by the transaction value. In all cases after peeking into accounts the final row of the current transaction loads the transaction data. The constraints below ensure the desired behaviour:
+\begin{enumerate}
+	\item \If $\cnWillRev_{i - 1} = 0$ \Then 
+		\[
+			\left[ \begin{array}{cr}
+				+ & \peekAccount     _{i + \locTxFinlSuccessSenderAccountOffset   } \\
+				+ & \peekAccount     _{i + \locTxFinlSuccessCoinbaseAccountOffset } \\
+				+ & \peekTransaction _{i + \locTxFinlSuccessTransactionRowOffset  } \\
+			\end{array} \right]
+			= 
+			\nsrTransactionFinalizationPhaseWontRevert
+		\]
+	\item \If $\cnWillRev_{i - 1} = 1$ \Then 
+		\[
+			\left[ \begin{array}{cr}
+				+ & \peekAccount     _{i + \locTxFinlFailureSenderAccountOffset    } \\
+				+ & \peekAccount     _{i + \locTxFinlFailureRecipientAccountOffset } \\
+				+ & \peekAccount     _{i + \locTxFinlFailureCoinbaseAccountOffset  } \\
+				+ & \peekTransaction _{i + \locTxFinlFailureTransactionRowOffset   } \\
+			\end{array} \right]
+			=
+			\nsrTransactionFinalizationPhaseWillRevert
+		\]
+\end{enumerate}
+\saNote{} Given the heartbeat constraints, the above has several \emph{implicit} consequences\footnote{which the implemenation need \textbf{not} enforce through new constraints}. The following are some of them.
+\begin{itemize}
+	\item $\batchNum$, $\txNum$, $\hubStamp$, $\txSkip$ remain constant during the finalization phase;
+	\item $\absTxNum$ and $\hubStamp$ will jump by 1 at the end of the phase;
+\end{itemize}

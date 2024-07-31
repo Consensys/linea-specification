@@ -1,0 +1,62 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{../../pkg/draculatheme}
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NF Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\begin{document}
+\begin{verbatim}
+White cells ⬜ represent 0.
+Black cells ⬛ represent 1.
+
+Plateau bit ⟦1⟧                      Plateau bit ⟦2⟧
+⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬛⬛⬛⬛⬛    ⬜⬜⬜⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+
+        SRC 1    (UNCHANGED)                 SRC 2    (UNCHANGED)
+🏻🏻🏻🏻🏻🏻🏻🏻🏻🏻🏻🟩🟩🟩🟩🟩    🟦🟦🟦🏻🏻🏻🏻🏻🏻🏻🏻🏻🏻🏻🏻🏻
+
+
+-----------------------------------------------------------------------
+
+            ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜
+                    TGT OLD (= 0)
+            ⬜⬜⬜⬜⬜⬜⬜🟩🟩🟩🟩🟩🟦🟦🟦⬜
+                    TGT NEW
+
+            ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬛    Plateau bit ⟦3⟧
+            ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬛⬛⬛⬛    Plateau bit ⟦4⟧
+\end{verbatim}
+
+\begin{verbatim}
+White cells ⬜ represent 0.
+Black cells ⬛ represent 1.
+
+⬜⬜⬜⬜⬜⬜⬜⬜⬜⬛⬛⬛⬛⬛⬛⬛    Plateau bit ⟦1⟧
+⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬛⬛    Plateau bit ⟦2⟧
+            
+    SRC 1 (UNCHANGED)
+🏻🏻🏻🏻🏻🏻🏻🏻🏻🟩🟩🟩🟩🟩🏻🏻
+
+
+----------------------------------------------------
+
+
+⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜
+    TGT     (= 0)
+⬜🟩🟩🟩🟩🟩⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜
+    TGT NEW
+
+⬜⬜⬜⬜⬜⬜⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛    Plateau bit ⟦3⟧
+\end{verbatim}
+
+\end{document}

@@ -1,0 +1,81 @@
+The present section explains how the \zkEvm{} constructs
+\locAbs  {} from
+\block  {} and
+\locRel     {}
+We ask that $\locAbsMax$ remains constant along non padding rows and that $\locRel$ remain constant along batches:
+\begin{enumerate}
+	\item $\locAbs_{0} = 0$
+	\item \If $\locAbs_{i} = 0$    \Then
+		\[
+			\left\{\begin{array}{lclr}
+				\block      _{i} & = & 0 & (\trash) \\
+				\locRel      _{i} & = & 0 & (\trash) \\
+			\end{array} \right.
+			\quad\text{and}\quad
+			\left\{ \begin{array}{lclr}
+				\locAbsMax   _{i} & = & 0 & (\trash) \\
+				\locRelMax   _{i} & = & 0 & (\trash) \\
+			\end{array}\right.
+		\]
+	\item $\locAbs_{i + 1} \in \{ \locAbs_{i}, 1 + \locAbs_{i} \}$
+	\item $\block_{i + 1}   \in \{ \block_{i},   1 + \block_{i}   \}$
+	\item \If $\locAbs_{i} \neq 0$ \Then
+		\[
+			\left\{\begin{array}{lcl}
+				\locAbsMax _{i + 1} & = & \locAbsMax _{i} \\
+			\end{array}\right.
+		\]
+	\item   \If $\block_{i + 1} \neq 1 + \block_{i}$ \Then
+		\[
+			\locRelMax_{i + 1} = \locRelMax_{i}
+		\]
+\end{enumerate}
+We now describe the constraints that govern $\big[\block, \locRel\big]$ progression. The constraints below ensure that $\big[\block, \locRel\big]$ start out being $[0,0]$ and remain in that state as long as $\locAbs = 0$. If the row index $i$ is such that $\locAbs_{i - 1} = 0$ and $\locAbs_{i} = 1$, the pair $\big[\block, \locRel\big]$ will jump from $[0,0]$ to $[1,1]$ at those same row indices. Once $\locAbs \neq 0$ the $\big[\block, \locRel\big]$ pair then progresses in such a way that if $\big[\col{b}, \col{t}\big]$ and $\big[\col{b'}, \col{t'}\big]$ represent two consecutive\footnote{i.e. sampled from two consecutive rows with indices $i$ and $i+1$} values of this pair then
+\[
+	\big[\col{b'}, \col{t'}\big]
+	=
+	\begin{cases}
+		\big[\col{b}, \col{t} \big]     & \text{i.e. same transaction, same batch} \\
+		\big[\col{b} + 1, 1 \big]       & \text{i.e. first transaction of a new batch} \\
+		\big[\col{b}, \col{t} + 1 \big] & \text{i.e. next transaction in the batch} \\
+	\end{cases}
+\]
+As a consequence\footnote{and as soon as $\locAbs \neq 0$} the pairs $\big[\block, \locRel\big]$ are listed in ascending order according to the standard lexicographic order on $\mathbb{N}^2$.
+\begin{enumerate}[resume]
+	\item \If $\locAbs_{i} = 0$ \Then
+		\[
+			\left\{\begin{array}{lcl}
+				\block_{i}   & = & 0 \\
+				\locRel_{i}      & = & 0 \\
+			\end{array}\right.
+		\]
+	\item \If \big($\locAbs_{i} = 0$ \et $\locAbs_{i + 1} \neq \locAbs_{i}$\big) \Then 
+		\[
+			\begin{cases}
+				\block_{i + 1} = 1 \\
+				\locRel_{i + 1} = 1 \\
+			\end{cases}
+		\]
+	\item \If \big($\locAbs_{i} \neq 0$ \et $\locAbs_{i + 1} \neq \locAbs_{i}$\big) \Then
+		\begin{enumerate}
+			\item \If $\locRel_{i} \neq \locRelMax_{i}$ \Then
+				\[
+					\left\{\begin{array}{lcl}
+						\block_{i + 1} & = & \block_{i} \\
+						\locRel_{i + 1}    & = & 1 + \locRel_{i} \\
+					\end{array}\right.
+				\]
+			\item \If $\locRel_{i} =    \locRelMax_{i}$ \Then 
+				\[
+					\left\{\begin{array}{lcl}
+						\block_{i + 1} & = & 1 + \block_{i} \\
+						\locRel_{i + 1}    & = & 1 \\
+					\end{array}\right.
+				\]
+		\end{enumerate}
+	\item \If $\locAbs_{i} \neq 0$ \Then
+		\begin{enumerate}
+			\item \If $\locRel_{i} \neq \locRelMax_{i}$ \Then $\isLastTxOfBlock_{i} = 0$
+			\item \If $\locRel_{i} =    \locRelMax_{i}$ \Then $\isLastTxOfBlock_{i} = 1$
+		\end{enumerate}
+\end{enumerate}

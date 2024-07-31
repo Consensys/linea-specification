@@ -1,0 +1,26 @@
+The present section describes \textbf{verticalisation constraints}. These are simple constraints with a simple goal: \textbf{data duplication}. Data duplication is required because of the following mismatch:
+\begin{enumerate}
+	\item the \rlpTxnRcptMod{} module extracts and exposes transaction data \emph{vertically} i.e. in column form;
+	\item the \hubMod{} module consumes transaction data \emph{horizontally} i.e. in row form.
+\end{enumerate}
+\begin{center}
+	\boxed{\text{The constraints below assume that } \locAbs_{i} \neq \locAbs_{i - 1}.}
+\end{center}
+\begin{enumerate}
+	\item We impose phase numbers:
+		\[
+			\left\{\begin{array}{lcl}
+				\phaseNumRlpTxnRcpt_{i + 0 }     & = & \subPhaseIdType \\
+				\phaseNumRlpTxnRcpt_{i + 1 }     & = & \subPhaseIdStatusCode \\
+				\phaseNumRlpTxnRcpt_{i + 2 }     & = & \subPhaseIdCumulGas \\
+			\end{array}\right.
+		\]
+	\item Some of the vertical data is converted to horizontal data:
+		\[
+			\left\{\begin{array}{lcl}
+				\outgoingTxrcpt_{i + 0 }     & = & \locTxType_{i} \\
+				\outgoingTxrcpt_{i + 1 }     & = & \txStatusCode_{i} \\
+				\outgoingTxrcpt_{i + 2 }     & = & \txCumulativeConsumedGas_{i} \\
+			\end{array}\right.
+		\]
+\end{enumerate}

@@ -1,0 +1,53 @@
+\documentclass{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{../pkg/common}
+\usepackage{../pkg/std}
+\usepackage{../pkg/IEEEtrantools}
+\usepackage{../pkg/rom}
+\usepackage{../pkg/ram}
+\usepackage{../pkg/offset_processor}
+\usepackage{../pkg/comparisons}
+\usepackage{../pkg/call_stack}
+\usepackage{../pkg/thm_env}
+
+\title{Formal verification of the zk-evm}
+\author{Rollup team}
+\date{July 2022}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+Here's a short list of some things that are crucial for the proper functioning of the zk-evm. These could be interaction points for our teams --- regardless of what collaboration might look like. The first few issues are rather simple, the last one would probably be difficult. Some of these really read like requiring mathematical proof, some of them have the aura of formal verification.
+\begin{description}
+	\item[Correctness of heartbeat constraints.] Every module that cares about temporality (e.g. Stack, RAM, \dots{}) has some \textbf{heartbeat} constraint system. The heartbeat imposes the cadence of operations and columns over different modules behave as expected. Most often it is rather simple, sometimes it's a little more involved (e.g. that of RAM pre-processing). The fact that the constraints achieve precisely the desired outcome is quite crucial to the zk-evm.
+	\item[Micro-instruction writing.] The Ram preprocessor takes a unique correctness of macro-instruction conversion to a sequence of micro-instructions in the RAM pre-processor. This was painstakingly defined by hand and will soon be implemented. The ``micro-instruction''-writing and the argumentation for it should be formally verifiable; as should be the connection between the prep-processing and the data manipulation. 
+	\item[Existence and essential uniqueness of lexicographic orders.] The zk-evm uses reordering arguments all over the place. Just off of the top of my head:
+	\begin{enumerate}
+		\item to prove stack, call stack, memory, storage consistency
+		\item to justify present knowledge of future events such as reverts / exceptions and the associated time stamps,
+		\item to establish ``warmth'' of storage keys,
+		\item to justify the current ``nonce delta'' of an account,
+		\item to justify running initialization code \emph{before} running any \emph{currently} deployed code,
+		\item the list goes on \dots{}
+	\end{enumerate}
+	The validity of these consistency arguments relies on the essential uniqueness of certain orders defined on row indices in execution traces. These orderings are defined using collections of columns constructed and constrained by the zk-evm. It is crucial that we have certitude that certain subsets of such zk-evm-constructed-sets-of-columns have properties such as ``essential uniqueness of associated lexicographic orders.'' Here by essential uniqueness we mean ''unique up to some `zero-rows'''.
+	\item[Size constraints.] It is crucial that the zk-evm have perfect control over the size (in bytes) of the data that it computes with. Everything within the zk-evm is represented as field elements (currently the inner field $\Bbb{F} = \Bbb{Z} / r\Bbb{Z}$ of \texttt{bn254}). Representing evm words (256 bit integers) unambiguously requires us to split evm words into subcomponents (limbs) of 16 bytes. Thus the zk-evm should manipulate field elements that are of the form $n\cdot 1_\Bbb{F}$ where $1_\Bbb{F}$ is the unit and $0\leq n < 2^{128}$. Data that enters the zk-evm is expected to be ``small''. Data entry points include:
+	\begin{enumerate}
+		\item the ROM (program counter, opcodes, push values),
+		\item transaction call data
+		\item block data
+		\item state data
+	\end{enumerate}
+	It seems rather uncontroversial that this data will always be correctly formed (mostly because it undergoes byte-wise construction in, say, the ROM, the Transaction Calldata module etc\dots{})
+
+	However, this data can at times undergo drastic modificaitons (e.g. in the ALU.) At times ``small'' field elements must be combined in ways that produce large ones (addition, multiplication but also inversion for \texttt{If/Then/Else} statements). It is crucial for the functioning of the zk-evm that these excesses remain confined and that none of these make it onto the stack, into memory, into storage, into the permanent state etc \dots{}.
+
+	Furthermore this formal verification should be field agnostic, in the sense that it should ``easily'' be portable to a different base field (say the Goldilocks field) with a different arithmetization following the same patterns.
+	% \item[Tricks of the trade.] There's a small set of tricks that we constantly re-use that are the back bone of the arithmetization. These are used for instance for proving stack overflow / underflow, performing comparisons between elements in a short range etc\dots{}
+	\item[Correctness of the back-end.] We have a back-end that uses gnark field arithmetic to perform column / expression computations. Examples include branching behaviour (with slightly different names, things like \texttt{BOOL.BoolIfTrueElse(CONCLUSION\_IF\_TRUE, CONCLUSION\_IF\_FALSE)}, \texttt{COL.IfZeroElse(CONCLUSION\_IF\_ZERO, CONCLUSION\_IF\_NONZERO)}, \dots{}). Our entire arithmetization relies on this set of methods. It's rather small.
+	\item[Zk-evm workflow.] We have had to make choices in the zk-evm design. Some of the deeper ones are about the workflow: how and when instructions get executed, when exceptions are raised, by whom etc\dots{} The totality of these choices determine the progression from instruction reading to execution and what to do next. Some of these choices \emph{seem} inconsequential, e.g. how we handle out of bounds jumps or jumps to anything other than a \inst{JUMPDEST} opcode that isn't shadowed by a \inst{PUSH\_X} instruction. The order in which we check for exceptions, and which exception the zk-evm throws and in what order. Our choice (not yet spec-ed out but present in our minds) of \emph{when} to compute gas in the life span of a transaction. The validity of these decisions is clearly important. But this issue is really more about the congruence between our zk-evm $\longleftrightarrow$ Ethereum Yellow Paper.
+\end{description}
+
+\end{document}

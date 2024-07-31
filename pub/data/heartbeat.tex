@@ -1,0 +1,60 @@
+I'm a bit at a crossroads with transaction call data (txcd) and init code i.e. the data provided in a transaction. In some sense txcd and init code should live in the same public data module:
+
+\begin{enumerate}
+\item both need to be billed (4 gas per 0x00, 16 gas for nonzero bytes)
+\item both need to be laid out byte by byte:
+\begin{enumerate}
+	\item for txcd:
+	\begin{enumerate}
+		\item for byte billing
+		\item to build data limbs for ram instructions touching txcd
+	\end{enumerate}
+	\item for init code:
+	\begin{enumerate}
+		\item for byte billing
+		\item to build limbs for the CODECOPY instruction
+	\end{enumerate}
+\end{enumerate}
+\item both are indexed by txNum
+\end{enumerate}
+
+On the other hand we do much more with init code than with txcd. With init code we further need to
+
+\begin{enumerate}
+	\item perform jump destination analysis and replace PUSH-shadowed bytes by INVALID instructions
+	\item build push values
+\end{enumerate}
+
+Something I just realized is that outside observers know the sender address and the sender nonce, it is part of the transaction data ($T_\text{n}$). Of course a connection to a permanent state must prove its validity but it's there. So we can know deployment address (which are then verified in the proof.) We can do a 2 sided plookup inclusion proof of the init code commitment into ROM. We could have both live in the same place or in different commitments
+
+There is a further difference: the nonce update of an deployment transaction is definitive. There are no rollbacks that can take it back. So the deployment number stuff should be $=0$ or $=1$.
+
+We can do all of this stuff in a single module. There is no issue wrt to loading code: there can only be two code fragments for such an address: init code and deployed code, there are no revert + \inst{CREATE} in this context.
+
+The thing is that in order to connect the txcd/initcode module to ROM I require the address. And this is something we know how to produce --- the nonce is part of the block data.
+
+Ok in essence:
+\begin{enumerate}
+	\item txcd is tied to a txNum
+	\item init code is tied to
+	\begin{enumerate}
+		\item the from address
+		\item its nonce delta
+		\item (implicitly to a txNum)
+	\end{enumerate}
+	\item ROM is indexed by address, deployment number and the \col{isInitCode} bit
+	\item we can
+	\begin{enumerate}
+		\item do the byte billing in the call data module
+		\item import the stream of
+		\[
+			\col{isInitCode}
+			\cdot
+			(\addr, \col{isInitCode}, \col{byteCounter}, \col{bytes}, \col{txcdSize})
+		\]
+		into the ROM where they would be sent to the tuple
+		\[
+			(\addr, \col{isInitCode}, \col{bytecounter}, \col{rawBytes}, \codeSize)
+		\]
+	\end{enumerate}
+\end{enumerate}

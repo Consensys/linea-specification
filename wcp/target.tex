@@ -1,0 +1,56 @@
+We first settle the behaviour of the first two bit columns:
+\begin{enumerate}
+	\item \If $\wcpStamp_{i} \neq 0$ \Then
+	\[
+	\left\{
+	\begin{array}{l}
+		\If \argOneHi_{i} =    \argTwoHi_{i} ~ \Then \bit{1}_{i} = 1 \\
+		\If \argOneHi_{i} \neq \argTwoHi_{i} ~ \Then \bit{1}_{i} = 0 \vspace{2mm} \\
+		\If \argOneLo_{i} =    \argTwoLo_{i} ~ \Then \bit{2}_{i} = 1 \\
+		\If \argOneLo_{i} \neq \argTwoLo_{i} ~ \Then \bit{2}_{i} = 0 \\
+	\end{array}
+	\right.
+	\]
+\end{enumerate}
+We fix the targets of the accumulator columns:
+\begin{enumerate}[resume]
+	\item \If ($\vli_{i} = 1$ \et $\ct_{i} = \maxCt_{i}$) \Then
+	\begin{enumerate}
+		\item the first four accumulator columns provide the byte decompositions of the arguments, i.e.
+			\[
+				\left\{
+				\begin{array}{lcl}
+					\acc{1}_{i} & \!\!\! = \!\!\! & \argOneHi_{i} \\
+					\acc{2}_{i} & \!\!\! = \!\!\! & \argOneLo_{i} \vspace{2mm} \\
+					\acc{3}_{i} & \!\!\! = \!\!\! & \argTwoHi_{i} \\
+					\acc{4}_{i} & \!\!\! = \!\!\! & \argTwoLo_{i} \\
+				\end{array}
+				\right.
+			\]
+		\item the remaining two accumulator columns compute certain nonnegative adjusted differences, i.e.
+			\[
+				\left\{
+				\begin{array}{lcl}
+					\acc{5}_{i} & \!\!\! = \!\!\! & (2\cdot\bit{3}_{i} - 1) \cdot \big(\argOneHi_{i} - \argTwoHi_{i}\big) - \bit{3}_{i} \\
+					\acc{6}_{i} & \!\!\! = \!\!\! & (2\cdot\bit{4}_{i} - 1) \cdot \big(\argOneLo_{i} - \argTwoLo_{i}\big) - \bit{4}_{i} \\
+				\end{array}
+				\right.
+			\]
+			In other words:
+			\[
+				\left\{
+				\begin{array}{l}
+					\bit{3} \equiv 1 \iff \argOneHi >    \argTwoHi \\
+					\bit{3} \equiv 0 \iff \argOneHi \leq \argTwoHi \vspace{2mm} \\
+					\bit{4} \equiv 1 \iff \argOneLo >    \argTwoLo \\
+					\bit{4} \equiv 0 \iff \argOneLo \leq \argTwoLo \\
+				\end{array}
+				\right.
+			\]
+	\end{enumerate}
+	\item \If $\isIszero_{i} = 1$ \Then
+			\begin{enumerate}
+				\item $\argTwoHi_{i} = 0$
+				\item $\argTwoLo_{i} = 0$
+			\end{enumerate}
+\end{enumerate}

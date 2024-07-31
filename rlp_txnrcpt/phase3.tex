@@ -1,0 +1,47 @@
+\begin{center}
+\boxed{\text{All constraints in this subsection assume that $\phase{3}_{i} = 1$.}}
+\end{center}
+
+This phase computes $\textsc{rlp}(R_\text{u})$ where $R_\text{u} \in \mathbb{N}$  is the (8 byte) integer representing the cumulative gas consumption of all the transactions in the current batch up to (and including) the current transaction. Its value is accessible through $\Input 1$. \saNote{} Every transaction consumes a nonzero amount gas (at least $G_\text{transaction} = 21000$) as such the integer to \textsc{rlp}-ize will necessarily be \emph{nonzero}. Also, gas consumption is limited by the batch's \textbf{gasLimit}, which in practice is much smaller than the $8$ bytes of room it is provided with.
+
+\begin{enumerate}
+        % \item \If $\Input1 = 0$ \Then $\nbstep = 1$ (\trash) % see comment about nonzeroness
+    \item $\nbstep_{i} = 8$
+    \item
+        \[
+            \rlpPrefixInt_{i}
+            \left(
+            \begin{array}{r}
+                \Input{1},
+                \ct,
+                \nbstep,
+                \done; \\
+                \byteCol{1},
+                \acc{1},
+                \accsize,
+                \Power,
+                \col{BIT},
+                \col{BIT\_ACC}; \\
+                \limb,
+                \lc,
+                \limbsize; \\
+            \end{array}
+            \right)
+        \]
+    \item \If $\done_{i}=1$ \Then:
+    \begin{enumerate}
+        \item \[
+    \limbShifting
+    \left(
+    \begin{array}{r}
+        \Input 1_{i},
+        \Power_{i},
+        \accsize_{i}; \\
+        \limb_{i},
+        \limbsize_{i}; \\
+    \end{array}
+    \right)
+\]
+        \item $\phasend_{i}=1$.  
+    \end{enumerate} 
+\end{enumerate}

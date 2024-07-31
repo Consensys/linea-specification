@@ -1,0 +1,70 @@
+PC	1	|	PUSH1 32
+PC	2	|	CALLDATASIZE
+PC	4	|	PUSH1 31
+PC	5	|	ADD
+PC	6	|	DIV						// | N ] where N = ceil(CDS/32)
+PC	8	|	PUSH1 0					// | N | 0 ]
+PC	9	|	JUMPDEST				// offset = 0x09
+PC	11	|	PUSH 1 					// | N | 0 | 1 ]
+PC	12	|	DUP3 					// | N | 0 | 1 | N ]
+PC	13	|	SUB						// | N | 0 | N-1 ]
+PC	14	|	SWAP2 					// | N-1 | 0 | N ]
+PC	15	|	POP 					// | N-1 | 0 ]
+PC	16	|	DUP1
+PC	17	|	DUP1					// | N-1 | 0 | 0 | 0 ]
+PC	18	|	CALLDATALOAD 			// | N-1 | 0 | 0 | # ]
+PC	19	|	SWAP1 					// | N-1 | 0 | # | 0 ]
+PC	20	|	MSTORE 					// | N-1 | 0 ]
+PC	22	|	PUSH1 32 				// | N-1 | 0 | 32 ]
+PC	23	|	ADD 					// | N-1 | 32 ]
+PC	24	|	SWAP1 					// | 32 | N-1 ]
+PC	25	|	DUP1					// | 32 | N-1 | N-1 ]
+PC	26	|	ISZERO 					// | 32 | N-1 | is0 ]
+PC	28	|	PUSH1 J 				// | 32 | N-1 | is0 | J ] what follows is what happens if N-1 != 0, J = 0x40
+PC	29	|	JUMPI					// | 32 | N-1 ]
+PC	30	|	SWAP1 					// | N-1 | 32 ]
+PC	32	|	PUSH1 9 				// | N-1 | 32 | 9 ]
+PC	33	|	JUMP 					// | N-1 | 32 ]
+PC	34	|	STOP
+...
+PC	63	|	STOP
+PC	64	|	JUMPDEST
+PC	65	|	POP
+PC	66	|	POP
+PC	67	|	CALLDATASIZE			// size
+PC	69	|	PUSH1 0 				// offset
+PC	71	|	PUSH1 0 				// value
+PC	72	|	CREATE					// deploys the call data as bytecode
+------------------------------------
+Randomized type 1 					// stack at the end = | address ]
+------------------------------------
+		|	DUP1					// | address | address ]
+		|	PUSH1 (arg1)			// | address | address | retSize ]
+		|	PUSH1 (arg2)			// | address | address | retSize | retOffset ]
+		|	PUSH1 0 				// | address | address | retSize | retOffset | argSize ]
+		|	PUSH1 0					// | address | address | retSize | retOffset | argSize | argOffset ]
+		|	PUSH1 0 				// | address | address | retSize | retOffset | argSize | argOffset | value ]
+		|	DUP6					// | address | address | retSize | retOffset | argSize | argOffset | value | address ]
+		|	PUSH2 0xffff			// | address | address | retSize | retOffset | argSize | argOffset | value | address | gas ]
+		|	CALL 					// | address | 1 ] (empty stack)
+		|	POP						//	
+------------------------------------
+Randomized type 1 					// stack at the end = | address ]
+------------------------------------
+
+
+The call data will be something like
+
+		|	PUSH32		(random crap)
+		|	PUSH1 		0
+		|	MSTORE
+		|	PUSH32		(random crap)
+		|	PUSH1		32
+		|	MSTORE
+		...
+		|	PUSH32		(random crap)
+		|	PUSH1		k x 32 			// k = 15 will do
+		|	MSTORE
+		|	PUSH1		(arg3)			// size
+		|	PUSH1		(arg4)			// offset
+		|	RETURN

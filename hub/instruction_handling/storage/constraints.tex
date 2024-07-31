@@ -1,0 +1,250 @@
+\begin{center}
+	\boxed{%
+		\text{The stack constraints presented below assume }
+		\begin{cases}
+			\peekStack_{i} = 1 \\
+			\stackDecStoFlag_{i} = 1 \\
+			\stackSux_{i} + \stackSox_{i} = 0 \\
+		\end{cases}}
+\end{center}
+
+\begin{description}
+	\item[\underline{Setting the stack pattern:}] we impose $\loadStoreSP\big[\decFlag{1}_{i}\big]_{i}$
+	\item[\underline{Valid exceptions:}]
+		the constraints below don't need to be imposed in the implementation:
+		\begin{enumerate}
+			\item \If $\decFlag{1}_{i} = 0$ \Then $\xAhoy_{i} = \stackOogx_{i}$ \quad (\trash)
+			\item \If $\decFlag{1}_{i} = 1$ \Then $\xAhoy_{i} = \stackStaticx_{i} + \stackSstorex_{i} + \stackOogx_{i}$ \quad (\trash)
+		\end{enumerate}
+		\saNote{} Given section~(\ref{hub: generalities: exceptions: automatic vanishing})
+		\inst{SSLOAD} may only raise stack exceptions or \oogxSH{}
+		while \inst{SSTORE} may raise stack exceptions, \staticxSH{}, \sstorexSH{} or \oogxSH{}.
+	\item[\underline{Setting $\nonStackRows$ and peeking flags:}]
+		storage operations can provoke exceptions in multiple ways and are rollback sensitive;
+		they thus have some inherent complexity;
+		we impose the following:
+		\begin{enumerate}
+			\item \If $\stackStaticx_{i} = 1$ \Then $\nonStackRows_{i} = 2$ and furthermore
+				\[
+					\left[ \begin{array}{cr}
+						+ & \peekContext _{i + \locFirstCon}         \\
+						+ & \peekContext _{i + \locStaticxSecondCon} \\
+					\end{array} \right]
+					=
+					\nonStackRows_{i}
+				\]
+			\item \If $\stackSstorex_{i} = 1$ \Then $\nonStackRows_{i} = 3$ and furthermore
+				\[
+					\left[ \begin{array}{cr}
+						+ & \peekContext _{i + \locFirstCon        } \\
+						+ & \peekMisc    _{i + \locSstorexMisc     } \\
+						+ & \peekContext _{i + \locSstorexSecondCon} \\
+					\end{array} \right]
+					=
+					\nonStackRows_{i}
+				\]
+			\item \If $\stackOogx_{i} = 1$ \Then $\nonStackRows_{i} = 5$ and furthermore
+				\[
+					\left[ \begin{array}{cr}
+						+ & \peekContext  _{i + \locFirstCon          } \\
+						+ & \peekMisc     _{i + \locOogxMisc          } \\
+						+ & \peekStorage  _{i + \locOogxDoStorage     } \\
+						+ & \peekStorage  _{i + \locOogxUndoStorage   } \\
+						+ & \peekContext  _{i + \locOogxSecondCon     } \\
+					\end{array} \right]
+					=
+					\nonStackRows_{i}
+				\]
+			\item \If $\xAhoy_{i} = 0$ \Then $\nonStackRows_{i} = 3 + \cnWillRev_{i}$ and furthermore
+				\[
+					\left[ \begin{array}{crcl}
+						+ &                 &                   & \peekContext _{i + \locFirstCon           } \\
+						+ &                 &                   & \peekMisc    _{i + \locMiscRowOffset      } \\
+						+ &                 &                   & \peekStorage _{i + \locFirstStoRowOffset  } \\
+						+ & \cnWillRev _{i} & \!\!\!\cdot\!\!\! & \peekStorage _{i + \locSecondStoRowOffset } \\
+					\end{array} \right]
+					=
+					\nonStackRows_{i}
+				\]
+		\end{enumerate}
+	\item[\underline{The first context row:}]
+		we \textbf{unconditionally} impose that $\readContextData {i}{\locFirstCon}{\cn_{i}}$
+	\item[\underline{Setting \stackStaticx{} flag:}]
+		we impose that $\stackStaticx_{i} = \decFlag{1}_{i} \cdot \cnStatic_{i + \locFirstCon}$;
+
+		\saNote{} Recall that (among instructions raising the $\stackDecStoFlag$ flag) only \inst{SSTORE} may raise a \staticxSH{}.
+	\item[\underline{Setting the miscellaneous-row:}]
+		\If $\peekMisc_{i + \locMiscRowOffset} = 1$ \Then 
+		\begin{enumerate}
+			\item we impose that \inst{SSTORE} instructions trigger the \oobMod{}
+				\[
+					\weightedMiscFlagSum {i}{\locMiscRowOffset}
+					=
+					\miscOobWeight \cdot \decFlag{1}_{i}
+				\]
+				in other words	
+				\[
+					\left\{ \begin{array}{lclr}
+						\miscExpFlag          _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \gZero           & (\trash) \\
+						\miscMmuFlag          _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \rZero           & (\trash) \\
+						\miscMxpFlag          _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \rZero           & (\trash) \\
+						\miscOobFlag          _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \decFlag{1}_{i}  & (\trash) \\
+						\miscStpFlag          _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \gZero           & (\trash) \\
+					\end{array} \right.
+				\]
+			\item \If $\decFlag{1}_{i} = 1$ \Then we further impose that
+				\[
+					\setOobInstructionSstore {i}{\locMiscRowOffset}
+					\Big[ \begin{array}{ll}
+						\utt{Actual gas:} & \gasActual_{i}  \\
+					\end{array} \Big]
+				\]
+		\end{enumerate}
+	\item[\underline{Justifying the \stackSstorex{} flag:}]
+		\begin{enumerate}
+		\If $\peekMisc_{i + \locMiscRowOffset} = 1$ \Then 
+			\item \If $\decFlag{1}_{i} = 1$ \Then we impose that $\stackSstorex_{i} = \miscOobDataCol{7}_{i + \locMiscRowOffset}$
+		\end{enumerate}
+\end{description}
+\saNote{}
+Recall that the purpose of the \oobMod{}-instruction $\oobInstSstore$ is to justify the presence or absence of a \sstorexSH{}.
+Recall further that this exception may only be triggered by the \inst{SSTORE} instruction and
+\[
+	\begin{cases}
+		\stackSstorex \equiv 0 \iff \gasActual >    G_{\text{callstipend}} \\
+		\stackSstorex \equiv 1 \iff \gasActual \leq G_{\text{callstipend}} \\
+	\end{cases}
+\]
+where $G_{\text{callstipend}} = 2300$.
+
+\saNote{}
+The gas cost of a storage instruction need only be computed in case of a \oogxSH{} or in the absence of any exception.
+In order to compute the gas cost accurately (in particular for \inst{SSTORE}) we let the \zkEvm{} perform the requeste storage update even in case of an exception.
+Note however that in case of an exception triggered by the present instruction or the context being rolled back at a later point this update is undone in the present instruction handling.
+\begin{description}
+	\item[\underline{Setting storage slot parameters:}]
+		\If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \Then\footnote{Observe that $\stackOogx_{i} + (1 - \xAhoy_{i})$ is binary since by construction $\stackOogx_{i} \cdot (1 - \xAhoy_{i}) = 0$}
+		\[
+			\left\{ \begin{array}{lclr}
+				\peekContext          _{i + \locFirstCon} + \peekStorage_{i + \locFirstStoRowOffset} & = & 2                                            & (\trash) \\
+				\stoAddressHi         _{i + \locFirstStoRowOffset}                                   & = & \cnAccountAddress\high  _{i + \locFirstCon} \\
+				\stoAddressLo         _{i + \locFirstStoRowOffset}                                   & = & \cnAccountAddress\low   _{i + \locFirstCon} \\
+				\stoDeploymentNumber  _{i + \locFirstStoRowOffset}                                   & = & \cnAccDepNum            _{i + \locFirstCon} \\
+				\stoKeyHi             _{i + \locFirstStoRowOffset}                                   & = & \stackItemValHi  {1}    _{i}                \\
+				\stoKeyLo             _{i + \locFirstStoRowOffset}                                   & = & \stackItemValLo  {1}    _{i}                \\
+				\multicolumn{3}{l}{\stoTurnOnWarmth      {i}{\locFirstStoRowOffset}     } \\
+				\multicolumn{3}{l}{
+					\standardDomSubStamps {
+						anchorRow        = i,
+						relOffset        = \locFirstStoRowOffset,
+						domOffset        = 0,
+					}
+				} \\
+					% \standardDomSubStamps {i}{\locFirstStoRowOffset}{0}  } \\
+			\end{array} \right.
+		\]
+	\item[\underline{Defining storage value operations:}]
+		\If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \Then
+		\begin{description}
+			\item[\underline{The \inst{SLOAD} case:}]
+				\If $\decFlag{1}_{i} = 0$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\multicolumn{3}{l}{\storageReading{i}{\locFirstStoRowOffset}} \\
+						\stackItemValHi  {4}  _{i} & \!\!\! = \!\!\! & \stoCurrValueHi_{i + \locFirstStoRowOffset} \\
+						\stackItemValLo  {4}  _{i} & \!\!\! = \!\!\! & \stoCurrValueLo_{i + \locFirstStoRowOffset} \\
+					\end{array} \right.
+				\]
+			\item[\underline{The \inst{SSTORE} case:}]
+				\If $\decFlag{1}_{i} = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\stoNextValueHi _{i + \locFirstStoRowOffset} & \!\!\! = \!\!\! & \stackItemValHi{4}_{i} \\
+						\stoNextValueLo _{i + \locFirstStoRowOffset} & \!\!\! = \!\!\! & \stackItemValLo{4}_{i} \\
+					\end{array} \right.
+				\]
+			\item[\underline{The inverse, undoing operation:}]
+				\If $\cnWillRev_{i} = 1$ \Then 
+				\[
+					\left\{ \begin{array}{lcl}
+						\stoSameStorageSlot          {i}{\locSecondStoRowOffset}{\locFirstStoRowOffset} \\
+						\stoUndoWarmthAndValueUpdate {i}{\locSecondStoRowOffset}{\locFirstStoRowOffset} \\
+						\revertDomSubStamps {
+							anchorRow        = i,
+							relOffset        = \locSecondStoRowOffset,
+							subOffset        = 0,
+							} \\
+						% {i}{\locSecondStoRowOffset}{0} \\
+					\end{array} \right.
+				\]
+		\end{description}
+\end{description}
+What is missing from our analysis so far is the opcode pricing (in both the \oogxSH{} and unexceptional cases) as well as the management of refunds (in the unreverted case.)
+We will use the following shorthands:
+\[
+	\left\{ \begin{array}{lcl}
+		\locOrigIsZero & \!\!\! \define \!\!\! & \stoOrigValueIsZero_{i + \locFirstStoRowOffset} \\
+		\locCurrIsZero & \!\!\! \define \!\!\! & \stoCurrValueIsZero_{i + \locFirstStoRowOffset} \\
+		\locNextIsZero & \!\!\! \define \!\!\! & \stoNextValueIsZero_{i + \locFirstStoRowOffset} \\
+		\locCurrIsOrig & \!\!\! \define \!\!\! & \stoCurrValueIsOrig_{i + \locFirstStoRowOffset} \\
+		\locNextIsOrig & \!\!\! \define \!\!\! & \stoNextValueIsOrig_{i + \locFirstStoRowOffset} \\
+		\locNextIsCurr & \!\!\! \define \!\!\! & \stoNextValueIsCurr_{i + \locFirstStoRowOffset} \\
+	\end{array} \right.
+\]
+\begin{description} 
+	\item[\underline{Setting the gas cost:}]
+		\If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \Then
+		\begin{description}
+			\item[\underline{The \inst{SLOAD} case:}]
+				\If $\decFlag{1}_{i} = 0$ \Then
+				\[
+					\begin{cases}
+						\If \stoWarmth_{i + \locFirstStoRowOffset} = 0 ~ \Then \gasCost_{i} = G_{\text{coldsload}}\\
+						\If \stoWarmth_{i + \locFirstStoRowOffset} = 1 ~ \Then \gasCost_{i} = G_{\text{warmaccess}}\\
+					\end{cases}
+				\]
+			\item[\underline{The \inst{SSTORE} case:}]
+				\If $\decFlag{1}_{i} = 1$ \Then
+				\begin{enumerate}
+					\item \If $\locNextIsCurr = 1$ \Then $ \gasCost_{i} = \locColdStorageSlot \cdot G_\text{coldsload} + G_\text{warmaccess} $
+					\item \If $\locCurrIsOrig = 0$ \Then $ \gasCost_{i} = \locColdStorageSlot \cdot G_\text{coldsload} + G_\text{warmaccess} $
+					\item \If \Big($\locNextIsCurr = 0$ \et $\locCurrIsOrig = 1$\Big)
+						\begin{enumerate}
+							\item \If $\locOrigIsZero = 1$ \Then $ \gasCost_{i} = \locColdStorageSlot \cdot G_\text{coldsload} + G_\text{sset} $
+							\item \If $\locOrigIsZero = 0$ \Then $ \gasCost_{i} = \locColdStorageSlot \cdot G_\text{coldsload} + G_\text{sreset} $
+						\end{enumerate}
+				\end{enumerate}
+				where in the above we have used the following shorthand
+				\[
+					\locColdStorageSlot \define (1 - \stoWarmth_{i + \locFirstStoRowOffset})
+				\]
+		\end{description}
+	\item[\underline{Setting the refund:}]
+		recall that among instructions raising the $\stackDecStoFlag$ only the \inst{SSTORE} instruction may grand refunds.
+		Futhermore refunds may only be granted in non reverting contexts.
+		See section~(\ref{hub: generalities: refunds: refunds}) for more details.
+
+		\If \Big($\cnWillRev_{i} = 0$ \et $\decFlag{1}_{i} = 1$\Big) \Then we thus impose that
+		\begin{enumerate}
+			\item \If $\locNextIsCurr = 1$ \Then $\refund\new_{i} = \refund_{i}$
+			\item \If $\locNextIsCurr = 0$ \Then
+				\begin{enumerate}
+					\item \If $\locCurrIsOrig = 0$ \Then
+						\[
+							\refund\new_{i} = \refund_{i} 
+							+
+							\left[ \begin{array}{crcccl}
+								+ & (1 - \locOrigIsZero) & \cdot & (\locNextIsZero - \locCurrIsZero) & \cdot & R_\text{sclear}                                 \\
+								+ & \locNextIsOrig       & \cdot & \locOrigIsZero                    & \cdot & \big(G_\text{sset} - G_\text{warmaccess}\big)   \\
+								+ & \locNextIsOrig       & \cdot & (1 -\locOrigIsZero)               & \cdot & \big(G_\text{sreset} - G_\text{warmaccess}\big) \\
+							\end{array} \right]
+						\]
+						\item \If $\locCurrIsOrig = 1$ \Then
+							\begin{enumerate}
+								\item \If $\locNextIsZero = 0$ \Then $\refund\new_{i} = \refund_{i}$
+								\item \If $\locNextIsZero = 1$ \Then $\refund\new_{i} = \refund_{i} + R_\text{sclear}$
+							\end{enumerate}
+				\end{enumerate}
+		\end{enumerate}
+\end{description}
+

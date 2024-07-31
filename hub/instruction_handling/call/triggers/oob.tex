@@ -1,0 +1,19 @@
+We trigger the \oobMod{} whenever the \zkEvm{} predicts an exception for a \inst{CALL} instruction and for all unexceptional \inst{CALL}-type instructions.
+As such we set
+\[
+	\locCallTriggersOob
+	\define
+	\left[ \begin{array}{cr}
+		+ & \locIsCall \cdot \scenCallException \\
+		+ & \scenCallUnexceptional              \\
+	\end{array} \right]
+\]
+\saNote{}
+There are two distinct \oobMod{} instructions that may be triggered: \oobInstXcall{} and \oobInstCall{}.
+The former is used to detect \staticxSH{}'s, the latter is used to justify the absence of any \staticxSH{} and to detect the presence or absence of aborting conditions.
+We refer the reader to section~(\ref{hub: instruction handling: call: generalities}) for more ample details, to
+section~(\ref{hub: misc: oob: call})  and
+section~(\ref{hub: misc: oob: xcall}) for a description of these instructions from the \hubMod{} point of view and to
+section~(\ref{oob: populating: opcodes: exceptional calls}) and
+section~(\ref{oob: populating: opcodes: call})
+for details about the implementations of these constraint systems in the \oobMod{} module.

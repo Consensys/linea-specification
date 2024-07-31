@@ -1,0 +1,100 @@
+\begin{center}
+	\boxed{%
+		\text{The pre-processing presented below assumes that }
+		\left\{ \begin{array}{lcl}
+			\isMacro                         _{i}      & = & 1 \\
+			\mmuInstFlagRamToExoWithPadding  _{i}      & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+We outline the preprocessing rows
+\begin{description}
+	\item[Number of preprocessing rows:]
+		we impose $\ppTotLZ_{i} = 0$
+	\def\rowNum{1} \item[Preprocessing row $\bm{n^\circ \rowNum}$:]
+		we impose that
+		\[
+			\left\{ \begin{array}{l}
+				\callToEuc
+				{i}{\rowNum}
+				{\macroSrcOffsetLo_{i}}
+				{\llarge}
+				\vspace{2mm}  \\
+				\callToIszero
+				{i}{\rowNum}
+				{0}{\locInitSbo} \\
+			\end{array} \right.
+		\]
+		we constrain
+		\[
+			\locAligned = \ppWcpRes _{i + \rowNum}
+		\]
+		and we define the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locInitSlo     & \define & \ppEucQuot    _{i + \rowNum} \\
+				\locInitSbo     & \define & \ppEucRem     _{i + \rowNum} \\
+			\end{array} \right.
+		\]
+	\def\rowNum{2} \item[Preprocessing row $\bm{n^\circ \rowNum}$:] 
+		we impose that
+		\[
+			\left\{ \begin{array}{l}
+				\callToLt
+				{i}{\rowNum}
+				{0}{\macroSize_{i}}
+				{\macroRefSize_{i}}
+				\vspace{2mm} \\ 
+				\callToEuc
+				{i}{\rowNum}
+				{\locPaddingSize}
+				{\llarge}
+				\\
+			\end{array} \right.
+		\]
+		where we define (and have already used) the following shorthand:
+		\begin{enumerate}
+			\item $\locHasRightPadding  \define  \ppWcpRes _{i + \rowNum}$                                      
+			\item $\locPaddingSize      \define  \locHasRightPadding \cdot (\macroRefSize_{i} - \macroSize_{i})$
+			\item \If $\locHasRightPadding = 0$ \Then $\locExtractionSize \define \macroRefSize_{i}$
+			\item \If $\locHasRightPadding = 1$ \Then $\locExtractionSize \define \macroSize_{i}$
+		\end{enumerate}
+		we further impose the following constraint:
+		\[
+			\ppTotRZ_{i} = \ppEucQuot_{i + \rowNum}
+		\]
+	\def\rowNum{3} \item[Preprocessing row $\bm{n^\circ \rowNum}$:]
+		we impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\callToEuc
+				{i}{\rowNum}
+				{\locExtractionSize}
+				{\llarge}
+				\vspace{2mm}     \\
+				\callToIszero
+				{i}{\rowNum}
+				{0}{\ppEucRem_{i + \rowNum}}
+				\\
+			\end{array} \right.
+		\]
+		we constrain:
+		\begin{enumerate}
+			\item $\ppTotNT_{i} = \ppEucCeil_{i + \rowNum}$
+			\item $\locLastLimbIsFull = \ppWcpRes_{i + \rowNum}$
+			\item \If $\locLastLimbIsFull = 1$ \Then $\locLastLimbByteSize = \llarge$
+			\item \If $\locLastLimbIsFull = 0$ \Then $\locLastLimbByteSize = \ppEucRem_{i + \rowNum}$
+		\end{enumerate}
+	\def\rowNum{4} \item[Preprocessing row $\bm{n^\circ \rowNum}$:] 
+		we impose that:
+		\[
+			\callToLt
+			{i}{\rowNum}
+			{0}{\locInitSbo + (\locLastLimbByteSize - 1)}
+			{\llarge}
+		\]
+		and impose that
+		\[
+			\locLastLimbSingleSource = \ppWcpRes    _{i + \rowNum}
+		\]
+\end{description}

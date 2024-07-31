@@ -1,0 +1,83 @@
+The present section describes the data layout for the \inst{RETURNDATACOPY} case. As such:
+\[
+	\boxed{\text{All constraints in this subsection further assume } \oobInstIsRdc_{i} = 1}
+\]
+We remind the reader that the objective of the \oobMod{} module in this particular case is to perform the following tasks
+\green{(\emph{a})} establish that neither the \col{offset} nor \col{size} (as read off the stack) are grossly out of bounds (i.e. $\geq 2^{128}$);
+\green{(\emph{b})} compute the sum \( \col{sum} := \locOffset   + \locSize   \)
+\green{(\emph{c})} compare \col{sum} and the return data size \locRds{}.
+
+\noindent We use the following shorthands for the values in the \oobDataCol{k} columns:
+\[
+	\left\{ \begin{array}{lclr}
+		\locOffsetHi & \define & \oobDataCol      {1}    _{i} \\
+		\locOffsetLo & \define & \oobDataCol      {2}    _{i} \\
+		\locSizeHi   & \define & \oobDataCol      {3}    _{i} \\
+		\locSizeLo   & \define & \oobDataCol      {4}    _{i} \\
+		\locRds      & \define & \oobDataCol      {5}    _{i} \\
+		\locRdcx     & \define & \oobDataCol      {7}    _{i}  & \prediction \\
+	\end{array} \right.
+\]
+\saNote{} As done elsewhere the acronym ``\col{roob}'' stands for ``\textbf{r}idiculously \textbf{o}ut \textbf{o}f \textbf{b}ounds.''
+The acronym ``\col{soob}'' stands for ``\textbf{s}um is \textbf{o}ut \textbf{o}f \textbf{b}ounds.''
+
+We impose the following constraints:
+\begin{description}
+	\item[\underline{Row n°$(i)$:}] we impose the following:
+		\[
+			\oobCallToIszero
+			{i}{0}
+			{\locOffsetHi}{\locSizeHi}
+		\]
+		and we define the shorthand
+		\[
+			\locRdcRoob \define 1 - \outgoingResLo _{i}
+		\]
+		The above tests simultaneously whether
+		(\emph{a}) the offset (within return data) is ridiculously large (i.e. $\geq 2^{\oneTwoEight}$)
+		or
+		(\emph{b}) the size parameter is ridiculously large (i.e. $\geq 2^{\oneTwoEight}$).
+		The further constraints below are only triggered if the above returns \texttt{true} i.e. if offsets and sizes aren't
+	\item[\underline{Row n°$(i + 1)$:}] we impose that
+		\begin{enumerate}
+			\item \If $\locRdcRoob = 0$ \Then 
+				\[
+					\oobCallToAdd
+					{i}{1}
+					{0}{\locOffsetLo}
+					{0}{\locSizeLo}
+				\]
+				The above computes, when the preceding check was successful, the sum of the low parts of the offset and size parameters of the \inst{RETURNDATACOPY} instruction; recall from section~(\ref{oob: lookups: add}) that the result of this \inst{ADD} instruction is stored on the following row (whence the ``\gray{\text{implicitly constrained}}'' below);
+			\item \If $\locRdcRoob = 1$ \Then $\oobNoCall{1}_{i}$.
+		\end{enumerate}
+	\item[\underline{Row n°$(i + 2)$:}]
+		\begin{enumerate}
+			\item \If $\locRdcRoob = 0$ \Then we impose the following:
+				\[
+					\left\{ \begin{array}{lcl}
+						\addFlag_{i + 2}         & = & 0 \quad (\trash) \\
+						\modFlag_{i + 2}         & = & 0 \quad (\trash) \\
+						\wcpFlag_{i + 2}         & = & 1 \\
+						\outgoingInst_{i + 2}    & = & \inst{GT} \vspace{2mm} \\
+						\outgoingData{1}_{i + 2} & = & \gray{\text{implicitly constrained}} \\
+						\outgoingData{2}_{i + 2} & = & \gray{\text{implicitly constrained}} \\
+						\outgoingData{3}_{i + 2} & = & 0 \\
+						\outgoingData{4}_{i + 2} & = & \locRds \\
+					\end{array} \right.
+				\]
+				and we define the shorthand
+				\[
+					\locRdcSoob \define \outgoingResLo _{i + 2}
+				\]
+				The above thus imposes $\col{offset} + \col{size} > \col{rds} \iff \locRdcSoob = 1$.
+			\item \If $\locRdcRoob = 1$ \Then we impose $\oobNoCall{2}_{i}$.
+		\end{enumerate}
+	\item[\underline{Justifying \hubMod{} predictions:}] we impose 
+		\[
+			\locRdcx = 
+			\left[ \begin{array}{cl}
+				+ & \locRdcRoob \\
+				+ & (1 - \locRdcRoob) \cdot \locRdcSoob
+			\end{array} \right]
+		\]
+\end{description}

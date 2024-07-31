@@ -1,0 +1,104 @@
+We explain how to verify modular addition and multiplication instructions of the \textsc{evm}. Recall that these instructions require adding and multiplying \emph{integers} (rather than integers $\mod 2^{256}$.)
+\begin{lem}[$4\times4$ multiplication]
+	Consider
+	$\colm{A}\equiv [\colm{A}_{3} \,|\, \colm{A}_{2} \,|\, \colm{A}_{1} \,|\, \colm{A}_{0}]$ and 
+	$\colm{B}\equiv [\colm{B}_{3} \,|\, \colm{B}_{2} \,|\, \colm{B}_{1} \,|\, \colm{B}_{0}]$ two (unsigned) $256$-bit integers
+	and 
+	$\colm{P}\equiv [\colm{P}_{3} \,\|\, \colm{P}_{2} \,\|\, \colm{P}_{1} \,\|\, \colm{P}_{0}]$,
+	a $512$-bit integer. Let us set
+	\[
+		\left\{ \begin{array}{lcl}
+			\colm{A}_{1}\cdot\colm{B}_{0} + \colm{A}_{0}\cdot\colm{B}_{1}                                                                 & \!\!\! \equiv \!\!\! & [0 \,|\, \alpha \,|\, \colm{H}_{1} \,|\, \colm{H}_{0}]\\
+			\colm{A}_{3}\cdot\colm{B}_{0} + \colm{A}_{2}\cdot\colm{B}_{1} + \colm{A}_{1}\cdot\colm{B}_{2} + \colm{A}_{0}\cdot\colm{B}_{3} & \!\!\! \equiv \!\!\! & [0 \,|\, \beta \,|\, \colm{H}_{3} \,|\, \colm{H}_{2}]\\
+			\colm{A}_{3}\cdot\colm{B}_{2} + \colm{A}_{2}\cdot\colm{B}_{3}                                                                 & \!\!\! \equiv \!\!\! & [0 \,|\, \gamma \,|\, \colm{H}_{5} \,|\, \colm{H}_{4}]\\
+		\end{array} \right.
+	\]
+	for some
+	$\alpha \in \{ 0, 1 \}$,
+	$\beta \in \{ 0, 1, 2, 3 \}$
+	and 
+	$\gamma \in \{ 0, 1 \}$. Then $\colm{A} \cdot \colm{B} = \colm{P}$ \emph{iff}
+	\[
+		\left\{ \begin{array}{rccclcl}
+			&& \colm{A}_{0}\cdot\colm{B}_{0} & \!\!\!\! + \!\!\!\! & \theta \cdot \colm{H}_{0}
+			& \!\!\! = \!\!\! &
+			\colm{P}_{0} + \theta^2 \cdot \lambda
+			\vspace{1mm} \\
+			\lambda + \colm{H}_{1} + \theta \cdot \alpha & \!\!\!\! + \!\!\!\! & \big[\colm{A}_{2}\cdot\colm{B}_{0} + \colm{A}_{1}\cdot\colm{B}_{1} + \colm{A}_{0}\cdot\colm{B}_{2} \big] & \!\!\!\! + \!\!\!\! & \theta \cdot \colm{H}_{2}
+			& \!\!\! = \!\!\! &
+			\colm{P}_{1} + \theta^2 \cdot \mu
+			\vspace{1mm} \\
+			\mu + \colm{H}_{3} + \theta \cdot \beta & \!\!\!\! + \!\!\!\! & \big[\colm{A}_{3}\cdot\colm{B}_{1} + \colm{A}_{2}\cdot\colm{B}_{2} + \colm{A}_{1}\cdot\colm{B}_{3} \big] & \!\!\!\! + \!\!\!\! & \theta \cdot \colm{H}_{4}
+			& \!\!\! = \!\!\! &
+			\colm{P}_{2} + \theta^2 \cdot \nu
+			\vspace{1mm} \\
+			\nu + \colm{H}_{5} + \theta \cdot \gamma & \!\!\!\! + \!\!\!\! & \colm{A}_{3}\cdot\colm{B}_{3} & & 
+			& \!\!\! = \!\!\! &
+			\colm{P}_{3}
+			\\
+		\end{array} \right.
+	\]
+	for some
+	$\lambda \in \{0, 1\}$
+	and 
+	$\mu, \nu \in \{0, 1, 2, 3\}$.
+\end{lem}
+\begin{lem}[$4\times8$ multiplication]
+	Let
+	$\colm{C}\equiv [\colm{C}_{3} \,|\, \colm{C}_{2} \,|\, \colm{C}_{1} \,|\, \colm{C}_{0}]$ and 
+	$\colm{R}
+	\equiv [\colm{R}_{3} \,|\, \colm{R}_{2} \,|\, \colm{R}_{1} \,|\, \colm{R}_{0}]
+	\equiv [\colm{R}\high \,\|\, \colm{R}\low]$ be two $256$-bit integers and let
+	$\colm{Q}\equiv [
+		\colm{Q}_{7} \,|\, \cdots \,|\, \colm{Q}_{1} \,|\, \colm{Q}_{0}]$
+	and
+	$\colm{P}\equiv [\colm{P}_{3} \,\|\, \colm{P}_{2} \,\|\, \colm{P}_{1} \,\|\, \colm{P}_{0}]$ be $512$-bit integers.
+	Define, for $k = 0, 1, 2, 3$, bits
+	$\colm{eq}_{k}$ and
+	$\colm{lt}_{k}$ by imposing that
+	\[
+		\left\{ \begin{array}{lcc}
+			\colm{eq}_{k} = 1	& \iff & \colm{R}_{k} = \colm{C}_{k}\\
+			\colm{lt}_{k} = 1	& \iff & \colm{R}_{k} < \colm{C}_{k}\\
+		\end{array} \right.
+	\]
+	Suppose furthermore we have base $\theta$ decompositions
+	\[
+		\left\{ \begin{array}{rcl}
+			\colm{C}_{1} \cdot \colm{Q}_{0}
+			+ \colm{C}_{0} \cdot \colm{Q}_{1}
+			& \equiv & [0 \,|\, \rho \,|\, \colm{G}_{1} \,|\, \colm{G}_{0}] \\
+			\colm{C}_{3} \cdot \colm{Q}_{0}
+			+ \colm{C}_{2} \cdot \colm{Q}_{1}
+			+ \colm{C}_{1} \cdot \colm{Q}_{2}
+			+ \colm{C}_{0} \cdot \colm{Q}_{3}
+			& \equiv & [0 \,|\, \sigma \,|\, \colm{G}_{3} \,|\, \colm{G}_{2}] \\
+			\colm{C}_{3} \cdot \colm{Q}_{2}
+			+ \colm{C}_{2} \cdot \colm{Q}_{3}
+			+ \colm{C}_{1} \cdot \colm{Q}_{4}
+			+ \colm{C}_{0} \cdot \colm{Q}_{5}
+			& \equiv & [0 \,|\, \tau \,|\, \colm{G}_{5} \,|\, \colm{G}_{4}] \\
+			\colm{C}_{3} \cdot \colm{Q}_{4}
+			+ \colm{C}_{2} \cdot \colm{Q}_{5}
+			+ \colm{C}_{1} \cdot \colm{Q}_{6}
+			+ \colm{C}_{0} \cdot \colm{Q}_{7}
+			& \equiv & [0 \,|\, 0 \,|\, 0 \,|\, \colm{G}_{6}] \\
+		\end{array} \right.
+	\]
+	where $\rho \in \{ 0, 1\}$ $\sigma \in \{ 0, 1, 2, 3\}$ $\tau \in \{ 0, 1, 2, 3\}$.
+
+	Then the pair $(\colm{Q}, \colm{R})$ represents the euclidean division of $\colm{P}$ by $\colm{C}$\footnote{i.e. $\colm{C} \cdot \colm{Q} + \colm{R} = \colm{P}$ (as integers) and $0 \leq \colm{R} < \colm{C}$.} \emph{iff}
+	\[
+		\colm{lt}_{3}
+		+
+		\colm{eq}_{3} \cdot \colm{lt}_{2}
+		+
+		\colm{eq}_{3} \cdot \colm{eq}_{2} \cdot \colm{lt}_{1}
+		+
+		\colm{eq}_{3} \cdot \colm{eq}_{2} \cdot \colm{eq}_{1} \cdot \colm{lt}_{0}
+		=
+		1
+		\tag{$\bigstar$}
+	\]
+	and
+\end{lem}

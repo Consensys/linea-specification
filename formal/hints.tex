@@ -1,0 +1,24 @@
+\corset{} could be augmented in several ways. \textbf{Hints} could impose, if at all relevant, directionality and intent. For instance we could have hints à la
+\begin{Verbatim}[commandchars=\\\{\}]
+(defconstraint setting-B (:guard A)            
+    (vanishes! B)                                      \textcolor{gray!75}{:hint (expect-known A)}
+                                                       \textcolor{gray!75}{:hint (sets B)}
+        \textcolor{gray!75}{                                               ;; \color{solarized-yellow}{intent and directionality}}
+)
+\end{Verbatim}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+(defconstraint byte-decompositions ()
+    (begin
+        (byte-decomposition CT BYTE_1 ACC_1 VAL_1)     \textcolor{gray!75}{:hint (expect-known VAL_1)}
+        \textcolor{gray!75}{                                               :hint (implicitly-defines BYTE_1 ACC_1)}
+        \textcolor{gray!75}{                                               ;; \color{solarized-yellow}{intent and directionality}}
+
+	(byte-decomposition CT BYTE_2 ACC_2 VAL_2)     \textcolor{gray!75}{:hint (expect-known BYTE_2)}
+        \textcolor{gray!75}{                                               :hint (implicitly-defines VAL_2 ACC_2)}
+        \textcolor{gray!75}{                                               :hint (imposes-smallness VAL_2 16)}
+        \textcolor{gray!75}{                                               ;; \color{solarized-yellow}{intermediary lemmas}}
+	)
+)
+\end{Verbatim}
+And when patterns emerge (as they very quickly will) we can start factorizing them into \corset{} functions that produce the hints for us. 

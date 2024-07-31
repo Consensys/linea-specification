@@ -1,0 +1,119 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below assume that }
+		\left\{ \begin{array}{lcl}
+			\peekScenario     _{i}      & = & 1 \\
+			\scenEcrecover    _{i}      & = & 1 \\
+			\scenPrcSuccess   _{i}      & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+We are thus assuming that the present row is the first of the second phase of dealing with the \inst{ECRECOVER} precompile.
+We are also assuming that $\scenPrcSuccess \equiv 1$.
+We remind the reader that success of the \inst{ECRECOVER} precompile only means that it was provided with sufficient gas, not that an address was effectively recovered.
+\begin{description}
+	\item[\underline{Miscellaneous-row $n^°(i + \prcStandardSuccessSecondMiscRowOffset)$:}]
+		\begin{description}
+			\item[\underline{Setting lookup flags:}]
+				we impose
+				\[
+					\weightedMiscFlagSum
+					{i}{\prcStandardSuccessSecondMiscRowOffset}
+					=
+					\miscMmuWeight \cdot \locAddressRecoverySuccess
+				\]
+				in other words
+				\[
+					\left\{ \begin{array}{lclr}
+						\miscExpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\trash) \\
+						\miscMmuFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locAddressRecoverySuccess & (\trash) \\
+						\miscMxpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\trash) \\
+						\miscOobFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\trash) \\
+						\miscStpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\trash) \\
+					\end{array} \right.
+				\]
+		\end{description}
+		\saNote{} In other words the ``result transfer'' step of a call to the \inst{ECRECOVER} only required if the call is
+		(\emph{a}) is successful (i.e. is given sufficient gas) and
+		(\emph{b}) is successful in recovering an address (as measured by $\locAddressRecoverySuccess \equiv 1$.)
+		\begin{description}
+			\item[\underline{\mmuMod{} data:}]
+				\If $\miscMmuFlag_{i + \prcStandardSuccessSecondMiscRowOffset} = 1$ \Then we impose
+				\[
+					\setMmuInstructionParametersExoToRamTransplants {
+						anchorRow = i                                     ,
+						relOffset = \prcStandardSuccessSecondMiscRowOffset ,
+						sourceId  = 1 + \hubStamp_{i}                     ,
+						targetId  = 1 + \hubStamp_{i}                     ,
+						size      = \evmWordSize                          ,
+						exoSum    = \exoWeightEcdata                      ,
+						phase     = \phaseEcrecoverResult                 ,
+						}
+				\]
+				\saNote{} Recall that the return data \textbf{o} of a successful call to the \inst{ECRECOVER} precompile which successfully recovers an address is a $\evmWordSize$ byte string $\textbf{o} \in \mathbb{B}_{\evmWordSize}$ is a string of composed of 12 (leading) zero bytes followed by 20 bytes making up the recovered Ethereum public address.
+		\end{description}
+	\item[\underline{Miscellaneous-row $n^°(i + \prcStandardSuccessThirdMiscRowOffset)$:}]
+		\begin{description}
+			\item[\underline{Setting lookup flags:}]
+				we impose
+				\[
+					\weightedMiscFlagSum
+					{i}{\prcStandardSuccessThirdMiscRowOffset}
+					=
+					\miscMmuWeight
+					\cdot
+					\left[ \begin{array}{l}
+						\cdot \; \locAddressRecoverySuccess   \\
+						\cdot \; \locOobResultNonzeroRac      \\
+					\end{array} \right]
+				\]
+				in other words
+				\[
+					\left\{ \begin{array}{lclc}
+						\miscExpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                                                   & (\trash) \\
+						\miscMmuFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \locAddressRecoverySuccess \cdot \locOobResultNonzeroRac & (\trash) \\
+						\miscMxpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                                                   & (\trash) \\
+						\miscOobFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                                                   & (\trash) \\
+						\miscStpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                                                   & (\trash) \\
+					\end{array} \right.
+				\]
+		\end{description}
+		\saNote{} In other words the ``result transfer'' step of a call to the \inst{ECRECOVER} only required if the call is
+		(\emph{a}) is successful (i.e. is given sufficient gas) and
+		(\emph{b}) is successful in recovering an address (as measured by $\locAddressRecoverySuccess \equiv 1$.)
+		\begin{description}
+			\item[\underline{\mmuMod{} data:}]
+				\If $\miscMmuFlag_{i + \prcStandardSuccessThirdMiscRowOffset} = 1$ \Then we impose
+				\[
+					\setMmuInstructionParametersRamToRamSansPadding {
+						anchorRow       = i                                     ,
+						relOffset       = \prcStandardSuccessThirdMiscRowOffset ,
+						sourceId        = 1 + \hubStamp_{i}                     ,
+						targetId        = \cn_{i}                               ,
+						sourceOffsetLo  = 0                                     ,
+						size            = \evmWordSize                          ,
+						referenceOffset = \locPrcRao                            ,
+						referenceSize   = \locPrcRac                            ,
+						}
+				\]
+				\saNote{} Recall that the return data \textbf{o} of a successful call to the \inst{ECRECOVER} precompile which successfully recovers an address is a $\redm{\evmWordSize}$ byte string $\textbf{o} \in \mathbb{B}_{\evmWordSize}$ composed of 12 (leading) zero bytes followed by 20 bytes making up the recovered Ethereum public address.
+		\end{description}
+	\item[\underline{Context-row $n^°(i + \prcStandardSuccessCallerContextRowRowOffset)$:}] 
+		we impose
+		\[
+			\provideReturnData {
+				anchorRow          = i                                            ,
+				relOffset          = \prcStandardSuccessCallerContextRowRowOffset ,
+				returnDataReceiver = \cn_{i}                                      ,
+				returnDataProvider = 1 + \hubStamp_{i}                            ,
+				returnDataOffset   = 0                                            ,
+				returnDataSize     = \evmWordSize \cdot \locAddressRecoverySuccess   ,
+			}
+			% \provideReturnData
+			% {i}{4} 
+			% {\cn_{i}                                   }         % Return data receiver
+			% {1 + \hubStamp_{i}                         }         % Return data provider
+			% {0                                         }         % Return data offset
+			% {\evmWordSize \cdot \locAddressRecoverySuccess}         % Return data size 
+		\]
+\end{description}

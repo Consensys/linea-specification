@@ -1,0 +1,41 @@
+The present section describes the lookup between the \hubMod{} and the \btcMod{} module.
+\begin{description}
+	\item[Row selector:]
+		we set
+		\[
+			\col{sel}_{i} \define
+			\left[ \begin{array}{cr}
+				\cdot & \peekStack       _{i}  \\
+				\cdot & (1 - \xAhoy      _{i}) \\
+				\cdot & \stackDecBtcFlag _{i}  \\
+				\cdot & \decFlag {1}     _{i}  \\
+			\end{array} \right]
+		\]
+		\saNote{}
+		Recall from section~(\ref{hub: instruction handling: btc}) that,
+		along stack-rows ($\peekStack \equiv 1$),
+		the conjunction of $\stackDecBtcFlag \equiv 1$ and $\decFlag{1} \equiv 1$
+		characterizes the \inst{BLOCKHASH} opcode.
+	\item[Source columns:] ---
+		\begin{multicols}{3}
+			\begin{enumerate}
+				\item $\batchNum          _{i}$
+				\item[\vspace{\fill}]
+				\item $\stackItemValHi{1} _{i}$
+				\item $\stackItemValLo{1} _{i}$
+				\item $\stackItemValHi{4} _{i}$
+				\item $\stackItemValLo{4} _{i}$
+			\end{enumerate}
+		\end{multicols}
+	\item[Target columns:] ---
+		\begin{multicols}{3}
+			\begin{enumerate}
+				\item $\relBlock         _{j}$
+				\item[\vspace{\fill}]
+				\item $\blockNumber\high _{j}$
+				\item $\blockNumber\low  _{j}$
+				\item $\resHi            _{j}$
+				\item $\resLo            _{j}$
+			\end{enumerate}
+		\end{multicols}
+\end{description}

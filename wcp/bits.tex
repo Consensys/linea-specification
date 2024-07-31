@@ -1,0 +1,16 @@
+We constrain the $\negCol{1}$, $\negCol{2}$ and $\BITS$ columns.
+\begin{enumerate}
+	\item \If \Big($\ct_{i}=\llargeMO$ \et $\isSlt_{i} + \isSgt_{i} \neq 0$\Big) \Then, setting $j := i - \llargeMO$,
+		\begin{enumerate}
+			\item $\byteCol{1}  _{j} = \sum   _{k = 0}^{7} 2^{7 - k} \BITS_{j + k}$
+			\item $\byteCol{3}  _{j} = \sum   _{k = 0}^{7} 2^{7 - k} \BITS_{j + k + 8}$
+			\item $\negCol{1}   _{j} = \BITS  _{j}$
+			\item $\negCol{2}   _{j} = \BITS  _{j + 8}$
+		\end{enumerate}
+	\item \If $\maxCt_{i} \neq \llargeMO$ \Then $\negCol{1}_{i}=\negCol{2}_{i}=0$ 
+\end{enumerate}
+\saNote{} Since the \col{IS\_XXX} flags are \emph{exclusive binary columns}, see note~(\ref{wcp: note: IS_XXX are exclusive binary columns}), the condition ``$\isSlt_{i} + \isSgt_{i} \neq 0$'' is equivalent to ``$\isSlt_{i}=1$ \Or $\isSgt_{i}=1$.''
+
+\saNote{} Recall that the purpose of the $\negCol{1}$ and $\negCol{2}$ columns is to capture \emph{when required} the sign bits of the arguments of a \wcpMod{} module instruction.
+This is required precisely for signed instructions (i.e. \inst{SLT} and \inst{SGT}) whose arguments are ``large.''
+The above captures the intuition that \If arguments are ``small'', in the sense that performing the byte decompositions of all high and low parts involved can be done in fewer than $\llarge$ rows i.e. $\maxCt \neq \llargeMO$, \Then the sign bits may safely be set to $0$. 

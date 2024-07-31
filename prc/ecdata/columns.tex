@@ -1,0 +1,110 @@
+The first batch of columns arrives to the present module from the \mmioMod{} module:
+\begin{enumerate}
+      \item \ecDataStamp{}: %\markAsExtractedFromMmio{}:
+            module stamp; has simple $0/1$ increments;
+      \item \ecdataId{}: %\markAsExtractedFromMmio{}:
+            unique identifier of a precompile \inst{CALL} triggering the present module;
+            contains a context number derived from the \hubStamp{};
+      \item \ecdataIndex{}: %\markAsExtractedFromMmio{}:
+            data limb index;
+      \item \ecdataLimb{}: %\markAsExtractedFromMmio{}:
+            data limb; either input or output;
+      \item \ecdataTotalSize{}: %\markAsExtractedFromMmio{}:
+            total size of input or output; Especially relevant for \inst{ECPAIRING} which has variable size inputs;
+      \item \ecdataPhase{}: %\markAsExtractedFromMmio{}:
+            phase identifying which precompile is being called and whether the data represents inputs or outputs;
+      \item \indexMax{}: %\markAsExtractedFromMmio{}:
+            maximum value of \ecdataIndex{} for a given phase;
+      \item \ecdataSuccessBit{} \hubMmuMmioPrediction{} \markAsPartiallyJustifiedHere{}:
+            success bit of the operation;
+\end{enumerate}
+
+The following columns partake in the ``instruction decoding'' of the above:
+\begin{multicols}{2}
+      \begin{enumerate}[resume]
+            \item \isEcrecoverData
+            \item \isEcrecoverResult
+            \item \isEcaddData
+            \item \isEcaddResult
+            \item \isEcmulData
+            \item \isEcmulResult
+            \item \isEcpairingData
+                  \newcounter{enumTemp}
+                  \setcounter{enumTemp}{\theenumi}\item \isEcpairingResult
+      \end{enumerate}
+\end{multicols}
+The following columns partake in the ``instruction decoding'' of the above:
+\begin{enumerate}[resume] \setcounter{enumi}{1+\theenumTemp}
+      \item \totalPairings:
+            In the context of pairings, equals to the number of pairings passed to the precompile;
+      \item \accPairings: In the context of pairings, counts the pairs starting from 1. It is equal to 0 otherwise.
+      \item \both{\internalChecksPassed}:
+            binary column, constant for a given \ecdataId, which lights up when all the internal checks passed.
+      \item \hurdle:
+            binary columns used to compute the value of \internalChecksPassed;
+      \item $\byteCol{$\Delta$}$:
+            byte column; used to justify that \ecdataId{} increments;
+\end{enumerate}
+
+The following batch of columns is relevant in the context of \inst{ECPAIRING}.
+In what follows we refer to data supposedly containing a $C_1$ point as \textbf{small points} and to data supposedly containing a $G_2$ point as \textbf{large points}.
+\begin{enumerate}[resume]
+      \item \ct:
+            for each pair of points, counts from 0 to \ctMaxSmallPoint{} and from 0 to \ctMaxLargePoint{} (see definitions in \ref{ec data: setting ct, ct_max, is_large, is_small}) along the coordinate of the small and large point respectively;
+      \item \maxCt:
+            the maximum value $\ct$ should count to;
+      \item \isSmallPoint:
+            binary column, which lights up when the point is small;
+      \item \isLargePoint:
+            binary column, which lights up when the point is large;
+      \item \notOnGTwo{} \ecDataPrediction{}:
+            binary column, which lights up on the 8 lines of a point that is not on $G_2$ (the second point, in the context of pairings). If 2 (or more) points are not on $G_2$, it only lights up for the first one. An external circuit must then justify that this point is indeed not on $G_2$;
+      \item \notOnGTwoAcc:
+            binary column which lignts up when $\notOnGTwo$ equals $1$;
+      \item \notOnGTwoAccMax:
+            binary column which lights up if there is a point that is not on $G_2$ (equals to the final value of \notOnGTwoAcc);
+      \item \isInfinity:
+            binary column;
+            constant along the 4 or 8 rows occupied by a (supposed) curve point;
+            lights up precisely when all coordinates of said point vanish;
+      \item \both{\trivialPairing}: binary column; the last data row of each pairing indicates if we are in a trivial case, in the sense that all small points belongs to $C_1$ and all large points are points at infinity;
+      \item \both{\membershipTestRequired}:
+            constant along the 8 rows containing a supposed $G_2$ point and zero along $C_1$ points. It lights up when the large point is predicted to be not on $G_2$ or when the small point is the point at infinity;
+      \item \both{\acceptablePairOfPoints}:
+            constant along the 12 rows of a pair of points. It lights up when the small point is on the curve, the large point is predicted to be on the $G_2$ subgroup and neither of the points is the point at infinity;
+\end{enumerate}
+
+The following columns defines the external circuits interface:
+\begin{enumerate}[resume]
+      \item \both{\csEcrecover}: indicates if inputs should be sent to the circuit for \inst{ECRECOVER};
+      \item \both{\csEcadd}: indicates if inputs should be sent to the circuit for \inst{ECADD};
+      \item \both{\csEcmul}: indicates if inputs should be sent to the circuit for \inst{ECMUL};
+      \item \both{\csEcpairing}: indicates if inputs should be sent to the circuit for \inst{ECPAIRING};
+      \item \both{\csGTwo}: indicates if inputs should be sent to the circuit for $G_2$ membership test;
+\end{enumerate}
+The following columns are used for the $\wcpMod$ lookup and the $\extMod$ lookup respectively
+\begin{multicols}{2}
+      \begin{enumerate}[resume]
+            \item \wcpFlag
+            \item \wcpArgOneHi
+            \item \wcpArgOneLo
+            \item \wcpArgTwoHi
+            \item \wcpArgTwoLo
+            \item \wcpRes
+            \item \wcpInst
+                  % \item[\vspace{\fill}]
+                  % \item[\vspace{\fill}]
+                  % \item[\vspace{\fill}]
+            \item \extFlag
+            \item \extArgOneHi
+            \item \extArgOneLo
+            \item \extArgTwoHi
+            \item \extArgTwoLo
+            \item \extArgThreeHi
+            \item \extArgThreeLo
+            \item \extResHi
+            \item \extResLo
+            \item \extInst
+            \item[\vspace{\fill}]
+      \end{enumerate}
+\end{multicols}

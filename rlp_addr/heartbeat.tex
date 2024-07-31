@@ -1,0 +1,43 @@
+The heartbeat of the rlp module is very simple:
+\begin{enumerate}
+  \item $\rlpAddrStamp_{0} = 0$;
+  \item \If $\recipe{1}_{i} + \recipe{2}_{i} = 0$ \Then
+    \[
+      \left\{ \begin{array}{lcl}
+        \ct_{i}               & = & 0 \quad (\trash) \\
+        \addr\high_{i}        & = & 0 \\
+        \addr\low _{i}        & = & 0 \\
+        \rawAddrHi _{i}       & = & 0 \\
+        \depAddr\high_{i}     & = & 0 \\
+        \depAddr\low _{i}     & = & 0 \\
+      \end{array} \right.
+      \quad\text{and}\quad
+      \left\{ \begin{array}{lcl}
+        \salt\high_{i}        & = & 0 \quad (\trash) \\
+        \salt\low _{i}        & = & 0 \quad (\trash) \\
+        \nonce_{i}            & = & 0 \quad (\trash) \\
+        \genByte_{i}          & = & 0 \quad (\trash) \\
+        \genBit_{i}           & = & 0 \quad (\trash) \\
+      \end{array} \right.
+    \]
+  \item $\rlpAddrStamp_{i + 1} \in \{ \rlpAddrStamp_{i}, 1 + \rlpAddrStamp_{i} \}$;
+  \item \If $\rlpAddrStamp_{i} \neq \rlpAddrStamp_{i - 1}$ \Then $\ct_{i} = 0$;
+\end{enumerate}
+We now lay out the \textbf{counter-cycle} length depending on the ``recipe'': 
+\begin{enumerate}[resume]
+  \item \If $\recipe{1}_{i} = 1$
+    \begin{enumerate}
+      \item \If $\ct_{i} \neq \mediumPO$ \Then $\ct_{i + 1} = 1 + \ct_{i}$;
+      \item \If $\ct_{i} =    \mediumPO$ \Then $\rlpAddrStamp_{i + 1} = 1 + \rlpAddrStamp_{i}$;
+    \end{enumerate}
+  \item \If $\recipe{2}_{i} = 1$
+    \begin{enumerate}
+      \item \If $\ct_{i} \neq \mediumMO$ \Then $\ct_{i + 1} = 1 + \ct_{i}$;
+      \item \If $\ct_{i} = \mediumMO$ \Then $\rlpAddrStamp_{i + 1} = 1 + \rlpAddrStamp_{i}$;
+    \end{enumerate}
+\end{enumerate}
+What follows are finalization constraints which ensure that the last counter-cycle doesn't end ``midway'':
+\begin{enumerate}[resume]
+  \item \If $\recipe{1}_{N} = 1$ \Then $\ct_{N} = \mediumPO$
+  \item \If $\recipe{2}_{N} = 1$ \Then $\ct_{N} = \mediumMO$
+\end{enumerate}

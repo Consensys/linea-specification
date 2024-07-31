@@ -1,0 +1,27 @@
+\begin{center}
+		\boxed{%
+			\text{The constraints below apply whenever }
+			\left\{ \begin{array}{lcl}
+				\peekScenario          _{i + \callFirstScenarioRowOffset}     & = & \one \\
+				\scenCallEoa           _{i + \callFirstScenarioRowOffset}     & = & \one \quad (\trash) \\
+			\end{array} \right.}
+\end{center}
+We indicate $\scenCallEoa \equiv 1$ only for greater clarity but it should be omitted from implementations.
+Indeed, all constraints below are guarded by a more stringent precondition. 
+We update the current execution context's return data.
+The current execution context receives empty return data.
+We must differentiate between reverted \inst{CALL}'s and unreverted ones.
+\begin{description}
+	\item[\underline{The   reverted case: account-row $n^°(i + \callEoaWillRevertCallerContextRowOffset)$:}]
+		\If $\scenCallEoaSuccessWillRevert_{i + \callFirstScenarioRowOffset} = 1$ \Then
+		\[
+			\nonContextProvidesEmptyReturnData
+			{i}{\callEoaWillRevertCallerContextRowOffset}
+		\]
+	\item[\underline{The unreverted case: account-row $n^°(i + \callEoaWontRevertCallerContextRowOffset)$:}]
+		\If $\scenCallEoaSuccessWontRevert_{i + \callFirstScenarioRowOffset} = 1$ \Then
+		\[
+			\nonContextProvidesEmptyReturnData
+			{i}{\callEoaWontRevertCallerContextRowOffset}
+		\]
+\end{description}

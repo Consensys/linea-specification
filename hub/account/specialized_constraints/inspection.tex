@@ -1,0 +1,85 @@
+\paragraph*{Account opening constraints.} The following set of constraints applies whenever an account is opened either to receive or spend funds.
+\[
+	\accOpening {\relof} _{i}
+	\iff
+	\left\{ \begin{array}{lcl}
+		\accSameNonce      {i}{\relof} \\ 
+		\accSameCode       {i}{\relof} \\
+		\accSameDeployment {i}{\relof} \\
+	\end{array} \right.
+\]
+
+\paragraph*{Account viewing constraints.} The following set of constraints imposes that account variables are only read but not modified
+\[
+	\accViewing {\relof} _{i}
+	\iff
+	\left\{ \begin{array}{lcl}
+		\accOpening      {\relof} _{i} \\ 
+		\accSameBalance  {i}{\relof} \\ 
+	\end{array} \right.
+\]
+
+\paragraph*{Account deletion constraints.} The following set of constraints imposes the deletion of an account:
+\[
+	\accDeletion {i}{\relof}
+	\iff
+	\left\{ \begin{array}{lclr}
+		\accNonce\new      _{i + \relof} & \!\!\! = \!\!\! & 0              \\
+		\accBalance\new    _{i + \relof} & \!\!\! = \!\!\! & 0              \\
+		\accCodesize\new   _{i + \relof} & \!\!\! = \!\!\! & 0              \\
+		\accHasCode\new    _{i + \relof} & \!\!\! = \!\!\! & 0              \\
+		\accCodehashHi\new _{i + \relof} & \!\!\! = \!\!\! & \emptyKeccakHi  & (\trash) \\
+		\accCodehashLo\new _{i + \relof} & \!\!\! = \!\!\! & \emptyKeccakLo  & (\trash) \\
+		\multicolumn{3}{l}{\accFreshNewDeploymentStatusAndNumber{\relof}_{i}} \\
+	\end{array} \right.
+\]
+
+\paragraph*{Working with the same account.}
+The following collection of constraints which spans two consecutive rows impose that the \zkEvm{} has a view into the same deployment over two consecutive rows:
+\[
+	\accSameAddr  {i}{\reluo}{\reldo}
+	\iff
+	\left\{ \begin{array}{lcl}
+		\accAddress\high_{i + \reluo}	& \!\!\! = \!\!\! & \accAddress\high_{i + \reldo} \\ 
+		\accAddress\low _{i + \reluo}	& \!\!\! = \!\!\! & \accAddress\low _{i + \reldo} \\
+	\end{array} \right.
+\]
+and 
+\[
+	\accSameAddrAndDepNum  {i}{\reluo}{\reldo}
+	\iff
+	\left\{ \begin{array}{lcl}
+		\multicolumn{3}{l}{\accSameAddr  {i}{\reluo}{\reldo}} \\
+		\accDepNumber_{i + \reluo} 	& \!\!\! = \!\!\! & \accDepNumber\new_{i + \reldo} \\
+	\end{array} \right.
+\]
+and
+\[
+	\accSameAddrDepNumAndDepStage  {i}{\reluo}{\reldo}
+	\iff
+	\left\{ \begin{array}{lcl}
+		\multicolumn{3}{l}{\accSameAddrAndDepNum  {i}{\reluo}{\reldo}} \\
+		\accDepStatus_{i + \reluo} & \!\!\! = \!\!\! & \accDepStatus\new_{i + \reldo} \\
+	\end{array} \right.
+\]
+\saNote{} These constraints should only be applied when (it is known that) $\peekAccount_{i} = \peekAccount_{i - \relof} = 1$.
+
+
+% TODO: fix this
+% \paragraph*{Deploying empty bytecode.}
+% The following collection of constraints applies whenever one deploys empty byte code (e.g. when encountering a \inst{STOP} in a deployment context or when \inst{RETURN}ing with zero size in a deployment context.)
+% \[
+% 	\accDeployEmptyBytecode{\relof}
+% 	\iff
+% 	\left\{ \begin{array}{lclr}
+% 		\accAddress\high   _{i + \relof} + & \!\!\! = \!\!\! & \codeAddress\high_{i}	\\
+% 		\accAddress\low	   _{i + \relof} + & \!\!\! = \!\!\! & \codeAddress\low_{i}	\\
+% 		\accDepNumber      _{i + \relof} + & \!\!\! = \!\!\! & \codeDepNum_{i}			\\
+% 		\accDepStatus      _{i + \relof} + & \!\!\! = \!\!\! & 1						& (\trash)	\\
+% 		\accDepStatus\new  _{i + \relof} + & \!\!\! = \!\!\! & 0						& (\trash)	\\
+% 		\accDepStatus\new  _{i + \relof} + & \!\!\! = \!\!\! & \accDepStatus_{i} - 1	\\
+% 		\accCodesize\new   _{i + \relof} + & \!\!\! = \!\!\! & 0						\\
+% 		\accHasCode\new    _{i + \relof} + & \!\!\! = \!\!\! & 0						\\
+% 		\multicolumn{3}{l}{\accSameCodeHash_{i}}								& (\trash)	\\
+% 	\end{array} \right.
+% \]

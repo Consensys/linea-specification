@@ -1,0 +1,50 @@
+We define
+$\setMmuInstructionParametersBlakeName _{i} \big[ \; \relof \; \big]$
+as follows
+\[
+        \left\{ \begin{array}{l}
+                \setMmuInstructionParametersBlake {
+                        anchorRow      = i                     ,
+                        relOffset      = \relof                ,
+                        sourceId       = \col{src\_id}         ,
+                        targetId       = \col{tgt\_id}         ,
+                        sourceOffsetLo = \col{src\_offset\_lo} ,
+                        successBit     = \col{success\_bit}    ,
+                        limbOne        = \col{limb\_1}         ,
+                        limbTwo        = \col{limb\_2}         ,
+                        }
+                \vspace{2mm} \\
+                \qquad \qquad \define
+                \setMmuInstruction {
+                        mmuInstruction  = \mmuInstBlake         ,
+                        anchorRow       = i                     ,
+                        relOffset       = \relof                ,
+                        sourceId        = \col{src\_id}         ,
+                        targetId        = \col{tgt\_id}         ,
+                        auxiliaryId     = \nothing              ,
+                        sourceOffsetHi  = \nothing              ,
+                        sourceOffsetLo  = \col{src\_offset\_lo} ,
+                        targetOffsetLo  = \nothing              ,
+                        size            = \nothing              ,
+                        referenceOffset = \nothing              ,
+                        referenceSize   = \nothing              ,
+                        successBit      = \col{success\_bit}    ,
+                        limbOne         = \col{limb\_1}         ,
+                        limbTwo         = \col{limb\_2}         ,
+                        exoSum          = \nothing              ,
+                        phase           = \nothing              ,
+                } \\
+        \end{array} \right.
+\]
+\saNote{}
+The values
+``\col{limb\_1}'' and
+``\col{limb\_2}''
+are best understood as \textbf{predictions}.
+The \mmuMod{} instruction will fill them with
+$\col{r} \in \mathbb{B}_{4}$, the number of rounds as extracted from memory, of the \inst{CALL} to \inst{BLAKE2f} and
+$\col{f} \in \mathbb{B}_{1}$, the final block indicator (which is expected to be a bit i.e. $\in \{ 0, 1 \}$.)
+
+\saNote{}
+The \texttt{Exo sum} and \texttt{Phase} are set in the \mmuMod{} module, depending on the \texttt{Success bit},
+see section~(\ref{mmu: instructions: blake}).

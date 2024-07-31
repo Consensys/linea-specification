@@ -1,0 +1,98 @@
+The present section describes the data layout for the \inst{JUMPI} case. As such:
+\[
+	\boxed{\text{All constraints in this subsection further assume }\oobInstIsJumpI_{i} = 1}
+\]
+We remind the reader that the objective of the \oobMod{} module in this particular case is to perform the following tasks
+\green{(\emph{a})} compare \locPcNew{} and \locCodeSize{}
+\green{(\emph{b})} compare the jump condition \locJumpCondition{}, the second argument to the \inst{JUMPI} instruction, to zero.
+
+\noindent We thus introduce the following (local) shorthands:
+\[
+	\left\{ \begin{array}{lclr}
+		\locPcNewHi                 & \define & \oobDataCol {1} _{i} \\
+		\locPcNewLo                 & \define & \oobDataCol {2} _{i} \\
+		\locJumpConditionHi         & \define & \oobDataCol {3} _{i} \\
+		\locJumpConditionLo         & \define & \oobDataCol {4} _{i} \\
+		\locCodeSize                & \define & \oobDataCol {5} _{i} \\
+		\locJumpNotAttempted        & \define & \oobDataCol {6} _{i}  & \prediction \\
+		\locJumpGuaranteedException & \define & \oobDataCol {7} _{i}  & \prediction \\
+		\locJumpMustBeAttempted     & \define & \oobDataCol {8} _{i}  & \prediction \\
+	\end{array} \right.
+\]
+We impose the following constraints:
+\begin{description}
+	\item[\underline{Row n°$(i)$ and n°$(i + 1)$:}]
+		we impose the following:
+		\[
+			\left\{ \begin{array}{l}
+				\oobCallToLt
+				{i}{0}
+				{\locPcNewHi}{\locPcNewLo}
+				{0}{\locCodeSize}
+				\vspace{2mm} \\
+				\oobCallToIszero
+				{i}{1}
+				{\locJumpConditionHi}{\locJumpConditionLo}
+				\\
+			\end{array} \right.
+		\]
+		we define the following associated shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locValidPcNew          & \define & \outgoingResLo _{i}     \\
+				\locJumpConditionIsZero & \define & \outgoingResLo _{i + 1} \\
+			\end{array} \right.
+		\]
+		It follows that
+		$\locValidPcNew          = 1 \iff \locPcNew         < \locCodeSize$ and
+		$\locJumpConditionIsZero = 1 \iff \locJumpCondition = 0$.
+	\item[\underline{Setting \hubMod{} predictions:}] we impose 
+		\[
+			\left\{ \begin{array}{lclcl}
+				\locJumpNotAttempted        & = & \locJumpConditionIsZero       \\
+				\locJumpGuaranteedException & = & (1 - \locJumpConditionIsZero)  & \cdot & (1 - \locValidPcNew) \\
+				\locJumpMustBeAttempted     & = & (1 - \locJumpConditionIsZero)  & \cdot & \locValidPcNew       \\
+			\end{array} \right.
+		\]
+\end{description}
+\saNote{} A \inst{JUMPI} instruction can either
+(\emph{a}) not be triggered at all (zero jump condition)
+(\emph{b}) be triggered but immediately produce an exception due to jumping out of bounds of the code size or
+(\emph{c}) be triggered and not immediately fail for the previous reason.
+These cases correspond, in order, to the following possibilities
+(\emph{a}) $\locJumpNotAttempted         \equiv 1$,
+(\emph{b}) $\locJumpGuaranteedException  \equiv 1$ and
+(\emph{c}) $\locJumpMustBeAttempted      \equiv 1$ respectively.
+In the third case the \zkEvm{} must retrieve the corresponding byte from the bytecode.
+The \inst{JUMPI} may still fail yet due either
+(\emph{a}) landing either on a byte which ``belongs'' to some \inst{PUSHX} instruction or
+(\emph{b}) landing on a byte not contributing to the argument of a \inst{PUSHX} instruction but not coding for the \inst{JUMPDEST} opcode either. 
+
+\saNote{} The above has implicit consequences which we list below which don't need to be incorporated into the implementation:
+\begin{enumerate}
+	\item $\locJumpNotAttempted        $ is binary \quad (\trash)
+	\item $\locJumpGuaranteedException $ is binary \quad (\trash)
+	\item $\locJumpMustBeAttempted     $ is binary \quad (\trash)
+	\item furthermore
+		\[
+			\left[ \begin{array}{cr}
+				+ & \locJumpNotAttempted        \\
+				+ & \locJumpGuaranteedException \\
+				+ & \locJumpMustBeAttempted     \\
+			\end{array} \right]
+			\equiv 1
+			\quad (\trash)
+		\]
+\end{enumerate}
+The table below subsumes the intent behind the $\oobDataCol{6}$  / $\oobDataCol{7}$ / $\oobDataCol{8}$ flags for \inst{JUMP} and \inst{JUMPI} instructions.
+\begin{figure}[!h]
+	\renewcommand{\arraystretch}{1.3}
+	\[
+		\begin{array}{|l|c|c|c|} \hline
+                                     & \text{interpretation of } ``\oobDataCol{6} = 1" & \text{interpretation of } ``\oobDataCol{7} = 1" & \text{interpretation of } ``\oobDataCol{8} = 1" \\ \hline \hline
+			\inst{JUMP}  & \nothing                                        & \text{the jump is guaranteed to fail}           & \text{the jump must be attempted}               \\ \hline
+			\inst{JUMPI} & \text{the jump won't be attempted}              & \text{the jump is guaranteed to fail}           & \text{the jump must be attempted}               \\ \hline
+		\end{array}
+	\]
+	\label{fig: oob: jump case interpretation of oob events}
+\end{figure}

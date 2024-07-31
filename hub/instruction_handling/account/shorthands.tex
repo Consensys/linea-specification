@@ -1,0 +1,25 @@
+We define some shorthands
+\[
+	\left\{ \begin{array}{lcl}
+		\locRequiresTrimming & \define & \left[ \begin{array}{cr} + & \decFlag{1}_{i} \\ + & \decFlag{2}_{i} \\ + & \decFlag{3}_{i} \\ \end{array} \right] \\
+		\locCurrentAccount   & \define & \stackDecAccFlag             _{i} - \locRequiresTrimming \\
+		\locRawAddressHi     & \define & \stackItemValHi        {1}   _{i}                        \\
+		\locRawAddressLo     & \define & \stackItemValLo        {1}   _{i}                        \\
+		\locAccountAddressHi & \define & \cnAccountAddress\high       _{i + 1}                    \\
+		\locAccountAddressLo & \define & \cnAccountAddress\low        _{i + 1}                    \\
+		\locCodeAddressHi    & \define & \cnCodeAddress\high          _{i + 1}                    \\
+		\locCodeAddressLo    & \define & \cnCodeAddress\low           _{i + 1}                    \\
+		\locWarmth           & \define & \accWarmth                   _{i + 1}                    \\
+	\end{array} \right.
+\]
+Thus by construction
+\[
+	\begin{array}{|l||c||c|c|c|c|c|} \hline
+		\INST              & \locRequiresTrimming & \locCurrentAccount \\ \hline\hline % & \stackDecTrmFlag
+		\inst{BALANCE}     & \oneCell             & \gZero             \\ \hline       % & \oneCell
+		\inst{EXTCODESIZE} & \oneCell             & \gZero             \\ \hline       % & \oneCell
+		\inst{EXTCODEHASH} & \oneCell             & \gZero             \\ \hline       % & \oneCell
+		\inst{CODESIZE}    & \gZero               & \oneCell           \\ \hline       % & \gZero
+		\inst{SELFBALANCE} & \gZero               & \oneCell           \\ \hline       % & \gZero
+	\end{array}
+\]

@@ -1,0 +1,50 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{../../../pkg/draculatheme}
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NF Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\begin{document}
+\begin{verbatim}
+White cells ⬜ represent 0.
+Black cells ⬛ represent 1.
+
+X  ≡ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬛⬛⬛⬛  satisfies Plateau(X, c; CT), c =  12
+                               
+B  ≡ 🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟨🟩🟩🟩  byte column
+
+CT ≡  0 1 2 3 4 5 6 7      ...      15  counter column
+
+Evolution of ACC over the counter-cycle of isolateSuffix:
+=========================================================
+
+CT =  0:  ACC  ≡ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜
+CT =  1:  ACC  ≡ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜
+CT =  2:  ACC  ≡ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜
+CT =  3:  ACC  ≡ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜
+CT =  4:  ACC  ≡ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜
+CT =  5:  ACC  ≡ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜
+CT =  6:  ACC  ≡ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜
+CT =  7:  ACC  ≡ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜
+CT =  8:  ACC  ≡ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜
+CT =  9:  ACC  ≡ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜
+CT = 10:  ACC  ≡ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜
+CT = 11:  ACC  ≡ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜
+CT = 12:  ACC  ≡ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜🟨
+CT = 13:  ACC  ≡ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜🟨🟩
+CT = 14:  ACC  ≡ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜🟨🟩🟩
+CT = 15:  ACC  ≡ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜🟨🟩🟩🟩    ⇐ extracted suffix
+\end{verbatim}
+
+\end{document}
+

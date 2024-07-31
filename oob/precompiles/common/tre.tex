@@ -1,0 +1,66 @@
+The present section describes the remaining computations required for \inst{ECPAIRING}.
+As such:
+\[
+	\boxed{\text{All constraints in this subsection further assume }
+	\oobInstIsEcpairing_{i} = 1 }
+\]
+Besides verifying whether the precompile was provided with sufficient gas we must also check a congruence condition.
+\begin{description}
+	\item[\underline{Row n°$(i + 2)$:}]
+		we impose that
+		\[
+			\oobCallToMod
+			{i}{2}
+			{0}{\locCds}
+			{0}{192}
+		\]
+		and we define the following shorthand
+		\[
+			\locRemainder \define \outgoingResLo_{i + 2}
+		\]
+	\item[\underline{Row n°$(i + 3)$:}]
+		we impose that
+		\[
+			\oobCallToIszero
+			{i}{3}
+			{0}{\locRemainder}
+		\]
+		and we define the following shorthand
+		\[
+			\locPairingSizeIsMultiple \define \outgoingResLo_{i + 3}
+		\]
+	\item[\underline{Row n°$(i + 4)$:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\locPairingSizeIsMultiple = 0$ \Then we impose $\oobNoCall{4}_{i}$.
+			\item \If $\locPairingSizeIsMultiple = 1$ \Then we impose that
+				\[
+					\oobCallToLt
+					{i}{4}
+					{0}{\locCallGas}
+					{0}{\locPrecompileCost}
+				\]
+				where we use the following shorthand
+				\[
+					\locPrecompileCost \define \Big[ 45000 + 34000 \cdot \big( \locCds / 192 \big) \Big]
+				\]
+				we further introduce the following shorthand
+				\[
+					\locInsufficientGas \define \outgoingResLo_{i + 4}
+				\]
+				It follows that $\locCallGas < \locPrecompileCost \iff \locInsufficientGas = 1$.
+		\end{enumerate}
+	\item[\underline{Justifying the remaining \hubMod{} predictions:}]
+		we impose that
+		\[
+			\locHubSuccess =
+			\locPairingSizeIsMultiple \cdot
+			(1 - \locInsufficientGas)
+		\]
+		we further impose that
+		\begin{enumerate}
+			\item \If $\locHubSuccess = 0$ \Then $\locReturnGas = 0$
+			\item \If $\locHubSuccess = 1$ \Then $\locReturnGas = \locCallGas - \locPrecompileCost$
+		\end{enumerate}
+\end{description}
+\saNote{} In other words $\locHubSuccess \equiv 1 \iff$ \Big($\cds \equiv 0 \mod 192$ \et{} $\locCallGas \geq \locPrecompileCost$\Big).

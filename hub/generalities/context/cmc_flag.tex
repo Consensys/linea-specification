@@ -1,0 +1,17 @@
+Below are the associated constraints:
+\begin{enumerate}
+	\item $\cmc$ is binary
+	\item $\cmc$ is $\hubStamp$-constant
+	\item \If $\txExec_{i} = 0$ \Then $\cmc_{i} = 0$
+\end{enumerate}
+Thus the only rows where $\cmc$ may be nonzero are execution rows. Given the $\hubStamp$-constancy condition and the fact that every execution step contains one (or two) stack row(s)\footnote{depending on whether $\tli = 0$ or $\tli = 1$} it suffices to settle its value along $\peekStack$ rows, which is what we do below.
+\begin{enumerate}[resume]
+	\item \If $\peekStack_{i} = 1$ \Then
+		\[
+			\left\{ \begin{array}{l}
+				\If \xAhoy_{i} + \stackDecHaltFlag_{i} +\stackDecCallFlag_{i} + \stackDecCreateFlag_{i} \neq 0 ~ \Then \cmc_{i} = 1 \\
+				\If \xAhoy_{i} + \stackDecHaltFlag_{i} +\stackDecCallFlag_{i} + \stackDecCreateFlag_{i} =    0 ~ \Then \cmc_{i} = 0 \\
+			\end{array} \right.
+		\]
+\end{enumerate}
+

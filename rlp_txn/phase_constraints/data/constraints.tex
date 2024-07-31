@@ -1,0 +1,153 @@
+\begin{center}
+\boxed{\text{In all this section, it is assumed that $\phaseData_{i}=1$.}}
+\end{center}
+
+We remind the reader that $\ispadding$ is $\ct$-constant, and $\isprefix$ is $\ct$-constant and $\phase9$-decrementing(see \ref{constancy_constraints}).
+\begin{enumerate}
+    \item \If $\isprefix_{i}=1$ \Then $\indexData_{i}=0$
+    \item \If $\isprefix_{i}=0$ \Then: 
+    \begin{enumerate}
+        \item \If ($\isprefix_{i-1}=0$ \et ($\lc_{i-1}=1$ or $\ispadding_{i-1}=1$)) \Then $\indexData_{i}=\indexData_{i-1} + 1$
+        \item \Else $\indexData_{i}=\indexData_{i-1}$
+    \end{enumerate}
+\end{enumerate}
+In other words, $\indexData$ starts at 0 and increases by one after a $\limb$ is constructed during the data concatenation phase or after a padding row. %It is equivalent to $\indexData_{i} = (1 - \isprefix_{i}) \cdot (\indexData_{i-1} + (1 - \isprefix_{i-1}) \cdot \lc_{i-1} + \ispadding_{i-1})$. Note that this column is useful only to reconstruct the data.
+\begin{enumerate}[resume]
+    \item \If $\ispadding_{i} = 0$ \Or $\isprefix_{i}=1$ \Then $\phasend_{i}=0$. In other words we prevent a phase transition before the padding rows.
+    \item \If ($\isprefix_{i}=0$ \et $\ispadding_{i} = 1$ \et $\done_{i}=1$) \Then $\phasend_{i}=1$
+    \item \If $\phaseData_{i-1}=0$ \Then:
+    Constraint on $\outgoingDataSymb$ as DataSize and DataCost are initialised at the begining of the phase:
+    \begin{enumerate}
+        \item $\outgoingDataSymb\high_{i}=\dataGasCost_{i}$
+        \item $\outgoingDataSymb\low_{i}=\phasesize_{i}$
+    \end{enumerate} 
+    We define the trivial case with no data:
+    \begin{enumerate}[resume]
+        \item $\isprefix_{i}=1$
+        \item \If $\phasesize_{i}=0$ \Then $\nbstep_{i}=1$
+        \item \If $\phasesize_{i} \ne 0$ \Then $\nbstep_{i}=8$ 
+    \end{enumerate}
+\end{enumerate}
+We constrain the trivial case:
+\begin{enumerate}[resume] 
+    \item \If ($\isprefix_{i} \ne 0$ \et $\nbstep_{i} \ne 8$) \Then:
+    \begin{enumerate}
+        \item $\limb_{i}=\rlprefixShortInt \cdot 256 ^{\llargeMO}$
+        \item $\limbsize_{i}=1$
+        \item $\ispadding_{i} =0$
+        \item $\isprefix_{i+1}=0$
+        \item $\ispadding_{i+1}=1$
+        \item $\nbstep_{i+1}=1$
+        \saNote{} We remind the reader that, as $\nbstep_{i+1}=1$, then $\done_{i+1}=1$ and then $\phasend_{i+1}=1$.
+    \end{enumerate}
+\end{enumerate}
+We constrain the general case, we first compute the RLP prefix:
+\begin{enumerate}[resume] 
+    \item \If ($\isprefix_{i} \ne 0$ \et $\nbstep_{i} \ne 1$) \Then
+        \begin{enumerate}
+            \item $\phasesize_{i} = \phasesize_{i+1}$
+            \item $\dataGasCost_{i} = \dataGasCost_{i+1}$
+            \item \If $\phasesize_{i} = 1$ \Then
+            \begin{enumerate}
+                \item 
+                    \[
+                        \rlpPrefixInt
+                        \left( \begin{array}{r}
+                            \Input2,
+                            \ct,
+                            \nbstep,
+                            \done; \\
+                            \byteCol1,
+                            \acc1,
+                            \accsize,
+                            \Power,
+                            \genBit,
+                            \genBitAcc; \\
+                            \limb,
+                            \lc,
+                            \limbsize; \\
+                        \end{array} \right)
+                    \]
+                \item \If $\ct_{i} \ne \nbstep_{i}-2$ \Then $\lc_{i}=0$
+                \item \If $\done_{i}=1$ \Then
+                    \begin{itemize}
+                        \item $\ispadding_{i-1} + \ispadding_{i} = 1$
+                        \item $\Input1_{i+1} = \Input1_{i} \cdot 256^{\llargeMO}$
+                    \end{itemize}
+            \end{enumerate}
+            \item \If $\phasesize_{i} \ne 1$ \Then: 
+            \begin{enumerate}
+                \item $\phasesize_{i} = \Input1_{i}$
+                \item $\ispadding_{i}=0$
+                \item 
+                    \[
+                        \rlpPrefixByteString
+                        \left( \begin{array}{r}
+                            \Input1,
+                            \ct,
+                            \nbstep,
+                            \done,
+                            \phase{0}; \\
+                            \accsize,
+                            \Power,
+                            \phaseRlpPrefix,
+                            \acc1,
+                            \acc2; \\
+                            \lc,
+                            \limb,
+                            \limbsize; \\
+                        \end{array} \right)
+                    \]
+                \item \If $\Done_{i}=0$ \et $\ct_{i} \ne \nbstep_{i}-2$ \Then $\lc_{i}=0$
+            \end{enumerate}
+            \item \If $\done_{i}=1$ \Then 
+            \begin{itemize}
+                \item $\isprefix_{i+1}=0$
+                \item $\ispadding_{i+1}=0$
+            \end{itemize}
+        \end{enumerate}
+        \item \If ($\isprefix_{i}=0$ \et $\ispadding_{i}=0$ \Then
+        \begin{enumerate}
+            \item $\nbstep_{i}=\llarge$
+            \item \If $\phasesize_{i} \ne 0$ \Then:
+            \begin{enumerate}
+                \item $\phasesize_{i+1}=\phasesize_{i}-1$
+                \item \If $\byteCol{1}_{i}=0$ \Then $\dataGasCost_{i+1} = \dataGasCost_{i} - G_{\mathrm{txdatazero}}$
+                \item \If $\byteCol{1}_{i} \ne 0$ \Then $\dataGasCost_{i+1} = \dataGasCost_{i} - G_{\mathrm{txdatanonzero}}$ \footnote{Define in the EYP, $G_{\mathrm{txdatanonzero}}=16$ and $G_{\mathrm{txdatazero}}=4$}
+            \end{enumerate}
+            \item \If $\phasesize_{i}=0$ \Then
+            \begin{enumerate}
+                \item $\phasesize_{i + 1} = \phasesize_{i}$
+                \item $\dataGasCost_{i + 1} = \dataGasCost_{i}$
+            \end{enumerate}
+            \item \If $\ct_{i}=0$ \Then $\accsize_{i}= 1$
+            \item \If $\ct_{i} \ne 0$ \Then
+            \begin{enumerate}
+                \item \If $\phasesize_{i} \ne 0$ \Then $\accsize_{i}=\accsize_{i-1}+1$
+                \item \If $\phasesize_{i}=0$ \Then:
+                \begin{itemize}
+                    \item $\accsize_{i}=\accsize_{i-1}$
+                    \item $\byteCol{1}_{i}=0$
+                \end{itemize}
+            \end{enumerate}
+            \item \If $\done_{i}=1$ \Then:
+            \begin{enumerate}
+                \item $\ispadding_{i}=0$
+                \item $\lc_{i-1}=0$
+                \item $\acc{1}_{i} = \Input1_{i}$
+                \item $\limb_{i} = \Input1_{i}$
+                \item $\limbsize_{i}=\accsize_{i}$
+                \item \If $\phasesize_{i} \in \{0, 1\}$ \footnote{It is implemented \If $\phasesize_{i}^{2} = \phasesize_{i}$ \Then:} \Then:
+                \begin{itemize}
+                    \item $\nbstep_{i+1}=2$
+                    \item  $\ispadding_{i+1} = 1$
+                    \item $\phasesize_{i + 1} = \phasesize_{i+2}$
+                    \item $\dataGasCost_{i + 1} = \dataGasCost_{i+2}$
+                \end{itemize}
+                \item \If ($\phasesize_{i} \ne 1$ \et $\phasesize_{i} \ne 0$) \footnote{It is implemented \If $\phasesize_{i}^{2} \ne \phasesize_{i}$ \Then:} \Then 
+                \begin{itemize}
+                    \item $\ispadding_{i+1} = 0$
+                \end{itemize}
+            \end{enumerate}
+        \end{enumerate}        
+\end{enumerate}

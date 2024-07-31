@@ -1,0 +1,190 @@
+\begin{center}
+	\boxed{%
+		\text{The pre-processing presented below assumes that }
+		\left\{ \begin{array}{lcl}
+			\isMacro                _{i}      & = & 1 \\
+			\mmuInstFlagModexpData  _{i}      & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+We outline the preprocessing rows
+\begin{description}
+	\item[Admissible phases:]
+		we impose that $\locPhase \in \{ \phaseModexpBase, \phaseModexpExponent, \phaseModexpModulus \}$ (\trash).
+	\item[Number of preprocessing rows:] \label{mmu: instructions: modexpdata: preprocessing: tot = 32 initially}
+		we impose $\ppTot_{i} = 32$;
+	\item[Preprocessing row $\bm{n^\circ 1}$:] 
+		we define the following shorthand
+		\[
+			\locNleftPaddingBytes \define 512 - \locModexpParamByteSize
+		\]
+		and we impose that
+		\[
+			\callToEuc
+			{i}{1}
+			{\locNleftPaddingBytes}
+			{\llarge}
+		\]
+		we impose the following constraint:
+		\[
+			\left\{ \begin{array}{lcl}
+			        \locInitTbo         & = & \ppEucRem    _{i + 1} \\
+			        \ppTotLZ     _{i}   & = & \ppEucQuot   _{i + 1} \\
+			\end{array} \right.
+		\]
+	\item[Preprocessing row $\bm{n^\circ 2}$:] 
+		we impose that
+		\[
+			\callToLt
+			{i}{2}
+			{0}{\locLeftoverCallDataSize}
+			{\locModexpParamByteSize}
+		\]
+		and we define the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locDataRunsOut        & \define & \ppWcpRes_{i + 2}                         \\
+				\locNrightPaddingBytes & \define & (\locModexpParamByteSize - \locLeftoverCallDataSize) \cdot \locDataRunsOut \\
+			\end{array} \right.
+		\]
+		we impose that
+		\[
+			\callToEuc
+			{i}{2}
+			{\locNrightPaddingBytes}
+			{\llarge}
+		\]
+		we impose the following constraint:
+		\[
+			\left\{ \begin{array}{lclr}
+			        \ppTotRZ  _{i}   & =       & \ppEucQuot _{i + 2} \\
+			        \ppTotNT  _{i}   & =       & 32 - \ppTotLZ_{i} - \ppTotRZ_{i} & (\trash) \\
+			\end{array} \right.
+		\]
+		(the second constraint is an implicit consequence of others and need not be implemented);
+		and we further define the following shorthands
+		\[
+			        \locRt \define \ppEucRem  _{i + 2}
+		\]
+	\item[Preprocessing row $\bm{n^\circ 3}$:] 
+		we impose that
+		\[
+			\left\{ \begin{array}{l}
+				\callToEq
+				{i}{3}
+				{0}{\ppTotNT_{i}}
+				{1}
+				\vspace{2mm} \\
+				% \callToEq  {i + 3}{0}{$\ppTotNT_{i}$}{1} \vspace{2mm} \\
+				\callToEuc
+				{i}{3}
+				{\locRdo}
+				{\llarge} \\
+			\end{array} \right.
+		\]
+		we define the following shorthand
+                \[
+                        \locTotntIsOne \define \ppWcpRes_{i + 3}
+                \]
+                and we enforce the following constraints
+		\[
+			\left\{ \begin{array}{lclr}
+				\locInitSlo       & = & \ppEucQuot _{i + 3} \\
+				\locInitSbo       & = & \ppEucRem  _{i + 3} \\
+			\end{array} \right.
+		\]
+		we impose that
+		\begin{enumerate}
+			\item \If $\locTotntIsOne = 0$ \Then $\locFirstLimbByteSize = \llarge - \locInitTbo$
+			\item \If $\locTotntIsOne = 1$ \Then
+				\begin{enumerate}
+					\item \If $\locDataRunsOut = 0$ \Then $\locFirstLimbByteSize = \locModexpParamByteSize$
+					\item \If $\locDataRunsOut = 1$ \Then $\locFirstLimbByteSize = \locLeftoverCallDataSize$
+				\end{enumerate}
+		\end{enumerate}
+		we also impose that 
+		\begin{enumerate}
+			\item \If $\locDataRunsOut = 0$ \Then $\locLastLimbByteSize = \llarge$
+			\item \If $\locDataRunsOut = 1$ \Then $\locLastLimbByteSize = \llarge - \locRt$
+		\end{enumerate}
+		See note~(\ref{mmu: modexpData: strange definition of last limb byte size}) for an explanation of the above.
+	\item[Preprocessing row $\bm{n^\circ 4}$:] 
+		we further impose
+		\[
+			\callToLt
+			{i}{4}
+			{0}{\locInitSbo + (\locFirstLimbByteSize - 1)}
+			{\llarge}
+		\]
+		we impose the following constraints:
+		\[
+			\locFirstLimbSingleSource = \ppWcpRes_{i + 4}
+		\]
+	\item[Preprocessing row $\bm{n^\circ 5}$:] 
+		we impose that
+		\[
+			\callToEq
+			{i}{5}
+			{0}{\locInitSbo}
+			{\locInitTbo}
+		\]
+		we impose the following constraints:
+		\[
+			\locAligned = \ppWcpRes _{i + 5}
+		\]
+	\item[Preprocessing row $\bm{n^\circ 6}$:]
+		we impose that
+		\begin{enumerate}
+			\item \If $\locAligned = 1$ \Then we impose $\locLastLimbSingleSource = \locAligned$
+			\item \If $\locAligned = 0$ \Then
+				we impose that
+				\[
+					\callToEuc
+					{i}{6}
+					{\locInitSbo + \locFirstLimbByteSize}
+					{\llarge}
+				\]
+				and we define the shorthand
+				\[
+					\locMiddleSbo \define \ppEucRem_{i + 6}
+				\]
+				we further impose that
+				\[
+					\callToLt
+					{i}{6}
+					{0}{\locMiddleSbo + (\locLastLimbByteSize - 1)}
+					{\llarge}
+				\]
+				and we impose the constraint
+				\[
+					\locLastLimbSingleSource = \ppWcpRes_{i + 6}
+				\]
+				\saNote{} We draw attention to the fact that we could alternatively have set
+				\begin{IEEEeqnarray*}{LCL}
+					\locMiddleSbo
+					& \define &
+					\begin{cases}
+						\If \locFirstLimbSingleSource = 1 ~ \Then & \locInitSbo + \locFirstLimbByteSize \\
+						\If \locFirstLimbSingleSource = 0 ~ \Then & \locInitSbo + \locFirstLimbByteSize - \llarge \\
+					\end{cases} \\
+				\end{IEEEeqnarray*}
+				to define \locMiddleSbo{}.
+		\end{enumerate}
+\end{description}
+\saNote{} \label{mmu: modexpData: strange definition of last limb byte size}
+The definition given above of the shorthand \locLastLimbByteSize{} should seem surprising.
+Indeed this definition does not always yield the correct number of ``nontrivial'' bytes in the last ``nontrivial'' limb.
+The above formula only ``works'' when two or more limbs are affected nontrivially i.e. $\locTotntIsOne = 0$.
+Yet the variable is given the suggestive name ``\locLastLimbByteSize.''
+A more natural definition would be:
+\begin{enumerate}
+	\item \If $\locTotntIsOne = 1$ \Then $\locLastLimbByteSize = \locFirstLimbByteSize$ (\trash)
+	\item \If $\locTotntIsOne = 0$ \Then
+		\begin{enumerate}
+			\item \If $\locDataRunsOut = 0$ \Then $\locLastLimbByteSize = \llarge$ (\trash)
+			\item \If $\locDataRunsOut = 1$ \Then $\locLastLimbByteSize = \llarge - \locRt$ (\trash)
+		\end{enumerate}
+\end{enumerate}
+Looking ahead the reader will notice that \locLastLimbByteSize{} is only ever used on rows with $\isLastNT \equiv 1$.
+Such rows only exist if $\ppTotNT \geq 2$.
+The original definition is therefore sufficient for our needs. 

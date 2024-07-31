@@ -1,0 +1,203 @@
+\subsubsection{Constancy columns} \label{constancy_constraints}
+We define that a column \col{X} is
+\begin{enumerate}
+    \item transaction-constant: \If $\absTxNum_{i} = \absTxNum_{i-1}$ \Then $\col{X}_{i} = \col{X}_{i-1}$
+    \item counter-constant: \If $\ct_{i} \ne 0$ \Then $\col{X}_{i} = \col{X}_{i-1}$
+    \item counter-incrementing: \If $\ct_{i} \ne 0$ \Then $\col{X}_{i} \in \{\col{X}_{i-1}; \col{X}_{i-1} + 1 \}$. If \col{X} is a bit column, it implies $\col{X}_{i} \in \{\col{X}_{i-1}; 1 \}$.
+    \item $\phase{k}$-constant: \If $\phase{k}_{i-1} + \phase{k}_{i} = 2$ \Then $\col{X}_{i} = \col{X}_{i-1}$.
+    \item $\phase{k}$-incrementing: \If $\phase{k}_{i-1} + \phase{k}_{i} = 2$ \Then $\col{X}_{i} \in \{\col{X}_{i-1}; \col{X}_{i-1} + 1 \}$. If \col{X} is a bit column, it implies $\col{X}_{i} \in \{\col{X}_{i-1}; 1 \}$.
+    \item $\phase{k}$-decrementing: \If $\phase{k}_{i-1} + \phase{k}_{i} = 2$ \Then $\col{X}_{i} \in \{\col{X}_{i-1} -1; \col{X}_{i-1} \}$. If \col{X} is a bit column, it implies $\col{X}_{i} \in \{0 ; \col{X}_{i-1}\}$.
+    \item block-constant: \If $\absTxNum_{i} \ne 0$ \Then $X_{i} = X_{i + 1}$ \et \If $\absTxNum_{i} = 0$ \Then $X_{i} = 0$
+\end{enumerate}
+
+We constrain: 
+\begin{enumerate}
+    \item \txType{}, \txRequiresEvmExecution{} and \CFI{} are transaction-constant. 
+    \item $\Input k$ (for $k = 1 ; 2$), $\nbstep$, $\lt$, $\lx$, $\isprefix$, $\nbAddr$, $\nStorageKeysInAccessList$, $\nStorageKeysInAccessEntry$, and $\Depth k$ (for $k = 1 ; 2$) are counter-constant.
+    \item $\ispadding$ is counter-incrementing.
+    \item \If $\phaseData{}_{i} = 0$ \Or $\isprefix_{i} = 0$ \Then $\lc$ is counter-incrementing.
+    \item $\rlptsize$ and $\rlpxsize$ are $\phaseRlpPrefix{}$-constant.
+    \item $\isprefix$ is $\phaseData$-decrementing.
+    \item $\outgoingDataSymb\high$ and $\outgoingDataSymb\low$ are $\phase{k}$-constant for $k \in \{ \phaseRlpPrefixValue \} \cup [\![ \phaseNonceValue ; \phaseAccessListValue ]\!] $
+    \item $\absTxNumInfty$ is block-constant.
+\end{enumerate}
+The following constraints hold by construction, there is therfore no reason to explictly constrain them:
+\begin{enumerate}[resume]
+    \item $\ispadding$ is $\phaseRlpPrefix$-decrementing; \quad (\trash)
+    \item $\done$ and $\accsize$ are $\ct$-incrementing; \quad (\trash)
+    \item $\phasend$ is $\phase{k}$-incrementing; \quad (\trash)
+    \item \indexData{} is $\phaseData{}$-incrementing; \quad (\trash)
+    \item $\phasesize$ is \phaseData{} and \phaseAccessList{}-decreasing; \quad (\trash)
+    \item $\rlptsize$ and $\rlpxsize$ are transaction-decreasing; \quad (\trash)
+    \item $\col{INDEX\_T}$ and $\col{INDEX\_X}$ are transaction-incrementing; \quad (\trash)
+\end{enumerate}
+
+\subsubsection{Global phase constrains} \label{Global phase constraints}
+Constraints on the transaction number:
+\begin{enumerate}
+    \item $\absTxNum_{0} = 0$
+    \item \If $\absTxNum_{i} = 0$ \Then $\sum_{k = \phaseRlpPrefixValue}^{\phaseSValue} \phase{k}_{i} = 0$
+    \item \If $\absTxNum_{i} \ne 0$ \Then $\sum_{k = \phaseRlpPrefixValue}^{\phaseSValue} \phase{k}_{i} = 1$ in other words, you must be in one and only phase at a time.
+    \item $\absTxNum_{i} = \absTxNum_{i-1} + \phaseRlpPrefix_{i} \cdot (\phaseRlpPrefix_{i}-\phaseRlpPrefix_{i-1})$ in other words $\absTxNum$ is constant except increasing by one when starting a new transaction.
+\end{enumerate}
+The bytestring that needs to be hashed by the prover is the bytestring reconstruction of $\widetilde{L}_{\mathrm{X}}(T)$ as defined in the \cite{EYP}.
+\begin{enumerate}[resume]
+    \item $\toHashByProver_{i} = \lc_{i} \cdot \lx_{i}$
+\end{enumerate}
+Constraints on $\lt$ and $\lx$: \footnote{Constraints in $\phaseRlpPrefix $ and $\phaseBeta$ are given in the phase description.}
+\begin{enumerate}[resume]
+    \item \If $\sum_{k = \phaseChainIdValue}^{\phaseAccessListValue} \phase{k}_{i} = 1$ \Then $\lt_{i} = \lx_{i} = 1$
+    \item \If $\sum_{k = \phaseYValue}^{\phaseSValue} \phase{k}_{i} = 1$ \Then 
+        \begin{enumerate}
+            \item $\lt_{i} = 1$
+            \item $\lx_{i} = 0$
+        \end{enumerate}
+\end{enumerate}
+Constraints on the phase transition:
+\begin{enumerate}[resume]
+    \item \If ($\absTxNum_{i} \neq 0$ \et $\done_{i} = 0$) \Then $\phasend_{i} = 0$. Note that constraining $\phasend$ to be nonzero inside \ct -loop is not sufficient to prevent unwanted phase transition in every phases, additional constrains are defined for some phases.
+    \item \If $\phasend_{i} = 0$ \Then $\phase{k}_{i + 1} = \phase{k}_{i}$ for every $k \in [\![ \phaseRlpPrefixValue ; \phaseSValue ]\!]$. \footnote{It is implemented \If $\phasend_{i} = 0$ \Then $\sum _{k = 0}^{14} k \cdot (\phase{k}_{i + 1} - \phase{k}_{i}) = 0$.}
+    \item \If $\phasend_{i} = 1$ \Then
+        \begin{enumerate}
+            \item \If $\phaseRlpPrefix_{i} = 1$ \Then 
+                \begin{enumerate}
+                    \item \If $\txType_{i} = 0$ \Then $\phaseNonce_{i + 1} = 1$
+                    \item \If $\txType_{i} \ne 0$ \Then $\phaseChainId_{i + 1} = 1$
+                \end{enumerate}
+            \item \If $\phaseChainId_{i} = 1$ \Then $\phaseNonce_{i + 1} = 1$
+            \item \If $\phaseNonce_{i} = 1$ \Then 
+                \begin{enumerate}
+                    \item \If $\txType_{i} \ne 2$ \Then $\phaseGasPrice_{i + 1} = 1$
+                    \item \If $\txType_{i} = 2$ \Then $\phaseMaxPriorityFeePerGas_{i + 1} = 1$
+                \end{enumerate}
+            \item \If $\phaseGasPrice_{i} = 1$ \Then $\phaseGasLimit_{i + 1} = 1$
+            \item \If $\phaseMaxPriorityFeePerGas_{i} = 1$ \Then $\phaseMaxFeePerGas_{i + 1} = 1$
+            \item \If $\phaseMaxFeePerGas_{i} = 1$ \Then $\phaseGasLimit_{i + 1} = 1$
+            \item \If $\phaseGasLimit_{i} = 1$ \Then $\phaseTo_{i + 1} = 1$
+            \item \If $\phaseTo_{i} = 1$ \Then $\phaseValue_{i + 1} = 1$
+            \item \If $\phaseValue_{i} = 1$ \Then $\phaseData_{i + 1} = 1$
+            \item \If $\phaseData_{i} = 1$ \Then 
+                \begin{enumerate}
+                    \item \trash $\phasesize_{i} = 0$
+                    \item $\dataGasCost_{i} = 0$
+                    \item \If $\txType_{i} = 0$ \Then $\phaseBeta_{i + 1} = 1$
+                    \item \If $\txType_{i} \ne 0$ \Then $\phaseAccessList_{i + 1} = 1$
+                \end{enumerate}
+            \item \If $\phaseAccessList_{i} = 1$ \Then 
+                \begin{enumerate}
+                    \item \trash $\phasesize_{i} = 0$
+                    \item $\nbAddr_{i} = 0$
+                    \item $\nStorageKeysInAccessList_{i} = 0$
+                    \item $\nStorageKeysInAccessEntry_{i} = 0$
+                    \item $\phaseY_{i + 1} = 1$
+                \end{enumerate}
+            \item \If $\phaseBeta_{i} = 1$ \Then $\phaseR_{i + 1} = 1$
+            \item \If $\phaseY_{i} = 1$ \Then $\phaseR_{i + 1} = 1$
+            \item \If $\phaseR_{i} = 1$ \Then $\phaseS_{i + 1} = 1$
+            \item \If $\phaseS_{i} = 1$ \Then:
+                \begin{enumerate}
+                    \item $\rlptsize_{i} = 0$
+                    \item $\rlpxsize_{i} = 0$
+                    \item $\phaseRlpPrefix_{i + 1} = 1$
+                \end{enumerate}
+        \end{enumerate}
+\end{enumerate}
+
+In other words, a phase transition happens if and only if $\phasend_{i} = 1$ and means $\phase{p}_{i} = 1$ and $\phase{q}_{i + 1} = 1$ with the only given possibility for p and q, depending of $\txType$: 
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} \hline
+        $\phase{p}_{i}$                                & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9  & 10 & 11 & 12 & 13 & 14 \\ \hline \hline
+        $\phase{q}_{i + 1}$ (for $\txType = 0$) & 2 &   & 3 & 6 &   &   & 7 & 8 & 9 & 11 &    & 13 &    & 14 & 0  \\ \hline
+        $\phase{q}_{i + 1}$ (for $\txType = 1$) & 1 & 2 & 3 & 6 &   &   & 7 & 8 & 9 & 10 & 12 &    & 13 & 14 & 0  \\ \hline
+        $\phase{q}_{i + 1}$ (for $\txType = 2$) & 1 & 2 & 4 &   & 5 & 6 & 7 & 8 & 9 & 10 & 12 &    & 13 & 14 & 0  \\ \hline
+    \end{tabular}
+    \caption{Possible phase transition}
+    \label{tab:Possible phase transition}
+\end{table}
+
+\subsubsection{Byte decomposition's loop Heartbeat}
+\begin{center}
+    \boxed{\text{All constraints in this subsection assume that $\absTxNum_{i} \ne 0$.}}
+\end{center}
+We remind the reader that $\nbstep$ and $\oli$ are $\ct$-constant, and $\lc$ is $\ct$-incrementing (see \ref{constancy_constraints}).
+\begin{enumerate}
+    \item \If $\ct_{i} = \nbstep_{i}-1$ \Then $\done_{i} = 1$ 
+    \item \If $\ct_{i} \ne \nbstep_{i}-1$ \Then $\done_{i} = 0$ in other words, $\done$ is nonzero only at the last row of a loop.
+    \item \If $\done_{i} = 0$ \Then $\ct_{i + 1} = \ct_{i} + 1$
+    \item \If $\done_{i} = 1$ \Then 
+        \begin{enumerate}
+            \item $\lc_{i} = 1-\ispadding_{i}$
+            \item $\ct_{i + 1} = 0$
+        \end{enumerate}
+\end{enumerate}
+
+\subsubsection{Blind byte and bit decomposition}
+We build some blind byte and bit accumulators. There are more constaints when those decomposition and accumulators are used, depending of the phase. 
+\begin{enumerate}
+    \item Constraints on the bytes accumulator columns for $k = 1,2$. 
+        \begin{enumerate}
+            \item \If $\ct_{i} = 0$ \Then $\byteCol{k}_{i} = \acc{k}_{i}$
+            \item \If $\ct_{i} \ne 0$  \Then $\acc{k}_{i} = 256 \cdot \acc{k}_{i-1} + \byteCol{k}_{i}$
+            \item we constraint those columbs to be byte: $\byteCol{k}$, $k = 1,2$
+        \end{enumerate}
+    \item Constraint on the bit accumulator column:
+        \begin{enumerate}
+            \item \If $\ct_{i} = 0$ \Then $\genBitAcc_{i} = \genBit_{i}$
+            \item \If $\ct_{i} \ne 0$  \Then $\genBitAcc_{i} = 2 \cdot \genBitAcc_{i-1} + \genBit_{i}$
+        \end{enumerate}
+\end{enumerate}
+
+\subsubsection{Global constraints}
+We define the shorthand $\col{phase\_weight\_sum}$ defined by the following expression
+\[
+    \col{phase\_weight\_sum}_{i} \define
+    \left[ \begin{array}{crcl}
+        + & \phaseRlpPrefixValue            & \!\!\!\cdot\!\!\! & \phaseRlpPrefix                          _{i} \\
+        + & \phaseChainIdValue              & \!\!\!\cdot\!\!\! & \phaseChainId                            _{i} \\
+        + & \phaseNonceValue                & \!\!\!\cdot\!\!\! & \phaseNonce                              _{i} \\
+        + & \phaseGasPriceValue             & \!\!\!\cdot\!\!\! & \phaseGasPrice                           _{i} \\
+        + & \phaseMaxPriorityFeePerGasValue & \!\!\!\cdot\!\!\! & \phaseMaxPriorityFeePerGas               _{i} \\
+        + & \phaseMaxFeePerGasValue         & \!\!\!\cdot\!\!\! & \phaseMaxFeePerGas                       _{i} \\
+        + & \phaseGasLimitValue             & \!\!\!\cdot\!\!\! & \phaseGasLimit                           _{i} \\
+        + & \phaseToValue                   & \!\!\!\cdot\!\!\! & \phaseTo                                 _{i} \\
+        + & \phaseValueValue                & \!\!\!\cdot\!\!\! & \phaseValue                              _{i} \\
+        + & \phaseDataValue                 & \!\!\!\cdot\!\!\! & \phaseData                               _{i} \\
+        + & \phaseAccessListValue           & \!\!\!\cdot\!\!\! & \phaseAccessList                         _{i} \\
+        + & \phaseBetaValue                 & \!\!\!\cdot\!\!\! & \phaseBeta                               _{i} \\
+        + & \phaseYValue                    & \!\!\!\cdot\!\!\! & \phaseY                                  _{i} \\
+        + & \phaseRValue                    & \!\!\!\cdot\!\!\! & \phaseR                                  _{i} \\
+        + & \phaseSValue                    & \!\!\!\cdot\!\!\! & \phaseS                                  _{i} \\
+    \end{array} \right]
+\]
+\begin{enumerate}
+    \item $\Phase_{i} = \col{phase\_weight\_sum}_{i}$
+    \item \If $\absTxNum_{i} \ne \absTxNum_{i-1}$ \Then:
+        \begin{enumerate}
+            \item $\indext_{i} = 0$ 
+            \item $\indexx_{i} = 0$
+        \end{enumerate}
+    \item \If $\absTxNum_{i} = \absTxNum_{i-1}$ \Then: 
+        \begin{enumerate}
+            \item $\indext_{i} = \indext_{i-1} + \lc_{i-1} \cdot \lt_{i-1}$ 
+            \item $\indexx_{i} = \indexx_{i-1} + \lc_{i-1} \cdot \lx_{i-1}$. In other words, $\indext$ (resp. $\indexx$) resets to 0 at the begining of a new transaction, and increases by one after $\lc$ and $\lt$ (resp. $\lx$) is one.
+        \end{enumerate}
+
+    \item \If $\sum_{k = \phaseChainIdValue}^{\phaseSValue} \phase{k}_{i} = 1$ \Then \footnote{We remind the reader that $\rlptsize$ and $\rlpxsize$ are $\phaseRlpPrefix$-constant integer (see \ref{constancy_constraints}).}
+        \begin{enumerate}
+            \item $\rlptsize_{i} = \rlptsize_{i-1} - \lc_{i} \cdot \lt_{i} \cdot\limbsize_{i}$
+            \item $\rlpxsize_{i} = \rlpxsize_{i-1} - \lc_{i} \cdot \lx_{i} \cdot\limbsize_{i}$
+        \end{enumerate}
+
+    \item \If ($\phaseRlpPrefix_{i} = 0$ \et $\phaseData_{i} = 0$ \et $\phaseBeta_{i} = 0$) \Then $\ispadding_{i} = 0$.
+\end{enumerate}
+
+\subsubsection{Finalisation constraints}
+\If $\absTxNum_{N} \ne 0$ \Then
+\begin{enumerate}
+    \item $\phasend_{N} = 1$
+    \item $\phaseS_{N} = 1$
+    \item $\absTxNum_{N} = \absTxNum_{N}^{\infty}$
+\end{enumerate}
+In other words, we constrain the last row of the trace to be the end of the last phase of a transaction (condition one and two), and that all the transaction has been compited (condition 3).

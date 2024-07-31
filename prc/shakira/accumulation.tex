@@ -1,0 +1,34 @@
+We impose constraints on the $\big( \nBytes, \nBytesAcc \big)$ pair.
+\begin{enumerate}
+	\item \If $\shakiraStamp_{i} \neq \shakiraStamp_{i - 1}$ \Then $\nBytes_{i} = \nBytesAcc_{i}$
+	\item \If \Big($\locIsData_{i - 1} = 1$ \et $\locIsData_{i} = 1$\Big)
+		\Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\nBytes    _{i - 1} & = & \llarge                          \\
+				\nBytesAcc _{i}     & = & \nBytesAcc_{i - 1} + \nBytes_{i} \\
+			\end{array} \right.
+		\]
+	\item \If \Big($\locIsData_{i - 1} = 1$ \et $\locIsResult_{i} = 1$\Big)
+		\[
+			\nBytesAcc   _{i - 1} = \shakiraTotalSize_{i - 1}
+		\]
+\end{enumerate}
+\saNote{}
+The two lookups from
+section~(\ref{shakira: lookups: nonzero last nBYTES}) and
+section~(\ref{shakira: lookups: small last nBYTES})
+impose that the final value of \nBytes{} along \textbf{data-rows} (i.e. rows satisfying $\locIsData \equiv 1$) is in the range $\{1, 2, \dots, \llarge\}$.
+Along with the above this enforces that along data-rows $i$ one has
+\[
+	\nBytes_{i} \equiv
+	\left\{ \begin{array}{ll}
+		\llarge                        & \text{if the next row is also a data-row} \\
+		\in \{ 1, 2, \dots, \llarge \} & \text{otherwise}                          \\
+	\end{array} \right.
+\]
+Together with the target constraint happening when swithching from data to result this imposes implicitly that along data-rows
+\[
+	\indexMax \equiv ( \shakiraTotalSize - 1 ) ~ /\!/ ~ \llarge
+\]
+where $/\!/$ stands for integer division (i.e. the quotient of the euclidean division.)

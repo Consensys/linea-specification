@@ -1,0 +1,38 @@
+In view of future decentralization it seems that the only assumptions we may (reasonably) make about \zkEvm{} proofs $\pi$ is that they are derived from \emph{some} underlying trace \fullTrace{} satisfying the constraint system $\fullConstraints$ and abiding by the well-formedness requirements from the previous section.
+
+Let us say that families of matrices abiding by these well-formedness properties are elements of the \textbf{trace space} $\mathcal{T}$. We may then, from our constraint system $\mathcal{C}_\zkEvm{}$ define a \textbf{parametrized family of relations} on the trace space
+\[ 
+\zkEvmConstRel
+\Big[
+	\underbrace{\state, \big(\text{tx}_a\big)_{a}}_{\text{``inputs''}};
+	\underbrace{\fullTrace}_{\text{``auxiliary''}};
+	\underbrace{\state'}_{\text{``ouputs''}}
+	\Big]
+\]
+Where $\state$ is the \textbf{initial state} parameter, $(\text{tx}_a)_{a}$ the \textbf{valid transactions}\footnote{transaction validity being an incremental notion in the sense that transaction ordering is important and a transaction validity depends on the history of transactions} parameter (which can be considered as \textbf{input} parameters), $\state'$ is the \textbf{final state} parameter.
+\begin{IEEEeqnarray*}{LCL}
+	\texttt{valid-state}(\state)
+	& \equiv & \mTrue \\
+	\texttt{valid-txs}\Big(\state, \big(\text{tx}_a\big)_{a}\Big)
+	& \equiv & \mTrue \\
+	\zkEvmConstRel
+	\Big[
+		\state, \big(\text{tx}_a\big)_{a};
+		\fullTrace;
+		\state'
+		\Big]
+	& = &
+	\left[ \bigwedge_{\moduleName \in \modules} \zkEvmModuleRel_{\moduleName} \Big[ \moduleTrace_{\moduleName} \Big] \right]
+	\wedge
+	\left[\bigwedge_{\lambda : \moduleName \hookrightarrow \moduleName' \in \lookups} \zkEvmLookupRel_{\lambda} \Big[ \moduleTrace_{\moduleName}, \moduleTrace_{\moduleName'} \Big] \right] \\
+	& \equiv & \mTrue / \mFalse
+\end{IEEEeqnarray*}
+\ob{Note: the above doesn't involve $\state'$ \dots{} while it should.}
+Depending on the module pair $\moduleName$, $\moduleName'$ the relation $\zkEvmLookupRel_{\moduleName, \moduleName'}$ may be
+(\emph{a})
+\textbf{trivial} e.g. the modules in question aren't connected by means of a lookup and so the relation should be trivially satisfied;
+(\emph{b})
+an \textbf{inclusion} statement e.g. ``every call from \moduleName{} to $\moduleName'$ is dealt with in $\moduleName'$'';
+(\emph{c})
+a \textbf{full inclusion} statement e.g. ``every call from \moduleName{} to $\moduleName'$ is dealt with in $\moduleName'$ and no other instructions are executed within $\moduleName'$ than those requested by module \moduleName{}.''
+

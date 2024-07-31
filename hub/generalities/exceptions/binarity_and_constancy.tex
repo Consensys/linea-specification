@@ -1,0 +1,76 @@
+\begin{center}
+	\boxed{\text{All constraints in this section are written under the assumption } \peekStack_{i} = 1.}
+\end{center}
+
+\noindent The present section imposes some general constraints on the exception flags. We use the following shorthands
+\[
+	\hspace*{-1.5cm}
+	\locExceptionFlagSum_{i}
+	\define
+	\left[ \begin{array}{cr}
+		+ & \stackSux{}     \\
+		+ & \stackSox{}     \\
+		+ & \stackOogx{}    \\
+		+ & \stackMxpx{}    \\
+		+ & \stackOpcx{}    \\
+		+ & \stackRdcx{}    \\
+		+ & \stackJumpx{}   \\
+		+ & \stackStaticx{} \\
+		+ & \stackSstorex{} \\
+		+ & \stackIcpx{}    \\
+		+ & \stackMaxcsx{}  \\
+	\end{array} \right]
+	\quad\text{and}\quad
+	\locWeightedExceptionFlagSum_{i}
+	\define
+	\left[ \begin{array}{crcl}
+		+ & 2^{0}  & \!\!\!\cdot\!\!\! & \stackSux       _{i} \\
+		+ & 2^{1}  & \!\!\!\cdot\!\!\! & \stackSox       _{i} \\
+		+ & 2^{2}  & \!\!\!\cdot\!\!\! & \stackOogx      _{i} \\
+		+ & 2^{3}  & \!\!\!\cdot\!\!\! & \stackMxpx      _{i} \\
+		+ & 2^{4}  & \!\!\!\cdot\!\!\! & \stackOpcx      _{i} \\
+		+ & 2^{5}  & \!\!\!\cdot\!\!\! & \stackRdcx      _{i} \\
+		+ & 2^{6}  & \!\!\!\cdot\!\!\! & \stackJumpx     _{i} \\
+		+ & 2^{7}  & \!\!\!\cdot\!\!\! & \stackStaticx   _{i} \\
+		+ & 2^{8}  & \!\!\!\cdot\!\!\! & \stackSstorex   _{i} \\
+		+ & 2^{9}  & \!\!\!\cdot\!\!\! & \stackIcpx      _{i} \\
+		+ & 2^{10} & \!\!\!\cdot\!\!\! & \stackMaxcsx    _{i} \\
+	\end{array} \right]
+\]
+We require the following:
+\begin{enumerate}
+	\item we impose \textbf{binarity constraints} on all exception flags
+		\begin{multicols}{4}
+			\begin{enumerate}
+				\item $\stackSux_{i}$
+				\item $\stackSox_{i}$
+				\item $\stackOogx_{i}$
+				\item $\stackMxpx_{i}$
+				\item $\stackOpcx_{i}$
+				\item $\stackRdcx_{i}$
+				\item $\stackJumpx_{i}$
+				\item $\stackStaticx_{i}$
+				\item $\stackSstorex_{i}$
+				\item $\stackIcpx_{i}$
+				\item $\stackMaxcsx_{i}$
+				\item[\vspace{\fill}]
+			\end{enumerate}
+		\end{multicols}
+        \item we impose a binarity constraint on $\locExceptionFlagSum$;
+	\item we impose \textbf{stack-row-constancy} on $\locWeightedExceptionFlagSum$;
+\end{enumerate}
+
+\saNote{} The above imposes that the exception flags be \textbf{exclusive, stack-row-constant binary columns}, see section~(\ref{hub: heartbeat: constancy conditions}) for the definition of stack-row-constancy.
+This has important consequences for the arithmetization, as well as for the implementation.
+Exclusivity of exception flags means that from the \zkEvm{}'s perspective \textbf{only one exception may be triggered at any point in time}.
+Yet most \evm{} opcodes can trigger several exceptions at once.
+For instance a great many instructions can trigger either \suxSH{} and \oogxSH{}.
+Certain opcodes may trigger several complex exceptions.
+\inst{CALL} instructions, for instance, can trigger any of the following
+\suxSH's,
+\staticxSH's,
+\mxpxSH's and
+\oogxSH's.
+The way that the arithmetization deals with this complexity is that it deals with exception in a instruction family specific order\footnote{and in the unexceptional case it must justify the absence of any exception}.
+
+\saNote{} The one exception to that are \opcxSH{}, \suxSH{} and \soxSH{} which always get checked first.

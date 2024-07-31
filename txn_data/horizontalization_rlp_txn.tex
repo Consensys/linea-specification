@@ -1,0 +1,104 @@
+The present section describes \textbf{verticalisation constraints}. These are simple constraints with a simple goal: \textbf{data duplication}. Data duplication is required because of the following mismatch:
+\begin{enumerate}
+	\item the \rlpTxnMod{} module extracts and exposes transaction data \emph{vertically} i.e. in column form;
+	\item the \hubMod{} module consumes transaction data \emph{horizontally} i.e. in row form.
+\end{enumerate}
+\begin{center}
+	\boxed{\text{The constraints below assume that } \locAbs_{i} \neq \locAbs_{i - 1}.}
+\end{center}
+\begin{description}
+	\item[\underline{Setting phase numbers:}]
+		we impose that
+		\[
+			\left\{\begin{array}{lcl}
+				\phaseNumRlpTxn_{i + 0 }     & = & \phaseRlpPrefixValue \\
+				\phaseNumRlpTxn_{i + 1 }     & = & \phaseToValue \\
+				\phaseNumRlpTxn_{i + 2 }     & = & \phaseNonceValue \\
+				\phaseNumRlpTxn_{i + 3 }     & = & \phaseValueValue \\
+				\phaseNumRlpTxn_{i + 4 }     & = & \phaseDataValue \\
+				\phaseNumRlpTxn_{i + 5 }     & = & \phaseGasLimitValue \\
+				\multicolumn{3}{l}{\If \txIsLegacy_{i} = 1 ~ \Then \phaseNumRlpTxn_{i + 6} = \phaseGasPriceValue}  \\
+				\multicolumn{3}{l}{\If \txIsAccessSet_{i} = 1 ~ \Then
+				\begin{cases}
+					\phaseNumRlpTxn_{i + 6} = \phaseGasPriceValue  \\
+					\phaseNumRlpTxn_{i + 7} = \phaseAccessListValue \\
+				\end{cases}}  \\
+				\multicolumn{3}{l}{\If \txIsTypeTwo_{i} = 1 ~ \Then
+				\begin{cases}
+					\phaseNumRlpTxn_{i + 6} = \phaseMaxFeePerGasValue  \\
+					\phaseNumRlpTxn_{i + 7} = \phaseAccessListValue \\
+				\end{cases}}  \\
+			\end{array}\right.
+		\]
+	\item[\underline{Horizontalization:}]
+		we impose that
+		\begin{description}
+			\item[Generalities:] 
+				we impose that
+				\[
+					\left\{ \begin{array}{lcl}
+						\locTypeSum      _{i} & = & \locTxType                         \\
+						\txNonce         _{i} & = & \locNonce                          \\
+						\txIsDeployment  _{i} & = & \locIsDep                          \\
+						\txValue         _{i} & = & \locValue                          \\
+						\txGasLimit      _{i} & = & \locGasLimit                       \\
+						\txCallDataSize  _{i} & = & \locDataSize \cdot (1 - \locIsDep) \\
+						\txInitCodeSize  _{i} & = & \locDataSize \cdot \locIsDep       \\
+					\end{array} \right.
+				\]
+				where we set
+				\[
+					\locTypeSum_{i}
+					\define
+					0 \cdot \txIsLegacy _{i} + 1 \cdot \txIsAccessSet_{i} + 2 \cdot \txIsTypeTwo_{i}
+				\]
+				\saNote{} The above implements, in effect, 
+				\begin{enumerate}
+					\item \If $\txIsDeployment_{i} = 0$ \Then
+						\[
+							\left\{ \begin{array}{lcl}
+								\txCallDataSize_{i} & = & \locDataSize \\
+								\txInitCodeSize_{i} & = & 0            \\
+							\end{array} \right.
+						\]
+					\item \If $\txIsDeployment_{i} = 1$ \Then
+						\[
+							\left\{ \begin{array}{lcl}
+								\txCallDataSize_{i} & = & 0            \\
+								\txInitCodeSize_{i} & = & \locDataSize \\
+							\end{array} \right.
+						\]
+				\end{enumerate}
+			\item[Transaction target address:]
+				\If $\txIsDeployment_{i} = 0$ \Then we impose
+				\[
+					\left\{ \begin{array}{lcl}
+						\txTo_{i}\high & = & \locToAddrHi \\
+						\txTo_{i}\low  & = & \locToAddrLo \\
+					\end{array} \right.
+				\]
+				\saNote{}
+				The above constrains $\txTo_{i}\high$ and $\txTo_{i}\low$ only when the transaction is a message call.
+				When the transaction is a deployment the \zkEvm{} retrieves \txTo{} by other means.
+		\end{description}
+	\item[\underline{Optional vanishing constraints}]
+		the vanishing constraints below are optional in the sense that corresponding fields are never touched by the constraints:
+		\[
+			\left\{\begin{array}{lclr}
+				\outgoingDataHi_{i}         & = & \zero    & (\trash)     \vspace{1mm} \\
+				\outgoingDataHi_{i + 2}     & = & \zero    & (\trash)     \vspace{1mm} \\
+				\outgoingDataHi_{i + 5}     & = & \zero    & (\trash)     \vspace{1mm} \\
+				\multicolumn{3}{l}{%
+					\If \txIsTypeTwo_{i} = 0 ~ \Then \outgoingDataHi_{i + 6} = 0} & (\trash) \\
+			\end{array}\right.
+		\]
+	\saNote{} There are no constraints on the additional row for the last transaction of a block for those columns.
+		% \item \If $\txIsTypeTwo_{i} = 0$) \Then
+		% 	\(
+		% 	\txGasPrice_{i} = \outgoingData_{i + 8}
+		% 	\)
+		% \item \If $\txIsTypeTwo_{i} = 1$) \Then
+		% 	\[
+		% 		\txGasPrice_{i} = \ob{TODO}
+		% 	\]
+\end{description}

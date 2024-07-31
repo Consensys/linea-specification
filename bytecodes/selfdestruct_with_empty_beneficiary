@@ -1,0 +1,60 @@
+Deployed code:
+==============
+
+PUSH1 0xad		// address
+SELFDESTRUCT
+
+associated bytecode: 0x 60 ad ff
+has p := 3 bytes
+
+Initialization code:
+====================
+
+PUSH3 		0x60adff 		// PUSH3 = PUSHp
+PUSH1 		0xe8			// 0xe8 = 256 - 8 * p
+SHL
+PUSH1 		0x00
+MSTORE
+PUSH1 		0x03			// size
+PUSH1 		0x00			// offset
+RETURN
+
+associated bytecode: 0x 62 60 ad ff 60 e8 1b 60 00 52 60 03 60 00 f3
+						op          op    op op    op op    op    op
+has q := 15 bytes
+
+Code to run on evm.codes/playground:
+====================================
+
+PUSH15 		0x6260adff60e81b60005260036000f3		// PUSH15 = PUSHq
+PUSH1 	    0x88			// 0x = 256 - 8 * q
+SHL
+PUSH1 		0X00
+MSTORE
+PUSH1 		0x0f 			// size, f = 15 = q
+PUSH1 		0x00 			// offset
+PUSH1 		0x??			// value
+CREATE
+
+PUSH1 		0x00
+PUSH1 		0x00
+PUSH1 		0x00
+PUSH1 		0x00
+PUSH1 		0x00 			// value
+DUP6 						// address
+PUSH2 		0xffff			// gas
+CALL
+
+PUSH1 		0xad 			// should contain 0x?? Wei
+BALANCE
+POP
+
+PUSH1 		0xad 			// should contain 0x?? Wei
+EXTCODEHASH
+POP
+
+Conclusion:
+===========
+
+- running this with zero value (i.e. 0x?? = 0x00) will produce an EXTCODEHASH for the address 0xad equal to 0
+- running this with zero value (i.e. 0x?? = 0x01) will produce an EXTCODEHASH for the address 0xad equal to c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470 i.e. KEC(( ))

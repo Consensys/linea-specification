@@ -1,0 +1,27 @@
+\subsubsection{Address trimming lookup $\hubMod \hookrightarrow \trmMod$}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{description}
+	\item[Row selector.] $\col{sel}_{i} := \peekStack_{i} \cdot \stackDecAccFlag_{i} \cdot \stackDecTrmFlag_{i}$
+
+		I.e. we select stack rows whose instructions raise the \accFlag{} and peek into foreign accounts.
+	\item[Source columns.] ---
+		\begin{multicols}{4}
+			\begin{enumerate}
+				\item $\cnAccountAddress\high_{i + 1}$
+				\item $\stackItemValHi{4}_{i}$
+				\item $\stackItemValLo{4}_{i}$
+				\item $\accTrmIsPrecompile_{i + 1}$
+			\end{enumerate}
+		\end{multicols}
+	\item[Target columns.] ---
+		\begin{multicols}{4}
+			\begin{enumerate}
+				\item $\trmAddrHi_{j}$
+				\item $\addr\high_{j}$
+				\item $\addr\low_{j}$
+				\item $\isPrecompile_{j}$
+			\end{enumerate}
+		\end{multicols}
+\end{description}
+\saNote{} The present collection of instructions does not care about the $\accTrmIsPrecompile$ flag. Others will, though, and we include it in the lookup for greater uniformity and mergeability with other lookups into the \trmMod{} module.

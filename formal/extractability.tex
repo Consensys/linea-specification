@@ -1,0 +1,39 @@
+I actually believe we have a much stronger property:
+\begin{conjecture}[Extraction]
+	Given a trace \fullTrace{} which satisfies $\fullConstraints$\footnote{and appropriate type hypotheses on module specific ``\godGiven'' inputs} there exists a unique minimal initial state $\state_0$ with the property that \emph{if well-formed} there exist (implicit, valid) transactions $(\text{tx}_a)_a$ (given in full, including transaction receipt) and a unique minimal partial terminal state $\state_1$ such that
+	\[
+		\zkEvmConstRel
+		\Big[ \state_{0}, \big(\text{tx}_a\big)_{a};
+		\fullTrace;
+		\state_{1} \Big]
+		=
+		\mTrue
+	\]
+	Furthermore if for some states $\state$ and $\state'$ and some transactions $(\widehat{\text{tx}}_b)_b$ the relation 
+	\[
+		\zkEvmConstRel
+		\Big[ \state, \big(\widehat{\text{tx}}_b\big)_{b};
+		\fullTrace;
+		\state' \Big]
+		=
+		\mTrue
+	\]
+	holds then $\sigma_0 \subset \sigma$, $\sigma_1 \subset \sigma'$, $\big(\text{tx}_a\big)_{a} = \big(\widehat{\text{tx}}_b\big)_{b}$.
+	% Furthermore if $\widehat{\state}$ and $\widehat{\state}'$ satisfy that same relation
+	% \[
+	% 	\zkEvmConstRel
+	% 	\Big[ \widehat{\state}, \big(\text{tx}_a\big)_{a};
+	% 	\fullTrace;
+	% 	\widehat{\state}' \Big]
+	% 	=
+	% 	\mTrue
+	% \]
+	% then $\sigma \setminus \sigma_0 = \widehat{\sigma} \setminus \sigma_0$
+	% and $\sigma' \setminus \sigma_1 = \widehat{\sigma}' \setminus \sigma_1$.
+\end{conjecture}
+\saNote{} This partial substate will be \emph{well-formed}\footnote{in the sense that storage values are correctly separated into high and low parts and committed byte code chunks are $\llarge$-byte integers} but not necessarily \emph{accessible}, e.g.:
+\begin{enumerate}
+	\item it may contain addresses with empty byte code but nonempty storage;
+	\item it may contain addresses with nonempty byte code containing neither \inst{CREATE(2)} instructions nor \inst{CALLCODE} / \inst{DELEGATECALL} instructions yet having a nonce $\geq 2$;
+	\item \dots{}
+\end{enumerate}

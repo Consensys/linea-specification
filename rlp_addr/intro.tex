@@ -1,0 +1,17 @@
+The \rlpAddrMod{} module does preliminary work required to compute addresses of accounts created through deployment transactions, \inst{CREATE} or \inst{CREATE2} instructions. This work consists in defining a byte string $\texttt{bs}$, the \texttt{KECCAK} hash of which (trimmed of its leading 12 bytes, trimming being delegated to the \trmMod{} module) defines the deployment address.
+
+There are two recipes for creating said byte string \texttt{bs}. The \textbf{first recipe} applies for deployment transactions and for accounts spawned through \inst{CREATE} instructions. The string is defined as
+\[
+    \texttt{bs} = \textsc{rlp}\big((s,n)\big)
+\]
+i.e. the \textsc{rlp} encoding of a pair $(s, n)$ where $s \in \mathbb{B}_{20}$ and $n \in \mathbb{N}_{256}$\footnote{In reality: $n \in \mathbb{N}_{64}$}. In applications $s$ is the address of the deployer account and $n$ is the nonce of said address \emph{prior} to its incrementation as part of deployment.
+
+The \textbf{second recipe} for defining this byte string defines it as a the concatenation of the following: a single byte \texttt{0xff}, an address $s\in\mathbb{B}_{20}$, a parameter $\zeta \in \mathbb{B}_{32}$ and a hash $h \in\mathbb{B}_{32}$:
+\[
+    \texttt{bs} =
+    \texttt{0xff} \cdot
+    s \cdot
+    \zeta \cdot
+    h
+\]
+In applications this method is used by the \inst{CREATE2} opcode: the address $s$ is that of the creator account, $\zeta$ (the ``salt'') is a stack argument and $h = \texttt{KECCAK}(\textbf{i})$ is the hash of the initalization code $\textbf{i}$.

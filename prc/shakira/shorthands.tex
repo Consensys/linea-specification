@@ -1,0 +1,78 @@
+We define the following shorthands
+\[
+	\left\{ \begin{array}{lcl}
+		\locShakiraIsKeccak_{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \isShakiraKeccakData     _{i} \\
+			+ & \isShakiraKeccakResult   _{i} \\
+		\end{array} \right] \vspace{2mm} \\
+		\locShakiraIsShaTwo_{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \isShakiraShaTwoData     _{i} \\
+			+ & \isShakiraShaTwoResult   _{i} \\
+		\end{array} \right] \vspace{2mm} \\
+		\locShakiraIsRipemd_{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \isShakiraRipemdData     _{i} \\
+			+ & \isShakiraRipemdResult   _{i} \\
+		\end{array} \right] \\
+	\end{array} \right.
+	\quad\text{and}\quad 
+	\left\{ \begin{array}{lcr}
+		\locIsData _{i} & \define &
+		\left[ \begin{array}{cr}
+			+ & \isShakiraKeccakData     _{i} \\
+			+ & \isShakiraShaTwoData     _{i} \\
+			+ & \isShakiraRipemdData     _{i} \\
+		\end{array} \right] \vspace{2mm} \\
+		\locIsResult _{i}  & \define &
+		\left[ \begin{array}{cr}
+			+ & \isShakiraKeccakResult   _{i} \\
+			+ & \isShakiraShaTwoResult   _{i} \\
+			+ & \isShakiraRipemdResult   _{i} \\
+		\end{array} \right] \\
+	\end{array} \right.
+\]
+We further set
+\[
+	\left\{ \begin{array}{lcl}
+		\flagSum_{i} & \define &
+		\left[ \begin{array}{cr}
+			+ & \locShakiraIsKeccak_{i} \\
+			+ & \locShakiraIsShaTwo_{i} \\
+			+ & \locShakiraIsRipemd_{i} \\
+		\end{array} \right] \vspace{2mm} \\
+		\weightedPhaseFlagSum_{i} & \define &
+		\left[ \begin{array}{crcl}
+			+ & \phaseKeccakData   & \!\!\!\cdot\!\!\! & \isShakiraKeccakData   _{i} \\
+			+ & \phaseKeccakResult & \!\!\!\cdot\!\!\! & \isShakiraKeccakResult _{i} \\
+			+ & \phaseShaTwoData   & \!\!\!\cdot\!\!\! & \isShakiraShaTwoData   _{i} \\
+			+ & \phaseShaTwoResult & \!\!\!\cdot\!\!\! & \isShakiraShaTwoResult _{i} \\
+			+ & \phaseRipemdData   & \!\!\!\cdot\!\!\! & \isShakiraRipemdData   _{i} \\
+			+ & \phaseRipemdResult & \!\!\!\cdot\!\!\! & \isShakiraRipemdResult _{i} \\
+		\end{array} \right] \\
+	\end{array} \right.
+\]
+We further define the following shorthands which will come in handy in the heartbeat section:
+\[
+	\left\{ \begin{array}{lcl}
+		\locStampIncrement_{i} & \define & (1 - \locIsData_{i}) \cdot \locIsData_{i + 1} \\
+		\locIndexResetBit_{i} & \define &
+		\left[ \begin{array}{crcl}
+			+ & (1 - \locIsData_{i})   & \!\!\!\cdot\!\!\! & \locIsData_{i + 1}   \\
+			+ & (1 - \locIsResult_{i}) & \!\!\!\cdot\!\!\! & \locIsResult_{i + 1} \\
+		\end{array} \right] \vspace{2mm} \\
+		\locLegalTransitionsBit_{i} & \define &
+		\left[ \begin{array}{crcl}
+			+ & \isShakiraKeccakData     _{i} & \!\!\!\cdot\!\!\! & \locShakiraIsKeccak          _{i + 1}                              \\
+			+ & \isShakiraShaTwoData     _{i} & \!\!\!\cdot\!\!\! & \locShakiraIsShaTwo          _{i + 1}                              \\
+			+ & \isShakiraRipemdData     _{i} & \!\!\!\cdot\!\!\! & \locShakiraIsRipemd          _{i + 1}   \vspace{2mm}               \\
+			%
+			+ & \isShakiraKeccakResult   _{i} & \!\!\!\cdot\!\!\! & \isShakiraKeccakResult       _{i + 1}                              \\
+			+ & \isShakiraShaTwoResult   _{i} & \!\!\!\cdot\!\!\! & \isShakiraShaTwoResult       _{i + 1}                              \\
+			+ & \isShakiraRipemdResult   _{i} & \!\!\!\cdot\!\!\! & \isShakiraRipemdResult       _{i + 1}   \vspace{2mm}               \\
+			%
+			+ & \locIsResult             _{i} & \!\!\!\cdot\!\!\! & \locIsData                   _{i + 1}                              \\
+		\end{array} \right] \\
+	\end{array} \right.
+\]

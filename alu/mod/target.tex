@@ -1,0 +1,42 @@
+We impose the following target constraints:
+\[
+\left\{ \begin{array}{lcl}
+	\argOneHi_{i} & \!\!\! = \!\!\! & \theta \cdot \col{ARG1\_3} + \col{ARG1\_2} \\
+	\argTwoHi_{i} & \!\!\! = \!\!\! & \theta \cdot \col{ARG2\_3} + \col{ARG2\_2} \vspace{2mm} \\
+	%
+	\multicolumn{3}{l}{\byteCol{1\_3}_{i - 7} = \sum_{k = 0}^7 2^{k} \cdot \msb{1}_{i - k}} \\
+	%
+	\multicolumn{3}{l}{\byteCol{2\_3}_{i - 7} = \sum_{k = 0}^7 2^{k} \cdot \msb{2}_{i - k}} \vspace{2mm} \\
+	%
+	\col{B\_HI} & \!\!\! = \!\!\! & \theta \cdot \col{B\_3} + \col{B\_2} \\
+	\col{B\_LO} & \!\!\! = \!\!\! & \theta \cdot \col{B\_1} + \col{B\_0} \vspace{2mm} \\
+	%
+	\multicolumn{3}{l}{%
+	\col{B\_0} \cdot \col{Q\_1} + \col{B\_1} \cdot \col{Q\_0} = \theta^2 \cdot \alpha + \theta \cdot \col{H\_1} + \col{H\_0}} \\
+	%
+	\multicolumn{3}{l}{%
+	\col{B\_0} \cdot \col{Q\_3} + \col{B\_1} \cdot \col{Q\_2} + \col{B\_2} \cdot \col{Q\_1} + \col{B\_3} \cdot \col{Q\_0} = \col{H\_2}} \vspace{2mm} \\
+	%
+	\multicolumn{3}{l}{ \col{B\_0} \cdot \col{Q\_0} + \theta \cdot \col{H\_0} + \col{R\_LO} = \col{A\_LO} + \theta^2 \cdot \beta} \\
+	%
+	\multicolumn{3}{l}{%
+	\beta + \col{H\_1} + \theta \cdot \alpha
+	+ \big(\col{B\_0} \cdot \col{Q\_2} + \col{B\_1} \cdot \col{Q\_1} + \col{B\_2} \cdot \col{Q\_0}\big)
+	+ \theta \cdot \col{H\_2} + \col{R\_HI}
+	=
+	\col{A\_HI}} \vspace{2mm} \\
+	\multicolumn{3}{l}{%
+	\col{B\_1} \cdot \col{Q\_3} + \col{B\_2} \cdot \col{Q\_2} + \col{B\_3} \cdot \col{Q\_1}
+	+ \col{B\_2} \cdot \col{Q\_3} + \col{B\_3} \cdot \col{Q\_2}
+	+ \col{B\_3} \cdot \col{Q\_3} = 0} \\
+\end{array} \right.
+\]
+The interpretation is as follows:
+\begin{itemize}
+	\item $\byteCol{1\_3}$ and $\byteCol{1\_2}$ are the byte decompositions of $\argOne_{3}$ and $\argOne_{2}$ respectively; taken together they provide the byte decomposition of $\argOne\high$; 
+	\item $\byteCol{2\_3}$ and $\byteCol{2\_2}$ are the byte decompositions of $\argTwo_{3}$ and $\argTwo_{2}$ respectively; taken together they provide the byte decomposition of $\argTwo\high$; 
+	\item $\msb{1}$ is the bit decomposition of the most significant byte of $\argOne$;
+	\item $\msb{2}$ is the bit decomposition of the most significant byte of $\argTwo$;
+	\item $\col{B\_0} \cdot \col{Q\_1} + \col{B\_1} \cdot \col{Q\_0} \equiv [0 \,|\, \alpha \,|\, \col{H\_1} \,|\, \col{H\_0}]$
+	\item $\col{B\_0} \cdot \col{Q\_0}  + \theta \cdot \col{H\_0} + \col{R\_HI} \equiv [\beta \,\|\, \col{A\_LO}]$
+\end{itemize}

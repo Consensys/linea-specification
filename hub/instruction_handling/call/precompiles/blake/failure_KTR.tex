@@ -1,0 +1,22 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below assume that }
+		\left\{ \begin{array}{lcl}
+			\peekScenario                 _{i}      & = & 1 \\
+			\scenBlake                    _{i}      & = & 1 \\
+			\scenPrcFailureKnownToRam     _{i}      & = & 0 \\
+		\end{array} \right.
+		}
+\end{center}
+We are thus considering the first row of the second phase of the \hubMod{}'s processing of a \inst{CALL} to the \inst{BLAKE2f} precompile.
+We are further assuming that the \hubMod{} module didn't detect an exceptional \inst{CALL} to the \inst{BLAKE2f} precompile (i.e. $\cds = \locBlakeCallDataSize$.)
+The only thing that remains to do is for us to set the return data of the caller context to being empty.
+\begin{description}
+	\item[\underline{Context-row $n^°(i + \prcBlakeFKTRCallerContextRowOffset)$:}] 
+		we impose
+		\[
+			\nonContextProvidesEmptyReturnData
+			{i}{\prcBlakeFKTRCallerContextRowOffset}
+		\]
+\end{description}
+

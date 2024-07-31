@@ -1,0 +1,41 @@
+The present section describes the data layout for the \inst{RETURN} case. As such:
+\[
+	\boxed{\text{All constraints in this subsection further assume } \oobInstIsDeployment_{i} = 1 }
+\]
+We remind the reader that the objective of the \oobMod{} module in this particular case is:
+\green{(\emph{a})} to perform the comparison \( \col{size} \leq 24576 \).
+
+
+\noindent We use the following shorthands for the values in the \oobDataCol{k} columns:
+\[
+	\left\{ \begin{array}{lclr}
+		\locCodeSizeHi           & \define & \oobDataCol {1}    _{i} \\
+		\locCodeSizeLo           & \define & \oobDataCol {2}    _{i} \\
+		%                        & \define & \oobDataCol {3}    _{i} \\
+		%                        & \define & \oobDataCol {4}    _{i} \\
+		%                        & \define & \oobDataCol {5}    _{i} \\
+		%                        & \define & \oobDataCol {6}    _{i} \\
+		\locMaxCodeSizeException & \define & \oobDataCol {7}    _{i}  & \prediction \\
+		%                        & \define & \oobDataCol {8}    _{i}  & \prediction \\
+	\end{array} \right.
+\]
+
+We impose the following constraints:
+\begin{description}
+	\item[\underline{Row n°$(i)$:}] we impose the following:
+		\[
+			\oobCallToLt
+			{i}{0}
+			{0}{24576}
+			{\locCodeSizeHi}{\locCodeSizeLo}
+		\]
+		and we define the following associated shorthand
+		\[
+			\locExceedsMaxCodeSize \define \outgoingResLo _{i}
+		\]
+		It follows that $\locExceedsMaxCodeSize = 1 \iff 24576 < \locCodeSize$.
+	\item[\underline{Justifying \hubMod{} predictions:}] we impose
+		\[
+			\locMaxCodeSizeException = \locExceedsMaxCodeSize
+		\]
+\end{description}

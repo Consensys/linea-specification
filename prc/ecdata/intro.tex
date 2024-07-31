@@ -1,0 +1,25 @@
+In $\ecDataMod$ module we detect a subset of the possible ways precompiles execution related to elliptic curves can fail. Specifically, for $\ecAdd$ and $\ecMul$ we can determine if they fail or succed. While, in the case of $\ecRecover$ and $\ecPairing$, we can determine if they surely fail or we need to rely on external circuits for determining the outcome of the execution.
+This goal is to perform some preliminary checks to avoid sending to the external circuits inputs that are
+trivially wrong.
+
+We define the following shorthands:
+\[
+    \left\{
+    \begin{array}{lcl}
+        \bnOuterPrime
+         & \!\!\! = \!\!\! & \bnOuterPrimeHex                                                                     \\
+        \bnOuterPrimeHi
+         & \!\!\! = \!\!\! & \bnOuterPrimeHexHi                                                                   \\
+        \bnOuterPrimeLo
+         & \!\!\! = \!\!\! & \bnOuterPrimeHexLo                                                                   \\
+        \secpN
+         & \!\!\! = \!\!\! & \secpNHex                                                                            \\
+        \secpNHi
+         & \!\!\! = \!\!\! & \secpNHexHi                                                                          \\
+        \secpNLo
+         & \!\!\! = \!\!\! & \secpNHexLo                                                                          \\
+        C_1
+         & \!\!\! = \!\!\! & \{ (\ttx, \tty) \in F_{\bnOuterPrime}^2 \mid \tty^2 = \ttx^3 + 3 \} \cup \{ (0, 0)\}
+    \end{array}
+    \right.
+\]

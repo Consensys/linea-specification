@@ -1,0 +1,91 @@
+\def\lookupColumnsHubIntoTxnData{%
+				\item \locAbsMax{}
+				\item \locAbs{}
+				\item \block{}
+				\item $\txFrom\high$
+				\item $\txFrom\low$
+				\item $\txTo\high$
+				\item $\txTo\low$
+				\item $\txCoinbase\high$
+				\item $\txCoinbase\low$
+				\item \txGasLimit{}
+				\item \txInitialGas{}
+				\item \txLeftoverGas{}
+				\item $\txFinalRefundCounter{}$
+				\item $\txEffectiveRefund$
+				\item \txIsTypeTwo{}
+				\item \txBasefee{}
+				\item \txGasPrice{}
+				\item \txNonce{}
+				\item $\txValue$
+				\item $\txInitialBalance$
+				\item \txIsDeployment{}
+				\item \txCallDataSize{}
+				\item \txInitCodeSize{}
+				\item \txStatusCode{}
+				\item \txRequiresEvmExecution{}
+				\item[\vspace{\fill}]
+				\item[\vspace{\fill}]
+}
+
+The purpose of the present lookup is to communicate relevant transaction information to the \hubMod{} module as well as extract some execution related information. The main points are that
+(\emph{a})
+the \hubMod{} requires information during either the \textbf{transaction initialization} phase (if $\txRequiresEvmExecution \equiv 1$) or the \textbf{transaction skipping} phase (if $\txRequiresEvmExecution \equiv 0$); this information includes, but is not limited to, the transaction nonce, initial sender balance, transfer value, gas available for bytecode execution; it also includes the \txRequiresEvmExecution{} flag must all be confirmed and some execution context data must be set accordingly;
+(\emph{b})
+certain opcodes require access to data contained in the present module (e.g. \inst{GASPRICE}, \inst{ORIGIN}, \dots), these data are retrieved using the current lookup which imports a dedicated transaction-row into the \hubMod{} module;
+(\emph{c})
+transaction \textbf{finalization}: the left over gas and applicable refunds are returned to the sender, the coinbase address is paid in accordance with the valid \inst{GASPRICE} (and \inst{BASEFEE} for \textsc{eip1550} transactions), the transaction status code is confirmed etc \dots{}
+
+\begin{description}
+	\item[Source columns:] the source module is the \hubMod{} module; it uses the following \textbf{selector} column:
+		\[
+			\col{sel} := \peekTransaction{}
+		\]
+		in other words we select for \textbf{transaction-rows}; its source columns are:
+		\begin{multicols}{3}
+			\begin{enumerate}
+					\lookupColumnsHubIntoTxnData{}					% \item[\vspace{\fill}]
+			\end{enumerate}
+		\end{multicols}
+	\item[Target columns:] the target module is the present \txnDataMod{} module; it requires no selector; the required columns are
+		\begin{multicols}{3}
+			\begin{enumerate}
+					\lookupColumnsHubIntoTxnData{}					% \item[\vspace{\fill}]
+			\end{enumerate}
+		\end{multicols}
+\end{description}
+
+\noindent We provide some context for this rather substantial lookup. Below are \emph{some} of the use-cases for the columns in the lookup above. Listing all use-cases would take us too far afield. Note that some columns have several use cases.
+\begin{itemize}
+	\item 
+		$\locAbsMax$,
+		$\locAbs$ and $\block$
+		are used to identify the transaction in the \hubMod{} module; the batch number is used to initialize the transaction's batch number.
+	\item 
+		$\txRequiresEvmExecution$, $\txInitialBalance$ are \emph{extracted} from the \hubMod{} module at the beginning of transaction processing;
+		$\txInitialBalance$ is the the sender account's balance before any modification is made to the account; it is used in the present module to vet \col{gas\_price} parameters for type 0 and type 1 transactions, \col{max\_fee\_per\_gas} for type 2 transactions and $\txValue$;
+		$\txRequiresEvmExecution$ is set in transaction initialization; the present module passes this information to the \rlpTxnMod{} module; it is used to filter out access sets in the lookup to the \hubMod{} module for transactions that \emph{don't} require \textsc{evm} execution; 
+	\item
+		$\txFrom\high$, $\txFrom\low$,
+		$\txNonce$ and $\txValue$
+		identify the sender account in transaction initialization, to check the sender account nonce \accNonce{} against the transaction nonce \txNonce{} and perform the initial sender balance update;  is also used to initialize, for transactions requiring \textsc{evm} execution, the root execution context's \cnCallValue{};
+	\item
+		$\txTo\high$ and $\txTo\low$ are used to load the recipient account at transaction start
+		 is used to set a context variable declaring the root execution context 
+		$\txInitialGas$
+		$\txInitCodeSize$.
+	\item 
+		$\txStatusCode$,
+		$\txLeftoverGas$,
+		$\txFinalRefundCounter$ and
+		$\txEffectiveRefund$ are \emph{read-off} in the transaction finalization phase ($\txFinl \equiv 1$);
+	\item 
+		$\txFrom\high$, $\txFrom\low$,
+		$\txCoinbase\high$, $\txCoinbase\low$,
+		$\txGasPrice$, 
+		$\txGasLimit{}$ and
+		$\txEffectiveRefund$
+		(as well as $\txBasefee$ and $\txIsTypeTwo$) are \emph{used} in the transaction finalization phase to reimburse left over gas and pay the coinbase address appropriately.
+	\item
+		$\txCallDataSize$, $\txIsDeployment$, $\txValue$, $\txInitialGas$, $\txGasPrice$ are used to set context variables;
+\end{itemize}

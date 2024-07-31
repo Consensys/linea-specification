@@ -1,0 +1,171 @@
+% \locSecondMiscRowOffsetDeployAndHash
+% \locNonemptyDeploymentFirstAccountRowOffset 
+% \locNonemptyDeploymentSecondAccountRowOffset
+% \locCallerContextRowOffsetNonemptyDeploymentWillRevert
+% \locCallerContextRowOffsetNonemptyDeploymentWontRevert
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below assume }
+		\left\{ \begin{array}{lcl}
+			\peekScenario                 _{i} & = & 1 \\
+			\scenReturnNonemptyDeployment _{i} & = & 1 \\
+		\end{array} \right.}
+\end{center}
+As per the above this section deals with recognizing and handling \textbf{unexceptional and nontrivial} \inst{RETURN} instructions executed in a deployment context.
+\begin{description}
+	\item[\underline{The second miscellaneous row $n^°(i + \locSecondMiscRowOffsetDeployAndHash)$:}]
+		we impose the following (wherein we deploy bytecode and hash it at the same time)
+		\[
+			\weightedMiscFlagSum
+			{i}{\locSecondMiscRowOffsetDeployAndHash}
+			=
+			\miscMmuWeight
+		\]
+		in other words
+		\[
+			\left\{ \begin{array}{lclr}
+				\miscExpFlag  _{i + \locSecondMiscRowOffsetDeployAndHash} & = & \gZero & (\trash) \\
+				\miscMmuFlag  _{i + \locSecondMiscRowOffsetDeployAndHash} & = & \rOne  & (\trash) \\
+				\miscMxpFlag  _{i + \locSecondMiscRowOffsetDeployAndHash} & = & \rZero & (\trash) \\
+				\miscOobFlag  _{i + \locSecondMiscRowOffsetDeployAndHash} & = & \gZero & (\trash) \\
+				\miscStpFlag  _{i + \locSecondMiscRowOffsetDeployAndHash} & = & \gZero & (\trash) \\
+			\end{array} \right.
+		\]
+	\item[\underline{Setting the (second) \mmuMod{} instruction:}]
+		we impose that
+		\[
+			\setMmuInstructionParametersRamToExoWithPadding {
+				anchorRow         = i                                    ,
+				relOffset         = \locSecondMiscRowOffsetDeployAndHash ,
+				sourceId          = \cn_{i}                              ,
+				targetId          = \locDeploymentCfi                    ,
+				auxiliaryId       = 1 + \hubStamp_{i}                    ,
+				% sourceOffsetHi  = \col{src\_offset\_hi}                ,
+				sourceOffsetLo    = \locOffsetLo                         ,
+				% targetOffsetLo  = \col{tgt\_offset\_lo}                ,
+				size              = \locSizeLo                           ,
+				% referenceOffset = \col{ref\_offset}                    ,
+				referenceSize     = \locSizeLo                           ,
+				successBit        = \nothing                             ,
+				% limbOne         = \col{limb\_1}                        ,
+				% limbTwo         = \col{limb\_2}                        ,
+				exoSum            = \exoWeightRom + \exoWeightKec        ,
+				phase             = \nothing                             ,
+				}
+			% \setMmuInstructionParametersRamToExoWithPadding {i}{\locSecondMiscRowOffsetDeployAndHash}
+			% \left[ \begin{array}{ll}
+			% 	\utt{Source ID:}            & \cn_{i}                                                    \\
+			% 	\utt{Target ID:}            & \accCfi _{i + \locNonemptyDeploymentFirstAccountRowOffset} \\
+			% 	\utt{Auxiliary ID:}         & 1 + \hubStamp_{i}                                          \\
+			% 	% \utt{Source offset high:} & \col{src\_offset\_hi}                                      \\
+			% 	\utt{Source offset low:}    & \locOffsetLo                                               \\
+			% 	% \utt{Target offset low:}  & \col{tgt\_offset\_lo}                                      \\
+			% 	\utt{Size:}                 & \locSizeLo                                                 \\
+			% 	% \utt{Reference offset:}   & \col{ref\_offset}                                          \\
+			% 	\utt{Reference size:}       & \locSizeLo                                                 \\
+			% 	\utt{Success bit:}          & \nothing                                                   \\
+			% 	% \utt{Limb one:}           & \col{limb\_1}                                              \\
+			% 	% \utt{Limb two:}           & \col{limb\_2}                                              \\
+			% 	\utt{Exo sum:}              & \exoWeightRom + \exoWeightKec                              \\
+			% 	\utt{Phase:}                & \nothing                                                   \\
+			% \end{array} \right]
+		\]
+		\saNote{}
+		The above performs both
+		(\emph{a}) the transfer of bytecode to the \romMod{} module for deployment
+		(\emph{b}) the transfer of bytecode to the \shakiraMod{} module for hashing.
+	\item[\underline{The first account row $n^°(i + \locNonemptyDeploymentFirstAccountRowOffset)$:}]
+		we impose the following
+		\[
+			\left\{ \begin{array}{lclr}
+				\accAddressHi                                       _{i + \locNonemptyDeploymentFirstAccountRowOffset}   & = & \locDeploymentAddressHi \\
+				\accAddressLo                                       _{i + \locNonemptyDeploymentFirstAccountRowOffset}   & = & \locDeploymentAddressLo \\
+				\multicolumn{3}{l}{\accSameBalance                   {i} {\locNonemptyDeploymentFirstAccountRowOffset}} \\
+				\multicolumn{3}{l}{\accSameNonce                     {i} {\locNonemptyDeploymentFirstAccountRowOffset}} \\
+				\accCodesize\new                                    _{i + \locNonemptyDeploymentFirstAccountRowOffset}   & = & \locSizeLo \\
+				\accCodehashHi\new                                  _{i + \locNonemptyDeploymentFirstAccountRowOffset}   & = & \locHashInfoCodeHashHi \\
+				\accCodehashLo\new                                  _{i + \locNonemptyDeploymentFirstAccountRowOffset}   & = & \locHashInfoCodeHashLo \\
+				\multicolumn{3}{l}{\accSameDeploymentNumber          {i} {\locNonemptyDeploymentFirstAccountRowOffset}}            \\
+				\accDepStatus\new                                   _{i + \locNonemptyDeploymentFirstAccountRowOffset}   & = & 0 \vspace{2mm} \\
+				\multicolumn{3}{l}{\accSameWarmth                    {i} {\locNonemptyDeploymentFirstAccountRowOffset}} \\
+				\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag {i} {\locNonemptyDeploymentFirstAccountRowOffset}} \\
+				\accRomLexFlag                                      _{i + \locNonemptyDeploymentFirstAccountRowOffset}   & = & \rOne \\
+				\accTrmFlag                                         _{i + \locNonemptyDeploymentFirstAccountRowOffset}   & = & \gZero \\
+				\multicolumn{3}{l}{
+					\standardDomSubStamps {
+						anchorRow        = i                                          ,
+						relOffset        = \locNonemptyDeploymentFirstAccountRowOffset,
+						domOffset        = 0                                          ,
+					}
+				} \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		Again the following constraints do not need to be enforced (they hold implictly) and we add them for reference:
+		\[
+			\left\{ \begin{array}{lclr}
+				\accCodehashHi  _{i + \locNonemptyDeploymentFirstAccountRowOffset} & = & \emptyKeccakHi & (\trash) \\
+				\accCodehashLo  _{i + \locNonemptyDeploymentFirstAccountRowOffset} & = & \emptyKeccakLo & (\trash) \\
+				\accDepStatus   _{i + \locNonemptyDeploymentFirstAccountRowOffset} & = & \rOne          & (\trash) \\
+				\multicolumn{3}{l}{\accIsntPrecompile {i}{\locNonemptyDeploymentFirstAccountRowOffset}} & (\trash) \\
+			\end{array} \right.
+		\]
+	\item[\underline{The second account row $n^°(i + \locNonemptyDeploymentSecondAccountRowOffset)$:}]
+		\If $\scenReturnFromDeploymentNonemptyByteCodeWillRevert _{i} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lclr}
+				\multicolumn{3}{l}{\accSameAddr                            {i}{\locNonemptyDeploymentSecondAccountRowOffset}{\locNonemptyDeploymentFirstAccountRowOffset}}              \\
+				\multicolumn{3}{l}{\accUndoBalanceUpdate                   {i}{\locNonemptyDeploymentSecondAccountRowOffset}{\locNonemptyDeploymentFirstAccountRowOffset}}              \\
+				\multicolumn{3}{l}{\accUndoNonceUpdate                     {i}{\locNonemptyDeploymentSecondAccountRowOffset}{\locNonemptyDeploymentFirstAccountRowOffset}}              \\
+				\multicolumn{3}{l}{\accUndoCodeUpdate                      {i}{\locNonemptyDeploymentSecondAccountRowOffset}{\locNonemptyDeploymentFirstAccountRowOffset}}              \\
+				\multicolumn{3}{l}{\accUndoDeploymentStatusAndNumberUpdate {i}{\locNonemptyDeploymentSecondAccountRowOffset}{\locNonemptyDeploymentFirstAccountRowOffset}} \vspace{2mm} \\
+				\multicolumn{3}{l}{\accUndoWarmthUpdate                    {i}{\locNonemptyDeploymentSecondAccountRowOffset}{\locNonemptyDeploymentFirstAccountRowOffset}}              \\
+				\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag       {i}{\locNonemptyDeploymentSecondAccountRowOffset}}                                                        \\
+				\accRomLexFlag _{i + \locNonemptyDeploymentSecondAccountRowOffset}   & = & 0 \\
+				\accTrmFlag    _{i + \locNonemptyDeploymentSecondAccountRowOffset}   & = & 0 \\
+				\multicolumn{3}{l}{
+					\revertDomSubStamps {
+						anchorRow        = i,
+						relOffset        = \locNonemptyDeploymentSecondAccountRowOffset,
+						subOffset        = 1,
+					}
+				} \\
+				% \ob{TODO: The second argument \dots{} just a typo ?}
+				% {i}{\locEmptyDeploymentSecondAccountRowOffset}{\locEmptyDeploymentFirstAccountRowOffset}} \\
+			\end{array} \right.
+		\]
+	\item[\underline{Setting the caller's new return data:}]
+		we impose that
+		\begin{description}
+			\item[\underline{The ``will revert'' case:}] 
+				\If $\scenReturnFromDeploymentNonemptyByteCodeWillRevert_{i} = 1$ \Then
+				\begin{enumerate}
+					\item \If $\locIsRoot = 1$ \Then we impose
+						\[
+							\readContextData
+							{i}{\locCallerContextRowOffsetNonemptyDeploymentWillRevert}
+							{\cn_{i}}
+						\]
+					\item \If $\locIsRoot = 0$ \Then we impose
+						\[
+							\executionProvidesEmptyReturnData
+							{i}{\locCallerContextRowOffsetNonemptyDeploymentWillRevert} 
+						\]
+				\end{enumerate}
+			\item[\underline{The ``won't revert'' case:}] 
+				\If $\scenReturnFromDeploymentNonemptyByteCodeWontRevert_{i} = 1$ \Then
+				\begin{enumerate}
+					\item \If $\locIsRoot = 1$ \Then we impose
+						\[
+							\readContextData
+							{i}{\locCallerContextRowOffsetNonemptyDeploymentWontRevert}
+							{\cn_{i}}
+						\]
+					\item \If $\locIsRoot = 0$ \Then we impose
+						\[
+							\executionProvidesEmptyReturnData
+							{i}{\locCallerContextRowOffsetNonemptyDeploymentWontRevert} 
+						\]
+				\end{enumerate}
+		\end{description}
+\end{description}

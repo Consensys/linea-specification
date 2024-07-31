@@ -1,0 +1,16 @@
+The present section imposes several constraints that are optional in the sense that they will be re-enforced on a case by case basis for all instructions which may trigger the \stpMod{} module, that is: \inst{CALL}-type and \inst{CREATE}-type instructions.
+These constraints impose that whenever the \stpMod{} module is triggered by the \hubMod{} module, the \mxpMod{} must also have been triggered.
+Furthermore it imposes ``copy constraints'' or ``duplication constraints'' transferring the ``memory expansion gas'' from the \mxpMod{} data columns, specifically: \miscMxpGasMxp{}, to the eponymous \stpMod{} data column, specifically \miscStpGasMxp{}.
+
+We therefore impose that
+\begin{enumerate}
+	\item \If $\peekMisc _{i} = 1$ \et $\miscStpFlag _{i} = 1$ \Then
+		\begin{enumerate}
+			\item $\miscMxpFlag _{i} = 1$
+			\item $\miscStpGasMxp _{i} = \miscMxpGasMxp _{i}$
+		\end{enumerate}
+\end{enumerate}
+\saNote{}
+Previous iterations of the \hubMod{} arithmetization didn't duplicate the \miscMxpGasMxp{} column.
+This column was shared between the \mxpMod{} and \stpMod{}.
+This approach is valid and slightly more efficient than the above but also a little more finnicky.

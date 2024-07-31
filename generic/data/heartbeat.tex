@@ -1,0 +1,20 @@
+
+The heartbeat of the present module falls in line with that of many other modules: it has a stamp that counts monotonically up from 0 jumping by 1 every time an instruction has been dealt with. We further have a counter column with a cycle length of $\ssmall$.
+
+\begin{enumerate}
+	\item $\gms_{0} = 0$
+	\item \If $\gms_{i} = 0$ \Then 
+	\[
+	\begin{cases}
+		\index_{i} = 0 \\
+		\limb{i} = 0 \\
+		\nBytes{i} = 0 \\
+	\end{cases}
+	\]
+\end{enumerate}
+There are two use possibilites for the module stamp: either its jumps are predictable and always $=1$ (i.e. $\gms_{i + 1} \in \{\gms_{i}, 1 + \gms_{i}\}$) or they may be erratic but small. When this is the case a module may add a byte column and an accumulator column to accumulate (say) 4 bytes and express the jumps in $\gms$ as positive 4 byte integers (i.e. \If $\gms_{i + 1} \neq \gms_{i} $ \Then $\gms_{i + 1} = \gms_{i} + 1 + \ACC_{i + 4}$ or similar.)
+\begin{enumerate}[resume]
+	\item \If $\gms_{i} \neq \gms_{i + 1}$ \Then $\index{i + 1} = 0$;
+	\item \If $\gms_{i} \neq 0$ \et $\gms_{i} = \gms_{i + 1}$ \Then $\index{i + 1} = 1 + \index_{i}$.
+\end{enumerate}
+

@@ -1,0 +1,196 @@
+# http://www.graphviz.org/content/cluster
+
+digraph G {
+
+  node [fontname = "Handlee"];
+  node [shape=plaintext];
+  edge [fontname = "Handlee"];
+
+  inst [label=<
+  <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
+  <TR>
+  <TD BGCOLOR="lightgray"><FONT POINT-SIZE="40">STOP</FONT></TD>
+  </TR>
+  </TABLE>>];
+  message_call [
+    label = "\nMessage Call\n ";
+    shape = diamond;
+    style = filled;
+    fillcolor = "ORANGE";
+    color = "RED";
+  ];
+  deployment_will_revert [
+    label = "\nDeployment\nWILL revert\n ";
+    shape = diamond;
+    style = filled;
+    fillcolor = "ORANGE";
+    color = "RED";
+  ];
+  deployment_wont_revert [
+    label = "\nDeployment\nWON'T revert\n ";
+    shape = diamond;
+    style = filled;
+    fillcolor = "ORANGE";
+    color = "RED";
+  ];
+
+  {
+    rank=same;
+    message_call; message_call_rows;
+  }
+  {
+    rank=same;
+    deployment_will_revert; deployment_will_revert_rows;
+  }
+  {
+    rank=same;
+    deployment_wont_revert; deployment_wont_revert_rows;
+  }
+
+  inst                       -> message_call;
+  message_call               -> message_call_rows;
+  message_call               -> deployment_will_revert;
+  deployment_will_revert     -> deployment_will_revert_rows;
+  deployment_will_revert     -> deployment_wont_revert;
+  deployment_wont_revert     -> deployment_wont_revert_rows;
+
+message_call_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>i</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>empty stack items</TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="LIGHTGREEN">current</TD>
+    <TD COLSPAN="1">observe cnDepStatus = <B>0</B></TD>
+  </TR>
+  <TR>
+    <TD>i + 2</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD COLSPAN="1">update return data: &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+
+deployment_will_revert_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>i</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>empty stack items</TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="LIGHTGREEN">current</TD>
+    <TD COLSPAN="1">observe cnDepStatus = <B>1</B>; read <B>I<sub>a</sub></B></TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="3">i + 2</TD>
+    <TD ROWSPAN="3">ACC</TD>
+    <TD ROWSPAN="3" BGCOLOR=" #33FFCC "><B>I<sub>a</sub></B></TD>
+    <TD ROWSPAN="1">TRM🏴 = <B>0</B>; CFI_REQ = <B>0</B>;</TD>
+    <TD ROWSPAN="3">τ · h + 0</TD> <TD ROWSPAN="3">0</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">WARM <B>≍</B>; accDepStatus: <B>1 ↘ 0</B>;</TD>
+  </TR>
+  <TR>
+  <TD ROWSPAN="1">code ← ∅ (size, hash, ...)</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="3">i + 3</TD>
+    <TD ROWSPAN="3">ACC</TD>
+    <TD ROWSPAN="3" BGCOLOR=" #33FFCC "><B>I<sub>a</sub></B></TD>
+    <TD ROWSPAN="1">TRM🏴 = <B>0</B>; CFI_REQ = <B>0</B>;</TD>
+    <TD ROWSPAN="3">τ · ρ + ε</TD> <TD ROWSPAN="3">τ · h + 1</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">WARM <B>≍</B>; accDepStatus <b>↶</b>;</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">code <b>↶</b></TD>
+  </TR>
+  <TR>
+    <TD>i + 3</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD>update return data: &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+deployment_wont_revert_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>i</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>empty stack items</TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="LIGHTGREEN">current</TD>
+    <TD COLSPAN="1">observe cnDepStatus = <B>1</B>; read <B>I<sub>a</sub></B></TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="3">i + 2</TD>
+    <TD ROWSPAN="3">ACC</TD>
+    <TD ROWSPAN="3" BGCOLOR=" #33FFCC "><B>I<sub>a</sub></B></TD>
+    <TD ROWSPAN="1">TRM🏴 = 0; CFI_REQ = 0; CFI = cfi</TD>
+    <TD ROWSPAN="3">τ · h + 0</TD><TD ROWSPAN="3">0</TD>
+  </TR>
+  <TR>
+  <TD ROWSPAN="1">WARM <B>≍</B>; accDepStatus: <B>1 ↘ 0</B>;</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">code ← ∅ (size, hash, ...)</TD>
+  </TR>
+  <TR>
+    <TD>i + 2</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD>update return data: &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+}

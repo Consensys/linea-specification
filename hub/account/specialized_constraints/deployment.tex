@@ -1,0 +1,53 @@
+Below $\relof$ is a (small) positive integer.
+\[
+	\left\{ \begin{array}{lcl}
+		\accSameDeploymentNumber  {i}{\relof} & \!\!\! \iff \!\!\! & \accDepNumber\new_{i + \relof} = \accDepNumber_{i + \relof} \\
+		\accSameDeploymentStatus  {i}{\relof} & \!\!\! \iff \!\!\! & \accDepStatus\new_{i + \relof} = \accDepStatus_{i + \relof} \\
+		\accSameDeployment        {i}{\relof} & \!\!\! \iff \!\!\! &
+		\left\{ \begin{array}{lcl}
+			\multicolumn{3}{l}{\accSameDeploymentNumber {i}{\relof} } \\
+			\multicolumn{3}{l}{\accSameDeploymentStatus {i}{\relof} } \\
+		\end{array} \right. \vspace{1mm} \\
+		\accIncrementDeploymentNumber    {i}{\relof} & \!\!\! \iff \!\!\! & \accDepNumber\new_{i + \relof} = 1 + \accDepNumber_{i + \relof} \\
+		\accTurnOnDepStatus       {i}{\relof} & \!\!\! \iff \!\!\! &
+		\left\{ \begin{array}{lcl}
+			\accDepStatus      _{i + \relof} & = & 0 \\
+			\accDepStatus\new  _{i + \relof} & = & 1 \\
+		\end{array} \right. \\
+		\multicolumn{3}{l}{
+			\accUndoDeploymentStatusAndNumberUpdate {i}{\reluo}{\reldo} \iff
+			\left\{ \begin{array}{lcl}
+				\multicolumn{3}{l}{\accSameDeploymentNumber {i}{\reluo}} \\
+				\accDepNumber     _{i + \reluo} & = & \accDepNumber\new   _{i + \reldo} \\
+				\accDepStatus     _{i + \reluo} & = & \accDepStatus\new   _{i + \reldo} \\
+				\accDepStatus\new _{i + \reluo} & = & \accDepStatus       _{i + \reldo} \\
+			\end{array} \right. } \\
+	\end{array} \right.
+\]
+We will also use larger compound constraints:
+\[
+	\left\{ \begin{array}{l}
+		\accInitiateForDeployment
+		{i}{\relof}
+		{\col{init\_code\_size}}
+		{\col{value}} 
+		\vspace{2mm} \\
+		\qquad \iff
+		\left\{ \begin{array}{lclr}
+			\accNonce            _{i + \relof} & \!\!\! = \!\!\! & 0  & (\trash) \\
+			\accNonce\new        _{i + \relof} & \!\!\! = \!\!\! & 1 \\
+			\multicolumn{3}{l}{\accIncrementBalance {i}{\relof}{\col{value}}} \\
+			\accCodesize         _{i + \relof} & \!\!\! = \!\!\! & 0                       & (\trash) \\
+			\accCodesize\new     _{i + \relof} & \!\!\! = \!\!\! & \col{init\_code\_size} \\
+			\accHasCode          _{i + \relof} & \!\!\! = \!\!\! & 0                       & (\trash) \\
+			\accCodehashHi       _{i + \relof} & \!\!\! = \!\!\! & \emptyKeccakHi          & (\trash) \\
+			\accCodehashLo       _{i + \relof} & \!\!\! = \!\!\! & \emptyKeccakLo          & (\trash) \\
+			\accHasCode\new      _{i + \relof} & \!\!\! = \!\!\! & 0                      \\
+			\accCodehashHi\new   _{i + \relof} & \!\!\! = \!\!\! & \emptyKeccakHi          & (\trash) \\
+			\accCodehashLo\new   _{i + \relof} & \!\!\! = \!\!\! & \emptyKeccakLo          & (\trash) \\
+			\multicolumn{3}{l}{\accIncrementDeploymentNumber {i}{\relof}} \\ 
+			\multicolumn{3}{l}{\accTurnOnDepStatus    {i}{\relof}} \\
+			\multicolumn{3}{l}{\accTurnOnWarmth       {i}{\relof}} \\
+		\end{array} \right. \\
+	\end{array} \right.
+\]

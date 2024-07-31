@@ -1,0 +1,48 @@
+**Question:** what should happen if you call `EXTCODEHASH` on yourself while you are deploying ?
+
+**Answer:** there seems to be a simple answer. By definition `EXTCODEHASH` returns `0` for empty accounts and the codehash of non-empty accounts. When a deployment is under way the new address starts out with a nonce of `1` and its codehash set to `KEC(( ))`. Thus the address is nonempty. `EXTCODEHASH` thus returns the actual codehash, i.e. `KEC(( )) = c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470`.
+
+We are going to test this on using the following initcode:
+
+```bash
+init code:
+==========
+
+ADDRESS
+EXTCODEHASH
+PUSH1 0x00
+MSTORE
+PUSH1 0x20
+PUSH1 0x00
+REVERT
+```
+
+- associated bytecode: 0x30 3f 60 00 52 60 20 60 00 fd
+- codesize: 10 bytes
+
+We will run the above. Deployment ends in a `REVERT` and we use `RETURNDATACOPY` to read the return data.
+
+```bash
+code to run:
+============
+
+PUSH10	0x303f60005260206000fd
+PUSH1 	0xb0
+SHL
+//
+PUSH1 0x00
+MSTORE
+//
+PUSH1 0x0a		// size (initcode is 10 bytes)
+PUSH1 0x00		// offset
+PUSH1 0x00		// value
+CREATE
+//
+RETURNDATASIZE
+PUSH1 0x00
+PUSH1 0x00
+RETURNDATACOPY
+//
+PUSH1 0x00
+MLOAD
+```

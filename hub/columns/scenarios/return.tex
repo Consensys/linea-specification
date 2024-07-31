@@ -1,0 +1,41 @@
+The following scenario column simplifies dealing with \textbf{exceptional} \inst{RETURN} instructions: 
+\begin{enumerate}[resume]
+	\item \scenReturnException:
+		binary column;
+		lights up for unexceptional \inst{RETURN} instructions that \textbf{require} modifying the caller context's \textsc{ram};
+\end{enumerate}
+The following scenarios are used to deal with \textbf{unexceptional} \inst{RETURN} instructions.
+The first batch pertain to \inst{RETURN} instructions executed in a context spawned through a message call.
+\begin{enumerate}[resume]
+	\item \scenReturnFromMessageCallWillTouchRam:
+		binary column;
+		lights up for unexceptional \inst{RETURN} instructions that \textbf{require} modifying the caller context's \textsc{ram};
+	\item \scenReturnFromMessageCallWontTouchRam:
+		binary column;
+		lights up for unexceptional \inst{RETURN} instructions that \textbf{don't require} modifying the caller context's \textsc{ram};
+\end{enumerate}
+\saNote{} An \textbf{unexceptional} \inst{RETURN} instruction in a message call context may modify the \textsc{ram} of its caller context \emph{iff}
+(\emph{a}) the current context isn't the root context of the transaction
+(\emph{b}) its size parameter is nonzero
+(\emph{c}) the caller context provided the current context with a nonzero \rac{}.
+
+The next batch pertain to \inst{RETURN} instructions executed in a deployment context.
+\begin{enumerate}[resume]
+	\item \scenReturnFromDeploymentEmptyByteCodeWillRevert:
+		binary column;
+		lights up for unexceptional \inst{RETURN} deployments of empty bytecode which \textbf{will be rolled back};
+	\item \scenReturnFromDeploymentEmptyByteCodeWontRevert:
+		binary column;
+		lights up for unexceptional \inst{RETURN} deployments of empty bytecode which \textbf{won't be rolled back};
+	\item \scenReturnFromDeploymentNonemptyByteCodeWillRevert:
+		binary column;
+		lights up for unexceptional \inst{RETURN} deployments of empty bytecode which \textbf{will be rolled back};
+	\item \scenReturnFromDeploymentNonemptyByteCodeWontRevert:
+		binary column;
+		lights up for unexceptional \inst{RETURN} deployments of empty bytecode which \textbf{won't be rolled back};
+\end{enumerate}
+\saNote{} We distinguish between ``empty'' deployments and ``nonempty'' deployments for two reasonss:
+(\emph{a}) deploying nonempty bytecode requires checking the first byte of the memory segment as \texttt{0xEF} is prohibited
+(\emph{b}) deploying nonempty bytecode requires reading data from \textsc{ram} and sending it boto the the \romMod{} module for (temporary) deployment and to the \hashDataMod{} module
+(\emph{c}) deploying nonempty bytecode requires turning on the \hashInfoMod{} module.
+None of these are required for (temporary) deployments of empty bytecode.

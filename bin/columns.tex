@@ -1,0 +1,71 @@
+The first columns dictate the present module's heartbeat. This heartbeat is nearly identical to that of the \textbf{word comparison module}.
+\begin{enumerate}
+    \item $\binStamp$:
+	imported column containing the word comparison stamp;
+	\item \maxCt{}: indicates the value at which \ct{} must reset;
+    \item \ct{}:
+	counts continuously from $0$ to $\maxCt{}$ and then resets;
+\end{enumerate}
+The following are imported values (opcode, arguments and results) obtained from the hub.
+\begin{enumerate}[resume]
+    \item $\INST{}$:
+	\godGiven{}
+	imported column; contains the instruction;
+    \item $\argOneHi$, $\argOneLo$:
+	\godGiven{}
+	contains the high and low part of the first instruction argument;
+    \item $\argTwoHi$, $\argTwoLo$:
+	\godGiven{}
+	contains the high and low part of the second instruction argument;
+    \item $\resHi$, $\resLo$:
+	\godGiven{}
+	contains the high and low part of the instruction output;
+    \item \isAnd{}, \isOr{}, \isXor{}, \isNot{}, \isByte{} and \isSignextend{}:
+	exclusive \emph{de facto} counter-constant binary columns;
+	light up for the associated \binMod{} module instruction;
+\end{enumerate}
+The following columns are only of import for the processing of the
+\inst{BYTE} and
+\inst{SIGNEXTEND}
+instructions.
+\begin{enumerate}[resume]
+    \item $\smallness$:
+	stamp-constant binary column;
+    \item $\BITS$:
+	binary column;
+    \item $\bit{b_4}$:
+	stamp-constant binary column;
+    \item $\lowFour$:
+	stamp-constant column with values in $\{0,1,\dots,\llargeMO\}$;
+    \item $\NEG$:
+	counter-constant binary column;
+\end{enumerate}
+$\smallness$ \emph{may} determine whether $\argOne$ is a byte.
+$\BITS$ \emph{may} contain the bits of the bit decomposition of the least significant byte of $\argOne$
+as well as the bit decomposition of a particular byte of $\argTwo$.
+From the former bit decomposition we extract the 5 least significant bits, of those the most significant bit is recorded in $\bit{b_4}$ and the remaining 4 are assembled into $\lowFour$.
+From the latter bit decomposition we extract $\NEG$ which contains the sign bit of a particular byte of $\argTwo$.
+The \inst{SIGNEXTEND} instructions \emph{may} require this sign bit.
+
+The following two columns allow us to extract the desired byte from $\argTwo$:
+\begin{enumerate}[resume]
+    \item $\bit{1}$:
+	binary column;
+    \item $\pivotByte$:
+	stamp-constant column containing a byte;
+\end{enumerate}
+$\bit{1}$ satisfies a particular plateau constraint
+(with jump at $\ct = \lowFour$ for \inst{BYTE} instructions and
+with jump at $\ct = \llargeMO - \lowFour$ for \inst{SIGNEXTEND} instructions, repectively.)
+
+The following decoded columns contain the result of bitwise binary operations on bytes:
+\begin{enumerate}[resume]
+    \item $\byteCol{1}, \dots{}, \byteCol{6}$:
+	byte columns;
+    \item $\acc{1}, \dots{}, \acc{6}$:
+	``(byte) accumulator'' columns;
+ %    \item $\decAND{HI}, \decAND{LO}$, $\decNOT{HI}, \decNOT{LO}$, $\decOR{HI}, \decOR{LO}$, $\decXOR{HI}, \decXOR{LO}$:
+	% decoded byte columns;
+    \item $\decXXX{HI}, \decXXX{LO}$:
+	columns obtained through a lookup argument; contain the high and low parts respectively of the bitwise operations on the current pair of (high or low) bytes;
+\end{enumerate}

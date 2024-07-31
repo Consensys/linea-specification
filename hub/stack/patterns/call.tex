@@ -1,0 +1,220 @@
+\subsubsection{Constraints}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Suppose we are given a bit $\col{b} \in \{ 0, 1\}$.
+We let $\callSP\big[\col{b}\big]_{i}$ stand for the following collection of constraints on rows $i$ and $i+1$.
+The first lot of constraints pertains to the first row (i.e. $\ct_{i} = 0$):
+\begin{description}
+	\item[\underline{Stack Item $n^\circ\,1$:}] the first stack item contains what will become the call data offset:
+	\[
+	\left\{
+	\begin{array}{lcl}
+		\stackItemHeight{1}_{i}	& \!\!\! = \!\!\! & \stackHeight_{i} - 2 - \col{b} \\
+		\stackItemPop{1}_{i}	& \!\!\! = \!\!\! & 1 \\
+		\stackItemStamp{1}_{i}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} + 3 \\
+	\end{array}
+	\right.
+	\]
+	\item[\underline{Stack Item $n^\circ\,2$:}] the second stack item contains what will become the call data size:
+	\[
+	\left\{
+	\begin{array}{lcl}
+		\stackItemHeight{2}_{i}	& \!\!\! = \!\!\! & \stackHeight_{i} - 3 - \col{b} \\
+		\stackItemPop{2}_{i}	& \!\!\! = \!\!\! & 1 \\
+		\stackItemStamp{2}_{i}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} + 4 \\
+	\end{array}
+	\right.
+	\]
+	\item[\underline{Stack Item $n^\circ\,3$:}] the third stack item contais what will become the offset at which return data may be written into RAM:
+	\[
+	\left\{
+	\begin{array}{lcl}
+		\stackItemHeight{3}_{i}	& \!\!\! = \!\!\! & \stackHeight_{i} - 4 - \col{b} \\
+		\stackItemPop{3}_{i}	& \!\!\! = \!\!\! & 1 \\
+		\stackItemStamp{3}_{i}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} + 5 \\
+	\end{array}
+	\right.
+	\]
+	\item[\underline{Stack Item $n^\circ\,4$:}] the fourth stack item contains what will become the size in bytes allocated by the call for writing return data directly into RAM:
+	\[
+	\left\{
+	\begin{array}{lcl}
+		\stackItemHeight{4}_{i}	& \!\!\! = \!\!\! & \stackHeight_{i} - 5 - \col{b} \\
+		\stackItemPop{4}_{i}	& \!\!\! = \!\!\! & 1 \\
+		\stackItemStamp{4}_{i}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} + 6 \\
+	\end{array}
+	\right.
+	\]
+	\item[\underline{Height update:}] $\stackHeight{}\new{}_{i} = \stackHeight{}_{i} - 5 - \col{b}$;
+\end{description}
+The second lot of constraints pertains to the second row (i.e. $\ct_{i + 1} = 1$).
+\begin{description}
+	\item[\underline{Stack Item ``$n^\circ\,5$'':}] contains the gas argument of the \inst{CALL}-type instruction:
+	\[
+	\left\{
+	\begin{array}{lcl}
+		\stackItemHeight{1}_{i + 1}	& \!\!\! = \!\!\! & \stackHeight_{i + 1}  \\
+		\stackItemPop{1}_{i + 1}	& \!\!\! = \!\!\! & 1 \\
+		\stackItemStamp{1}_{i + 1}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i + 1} \\
+	\end{array}
+	\right.
+	\]
+	\item[\underline{Stack Item ``$n^\circ\,6$'':}] contains the address argument of the \inst{CALL}-type instruction:
+	\[
+	\left\{
+	\begin{array}{lcl}
+		\stackItemHeight{2}_{i + 1}	& \!\!\! = \!\!\! & \stackHeight_{i + 1} - 1 \\
+		\stackItemPop{2}_{i + 1}	& \!\!\! = \!\!\! & 1 \\
+		\stackItemStamp{2}_{i + 1}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i + 1} + 1 \\
+	\end{array}
+	\right.
+	\]
+	\item[\underline{Stack Item ``$n^\circ\,7$'':}] \emph{may} contain a value argument (used for both \inst{CALL} and \inst{CALLCODE})
+	\[
+	\left\{
+	\begin{array}{lcl}
+		\stackItemHeight{3}_{i + 1}	& \!\!\! = \!\!\! & (\stackHeight_{i + 1} - 2) \cdot \col{b} \\
+		\stackItemPop{3}_{i + 1}	& \!\!\! = \!\!\! & \col{b} \\
+		\stackItemStamp{3}_{i + 1}	& \!\!\! = \!\!\! & (\hubTau \cdot \hubStamp_{i + 1} + 2)\cdot \col{b} \\
+	\end{array}
+	\right.
+	\]
+	\item[\underline{Stack Item ``$n^\circ\,8$'':}] the fourth stack item contains the success bit
+	\[
+	\left\{
+	\begin{array}{lcl}
+		\stackItemHeight{4}_{i + 1}	& \!\!\! = \!\!\! & \stackHeight_{i + 1} - 5 - \col{b} \\
+		\stackItemPop{4}_{i + 1}	& \!\!\! = \!\!\! & 0 \\
+		\stackItemStamp{4}_{i + 1}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i + 1} + 7 \\
+		\stackItemValHi{4}_{i + 1}	& \!\!\! = \!\!\! & 0 \\
+		\multicolumn{3}{l}{\stackItemValLo{4}_{i + 1} \in \{ 0, 1 \} } \\
+	\end{array}
+	\right.
+	\]
+	\saNote{} The last constraints impose a ``bithood'' constraint on the stack item meant to hold the success bit.
+\end{description}
+Recall that \inst{CALL}-type instructions require either $\bm{6}$ or $\bm{7}$ stack arguments (and always produce a success bit as output.)
+Whether a \inst{CALL}-type instructions requires 6 or 7 arguments can be read off of $\decFlag{1}$, see section~\ref{hub: instruction handling: Call}
+In applications $\col{b}$ will be replaced with $\decFlag{1}_{i}$.
+
+
+\subsubsection{Graphical representation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+We represent the stack pattern when $\decFlag{1}=0$ is in figure~\ref{fig: call stack pattern flag1 = 0} and similarly for $\decFlag{1}=1$ see figure~\ref{fig: call stack pattern flag1 = 1}.
+\begin{figure}[h!]
+\[
+	\tag{$\col{b} = 0$}
+	\begin{array}{r}
+		\begin{array}{|l|r|r|r|r|}
+		\cline{2-5}
+		\multicolumn{1}{c|}{(\ct_{i} = 0)} &
+		\multicolumn{1}{c|}{\text{Stack}} &
+		\multicolumn{1}{c|}{\text{Stack}} &
+		\multicolumn{1}{c|}{\text{Stack}} &
+		\multicolumn{1}{c|}{\text{Stack}} \\
+		\multicolumn{1}{c|}{} &
+		\multicolumn{1}{c|}{\text{Item 1}} &
+		\multicolumn{1}{c|}{\text{Item 2}} &
+		\multicolumn{1}{c|}{\text{Item 3}} &
+		\multicolumn{1}{c|}{\text{Item 4}} \\
+		\hline
+		\stackItemHeight{k}_{i} &
+		\col{h} - 2 & \col{h} - 3 & \col{h} - 4 & \col{h} - 5 \\
+		\hline
+		\stackItemValHi{k}_{i}/\stackItemValLo{k}_{i} & \cdo{} & \cds & \retAtOff & \retAtCap{} \\
+		\hline
+		\stackItemPop{k}_{i} & 1 & 1 & 1 & 1 \\
+		\hline
+		\stackItemStamp{k}_{i} & \hubTau \cdot \col{st} + 3 & \hubTau \cdot \col{st} + 4 & \hubTau \cdot \col{st} + 5 & \hubTau \cdot \col{st} + 6 \\
+		\hline
+		\end{array} \vspace{3mm} \\
+		\begin{array}{|l|r|r|c|r|}
+		\cline{2-5}
+		\multicolumn{1}{c|}{(\ct_{i + 1} = 1)} &
+		\multicolumn{1}{c|}{\text{Stack}} &
+		\multicolumn{1}{c|}{\text{Stack}} &
+		\multicolumn{1}{c|}{\text{Stack}} &
+		\multicolumn{1}{c|}{\text{Stack}} \\
+		\multicolumn{1}{c|}{} &
+		\multicolumn{1}{c|}{\text{Item 1}} &
+		\multicolumn{1}{c|}{\text{Item 2}} &
+		\multicolumn{1}{c|}{\text{Item 3}} &
+		\multicolumn{1}{c|}{\text{Item 4}} \\
+		\hline
+		\stackItemHeight{k}_{i + 1} & \col{h} & \col{h} - 1 & \graym{\varnothing} & \col{h} - 5 \\
+		\hline 
+		\stackItemValHi{k}_{i + 1}/\stackItemValLo{k}_{i + 1} & \col{gas} & \col{address} & \graym{\varnothing} & \col{success} \\
+		\hline
+		\stackItemPop{k}_{i + 1} & 1 & 1 & \graym{\varnothing} & 0 \\
+		\hline
+		\stackItemStamp{k}_{i + 1} & \hubTau \cdot \col{st} & \hubTau \cdot \col{st} + 1 & \graym{\varnothing} & \hubTau \cdot \col{st} + 7 \\
+		\hline
+		\end{array}
+	\end{array}
+\]
+\label{fig: call stack pattern flag1 = 0}
+\caption{%
+Graphical representation of $\callSP\big[\col{b}\big]_{i}$ for $\col{b} = 0$.
+In applications $\col{b} = \decFlag{1}_{i}$ so that the above applies to \inst{DELEGATECALL} and \inst{STATICCALL} instructions.
+Recall that \cdo{}, \retAtOff{}, \cds{}, \retAtCap{} are short hand for \CDO{}, \RETATOFF{}, \CDS{}, \RETATCAP{} respectively.
+We write $\col{h} := \stackHeight_{i}$ and $\col{st} := \hubStamp_{i}$.}
+\end{figure}
+
+\begin{figure}[h!]
+\[
+	\tag{$\col{b} = 1$}
+	\begin{array}{r}
+		\begin{array}{|l|r|r|r|r|}
+		\cline{2-5}
+		\multicolumn{1}{c|}{(\ct_{i} = 0)} &
+		\multicolumn{1}{c|}{\text{Stack}} &
+		\multicolumn{1}{c|}{\text{Stack}} &
+		\multicolumn{1}{c|}{\text{Stack}} &
+		\multicolumn{1}{c|}{\text{Stack}} \\
+		\multicolumn{1}{c|}{} &
+		\multicolumn{1}{c|}{\text{Item 1}} &
+		\multicolumn{1}{c|}{\text{Item 2}} &
+		\multicolumn{1}{c|}{\text{Item 3}} &
+		\multicolumn{1}{c|}{\text{Item 4}} \\ \hline
+		\stackItemHeight{k}_{i} & \col{h} - 3 & \col{h} - 4 & \col{h} - 5 & \col{h} - 6 \\
+		\hline
+		\stackItemValHi{k}_{i}/\stackItemValLo{k}_{i} & \cdo{} & \cds & \retAtOff & \retAtCap{} \\
+		\hline
+		\stackItemPop{k}_{i} & 1 & 1 & 1 & 1 \\
+		\hline
+		\stackItemStamp{k}_{i} & \hubTau \cdot \col{st} + 3 & \hubTau \cdot \col{st} + 4 & \hubTau \cdot \col{st} + 5 & \hubTau \cdot \col{st} + 6 \\
+		\hline
+		\end{array} \vspace{3mm} \\
+		\begin{array}{|l|r|r|r|r|}
+		\cline{2-5}
+		\multicolumn{1}{c|}{(\ct_{i + 1} = 1)} &
+		\multicolumn{1}{c|}{\text{Stack}} &
+		\multicolumn{1}{c|}{\text{Stack}} &
+		\multicolumn{1}{c|}{\text{Stack}} &
+		\multicolumn{1}{c|}{\text{Stack}} \\
+		\multicolumn{1}{c|}{} &
+		\multicolumn{1}{c|}{\text{Item 1}} &
+		\multicolumn{1}{c|}{\text{Item 2}} &
+		\multicolumn{1}{c|}{\text{Item 3}} &
+		\multicolumn{1}{c|}{\text{Item 4}} \\ \hline
+		\stackItemHeight{k}_{i + 1} & \col{h} & \col{h} - 1 & \col{h} - 2 & \col{h} - 6 \\
+		\hline 
+		\stackItemValHi{k}_{i + 1}/\stackItemValLo{k}_{i + 1} & \col{gas} & \col{address} & \col{value} & \col{success} \\
+		\hline
+		\stackItemPop{k}_{i + 1} & 1 & 1 & 1 & 0 \\
+		\hline
+		\stackItemStamp{k}_{i + 1} & \hubTau \cdot \col{st} & \hubTau \cdot \col{st} + 1 & \hubTau \cdot \col{st} + 2 & \hubTau \cdot \col{st} + 7 \\
+		\hline
+		\end{array}
+	\end{array}
+\]
+\label{fig: call stack pattern flag1 = 1}
+\caption{%
+Graphical representation of $\callSP\big[\col{b}\big]_{i}$ for $\col{b} = 1$.
+In applications $\col{b} = \decFlag{1}_{i}$ so that the above will apply to \inst{CALL} and \inst{CALLCODE} instructions.
+Recall that \cdo{}, \retAtOff{}, \cds{}, \retAtCap{} are short hand for \CDO{}, \RETATOFF{}, \CDS{}, \RETATCAP{} respectively.
+We write $\col{h} := \stackHeight_{i}$ and $\col{st} := \hubStamp_{i}$.}
+\end{figure}

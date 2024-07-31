@@ -1,0 +1,118 @@
+\begin{center}
+	\boxed{%
+		\text{The stack constraints presented below assume }
+		\left\{ \begin{array}{lcl}
+			\peekStack_{i}					& \!\!\! = \!\!\! & 1 \\
+			\stackDecHaltFlag_{i}				& \!\!\! = \!\!\! & 1 \\
+			\decFlag{3}_{i}					& \!\!\! = \!\!\! & 1 \\
+		\end{array} \right.}
+\end{center}
+\saNote{} \inst{STOP} can provoke neither \suxSH{}'s nor \soxSH{}'s.
+There is therefore no point in filtering out by the usual precondition
+$\stackSux_{i} + \stackSox_{i} \neq 1$.
+
+The present section deals with handling \inst{STOP} instructions.
+\begin{description}
+	\item[\underline{Setting the stack pattern:}] we impose $\zeroZeroSP_{i}$;
+	\item[\underline{Setting the gas cost:}] we impose $\gasCost_{i} = \staticGas_{i} ~ (=0)$;
+		\inst{STOP} instructions don't consume any gas;
+	\item[\underline{Setting \xAhoy:}] we impose $\xAhoy_{i} = 0$;
+\end{description}
+\saNote{} Echoing the previous point, \inst{STOP} instructions can't produce \textbf{any exception at all}.
+\begin{description}
+	\item[\underline{The first non stack row:}] we impose
+		\[
+			\begin{cases}
+				\peekContext     _{i + 1} = 1    \\
+				\readContextData {i}{1}{\cn_{i}} \\
+			\end{cases}
+		\]
+		\saNote{} We isolate this constraint for readability. It justifies several of the shorthands introduced in section~(\ref{hub: instruction handling: halt: stop: shorthands}). 
+	\item[\underline{Setting $\nonStackRows$ and peeking flags:}] we impose the following
+		\begin{enumerate}
+			\item \If $\locDeploys = 0$ \Then $\nonStackRows_{i} = 2$ and
+				\[
+					\left[ \begin{array}{r}
+						+ \peekContext_{i + 1} \\
+						+ \peekContext_{i + 2} \\
+					\end{array} \right]
+					= \nonStackRows_{i}
+					\quad\text{and}\quad
+					\executionProvidesEmptyReturnData {i}{2}  \quad(\trash)
+				\]
+			\item \If $\locDeploys = 1$ \Then 
+				\begin{enumerate}
+					\item \If $\locWillRevert = 0$ \Then $\nonStackRows_{i} = 3$;
+						\[
+							\left[ \begin{array}{r}
+								+ \peekContext_{i + 1} \\
+								+ \peekAccount_{i + \locFirstAccountRow} \\
+								+ \peekContext_{i + 3} \\
+							\end{array} \right]
+							= \nonStackRows_{i}
+							\quad\text{and}\quad
+							\executionProvidesEmptyReturnData {i}{3}  \quad(\trash)
+						\]
+					\item \If $\locWillRevert = 1$ \Then $\nonStackRows_{i} = 4$;
+						\[
+							\left[ \begin{array}{r}
+								+ \peekContext_{i + 1} \\
+								+ \peekAccount_{i + \locFirstAccountRow} \\
+								+ \peekAccount_{i + \locSecondAccountRow} \\
+								+ \peekContext_{i + 4} \\
+							\end{array} \right]
+							= \nonStackRows_{i}
+							\quad\text{and}\quad
+							\executionProvidesEmptyReturnData {i}{4}  \quad(\trash)
+						\]
+				\end{enumerate}
+		\end{enumerate}
+		\saNote{} The above boils down to $\nonStackRows_{i} = 2 + \locDeploys \cdot (1 + \locWillRevert)$.
+	\item[\underline{Account row $n^°(i + \locFirstAccountRow)$:}] we impose \If $\locDeploys = 1$ \Then we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\accTrmFlag                                                         _{i + \locFirstAccountRow}  & = & \gZero                        \\
+				\accRomLexFlag                                                      _{i + \locFirstAccountRow}  & = & \gZero           \vspace{2mm} \\
+				\accAddressHi                                                       _{i + \locFirstAccountRow}  & = & \locAddressHi                 \\
+				\accAddressLo                                                       _{i + \locFirstAccountRow}  & = & \locAddressLo    \vspace{2mm} \\
+				\multicolumn{3}{l}{\accSameBalance    {i}{\locFirstAccountRow}} \\
+				\multicolumn{3}{l}{\accSameNonce      {i}{\locFirstAccountRow}} \\
+				\multicolumn{3}{l}{\accSameWarmth     {i}{\locFirstAccountRow}} \\
+				\accCodesize                           \new                         _{i + \locFirstAccountRow}  & = & 0                             \\
+				\accCodehashHi                         \new                         _{i + \locFirstAccountRow}  & = & \emptyKeccakHi                \\
+				\accCodehashLo                         \new                         _{i + \locFirstAccountRow}  & = & \emptyKeccakLo                \\
+				\multicolumn{3}{l}{\accSameDeploymentNumber  {i}{\locFirstAccountRow} }                 \\
+				\accDepStatus                                                       _{i + \locFirstAccountRow}  & = & 1                             \\
+				\accDepStatus\new                                                   _{i + \locFirstAccountRow}  & = & 0                             \\
+				\multicolumn{3}{l}{
+					\standardDomSubStamps {
+						anchorRow        = i,
+						relOffset        = \locFirstAccountRow,
+						domOffset        = 0,
+					}
+				} \\
+					% \standardDomSubStamps   {i}{\locFirstAccountRow}{0}            }                 \\
+			\end{array} \right.
+		\]
+	\item[\underline{Account row $n^°(i + \locFirstAccountRow)$:}] we impose \If $\locDeploys = 1$ \et $\locWillRevert = 1$ \Then we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\accTrmFlag     _{i + \locSecondAccountRow}                                                                               & = & \gZero              \\
+				\accRomLexFlag  _{i + \locSecondAccountRow}                                                                               & = & \gZero \vspace{2mm} \\
+				\multicolumn{3}{l}{\accSameAddr                             {i}{\locSecondAccountRow}{\locFirstAccountRow}} \vspace{2mm} \\
+				\multicolumn{3}{l}{\accUndoBalanceUpdate                    {i}{\locSecondAccountRow}{\locFirstAccountRow}}              \\
+				\multicolumn{3}{l}{\accUndoNonceUpdate                      {i}{\locSecondAccountRow}{\locFirstAccountRow}}              \\
+				\multicolumn{3}{l}{\accUndoWarmthUpdate                     {i}{\locSecondAccountRow}{\locFirstAccountRow}}              \\
+				\multicolumn{3}{l}{\accUndoCodeUpdate                       {i}{\locSecondAccountRow}{\locFirstAccountRow}}              \\
+				\multicolumn{3}{l}{\accUndoDeploymentStatusAndNumberUpdate  {i}{\locSecondAccountRow}{\locFirstAccountRow}}              \\
+				\multicolumn{3}{l}{
+					\revertDomSubStamps {
+						anchorRow        = i,
+						relOffset        = \locSecondAccountRow,
+						subOffset        = 1,
+						}
+					} \\
+					% {i}{\locSecondAccountRow}{1}}                          \\
+			\end{array} \right.
+		\]
+\end{description}

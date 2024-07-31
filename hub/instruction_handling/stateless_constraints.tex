@@ -1,0 +1,127 @@
+\begin{center}
+	\boxed{%
+		\text{The stack constraints presented below assume }
+		\left\{ \begin{array}{lclr}
+			\peekStack_{i}                & = & 1 \\
+			\stackSux_{i} + \stackSox_{i} & = & 0 \\
+			\isStatelessInst_{i}          & = & 1  & (\trash) \\
+		\end{array} \right.
+		}
+\end{center}
+\saNote{}
+We have used the shorthand
+\[
+	\isStatelessInst_{i}
+	\define
+	\left[ \begin{array}{r}
+		+ \stackDecAddFlag_{i} + \stackDecBinFlag_{i} + \stackDecExtFlag_{i} \\
+		+ \stackDecModFlag_{i} + \stackDecMulFlag_{i} + \stackDecShfFlag_{i} \\
+		+ \stackDecWcpFlag_{i}                          \\
+	\end{array} \right] = 1
+\]
+\saNote{}
+The present section deals with \emph{all} instruction raising any of the following flags
+\begin{multicols}{4}
+	\begin{enumerate}
+		\item $\stackDecAddFlag$
+		\item $\stackDecBinFlag$
+		\item $\stackDecExtFlag$
+		\item $\stackDecModFlag$
+		\item $\stackDecMulFlag$
+		\item $\stackDecShfFlag$
+		\item $\stackDecWcpFlag$
+		\item[\vspace{\fill}]
+	\end{enumerate}
+\end{multicols}
+Yet the precondition ``$\isStatelessInst_{i} = 1$ isn't required: this condition will always follow from stronger preconditions imposed using the shorthands we define below.
+
+We shall use the following shorthands:
+\[
+	\left\{ \begin{array}{lcl}
+		\instIsExp   & \define & \stackDecMulFlag_{i} \cdot \decFlag{2}_{i} \\
+		\instIsntExp & \define &
+		\left[ \begin{array}{r}
+			+ \stackDecAddFlag_{i} + \stackDecBinFlag_{i} + \stackDecExtFlag_{i} \\
+			+ \stackDecModFlag_{i} + \stackDecShfFlag_{i} + \stackDecWcpFlag_{i}  \\
+			+ \stackDecMulFlag_{i} \cdot \decFlag{1}_{i} \\
+		\end{array} \right] \\
+		\oneArgInst & \define & (\stackDecBinFlag_{i} + \stackDecWcpFlag_{i}) \cdot \decFlag{1}_{i} \\
+		\twoArgInst & \define &
+		\left[ \begin{array}{r}
+			+ \stackDecAddFlag_{i} + \stackDecModFlag_{i} + \stackDecMulFlag_{i} + \stackDecShfFlag_{i} \\
+			+ (\stackDecBinFlag_{i} + \stackDecWcpFlag_{i}) \cdot (1 - \decFlag{1}_{i}) \\
+		\end{array} \right] \\
+		\treArgInst & \define & \stackDecExtFlag_{i} \\
+	\end{array} \right.
+\]
+\saNote{} By construction
+\begin{IEEEeqnarray*}{LCL}
+	\isStatelessInst & \equiv & \oneArgInst + \twoArgInst + \treArgInst \\
+                         & \equiv & \instIsExp  + \instIsntExp              \\
+\end{IEEEeqnarray*}
+
+In other words we are assuming that the \zkEvm{} is currently dealing with an arithmetic, binary, shifting or word comparison instruction.
+\begin{description}
+	\item[\underline{Setting the stack pattern:}] we impose that
+		\begin{enumerate}
+			\item \If $\oneArgInst = 1$ \Then $\oneOneSP_{i}$,   see section~(\ref{hub: stack patterns: 1_1});
+			\item \If $\twoArgInst = 1$ \Then $\twoOneSP_{i}$,   see section~(\ref{hub: stack patterns: 2_1});
+			\item \If $\treArgInst = 1$ \Then $\threeOneSP_{i}$, see section~(\ref{hub: stack patterns: 3_1});
+		\end{enumerate}
+	\item[\underline{Zero high part for \wcpMod{}:}]\label{hub: instruction handling: stateless: wcp high part is zero}
+		\If $\stackDecWcpFlag_{i} = 1$ \Then we impose that
+		\begin{enumerate}
+			\item $\stackItemValHi{4}_{i} = 0$
+			\item $\stackItemValLo{4}_{i} \cdot (1 - \stackItemValLo{4}_{i}) = 0$ \quad (\trash)
+		\end{enumerate}
+	\item[\underline{Setting $\nonStackRows$:}] \If $\isStatelessInst_{i} = 1$ \Then we impose that
+		\[
+			\nonStackRows_{i} = \instIsExp_{i} + \cmc_{i}
+		\]
+		i.e. we impose that
+		\begin{enumerate}
+			\item \If $\instIsntExp = 1$ \Then $\nonStackRows_{i} = \cmc_{i}$; \quad (\trash)
+			\item \If $\instIsExp   = 1$ \Then $\nonStackRows_{i} = 1 + \cmc_{i}$; \quad (\trash)
+		\end{enumerate}
+	\item[\underline{Setting the peeking flags:}] we impose that
+		\begin{enumerate}
+			\item \If $\instIsntExp = 1$ \Then $\cmc_{i} \cdot \peekContext_{i + 1} = \nonStackRows_{i}$ (\trash);
+			\item \If $\instIsExp   = 1$ \Then $ \peekMisc_{i + 1} + \cmc_{i} \cdot \peekContext_{i + 2} = \nonStackRows_{i} $
+		\end{enumerate}
+	\item[\underline{Setting miscellaneous flags:}] \If $\instIsExp = 1$ \Then
+		\[
+			\weightedMiscFlagSum {i}{1}
+			=
+			\miscExpWeight
+		\]
+		in other words
+		\[
+			\left\{ \begin{array}{lclr}
+				\miscExpFlag_{i + 1} & = & \rOne  & (\trash) \\
+				\miscMmuFlag_{i + 1} & = & \rZero & (\trash) \\
+				\miscMxpFlag_{i + 1} & = & \rZero & (\trash) \\
+				\miscOobFlag_{i + 1} & = & \gZero & (\trash) \\
+				\miscStpFlag_{i + 1} & = & \gZero & (\trash) \\
+			\end{array} \right.
+		\]
+	\item[\underline{Setting $\miscExpFlag$ arguments of:}] \If $\instIsExp   = 1$ \Then
+		\[
+			\setExpInstructionParametersExpLog {i}{1}
+			\left[ \begin{array}{ll}
+				\utt{Exponent high:} & \stackItemValHi{2}_{i} \\
+				\utt{Exponent low:}  & \stackItemValLo{2}_{i} \\
+			\end{array} \right] \vspace{2mm} \\
+		\]
+		% \[
+		% 	\left\{ \begin{array}{lcl}
+		% 		\miscExpDataCol{1}_{i + 1}    & = & \stackItemValHi{2}_{i} \\
+		% 		\miscExpDataCol{2}_{i + 1}    & = & \stackItemValLo{2}_{i} \\
+		% 	\end{array} \right.
+		% \]
+		\saNote{} The second stack item of an \inst{EXP} instruction contains the exponent.
+	\item[\underline{Setting the gas cost:}] we impose that
+		\begin{enumerate}
+			\item \If $\instIsntExp = 1$ \Then $\gasCost_{i} = \decStaticGas_{i}$;
+			\item \If $\instIsExp   = 1$ \Then $\gasCost_{i} = \decStaticGas_{i} + \miscExpDataCol{5}_{i + 1}$
+		\end{enumerate}
+\end{description}

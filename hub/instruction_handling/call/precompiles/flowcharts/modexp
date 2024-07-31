@@ -1,0 +1,42 @@
+|-----------+-------------+-------------------------------------+-----------------------------------+----------------------------------------------------------|
+| Row index | Perspective |                                     |                                   |                                                          |
+|-----------+-------------+-------------------------------------+-----------------------------------+----------------------------------------------------------|
+| i         | SCEN        | SCEN/MODEXP                         | FAILURE_KNOWN_TO_RAM              |                                                          |
+|-----------+-------------+-------------------------------------+-----------------------------------+----------------------------------------------------------|
+| i + 1     | MISC        | MMU🏴 = 0                           | EXP🏴 = 0                         | OOB🏴 = 1                                                |
+|           |             |                                     |                                   | OOB_INST = MODEXP_cds                                    |
+|           |             |                                     |                                   | extract_raw_bbs := [cds > 0]                             |
+|           |             |                                     |                                   | extract_raw_ebs := [cds > 32]                            |
+|           |             |                                     |                                   | extract_raw_mbs := [cds > 64]                            |
+|           |             |                                     |                                   | trim_raw_bbs    := [cds > 0] ∧ [cds < 32]                |
+|           |             |                                     |                                   | trim_raw_ebs    := [cds > 32] ∧ [cds < 64]               |
+|           |             |                                     |                                   | trim_raw_mbs    := [cds > 64] ∧ [cds < 96]               |
+|-----------+-------------+-------------------------------------+-----------------------------------+----------------------------------------------------------|
+| i + 2     | MISC        | MMU🏴 = extract_raw_bbs             | EXP🏴 = trim_raw_bbs              | OOB🏴 = extract_raw_bbs                                  |
+|           |             | MMU_INST = MLOAD, offset = cdo      | EXP_INST = trimBytesBeyond        | (implicit check) bbs ≤ 512                               |
+|           |             |                                     |                                   | OOB_INST = MODEXP_base                                   |
+|-----------+-------------+-------------------------------------+-----------------------------------+----------------------------------------------------------|
+| i + 3     | MISC        | MMU🏴 = extract_raw_ebs             | EXP🏴 = trim_raw_ebs              | OOB🏴 = extract_raw_ebs                                  |
+|           |             | MMU_INST = MLOAD, offset = cdo + 32 | EXP_INST = trimBytesBeyond        | (implicit check) ebs ≤ 512                               |
+|           |             |                                     |                                   | OOB_INST = MODEXP_exponent                               |
+|           |             |                                     |                                   | diff := 0 ∨ [ebs - 32]                                   |
+|           |             |                                     |                                   | n_ebs_bytes := 32 ∧ ebs                                  |
+|-----------+-------------+-------------------------------------+-----------------------------------+----------------------------------------------------------|
+| i + 4     | MISC        | MMU🏴 = extract_raw_mbs             | EXP🏴 = trim_raw_mbs              | OOB🏴 = extract_raw_mbs                                  |
+|           |             | MMU_INST = MLOAD, offset = cdo + 64 | EXP_INST = trimBytesBeyond        | (implicit check) mbs ≤ 512                               |
+|           |             |                                     |                                   | OOB_INST = MODEXP_modulus                                |
+|           |             |                                     |                                   | max_bbs_mbs := bbs ∨ mbs                                 |
+|-----------+-------------+-------------------------------------+-----------------------------------+----------------------------------------------------------|
+| i + 5     | MISC        | MMU🏴 = extract_raw_leading_word    | EXP🏴 = extract_raw_leading_word  | OOB🏴 = 1                                                |
+|           |             | MMU_INST = MLOAD, offset = cdo + 96 | EXP_INST = exponentLeadingWordLog | cds, ebs, bbs                                            |
+|           |             |                                     |                                   | OOB_INST = MODEXP_leading                                |
+|           |             |                                     |                                   | n_cds_bytes := 32 ∧ [0 ∨ [cds - (96 + bbs)]]             |
+|           |             |                                     |                                   | extract_raw_leading_word := [cds > 96 + bbs] ∧ [ebs ≠ 0] |
+|-----------+-------------+-------------------------------------+-----------------------------------+----------------------------------------------------------|
+| i + 6     | MISC        | MMU🏴 = 0                           | EXP🏴 = 0                         | OOB🏴 = 1                                                |
+|           |             |                                     |                                   | call_gas, rem_gas, log(E)_approx, max_bbs_mbs, r@c       |
+|           |             |                                     |                                   | OOB_INST = MODEXP_pricing                                |
+|           |             |                                     |                                   | insufficient_gas := 1                                    |
+|           |             |                                     |                                   | r@c_nonzero      := [r@c != 0]                           |
+|-----------+-------------+-------------------------------------+-----------------------------------+----------------------------------------------------------|
+| i + 7     | CON         | nonContextProvidesEmptyReturnData() |

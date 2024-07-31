@@ -1,0 +1,80 @@
+\subsubsection{Constraints}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Suppose we are given a bit $\col{b} \in \{ 0, 1\}$. We let $\copySP\big[\col{b}\big]_{i}$ stand for the following collection of constraints.
+\begin{description}
+	\item[\underline{Stack Item $n^\circ\,1$:}] the first stack item will contain a source offset:
+		\[
+			\left\{ \begin{array}{lcl}
+				\stackItemHeight{1}_{i}	& \!\!\! = \!\!\! & \stackHeight_{i} - (0 + \col{b}) \\
+				\stackItemPop{1}_{i}	& \!\!\! = \!\!\! & 1                                \\
+				\stackItemStamp{1}_{i}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} + 1  \\
+			\end{array} \right.
+		\]
+	\item[\underline{Stack Item $n^\circ\,2$:}] the second stack item will contain a size:
+		\[
+			\left\{ \begin{array}{lcl}
+				\stackItemHeight{2}_{i}	& \!\!\! = \!\!\! & \stackHeight_{i} - (2 + \col{b}) \\
+				\stackItemPop{2}_{i}	& \!\!\! = \!\!\! & 1                                \\
+				\stackItemStamp{2}_{i}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} + 2  \\
+			\end{array} \right.
+		\]
+	\item[\underline{Stack Item $n^\circ\,3$:}] the third stack item will contain a target offset:
+		\[
+			\left\{ \begin{array}{lcl}
+				\stackItemHeight{3}_{i}	& \!\!\! = \!\!\! & \stackHeight_{i} - (1 + \col{b}) \\
+				\stackItemPop{3}_{i}	& \!\!\! = \!\!\! & 1                                \\
+				\stackItemStamp{3}_{i}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} + 3  \\
+			\end{array} \right.
+		\]
+	\item[\underline{Stack Item $n^\circ\,4$:}] the fourth stack item \emph{may contain} an address
+		\[
+			\left\{ \begin{array}{lcl}
+				\stackItemHeight{4}_{i}	& \!\!\! = \!\!\! & \stackHeight_{i} \cdot \col{b}            \\
+				\stackItemPop{4}_{i}	& \!\!\! = \!\!\! & \col{b}                                   \\
+				\stackItemStamp{4}_{i}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} \cdot \col{b} \\
+			\end{array} \right.
+		\]
+	\item[\underline{Height update:}] $\stackHeight{}\new{}_{i} = \stackHeight{}_{i} - (3 + \col{b})$;
+\end{description}
+In applications $\col{b}$ will $=1$ for \inst{EXTCODECOPY} only among all instructions in the \inst{COPY}-instruction family.
+This bit dictates whether or not the copy instruction requires an address argument or not.
+
+\subsubsection{Graphical representation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+For this set of instructions the interpretation of $\decFlag{4}$ is that it equals $1$ for \inst{EXTCODECOPY} only. The picture is the following:
+\begin{figure}[h!]
+	\[
+		\tag{$\col{b} = 0$}
+		\begin{array}{|l|r|r|r|c|} \cline{2-5}
+			\multicolumn{1}{c|}{}                         & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  \\
+			\multicolumn{1}{c|}{}                         & \multicolumn{1}{c|}{\text{Item 1}} & \multicolumn{1}{c|}{\text{Item 2}} & \multicolumn{1}{c|}{\text{Item 3}} & \multicolumn{1}{c|}{\text{Item 4}} \\ \hline
+			\stackItemHeight{k}_{i}                       & \col{h}                            & \col{h} - 2                        & \col{h} - 1                        & \nothing                           \\ \hline
+			\stackItemValHi{k}_{i}/\stackItemValLo{k}_{i} & \col{destOffset}                   & \col{size}                         & \col{(rel)offset}                  & \nothing                           \\ \hline
+			\stackItemPop{k}_{i}                          & 1                                  & 1                                  & 1                                  & \nothing                           \\ \hline
+			\stackItemStamp{k}_{i}                        & \hubTau \cdot \col{st} + 1         & \hubTau \cdot \col{st} + 3         & \hubTau \cdot \col{st} + 2         & \nothing                           \\ \hline
+		\end{array}
+	\]
+	\[
+		\tag{$\col{b} = 1$} %\inst{EXTCODECOPY}}
+		\begin{array}{|l|r|r|r|r|} \cline{2-5}
+			\multicolumn{1}{c|}{}                         & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  \\
+			\multicolumn{1}{c|}{}                         & \multicolumn{1}{c|}{\text{Item 1}} & \multicolumn{1}{c|}{\text{Item 2}} & \multicolumn{1}{c|}{\text{Item 3}} & \multicolumn{1}{c|}{\text{Item 4}} \\ \hline
+			\stackItemHeight{k}_{i}                       & \col{h} - 1                        & \col{h} - 3                        & \col{h} - 2                        & \col{h}                            \\ \hline 
+			\stackItemValHi{k}_{i}/\stackItemValLo{k}_{i} & \col{destOffset}                   & \col{size}                         & \col{(rel)offset}                  & \col{addr}                         \\ \hline
+			\stackItemPop{k}_{i}                          & 1                                  & 1                                  & 1                                  & 1                                  \\ \hline
+			\stackItemStamp{k}_{i}                        & \hubTau \cdot \col{st} + 1         & \hubTau \cdot \col{st} + 3         & \hubTau \cdot \col{st} + 2         & \hubTau \cdot \col{st}             \\ \hline
+		\end{array}
+	\]
+	\caption{%
+		The first three items one pops from stack represent the offset where to start writing, the (relative) offset of where to start reading and the size (i.e. number of bytes to read.) This is all there is when $\decFlag{1}=0$.
+		But for \inst{EXTCODECOPY} (i.e. $\decFlag{1} = \decFlag{2} = 1$) there is an extra stack argument to pop: the address.
+		For \inst{CODECOPY} (i.e. $\decFlag{1} = 1$ and $\decFlag{2} = 0$) the fourth stack item is \emph{technically} empty but we make it contain the current bytecode address.
+		This will not perturb consistency constraints as $\stackHeight = 0$.
+		We write $\col{h} := \stackHeight_{i}$ and $\col{st} := \hubStamp_{i}$.
+		\ob{TODO: do we still need this }$\yellowm{\codeAddress{}}$ ?
+		\ob{TODO: rewrite this whole paragraph.}}
+\end{figure}

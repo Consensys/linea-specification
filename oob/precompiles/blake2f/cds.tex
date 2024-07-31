@@ -1,0 +1,54 @@
+\[
+	\boxed{\text{All constraints in this subsection further assume } \oobInstIsBlakeCds_{i} = 1}
+\]
+We use the shorthands defined below:
+\[
+	\left\{ \begin{array}{lclr}
+		%                & \define & \oobDataCol {1} _{i} \\
+		\locCds          & \define & \oobDataCol {2} _{i} \\
+		\locRac          & \define & \oobDataCol {3} _{i} \\
+		\locHubSuccess   & \define & \oobDataCol {4} _{i}  & \prediction \\
+		%                & \define & \oobDataCol {5} _{i} \\
+		%                & \define & \oobDataCol {6} _{i} \\
+		%                & \define & \oobDataCol {7} _{i} \\
+		\locRacIsNonzero & \define & \oobDataCol {8} _{i}  & \prediction \\
+	\end{array} \right.
+\]
+\saNote{} The decorator `` $\prediction{}$ '' stands for ``\hubMod{} prediction.''
+
+We impose the following constraints:
+\begin{description}
+	\item[\underline{Rows n°$(i)$ and n°$(i + 1)$:}]
+		we impose the following:
+		\[
+			\left\{ \begin{array}{l}
+				\oobCallToEq
+				{i}{0}
+				{0}{\locCds}
+				{0}{213}
+				\vspace{2mm} \\
+				\oobCallToIszero
+				{i}{1}
+				{0}{\locRac}
+				\\
+			\end{array} \right.
+		\]
+		we then set the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locValidCdsBlake & \define & \outgoingResLo  _{i    } \\
+				\locRacIsZero     & \define & \outgoingResLo  _{i + 1} \\
+			\end{array} \right.
+		\]
+		It follows that $\locValidCdsBlake = 1 \iff \locCds = 213$.
+	\item[\underline{Justifying \hubMod{} predictions:}]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\locHubSuccess   & = & \locValidCdsBlake \\
+				\locRacIsNonzero & = & 1 - \locRacIsZero \\
+			\end{array} \right.
+		\]
+\end{description}
+In other words, when making ``first contact'' with a \inst{CALL} to the \inst{BLAKE2f} precompile the
+\locValidCdsBlake{} flag measures failure of the \cds{} being the expected value of $213$. This will trigger a special failure mode in the \hubMod{} module. 

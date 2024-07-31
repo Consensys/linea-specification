@@ -1,0 +1,472 @@
+# http://www.graphviz.org/content/cluster
+
+digraph G {
+
+  bgcolor = "lightgray"
+  node [fontname = "Handlee"];
+  node [shape=plaintext];
+  edge [fontname = "Handlee"];
+
+  inst [label=<
+  <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
+  <TR>
+  <TD><FONT POINT-SIZE="40">SELFDESTRUCT</FONT></TD>
+  </TR>
+  </TABLE>>];
+  sux [
+    label = "\nSUX\n ";
+    shape = diamond;
+    style = filled;
+    fillcolor = "ORANGE";
+    color = "RED";
+  ];
+  staticx [
+    label = "\nSTATICX\n ";
+    shape = diamond;
+    style = filled;
+    fillcolor = "ORANGE";
+    color = "RED";
+  ];
+  oogx [
+    label = "\nOOGX\n ";
+    shape = diamond;
+    style = filled;
+    fillcolor = "ORANGE";
+    color = "RED";
+  ];
+  unexceptional [
+    label = "\nNo Exception\n ";
+    shape = rect;
+    style = filled;
+    fillcolor = "LIGHTBLUE";
+    color = "green";
+  ];
+  sd_will_be_reverted [
+    label = "\nSELFDESTRUCT\nWILL revert\n ";
+    shape = diamond;
+    style = filled;
+    fillcolor = "LIGHTGREEN";
+    color = "RED";
+  ];
+  sd_wont_be_reverted_marked [
+    label = "\nSELFDESTRUCT\nWON'T revert\nmarked for SD\n ";
+    shape = diamond;
+    style = filled;
+    fillcolor = "LIGHTGREEN";
+    color = "RED";
+  ];
+  sd_wont_be_reverted_nomark [
+    label = "\nSELFDESTRUCT\nWON'T revert\nnot marked for SD\n ";
+    shape = diamond;
+    style = filled;
+    fillcolor = "LIGHTGREEN";
+    color = "RED";
+  ];
+
+  {
+    rank=same;
+    sux; sux_rows;
+  }
+  {
+    rank=same;
+    staticx; staticx_rows;
+  }
+  {
+    rank=same;
+    oogx; oogx_rows;
+  }
+  {
+    rank=same;
+    revert; revert_rows;
+  }
+  {
+    rank=same;
+    sd_will_be_reverted; sd_will_be_reverted_rows;
+  }
+  {
+    rank=same;
+    sd_wont_be_reverted_marked; sd_wont_be_reverted_marked_rows;
+  }
+  {
+    rank=same;
+    sd_wont_be_reverted_nomark; sd_wont_be_reverted_nomark_rows;
+  }
+
+  inst                                  -> sux;
+  sux                                   -> sux_rows;
+  sux                                   -> staticx;
+  staticx                               -> staticx_rows;
+  staticx                               -> oogx
+  oogx                                  -> oogx_rows;
+  oogx                                  -> unexceptional;
+  unexceptional                         -> sd_will_be_reverted;
+  sd_will_be_reverted                   -> sd_will_be_reverted_rows;
+  sd_will_be_reverted                   -> sd_wont_be_reverted_marked;
+  sd_wont_be_reverted_marked            -> sd_wont_be_reverted_marked_rows;
+  sd_wont_be_reverted_marked            -> sd_wont_be_reverted_nomark;
+  sd_wont_be_reverted_nomark            -> sd_wont_be_reverted_nomark_rows;
+
+sux_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">REFUND</TD><TD ROWSPAN="2">REFUND<sup>&nu;</sup></TD>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD><TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2" COLSPAN="2"><B>same</B></TD>
+    <TD>i</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>empty stack items</TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD COLSPAN="1">update return data: &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+staticx_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">REFUND</TD><TD ROWSPAN="2">REFUND<sup>&nu;</sup></TD>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="3" COLSPAN="2"><B>same</B></TD>
+    <TD>i</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>rawAddr</TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="LIGHTGREEN">current</TD>
+    <TD>observe STATIC🏴 = <B><FONT COLOR="ORANGERED">1</FONT></B>;</TD>
+  </TR>
+  <TR>
+    <TD>i + 2</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD>update return data: &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+oogx_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">REFUND</TD><TD ROWSPAN="2">REFUND<sup>&nu;</sup></TD>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="7" COLSPAN="2"><B>same</B></TD>
+    <TD>i</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>rawAddr</TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="LIGHTGREEN">current</TD>
+    <TD>observe STATIC🏴 = <B><FONT COLOR="GREEN">0</FONT></B> and <B>I<sub>a</sub></B>;</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i + 2</TD>
+    <TD ROWSPAN="2">ACC</TD>
+    <TD ROWSPAN="2" BGCOLOR=" #33FFCC "><B>I<sub>a</sub></B></TD>
+    <TD ROWSPAN="1">TRM🏴 = <B>0</B>; CFI_REQ = <B>0</B>;</TD>
+    <TD ROWSPAN="2">τ · h + 0</TD>
+    <TD ROWSPAN="2">0</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">[BAL &ne; 0] ?</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i + 3</TD>
+    <TD ROWSPAN="2">ACC</TD>
+    <TD ROWSPAN="2" BGCOLOR=" #33FFCC ">trimmed recipient address</TD>
+    <TD ROWSPAN="1">TRM🏴 = <B>1</B>; same everything;</TD>
+    <TD ROWSPAN="2">τ · h + 1</TD>
+    <TD ROWSPAN="2">0</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">Warmth ? &exist; ?</TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD>update return data: &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+sd_will_be_reverted_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">REFUND</TD><TD ROWSPAN="2">REFUND<sup>&nu;</sup></TD>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="13" COLSPAN="2"><B>same</B></TD>
+    <TD>i</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>rawAddr</TD>
+  </TR>
+  <TR>
+    <TD COLSPAN="1">i + 1</TD>
+    <TD COLSPAN="1">SCN</TD>
+    <TD BGCOLOR="salmon" COLSPAN="2">SELFDESTRUCT: reverted; [trmAddr &ne;&nbsp; <B>I<sub>a</sub></B>] </TD>
+  </TR>
+  <TR>
+    <TD>i + 2</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="LIGHTGREEN">current</TD>
+    <TD>observe STATIC🏴 = <B><FONT COLOR="GREEN">0</FONT></B> and <B>I<sub>a</sub></B>;</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="3">i + 3</TD>
+    <TD ROWSPAN="3">ACC</TD>
+    <TD ROWSPAN="3" BGCOLOR=" #33FFCC "><B>I<sub>a</sub></B></TD>
+    <TD ROWSPAN="1">TRM🏴 = <B>0</B>; CFI_REQ = <B>0</B>;</TD>
+    <TD ROWSPAN="3">τ · h + 0</TD>
+    <TD ROWSPAN="3">0</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">BAL = <B>b</B>; [<B>b</B> &ne; 0] ? BAL<sup>&nu;</sup> = 0</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">MARKED = 0 unchanged </TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i + 4</TD>
+    <TD ROWSPAN="2">ACC</TD>
+    <TD ROWSPAN="2" BGCOLOR=" #33FFCC ">trmAddr</TD>
+    <TD ROWSPAN="1">TRM🏴 = <B>1</B>; W <B>↗</B> ; BAL += <B>b</B>; [trmAddr &ne; <B>I<sub>a</sub></B>] </TD>
+    <TD ROWSPAN="2">τ · h + 1</TD>
+    <TD ROWSPAN="2">0</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">Warmth ? &exist; ?</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i + 5</TD>
+    <TD ROWSPAN="2">ACC</TD>
+    <TD ROWSPAN="2" BGCOLOR=" #33FFCC "><B>I<sub>a</sub></B></TD>
+    <TD ROWSPAN="1">TRM🏴 = <B>0</B>; CFI_REQ = <B>0</B>;</TD>
+    <TD ROWSPAN="2">τ · ρ + ε</TD><TD ROWSPAN="2">τ · h + 2</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">BAL <B>↶</B> </TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i + 6</TD>
+    <TD ROWSPAN="2">ACC</TD>
+    <TD ROWSPAN="2" BGCOLOR=" #33FFCC ">trmAddr</TD>
+    <TD ROWSPAN="1">TRM🏴 = <B>0</B>; W <B>↶</B>;</TD>
+    <TD ROWSPAN="2">τ · ρ + ε</TD><TD ROWSPAN="2">τ · h + 3</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">BAL <B>↶</B> </TD>
+  </TR>
+  <TR>
+    <TD>i + 7</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD>update return data: &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+sd_wont_be_reverted_marked_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">REFUND</TD><TD ROWSPAN="2">REFUND<sup>&nu;</sup></TD>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="12" COLSPAN="2"><B>same</B></TD>
+    <TD>i</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>rawAddr</TD>
+  </TR>
+  <TR>
+    <TD COLSPAN="1">i + 1</TD>
+    <TD COLSPAN="1">SCN</TD>
+    <TD BGCOLOR="salmon" COLSPAN="2">SELFDESTRUCT: no rollback, already marked; [trmAddr &ne;&nbsp; <B>I<sub>a</sub></B>] </TD>
+  </TR>
+  <TR>
+    <TD>i + 2</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="LIGHTGREEN">current</TD>
+    <TD>observe STATIC🏴 = <B><FONT COLOR="GREEN">0</FONT></B> and <B>I<sub>a</sub></B>;</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i + 3</TD>
+    <TD ROWSPAN="2">ACC</TD>
+    <TD ROWSPAN="2" BGCOLOR=" #33FFCC "><B>I<sub>a</sub></B></TD>
+    <TD ROWSPAN="1">TRM🏴 = <B>0</B>; CFI_REQ = <B>0</B>;</TD>
+    <TD ROWSPAN="2">τ · h + 0</TD>
+    <TD ROWSPAN="2">0</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">BAL = <B>b</B>; [<B>b</B> &ne; 0] ? BAL<sup>&nu;</sup> = 0</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i + 4</TD>
+    <TD ROWSPAN="2">ACC</TD>
+    <TD ROWSPAN="2" BGCOLOR=" #33FFCC ">trmAddr</TD>
+    <TD ROWSPAN="1">TRM🏴 = <B>1</B>; W <B>↗</B> ; BAL += <B>b</B>; [trmAddr &ne; <B>I<sub>a</sub></B>] </TD>
+    <TD ROWSPAN="2">τ · h + 1</TD>
+    <TD ROWSPAN="2">0</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">Warmth ? &exist; ?</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i + 5</TD>
+    <TD ROWSPAN="2">ACC</TD>
+    <TD ROWSPAN="2" BGCOLOR=" #33FFCC "><B>I<sub>a</sub></B></TD>
+    <TD ROWSPAN="1">TRM🏴 = <B>0</B>; CFI_REQ = <B>0</B>;</TD>
+    <TD ROWSPAN="2">τ · ρ + ε</TD><TD ROWSPAN="2">τ · h + 2</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">BAL <B>↶</B> </TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i + 6</TD>
+    <TD ROWSPAN="2">ACC</TD>
+    <TD ROWSPAN="2" BGCOLOR=" #33FFCC ">trmAddr</TD>
+    <TD ROWSPAN="1">TRM🏴 = <B>0</B>; W <B>↶</B>;</TD>
+    <TD ROWSPAN="2">τ · ρ + ε</TD><TD ROWSPAN="2">τ · h + 3</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">BAL <B>↶</B> </TD>
+  </TR>
+  <TR>
+    <TD>i + 7</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD>update return data: &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+sd_wont_be_reverted_nomark_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">REFUND</TD><TD ROWSPAN="2">REFUND<sup>&nu;</sup></TD>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="12" COLSPAN="2"><B>+= 25_000</B></TD>
+    <TD>i</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>rawAddr</TD>
+  </TR>
+  <TR>
+    <TD COLSPAN="1">i + 1</TD>
+    <TD COLSPAN="1">SCN</TD>
+    <TD BGCOLOR="salmon" COLSPAN="2">SELFDESTRUCT: no rollback, unmarked; [trmAddr &ne;&nbsp; <B>I<sub>a</sub></B>] </TD>
+  </TR>
+  <TR>
+    <TD>i + 2</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="LIGHTGREEN">current</TD>
+    <TD>observe STATIC🏴 = <B><FONT COLOR="GREEN">0</FONT></B> and <B>I<sub>a</sub></B>;</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i + 3</TD>
+    <TD ROWSPAN="2">ACC</TD>
+    <TD ROWSPAN="2" BGCOLOR=" #33FFCC "><B>I<sub>a</sub></B></TD>
+    <TD ROWSPAN="1">TRM🏴 = <B>0</B>; CFI_REQ = <B>0</B>;</TD>
+    <TD ROWSPAN="2">τ · h + 0</TD>
+    <TD ROWSPAN="2">0</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">BAL = <B>b</B>; [<B>b</B> &ne; 0] ? BAL<sup>&nu;</sup> = 0</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i + 4</TD>
+    <TD ROWSPAN="2">ACC</TD>
+    <TD ROWSPAN="2" BGCOLOR=" #33FFCC ">trmAddr</TD>
+    <TD ROWSPAN="1">TRM🏴 = <B>1</B>; W <B>↗</B> ; BAL += <B>b</B>; [trmAddr &ne; <B>I<sub>a</sub></B>] </TD>
+    <TD ROWSPAN="2">τ · h + 1</TD>
+    <TD ROWSPAN="2">0</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">Warmth ? &exist; ?</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i + 5</TD>
+    <TD ROWSPAN="2">ACC</TD>
+    <TD ROWSPAN="2" BGCOLOR=" #33FFCC "><B>I<sub>a</sub></B></TD>
+    <TD ROWSPAN="1">TRM🏴 = <B>0</B>; CFI_REQ = <B>0</B>;</TD>
+    <TD ROWSPAN="2">τ · TX_END + ε<sub>sd</sub></TD><TD ROWSPAN="2">τ · h + 2</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">DESTROY ACCOUNT</TD>
+  </TR>
+  <TR>
+    <TD>i + 6</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD>update return data: &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+
+
+}
+
+

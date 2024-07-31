@@ -1,0 +1,301 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below are written under the assumption that}
+		\left\{ \begin{array}{lcl}
+			\peekScenario     _{i}                & = & 1 \\
+			\scenCreateSum    _{i}                & = & 1 \\
+		\end{array} \right.}
+\end{center}
+The present section deals with generalities pertaining to \inst{CREATE}-type instructions. These constraints hold regardless of anything else. 
+\begin{description}
+	\item[\underline{Setting the stack pattern:}]
+		we impose $\createSP_{i - 2}\big[ \locIsCreateTwo \big]$;
+	\item[\underline{Setting the ``deployment address'' stack output:}]
+		we impose
+		\begin{enumerate}
+			\item \If $\scenCreateSuccess_{i} = 0$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\locOutputHi & = & 0 \\
+						\locOutputLo & = & 0 \\
+					\end{array} \right.
+				\]
+			\item \If $\scenCreateSuccess_{i} = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\locOutputHi & = & \locCreateeAddressHi \\
+						\locOutputLo & = & \locCreateeAddressLo \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+	\item[\underline{Triggering the \hashInfoMod{} module and settings:}]
+		we impose
+		\[
+			\maybeRequestHash {
+				anchorRow  = i,
+				relOffset  = - \createFirstStackRowOffset,
+				requestBit = \locTriggerHashInfo,
+			}
+		\]
+	\item[\underline{Setting the context-row $n^°(i + \createCurrentContextRowOffset)$:}]
+		we unconditionally impose
+		\[
+			\readContextData {i}{\createCurrentContextRowOffset} {\cn_{i}}
+		\]
+	\item[\underline{Setting the \staticxSH{}:}]
+		we unconditionally impose
+		\[
+			\locStaticx = \locIsStatic
+		\]
+	\item[\underline{Setting the module flags of miscellaneous-row $n^°(i + \createMiscRowOffset)$::}] 
+		every processing path for \inst{CREATE}-type instructions contains a single \textbf{miscellaneous-row}
+		\[
+			\weightedMiscFlagSum
+			{i}{\createMiscRowOffset}
+			=
+			\left[ \begin{array}{lcl}
+				\miscMmuWeight & \cdot & \locTriggerMmu \\
+				\miscMxpWeight & \cdot & \locTriggerMxp \\
+				\miscOobWeight & \cdot & \locTriggerOob \\
+				\miscStpWeight & \cdot & \locTriggerStp \\
+			\end{array} \right]
+		\]
+		in other words
+		\[
+			\left\{ \begin{array}{lclr}
+				\miscExpFlag _{i + \createMiscRowOffset} & = & \gZero         & (\trash) \\
+				\miscMmuFlag _{i + \createMiscRowOffset} & = & \locTriggerMmu & (\trash) \\
+				\miscMxpFlag _{i + \createMiscRowOffset} & = & \locTriggerMxp & (\trash) \\
+				\miscOobFlag _{i + \createMiscRowOffset} & = & \locTriggerOob & (\trash) \\
+				\miscStpFlag _{i + \createMiscRowOffset} & = & \locTriggerStp & (\trash) \\
+			\end{array} \right.
+		\]
+	\item[\underline{Setting the \mxpMod{} instruction:}]
+		we impose \If $\miscMxpFlag_{i + \createMiscRowOffset} = 1$ \Then
+		\[
+			\setMxpInstructionTypeFour
+			{i}{\createMiscRowOffset}
+			\left[ \begin{array}{ll}
+				\utt{Instruction:}       & \locInst     \\
+				\utt{Deploys byte code:} & 0            \\
+				\utt{Offset high part:}  & \locOffsetHi \\
+				\utt{Offset low  part:}  & \locOffsetLo \\
+				\utt{Size high part:}    & \locSizeHi   \\
+				\utt{Size low  part:}    & \locSizeLo   \\
+			\end{array} \right]
+		\]
+	\item[\underline{Setting the \mxpxSH{}:}]
+		we impose
+		\begin{enumerate}
+			\item \If $\miscMxpFlag_{i + \createMiscRowOffset} = 0$ \Then $\locMxpx = 0$ \quad (\trash)
+			\item \If $\miscMxpFlag_{i + \createMiscRowOffset} = 1$ \Then $\locMxpx = \locMxpMxpx$
+		\end{enumerate}
+	\item[\underline{Setting the \stpMod{} instruction:}]
+		we impose \If $\miscStpFlag_{i + \createMiscRowOffset} = 1$ \Then
+		\[
+			\setStpInstructionCreate{
+				anchorRow = i,
+				relOffset = \createMiscRowOffset,
+				instruction = \locInst,
+				valueHi = \locValueHi,
+				valueLo = \locValueLo,
+				mxpGas = \locMxpGas,
+			}
+			% \left\{ \begin{array}{lcl}
+			% 	% \miscStpFlag                  _{i + \createMiscRowOffset} & = & \one \vspace{2mm} \\
+			% 	\miscStpInst                  _{i + \createMiscRowOffset}   & = & \locInst          \\
+			% 	\miscStpGasHi                 _{i + \createMiscRowOffset}   & = & \gZero            \\
+			% 	\miscStpGasLo                 _{i + \createMiscRowOffset}   & = & \gZero            \\
+			% 	\miscStpValueHi               _{i + \createMiscRowOffset}   & = & \locValueHi       \\
+			% 	\miscStpValueLo               _{i + \createMiscRowOffset}   & = & \locValueLo       \\
+			% 	\miscStpAccExists             _{i + \createMiscRowOffset}   & = & 0                 \\
+			% 	\miscStpAccWarmth             _{i + \createMiscRowOffset}   & = & 0                 \\
+			% 	\miscStpOogx                  _{i + \createMiscRowOffset}   & = & \locOogx          \\
+			% 	% \gasActual                    _{i + \createMiscRowOffset} & = &                   \\ % shared column
+			% 	% \gasCost                      _{i + \createMiscRowOffset} & = &                   \\ % shared column
+			% 	% \miscMxpGasMxp                _{i + \createMiscRowOffset} & = &                   \\ % mxp gas (available on the same row)
+			% 	\miscStpGasUpfront            _{i + \createMiscRowOffset}   & = & \relevantValue    \\
+			% 	\miscStpGasPoop               _{i + \createMiscRowOffset}   & = & \relevantValue    \\
+			% 	\miscStpGasStipend            _{i + \createMiscRowOffset}   & = & \relevantValue    \\
+			% \end{array} \right.
+		\]
+		\saNote{} The \stpMod{} computes the gas cost $\gasCost_{i}$ of \inst{CREATE}-type instructions; it also, verifies \locOogx{}.
+	\item[\underline{Setting the \oogxSH{}:}]
+		we impose
+		\begin{enumerate}
+			\item \If $\miscStpFlag_{i + \createMiscRowOffset} = 0$ \Then $\locOogx = 0$ \quad (\trash)
+			\item \If $\miscStpFlag_{i + \createMiscRowOffset} = 1$ \Then $\locOogx = \locStpOogx$
+		\end{enumerate}
+	\item[\underline{Setting the \oobMod{} instruction:}]
+		we impose \If $\miscOobFlag_{i + \createMiscRowOffset} = 1$ \Then
+		\[
+			\setOobInstructionCreate {
+				anchorRow      = i,
+				relOffset      = \createMiscRowOffset,
+				valueHi        = \locValueHi,
+				valueLo        = \locValueLo,
+				balance        = \locCreatorBalance,
+				nonce          = \locCreateeNonce,
+				hasCode        = \locCreateeHasCode,
+				callStackDepth = \locCsd,
+			}
+			% \vspace{2mm} \\
+			% \left\{ \begin{array}{lclc}
+			% 	\miscOobDataCol{1}   _{i + 1} & = & \locValueHi                         \\
+			% 	\miscOobDataCol{2}   _{i + 1} & = & \locValueLo                         \\
+			% 	\miscOobDataCol{3}   _{i + 1} & = & \locCreatorBalance                  \\
+			% 	\miscOobDataCol{4}   _{i + 1} & = & \locCreateeNonce                    \\
+			% 	\miscOobDataCol{5}   _{i + 1} & = & \locCreateeHasCode                  \\
+			% 	\miscOobDataCol{6}   _{i + 1} & = & \locCsd                             \\
+			% 	\miscOobInst         _{i + 1} & = & \oobInstCreate                      \\
+			% 	\miscOobDataCol{7}   _{i + 1} & = & \scenCreateAbort_{i}                \\
+			% 	\miscOobDataCol{8}   _{i + 1} & = & \scenCreateFCond_{i}                \\
+			% \end{array} \right.
+		\]
+		where we define the following shorthands:
+		\[
+			\left\{ \begin{array}{lclc}
+				\If \locTriggerRlpAddr = 0 ~ \Then 
+				\left\{ \begin{array}{lclc}
+					\locCreateeNonce   & = & 0 \\
+					\locCreateeHasCode & = & 0 \\
+				\end{array} \right. \\
+				\If \locTriggerRlpAddr = 1 ~ \Then 
+				\left\{ \begin{array}{lclc}
+					\locCreateeNonce   & = & \accNonce    _{i + \createFirstCreateeAccountRowOffset} \\
+					\locCreateeHasCode & = & \accHasCode  _{i + \createFirstCreateeAccountRowOffset} \\
+				\end{array} \right. \\
+			\end{array} \right.
+		\]
+		\saNote{} We explain the conditional definitions of \locCreateeNonce{} and \locCreateeHasCode{} by the fact that the \zkEvm{} is granted access to the account of the deployment address \emph{iff} it computes that address.
+	\item[\underline{Setting the \inst{CREATE}-scenario:}]
+		we impose the following
+		\begin{enumerate}
+			\item we unconditionally impose $\scenCreateException_{i} = \xAhoy_{i}$ \label{create: setting exceptional scenario}
+			\item \If $\scenCreateUnexceptional_{i} = 1$\footnote{i.e. ``\If $\miscOobFlag_{i + \createMiscRowOffset} = 1$.''} \Then
+				\[
+					\left\{ \begin{array}{lclr}
+						\scenCreateAbort       _{i} & = & \locOobAbortingCondition                               \\
+						\scenCreateFCond       _{i} & = & \locOobFailureCondition                                \\
+						\scenCreateNotRebuffed _{i} & = & 1 - \locOobAbortingCondition - \locOobFailureCondition  & (\trash) \\
+					\end{array} \right.
+				\]
+			\item \If $\scenCreateCreatorStateChange_{i} = 1$ \Then
+				\[
+					\scenCreateCreatorStateChangeWillRevert_{i}
+					=
+					\cnWillRev_{i}
+				\]
+			\item \If $\scenCreateNotRebuffed _{i} = 1$ \Then
+				\[
+					\scenCreateExecutionNonEmptyInitCode _{i}
+					=
+					\locMxpMtntop
+				\]
+			\item \If $\scenCreateExecutionNonEmptyInitCode _{i} = 1$ \Then
+				\[
+					\scenCreateFailure _{i}
+					=
+					\miscChildSelfReverts _{i + \createMiscRowOffset}
+				\]
+				\saNote{}
+				The value of $\miscChildSelfReverts _{i + \createMiscRowOffset}$ is justified in section~(\ref{hub: instruction handling: create: generalities: final context row}).
+		\end{enumerate}
+	\item[\underline{Setting the \mmuMod{} data:}]
+		we impose \If $\miscMmuFlag_{i + \createMiscRowOffset} = 1$ \Then
+		\[
+			\setMmuInstructionParametersRamToExoWithPadding {
+				anchorRow         = i                               ,
+				relOffset         = \createMiscRowOffset            ,
+				sourceId          = \cn_{i}                         ,
+				targetId          = \undefinedStar \quad \locTgtId  ,
+				auxiliaryId       = \undefinedStar \quad \locAuxId  ,
+				% sourceOffsetHi  = \col{src\_offset\_hi}           ,
+				sourceOffsetLo    = \locOffsetLo                    ,
+				% targetOffsetLo  = \col{tgt\_offset\_lo}           ,
+				size              = \locSizeLo                      ,
+				% referenceOffset = \col{ref\_offset}               ,
+				referenceSize     = \locSizeLo                      ,
+				successBit        = \nothing                        ,
+				% limbOne         = \col{limb\_1}                   ,
+				% limbTwo         = \col{limb\_2}                   ,
+				exoSum            = \undefinedStar \quad \locExoSum ,
+				phase             = \rZero                          ,
+				}
+			% \setMmuInstructionParametersRamToExoWithPadding
+			% {i}{\createMiscRowOffset}
+			% \left[ \begin{array}{llr}
+			% 	\utt{Source ID:}            & \cn_{i}               \\
+			% 	\utt{Target ID:}            & \locTgtId              & (\bigstar) \\
+			% 	\utt{Auxiliary ID:}         & \locAuxId              & (\bigstar) \\
+			% 	% \utt{Source offset high:} & \col{src\_offset\_hi} \\
+			% 	\utt{Source offset low:}    & \locOffsetLo          \\
+			% 	% \utt{Target offset low:}  & \col{tgt\_offset\_lo} \\
+			% 	\utt{Size:}                 & \locSizeLo            \\
+			% 	% \utt{Reference offset:}   & \col{ref\_offset}     \\
+			% 	\utt{Reference size:}       & \locSizeLo            \\
+			% 	\utt{Success bit:}          & \nothing              \\
+			% 	% \utt{Limb one:}           & \col{limb\_1}         \\
+			% 	% \utt{Limb two:}           & \col{limb\_2}         \\
+			% 	\utt{Exo sum:}              & \locExoSum             & (\bigstar) \\
+			% 	\utt{Phase:}                & \rZero                \\
+			% \end{array} \right]
+		\]
+		where we have used the following (as of yet undefined) shorthands \locTgtId{}, \locAuxId{} and \locExoSum{} which we define as follows:
+		\begin{enumerate}
+			\item \If $\locHashInitCode = 1$ \Then 
+				\[
+					\left\{ \begin{array}{lcl}
+						\locTgtId  & \define & \nothing          \\
+						\locAuxId  & \define & 1 + \hubStamp_{i} \\
+						\locExoSum & \define & \exoWeightKec     \\
+					\end{array} \right.
+				\]
+			\item \If $\locHashInitCodeAndSendToRom = 1$ \Then 
+				\[
+					\left\{ \begin{array}{lcl}
+						\locTgtId  & \define & \locDepCfi                    \\
+						\locAuxId  & \define & 1 + \hubStamp_{i}             \\
+						\locExoSum & \define & \exoWeightRom + \exoWeightKec \\
+					\end{array} \right.
+				\]
+			\item \If $\locSendInitCodeToRom = 1$ \Then 
+				\[
+					\left\{ \begin{array}{lcl}
+						\locTgtId  & \define & \locDepCfi    \\
+						\locAuxId  & \define & \nothing      \\
+						\locExoSum & \define & \exoWeightRom \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+		\saNote{} Recall that the lookup serving the \mmuMod{} module its instructions provides the current context number \cn{} and caller context number \caller{} (so that there is no need to specify those in the above.)
+	\item[\underline{Setting the next context number:}]
+		we impose
+		\[
+			\left\{ \begin{array}{lclr}
+				\If \scenCreateException                     _{i} = 1  & \Then & \nextContextIsCaller   _{i} & (\trash) \\
+				\If \scenCreateNoContextChange               _{i} = 1  & \Then & \nextContextIsCurrent  _{i} \\
+				\If \scenCreateExecutionNonEmptyInitCode     _{i} = 1  & \Then & \nextContextIsNew      _{i} \\
+			\end{array} \right.
+		\]
+	\item[\underline{Setting the \gasCost{}:}]
+		we impose
+		\begin{enumerate}
+			\item \If $\locStaticx + \locMxpx = 1$              \Then $\gasCost _{i} = 0$
+			\item \If $\locOogx + \scenCreateUnexceptional = 1$ \Then $\gasCost _{i} = G_\text{create} + \locMxpGas$
+		\end{enumerate}
+	\item[\underline{Setting the \gasNext{}:}]
+		we impose
+		\begin{enumerate}
+			\item \If $\scenCreateException                 _{i} = 1$ \Then $\gasNext_{i} = 0$ (\trash)
+			\item \If $\scenCreateNoContextChange           _{i} = 1$ \Then $\gasNext_{i} = \gasActual_{i} - \gasCost_{i}$
+			\item \If $\scenCreateExecutionNonEmptyInitCode _{i} = 1$ \Then
+				\[
+					\gasNext_{i} = \gasActual_{i} - 
+					\left[ \begin{array}{cl}
+						+ & \gasCost_{i} \\
+						+ & \locStpGasPoop  \\
+					\end{array} \right]
+				\]
+		\end{enumerate}
+\end{description}

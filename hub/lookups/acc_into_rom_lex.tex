@@ -1,0 +1,41 @@
+The present section describes the lookup between the \hubMod{} and the \romLexMod{} module.
+The $\accRomLexFlag$ flag turns on opportunistically (e.g. when performing a \inst{CALL}-type or \inst{CREATE}-type instruction.
+In more detail: the \zkEvm{} turns on this flag whenever it is about to enter a new execution context and requires the associated \cfi{}. 
+\begin{description}
+	\item[Selector column:] we use the following selector:
+		\begin{enumerate}
+			\item \If $\peekAccount _{i} = 0$ \Then $\col{sel} _{i} = 0$
+			\item \If $\peekAccount _{i} = 1$ \Then
+				\begin{enumerate}
+				        \item \If $\accCodesize\new _{i} =    0$ \Then $\col{sel} _{i} = 0$
+					\item \If $\accCodesize\new _{i} \neq 0$ \Then $\col{sel} _{i} = \accRomLexFlag _{i}$
+				\end{enumerate}
+		\end{enumerate}
+	\item[Source columns:] ---
+		\begin{multicols}{4}
+			\begin{enumerate}
+				\item $\accCfi$
+				\item $\accCodesize\new$
+				\item $\accAddressHi$
+				\item $\accAddressLo$
+				\item $\accDepNum\new$
+				\item $\accDepStatus\new$
+				\item $\accCodehashHi$
+				\item $\accCodehashLo$
+			\end{enumerate}
+		\end{multicols}
+	\item[Target columns:] ---
+		\begin{multicols}{4}
+			\begin{enumerate}
+				\item $\cfi$
+				\item $\codeSize$
+				\item $\addrHi$
+				\item $\addrLo$
+				\item $\depNumber$
+				\item $\depStatus$
+				\item $\CH\high$
+				\item $\CH\low$
+			\end{enumerate}
+		\end{multicols}
+\end{description}
+\saNote{} We use ``$\peekAccount \cdot \accHasCode \cdot \accRomLexFlag$'' as a selctor rather than ``$\peekAccount \cdot \accRomLexFlag$'' to prevent triggering the \romLexMod{} module with accounts that don't contain any code.

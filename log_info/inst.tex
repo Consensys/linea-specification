@@ -1,0 +1,30 @@
+The present section constrains the \INST{} column and associated $\isLog{X}$ columns.
+\begin{enumerate}
+	\item \If $\txEmitsLogs_{i} = 0$ \Then $\displaystyle \sum_{\col{X} = 0} ^ {4} \isLog{X}_{i} = 0$
+	\item \If $\txEmitsLogs_{i} = 1$ \Then $\displaystyle \sum_{\col{X} = 0} ^ {4} \isLog{X}_{i} = 1$
+	\item In all circumstances we impose
+		\[
+			\sum_{\col{X} = 0}^{4} \inst{LOGX} \cdot \isLog{X} = \INST_{i}
+		\]
+\end{enumerate}
+
+\saNote{} We may of course subsume the above as ``$\txEmitsLogs_{i} = \sum_{\col{X} = 0} ^ {4} \isLog{X}_{i}$''.
+\saNote{} The above imposes that along rows $i$ pertaining to transactions that emit logs, $\INST_{i} \in \{ \inst{LOG0}, \inst{LOG1}, \inst{LOG2}, \inst{LOG3}, \inst{LOG4} \}$.
+\saNote{} Given that $\INST$ is in the range $\{ \texttt{0x00} \} \cup \{ \texttt{0x\,A0}, \dots, \texttt{0x\,A4}\}$, the above unambiguously selects for at most one of the five $\isLog{X}$ flags:
+\begin{figure}[h!]
+	\def\zero{\graym{0}}
+	\def\one{\cellcolor{solarized-green}\bm{1}}
+	\[
+		\begin{array}{|c|c|c|c|c|c|}
+			\hline
+			\INST         & \isLog{0} & \isLog{1} & \isLog{2} & \isLog{3} & \isLog{4} \\ \hline \hline
+			\texttt{0x00} & \zero     & \zero     & \zero     & \zero     & \zero     \\ \hline
+			\inst{LOG0}   & \one      & \zero     & \zero     & \zero     & \zero     \\ \hline
+			\inst{LOG1}   & \zero     & \one      & \zero     & \zero     & \zero     \\ \hline
+			\inst{LOG2}   & \zero     & \zero     & \one      & \zero     & \zero     \\ \hline
+			\inst{LOG3}   & \zero     & \zero     & \zero     & \one      & \zero     \\ \hline
+			\inst{LOG4}   & \zero     & \zero     & \zero     & \zero     & \one      \\ \hline
+		\end{array}
+	\]
+	\caption{Unique configuration for the \isLog{X} flags.} 
+\end{figure}

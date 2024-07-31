@@ -1,0 +1,201 @@
+We introduce the following shorthands for the handling of \inst{CREATE}-type instructions.
+\[
+	\hspace*{-2cm}
+	\left\{ \begin{array}{lcl}
+		\scenCreateExecutionEmptyInitCode_{i} & \define &
+		\left[ \begin{array}{l}
+			% + \scenCreateException                           _{i}   \\
+			% + \scenCreateAbort                               _{i}   \\
+			% + \scenCreateFCondWontRevert                     _{i}   \\
+			% + \scenCreateFCondWillRevert                     _{i}   \\
+			% + \scenCreateNonEmptyInitCodeFailureWontRevert   _{i}   \\
+			% + \scenCreateNonEmptyInitCodeFailureWillRevert   _{i}   \\
+			% + \scenCreateNonEmptyInitCodeSuccessWontRevert   _{i}   \\
+			% + \scenCreateNonEmptyInitCodeSuccessWillRevert   _{i}   \\
+			+ \scenCreateEmptyInitCodeWontRevert             _{i}   \\
+			+ \scenCreateEmptyInitCodeWillRevert             _{i}   \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\scenCreateExecutionNonEmptyInitCode_{i} & \define &
+		\left[ \begin{array}{l}
+			% + \scenCreateException                           _{i}   \\
+			% + \scenCreateAbort                               _{i}   \\
+			% + \scenCreateFCondWontRevert                     _{i}   \\
+			% + \scenCreateFCondWillRevert                     _{i}   \\
+			+ \scenCreateNonEmptyInitCodeFailureWontRevert   _{i}   \\
+			+ \scenCreateNonEmptyInitCodeFailureWillRevert   _{i}   \\
+			+ \scenCreateNonEmptyInitCodeSuccessWontRevert   _{i}   \\
+			+ \scenCreateNonEmptyInitCodeSuccessWillRevert   _{i}   \\
+			% + \scenCreateEmptyInitCodeWontRevert             _{i}   \\
+			% + \scenCreateEmptyInitCodeWillRevert             _{i}   \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\scenCreateExecution_{i} & \!\!\! \define \!\!\! &
+		\left[ \begin{array}{l}
+			+ \scenCreateExecutionNonEmptyInitCode _{i} \\
+			+ \scenCreateExecutionEmptyInitCode    _{i}    \\
+		\end{array} \right]
+		\\
+		& \!\!\! \define \!\!\! &
+		\left[ \begin{array}{l}
+			+ \scenCreateSuccess _{i} \\
+			+ \scenCreateFailure _{i} \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\scenCreateRebuffed _{i} & \define &
+		\left[ \begin{array}{l}
+			+ \scenCreateException  _{i} \\
+			+ \scenCreateAbort      _{i} \\
+			+ \scenCreateFCond      _{i} \\
+		\end{array} \right]
+	\end{array} \right.
+\]
+and
+\[
+	\hspace*{-2cm}
+	\left\{ \begin{array}{lcl}
+		\scenCreateFCond_{i} & \define &
+		\left[ \begin{array}{l}
+			% + \scenCreateException                           _{i} \\
+			% + \scenCreateAbort                               _{i} \\
+			+ \scenCreateFCondWontRevert                     _{i}   \\
+			+ \scenCreateFCondWillRevert                     _{i}   \\
+			% + \scenCreateNonEmptyInitCodeFailureWontRevert   _{i} \\
+			% + \scenCreateNonEmptyInitCodeFailureWillRevert   _{i} \\
+			% + \scenCreateNonEmptyInitCodeSuccessWontRevert   _{i} \\
+			% + \scenCreateNonEmptyInitCodeSuccessWillRevert   _{i} \\
+			% + \scenCreateEmptyInitCodeWontRevert             _{i} \\
+			% + \scenCreateEmptyInitCodeWillRevert             _{i} \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\scenCreateUnexceptional_{i} & \define &
+		\left[ \begin{array}{l}
+			% + \scenCreateException       _{i}  \\
+			+ \scenCreateAbort           _{i}  \\
+			+ \scenCreateFCond           _{i}  \\
+			+ \scenCreateExecution       _{i}  \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\scenCreateSum_{i} & \define &
+		\left[ \begin{array}{l}
+			+ \scenCreateException       _{i}  \\
+			+ \scenCreateUnexceptional   _{i}  \\
+		\end{array} \right]
+	\end{array} \right.
+\]
+and
+\[
+	\scenCreateComputeAddress_{i} \define
+	\left[ \begin{array}{l}
+		% + \scenCreateException       _{i}  \\
+		% + \scenCreateAbort           _{i}  \\
+		+ \scenCreateFCond           _{i}  \\
+		+ \scenCreateExecution       _{i}  \\
+	\end{array} \right]
+\]
+and
+\[
+	\scenCreateNoContextChange_{i} \define
+	\left[ \begin{array}{l}
+		+ \scenCreateAbort                    _{i}  \\
+		+ \scenCreateFCond                    _{i}  \\
+		+ \scenCreateExecutionEmptyInitCode   _{i}  \\
+	\end{array} \right]
+\]
+and
+\[
+	\hspace*{-2cm}
+	\left\{ \begin{array}{lcl}
+		\scenCreateSuccess_{i} & \define &
+		\left[ \begin{array}{l}
+			% + \scenCreateException                           _{i}   \\
+			% + \scenCreateAbort                               _{i}   \\
+			% + \scenCreateFCondWontRevert                     _{i}   \\
+			% + \scenCreateFCondWillRevert                     _{i}   \\
+			% + \scenCreateNonEmptyInitCodeFailureWontRevert   _{i}   \\
+			% + \scenCreateNonEmptyInitCodeFailureWillRevert   _{i}   \\
+			+ \scenCreateNonEmptyInitCodeSuccessWontRevert   _{i}   \\
+			+ \scenCreateNonEmptyInitCodeSuccessWillRevert   _{i}   \\
+			+ \scenCreateEmptyInitCodeWontRevert             _{i}   \\
+			+ \scenCreateEmptyInitCodeWillRevert             _{i}   \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\scenCreateFailure_{i} & \define &
+		\left[ \begin{array}{l}
+			% + \scenCreateException                           _{i}   \\
+			% + \scenCreateAbort                               _{i}   \\
+			% + \scenCreateFCondWontRevert                     _{i}   \\
+			% + \scenCreateFCondWillRevert                     _{i}   \\
+			+ \scenCreateNonEmptyInitCodeFailureWontRevert   _{i}   \\
+			+ \scenCreateNonEmptyInitCodeFailureWillRevert   _{i}   \\
+			% + \scenCreateNonEmptyInitCodeSuccessWontRevert   _{i}   \\
+			% + \scenCreateNonEmptyInitCodeSuccessWillRevert   _{i}   \\
+			% + \scenCreateEmptyInitCodeWontRevert             _{i}   \\
+			% + \scenCreateEmptyInitCodeWillRevert             _{i}   \\
+		\end{array} \right]
+	\end{array} \right.
+\]
+and
+\[
+	\hspace*{-2cm}
+	\left\{ \begin{array}{lcl}
+		\scenCreateCreatorStateChangeWillRevert_{i} & \define &
+		\left[ \begin{array}{l}
+			% + \scenCreateException                           _{i}   \\
+			% + \scenCreateAbort                               _{i}   \\
+			% + \scenCreateFCondWontRevert                     _{i}   \\
+			+ \scenCreateFCondWillRevert                     _{i}   \\
+			% + \scenCreateNonEmptyInitCodeFailureWontRevert   _{i}   \\
+			+ \scenCreateNonEmptyInitCodeFailureWillRevert   _{i}   \\
+			% + \scenCreateNonEmptyInitCodeSuccessWontRevert   _{i}   \\
+			+ \scenCreateNonEmptyInitCodeSuccessWillRevert   _{i}   \\
+			% + \scenCreateEmptyInitCodeWontRevert             _{i}   \\
+			+ \scenCreateEmptyInitCodeWillRevert             _{i}   \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\scenCreateCreatorStateChangeWontRevert_{i} & \define &
+		\left[ \begin{array}{l}
+			% + \scenCreateException                           _{i}   \\
+			% + \scenCreateAbort                               _{i}   \\
+			+ \scenCreateFCondWontRevert                     _{i}   \\
+			% + \scenCreateFCondWillRevert                     _{i}   \\
+			+ \scenCreateNonEmptyInitCodeFailureWontRevert   _{i}   \\
+			% + \scenCreateNonEmptyInitCodeFailureWillRevert   _{i}   \\
+			+ \scenCreateNonEmptyInitCodeSuccessWontRevert   _{i}   \\
+			% + \scenCreateNonEmptyInitCodeSuccessWillRevert   _{i}   \\
+			+ \scenCreateEmptyInitCodeWontRevert             _{i}   \\
+			% + \scenCreateEmptyInitCodeWillRevert             _{i}   \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\scenCreateCreatorStateChange_{i} & \define &
+		\left[ \begin{array}{l}
+			+ \scenCreateFCond      _{i} \\
+			+ \scenCreateExecution  _{i} \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\scenCreateNoCreatorStateChange _{i} & \define &
+		\left[ \begin{array}{l}
+			+ \scenCreateException  _{i} \\
+			+ \scenCreateAbort      _{i} \\
+		\end{array} \right]
+		\\
+	\end{array} \right.
+\]
+and
+\[
+	% I'm not using this one ...
+	% also I'm confused why this doesn't include \scenCreateFCondWillRevert as one will have to revert warmth (IIRC)
+	\scenCreateSimpleRevert_{i} \define
+	\left[ \begin{array}{l}
+		% + \scenCreateException                           _{i}   \\
+		% + \scenCreateAbort                               _{i}   \\
+		% + \scenCreateFCondWontRevert                     _{i}   \\
+		+ \scenCreateFCondWillRevert                     _{i}   \\
+		% + \scenCreateNonEmptyInitCodeFailureWontRevert   _{i}   \\
+		% + \scenCreateNonEmptyInitCodeFailureWillRevert   _{i}   \\
+		% + \scenCreateNonEmptyInitCodeSuccessWontRevert   _{i}   \\
+		+ \scenCreateNonEmptyInitCodeSuccessWillRevert   _{i}   \\
+		% + \scenCreateEmptyInitCodeWontRevert             _{i}   \\
+		+ \scenCreateEmptyInitCodeWillRevert             _{i}   \\
+	\end{array} \right]
+\]

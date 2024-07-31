@@ -1,0 +1,18 @@
+There is a commitment to the following data
+\begin{enumerate}
+	\item \col{TX\_NUM}
+	\item \col{FROM}
+	\item \col{TO}
+	\item \col{VALUE}
+	\item \col{GAS}
+	\item \col{GAS\_PRICE}
+	\item \col{TRANSACTION\_CALLDATASIZE}
+	\item \col{INITIALIZATION\_CODESIZE}
+\end{enumerate}
+It is padded with zeros to a power of 2. The constraints are that when \col{TX\_NUM} is nonzero then
+\begin{enumerate}
+	\item it grows by 1 with every row
+	\item the product of the two columns \col{TRANSACTION\_CALLDATASIZE} and \col{INITIALIZATION\_CODESIZE} is zero
+	\item if \col{TO} is 0 then the \col{TRANSACTION\_CALLDATASIZE} is zero
+\end{enumerate}
+The idea is the following: when \col{TX\_NUM} changes in the MET we have a special binary flag that lights up for 16 rows. This flag indicates transaction initialization. It also won't be part of the plookup into ROM. It's about computing the cost of entering the transaction given call data / init code etc.

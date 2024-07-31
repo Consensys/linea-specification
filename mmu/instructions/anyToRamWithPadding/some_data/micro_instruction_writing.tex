@@ -1,0 +1,193 @@
+\begin{center} \boxed{ \text{The constraints below assume that } \mmuInstFlagAnyToRamWithPaddingSomeData _{i} = 1 }
+\end{center}
+\begin{description}
+	\item[First row paying forward:]
+		\If $\isFirstNT_{i}  = 1$ \Then we impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst        _{i + 1} & = & \valueToBeSet \\
+				\microSize        _{i + 1} & = & \valueToBeSet \\
+				\microSlo         _{i + 1} & = & \microSlo_{i} + 1 \\
+				\microSbo         _{i + 1} & = & 0 \\
+				\microTlo         _{i + 1} & = & \microTlo_{i} + \locTloIncrementAfterFirst_{i} \\
+				\microTbo         _{i + 1} & = & \locMiddleTbo_{i} \\
+				\microLimb        _{i + 1} & = & \relevantValue \\
+				% \microCns         _{i + 1} & = & \macroSrcId_{i} \\
+				% \microCnt         _{i + 1} & = & \macroTgtId_{i}  \\
+				% \microSuccessBit  _{i + 1} & = & \nothing \\
+				% \microExoSum      _{i + 1} & = & \nothing \\
+				% \microPhase       _{i + 1} & = & \nothing \\
+				% \microIdOne       _{i + 1} & = & \nothing \\
+				% \microIdTwo       _{i + 1} & = & \nothing \\
+			\end{array} \right.
+		\]
+	\item[Middle rows:]
+		\If $\isMiddleNT_{i} = 1$ \Then we impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst        _{i} & = & \locMiddleDataTransferInst \\
+				\microSize        _{i} & = & \llarge \\
+				\microSlo         _{i} & = & \alreadySet \\
+				\microSbo         _{i} & = & \alreadySet \\
+				\microTlo         _{i} & = & \alreadySet \\
+				\microTbo         _{i} & = & \alreadySet \\
+				\microLimb        _{i} & = & \relevantValue \\
+				% \microCns         _{i} & = & \macroSrcId_{i} \\
+				% \microCnt         _{i} & = & \macroTgtId_{i}  \\
+				% \microSuccessBit  _{i} & = & \nothing \\
+				% \microExoSum      _{i} & = & \nothing \\
+				% \microPhase       _{i} & = & \nothing \\
+				% \microIdOne       _{i} & = & \nothing \\
+				% \microIdTwo       _{i} & = & \nothing \\
+			\end{array} \right.
+		\]
+		where \locMiddleDataTransferInst{} is given the following definition:
+		\begin{enumerate}
+			\item \If $\locDataSourceIsRam_{i} = 1$
+				\begin{enumerate}
+					\item \If $\locAligned_{i} = 1$ \Then $\locFirstDataTransferInst \define \mmioInstRamToRamTransplant$
+					\item \If $\locAligned_{i} = 0$ \Then $\locFirstDataTransferInst \define \mmioInstRamToRamTwoTarget$
+				\end{enumerate}
+			\item \If $\locDataSourceIsRam_{i} = 0$
+				\begin{enumerate}
+					\item \If $\locAligned_{i} = 1$ \Then $\locFirstDataTransferInst \define \mmioInstLimbToRamTransplant$
+					\item \If $\locAligned_{i} = 0$ \Then $\locFirstDataTransferInst \define \mmioInstLimbToRamTwoTarget$
+				\end{enumerate}
+		\end{enumerate}
+	\item[Middle rows paying forward:]
+		\If $\isMiddleNT_{i} = 1$ \Then we impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst        _{i + 1} & = & \valueToBeSet \\
+				\microSize        _{i + 1} & = & \valueToBeSet \\
+				\microSlo         _{i + 1} & = & \microSlo_{i} + 1 \\
+				\microSbo         _{i + 1} & = & 0 \\
+				\microTlo         _{i + 1} & = & \microTlo_{i} + 1 \\
+				\microTbo         _{i + 1} & = & \locMiddleTbo_{i} \\
+				\microLimb        _{i + 1} & = & \relevantValue \\
+				% \microCns         _{i + 1} & = & \macroSrcId_{i} \\
+				% \microCnt         _{i + 1} & = & \macroTgtId_{i}  \\
+				% \microSuccessBit  _{i + 1} & = & \nothing \\
+				% \microExoSum      _{i + 1} & = & \nothing \\
+				% \microPhase       _{i + 1} & = & \nothing \\
+				% \microIdOne       _{i + 1} & = & \nothing \\
+				% \microIdTwo       _{i + 1} & = & \nothing \\
+			\end{array} \right.
+		\]
+	\item[Last row:]
+		\If $\isLastNT_{i} = 1$ \Then we impose that 
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst        _{i} & = & \locLastDataTransferInst \\
+				\microSize        _{i} & = & \locLastDataTransferSize_{i} \\
+				\microSlo         _{i} & = & \alreadySet \\
+				\microSbo         _{i} & = & \alreadySet \\
+				\microTlo         _{i} & = & \alreadySet \\
+				\microTbo         _{i} & = & \alreadySet \\
+				\microLimb        _{i} & = & \relevantValue \\
+				% \microCns         _{i} & = & \macroSrcId_{i} \\
+				% \microCnt         _{i} & = & \macroTgtId_{i}  \\
+				% \microSuccessBit  _{i} & = & \nothing \\
+				% \microExoSum      _{i} & = & \nothing \\
+				% \microPhase       _{i} & = & \nothing \\
+				% \microIdOne       _{i} & = & \nothing \\
+				% \microIdTwo       _{i} & = & \nothing \\
+			\end{array} \right.
+		\]
+		where \locLastDataTransferInst{} is given the following definition:
+		\begin{enumerate}
+			\item \If $\locDataSourceIsRam_{i} = 1$
+				\begin{enumerate}
+					\item \If $\locLastDataTransferSingleTarget_{i} = 1$ \Then $\locLastDataTransferInst \define \mmioInstRamToRamPartial$
+					\item \If $\locLastDataTransferSingleTarget_{i} = 0$ \Then $\locLastDataTransferInst \define \mmioInstRamToRamTwoTarget$
+				\end{enumerate}
+			\item \If $\locDataSourceIsRam_{i} = 0$
+				\begin{enumerate}
+					\item \If $\locLastDataTransferSingleTarget_{i} = 1$ \Then $\locLastDataTransferInst \define \mmioInstLimbToRamOneTarget$
+					\item \If $\locLastDataTransferSingleTarget_{i} = 0$ \Then $\locLastDataTransferInst \define \mmioInstLimbToRamTwoTarget$
+				\end{enumerate}
+		\end{enumerate}
+	\item[Transition row:]
+		\If $\isOnlyRZ_{i} + \isFirstRZ_{i} = 1$ \Then we impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst        _{i} & = & \mmioInstRamExcision \\
+				\microSize        _{i} & = & \locFirstPaddingSize_{i} \\
+				\microSlo         _{i} & = & \nothing \\
+				\microSbo         _{i} & = & \nothing \\
+				\microTlo         _{i} & = & \microTlo_{i - 1} + \locTloIncrementAtTransition_{i} \\
+				\microTbo         _{i} & = & \locFirstPbo_{i} \\
+				\microLimb        _{i} & = & \nothing \\
+				% \microCns         _{i} & = & \macroSrcId_{i} \\
+				% \microCnt         _{i} & = & \macroTgtId_{i}  \\
+				% \microSuccessBit  _{i} & = & \nothing \\
+				% \microExoSum      _{i} & = & \nothing \\
+				% \microPhase       _{i} & = & \nothing \\
+				% \microIdOne       _{i} & = & \nothing \\
+				% \microIdTwo       _{i} & = & \nothing \\
+			\end{array} \right.
+		\]
+	\item[Paying forward:]
+		\If $\isFirstRZ_{i} + \isMiddleRZ_{i} = 1$ \Then we impose that 
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst        _{i + 1} & = & \valueToBeSet \\
+				\microSize        _{i + 1} & = & \valueToBeSet \\
+				\microSlo         _{i + 1} & = & \nothing \\
+				\microSbo         _{i + 1} & = & \nothing \\
+				\microTlo         _{i + 1} & = & 1 + \microTlo_{i} \\
+				\microTbo         _{i + 1} & = & 0 \\
+				\microLimb        _{i + 1} & = & \nothing \\
+				% \microCns         _{i + 1} & = & \macroSrcId_{i} \\
+				% \microCnt         _{i + 1} & = & \macroTgtId_{i}  \\
+				% \microSuccessBit  _{i + 1} & = & \nothing \\
+				% \microExoSum      _{i + 1} & = & \nothing \\
+				% \microPhase       _{i + 1} & = & \nothing \\
+				% \microIdOne       _{i + 1} & = & \nothing \\
+				% \microIdTwo       _{i + 1} & = & \nothing \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		The constraint ``$\microTbo_{i} = 0$'' is only required for the last row (which might be an excision instruction.)
+	\item[The ``middle right padding'' rows:] 
+		\If $\isMiddleRZ_{i} = 1$ \Then we impose that 
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst        _{i} & = & \mmioInstRamVanishes  \\
+				\microSize        _{i} & = & \nothing \\
+				% \microSlo         _{i} & = & \nothing \\
+				% \microSbo         _{i} & = & \nothing \\
+				% \microTlo         _{i} & = & 1 + \microTlo_{i - 1} \\
+				% \microTbo         _{i} & = & 0 \\
+				% \microLimb        _{i} & = & \nothing \\
+				% \microCns         _{i} & = & \macroSrcId_{i} \\
+				% \microCnt         _{i} & = & \macroTgtId_{i}  \\
+				% \microSuccessBit  _{i} & = & \nothing \\
+				% \microExoSum      _{i} & = & \nothing \\
+				% \microPhase       _{i} & = & \nothing \\
+				% \microIdOne       _{i} & = & \nothing \\
+				% \microIdTwo       _{i} & = & \nothing \\
+			\end{array} \right.
+		\]
+	\item[The ``last right padding'' row:] 
+		\If $\isLastRZ_{i} = 1$ \Then we impose that 
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst        _{i} & = & \mmioInstRamExcision  \\
+				\microSize        _{i} & = & \locLastPaddingSize_{i} \\
+				% \microSlo         _{i} & = & \nothing \\
+				% \microSbo         _{i} & = & \nothing \\
+				% \microTlo         _{i} & = & 1 + \microTlo_{i - 1} \\
+				% \microTbo         _{i} & = & 0 \\
+				% \microLimb        _{i} & = & \nothing \\
+				% \microCns         _{i} & = & \macroSrcId_{i} \\
+				% \microCnt         _{i} & = & \macroTgtId_{i}  \\
+				% \microSuccessBit  _{i} & = & \nothing \\
+				% \microExoSum      _{i} & = & \nothing \\
+				% \microPhase       _{i} & = & \nothing \\
+				% \microIdOne       _{i} & = & \nothing \\
+				% \microIdTwo       _{i} & = & \nothing \\
+			\end{array} \right.
+		\]
+\end{description}
+

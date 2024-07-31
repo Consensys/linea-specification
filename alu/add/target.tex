@@ -1,0 +1,42 @@
+\[
+	\boxed{\text{All constraints in this subsection assume }
+	\left\{ \begin{array}{lcl}
+		\addStamp_{i} & \neq & 0          \\
+		\ct_{i}       & =    & \maxCt_{i} \\
+	\end{array} \right. }
+\]
+We impose the following constraints:
+\begin{enumerate}
+	\item We fix target constraints for the accumulators:
+		\[
+			\left\{ \begin{array}{lcl}
+				\resHi_{i} & \!\!\! = \!\!\! & \acc{1}_{i} \\
+				\resLo_{i} & \!\!\! = \!\!\! & \acc{2}_{i} \\
+			\end{array} \right.
+		\]
+	\item \If $\INST_{i} = \inst{ADD}$\footnote{in the implementation we may replace this with ``\If $\INST_{i} \neq \inst{SUB}$ \Then''}
+		\Then
+		\[
+			\setAddition
+			\left( \begin{array}{c}
+				\argOneHi_{i}, \argOneLo_{i},
+				\argTwoHi_{i}, \argTwoLo_{i}; \\
+				\resHi_{i}, \resLo_{i};
+				\overflow_{i},
+				\overflow_{i-1};
+			\end{array} \right)
+		\]
+	\item \If $\INST_{i} = \inst{SUB}$\footnote{in the implementation we may replace this with ``\If $\INST_{i} \neq \inst{ADD}$ \Then''}
+		\Then
+		\[
+			\setSubtraction
+			\left( \begin{array}{c}
+				\argOneHi_{i}, \argOneLo_{i},
+				\argTwoHi_{i}, \argTwoLo_{i}; \\
+				\resHi_{i}, \resLo_{i};
+				\overflow_{i},
+				\overflow_{i-1};
+			\end{array} \right)
+		\]
+\end{enumerate}
+

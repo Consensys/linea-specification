@@ -1,0 +1,301 @@
+\begin{center}
+	\boxed{%
+		\text{The stack constraints presented below assume }
+		\begin{cases}
+			\peekStack_{i} = 1 \\
+			\stackDecCopyFlag_{i} = 1 \\
+			\stackSux_{i} + \stackSox_{i} = 0 \\
+		\end{cases}}
+\end{center}
+The constraints are as follows:
+\begin{description}
+	\item[\underline{\underline{Setting the stack pattern:}}]
+		we impose $\copySP_{i} \big[ \locIsExtcc \big]$;
+	\item[\underline{\underline{Allowable exceptions:}}]
+		we impose
+		\[ \xAhoy _{i} = \locIsRdc \cdot \stackRdcx _{i} + \stackMxpx _{i} + \stackOogx _{i} \quad (\trash) \]
+	\item[\underline{\underline{Setting $\nonStackRows$ and peeking flags:}}] we impose the following
+		\begin{description}
+			\item[\underline{The \inst{CALLDATACOPY} case:}]
+				\If $\locIsCdc   = 1$ \Then $\nonStackRows_{i} = 2$ furthermore
+				\[
+					\left[ \begin{array}{cr}
+						+ & \peekMisc      _{i + \locCopyMiscRowOffset     } \\
+						+ & \peekContext   _{i + \locCopyCurrentContextRow } \\
+					\end{array} \right]
+					= \nonStackRows_{i}
+				\]
+			\item[\underline{The \inst{RETURNDATACOPY} case:}]
+				\If $\locIsRdc   = 1$ \Then $\nonStackRows_{i} = 2 + \stackRdcx_{i}$ furthermore
+				\begin{enumerate}
+					\item \If $\stackRdcx_{i} = 1$ \Then
+						\[
+							\left[ \begin{array}{cr}
+								+ & \peekMisc    _{i + \locCopyMiscRowOffset         } \\
+								+ & \peekContext _{i + \locCopyCurrentContextRow     } \\
+								+ & \peekContext _{i + \locCopyCallerContextRowLarge } \\
+							\end{array} \right]
+							= \nonStackRows_{i}
+						\]
+					\item \If $\stackRdcx_{i} = 0$ \Then
+						\[
+							\left[ \begin{array}{cr}
+								+ & \peekMisc                     _{i + \locCopyMiscRowOffset     } \\
+								+ & \peekContext                  _{i + \locCopyCurrentContextRow } \\
+							\end{array} \right]
+							= \nonStackRows_{i}
+						\]
+				\end{enumerate}
+				\saNote{} \rdcxSH{} induce an extra row of instruction processing of \inst{RETURNDATACOPY},
+			\item[\underline{The \inst{CODECOPY} case:}]
+				\If $\locIsCc    = 1$ \Then $\nonStackRows_{i} = 2 + (1 - \xAhoy_{i})$ furthermore
+				\begin{enumerate}
+					\item \If $\xAhoy_{i} = 1$ \Then 
+						\[
+							\left[ \begin{array}{cr}
+								+ & \peekMisc      _{i + \locCopyMiscRowOffset         } \\
+								+ & \peekContext   _{i + \locCopyCallerContextRowSmall } \\
+							\end{array} \right]
+							= \nonStackRows_{i}
+						\]
+					\item \If $\xAhoy_{i} = 0$ \Then 
+						\[
+							\left[ \begin{array}{cr}
+								+ & \peekMisc      _{i + \locCopyMiscRowOffset     } \\
+								+ & \peekContext   _{i + \locCopyCurrentContextRow } \\
+								+ & \peekAccount   _{i + \locCopyCurrentAccountRow } \\
+							\end{array} \right]
+							= \nonStackRows_{i}
+						\]
+				\end{enumerate}
+			\item[\underline{The \inst{EXTCODECOPY} case:}]
+				\If $\locIsExtcc = 1$ \Then $\nonStackRows_{i} = 2 + \stackOogx_{i} + (1 - \xAhoy_{i}) \cdot \cnWillRev$ furthermore
+				\begin{enumerate}
+					\item \If $\stackMxpx_{i} = 1$ \Then 
+						\[
+							\left[ \begin{array}{cr}
+								+ & \peekMisc      _{i + \locCopyMiscRowOffset         } \\
+								+ & \peekContext   _{i + \locCopyCallerContextRowSmall } \\
+							\end{array} \right]
+							= \nonStackRows_{i}
+						\]
+					\item \If $\stackOogx_{i} = 1$ \Then 
+						\[
+							\left[ \begin{array}{cr}
+								+ & \peekMisc      _{i + \locCopyMiscRowOffset          } \\
+								+ & \peekAccount   _{i + \locCopyOutsideAccountRowFirst } \\
+								+ & \peekContext   _{i + \locCopyCallerContextRowLarge  } \\
+							\end{array} \right]
+							= \nonStackRows_{i}
+						\]
+					\item \If $\xAhoy_{i} = 0$ \et $\cnWillRev_{i} = 1$ \Then 
+						\[
+							\left[ \begin{array}{cr}
+								+ & \peekMisc      _{i + \locCopyMiscRowOffset           } \\
+								+ & \peekAccount   _{i + \locCopyOutsideAccountRowFirst  } \\
+								+ & \peekAccount   _{i + \locCopyOutsideAccountRowSecond } \\
+							\end{array} \right]
+							= \nonStackRows_{i}
+						\]
+					\item \If $\xAhoy_{i} = 0$ \et $\cnWillRev_{i} = 0$ \Then 
+						\[
+							\left[ \begin{array}{cr}
+								+ & \peekMisc      _{i + \locCopyMiscRowOffset          } \\
+								+ & \peekAccount   _{i + \locCopyOutsideAccountRowFirst } \\
+							\end{array} \right]
+							= \nonStackRows_{i}
+						\]
+				\end{enumerate}
+				\saNote{} \oogxSH{}'s and unexceptional but later on reverted \inst{EXTCODECOPY} induce an extra instruction processing row.
+		\end{description}
+	\item[\underline{\underline{Setting the miscellaneous-row $n^°(i + \locCopyMiscRowOffset)$:}}]
+		observe that every processing path bigstarts with a \textbf{miscellaneous-row}
+		\begin{description}
+			\item[\underline{Setting module flags:}] 
+				\[
+					\weightedMiscFlagSum {i}{\locCopyMiscRowOffset}
+					=
+					\left[ \begin{array}{crcl}
+						+ & \miscMmuWeight & \!\!\! \cdot \!\!\! & \locTriggerMmu \\
+						+ & \miscMxpWeight & \!\!\! \cdot \!\!\! & \locTriggerMxp \\
+						+ & \miscOobWeight & \!\!\! \cdot \!\!\! & \locTriggerOob \\
+					\end{array} \right]
+				\]
+				i.e.
+				\[
+					\left\{ \begin{array}{lclr}
+						\miscExpFlag_{i + \locCopyMiscRowOffset} & = & \gZero         & (\trash) \\
+						\miscMmuFlag_{i + \locCopyMiscRowOffset} & = & \locTriggerMmu & (\trash) \\
+						\miscMxpFlag_{i + \locCopyMiscRowOffset} & = & \locTriggerMxp & (\trash) \\
+						\miscOobFlag_{i + \locCopyMiscRowOffset} & = & \locTriggerOob & (\trash) \\
+						\miscStpFlag_{i + \locCopyMiscRowOffset} & = & \gZero         & (\trash) \\
+					\end{array} \right.
+				\]
+				\saNote{} We will specify \locTriggerMmu{}, \locTriggerMxp{} and \locTriggerOob{} shortly.
+			\item[\underline{Specifying \locTriggerOob{}:}]
+				\inst{RETURNDATACOPY} is the only instruction in the \inst{COPY}-family that requires the \oobMod{} module;
+				indeed the \oobMod{} detects \rdcxSH{}'s;
+				we thus impose
+				\[
+					\locTriggerOob = \locIsRdc
+				\]
+			\item[\underline{Specifying \locTriggerMxp{}:}]
+				we technically don't have to call the \mxpMod{} module in case of \inst{RETURNDATACOPY} instructions raising the \rdcxSH{};
+				this exception is enough to justify the exceptional halting condition; this behaviour is reflected in the assignment of the \miscMxpFlag{} since we impose
+				\[ \locTriggerMxp = \one - \stackRdcx_{i} \]
+			\item[\underline{Specifying \locTriggerMmu{}:}]
+				\label{locTriggerMmu for the copy family}
+				for a \inst{COPY}-type instruction to trigger the \mmuMod{} is is necessary and sufficient that the instruction raise no exception and be provided with a nonzero size parameter;
+				as such we set
+				\begin{enumerate}
+					\item \If $\xAhoy _{i} = 1$ \Then $\locTriggerMmu = 0$
+					\item \If $\xAhoy _{i} = 0$ \Then $\locTriggerMmu = \miscMxpTypeFourInstMayTriggerMmu _{i + \locCopyMiscRowOffset}$
+				\end{enumerate}
+				\saNote{}
+				Recall the specification of \miscMxpTypeFourInstMayTriggerMmu{} in the \mxpMod{}, section~(\ref{mxp: may trigger non trivial operation}).
+				This flag vanishes for instructions that aren't ``\textbf{type 4}'' as well as whenever the \mxpx{} flag is raised.
+				In all other cases this flag is $0$ \textbf{iff} the size parameter \locSizeLo{} is zero.
+			\item[\underline{Setting \oobMod{} data:}]
+				\If $\miscOobFlag _{i + \locCopyMiscRowOffset} = 1$ \Then we impose
+				\[
+					\setOobInstructionRdc {i}{\locCopyMiscRowOffset}
+					\left[ \begin{array}{ll}
+						\utt{Reference offset high:} & \locSourceOffsetHi \\
+						\utt{Reference offset low:}  & \locSourceOffsetLo \\
+						\utt{Size high:}             & \locSizeHi         \\
+						\utt{Size low:}              & \locSizeLo         \\
+						\utt{Return data size:}      & \locRds            \\
+					\end{array} \right] \vspace{2mm} \\
+				\]
+			\item[\underline{Setting $\stackRdcx_{i}$:}]
+				we impose
+				\begin{enumerate}
+					\item $\miscOobFlag _{i + \locCopyMiscRowOffset} = 0$ \Then $\stackRdcx_{i} = 0$ \quad (\trash)
+				        \item $\miscOobFlag _{i + \locCopyMiscRowOffset} = 1$ \Then $\stackRdcx_{i} = \locOobRdcx$
+				\end{enumerate}
+			\item[\underline{Setting \mxpMod{} data:}]
+				\If $\miscMxpFlag _{i + \locCopyMiscRowOffset} = 1$ \Then we impose
+				\[
+					\setMxpInstructionTypeFour {i}{\locCopyMiscRowOffset}
+					\left[ \begin{array}{ll}
+						\utt{Instruction:}       & \locInst           \\
+						\utt{Deploys byte code:} & 0                  \\
+						\utt{Offset high part:}  & \locTargetOffsetHi \\
+						\utt{Offset low  part:}  & \locTargetOffsetLo \\
+						\utt{Size high part:}    & \locSizeHi         \\
+						\utt{Size low  part:}    & \locSizeLo         \\
+					\end{array} \right]
+				\]
+			\item[\underline{Setting $\stackMxpx_{i}$:}]
+				we impose
+				\begin{enumerate}
+					\item \If $\miscMxpFlag _{i + \locCopyMiscRowOffset} = 0$ \Then we impose $\stackMxpx_{i} = 0$ \quad (\trash)
+				        \item \If $\miscMxpFlag _{i + \locCopyMiscRowOffset} = 1$ \Then we impose $\stackMxpx_{i} = \locMxpMxpx$
+				\end{enumerate}
+			\item[\underline{Setting \mmuMod{} data:}]
+				\If $\miscMmuFlag _{i + \locCopyMiscRowOffset} = 1$ \Then we impose
+				\[
+					\setMmuInstructionParametersAnyToRamWithPadding {
+						anchorRow       = i                     ,
+						relOffset       = \locCopyMiscRowOffset ,
+						sourceId        = \locSourceId          ,
+						targetId        = \cn_{i}               ,
+						sourceOffsetHi  = \locSourceOffsetHi    ,
+						sourceOffsetLo  = \locSourceOffsetLo    ,
+						targetOffsetLo  = \locTargetOffsetLo    ,
+						size            = \locSizeLo            ,
+						referenceOffset = \locReferenceOffset   ,
+						referenceSize   = \locReferenceSize     ,
+						exoSum          = \locExoSum            ,
+					}
+					% \setMmuInstructionParametersAnyToRamWithPadding {i}{\locCopyMiscRowOffset}
+					% \left[ \begin{array}{llr}
+					% 	\utt{Source ID:}          & \locSourceId         & (\bigstar) \\
+					% 	\utt{Target ID:}          & \cn_{i}             \\
+					% 	% \utt{Auxiliary ID:}     & \col{aux\_id}       \\
+					% 	\utt{Source offset high:} & \locSourceOffsetHi  \\
+					% 	\utt{Source offset low:}  & \locSourceOffsetLo  \\
+					% 	\utt{Target offset low:}  & \locTargetOffsetLo  \\
+					% 	\utt{Size:}               & \locSizeLo          \\
+					% 	\utt{Reference offset:}   & \locReferenceOffset  & (\bigstar) \\
+					% 	\utt{Reference size:}     & \locReferenceSize    & (\bigstar) \\
+					% 	% \utt{Success bit:}      & \col{success\_bit}  \\
+					% 	% \utt{Limb one:}         & \col{limb\_1}       \\
+					% 	% \utt{Limb two:}         & \col{limb\_2}       \\
+					% 	\utt{Exo sum:}            & \locExoSum           & (\bigstar) \\
+					% 	% \utt{Phase:}            & \col{phase}         \\
+					% \end{array} \right]
+				\]
+				where the fields labeled with $(\bigstar)$ are (currently undefined) shorthands for which we now produce definitions
+				\begin{description}
+					\item[The \inst{CALLDATACOPY} case:] 
+						\If $\locIsCdc = 1$ \Then
+						we impose
+						% \[
+						% \left\{ \begin{array}{lcl}
+						% \locSourceId        & \define & \cnCallDataContextNumber _{i + \locCopyCurrentContextRow} \\
+						% \locReferenceOffset & \define & \cnCdo                   _{i + \locCopyCurrentContextRow} \\
+						% \locReferenceSize   & \define & \cnCds                   _{i + \locCopyCurrentContextRow} \\
+						% \locExoSum          & \define & 0                                                         \\
+						% \end{array} \right.
+						% \]
+						\[
+							\left\{ \begin{array}{lcl}
+								\locSourceId        & \define & \locCallDataContext \\
+								\locReferenceOffset & \define & \locCdo             \\
+								\locReferenceSize   & \define & \locCds             \\
+								\locExoSum          & \define & 0                   \\
+							\end{array} \right.
+						\]
+					\item[The \inst{RETURNDATACOPY} case:] 
+						\If $\locIsRdc = 1$ \Then
+						we impose
+						% \[
+						% \left\{ \begin{array}{lcl}
+						% \locSourceId        & \define & \cnReturner _{i + \locCopyCurrentContextRow} \\
+						% \locReferenceOffset & \define & \cnRdo      _{i + \locCopyCurrentContextRow} \\
+						% \locReferenceSize   & \define & \cnRds      _{i + \locCopyCurrentContextRow} \\
+						% \locExoSum          & \define & 0                                            \\
+						% \end{array} \right.
+						% \]
+						\[
+							\left\{ \begin{array}{lcl}
+								\locSourceId        & \define & \locReturnDataContext \\
+								\locReferenceOffset & \define & \locRdo               \\
+								\locReferenceSize   & \define & \locRds               \\
+								\locExoSum          & \define & 0                     \\
+							\end{array} \right.
+						\]
+					\item[The \inst{CODECOPY} case:] 
+						\If $\locIsCc = 1$ \Then
+						we impose
+						\[
+							\left\{ \begin{array}{lcl}
+								\locSourceId        & \define & \accCfi      _{i + \locCopyCurrentAccountRow} \\
+								\locReferenceOffset & \define & 0                                             \\
+								\locReferenceSize   & \define & \accCodesize _{i + \locCopyCurrentAccountRow} \\
+								\locExoSum          & \define & \exoWeightRom                                 \\
+							\end{array} \right.
+						\]
+					\item[The \inst{EXTCODECOPY} case:] 
+						\If $\locIsExtcc = 1$ \Then
+						we impose
+						\[
+							\left\{ \begin{array}{lcl}
+								\locSourceId        & \define & \accCfi      _{i + \locCopyOutsideAccountRowFirst} \\
+								\locReferenceOffset & \define & 0                                                  \\
+								\locReferenceSize   & \define & \accCodesize _{i + \locCopyOutsideAccountRowFirst} \cdot \accHasCode _{i + \locCopyOutsideAccountRowFirst} \\
+								\locExoSum          & \define & \exoWeightRom                                      \\
+							\end{array} \right.
+						\]
+				\end{description}
+			\end{description}
+		\end{description}
+		\saNote{}
+		We provide some explanations concerning the \locReferenceSize{} in the \inst{EXTCODECOPY} case.
+		The above addresses a subtlety concerning the interplay between \inst{EXTCODECOPY} (and \inst{EXTCODEHASH}) and \textbf{deployments}.
+		If the (trimmed) address parameter of an \inst{EXTCODECOPY} invocation points to an address currently undergoing deployment its code is considered to be empty (and indeed \inst{EXTCODEHASH} would return $\emptyKeccak$).
+		From the point of view of the arithmetization said address will have nonzero code size but we will have set its code hash to $\emptyKeccak$.
+		As a consequence will have $\accHasCode \equiv 0$ and the above makes it appear as though the target address' code is empty.
+
+		\saNote{} For instructions raising the $\stackDecCopyFlag$ one has $\cmc = \xAhoy$.

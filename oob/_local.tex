@@ -1,0 +1,218 @@
+\newcommand{\locInc}          [1]       {\col{INC\_#1}}
+\newcommand{\locOut}          [1]       {\col{OUT\_#1}}
+\newcommand{\x}               [1]       {\cellcolor{solarized-green!40!yellow}#1}
+\def\locIncomingInstruction             {\col{INC\_INST}}
+\def\locCallGas                         {\col{call\_gas}}
+\def\locCeil                            {\col{ceil}}
+\def\locHi                              {\col{\_hi}}
+\def\locLo                              {\col{\_lo}}
+\def\one                                {\cellcolor{\romCol}\bm{1}}
+\def\rOne                               {\red{1}}
+\def\zero                               {\bm{0}}
+\def\gZero                              {\graym{0}}
+\def\locAdd                             {\redm{1}}
+\def\locMod                             {\redm{2}}
+\def\locWcp                             {\redm{3}}
+
+% arguments for specialized constraints
+\def\locArgOneHi                        {\col{arg\_1\_hi}}
+\def\locArgOneLo                        {\col{arg\_1\_lo}}
+\def\locArgTwoHi                        {\col{arg\_2\_hi}}
+\def\locArgTwoLo                        {\col{arg\_2\_lo}}
+%
+\def\locPrecompileCost                  {\col{precompile\_cost}}
+\def\locRemainingGas                    {\col{remaining\_gas}}
+\def\locCdsIsZero                       {\col{cds\_is\_zero}}
+\def\locCdsIsNonZero                    {\col{cds\_nonzero}}
+\def\locReturnAtCapacity                {\col{return\_at\_capacity}}
+\def\locRac                             {\col{r@c}}
+\def\locRacIsZero                       {\col{r@c\_is\_zero}}
+\def\locRacIsNonZero                    {\col{r@c\_nonzero}}
+\def\locCeil                            {\col{ceil}}
+\def\locRemainder                       {\col{remainder}}
+\def\locPairingSizeIsMultiple           {\col{is\_multiple\_of\_192}}
+\def\locSufficientGas                   {\col{sufficient\_gas}}
+\def\locInsufficientGas                 {\col{insufficient\_gas}}
+% JUMP / JUMPI
+\def\locPcNew                           {\col{pc\_new}}
+\def\locPcNewHi                         {\locPcNew\locHi}
+\def\locPcNewLo                         {\locPcNew\locLo}
+\def\locJumpCondition                   {\col{jump\_cond}}
+\def\locJumpConditionHi                 {\locJumpCondition\locHi}
+\def\locJumpConditionLo                 {\locJumpCondition\locLo}
+\def\locJumpConditionIsZero             {\col{jump\_cond\_is\_zero}}
+\def\locCodeSize                        {\col{code\_size}}
+\def\locInvalidPcNew                    {\col{invalid\_pc\_new}}
+\def\locValidPcNew                      {\col{valid\_pc\_new}}
+\def\locJumpNotAttempted                {\col{jump\_not\_attempted}}
+\def\locJumpGuaranteedException         {\col{jump\_guaranteed\_exception}}
+\def\locJumpMustBeAttempted             {\col{jump\_must\_be\_attempted}}
+\def\locJumpiNotAttempted               {\col{jumpi\_not\_attempted}}
+\def\locJumpiGuaranteedException        {\col{jumpi\_guaranteed\_exception}}
+\def\locJumpiMustBeAttempted            {\col{jumpi\_must\_be\_attempted}}
+% CALL
+% XCALL
+\def\locNzv                             {\colm{[val \neq 0]}}                       % nzv <=> non zero value
+\def\locNonzeroValue                    {\col{value\_is\_nonzero}}
+\def\locBalanceAbort                    {\col{insufficient\_balance\_abort}}
+\def\locCsdAbort                        {\col{call\_stack\_depth\_abort}}
+\def\locAbortingCondition               {\col{aborting\_condition}}
+\def\locFailureCondition                {\col{failure\_condition}}
+\def\locZeroValue                       {\col{value\_is\_zero}}
+% CDL, RDC
+\def\locOffset                          {\col{offset}}
+\def\locOffsetHi                        {\locOffset\locHi}
+\def\locOffsetLo                        {\locOffset\locLo}
+\def\locSize                            {\col{size}}
+\def\locSizeHi                          {\locSize\locHi}
+\def\locSizeLo                          {\locSize\locLo}
+\def\locCdlTouchesRam                   {\col{touches\_ram}}
+\def\locCdlOutOfBounds                  {\col{cdl\_out\_of\_bounds}}
+\def\locCds                             {\col{cds}}
+\def\locCallDataSize                    {\col{call\_data\_size}}
+\def\locRds                             {\col{rds}}
+\def\locRdcx                            {\col{rdcx}}
+\def\locReturnDataSize                  {\col{return\_data\_size}}
+\def\locCsd                             {\col{csd}}
+\def\locCallStackDepth                  {\col{call\_stack\_depth}}
+\def\locBalance                         {\col{balance}}
+\def\locBal                             {\col{bal}}
+\def\locValue                           {\col{value}}
+\def\locValueHi                         {\locValue\locHi}
+\def\locValueLo                         {\locValue\locLo}
+\def\locRdcRoob                         {\col{rdc\_roob}}
+\def\locRdcSoob                         {\col{rdc\_soob}}
+%
+\def\locCompToFiveTwelve                {\col{comp\_to\_512}}
+\def\locBase                            {\ell_\text{B}}
+\def\locExponent                        {\ell_\text{E}}
+\def\locModulus                         {\ell_\text{M}}
+\def\locExponentLogEYP                  {\ell_\text{E}'}
+% MODEXP: call data size
+\def\locCdsGtZero                       {\col{cds\_GT\_0}}
+\def\locCdsGtTt                         {\col{cds\_GT\_32}}
+\def\locCdsGtSf                         {\col{cds\_GT\_64}}
+\def\locCdsLtTt                         {\col{cds\_LT\_32}}
+\def\locCdsLtSf                         {\col{cds\_LT\_64}}
+\def\locCdsLtNs                         {\col{cds\_LT\_96}}
+\def\locCdsLttt                         {\col{cds\_LT\_32}}     % Lttt = less than thirty two
+\def\locCdsLtsf                         {\col{cds\_LT\_64}}     % Ltsf = less than sixty four
+\def\locCdsLtns                         {\col{cds\_LT\_96}}     % Ltns = less than ninety six
+% MODEXP: extract byte size ? trim it ? 
+\def\locExtractBbs                      {\col{extract\_bbs}}
+\def\locExtractEbs                      {\col{extract\_ebs}}
+\def\locExtractMbs                      {\col{extract\_mbs}}
+\def\locTrimBbs                         {\col{trim\_bbs}}
+\def\locTrimEbs                         {\col{trim\_ebs}}
+\def\locTrimMbs                         {\col{trim\_mbs}}
+\def\locExtractExponentLead             {\col{extract\_exponent\_lead}}
+% MODEXP: base
+\def\locBbs                             {\col {bbs}}
+\def\locBbsHi                           {\locBbs\locHi}
+\def\locBbsLo                           {\locBbs\locLo}
+\def\locBbsIsZero                       {\locBbs\col{\_is\_zero}}
+\def\locNDataBytesX                     {\colm{[\locCds - (96 + \locBbs) < 32]}}
+
+% MODEXP: generic byte size
+\def\locXbs                             {\col {xbs}}
+% MODEXP: exponent
+\def\locEbs                             {\col {ebs}}
+\def\locEbsHi                           {\locEbs\locHi}
+\def\locEbsLo                           {\locEbs\locLo}
+\def\locEbsIsZero                       {\locEbs\col{\_is\_zero}}
+\def\locEbsLtThirtyTwo                  {\locEbs\col{\_less\_than\_32}}
+\def\locEbsMinThirtyTwo                 {\col{min\_}\locEbs\col{\_32}}
+\def\locEbsSubThirtyTwo                 {\col{sub\_}\locEbs\col{\_32}}
+% MODEXP: modulus
+\def\locMbs                             {\col {mbs}}
+\def\locMbsHi                           {\locMbs\locHi}
+\def\locMbsLo                           {\locMbs\locLo}
+\def\locMbsIsZero                       {\locMbs\col{\_is\_zero}}
+\def\locMaxMbsBbs                       {\col{max\_}\locMbs\col{\_}\locBbs}
+\def\locMbsLtBbs                        {\locMbs\col{\_LT\_}\locBbs}
+% MODEXP: leading word
+\def\locCdsCutoff                       {\col{cds\_cutoff}}
+\def\locEbsCutoff                       {\col{ebs\_cutoff}}
+\def\locExtractableCdsBytes             {\col{cds\_bytes}}
+\def\locBeyondBase                      {\col{call\_data\_extends\_beyond\_base}}
+\def\locBeyondBaseByLessThanAnEvmWord   {\col{by\_less\_than\_an\_EVM\_word}}
+\def\locNDataBytes                      {\col{up\_to\_32\_call\_data\_bytes}}
+\def\locLoadLeadingWord                 {\col{load\_lead}}
+\def\locCallDataContainsExponentBytes   {\col{call\_data\_contains\_exponent\_bytes}}
+\def\locCallDataExtendsBeyondExponent   {\col{call\_data\_extends\_beyond\_exponent}}
+% MODEXP: pricing
+\def\locExponentLog                     {\col{exponent\_log}}
+\def\locExponentLogIsZero               {\col{exponent\_log\_is\_zero}}
+\def\locFOfMax                          {\col{f\_of\_max}}
+\def\locBigQuotient                     {\col{big\_quotient}}
+\def\locBigQuotientLtTwoHundred         {\col{big\_quotient\_LT\_200}}
+\def\locProduct                         {\col{big\_numerator}}
+% MODEXP: predicting RAM instruction for extraction of base, exponent, modulus 
+\def\locUsedBytes                       {\col{used}}
+\def\locByteSize                        {\col{size}}
+\def\locTransfer                        {\col{trsf}}
+\def\locTransferAllZeros                {\locTransfer\col{\_zeros}}
+\def\locTransferUntrimmed               {\locTransfer\col{\_full}}
+\def\locTransferTrimmed                 {\locTransfer\col{\_trim}}
+\def\locZeroByteSize                    {\col{zero\_size}}
+\def\locNonZeroByteSize                 {\col{nonzero\_size}}
+\def\locCallDataWillRunOut              {\col{call\_data\_will\_run\_out}}
+\def\locCallDataWontRunOut              {\col{call\_data\_wont\_run\_out}}
+\def\locSomeCallDataRemains             {\col{some\_call\_data\_remains}}
+\def\locNoCallDataRemains               {\col{no\_call\_data\_remains}}
+% BLAKE2f
+\def\locFNotABit                        {\col{f\_is\_not\_a\_bit}}
+\def\locFisABit                         {\col{f\_is\_a\_bit}}
+\def\locBlakeR                          {\col{blake\_r}}
+\def\locBlakeF                          {\col{blake\_f}}
+% CREATE
+\def\locNonce                           {\col{nonce}}
+\def\locHasNonce                        {\col{has\_nonce}}
+\def\locHasCode                         {\col{has\_code}}
+\def\locNonzeroNonce                    {\col{nonzero\_nonce}}
+% SSTORE
+\def\locSstoreGas                       {\col{gas}}
+\def\locSstoreSufficientGas             {\col{sufficient\_gas}}
+\def\locSstoreException                 {\col{sstorex}}
+% RETURN deployment
+\def\locExceedsMaxCodeSize              {\col{exceeds\_max\_code\_size}}
+\def\locCodeSizeHi                      {\col{code\_size\_hi}}
+\def\locCodeSizeLo                      {\col{code\_size\_lo}}
+\def\locMaxCodeSizeException            {\col{max\_code\_size\_exception}}
+% lookup shorthands
+\def\locLookupSum                       {\col{lookup\_sum}}
+\def\locWeightedLookupSum               {\col{wght\_lookup\_sum}}
+\def\locInstFlagSum                     {\col{flag\_sum\_inst}}
+\def\locPrcFlagSum                      {\col{flag\_sum\_prc}}
+\def\locPrcFlagSumCommon                {\locPrcFlagSum\col{\_common}}
+\def\locPrcFlagSumBlake                 {\locPrcFlagSum\col{\_blake}}
+\def\locPrcFlagSumModexp                {\locPrcFlagSum\col{\_modexp}}
+
+% common precompile shorthands
+% \def\locCallGas                         {\col{call\_gas}}
+% \def\locCds                             {\col{cds}}
+% \def\locRac                             {\col{r@c}}
+\def\locCommonPrecompile                {\col{common\_precompile}}
+
+\def\locHubSuccess                      {\col{hub\_success}}
+\def\locRamSuccess                      {\col{ram\_success}}
+\def\locReturnGas                       {\col{return\_gas}}
+\def\locExtractCallData                 {\col{extract\_call\_data}}
+\def\locEmptyCallData                   {\col{empty\_call\_data}}
+\def\locRacIsNonzero                    {\col{r@c\_nonzero}}
+
+\def\locXbsHi                           {\col{xbs\_hi}}
+\def\locXbsLo                           {\col{xbs\_lo}}
+\def\locYbsLo                           {\col{ybs\_lo}}
+\def\locMax                             {\col{max\_xbs\_ybs}}
+\def\locXbsNonzero                      {\col{xbs\_nonzero}}
+\def\locComputeMax                      {\col{compute\_max}}
+\def\locCmp                             {\col{comp}}
+
+\def\locExtractBase                     {\col{extract\_base}}
+\def\locExtractExponent                 {\col{extract\_exponent}}
+\def\locExtractModulus                  {\col{extract\_modulus}}
+\def\locExtractXxx                      {\col{extract\_xxx}}
+
+% BLAKE2f
+\def\locValidCdsBlake                   {\col{valid\_cds}}

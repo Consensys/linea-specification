@@ -1,0 +1,211 @@
+\begin{center}
+	\boxed{%
+		\text{The pre-processing presented below assumes that }
+		\left\{ \begin{array}{lcl}
+			\isMacro                     _{i}      & = & 1 \\
+			\mmuInstFlagRamToRamSansPadding  _{i}      & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+We do the pre-processing.
+\begin{description}
+	\item[Number of preprocessing rows:]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\ppTotLZ_{i} & = & 0 \\
+				\ppTotRZ_{i} & = & 0 \\
+			\end{array} \right.
+		\]
+	\item[Shorthands:] 
+		we use the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locRdo & \define & \macroSrcOffsetLo        _{i} \\
+				\locRds & \define & \macroSize               _{i} \\
+				\locRao & \define & \macroRefOffset          _{i} \\
+				\locRac & \define & \macroRefSize            _{i} \\
+			\end{array} \right.
+		\]
+	\def\rowNum{1} \item[Pre-processing row $\bm{n^\circ (i + \rowNum)}$:] 
+		we impose
+		\[
+			\left\{ \begin{array}{l}
+				\callToEuc
+				{i}{\rowNum}
+				{\locRdo}
+				{\llarge}
+				\\
+				\callToLt
+				{i}{\rowNum}
+				{0}{\locRac}
+				{\locRds} \vspace{2mm} \\
+			\end{array} \right.
+		\]
+		and we define the following shorthands:
+		\[
+			\left\{ \begin{array}{lcl}
+				\locInitSlo      & \define & \ppEucQuot  _{i + \rowNum} \\
+				\locInitSbo      & \define & \ppEucRem   _{i + \rowNum} \\
+				\locCmp          & \define & \ppWcpRes   _{i + \rowNum} \\        
+				\locRealSize     & \define & 
+				\begin{cases}
+					\If \locCmp = 0 ~ \Then \locRds \\
+					\If \locCmp = 1 ~ \Then \locRac \\
+				\end{cases}  \\
+			\end{array} \right.
+		\]
+	\def\rowNum{2} \item[Pre-processing row $\bm{n^\circ (i + \rowNum)}$:] 
+		we impose
+		\[
+			\left\{ \begin{array}{l}
+				\callToEuc
+				{i}{\rowNum}
+				{\locRao}
+				{\llarge}
+				\\
+				\callToEq
+				{i}{\rowNum}
+				{0}{\locInitSbo}
+				{\locInitTbo}
+				\\
+				% \callToEq   {i + \rowNum}   {0}{\locInitSbo}   {\locInitTbo}                             \\
+			\end{array} \right.
+		\]
+		where we have defined the following shorthands:
+		\[
+			\left\{ \begin{array}{lcl}
+				\locInitTlo         & \define & \ppEucQuot  _{i + \rowNum} \\
+				\locInitTbo         & \define & \ppEucRem   _{i + \rowNum} \\
+			\end{array} \right.
+		\]
+		we also impose
+		\[
+			\locAligned           = \ppWcpRes_{i + \rowNum}
+		\]
+	\def\rowNum{3} \item[Pre-processing row $\bm{n^\circ (i + \rowNum)}$:] 
+		we impose
+		\[
+			\left\{ \begin{array}{l}
+				\callToEuc
+				{i}{\rowNum}
+				{\locRao + (\locRealSize - 1)}
+				{\llarge}
+				\vspace{2mm} \\
+				\callToEq
+				{i}{\rowNum}
+				{0}{\ppTotNT_{i}}
+				{1}                                    \\
+				% \callToEq   {i + \rowNum}   {0}{$\ppTotNT_{i}$}   {1}                                    \\
+			\end{array} \right.
+		\]
+		and we impose
+		\[
+			\ppTotNT_{i} = \Big( \locLastTlo - \locInitTlo \Big) + 1
+		\]
+		we also define the following shorthand:
+		\[
+			\left\{ \begin{array}{lcl}
+				\locTotntIsOne & \define & \ppWcpRes_{i + \rowNum}  \\
+				\locLastTlo    & \define & \ppEucQuot_{i + \rowNum} \\
+			\end{array} \right.
+		\]
+		we further impose
+		\begin{enumerate}
+			\item \If $\locTotntIsOne = 1$ \Then
+				\[
+					\left\{ \begin{array}{lclr}
+						\locFirstLimbByteSize  & \define & \locRealSize \\
+						\locLastLimbByteSize   & =       & \locRealSize \\
+					\end{array} \right.
+				\]
+			\item \If $\locTotntIsOne = 0$ \Then 
+				\[
+					\left\{ \begin{array}{lcl}
+						\locFirstLimbByteSize & \define & \llarge - \locInitTbo \\
+						\locLastLimbByteSize  & =       & 1 + \ppEucRem_{i + \rowNum} \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+	\def\rowNum{4} \item[Pre-processing row $\bm{n^\circ (i + \rowNum)}$:] 
+		we impose
+		\[
+			\left\{ \begin{array}{l}
+				\callToLt
+				{i}{\rowNum}
+				{0}{\locInitSbo + (\locFirstLimbByteSize - 1)}
+				{\llarge}
+				\vspace{2mm} \\
+				\callToEuc
+				{i}{\rowNum}
+				{\locMiddleSbo + (\locLastLimbByteSize - 1)}
+				{\llarge}
+				\\
+			\end{array} \right.
+		\]
+		we further impose
+		\[
+			\locFirstLimbSingleSource \define \ppWcpRes_{i + \rowNum}
+		\]
+		we also impose
+		\begin{enumerate}
+			\item \If $\locAligned = 1$ \Then $\locMiddleSbo = 0$ \qquad (\trash)
+			\item \If $\locAligned = 0$ \Then
+				\begin{enumerate}
+					\item \If $\locFirstLimbSingleSource = 1$ \Then \[ \locMiddleSbo = \locInitSbo + \locFirstLimbByteSize \]
+					\item \If $\locFirstLimbSingleSource = 0$ \Then \[ \locMiddleSbo = \locInitSbo + \locFirstLimbByteSize - \llarge \]
+				\end{enumerate}
+		\end{enumerate}
+		furthermore
+		\begin{enumerate}
+			\item \If $\locTotntIsOne = 1$ \Then $\locLastLimbSingleSource = \locFirstLimbSingleSource$
+			\item \If $\locTotntIsOne = 0$ \Then $\locLastLimbSingleSource = 1 - \ppEucQuot _{i + \rowNum}$
+		\end{enumerate}
+		we further constrain \locMicroSloIncrement{} as follows:
+		\begin{enumerate}
+			\item \If $\locAligned = 1$ \Then $\locMicroSloIncrement = 1$
+			\item \If $\locAligned = 0$ \Then $\locMicroSloIncrement = 1 - \locFirstLimbSingleSource$
+		\end{enumerate}
+		\saNote{}
+		We will only use \locLastLimbSingleSource{} in the $\locTotntIsOne = 0$ case, so we could get away without the case analysis.
+		We will similarly only use \locMicroSloIncrement{} in case $\locTotntIsOne = 0$.
+	\def\rowNum{5} \item[Pre-processing row $\bm{n^\circ (i + \rowNum)}$:] 
+		we impose
+		\[
+			\left\{ \begin{array}{l}
+				\callToIszero
+				{i}{\rowNum}
+				{0}{\locInitTbo}
+				\vspace{2mm} \\
+				\callToEuc
+				{i}{\rowNum}
+				{\locLastLimbByteSize}
+				{\llarge}
+				\\
+			\end{array} \right.
+		\]
+		we further impose that
+		\[
+			\locFastLastLimb = \locAligned \cdot \locLastLimbIsFull
+		\]
+		where we define the \locLastLimbIsFull{} shorthand
+		\begin{enumerate}
+			\item $\locInitTboIsZero  \define \ppWcpRes  _{i + \rowNum}$
+			\item $\locLastLimbIsFull \define \ppEucQuot _{i + \rowNum}$
+			\item \If $\locTotntIsOne = 0$ \Then $\locFastFirstLimb \define \locAligned \cdot \locInitTboIsZero$
+		\end{enumerate}
+\end{description}
+\saNote{}
+We provide some explanation for the shorthand definition of \locLastLimbIsFull{}.
+The goal is for this shorthand to contain
+$0$ if $\locLastLimbByteSize < \llarge$ and
+$1$ if $\locLastLimbByteSize = \llarge$.
+Fist of all note that by construction $\locLastLimbByteSize \in \{1, 2, \dots, \llarge \}$.
+Its quotient under euclidean division by $\llarge$ is therefore $\in \{ 0, 1\}$, and equals $1$ \emph{iff} $\locLastLimbByteSize = \llarge$.
+This justifies the shorthand definition in terms of the quotient.
+
+\saNote{} \label{mmu: instructions: ram to ram sans padding: fast_last_limb is useful for totnt = 1}
+We also provide an observation for \locFastLastLimb{}, that observation being: whenever $\ppTotNT \equiv 1$ (i.e. $\locTotntIsOne = 1$) we see that $\locFastLastLimb = 1 \iff$ the one micro-instruction that gets executed is a limb transplant. This explains why we use that flag in the ``\textbf{Only nontrivial row}'' case of micro-instruction-writing.
+
+\saNote{} We won't use \locFastFirstLimb{} in case $\ppTotNT \equiv 1$. In its stead we will use \locFastLastLimb{}, which is defined in all cases.
+One \emph{could} therefore drop the precondition ``\If $\locTotntIsOne = 0$ \Then \dots'' from its definition, though, if dropped, the interpretation of this shorthand fails in case $\ppTotNT \equiv 1$.

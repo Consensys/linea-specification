@@ -1,0 +1,68 @@
+We shall use the following shorthands
+\[
+	\hspace*{-2.7cm}
+	\left\{ \begin{array}{lcl}
+		\locIsCall         & \define & \decFlag         {1}  _{i - \callFirstStackRowOffset}  \\
+		\locIsCallcode     & \define & \decFlag         {2}  _{i - \callFirstStackRowOffset}  \\
+		\locIsDelegatecall & \define & \decFlag         {3}  _{i - \callFirstStackRowOffset}  \\
+		\locIsStaticcall   & \define & \decFlag         {4}  _{i - \callFirstStackRowOffset}  \\
+		\locStaticx        & \define & \stackStaticx         _{i - \callFirstStackRowOffset}  \\
+		\locMxpx           & \define & \stackMxpx            _{i - \callFirstStackRowOffset}  \\
+		\locOogx           & \define & \stackOogx            _{i - \callFirstStackRowOffset}  \\
+		\locInst           & \define & \stackInst            _{i - \callFirstStackRowOffset}  \\
+		\locCdoHi          & \define & \stackItemValHi  {1}  _{i - \callFirstStackRowOffset}  \\
+		\locCdoLo          & \define & \stackItemValLo  {1}  _{i - \callFirstStackRowOffset}  \\
+		\locCdsHi          & \define & \stackItemValHi  {2}  _{i - \callFirstStackRowOffset}  \\
+		\locCdsLo          & \define & \stackItemValLo  {2}  _{i - \callFirstStackRowOffset}  \\
+		\locRaoHi          & \define & \stackItemValHi  {3}  _{i - \callFirstStackRowOffset}  \\
+		\locRaoLo          & \define & \stackItemValLo  {3}  _{i - \callFirstStackRowOffset}  \\
+		\locRacHi          & \define & \stackItemValHi  {4}  _{i - \callFirstStackRowOffset}  \\
+		\locRacLo          & \define & \stackItemValLo  {4}  _{i - \callFirstStackRowOffset}  \\
+		\locGasHi          & \define & \stackItemValHi  {1}  _{i - \callSecondStackRowOffset} \\
+		\locGasLo          & \define & \stackItemValLo  {1}  _{i - \callSecondStackRowOffset} \\
+		\locRawAddressHi   & \define & \stackItemValHi  {2}  _{i - \callSecondStackRowOffset} \\
+		\locRawAddressLo   & \define & \stackItemValLo  {2}  _{i - \callSecondStackRowOffset} \\
+		\locValueHi        & \define & \stackItemValHi  {3}  _{i - \callSecondStackRowOffset} \\
+		\locValueLo        & \define & \stackItemValLo  {3}  _{i - \callSecondStackRowOffset} \\
+		\locSuccessBitHi   & \define & \stackItemValHi  {4}  _{i - \callSecondStackRowOffset} \\
+		\locSuccessBitLo   & \define & \stackItemValLo  {4}  _{i - \callSecondStackRowOffset} \\
+	\end{array} \right.
+	\left\{ \begin{array}{lcl}
+		\locGasActual                   & \define & \gasActual                 _{i - \callFirstStackRowOffset}          \\
+		\locCurrentAddressHi            & \define & \cnAccountAddress\high     _{i + \callCurrentContextRowOffset}      \\
+		\locCurrentAddressLo            & \define & \cnAccountAddress\low      _{i + \callCurrentContextRowOffset}      \\
+		\locIsStatic                    & \define & \cnStatic                  _{i + \callCurrentContextRowOffset}      \\
+		\locCurrentCallerAddressHi      & \define & \cnCallerAddress\high      _{i + \callCurrentContextRowOffset}      \\
+		\locCurrentCallerAddressLo      & \define & \cnCallerAddress\low       _{i + \callCurrentContextRowOffset}      \\
+		\locCurrentCallValue            & \define & \cnCallValue               _{i + \callCurrentContextRowOffset}      \\
+		\locCsd                         & \define & \cnCsd                     _{i + \callCurrentContextRowOffset}      \\
+		\locMxpMemoryExpansionException & \define & \miscMxpMxpx               _{i + \callMiscRowOffset}                \\
+		\locMxpMemoryExpansionGas       & \define & \miscMxpGasMxp             _{i + \callMiscRowOffset}                \\
+		\locStpGasUpfront               & \define & \miscStpGasUpfront         _{i + \callMiscRowOffset}                \\
+		\locStpGasPoop                  & \define & \miscStpGasPoop            _{i + \callMiscRowOffset}                \\
+		\locStpGasStipend               & \define & \miscStpGasStipend         _{i + \callMiscRowOffset}                \\
+		\locStpOogx                     & \define & \miscStpOogx               _{i + \callMiscRowOffset}                \\
+		\locNonzeroValue                & \define & \miscOobDataCol  {7}       _{i + \callMiscRowOffset}                \\
+		\locOobAbortingCondition        & \define & \miscOobDataCol  {8}       _{i + \callMiscRowOffset}                \\
+		\locCallerBalance               & \define & \accBalance                _{i + \callFirstCallerAccountRowOffset}  \\
+                \locCalleeAddressHi             & \define & \accAddressHi              _{i + \callFirstCalleeAccountRowOffset}  \\
+                \locCalleeAddressLo             & \define & \accAddressLo              _{i + \callFirstCalleeAccountRowOffset}  \\
+		\locCalleeCfi                   & \define & \accCfi                    _{i + \callFirstCalleeAccountRowOffset}  \\
+		\locCalleeHasCode               & \define & \accHasCode                _{i + \callFirstCalleeAccountRowOffset}  \\
+		\locCalleeWarmth                & \define & \accWarmth                 _{i + \callFirstCalleeAccountRowOffset}  \\
+		\locCalleeExists                & \define & \accExists                 _{i + \callFirstCalleeAccountRowOffset}  \\
+		\multicolumn{3}{l}{\locCalleeIsPrecompile \define \accTrmIsPrecompile  _{i + \callFirstCalleeAccountRowOffset}} \\
+	\end{array} \right.
+\]
+We further introduce some shorthands for ``revert data'':
+\[
+	\left\{ \begin{array}{lcl}
+		\locCnWillRevert      & \define & \cnWillRev            _{i - \callFirstStackRowOffset} \\
+		\locCnRevertStamp     & \define & \cnRevStamp           _{i - \callFirstStackRowOffset} \\
+		\locCalleeWillRevert  & \define & \miscChildSelfReverts _{i + \callMiscRowOffset}       \\
+		\locCalleeRevertStamp & \define & \miscChildRevertStamp _{i + \callMiscRowOffset}       \\
+	\end{array} \right.
+\]
+\saNote{}
+These shorthands only make sense given that both $\peekScenario_{i} = 1$ and $\scenCreateSum_{i} = 1$.
+These constraints will be imposed starting with section~(\ref{hub: instruction handling: create: generalities})

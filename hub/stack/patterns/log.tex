@@ -1,0 +1,138 @@
+\def\bSum                             {\textsf{bSum}}
+\subsubsection{Constraints}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Suppose we are given a parameter $\col{param} \in \{ 0, 1, 2, 3, 4 \}$ and \textbf{exclusive} bits $\col{b}_{1}, \col{b}_{2}, \col{b}_{3}, \col{b}_{4} \in \{ 0, 1 \}$.
+We collect under the moniker
+\[ 
+	\logSP_{i}
+	\big[ \col{param}; \col{b}_{1}, \col{b}_{2}, \col{b}_{3}, \col{b}_{4} \big]
+\]
+the following collection of constraints (which spans two rows.) The first lot of constraints pertains to the first row (i.e. $\ct_{i} = 0$). This row contains offset and size parameters.
+\begin{description}
+	\item[\underline{Bit exclusivity:}]
+		we expect all $\col{b}_\ell$ to be bits and for their sum $\sum_{\ell = 1}^4\col{b}_{\ell}$ to be binary, too;
+		these constraints will always hold since the bits this constraint system will be fed are instruction decoded and thus exclusive bits by definition; 
+	\item[\underline{Stack Item $n^\circ\,1$:}] the first stack item of the first row contains the offset:
+		\[
+			\left\{
+				\begin{array}{lcl}
+					\stackItemHeight{1}_{i}	& \!\!\! = \!\!\! & \stackHeight_{i} \\
+					\stackItemPop{1}_{i}	& \!\!\! = \!\!\! & 1 \\
+					\stackItemStamp{1}_{i}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} 
+				\end{array}
+				\right.
+			\]
+		\item[\underline{Stack Item $n^\circ\,2$:}] the second stack item of the first row contains the size:
+			\[
+				\left\{
+					\begin{array}{lcl}
+						\stackItemHeight{2}_{i}	& \!\!\! = \!\!\! & \stackHeight_{i} - 1 \\
+						\stackItemPop{2}_{i}	& \!\!\! = \!\!\! & 1 \\
+						\stackItemStamp{2}_{i}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} + 1
+					\end{array}
+					\right.
+				\]
+			\item[\underline{Stack Item $n^\circ\,3$:}] the third stack item of the first row is empty: $\emptyStackItem{3}_{i}$;
+			\item[\underline{Stack Item $n^\circ\,4$:}] the fourth stack item of the first row is empty: $\emptyStackItem{4}_{i}$;
+			\item[\underline{Height update:}] $\stackHeight{}\new{}_{i} = \stackHeight{}_{i} - (\col{param} + 2)$; \ob{TODO: check validity};
+\end{description}
+
+The second lot of constraints pertains to the second row (i.e. $\ct_{i + 1} = 1$). This row contains topics. To simplify notations we will use the following shorthands:
+\[
+	\bSum_{k} := \sum_{\ell = k}^{4} \col{b}_{\ell}
+\]
+\begin{description}
+	\item[\underline{Stack Item $n^\circ\,5$:}] the first stack item of the second row \emph{may} contain a first topic:
+		\[
+			\left\{ \begin{array}{lcl}
+				\stackItemHeight {1} _{i + 1} & \!\!\! = \!\!\! & \bSum_{1} \cdot (\stackHeight_{i + 1} - 2)            \\
+				\stackItemPop    {1} _{i + 1} & \!\!\! = \!\!\! & \bSum_{1}                                             \\
+				\stackItemStamp  {1} _{i + 1} & \!\!\! = \!\!\! & \bSum_{1} \cdot (\hubTau \cdot \hubStamp_{i + 1} + 2) \\
+			\end{array} \right.
+		\]
+	\item[\underline{Stack Item $n^\circ\,6$:}] the second stack item of the second row \emph{may} contain a second topic; % let us write $\col{or} := \col{b'} + \col{b''} - \col{b'} \cdot \col{b''} = \col{b'} \vee \col{b''}$
+		\[
+			\left\{ \begin{array}{lcl}
+				\stackItemHeight {2} _{i + 1} & \!\!\! = \!\!\! & \bSum_{2} \cdot (\stackHeight_{i + 1} - 3)            \\
+				\stackItemPop    {2} _{i + 1} & \!\!\! = \!\!\! & \bSum_{2}                                             \\
+				\stackItemStamp  {2} _{i + 1} & \!\!\! = \!\!\! & \bSum_{2} \cdot (\hubTau \cdot \hubStamp_{i + 1} + 3) \\
+			\end{array} \right.
+		\]
+	\item[\underline{Stack Item $n^\circ\,7$:}] the third stack item of the second row \emph{may} contain a third topic:
+		\[
+			\left\{ \begin{array}{lcl}
+				\stackItemHeight {3} _{i + 1} & \!\!\! = \!\!\! & \bSum_{3} \cdot (\stackHeight_{i + 1} - 4)            \\
+				\stackItemPop    {3} _{i + 1} & \!\!\! = \!\!\! & \bSum_{3}                                             \\
+				\stackItemStamp  {3} _{i + 1} & \!\!\! = \!\!\! & \bSum_{3} \cdot (\hubTau \cdot \hubStamp_{i + 1} + 4) \\
+			\end{array} \right.
+		\]
+	\item[\underline{Stack Item $n^\circ\,8$:}] the fourth stack item of the second row \emph{may} contain a fourth topic; % let us write $\col{and} := \col{b'} \cdot \col{b''} = \col{b'} \wedge \col{b''}$
+		\[
+			\left\{ \begin{array}{lcl}
+				\stackItemHeight {4} _{i + 1} & \!\!\! = \!\!\! & \bSum_{4} \cdot (\stackHeight_{i + 1} - 5)            \\
+				\stackItemPop    {4} _{i + 1} & \!\!\! = \!\!\! & \bSum_{4}                                             \\
+				\stackItemStamp  {4} _{i + 1} & \!\!\! = \!\!\! & \bSum_{4} \cdot (\hubTau \cdot \hubStamp_{i + 1} + 5) \\
+			\end{array} \right.
+		\]
+\end{description}
+Recall that the \inst{LOG0}-\inst{LOG4} instructions are characterized by the fact that they raise the $\stackDecLogFlag$ and are distinguished from one another by their
+$\decFlag{1}$, $\decFlag{2}$, $\decFlag{3}$ and $\decFlag{4}$, see section~\ref{hub: instruction handling: Log}.
+In applications we will use $\col{param} = \INST_{i} - \inst{LOG0} \in \{ 0, 1, 2, 3, 4 \}$ and
+$\col{b}_{1}$,     $\col{b}_{1}$,     $\col{b}_{3}$,    and $\col{b}_{4}$     will be replaced with
+$\decFlag{1}_{i}$, $\decFlag{2}_{i}$, $\decFlag{3}_{i}$ and $\decFlag{4}_{i}$ respectively.
+
+
+\subsubsection{Graphical representation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{figure}[h!]
+\[
+	\begin{array}{|l|r|r|c|c|}
+	\cline{2-5}
+	\multicolumn{1}{c|}{(\ct_{i} = 0)}              & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  \\
+	\multicolumn{1}{c|}{}                           & \multicolumn{1}{c|}{\text{Item 1}} & \multicolumn{1}{c|}{\text{Item 2}} & \multicolumn{1}{c|}{\text{Item 3}} & \multicolumn{1}{c|}{\text{Item 4}} \\ \hline
+	\stackItemHeight{k}_{i}                         & \col{h}                            & \col{h} - 1                        & \nothing                           & \nothing                           \\ \hline 
+	\stackItemValHi{k}_{i} / \stackItemValLo{k}_{i} & \col{offset}                       & \col{size}                         & \nothing                           & \nothing                           \\ \hline
+	\stackItemPop{k}_{i}                            & 1                                  & 1                                  & \nothing                           & \nothing                           \\ \hline
+	\stackItemStamp{k}_{i}                          & \hubTau \cdot \col{st}             & \hubTau \cdot \col{st} + 1         & \nothing                           & \nothing                           \\ \hline
+	\end{array}	
+\]
+\caption{%
+Representation of the first row ($\ct_{i} = 0$) of $\logSP\big[\col{param}; \col{b}, \col{b'}, \col{b''}\big]_{i}$.
+The first row is independent of $\col{param}$, $\col{b}$, $\col{b'}$ and $\col{b''}$.
+We write $\col{h} := \stackHeight_{i}$ and $\col{st} := \hubStamp_{i}$.}
+\end{figure}
+\begin{figure}[h!]
+\[
+	\begin{array}{|l|c|c|c|c|} \cline{2-5}
+	\multicolumn{1}{c|}{(\ct_{i + 1} = 1)}                     & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}} \\
+	\multicolumn{1}{c|}{}                                      & \multicolumn{1}{c|}{\text{Item 1}} & \multicolumn{1}{c|}{\text{Item 2}} & \multicolumn{1}{c|}{\text{Item 3}} & \multicolumn{1}{c|}{\text{Item 4}} \\ \hline
+	\stackItemHeight{k}_{i + 1}                                & \nothing                           & \nothing                           & \nothing                           & \nothing \\ \hline 
+	\stackItemValHi{k}_{i + 1} / \stackItemValLo{k}_{i + 1}    & \nothing                           & \nothing                           & \nothing                           & \nothing \\ \hline
+	\stackItemPop{k}_{i + 1}                                   & \nothing                           & \nothing                           & \nothing                           & \nothing \\ \hline
+	\stackItemStamp{k}_{i + 1}                                 & \nothing                           & \nothing                           & \nothing                           & \nothing \\ \hline
+	\end{array}
+\]
+\caption{%
+This table represents the stack pattern of the second row ($\ct_{i + 1} = 1$) of a \inst{LOG0} instruction.}
+\[
+	\begin{array}{|l|r|r|r|c|} \cline{2-5}
+	\multicolumn{1}{c|}{(\ct_{i + 1} = 1)}                  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  \\
+	\multicolumn{1}{c|}{}                                   & \multicolumn{1}{c|}{\text{Item 1}} & \multicolumn{1}{c|}{\text{Item 2}} & \multicolumn{1}{c|}{\text{Item 3}} & \multicolumn{1}{c|}{\text{Item 4}} \\ \hline
+	\stackItemHeight{k}_{i + 1}                             & \col{h} - 2                        & \col{h} - 3                        & \col{h} - 4                        & \nothing                           \\ \hline 
+	\stackItemValHi{k}_{i + 1} / \stackItemValLo{k}_{i + 1} & \col{topic1}                       & \col{topic2}                       & \col{topic3}                       & \nothing                           \\ \hline
+	\stackItemPop{k}_{i + 1}                                & 1                                  & 1                                  & 1                                  & \nothing                           \\ \hline
+	\stackItemStamp{k}_{i + 1}                              & \hubTau \cdot \col{st} + 2         & \hubTau \cdot \col{st} + 3         & \hubTau \cdot \col{st} + 4         & \nothing                           \\ \hline
+	\end{array}	
+\]
+\caption{%
+By way of example, representation of the second row ($\ct_{i + 1} = 1$) of $\logSP\big[\col{param}; \col{b}, \col{b'}, \col{b''}\big]_{i}$ with
+$\col{b}   = 1$,
+$\col{b'}  = 1$, and
+$\col{b''} = 0$
+and $\inst{param} = 3$ for a \inst{LOG3} instruction.
+We write $\col{h} := \stackHeight_{i}$ and $\col{st} := \hubStamp_{i}$.}
+\end{figure}

@@ -1,0 +1,110 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below assume }
+		\left\{ \begin{array}{lcl}
+			\peekScenario              _{i} & = & 1 \\
+			\scenReturnEmptyDeployment _{i} & = & 1 \\
+		\end{array} \right.}
+\end{center}
+As per the above this section deals with recognizing and handling \textbf{unexceptional and trivial} \inst{RETURN} instructions executed in a deployment context.
+\begin{description}
+	\item[\underline{The first account row $n^°(i + \locEmptyDeploymentFirstAccountRowOffset)$:}]
+		we impose the following
+		\[
+			\left\{ \begin{array}{lclr}
+				\accAddressHi          _{i + \locEmptyDeploymentFirstAccountRowOffset}   & = & \locDeploymentAddressHi \\
+				\accAddressLo          _{i + \locEmptyDeploymentFirstAccountRowOffset}   & = & \locDeploymentAddressLo \\
+				\multicolumn{3}{l}{\accSameBalance          {i}{\locEmptyDeploymentFirstAccountRowOffset}} \\
+				\multicolumn{3}{l}{\accSameNonce            {i}{\locEmptyDeploymentFirstAccountRowOffset}} \\
+				\accCodesize\new       _{i + \locEmptyDeploymentFirstAccountRowOffset}   & = & \locSizeLo \\
+				\accCodehashHi\new     _{i + \locEmptyDeploymentFirstAccountRowOffset}   & = & \emptyKeccakHi \\
+				\accCodehashLo\new     _{i + \locEmptyDeploymentFirstAccountRowOffset}   & = & \emptyKeccakLo \\
+				\multicolumn{3}{l}{\accSameDeploymentNumber {i}{\locEmptyDeploymentFirstAccountRowOffset}}            \\
+				\accDepStatus\new      _{i + \locEmptyDeploymentFirstAccountRowOffset}   & = & 0 \\
+				\multicolumn{3}{l}{\accSameWarmth                    {i}{\locEmptyDeploymentFirstAccountRowOffset}} \\
+				\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag {i}{\locEmptyDeploymentFirstAccountRowOffset}} \\
+				\accRomLexFlag         _{i + \locEmptyDeploymentFirstAccountRowOffset}   & = & 0 \\
+				\accTrmFlag            _{i + \locEmptyDeploymentFirstAccountRowOffset}   & = & 0 \\
+				\multicolumn{3}{l}{
+					\standardDomSubStamps {
+						anchorRow        = i,
+						relOffset        = \locEmptyDeploymentFirstAccountRowOffset,
+						domOffset        = 0,
+					}
+				} \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		Given the scenario ($\scenReturnEmptyDeployment \equiv 1$) we of course have $\locSizeLo = 0$.
+
+		\saNote{}
+		The following constraints aren't required \emph{per se} as they hold implicitly:
+		\[
+			\left\{ \begin{array}{lclr}
+				\accCodehashHi         _{i + \locEmptyDeploymentFirstAccountRowOffset}   & = & \emptyKeccakHi & (\trash) \\
+				\accCodehashLo         _{i + \locEmptyDeploymentFirstAccountRowOffset}   & = & \emptyKeccakLo & (\trash) \\
+				\accDepStatus          _{i + \locEmptyDeploymentFirstAccountRowOffset}   & = & 1 & (\trash) \\
+				\multicolumn{3}{l}{\accIsntPrecompile {i}{\locEmptyDeploymentFirstAccountRowOffset}} & (\trash) \\
+			\end{array} \right.
+		\]
+	\item[\underline{The second account row $n^°(i + \locEmptyDeploymentSecondAccountRowOffset)$:}]
+		\If $\scenReturnFromDeploymentEmptyByteCodeWillRevert _{i} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lclr}
+				\multicolumn{3}{l}{\accSameAddr                            {i}{\locEmptyDeploymentSecondAccountRowOffset}{\locEmptyDeploymentFirstAccountRowOffset}}              \\
+				\multicolumn{3}{l}{\accUndoBalanceUpdate                   {i}{\locEmptyDeploymentSecondAccountRowOffset}{\locEmptyDeploymentFirstAccountRowOffset}}              \\
+				\multicolumn{3}{l}{\accUndoNonceUpdate                     {i}{\locEmptyDeploymentSecondAccountRowOffset}{\locEmptyDeploymentFirstAccountRowOffset}}              \\
+				\multicolumn{3}{l}{\accUndoCodeUpdate                      {i}{\locEmptyDeploymentSecondAccountRowOffset}{\locEmptyDeploymentFirstAccountRowOffset}}              \\
+				\multicolumn{3}{l}{\accUndoDeploymentStatusAndNumberUpdate {i}{\locEmptyDeploymentSecondAccountRowOffset}{\locEmptyDeploymentFirstAccountRowOffset}} \vspace{2mm} \\
+				\multicolumn{3}{l}{\accUndoWarmthUpdate                    {i}{\locEmptyDeploymentSecondAccountRowOffset}{\locEmptyDeploymentFirstAccountRowOffset}}              \\
+				\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag       {i}{\locEmptyDeploymentSecondAccountRowOffset}}                                                        \\
+				\accRomLexFlag _{i + \locEmptyDeploymentSecondAccountRowOffset}   & = & 0 \\
+				\accTrmFlag    _{i + \locEmptyDeploymentSecondAccountRowOffset}   & = & 0 \\
+				\multicolumn{3}{l}{
+					\revertDomSubStamps {
+						anchorRow        = i,
+						relOffset        = \locEmptyDeploymentSecondAccountRowOffset,
+						subOffset        = 1,
+					}
+				} \\
+				% \ob{TODO: The second argument \dots{} just a typo ?}
+				% {i}{\locEmptyDeploymentSecondAccountRowOffset}{\locEmptyDeploymentFirstAccountRowOffset}} \\
+			\end{array} \right.
+		\]
+	\item[\underline{Setting the caller's new return data:}]
+		we impose that
+		\begin{description}
+			\item[\underline{The ``will revert'' case:}] 
+				\If $\scenReturnFromDeploymentEmptyByteCodeWillRevert_{i}~=~1$ \Then
+				we impose that
+				\begin{enumerate}
+					\item \If $\locIsRoot = 1$ \Then we impose
+						\[
+							\readContextData
+							{i}{\locCallerContextRowOffsetEmptyDeploymentWillRevert}
+							{\cn_{i}}
+						\]
+					\item \If $\locIsRoot = 0$ \Then we impose
+						\[
+							\executionProvidesEmptyReturnData
+							{i}{\locCallerContextRowOffsetEmptyDeploymentWillRevert} 
+						\]
+				\end{enumerate}
+			\item[\underline{The ``won't revert'' case:}] 
+				\If $\scenReturnFromDeploymentEmptyByteCodeWontRevert_{i}~=~1$ \Then
+				we impose that
+				\begin{enumerate}
+					\item \If $\locIsRoot = 1$ \Then we impose
+						\[
+							\readContextData
+							{i}{\locCallerContextRowOffsetEmptyDeploymentWontRevert}
+							{\cn_{i}}
+						\]
+					\item \If $\locIsRoot = 0$ \Then we impose
+						\[
+							\executionProvidesEmptyReturnData
+							{i}{\locCallerContextRowOffsetEmptyDeploymentWontRevert} 
+						\]
+				\end{enumerate}
+		\end{description}
+\end{description}

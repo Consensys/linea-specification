@@ -1,0 +1,89 @@
+In this subsection we specify the bytes of the result columns $\iResHi$ and $\iResLo$.
+Recall that given the target constraints from subsection~\ref{subsec: target}, these are recorded in the $\byteCol{4}$ and $\byteCol{5}$ byte columns.
+Part of the specification of these columns is already done (the case where $\oli_{i} = 1$ sees the result columns $=0$.)
+\[
+	\boxed{\text{All constraints below are written under the assumption that }\shfStamp_{i}\neq 0\text{ and }\oli_{i} = 0.}
+\]
+
+%\paragraph{$\iResHi$ and $\iResLo$ when $\known = 1$:} ---
+%\paragraph{$\byteCol{4}$ and $\byteCol{5}$ when $\known = 1$:} ---
+\begin{enumerate}
+	\item \If $\known_{i} = 1$ \Then
+	\begin{enumerate}
+		\item \If $\iInst_{i} \neq \inst{SAR}$ \Then
+		\[
+		\left\{
+		\begin{array}{l}
+%			\iResHi_{i} = 0 \\
+%			\iResLo_{i} = 0 \\
+			\byteCol{4}_{i} = 0 \\
+			\byteCol{5}_{i} = 0 \\
+		\end{array}
+		\right.
+		\]
+		\item \If $\iInst_{i} = \inst{SAR}$ \Then
+		\[
+		\left\{
+		\begin{array}{l}
+%			\iResHi_{i} = \NEG_{i} \cdot \left( 256^{\llarge} - 1 \right) \\
+%			\iResLo_{i} = \NEG_{i} \cdot \left( 256^{\llarge} - 1 \right) \\
+			\byteCol{4}_{i} = 255 \cdot \NEG_{i} \\
+			\byteCol{5}_{i} = 255 \cdot \NEG_{i} \\			
+		\end{array}
+		\right.
+		\]
+	\end{enumerate}
+%\end{enumerate}
+%
+%\paragraph{$\byteCol{4}$ and $\byteCol{5}$ when $\known = 0$.} ---
+%\begin{enumerate}
+	\item \If $\known_{i} = 0$ \Then 
+	\begin{enumerate}
+		\item \If $\shd_{i} = 0$ \Then
+		\begin{enumerate}
+			\item \If $\bit{b_7}_{i} = 0$ \Then 
+			\[
+			\left\{
+			\begin{array}{l}
+			\byteCol{4}_{i} = \shiftedBytes{7}\high_{i} \\
+			\byteCol{5}_{i} = \shiftedBytes{7}\low_{i} \\
+			\end{array}
+			\right.
+			\]
+			\item \If $\bit{b_7}_{i} = 1$ \Then 
+			\[
+			\left\{
+			\begin{array}{l}
+			\byteCol{4}_{i} = \shiftedBytes{7}\low_{i} \\
+			\byteCol{5}_{i} = 0 \\
+			\end{array}
+			\right.
+			\]
+		\end{enumerate}
+		\item \If $\shd_{i} = 1$ \Then
+		\begin{enumerate}
+			\item \If $\bit{b_7}_{i} = 0$ \Then 
+			\[
+			\left\{
+			\begin{array}{l}
+			\byteCol{4}_{i} = \shiftedBytes{7}\high_{i} \\
+			\byteCol{5}_{i} = \shiftedBytes{7}\low_{i} \\
+			\end{array}
+			\right.
+			\]
+			\item \If $\bit{b_7}_{i} = 1$ \Then 
+			\[
+			\left\{
+			\begin{array}{l}
+			\byteCol{4}_{i} =  
+			\begin{cases}
+			\If \INST_{i} \neq \inst{SAR}:& 0 \\
+			\If \INST_{i} \neq \inst{SHR}:& 255 \cdot \NEG_{i} \\
+			\end{cases} \\
+			\byteCol{5}_{i} = \shiftedBytes{7}\high_{i} \\
+			\end{array}
+			\right.
+			\]
+		\end{enumerate}
+	\end{enumerate}
+\end{enumerate}

@@ -1,0 +1,70 @@
+This section constrains on the result columns.
+For \inst{BYTE} and \inst{SIGNEXTEND} instructions satisfying $\maxCt \equiv 0$ the result can be constrained on sight.
+Otherwise one has to constrain their byte decompositions, i.e. $\byteCol{5}$ and $\byteCol{6}$.
+\begin{enumerate}
+	\item \If $\isByte_{i} = 1$ \Then
+		\begin{enumerate}
+			\item \If $\maxCt_{i} = 0$ \Then
+				\[
+					\begin{cases}
+						\resHi_{i} = 0 \\
+						\resLo_{i} = 0 \\
+					\end{cases}
+				\]
+			\item \If $\maxCt_{i} \neq 0$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\resHi_{i} = 0 \\
+						\resLo_{i} = \smallness_{i} \cdot \pivotByte_{i} \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+	\item \If $\isSignextend_{i} = 1$ \Then
+		\begin{enumerate}
+			\item \If $\maxCt_{i} = 0$ \Then
+				\[
+					\begin{cases}
+						\resHi_{i} = \argTwoHi \\
+						\resLo_{i} = \argTwoLo \\
+					\end{cases}
+				\]
+			\item \If $\maxCt_{i} \neq 0$
+				\begin{enumerate}
+					\item \If $\smallness_{i} = 0$ \Then
+						\[
+							\begin{cases}
+								\resHi_{i} = \argTwoHi_{i} \\
+								\resLo_{i} = \argTwoLo_{i} \\
+							\end{cases}
+						\]
+					\item \If $\smallness_{i} = 1$ \Then 
+						\[
+							\begin{cases}
+								\If \bit{b_4}_{i} = 0 ~ \Then
+								\begin{cases}
+									\byteCol{5}_{i} = \NEG_{i}\cdot 255 \\
+									\begin{cases}
+										\If \bit{1}_{i} = 0 ~ \Then \byteCol{6}_{i} = \NEG_{i} \cdot 255 \\
+										\If \bit{1}_{i} = 1 ~ \Then \byteCol{6}_{i} = \byteCol{4}_{i} \\
+									\end{cases} \\
+								\end{cases} \vspace{2mm} \\
+								\If \bit{b_4}_{i} = 1 ~ \Then
+								\begin{cases}
+									\begin{cases}
+										\If \bit{1}_{i} = 0 ~ \Then \byteCol{5}_{i} = \NEG_{i} \cdot 255 \\
+										\If \bit{1}_{i} = 1 ~ \Then \byteCol{5}_{i} = \byteCol{3}_{i} \\
+									\end{cases} \\
+									\resLo_{i} = \argTwoLo_{i} \\
+								\end{cases}
+							\end{cases}
+						\]
+				\end{enumerate}
+		\end{enumerate}
+	\item \If $\isAnd_{i} + \isOr_{i} + \isXor_{i} + \isNot_{i} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\byteCol{5}_{i} & \!\!\! = \!\!\! & \decXXX{HI}_{i} \\
+				\byteCol{6}_{i} & \!\!\! = \!\!\! & \decXXX{LO}_{i} \\
+			\end{array} \right.
+		\]
+\end{enumerate}

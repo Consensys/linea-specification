@@ -1,0 +1,24 @@
+
+Indeed within execution execution-rows $\cn\new$ is set to the $1 + \hubStamp$ precisely when entering a new execution context spawned through a \inst{CALL} or \inst{CREATE} type instruction.
+The following constraint takes place at the interface between the parent context and the child context's first row.
+\begin{enumerate}
+	\item \If \big($\txInit_{i - 1} = 1$ \et  $\txExec_{i} = 1$\big) \Then $\cnGetsRev_{i} = 0$;
+\end{enumerate}
+I.e. \locRootContext{}'s fictitious parent context, \locBedrockContext{}, doesn't impose a rollback.
+The following constraint takes place within the execution phase of a transaction when transitioning to a child context.
+\begin{enumerate}[resume]
+	\item \If
+		\[ 
+		\left\{ \begin{array}{lcl}
+			\hubStamp  _{i - 1} & \!\!\! \neq \!\!\! & \hubStamp_{i}         \\
+			\txExec    _{i - 1} & \!\!\! =    \!\!\! & 1                     \\
+			\txExec    _{i}     & \!\!\! =    \!\!\! & 1                     \\
+			\cn\new    _{i - 1} & \!\!\! =    \!\!\! & 1 + \hubStamp_{i - 1} \\
+		\end{array} \right.
+		\]
+		\Then
+		\begin{enumerate}
+			\item $\cnGetsRev_{i} = \cnWillRev_{i - 1}$
+			\item \If $\cnSelfRev_{i} = 0$ \Then $\cnRevStamp_{i} = \cnRevStamp_{i - 1}$
+		\end{enumerate}
+\end{enumerate}

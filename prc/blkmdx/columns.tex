@@ -1,0 +1,43 @@
+\begin{enumerate}
+	\item \blkMdxStamp{}:
+		module stamp column;
+	\item \modexpBlakeId{}:
+		unique data identifier;
+		can have large increments but must be listed in ascending order;
+	\item \modexpBlakePhase{}:
+		``phase'' column;
+	\item \index{}:
+		index column
+	\item \indexMax{}:
+		associated ``maximum index'' column;
+\end{enumerate}
+A data limb is uniquely determined by
+(\emph{a}) a unique identifier,
+(\emph{b}) a phase and
+(\emph{c}) an index.
+These are provided above.
+
+\saNote{} The present module only stores data with size which is known ahead of time. It therefore doesn't require an \nBytes{} column.
+
+The following column is a ``limb'' which contains limbs (i.e. $\llarge$-byte integers) representing data.
+This data may be either input data
+(\inst{MODEXP} base, exponent or modulus, \inst{BLAKE2f} ``\col{rounds}'' and ``\col{f}'' parameters and \col{h}, \col{m} and \col{t} parameters)
+or ouput data
+(\inst{MODEXP} result or \inst{BLAKE2f} result.)
+\begin{enumerate}[resume]
+	\item \limb{}:
+		data limb column;
+\end{enumerate}
+The following columns are exclusive binary columns that allow the present module to identify the nature of the data it holds.
+\begin{multicols}{2}
+	\begin{enumerate}[resume]
+		\item \isModexpBase{}
+		\item \isModexpExponent{}
+		\item \isModexpModulus{}
+		\item \isModexpResult{}
+		\item \isBlakeData{}
+		\item \isBlakeParams{}
+		\item \isBlakeResult{}
+		\item[\vspace{\fill}]
+	\end{enumerate}
+\end{multicols}

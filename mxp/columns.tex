@@ -1,0 +1,107 @@
+The following columns determine the heartbeat of the module:
+\begin{enumerate}
+	\item \mxpStamp: \godGiven{}
+	      \ccc{} containing the module stamp; stamp increments are $0$ or $1$;
+	\item \cn: \godGiven{}
+	      \ccc{} containing the relevant context number;
+	\item \ct:
+	      counter column; grows monotonically and resets to 0 with every new instruction;
+	\item \roob{}:
+	      \ccbc{} indicating whether an offset or a size is \ROOB;
+	\item \noop{}:
+	      \ccbc{}; is zero if $\roob \equiv 1$; otherwise lights up if relevant size(s) are zero;
+\end{enumerate}
+Thus if $\noop \equiv 1$ the underlying instruction is a no-op \emph{from the point of view of memory expansion and that alone}.
+\begin{enumerate}[resume]
+	\item \mxpx: \godGiven{}
+	      \ccbc{}; indicates whether a \mxpX{} has taken place i.e. whenever \emph{both} maximal offsets fit into $\ssmall{}$ bytes or not;
+\end{enumerate}
+The \ct{} column either hovers around $0$ or counts from 0 to either $\ssmallMO{}$ or $\lllargeMO{}$ depending on other factors. Which of the two is the cut-off point depends on whether the maximal offset fits into $\ssmall{}$ bytes ($\mxpx{} = 0$) or not ($\mxpx{} = 1$).
+Maximal offsets are defined as sums of two 16 byte integers and as such may overflow 16 bytes. Computing their byte decomposition may thus require $\lllarge{}$ bytes. This explains \ct's threshold at $\lllargeMO{} = \lllarge - 1$ rather than the customary $\llargeMO = \llarge - 1$ found in most other modules.% Imported columns are surrounded by $\langle\,\cdots\rangle$.
+\begin{enumerate}[resume]
+	\item $\INST$: \godGiven{}
+	      \ccc{} containing an instruction;
+	\item $\decMxpType{k}$ for $k \in \{ 1, 2, \dots, 5\}$:
+	      instruction decoded binary columns (and thus \ccbc);
+	\item $\decWordCost$ and $\decByteCost$:
+	      instruction decoded (and thus \ccc{}) containing gas cost parameters;
+\end{enumerate}
+The $\decMxpType{1}, \decMxpType{2}, \dots, \decMxpType{5}$ partition the instructions into different classes. The present module treats instructions of a same class homogeneously.
+\begin{enumerate}[resume]
+	\item $\codeDeployment$: \godGiven{}
+	      \ccbc{} indicating whether the memory expansion cost pertains to a \inst{RETURN} in a deployment context;
+	\item $\offsetHi{k}$, $\offsetLo{k}$ for $k = 1, 2$: \godGiven{}
+	      \ccc{} containing the high and low parts of an offset parameter;
+	\item $\sizeHi{k}$, $\sizeLo{k}$ for $k = 1, 2$: \godGiven{}
+	      \ccc{}'s containing the high and low parts of a size parameter;
+	\item $\lastOffset{k}$ for $k = 1, 2$:
+	      largest offsets in memory touched by the instruction by the first and second pairs of offsets and sizes respectively;
+	\item $\maxOffset$:
+	      computes $\max\Big\{\lastOffset{1},\lastOffset{2}\Big\}$ \emph{when both are in bounds};
+	\item \comp:
+	      \ccbc{} which equals 1 \emph{iff} $\lastOffset{1}\geq\lastOffset{2}$;
+\end{enumerate}
+The above ``comparison bit'' column comes into play only for memory expanding instructions involving two offsets, i.e. \inst{CALL}-type instructions.
+\begin{enumerate}[resume]
+	\item $\byteCol{k}$ and $\acc{k}$ for $k \in \{ \col{1}, \col{2}, \col{3}, \col{4}, \col{A}, \col{W}, \col{Q}\}$:
+	      byte columns and associated accumulator columns;
+	\item $\byteCol{QQ}, \byteCol{R}$:
+	      extra byte columns;
+\end{enumerate}
+The byte columns $\byteCol{R}$, $\byteCol{QQ}$ provide auxiliary bytes that are used, for instance, to \emph{complete} byte decompositions of \emph{medium-sized} numbers (i.e. $\medium{}$-byte integers) that can appear in calculations.
+\begin{enumerate}[resume]
+	\item $\memSize$: \godGiven{}
+	      \ccc{} containing ``the [currently valid] active number of words in memory (counting continuously from position $0$)'' \emph{before} excuting on the current instruction;
+	\item $\memSize\new$:
+	      \ccc{} which \emph{may} contain ``the active number of words in memory (counting continuously from position $0$)'' \emph{after} executing the current instruction;
+	\item \expCost:
+	      \ccc{} containing the currently accrued memory expansion cost;
+	\item $\expCost\new$:
+	      \ccc{} containing the updated value of $\expCost$: if no memory expansion took place contains the same value as \expCost{} while if memory expansion \emph{did} occur will store the updated value of $\expCost$;
+	\item $\mxpQuadGas$:
+	      \ccc{} containing the quadratic expansion cost of the instruction;
+	\item $\mxpLinGas$:
+	      \ccc{} containing the linear cost (if relevant) of the instruction;
+	\item $\gasMxp$: \godGiven{}
+	      \ccc{} containing the relevant sum of the quadratic and linear gas costs;
+	\item \mexpEvent{}:
+	      given $\roob = \noop = 0$, indicates a \MEXPEVENT{} takes place, i.e. whether $\maxOffset + 1 \geq \memSize$ and thus whether the current instruction incurs a memory expansion cost; abbreviated to \mexpEvent{};
+	\item \YNMO{}:
+		\godGiven{} column; indicates if type 4 instruction could potentially trigger the \mmuMod{} module;
+		abbreviated to \mayTriggerNonTrivialOperation{};
+\end{enumerate}
+
+We provide more details. Using the notation from the Ethereum Yellow Paper \ob{TODO: add reference} the above columns will contain respectively
+\[
+	\left\{ \begin{array}{lcl}
+		\memSize     & \longleftrightarrow & \bm{\mu}_\text{i}                  \\
+		\memSize\new & \longleftrightarrow & \bm{\mu}_\text{i}'                 \\
+		\expCost     & \longleftrightarrow & C_\textrm{mem}(\bm{\mu}_\text{i})  \\
+		\expCost\new & \longleftrightarrow & C_\textrm{mem}(\bm{\mu}_\text{i}') \\
+	\end{array} \right.
+\]
+where $C_\textrm{mem}$ is defined as:
+\[
+	C_\textrm{mem}(a) =
+	G_\textrm{mem}\cdot a
+	+
+	\left\lfloor\frac{a^2}{512}\right\rfloor
+\]
+$\mxpQuadGas$ will contain the quadratic memory expansion cost:
+\[
+	\mxpQuadGas =
+	\expCost\new - \expCost
+\]
+while any applicable ``linear'' gas costs incurred on top of that is stored in \mxpLinGas{}:
+\[
+	\mxpLinGas =
+	\left[ \begin{array}{c}
+			\texttt{any applicable} \\
+			\texttt{linear cost}    \\
+		\end{array} \right]
+\]
+\saNote{} The present module exposes the sum of both the linear and quadratic terms to the \hubMod{} module.
+
+\saNote{} Fixed costs such such as $G_\text{create}$ for \inst{CREATE}-type instructions or $G_\text{log} + \inst{X} \cdot G_\text{logtopic}$ for \inst{LOGX} instructions aren't included in the present module.
+
+\saNote{} Other gas costs (such as those related to warmth, account existence etc\dots{} for \inst{CALL}-type instructions) are handled elsewhere i.e. either in the \hubMod{} module directly or in the \stpMod{} module.

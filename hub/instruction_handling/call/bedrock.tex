@@ -1,0 +1,44 @@
+We impose the following constraints.
+\begin{description}
+	\item[\underline{Forward setting of \emph{some} \inst{CALL}-scenario:}]
+		we impose that
+		\[
+			\If
+			\left\{ \begin{array}{lcl}
+				\peekStack        _{i} & = & 1 \\
+				\stackDecCallFlag _{i} & = & 1 \\
+				\ct               _{i} & = & 0 \\
+				\stackSux         _{i} +
+				\stackSux         _{i} & = & 0 \\
+			\end{array} \right.
+			\Then
+			\left\{ \begin{array}{lcl}
+				\peekScenario _{i + 2} & = & 1 \\
+				\scenCallSum  _{i + 2} & = & 1 \\
+			\end{array} \right.
+		\]
+\end{description}
+\saNote{} Recall that \inst{CALL}-type instructions are $\TLI$'s. The above thus sets the first non stack row of such an instruction. 
+
+Conversely we \emph{may} want to impose
+\begin{description}
+	\item[\underline{Backwards setting of the \inst{CALL}-type instruction:}]
+		we impose that
+		\[
+			\underbrace{\If
+			\left\{ \begin{array}{lcl}
+				\peekScenario _{i + \callFirstScenarioRowOffset} & = & 1 \\
+				\scenCallSum  _{i + \callFirstScenarioRowOffset} & = & 1 \\
+			\end{array} \right.
+			\Then
+			\left\{ \begin{array}{lcl}
+				\peekStack        _{i - \callFirstStackRowOffset} & = & 1 \\
+				\stackDecCallFlag _{i - \callFirstStackRowOffset} & = & 1 \\
+				\ct               _{i - \callFirstStackRowOffset} & = & 0 \\
+				\stackSux         _{i - \callFirstStackRowOffset} +
+				\stackSox         _{i - \callFirstStackRowOffset} & = & 0 \\
+			\end{array} \right.}_{\displaystyle (\trash)}
+		\]
+\end{description}
+\saNote{}
+In the upcoming sections the vantage point for dealing with \inst{CALL} instructions will be a row $i$ with $\peekScenario _{i + \callFirstScenarioRowOffset} = 1$ \et $\scenCallSum  _{i + \callFirstScenarioRowOffset} = 1$, i.e. a row $i$ representing the first non stack row of a \inst{CALL}-type instruction (which raises no \suxSH{}.)

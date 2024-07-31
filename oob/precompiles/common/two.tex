@@ -1,0 +1,73 @@
+The present section describes the remaining computations required for dealing with
+\inst{SHA2-256},
+\inst{RIPEMD-160} and
+\inst{IDENTITY}.
+As such:
+\[
+	\boxed{\text{All constraints in this subsection further assume }
+	\left[ \begin{array}{cr}
+		+ & \oobInstIsShaTwo_{i}     \\
+		+ & \oobInstIsRipemd_{i}     \\
+		+ & \oobInstIsIdentity_{i}   \\
+	\end{array} \right] = 1}
+\]
+These precompiles have in common is that in order to compute their \locPrecompileCost{} one must compute
+\[
+	\locCeil \equiv \bigg \lceil \frac{\locCds}{32} \bigg \rceil, \quad \locCds \equiv \|I_\textbf{d}\|.
+\]
+\begin{description}
+	\item[\underline{Row n°$(i + 2)$:}] we impose the following:
+		\[
+			\oobCallToDiv
+			{i}{2}
+			{0}{\locCds + 31}
+			{0}{32}
+		\]
+		we further define the shorthand $\locCeil \define \outgoingResLo_{i + 2}$.
+\end{description}
+\saNote{} Computing the addition $\locCds + 31$ does not require the \addMod{} module.
+Indeed, if (a \inst{CALL}-type instruction targeting) a precompile makes it this far its \CDS{} parameter is known to be small by virtue of it not triggering a \mxpxSH{}.
+The sum ``$\locCds + 31$'' may therefore be safely computed as above. 
+\begin{description}
+	\item[\underline{Row n°$(i + 3)$:}] we impose that
+		\[
+			\oobCallToLt
+			{i}{3}
+			{0}{\locCallGas}
+			{0}{\locPrecompileCost}
+		\]
+		where
+		\[
+			\locPrecompileCost \define
+			\Big[ 5 + \locCeil \Big]
+			\cdot
+			\left[ \begin{array}{crcl}
+				+ & 12  & \cdot & \oobInstIsShaTwo   _{i} \\
+				+ & 120 & \cdot & \oobInstIsRipemd   _{i} \\
+				+ & 3   & \cdot & \oobInstIsIdentity _{i} \\
+			\end{array} \right]
+		\]
+		we further introduce the following shorthand
+		\[
+			\locInsufficientGas \define \outgoingResLo_{i + 3}
+		\]
+		it follows that $\locCallGas < \locPrecompileCost \iff \locInsufficientGas = 1$.
+	\item[\underline{Justifying the remaining \hubMod{} predictions:}]
+		we impose that
+		\[
+			\locHubSuccess = 1 - \locInsufficientGas.
+		\]
+		we further impose that
+		\begin{enumerate}
+			\item \If $\locHubSuccess = 0$ \Then $\locReturnGas = 0$
+			\item \If $\locHubSuccess = 1$ \Then $\locReturnGas = \locCallGas - \locPrecompileCost$
+		\end{enumerate}
+\end{description}
+% We thus introduce the following (local) shorthands:
+% \[
+% 	\left\{ \begin{array}{lcl}
+% 		\locCeil               & \longleftrightarrow & \outgoingResLo   _{i + 2} \\
+% 		\locInsufficientGas    & \longleftrightarrow & \outgoingResLo   _{i + 3} \\
+% 	\end{array} \right.
+% \]
+% \saNote{} Since the above precompiles can fail in more complex ways than being provided with insufficient gas, what we have called  ``remaining gas'' should really be called ``potentially refunded gas.'' 

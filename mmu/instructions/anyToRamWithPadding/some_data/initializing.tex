@@ -1,0 +1,147 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints below assume that }
+		\left\{ \begin{array}{lcl}
+			\isMacro                                _{i} & = & 1 \\
+			\mmuInstFlagAnyToRamWithPaddingSomeData _{i} & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+The upcoming constraints facilitate the transition from pre-processing to micro-instruction-writing.
+\begin{description}
+	\item[Setting micro-instruction-writing-constant values:]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}		
+				% \microInst        _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \locMicroInst  \\
+				% \microSize        _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+				% \microSlo         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+				% \microSbo         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+				% \microTlo         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \locTlo \\
+				% \microTbo         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \locTbo \\
+				% \microLimb        _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \macroLimbTwo_{i} \\
+				\microCns         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \locMicroCns \\
+				\microCnt         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \macroTgtId_{i}  \\
+				\microSuccessBit  _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+				\microExoSum      _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \macroExoSum_{i} \\
+				\microPhase       _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+				\microIdOne       _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \locMicroIdOne \\
+				\microIdTwo       _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+				\microTotalSize   _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \macroRefSize_{i} \\
+			\end{array} \right.
+		\]
+		where have used shorthands obeying the following definitions
+		\begin{enumerate}
+		        \item \If $\locDataSourceIsRam = 1$ \Then
+			\[
+				\left\{ \begin{array}{lcl}
+				        \locMicroCns   & \define & \macroSrcId_{i} \\
+				        \locMicroIdOne & \define & \nothing        \\
+				\end{array} \right.
+			\]
+		        \item \If $\locDataSourceIsRam = 0$ \Then
+			\[
+				\left\{ \begin{array}{lcl}
+				        \locMicroCns   & \define & \nothing        \\
+				        \locMicroIdOne & \define & \macroSrcId_{i} \\
+				\end{array} \right.
+			\]
+		\end{enumerate}
+\end{description}
+\saNote{}
+We provide the \macroRefSize{} in the \microTotalSize{} column to satisfy the lookup interface from the \mmioMod{} to the \romMod{}.
+This size isn't required by the \mmioMod{} \emph{per se}.
+\begin{description}
+	\item[First or only micro-instruction-writing-row:] \label{mmu: instructions: modexpdata: initialize: tlo is initially 0}
+		we impose
+		\begin{description}
+			\item[Generalities:]
+				we impose that
+				\[
+					\left\{ \begin{array}{lcl}
+						\microInst        _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \valueToBeSet \\
+						\microSize        _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \valueToBeSet \\
+						\microSlo         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \locMinSlo \\
+						\microSbo         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \locMinSbo \\
+						\microTlo         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \locMinTlo \\
+						\microTbo         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \locMinTbo \\
+						\microLimb        _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \relevantValue \\
+						% \microCns         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \macroSrcId_{i} \\
+						% \microCnt         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \macroTgtId_{i}  \\
+						% \microSuccessBit  _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+						% \microExoSum      _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+						% \microPhase       _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+						% \microIdOne       _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+						% \microIdTwo       _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+					\end{array} \right.
+				\]
+\saNote{} In the case $\locDataSourceIsRam = 0$, in order to comply with the lookup between \mmuMod{} and \mmioMod{} one has to fill the $\microLimb$ column with the relevant limb, hence the notation ``$\relevantValue$''.
+			\item[The $\locTotntIsOne \equiv 1$ case:] 
+				we impose
+				\[
+					\left\{ \begin{array}{lcl}
+						\microInst        _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \locOnlyDataTransferInst  \\
+						\microSize        _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \locOnlyDataTransferSize \\
+						% \microSlo         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+						% \microSbo         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+						% \microTlo         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \locMinTlo \\
+						% \microTbo         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \locMinTbo \\
+						% \microLimb        _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+						% \microCns         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \macroSrcId_{i} \\
+						% \microCnt         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \macroTgtId_{i}  \\
+						% \microSuccessBit  _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+						% \microExoSum      _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+						% \microPhase       _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+						% \microIdOne       _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+						% \microIdTwo       _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+					\end{array} \right.
+				\]
+				where \locOnlyDataTransferInst{} is given the following definition:
+				\begin{enumerate}
+				        \item \If $\locDataSourceIsRam = 1$
+					\begin{enumerate}
+					        \item \If $\locOnlyDataTransferSingleTarget = 1$ \Then $\locOnlyDataTransferInst = \mmioInstRamToRamPartial$
+					        \item \If $\locOnlyDataTransferSingleTarget = 0$ \Then $\locOnlyDataTransferInst = \mmioInstRamToRamTwoTarget$
+					\end{enumerate}
+				        \item \If $\locDataSourceIsRam = 0$
+					\begin{enumerate}
+					        \item \If $\locOnlyDataTransferSingleTarget = 1$ \Then $\locOnlyDataTransferInst = \mmioInstLimbToRamOneTarget$
+					        \item \If $\locOnlyDataTransferSingleTarget = 0$ \Then $\locOnlyDataTransferInst = \mmioInstLimbToRamTwoTarget$
+					\end{enumerate}
+				\end{enumerate}
+			\item[The $\locTotntIsOne \equiv 0$ case:] 
+				we impose
+				\[
+					\left\{ \begin{array}{lcl}
+						\microInst        _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \locFirstDataTransferInst  \\
+						\microSize        _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \locFirstDataTransferSize \\
+						% \microSlo         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+						% \microSbo         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+						% \microTlo         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \locMinTlo \\
+						% \microTbo         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \locMinTbo \\
+						% \microLimb        _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+						% \microCns         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \macroSrcId_{i} \\
+						% \microCnt         _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \macroTgtId_{i}  \\
+						% \microSuccessBit  _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+						% \microExoSum      _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+						% \microPhase       _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+						% \microIdOne       _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+						% \microIdTwo       _{i + \nppMmuInstAnyToRamWithPaddingSomeDataValuePO} & = & \nothing \\
+					\end{array} \right.
+				\]
+				where \locOnlyDataTransferInst{} is given the following definition:
+				\begin{enumerate}
+				        \item \If $\locDataSourceIsRam = 1$
+					\begin{enumerate}
+					        \item \If $\locFirstDataTransferSingleTarget = 1$ \Then $\locFirstDataTransferInst = \mmioInstRamToRamPartial$
+					        \item \If $\locFirstDataTransferSingleTarget = 0$ \Then $\locFirstDataTransferInst = \mmioInstRamToRamTwoTarget$
+					\end{enumerate}
+				        \item \If $\locDataSourceIsRam = 0$
+					\begin{enumerate}
+					        \item \If $\locFirstDataTransferSingleTarget = 1$ \Then $\locFirstDataTransferInst = \mmioInstLimbToRamOneTarget$
+					        \item \If $\locFirstDataTransferSingleTarget = 0$ \Then $\locFirstDataTransferInst = \mmioInstLimbToRamTwoTarget$
+					\end{enumerate}
+				\end{enumerate}
+		\end{description}
+\end{description} 
+

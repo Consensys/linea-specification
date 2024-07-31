@@ -1,0 +1,103 @@
+\subsubsection{Supported instructions and flags}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\[
+	\begin{array}{|l||c||c|c|c|c|c|}
+		\hline
+		\INST                 & \tli  & \stackDecConFlag & \decFlag{1} & \decFlag{2} & \decFlag{3} & \decFlag{4} \\ \hline\hline
+		\inst{ADDRESS}        & \zero & \oneCell         & \oneCell    & \zero       & \zero       & \zero       \\ \hline
+		\inst{CALLER}         & \zero & \oneCell         & \zero       & \oneCell    & \zero       & \zero       \\ \hline
+		\inst{CALLVALUE}      & \zero & \oneCell         & \zero       & \zero       & \oneCell    & \zero       \\ \hline
+		\inst{CALLDATASIZE}   & \zero & \oneCell         & \zero       & \zero       & \zero       & \oneCell    \\ \hline
+		\inst{RETURNDATASIZE} & \zero & \oneCell         & \zero       & \zero       & \zero       & \zero       \\ \hline
+	\end{array}
+\]
+
+
+\subsubsection{Constraints}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{center}
+	\boxed{%
+		\text{The stack constraints presented below assume }
+		\left\{ \begin{array}{lcl}
+			\peekStack_{i}                & = & 1 \\
+			\stackDecConFlag_{i}          & = & 1 \\
+			\stackSux_{i} + \stackSox_{i} & = & 0 \\
+		\end{array} \right.
+		}
+\end{center}
+
+\begin{description}
+	\item[\underline{Setting the stack pattern:}]
+		we impose $\zeroOneSP_{i}$
+	\item[\underline{Setting the gas cost:}]
+		we impose $\gasCost_{i} = \decStaticGas_{i}$;
+	\item[\underline{Setting $\nonStackRows$:}]
+		we impose $\nonStackRows_{i} = 1 + \cmc_{i}$;
+	\item[\underline{Setting the peeking flags:}]
+		we impose that
+		\[
+			\left[ \begin{array}{cr}
+				+ & \peekContext_{i + 1} \\
+				+ & \cmc_{i} \cdot \peekContext_{i + 2} \\
+			\end{array} \right]
+			= \nonStackRows_{i}
+		\]
+		we further unconditionally set $\readContextData {i}{1}{\cn_{i}} = 1$
+	\item[\underline{Value constraints:}]
+		\If $\cmc_{i} = 0$ \Then
+		\begin{enumerate}
+			\item \If $\decFlag{1}_{i} = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\stackItemValHi{4}_{i} & \!\!\! = \!\!\! & \cnAccountAddress\high_{i + 1} \\
+						\stackItemValLo{4}_{i} & \!\!\! = \!\!\! & \cnAccountAddress\low_{i + 1} \\
+					\end{array} \right.
+				\]
+			\item \If $\decFlag{2}_{i} = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\stackItemValHi{4}_{i} & \!\!\! = \!\!\! & \cnCallerAddress\high_{i + 1} \\
+						\stackItemValLo{4}_{i} & \!\!\! = \!\!\! & \cnCallerAddress\low_{i + 1} \\
+					\end{array} \right.
+				\]
+			\item \If $\decFlag{3}_{i} = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\stackItemValHi{4}_{i} & \!\!\! = \!\!\! & 0 \\
+						\stackItemValLo{4}_{i} & \!\!\! = \!\!\! & \cnCallValue_{i + 1} \\
+					\end{array} \right.
+				\]
+			\item \If $\decFlag{4}_{i} = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\stackItemValHi{4}_{i} & \!\!\! = \!\!\! & 0 \\
+						\stackItemValLo{4}_{i} & \!\!\! = \!\!\! & \cnCds_{i + 1} \\
+					\end{array} \right.
+				\]
+				\def\locDecFlagSum{\col{id\_flag\_sum}}
+			\item \If $\locDecFlagSum_{i} = 0$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\stackItemValHi{4}_{i} & \!\!\! = \!\!\! & 0 \\
+						\stackItemValLo{4}_{i} & \!\!\! = \!\!\! & \cnRds_{i + 1} \\
+					\end{array} \right.
+				\]
+				where we use the following shorthand
+				\[
+					\locDecFlagSum_{i}
+					\define
+					\left[ \begin{array}{cr}
+						+ & \decFlag{1}_{i} \\
+						+ & \decFlag{2}_{i} \\
+						+ & \decFlag{3}_{i} \\
+						+ & \decFlag{4}_{i} \\
+					\end{array} \right]
+				\]
+				\saNote{} Given the flag table presented above \locDecFlagSum{} is binary.
+		\end{enumerate}
+\end{description}
+\saNote{} For instructions raising the $\stackDecConFlag$ one has $\cmc \equiv \xAhoy$.

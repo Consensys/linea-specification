@@ -1,0 +1,309 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below are written under the assumption that }
+		\left\{ \begin{array}{lcl}
+			\peekScenario      _{i + \callFirstScenarioRowOffset}    & = & 1 \\
+			\scenCallSum       _{i + \callFirstScenarioRowOffset}    & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+In other words we are in the most general case of a \inst{CALL}-type instruction that (at the very least) raises no \suxSH{}. 
+Recall from
+section~(\ref{hub: instruction handling: call: peeking flags and nRows no precompiles}) and
+section~(\ref{hub: instruction handling: call: peeking flags and nRows for precompiles first half})
+that row
+$(i + \callCurrentContextRowOffset)$ is \textbf{always} a context-row and
+$(i + \callMiscRowOffset)$ is \textbf{always} a miscellaneous-row.
+We impose the following constraints:
+\begin{description}
+	\item[\underline{Setting the stack pattern:}]
+		we impose $\callSP _{i - \callFirstStackRowOffset} \big[ \locIsCall + \locIsCallcode \big]$;
+	\item[\underline{Setting the success bit:}]
+		we impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\locSuccessBitHi & = & 0                    \\
+				\locSuccessBitLo & = & \scenCallSuccess_{i + \callFirstScenarioRowOffset} \\
+			\end{array} \right.
+		\]
+	\item[\underline{Setting allowable exceptions:}]
+		we impose that
+		\begin{enumerate}
+		        \item \If $\locIsCall = 1$ \Then
+				\[
+					\xAhoy _{i}
+					=
+					\left[ \begin{array}{lr}
+						+ & \locStaticx \\
+						+ & \locMxpx    \\
+						+ & \locOogx    \\
+					\end{array} \right]
+				\]
+		        \item \If $\locIsCallcode + \locIsDelegatecall + \locIsStaticcall = 1$ \Then
+				\[
+					\xAhoy _{i}
+					=
+					\left[ \begin{array}{lr}
+						+ & \locMxpx    \\
+						+ & \locOogx    \\
+					\end{array} \right]
+				\]
+		\end{enumerate}
+		\saNote{} The above reflects the fact that among all \inst{CALL}-type instructions only \inst{CALL} may trigger a \staticxSH{}.
+	\item[\underline{The first context-row $n^°(i + \callCurrentContextRowOffset)$:}]
+		we impose $\readContextData {i}{\callCurrentContextRowOffset}{\cn_{i}}$;
+	\item[\underline{Setting miscellaneous flags on row $n^°(i + \callMiscRowOffset)$:}]
+		we impose that
+		\[
+			\weightedMiscFlagSum
+			{i}{\callMiscRowOffset}
+			=
+			\left[ \begin{array}{lrcl}
+				+ & \miscMxpWeight & \cdot & \locCallTriggersMxp \\
+				+ & \miscOobWeight & \cdot & \locCallTriggersOob \\
+				+ & \miscStpWeight & \cdot & \locCallTriggersStp \\
+			\end{array} \right]
+		\]
+		in other words
+		\[
+			\left\{ \begin{array}{lclr}
+				\miscExpFlag_{i + \callMiscRowOffset} & = & \gZero              & (\trash) \\
+				\miscMmuFlag_{i + \callMiscRowOffset} & = & \rZero              & (\trash) \\
+				\miscMxpFlag_{i + \callMiscRowOffset} & = & \locCallTriggersMxp & (\trash) \\
+				\miscOobFlag_{i + \callMiscRowOffset} & = & \locCallTriggersOob & (\trash) \\
+				\miscStpFlag_{i + \callMiscRowOffset} & = & \locCallTriggersStp & (\trash) \\
+			\end{array} \right.
+		\]
+	\item[\underline{Setting \oobMod{} instruction parameters:}]
+		\If $\miscOobFlag_{i + \callMiscRowOffset} = 1$ \Then
+		we impose that 
+		\begin{enumerate}
+			\item \If $\scenCallException _{i} = 1$ \Then
+				\[
+					\setOobInstructionXcall {
+						anchorRow = i,
+						relOffset = \callMiscRowOffset,
+						valueHi   = \locValueHi,
+						valueLo   = \locValueLo,
+					}
+				\]
+			\item \If $\scenCallUnexceptional _{i + \callFirstScenarioRowOffset} = 1$ \Then
+				\[
+					\setOobInstructionCall {
+						anchorRow      = i,
+						relOffset      = \callMiscRowOffset,
+						valueHi        = \locValueHi,
+						valueLo        = \locValueLo,
+						balance        = \locCallerBalance,
+						callStackDepth = \locCsd,
+					}
+				\]
+		\end{enumerate}
+		\saNote{}
+		\inst{CALL} instructions \textbf{always} trigger the \oobMod{} module.
+	\item[\underline{Justifying \staticxSH's:}]
+		we unconditionally impose that
+		\[
+			\locStaticx
+			=
+			\left[ \begin{array}{cl}
+				\cdot & \locIsCall       \\
+				\cdot & \locNonzeroValue \\
+				\cdot & \locIsStatic     \\
+			\end{array} \right]
+		\]
+		\saNote{}
+		The interpretation of the cell pointed to by the shorthand \locNonzeroValue{} is the same for both \oobMod{} instructions, see
+		section~(\ref{hub: misc: oob: call})  and
+		section~(\ref{hub: misc: oob: xcall}).
+
+		\saNote{}
+		The above, seeing as it applies to \textbf{each and every \inst{CALL} instruction}, implies that among (non stack over/underflow) exceptions, \staticxSH{} is dominant and always the primary focus of verification.
+	\item[\underline{Setting \mxpMod{} instruction parameters:}]
+		\If $\miscMxpFlag_{i + \callMiscRowOffset} = 1$ \Then we impose that
+		\[
+			\setMxpInstructionTypeFive {
+				anchorRow          = i,
+				relOffset          = \callMiscRowOffset,
+				instruction        = \locInst,
+				callDataOffsetHi   = \locCdoHi,
+				callDataOffsetLo   = \locCdoLo,
+				callDataSizeHi     = \locCdsHi,
+				callDataSizeLo     = \locCdsLo,
+				returnAtOffsetHi   = \locRaoHi,
+				returnAtOffsetLo   = \locRaoLo,
+				returnAtCapacityHi = \locRacHi,
+				returnAtCapacityLo = \locRacLo,
+			}
+		\]
+	\item[\underline{Justifying \mxpxSH's:}]
+		\If $\miscMxpFlag_{i + \callMiscRowOffset} = 1$ \Then we impose that
+		\[
+			\locMxpx =
+			\locMxpMemoryExpansionException
+		\]
+	\item[\underline{Setting \stpMod{} instruction parameters:}]
+		\If $\miscStpFlag_{i + \callMiscRowOffset} = 1$ \Then we impose that
+		\[
+			\setStpInstructionCall{
+				anchorRow   = i                         ,
+				relOffset   = \callMiscRowOffset        ,
+				instruction = \locInst                  ,
+				gasHi       = \locGasHi                 ,
+				gasLo       = \locGasLo                 ,
+				valueHi     = \locValueHi               ,
+				valueLo     = \locValueHi               ,
+				warmth      = \locCalleeExists          ,
+				exists      = \locCalleeWarmth          ,
+				mxpGas      = \locMxpMemoryExpansionGas ,
+			}
+			% \left\{ \begin{array}{lcl}
+			% 	\miscStpInst        _{i + \callMiscRowOffset}  & = & \locInst_{i}       \\
+			% 	\miscStpGasHi       _{i + \callMiscRowOffset}  & = & \locGasHi          \\
+			% 	\miscStpGasLo       _{i + \callMiscRowOffset}  & = & \locGasLo          \\
+			% 	\miscStpValueHi     _{i + \callMiscRowOffset}  & = & \locValueHi        \\
+			% 	\miscStpValueLo     _{i + \callMiscRowOffset}  & = & \locValueHi        \\
+			% 	\miscStpAccExists   _{i + \callMiscRowOffset}  & = & \locCalleeExists   \\
+			% 	\miscStpAccWarmth   _{i + \callMiscRowOffset}  & = & \locCalleeWarmth   \\
+			% 	\miscStpOogx        _{i + \callMiscRowOffset}  & = & \locOogx \\
+			% 	\miscStpGasUpfront  _{i + \callMiscRowOffset}  & = & \relevantValue \\
+			% 	\miscStpGasPoop     _{i + \callMiscRowOffset}  & = & \relevantValue \\
+			% 	\miscStpGasStipend  _{i + \callMiscRowOffset}  & = & \relevantValue \\
+			% \end{array} \right.
+		\]
+	\item[\underline{Justifying \oogxSH's:}]
+		\If $\miscStpFlag_{i + \callMiscRowOffset} = 1$ \Then we impose that
+		\[
+			\locOogx =
+			\locStpOogx
+		\]
+	\item[\underline{Setting the \inst{CALL}-scenario flag:}]
+		we constrain the \inst{CALL}-scenario:
+		\begin{enumerate}
+			\item we unconditionally impose $\scenCallException_{i + \callFirstScenarioRowOffset} = \xAhoy_{i}$;
+			\item
+				\If $\scenCallUnexceptional _{i + \callFirstScenarioRowOffset} = 1$
+				\Then we impose that
+				\[ \scenCallAbort _{i + \callFirstScenarioRowOffset} = \locOobAbortingCondition \]
+			\item
+				\If $\scenCallAbort _{i + \callFirstScenarioRowOffset} = 1$
+				\Then we impose that
+				\[
+					\left\{ \begin{array}{lclr}
+						\scenCallAbortWillRevert _{i + \callFirstScenarioRowOffset} & = & \locCallerWillRevert                \\
+						\scenCallAbortWontRevert _{i + \callFirstScenarioRowOffset} & = & 1 - \locCallerWillRevert & (\trash) \\
+					\end{array} \right.
+				\]
+			\item
+				\If $\scenCallEntry         _{i + \callFirstScenarioRowOffset} = 1$
+				\Then we impose that
+				\[
+					\left\{ \begin{array}{lcl}
+						\scenCallPrc _{i + \callFirstScenarioRowOffset} & = & \locCalleeIsPrecompile                                     \\
+						\scenCallEoa _{i + \callFirstScenarioRowOffset} & = & (1 - \locCalleeIsPrecompile) \cdot (1 - \locCalleeHasCode) \\
+						\scenCallSmc _{i + \callFirstScenarioRowOffset} & = & \locCalleeHasCode                                          \\
+					\end{array} \right.
+				\]
+			\item \If
+				$\left[ \begin{array}{cl}
+					+ & \scenCallPrcSuccessWillRevert _{i + \callFirstScenarioRowOffset} \\
+					+ & \scenCallPrcSuccessWontRevert _{i + \callFirstScenarioRowOffset} \\
+				\end{array} \right] = 1$
+				\Then we impose that
+			% \item \If $\scenCallPrc  _{i + \callFirstScenarioRowOffset} = 1$ \Then we impose that
+				\[
+					\left\{ \begin{array}{lclr}
+						\scenCallPrcSuccessWillRevert _{i + \callFirstScenarioRowOffset} & = & \locCallerWillRevert     \\
+						\scenCallPrcSuccessWontRevert _{i + \callFirstScenarioRowOffset} & = & 1 - \locCallerWillRevert  & (\trash) \\
+					\end{array} \right.
+				\]
+			\item \If $\scenCallEoa  _{i + \callFirstScenarioRowOffset} = 1$ \Then we impose that
+				\[
+					\left\{ \begin{array}{lclr}
+						\scenCallEoaSuccessWillRevert _{i + \callFirstScenarioRowOffset} & = & \locCallerWillRevert     \\
+						\scenCallEoaSuccessWontRevert _{i + \callFirstScenarioRowOffset} & = & 1 - \locCallerWillRevert  & (\trash) \\
+					\end{array} \right.
+				\]
+			\item \If $\scenCallSmc  _{i + \callFirstScenarioRowOffset} = 1$ \Then we impose that
+				\[
+					\left\{ \begin{array}{lclr}
+						\left[ \begin{array}{ll}
+							+ & \scenCallSmcSuccessWillRevert _{i + \callFirstScenarioRowOffset} \\
+							+ & \scenCallSmcFailureWillRevert _{i + \callFirstScenarioRowOffset} \\
+						\end{array} \right] & = & \locCallerWillRevert \vspace{2mm} \\
+						\left[ \begin{array}{ll}
+							+ & \scenCallSmcSuccessWontRevert _{i + \callFirstScenarioRowOffset} \\
+							+ & \scenCallSmcFailureWontRevert _{i + \callFirstScenarioRowOffset} \\
+						\end{array} \right] & = & 1 - \locCallerWillRevert & (\trash) \\
+					\end{array} \right.
+				\]
+				we further impose
+				\[
+					\left\{ \begin{array}{lclr}
+						\scenCallSmcFailure _{i + \callFirstScenarioRowOffset} & = & \locCalleeSelfReverts     \\
+						\scenCallSmcSuccess _{i + \callFirstScenarioRowOffset} & = & 1 - \locCalleeSelfReverts \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+		\saNote{}
+		There is no connection between scenario flags and reverting behaviour of the present or child context in the \scenCallPrcFailure{} case.
+		Indeed if the \hubMod{} module predicts the \scenCallPrcFailure{} scenario no state change will be enacted.
+	\item[\underline{Setting the next context number:}]
+		we impose
+		\[
+			\left\{ \begin{array}{lclr}
+				\If \scenCallException         _{i + \callFirstScenarioRowOffset} = 1  & \Then & \cn\new  _{i - \callFirstStackRowOffset} = \caller        _{i - \callFirstStackRowOffset} & (\trash) \\
+				\If \scenCallNoContextChange   _{i + \callFirstScenarioRowOffset} = 1  & \Then & \cn\new  _{i - \callFirstStackRowOffset} = \cn            _{i - \callFirstStackRowOffset} \\
+				\If \scenCallSmc               _{i + \callFirstScenarioRowOffset} = 1  & \Then & \cn\new  _{i - \callFirstStackRowOffset} = 1 + \hubStamp  _{i - \callFirstStackRowOffset} \\
+			\end{array} \right.
+		\]
+	\item[\underline{Setting \gasCost{}:}]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\If \locStaticx = 1                                        & \Then \!\!\! & \gasCost_{i} = 0                 \\
+				\If \locMxpx    = 1                                        & \Then \!\!\! & \gasCost_{i} = 0                 \\
+				\If \locOogx    = 1                                        & \Then \!\!\! & \gasCost_{i} = \locStpGasUpfront \\
+				\If \scenCallAbort  _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasCost_{i} = \locStpGasUpfront \\
+				\If \scenCallSmc    _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasCost_{i} = \locStpGasUpfront \\
+				\If \scenCallEoa    _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasCost_{i} = \locStpGasUpfront \\
+				\If \scenCallPrc    _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasCost_{i} = \locStpGasUpfront \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		The implementation may choose to compress the above constraints into the following two constraints:
+		\[
+			\left\{ \begin{array}{lclr}
+				\If
+				\left[ \begin{array}{cl}
+					+ & \locStaticx \\
+					+ & \locMxpx    \\
+				\end{array} \right]
+				= 1 & \Then \!\!\! & \gasCost_{i} = 0 & (\trash) \vspace{2mm} \\
+				\If
+				\left[ \begin{array}{cl}
+					+ & \locOogx                                          \\
+					+ & \scenCallAbort _{i + \callFirstScenarioRowOffset} \\
+					+ & \scenCallSmc   _{i + \callFirstScenarioRowOffset} \\
+					+ & \scenCallEoa   _{i + \callFirstScenarioRowOffset} \\
+					+ & \scenCallPrc   _{i + \callFirstScenarioRowOffset} \\
+				\end{array} \right]
+				= 1 & \Then \!\!\! & \gasCost_{i} = \locStpGasUpfront & (\trash) \\
+			\end{array} \right.
+		\]
+	\item[\underline{Setting \gasNext{}:}]
+		we impose
+		\[
+			\hspace*{-2cm}
+			\left\{ \begin{array}{lclr}
+				\If \locStaticx  = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\trash) \\
+				\If \locMxpx     = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\trash) \\
+				\If \locOogx     = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\trash) \\
+				\If \scenCallAbort _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasNext_{i} = \gasActual_{i} - \locStpGasUpfront + \locStpGasStipend \\
+				\If \scenCallEoa   _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasNext_{i} = \gasActual_{i} - \locStpGasUpfront + \locStpGasStipend \\
+				\If \scenCallSmc   _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasNext_{i} = \gasActual_{i} - \locStpGasUpfront - \locStpGasPoop    \\
+				\If \scenCallPrc   _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasNext_{i} = \ob{TODO!}                                             \\
+			\end{array} \right.
+		\]
+		\saNote{} We will complete the specification of \gasNext{} in case $\scenCallPrc \equiv 1$ in section~(\ref{hub: instruction handling: call: precompile memory operations}). 
+\end{description}

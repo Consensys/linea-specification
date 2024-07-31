@@ -1,0 +1,54 @@
+Suppose we are given:
+\begin{itemize}
+	\item a binary column \col{X},
+	\item a counter-constant column \col{C},
+	\item a ``counter column'' \ct{}.
+\end{itemize}
+We say that the pair $(\col{X},\col{C})$ satisfies the \textbf{binary plateau constraint}\label{def: binary plateau constraints} if
+\begin{enumerate}
+	\item \If $\col{C}_i = 0$ \Then $\col{X}_i=1$,
+	\item \If $\col{C}_i \neq 0$ \Then
+	\begin{enumerate}
+		\item \If $\ct_i = 0$ \Then $\col{X}_i=0$,
+		\item \If $\ct_i \neq 0$ \Then 
+		\begin{enumerate}
+			\item \If $\ct_{i} = \col{C}_{i}$ \Then $\col{X}_{i} = 1$,
+			\item \If $\ct_{i} \neq \col{C}_{i}$ \Then $\col{X}_{i} = \col{X}_{i - 1}$,
+		\end{enumerate}
+	\end{enumerate}
+\end{enumerate}
+and we use the shorthand
+\[
+	\plateau(\col{X},\col{C}; \ct{})
+\]
+to signify that $(\col{X},\col{C})$ satisfies this constraint. In practice the columns \col{C} we will consider will be counter-constant columns with values $\in\{0,1,2,\dots,\llargeMO\}$. Figure~\ref{fig: binary plateau constraints} represents portions (that is, counter-cycles) of a binary column \col{X} that satisfies a binary plateau constraint w.r.t. some counter-constant column \col{C} for different values of $c=\col{C}$.
+\def\zero{\bm{{\color{gray!60}0}}}
+\def\one{\bm{1}}
+\begin{figure}\label{fig: binary plateau constraints}
+\[
+	\begin{array}{|l|c|c|c|c|c|c|c|c|c|}
+	\hline
+	\col{X} & \one & \one & \one & \cdots & \one\\
+	\hline
+	\ct{}   & 0 & 1 & 2 & \cdots & \llargeMO\\
+	\hline
+	\end{array}
+	\qquad
+	\begin{array}{|l|c|c|c|c|c|c|c|c|c|}
+	\hline
+	\col{X} & \zero & \zero & \zero & \cdots & \zero & \one & \one & \cdots & \one\\
+	\hline
+	\ct{}   & 0 & 1 & 2 & \cdots & c-1 & c & c+1 & \cdots & \llargeMO\\
+	\hline
+	\end{array}
+	\qquad
+	\begin{array}{|l|c|c|c|c|c|c|c|c|c|}
+	\hline
+	\col{X} & \zero & \zero & \zero & \cdots & \zero\\
+	\hline
+	\ct{}   & 0 & 1 & 2 & \cdots & \llargeMO\\
+	\hline
+	\end{array}
+\]
+\caption{Assuming $\plateau(\col{X},\col{C})$, the above represents a counter-cycle's worth of \col{X} when $c=0$, when $0 < c < \llarge$ and when $c\geq \llarge$.}
+\end{figure}

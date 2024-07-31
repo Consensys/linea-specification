@@ -1,0 +1,147 @@
+\begin{lem}[euclidean division of a $512$-bit integer by a $256$-bit integer]
+Let 
+$\colm{J} \equiv [\colm{J}_{7} \,|\, \cdots \,|\, \colm{J}_{1} \,|\, \colm{J}_{0}]$ be a $512$-bit integer
+and let 
+$\colm{C}\equiv[\colm{C}_{3} \,|\, \colm{C}_{2} \,|\, \colm{C}_{1} \,|\, \colm{C}_{0}]$,
+be a \emph{nonzero} $256$-bit integer.
+Suppose furthermore that
+$\colm{Q} \equiv [\colm{Q}_{7} \,|\, \cdots \,|\, \colm{Q}_{1} \,|\, \colm{Q}_{0}]$
+and
+$\colm{R}\equiv[\colm{R}_{3} \,|\, \colm{R}_{2} \,|\, \colm{R}_{1} \,|\, \colm{R}_{0}]$
+are a $512$-bit integer and a $256$-bit integer respectively.
+
+Define, for $k = 0, 1, 2, 3$, bits
+$\colm{eq}_{k}$ and
+$\colm{lt}_{k}$ by imposing that
+\[
+	\left\{
+	\begin{array}{lcc}
+		\colm{eq}_{k} = 1	& \iff & \colm{R}_{k} = \colm{C}_{k}\\
+		\colm{lt}_{k} = 1	& \iff & \colm{R}_{k} < \colm{C}_{k}\\
+ 	\end{array}
+	\right.
+\]
+
+The following are equivalent:
+\begin{enumerate}
+	\item $(\colm{Q}, \colm{R})$ is the euclidean division of $\colm{J}$ by $\colm{C}$, i.e.
+	$\colm{J} = \colm{Q} \cdot \colm{C} + \colm{R}$ as integers and
+	$0\leq \colm{R} < \colm{C}$;
+	\item there exist $64$-bit integers $\colm{I}_{6}, \colm{I}_{5}, \colm{I}_{4}, \colm{I}_{3}, \colm{I}_{2}, \colm{I}_{1}$ and $\colm{I}_{0}$
+	as well as
+	$\sigma \in \{ 0, 1 \}$,
+	$\tau \in \{ 0, 1, 2, 3\}$,
+	$\rho \in \{ 0, 1, 2, 3\}$,
+	$\varphi \in \{ 0, 1, 2\}$,
+	$\psi \in \{ 0, 1, 2, 3, 4\}$ and
+	$\chi \in \{ 0, 1, 2, 3, 4\}$ such that
+	\[
+	\left\{
+	\begin{array}{lcr}
+		  \colm{Q}_{1} \cdot \colm{C}_{0}
+		+ \colm{Q}_{0} \cdot \colm{C}_{1} & \!\!\! = \!\!\! &
+		\theta^2 \cdot \sigma
+		+ \,\, \theta \cdot \colm{I}_{1} + \colm{I}_{0} \\
+		  \colm{Q}_{3} \cdot \colm{C}_{0}
+		+ \colm{Q}_{2} \cdot \colm{C}_{1}
+		+ \colm{Q}_{1} \cdot \colm{C}_{2}
+		+ \colm{Q}_{0} \cdot \colm{C}_{3} & \!\!\! = \!\!\! &
+		\theta^2 \cdot \tau
+		+ \,\, \theta \cdot \colm{I}_{3} + \colm{I}_{2} \\
+		  \colm{Q}_{5} \cdot \colm{C}_{0}
+		+ \colm{Q}_{4} \cdot \colm{C}_{1}
+		+ \colm{Q}_{3} \cdot \colm{C}_{2}
+		+ \colm{Q}_{2} \cdot \colm{C}_{3} & \!\!\! = \!\!\! &
+		\theta^2 \cdot \rho
+		+ \,\, \theta \cdot \colm{I}_{5} + \colm{I}_{4} \\
+		  \colm{Q}_{7} \cdot \colm{C}_{0}
+		+ \colm{Q}_{6} \cdot \colm{C}_{1}
+		+ \colm{Q}_{5} \cdot \colm{C}_{2}
+		+ \colm{Q}_{4} \cdot \colm{C}_{3} & \!\!\! = \!\!\! &
+		\colm{I}_{6} \\
+	\end{array}
+	\right.
+	\]
+	and
+	\[
+	\left\{
+	\begin{array}{lll}
+		\colm{Q}_{7} \cdot \colm{C}_{1} = 0,
+		& \colm{Q}_{6} \cdot \colm{C}_{2} = 0,
+		& \colm{Q}_{5} \cdot \colm{C}_{3} = 0, \\
+		\colm{Q}_{7} \cdot \colm{C}_{2} = 0,
+		& \colm{Q}_{6} \cdot \colm{C}_{3} = 0,
+		& \colm{Q}_{7} \cdot \colm{C}_{3} = 0,
+	\end{array}
+	\right\}
+	\]
+	and
+	\[
+\left\{
+\begin{array}{cclcr}
+	&
+	\colm{Q}_{0} \cdot \colm{C}_{0}
+	&
+	\!\!\!\!\!
+	+ \,\, \theta \cdot \colm{I}_{0}
+	+ \Big[\theta \cdot \colm{R}_{1} + \colm{R}_{0}\Big]
+	& \!\!\!\! = \!\!\!\! & 
+	\theta^2 \cdot \varphi + \theta \cdot \colm{J}_{1} + \colm{J}_{0} \vspace{1mm} \\
+	\varphi
+	+ \colm{I}_{1}
+	+ \theta\cdot\sigma
+	&
+	+	\Big[\colm{Q}_{2} \cdot \colm{C}_{0}
+	+	\colm{Q}_{1} \cdot \colm{C}_{1}
+	+	\colm{Q}_{0} \cdot \colm{C}_{2}\Big]
+	&
+	\!\!\!\!\!
+	+ \,\, \theta \cdot \colm{I}_{2}
+	+ \Big[\theta \cdot \colm{R}_{3} + \colm{R}_{2}\Big]
+	& \!\!\!\! = \!\!\!\! & 
+	\theta^2 \cdot \psi + \theta \cdot \colm{J}_{3} + \colm{J}_{2} \vspace{1mm} \\
+	\psi
+	+ \colm{I}_{3}
+	+ \theta\cdot\tau
+	&
+	\!\!\!\!
+	+	\Big[\colm{Q}_{4} \cdot \colm{C}_{0}
+	+	\colm{Q}_{3} \cdot \colm{C}_{1}
+	+	\colm{Q}_{2} \cdot \colm{C}_{2}
+	+	\colm{Q}_{1} \cdot \colm{C}_{3}\Big]
+	&
+	\!\!\!\!\!
+	+ \,\, \theta \cdot \colm{I}_{4}
+	& \!\!\!\! = \!\!\!\! & 
+	\theta^2 \cdot \chi + \theta \cdot \colm{J}_{5} + \colm{J}_{4} \vspace{1mm} \\
+	\chi
+	+ \colm{I}_{5}
+	+ \theta\cdot\rho
+	&
+	\!\!\!\!
+	+	\Big[\colm{Q}_{6} \cdot \colm{C}_{0}
+	+	\colm{Q}_{5} \cdot \colm{C}_{1}
+	+	\colm{Q}_{4} \cdot \colm{C}_{2}
+	+	\colm{Q}_{3} \cdot \colm{C}_{3}\Big]
+	&
+	\!\!\!\!\!
+	+ \,\, \theta \cdot \colm{I}_{6}
+	& \!\!\!\! = \!\!\!\! &
+	\theta \cdot \colm{J}_{7} + \colm{J}_{6} \\
+\end{array}
+\right.
+\]
+and finally
+\[
+	\colm{lt}_{3}
+	+
+	\colm{eq}_{3} \cdot \colm{lt}_{2}
+	+
+	\colm{eq}_{3} \cdot \colm{eq}_{2} \cdot \colm{lt}_{1}
+	+
+	\colm{eq}_{3} \cdot \colm{eq}_{2} \cdot \colm{eq}_{1} \cdot \colm{lt}_{0}
+	=
+	1
+\]
+\end{enumerate}
+\end{lem}

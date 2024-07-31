@@ -1,0 +1,75 @@
+Before defining the values for the missing shorthands from section~(\ref{hub: instruction handling: call: specialized: initializing callee})
+we take the time to remind the reader how the various \inst{CALL}-type instructions set the parameters for the message call function $\Theta$:
+\[
+	\renewcommand{\arraystretch}{1.3}
+	\begin{array}{|l|c|l|} \cline{3-3}
+		\multicolumn{2}{c|} & \text{Caller context} \\
+		\multicolumn{2}{c|} & \text{environment} \\
+		\multicolumn{2}{c|} & \text{variables} \\ \hline
+		\text{Definition of }\Theta & \Theta(\bm{\sigma}, A  , \yellowm{s}      , o         , \yellowm{r}       , c, g                 , p         , v                     , \yellowm{\tilde{v}}          , \textbf{d}, e             , \yellowm{w}  )        & \begin{cases} I_\text{s}' & \leftarrow \yellowm{s}       \\ I_\text{a}' & \leftarrow \yellowm{r         } \\ I_\text{v}' & \leftarrow \yellowm{\tilde{v}}           \\ I_\text{w}' & \leftarrow \yellowm{w}       \\ \end{cases} \\ \hline \hline
+		\inst{CALL}         & \Theta(\bm{\sigma}, A^*, \redm{I_\text{a}}, I_\text{o}, \redm{t         } , t, C_\textsc{callgas}, I_\text{p}, \bm{\mu}_\textbf{s}[2], \redm{\bm{\mu}_\textbf{s}[2]}, \textbf{i}, I_\text{e} + 1, \redm{I_{\text{w}}} ) & \begin{cases} I_\text{s}' & \leftarrow \redm{I_\text{a}} \\ I_\text{a}' & \leftarrow \redm{t            } \\ I_\text{v}' & \leftarrow \redm{\bm{\mu}_\textbf{s}[2]} \\ I_\text{w}' & \leftarrow \redm{I_\text{w}} \\ \end{cases} \\ \hline
+		\inst{CALLCODE}             & \Theta(\bm{\sigma}, A^*, \redm{I_\text{a}}, I_\text{o}, \redm{I_\text{a}} , t, C_\textsc{callgas}, I_\text{p}, \bm{\mu}_\textbf{s}[2], \redm{\bm{\mu}_\textbf{s}[2]}, \textbf{i}, I_\text{e} + 1, \redm{I_{\text{w}}} ) & \begin{cases} I_\text{s}' & \leftarrow \redm{I_\text{a}} \\ I_\text{a}' & \leftarrow \redm{I_\text{a}   } \\ I_\text{v}' & \leftarrow \redm{\bm{\mu}_\textbf{s}[2]} \\ I_\text{w}' & \leftarrow \redm{I_\text{w}} \\ \end{cases} \\ \hline
+		\inst{DELEGATECALL}         & \Theta(\bm{\sigma}, A^*, \redm{I_\text{s}}, I_\text{o}, \redm{I_\text{a}} , t, C_\textsc{callgas}, I_\text{p}, 0                     , \redm{I_\text{v}            }, \textbf{i}, I_\text{e} + 1, \redm{I_{\text{w}}} ) & \begin{cases} I_\text{s}' & \leftarrow \redm{I_\text{s}} \\ I_\text{a}' & \leftarrow \redm{I_\text{a}   } \\ I_\text{v}' & \leftarrow \redm{I_\text{v}}             \\ I_\text{w}' & \leftarrow \redm{I_\text{w}} \\ \end{cases} \\ \hline
+		\inst{STATICCALL}           & \Theta(\bm{\sigma}, A^*, \redm{I_\text{a}}, I_\text{o}, \redm{t         } , t, C_\textsc{callgas}, I_\text{p}, 0                     , \redm{0                     }, \textbf{i}, I_\text{e} + 1, \redm{\bot        } ) & \begin{cases} I_\text{s}' & \leftarrow \redm{I_\text{a}} \\ I_\text{a}' & \leftarrow \redm{t            } \\ I_\text{v}' & \leftarrow \redm{0}                      \\ I_\text{w}' & \leftarrow \redm{\bot      } \\ \end{cases} \\ \hline
+	\end{array}
+\]
+from which it follows that
+\begin{description}
+	\item[\underline{Caller address $I_\text{s}'$ of the callee context:}] 
+		$I_\text{s}'$ is accessible through the \inst{CALLER} opcode
+		\begin{itemize}
+			\item 
+				\inst{CALL},
+				\inst{CALLCODE} and
+				\inst{STATICCALL}
+				set the callee context's ``caller address $I_\text{s}$''
+				to the caller context's ``account address $I_\text{a}$''
+			\item 
+				\inst{DELEGATECALL}
+				perpetuates the caller context's ``caller address $I_\text{s}$''
+				to the callee context's ``caller address $I_\text{s}$''
+		\end{itemize}
+		% \inst{CALL},
+		% \inst{CALLCODE} 
+		% \inst{DELEGATECALL}
+		% \inst{STATICCALL}
+	\item[\underline{Account address $I_\text{a}'$ of the callee context:}] 
+		$I_\text{a}'$ is accessible through the \inst{ADDRESS} opcode
+		\begin{itemize}
+			\item
+				\inst{CALLCODE} 
+				\inst{DELEGATECALL}
+				perpetuate the current account address (as accessible through the \inst{ADDRESS} opcode) to the callee context;
+			\item 
+				\inst{CALL},
+				\inst{STATICCALL}
+				the underlying account address is that of the target address of the \inst{CALL}-type instruction;
+		\end{itemize}
+	\item[\underline{Value $I_\text{v}'$ passed to the callee context:}] 
+		$I_\text{a}'$ is accessible through the \inst{CALLVALUE} opcode
+		\begin{itemize}
+			\item 
+				\inst{CALL},
+				\inst{CALLCODE} 
+				provide the callee context with the ``value'' stack argument as its ``call value'';
+			\item 
+				\inst{DELEGATECALL}
+				transfers the current ``call value'' $I_\text{v}$ to the callee context;
+			\item 
+				\inst{STATICCALL}
+				provides the callee context with zero ``call value'';
+		\end{itemize}
+	\item[\underline{Write permission $I_\text{w}'$ of the callee context:}] 
+		responsible for raising \staticxSH{}'s
+		\begin{itemize}
+			\item
+				\inst{CALL},
+				\inst{CALLCODE} and
+				\inst{DELEGATECALL}
+				tranfer the current write permission ($I_\text{w} \equiv \neg ~ \locIsStatic$) to the callee context;
+			\item
+				\inst{STATICCALL}
+				sets the write permission of the callee context to false, $I_\text{w} \equiv \perp$, i.e. sets it $\cnStatic \equiv \rOne$;
+		\end{itemize}
+\end{description}
+

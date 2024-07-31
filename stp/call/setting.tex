@@ -1,0 +1,32 @@
+\[
+	\boxed{\text{The constaints below assume that }
+	\begin{cases}
+		\stpStamp_{i} \neq \stpStamp_{i - 1} \\
+		\isCall  _{i} =    1                     \\
+	\end{cases}}
+\]
+We now settle gas costs and gas stipends for \inst{CALL}'s:
+\begin{description}
+	\item[\underline{The ``no \oogxSH{}'' case:}] \If $\oogx_{i} = 0$ \Then
+		\begin{enumerate}
+			\item $\gasUpfront_{i} = \locGasUpfrontCall$
+			\item $\gasPoop_{i} = \locMin$
+			\item $\gasStipend_{i} = \cctv_{i} \cdot \locTransfersValue \cdot G_{\text{callstipend}}$
+				% Where we set
+				% \begin{IEEEeqnarray*}{LCL}
+				% 	\locMin  & := &
+				% 	\begin{cases}
+				% 		\If \resLo_{i + 4} = 0 : & L(\locDiff) \\
+				% 		\If \resLo_{i + 4} = 1 : & \gasLo_{i} \\
+				% 	\end{cases} \\
+				% 	& =  &  (1 - \resLo_{i + 4}) \cdot (\argOneLo_{i + 3} - \resLo_{i + 3}) \\
+				% 	&    &  ~ + \resLo_{i + 4} \cdot \gasLo_{i} \\
+				% \end{IEEEeqnarray*}
+		\end{enumerate}
+	\item[\underline{The ``\oogxSH{}'' case:}] \If $\oogx_{i} = 1$ \Then
+		\begin{enumerate}
+			\item $\gasUpfront_{i} = \locGasUpfrontCall$
+			\item $\gasPoop_{i} = 0$
+			\item $\gasStipend_{i} = 0$
+		\end{enumerate}
+\end{description}

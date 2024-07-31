@@ -1,0 +1,20 @@
+The present section details a simple ``comparison'' constraint which will be used to compare inputs representing the length of a byte string to $\fiftyFive$. We are given the following:
+\begin{itemize}
+\item \col{length};
+\item \col{comp} a binary column;
+\item \col{acc}: an ``accumulator column'';
+\end{itemize}
+The interpretation will be as follows: 
+\col{length} will be the length we are interested in comparing to $\fiftyFive$;
+\col{comp} will be the comparison bit ($=0$ \emph{iff} $\col{length} \leq \fiftyFive$)
+\col{acc} will be a byte accumulation column (such constraints will be imposed elsewhere) such that on the row where the constraint below applies one is assured that its value is relatively small. 
+
+\noindent We subsume under the shorthand
+\[
+    \compareFiftyFive_{i}(\col{length}, \col{comp}, \col{acc})
+\]
+The following single constraint:
+\[
+    (2 \cdot \col{comp}_{i} - 1) \cdot (\col{length}_{i} - \fiftyFive) - \col{comp}_{i} = \col{acc}_{i}
+\]
+\saNote{} This equation enforces the desired interpretation for the comparison bit. 

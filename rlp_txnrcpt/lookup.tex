@@ -1,0 +1,54 @@
+This module takes information from three different modules through lookup : \logInfoMod, \logDataMod and \txnDataMod. 
+
+\subsection{Lookup emanating from LOGINFO}{}
+\label{lookup_log_info}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|c|c|c|c|c|c|c|}
+    \hline
+   $\col{ABSTX}^{\infty}$ & \col{ABSTX} & $\col{ABSLOG}^{\infty}$ & \col{ABSLOG} & \Phase{}                                          & \col{DATA\_1}     & \col{DATA\_2}      \\ \hline
+                          &             & abs 	                  & nLog         & 			  \subPhaseIdAddr                                            & (\col{ADDR\_HI})  & (\col{ADDR\_LOW})  \\ \hline
+                          &             & abs 	                  & nLog         & $\subPhaseIdTopicBase  + \subPhaseIdTopicDelta \cdot \col{topic}$ & (\col{TOPIC\_HI}) & (\col{TOPIC\_LOW}) \\ \hline
+                          &             & abs 	                  & nLog         & 			  \subPhaseIdDataSize                                        & (\col{DATASIZE})  &    \col{nbTopic}   \\ \hline
+  \end{tabular}
+  \caption{\logInfoMod{} Source. \col{topic} ranges from 1 to \col{nbTopic} which equals \inst{X} for \inst{LOGX} instructions. We use the following shorthand:  $\col{ABSTX}^{\infty}$ for \absTxNumInfty, \col{ABSTX} for \absTxNum, $\col{ABSLOG}^{\infty}$ for \absLogNumMax, \col{ABSLOG} for \absLogNum.} 
+\end{table}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    \absTxNum & \logNum & \Phase{} & \Input{1}     & \Input{2}      \\ \hline
+    abs 	  & nLog    & 			 ... &  ...          &   ...          \\ \hline
+  \end{tabular}
+  \caption{RLP\_TXRCPT Target}
+\end{table}
+
+\subsection{Lookup emanating from LOGDATA}
+\label{lookup_log_data}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|c|c|c|c|c|c|}
+    \hline
+    \absTxNum & \logNum & \Phase{} & \indexlocal & \limb & \limbsize \\ \hline
+    abs 	  & nLog    & 		 \subPhaseIdDataLimb	     &        &       &           \\ \hline
+  \end{tabular}
+  \caption{LOGDATA Source}
+\end{table}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|c|c|c|c|c|c|}
+    \hline
+    \absTxNum & \logNum & \Phase & \indexlocal & \limb & \limbsize \\ \hline
+    ... 	  & ...     & 		 ...     &     ...     &  ...  & ...       \\ \hline
+  \end{tabular}
+  \caption{RLP\_TXRCPT Target}
+\end{table}
+
+
+\subsection{Lookup emanating from TXNDATA}
+See \ref{txData: lookups: rlp txnrcpt}, page \pageref{txData: lookups: rlp txnrcpt}. 
+

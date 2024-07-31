@@ -1,0 +1,34 @@
+\begin{center}
+	\boxed{\text{All constraints in this section are written under the assumption } \peekStack_{i} = 1.}
+\end{center}
+
+Before instruction processing leads to any items being either excavated from (or placed onto) some execution context's stack, the \zkEvm{} must first check whether doing so would cause a \textbf{stack exception}, that is: either a \suxSH{} or a \soxSH{}.
+The main ingredients that go into this check are as follows:
+\begin{enumerate}
+	\item the currently valid stack height $\height$;
+	\item two instruction decoded parameters $\stackDelta$ and $\stackAlpha$;
+	\item two exclusive exception flags $\stackSux$ and $\stackSox{}$;
+\end{enumerate}
+\saNote{} For a given instruction $w$ the \idMod{} module provides the pair $(\stackDelta, \stackAlpha)$ representing $(\delta_{w},\alpha_{w})$ respectively, using notations from the \cite{EYP}.
+\begin{enumerate}[resume]
+	\item a lookup to the \wcpMod{} to check for \suxSH{}'s, see section~(\ref{hub: lookups: into wcp for stack underflow});
+	\item a lookup to the \wcpMod{} to check for \soxSH{}'s, see section~(\ref{hub: lookups: into wcp for stack overflow});
+\end{enumerate}
+\saNote{} The above lookups justify $\stackSux_{i}$ and $\stackSox_{i}$ respectively.
+
+In case of a stack exception only one (non stack-)peeking row is required, the row which updates the parent context's context data.
+We thus impose the following:
+\begin{enumerate}
+	\item \If \Big($\peekStack_{i} = 1$ \et $\stackSux_{i} + \stackSox_{i} = 1$\Big) \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\nonStackRows_{i} & = & 1 \\
+				\multicolumn{3}{l}{\emptyStackItem{k}_{i}, ~ k\in\{1,2,3,4\}} \\
+			\end{array} \right.
+		\]
+\end{enumerate}
+\saNote{} The above applies automatically to both rows in case of a $\TLI{}$.
+
+\saNote{} In case of a stack exception the above and constraints from section~\ref{hub: generalities: context: context numbers} impose that the \textbf{one} non-stack row coming after the stack rows\footnote{one or two depending on $\tli{}$} be a context-row providing empty return data to the caller context. Recall that there is one such row by virtue of the above constraint $\nonStackRows_{i} = 1$.
+
+\saNote{} The \inst{DUP\_X}, $1 \leq \inst{X} \leq 16$, instructions are the only instructions which may raise both underflow and overflow exceptions.

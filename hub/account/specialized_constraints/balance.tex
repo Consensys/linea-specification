@@ -1,0 +1,16 @@
+Below we define some simple constraint systems for account balance operations.
+\[
+\left\{ \begin{array}{lcl}
+	\accSameBalance         {i}{\relof}              & \!\!\! \iff \!\!\! & \accBalance\new_{i + \relof} = \accBalance_{i + \relof}               \\
+	\accIncrementBalance    {i}{\relof}{\col{value}} & \!\!\! \iff \!\!\! & \accBalance\new_{i + \relof} = \accBalance_{i + \relof} + \col{value} \\
+	\accDecrementBalance    {i}{\relof}{\col{value}} & \!\!\! \iff \!\!\! & \accBalance\new_{i + \relof} = \accBalance_{i + \relof} - \col{value} \\
+	\accUndoBalanceUpdate   {i}{\reluo}{\reldo}      & \!\!\! \iff \!\!\! &
+	\left\{ \begin{array}{lcl}
+		\accBalance     _{i + \reluo} & \!\!\! = \!\!\! & \accBalance\new _{i + \reldo} \\
+		\accBalance\new _{i + \reluo} & \!\!\! = \!\!\! & \accBalance	  _{i + \reldo} \\
+	\end{array} \right. \\
+\end{array} \right.
+\]
+\saNote{}
+The ``$\accUndoBalanceUpdate {i}{\reluo}{\reldo}$'' constraint undoes on row $i + \reluo$ (i.e. the row with relative offset $\reluo$) changes made to the account's balance on row $i + \reldo$ (i.e. the row with relative offset $\reldo$).
+This constraints should only be applied when $\peekAccount_{i} = \peekAccount_{i - \relof} = 1$ (and the underlying account is the same on both rows.)

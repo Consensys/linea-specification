@@ -1,0 +1,71 @@
+\begin{center}
+	\boxed{%
+		\text{The next constraints are written assuming that}
+		\left\{ \begin{array}{lcl}
+			\peekScenario                                _{i} & = & 1 \\
+			\scenCreateNonEmptyInitCodeFailureWillRevert _{i} & = & 1 \\
+		\end{array} \right. }
+\end{center}
+We deal with the extra complication that arises when a deployment fails and the context which launched it is later on reverted.
+We impose the following constraints:
+\begin{description}
+	\item[\underline{Undoing creator account operations on row $n^°(i + \createThirdCreatorAccountRowOffset)$:}] 
+		we impose that
+		\[
+			\left\{ \begin{array}{lclr}
+				\multicolumn{3}{l}{\accSameAddr                      {i}{\createThirdCreatorAccountRowOffset}{\createFirstCreatorAccountRowOffset}} \\ % address
+				\multicolumn{3}{l}{\accSameBalance                   {i}{\createThirdCreatorAccountRowOffset}} \\ % balance
+				\multicolumn{3}{l}{\accUndoNonceUpdate               {i}{\createThirdCreatorAccountRowOffset}{\createFirstCreatorAccountRowOffset}} \\ % nonce
+				\multicolumn{3}{l}{\accSameCode                      {i}{\createThirdCreatorAccountRowOffset}}                                      \\ % code
+				\multicolumn{3}{l}{\accSameWarmth                    {i}{\createThirdCreatorAccountRowOffset}}                                      \\ % warmth
+				\multicolumn{3}{l}{\accSameDeployment                {i}{\createThirdCreatorAccountRowOffset}}                                      \\ % deployment number and status
+				\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag {i}{\createThirdCreatorAccountRowOffset}} \vspace{2mm}                         \\
+				\accTrmFlag      _{i + \createThirdCreatorAccountRowOffset} & = & 0              \\ % TRM
+				\accRomLexFlag   _{i + \createThirdCreatorAccountRowOffset} & = & 0              \\ % ROM_LEX
+				\accRlpAddrFlag  _{i + \createThirdCreatorAccountRowOffset} & = & 0 \vspace{2mm} \\ % RLP_ADDR
+				\multicolumn{3}{l}{
+					\revertDomSubStamps {
+						anchorRow        = i,
+						relOffset        = \createThirdCreatorAccountRowOffset,
+						subOffset        = 2,
+						}
+					} \\
+					% \revertDomSubStamps {i}{\createThirdCreatorAccountRowOffset}{2} } \\
+					% \multicolumn{3}{l}{
+					% 	\revertWithChildFailureDomSubStamps {i}{\relof} {\col{s}} {\locCreateeRevertStamp}
+					% } \\
+					% \multicolumn{3}{l}{\revertDomSubStamps {i}{\createThirdCreatorAccountRowOffset}{0}} \\ % Dom / Sub stamps
+			\end{array} \right.
+		\]
+		\saNote{} The balance is refunded to the creator, but the nonce remains at ``$n + 1$.''
+	\item[\underline{Undoing createe account operations on row $n^°(i + \createThirdCreateeAccountRowOffset)$:}] 
+		we impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\multicolumn{3}{l}{\accSameAddr                      {i}{\createThirdCreateeAccountRowOffset}{\createFirstCreateeAccountRowOffset}} \\ % address
+				\multicolumn{3}{l}{\accSameBalance                   {i}{\createThirdCreateeAccountRowOffset}} \\ % balance
+				\multicolumn{3}{l}{\accSameNonce                     {i}{\createThirdCreateeAccountRowOffset}} \\ % nonce
+				\multicolumn{3}{l}{\accSameCode                      {i}{\createThirdCreateeAccountRowOffset}} \\ % code
+				\multicolumn{3}{l}{\accUndoWarmthUpdate              {i}{\createThirdCreateeAccountRowOffset}{\createFirstCreateeAccountRowOffset}} \\ % warmth
+				\multicolumn{3}{l}{\accSameDeployment                {i}{\createThirdCreateeAccountRowOffset}} \\ % deployment number and status
+				\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag {i}{\createThirdCreateeAccountRowOffset}} \vspace{4mm}                         \\
+				\accTrmFlag     _{i + \createThirdCreateeAccountRowOffset} & = & 0              \\ % TRM
+				\accRomLexFlag  _{i + \createThirdCreateeAccountRowOffset} & = & 0              \\ % ROM_LEX
+				\accRlpAddrFlag _{i + \createThirdCreateeAccountRowOffset} & = & 0 \vspace{4mm} \\ % RLP_ADDR
+				\multicolumn{3}{l}{
+					\revertDomSubStamps {
+						anchorRow        = i,
+						relOffset        = \createThirdCreateeAccountRowOffset,
+						subOffset        = 3,
+						}
+					} \\
+					% \revertDomSubStamps {i}{\createThirdCreateeAccountRowOffset}{3}} \\ % Dom / Sub stamps
+			\end{array} \right.
+		\]
+		\saNote{} The only nontrivial operations which the above ``undoes'' are
+		the nonce update,
+		the warmth update and
+		the \accDepStatus{} udpate (\accDepNumber{} updates are \emph{never} undone, see the definition of \accUndoDeploymentStatusAndNumberUpdateName{} in section~(\ref{hub: account: specialized constraints: deployment}).)
+\end{description}
+
+

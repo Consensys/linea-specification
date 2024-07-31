@@ -1,0 +1,73 @@
+\[
+	\boxed{\text{All constraints in this subsection further assume } \oobInstIsModexpExtract_{i} = 1}
+\]
+We use the shorthands defined below:
+\[
+	\left\{ \begin{array}{lclr}
+		% \locCallGas             & \define & \oobDataCol{1}_{i} \\
+		\locCds                 & \define & \oobDataCol{2}_{i} \\
+		\locBbs                 & \define & \oobDataCol{3}_{i} \\
+		\locEbs                 & \define & \oobDataCol{4}_{i} \\
+		\locMbs                 & \define & \oobDataCol{5}_{i} \\
+		\locExtractBase      & \define & \oobDataCol{6}_{i} & \quad \prediction \\
+		\locExtractExponent  & \define & \oobDataCol{7}_{i} & \quad \prediction \\
+		\locExtractModulus   & \define & \oobDataCol{8}_{i} & \quad \prediction \\
+	\end{array} \right.
+\]
+\saNote{} The decorator `` $\prediction{}$ '' stands for ``\hubMod{} prediction.''
+
+\begin{description}
+	\item[\underline{Rows $n^\circ(i)$, $n^\circ(i + 1)$, $n^\circ(i + 2)$ and $n^\circ(i + 3)$:}]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\oobCallToIszero
+				{i}{0}
+				{0}{\locBbs}
+				\vspace{2mm} \\
+				\oobCallToIszero
+				{i}{1}
+				{0}{\locEbs}
+				 \vspace{2mm} \\
+				\oobCallToIszero
+				{i}{2}
+				{0}{\locMbs}
+				\vspace{2mm} \\
+				\oobCallToLt
+				{i}{3}
+				{0}{96 + \locBbs + \locEbs}
+				{0}{\locCds}
+				\\
+			\end{array} \right.
+		\]
+		and define the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locBbsIsZero                      & \define & \outgoingResLo_{i    } \\ 
+				\locEbsIsZero                      & \define & \outgoingResLo_{i + 1} \\ 
+				\locMbsIsZero                      & \define & \outgoingResLo_{i + 2} \\ 
+				\locCallDataExtendsBeyondExponent  & \define & \outgoingResLo_{i + 3} \\ 
+			\end{array} \right.
+		\]
+	\item[\underline{Justifying \hubMod{} predictions:}] 
+		we impose that
+		\[
+			\left\{ \begin{array}{lcrcl}
+				\locExtractModulus     & = & \locCallDataExtendsBeyondExponent  & \!\!\!\cdot\!\!\! & (1 - \locMbsIsZero) \\ 
+				\locExtractBase        & = & \locExtractModulus              & \!\!\!\cdot\!\!\! & (1 - \locBbsIsZero) \\ 
+				\locExtractExponent    & = & \locExtractModulus              & \!\!\!\cdot\!\!\! & (1 - \locEbsIsZero) \\ 
+			\end{array} \right.
+		\]
+\end{description}
+\saNote{} By construction \( 0 \leq \locExtractXxx \leq \locExtractModulus \leq 1)$ for $\col{xxx} = \col{base}, \col{exponent}, \col{modulus}$.
+
+\saNote{} We provide some explanations.
+The condition ``$\locExtractModulus \equiv 0$'' amounts to either $\locMbs \equiv 0$ or $\locCds \leq 96 + \locBbs + \locEbs$.
+In either case the \textbf{modulus} of the underlying \inst{MODEXP} call is $\bm{0}$ and so is the \textbf{result} (though, importantly, the \RDS{} \emph{post-call} is \locMbs{} which can be anything in the range $\{ 0, 1, \dots, 512 \}$.)
+In this case there is no reason to extract any of the base, exponent or modulus.
+On the other hand when $\locExtractModulus \equiv 1$ it is necessary to extract base, exponent and modulus.
+It may still happen that $\locBbs \equiv 0$ or $\locEbs \equiv 0$.
+In which case the \hubMod{} will order the \textsc{ram} to send zeros to the \modexpMod{} (rather than potentially left and right padded data from \textsc{ram}.)
+To account for this possibility the $\oobInstModexpExtract$ instruction provides the bits
+\locExtractBase     {} and
+\locExtractExponent {} for exploitation by the \inst{MODEXP} processing in the \hubMod{} module.

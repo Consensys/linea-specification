@@ -1,0 +1,101 @@
+The present section specifies the behaviour of the binary $\roob$. This binary flag should turn on \emph{if and only if} offset(s) and / or size(s) are $\ROOB$. Its behaviour depends on the memory expansion type of the instruction at hand.
+\begin{enumerate}
+	\item $\roob$ is binary (\trash);
+	\item \If $\decMxpType{1}_{i} = 1$ \Then $\roob_{i} = 0$;
+	\item \If \Big($\decMxpType{2}_{i} + \decMxpType{3}_{i} \neq 0$\Big) \Then
+	\[
+	\left\{
+	\begin{array}{l}
+		\If \offsetHi{1}_{i} \neq 0 ~ \Then \roob_{i} = 1 \\
+		\If \offsetHi{1}_{i} = 0    ~ \Then \roob_{i} = 0 \\
+	\end{array}
+	\right.
+	\]
+	\item \If $\decMxpType{4}_{i} = 1$ \Then
+	\[
+	\left\{
+	\begin{array}{l}
+		\If \sizeHi{1}_{i} \neq 0 ~ \Then \roob_{i} = 1 \vspace{2mm} \\
+		\If \offsetHi{1}_{i} \cdot \sizeLo{1}_{i} \neq 0 ~ \Then \roob_{i} = 1 \vspace{2mm} \\
+%		\If \roob_{i} = 1 ~ \Then \Big(\isValHi{3}_{i} \neq 0 ~ \OR \isValHi{1}_{i} \cdot \isValLo{3}_{i} \neq 0\Big) \vspace{2mm} \\
+		\If
+		\left\{
+		\begin{array}{lr}
+			\sizeHi{1}_{i} = 0 & \et \\
+			\offsetHi{1}_{i} \cdot \sizeLo{1}_{i} = 0
+		\end{array}
+		\right\}
+		\Then \roob_{i} = 0
+%		\If \roob_{i} = 0 ~ \Then 
+%		\begin{cases}
+%			\isValHi{3}_{i} = 0 & \et \\
+%			\isValHi{1}_{i} \cdot \isValLo{3}_{i} = 0 \\
+%		\end{cases} \\
+	\end{array}
+	\right.
+	\]
+	In other words, the desired behaviour is
+	\[
+		\roob_{i} = 1 \iff
+		\left\{
+		\begin{array}{l}
+			\sizeHi{1}_{i} \neq 0 \\
+			\qquad \OR \\
+			\Big( \offsetHi{1}_{i} \neq 0 ~ \et \sizeLo{1}_{i} \neq 0 \Big) \\
+		\end{array}
+		\right.
+	\]
+	\item \If $\decMxpType{5}_{i} = 1$ \Then
+	\[
+	\left\{
+	\begin{array}{l}
+		\If \sizeHi{1}_{i} \neq 0
+				~ \Then \roob_{i} = 1 \vspace{2mm} \\
+		\If \sizeHi{2}_{i} \neq 0
+				~ \Then \roob_{i} = 1 \vspace{2mm} \\
+		\If \offsetHi{1}_{i} \cdot \sizeLo{1}_{i} \neq 0
+				~ \Then \roob_{i} = 1 \vspace{2mm} \\
+		\If \offsetHi{2}_{i} \cdot \sizeLo{2}_{i} \neq 0
+				~ \Then \roob_{i} = 1 \vspace{2mm} \\
+%		\If \roob_{i} = 1 ~ \Then
+%		\left\{
+%		\begin{array}{lr}
+%			\sizeHi{1}_{i} \neq 0 & \OR \\
+%			\offsetHi{1}_{i} \cdot \isValLo{3}_{i} \neq 0 & \OR \\
+%			\sizeHi{2}_{i} \neq 0 & \OR \\
+%			\offsetHi{2}_{i} \cdot \isValLo{4}_{i} \neq 0 \\
+%		\end{array}
+%		\right.
+%		\vspace{2mm} \\
+		\If
+		\left\{
+		\begin{array}{lr}
+			\sizeHi{1}_{i} = 0 & \et \\
+			\sizeHi{2}_{i} = 0 & \et \\
+			\offsetHi{1}_{i} \cdot \sizeLo{1}_{i} = 0 & \et \\
+			\offsetHi{2}_{i} \cdot \sizeLo{2}_{i} = 0 \\
+		\end{array}
+		\right\} \Then \roob_{i} = 0 \\
+	\end{array}
+	\right.
+	\]
+	\ob{TODO: can we replace the first two conditions with $\redm{\sizeHi{1}_{i} + \sizeHi{2}_{i} = 0}$ ? The reason being that these are stack values and those should always be 16B integers.}
+	In other words, the desired behaviour is
+	\[
+		\roob_{i} = 1 \iff
+		\left\{
+		\begin{array}{lr}
+			\sizeHi{1}_{i} \neq 0 & \OR \\
+			\sizeHi{2}_{i} \neq 0 & \OR \\
+			\Big( \offsetHi{1}_{i} \neq 0 ~ \et \sizeLo{1}_{i} \neq 0 \Big) & \OR \\
+			\Big( \offsetHi{2}_{i} \neq 0 ~ \et \sizeLo{2}_{i} \neq 0 \Big) & \OR \\
+		\end{array}
+		\right.
+	\]
+\end{enumerate}
+
+We provide some context.
+If $\decMxpType{1}_{i} = 1$ then the instruction is $\inst{MSIZE}$ which takes no size or offset arguments and can't provoke an out of bounds error. Thus $\roob_{i} = 0$ automatically.
+If $\decMxpType{2}_{i} = 1$ or $\decMxpType{3}_{i} = 1$ then the instruction is one of \inst{MLOAD}, \inst{MSTORE}, \inst{MSTORE8} and takes a single offset parameter. Offsets that are greater than 4 bytes may never occur because of gas related expenses, let alone offsets that occupy $>\llarge$ bytes (as witnessed by $\isValHi{1} \neq 0$.)
+If $\decMxpType{4}_{i} = 1$ the instruction takes \col{offset} and \col{size} arguments. For such an instruction to be ridiculously out of bounds either its size parameter has to be huge (as witnessed by $\sValHi{3}\neq0$) or its offset parameter has to be huge and its size parameter nonzero (as witnessed by $\sValHi{1}\neq0$ and $\sVal{3}\neq0$.)
+If $\decMxpType{5}_{i} = 1$ is entirely analoguous to the $\decMxpType{4}$ case except that two $(\col{offset}, \col{size})$ pairs are required.

@@ -1,0 +1,83 @@
+The present section details the way in which logging data, which the \hubMod{} provides in row form, is \textbf{verticatlize} for consumption by the \rlpTxnRcptMod{} module. Verticalization occurs for log items only. In other words, no verticalization happens for transactions that don't lead to (non reverted) logging events. As such
+\[ \boxed{\text{All constraints in this subsection assume } \begin{cases} \absTxNum_{i} \neq 0 \\ \ct_{i} = 0 \\ \end{cases}} \]
+	\saNote{} Given the constraints below the condition ``$\absTxNum_{i} \neq 0$'' is superfluous.
+	\begin{description}
+			% \item[\underline{First row:}] The first row is \emph{always} used to record the number of log items of the transaction:
+			% 	\[
+			% 		\left\{ \begin{array}{lcl}
+			% 			\phaseNum_{i}        & = & \ob{TODO!}         \\
+			% 			\outgoingDataHi_{i}  & = & 0                  \\
+			% 			\outgoingDataLo_{i}  & = & \absLogNumMax_{i}     \\
+			% 		\end{array} \right.
+			% 	\]
+		\item[\underline{First and second row:}] \If $\isLog{0}_{i} + \cdots + \isLog{4}_{i} \neq 0$ \Then
+			\[
+			\iffalse
+			\sum_{k=1}^{5} k \cdot \phase{k}_{j}
+			\subPhaseIdWeightIsPrefix \cdot \isprefix_{j}
+			\subPhaseIdWeightIsOt \cdot \isOt_{j}
+			\subPhaseIdWeightIsOd \cdot \isOd_{j}
+			\subPhaseIdWeightDepth \cdot \Depth1_{j}
+			\subPhaseIdWeightIndexLocal \cdot \isOt_{j} \cdot \indexlocal_{j}$
+			\fi
+				\left\{ \begin{array}{lcl}
+					\phaseNum_{i}        & = & \subPhaseIdDataSize \\
+					\outgoingDataHi_{i}  & = & \logDataSize_{i}         \\
+					\outgoingDataLo_{i}  & = & \INST_{i} - \inst{LOG0}  \vspace{2mm} \\
+					\phaseNum_{i + 1}        & = & \subPhaseIdAddr   \\
+					\outgoingDataHi_{i + 1}  & = & \addrHi_{i}              \\
+					\outgoingDataLo_{i + 1}  & = & \addrLo_{i}              \\
+				\end{array} \right.
+			\]
+		\item[\underline{Third row:}] \If $\isLog{1}_{i} + \cdots + \isLog{4}_{i} \neq 0$ \Then
+			\[
+				\left\{ \begin{array}{lcl}
+					\phaseNum_{i + 2}        & = & \subPhaseIdTopicBase  + \subPhaseIdTopicDelta         \\
+					\outgoingDataHi_{i + 2}  & = & \topicHi{1}_{i}    \\
+					\outgoingDataLo_{i + 2}  & = & \topicLo{1}_{i}    \\
+				\end{array} \right.
+			\]
+		\item[\underline{Fourth row:}] \If $\isLog{2}_{i} + \cdots + \isLog{4}_{i} \neq 0$ \Then
+			\[
+				\left\{ \begin{array}{lcl}
+					\phaseNum_{i + 3}        & = & \subPhaseIdTopicBase  + 2 \cdot \subPhaseIdTopicDelta         \\
+					\outgoingDataHi_{i + 3}  & = & \topicHi{2}_{i}    \\
+					\outgoingDataLo_{i + 3}  & = & \topicLo{2}_{i}    \\
+				\end{array} \right.
+			\]
+		\item[\underline{Fifth row:}] \If $\isLog{3}_{i} + \isLog{4}_{i} \neq 0$ \Then
+			\[
+				\left\{ \begin{array}{lcl}
+					\phaseNum_{i + 4}        & = & \subPhaseIdTopicBase  + 3 \cdot \subPhaseIdTopicDelta         \\
+					\outgoingDataHi_{i + 4}  & = & \topicHi{3}_{i}    \\
+					\outgoingDataLo_{i + 4}  & = & \topicLo{3}_{i}    \\
+				\end{array} \right.
+			\]
+		\item[\underline{Sixth row:}] \If $\isLog{4}_{i} \neq 0$ \Then
+			\[
+				\left\{ \begin{array}{lcl}
+					\phaseNum_{i + 5}        & = & \subPhaseIdTopicBase  + 4 \cdot \subPhaseIdTopicDelta         \\
+					\outgoingDataHi_{i + 5}  & = & \topicHi{4}_{i}    \\
+					\outgoingDataLo_{i + 5}  & = & \topicLo{4}_{i}    \\
+				\end{array} \right.
+			\]
+
+		\item[\underline{If no Log entry:}] \If $\txEmitsLogs_{i} = 0$ \Then
+			\[
+				\left\{ \begin{array}{lcl}
+					\phaseNum_{i}        & = & \subPhaseIdNoLogEntry         \\
+					\outgoingDataHi_{i}  & = & 0    \\
+					\outgoingDataLo_{i}  & = & 0    \\
+				\end{array} \right.
+			\]
+	\end{description}
+\saNote{}
+The numeric constants above are obtained as
+\[
+	\begin{cases}
+		\subPhaseIdDataSize   & = 5 + \subPhaseIdWeightIsPrefix +   \subPhaseIdWeightIsOd + \subPhaseIdWeightDepth          \\
+		\subPhaseIdAddr       & = 5 + \subPhaseIdWeightDepth          \\
+		\subPhaseIdTopicBase  & = 5 + \subPhaseIdWeightIsOt + \subPhaseIdWeightDepth \\
+		\subPhaseIdNoLogEntry & = 5 + \subPhaseIdWeightIsPrefix \\
+	\end{cases}
+\]

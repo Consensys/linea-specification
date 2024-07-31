@@ -1,0 +1,143 @@
+\subsubsection{Constraints}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Suppose we are given a bit $\col{b} \in \{ 0, 1\}$. We let $\loadStoreSP\big[\col{b}\big]_{i}$ stand for the following collection of constraints:
+\begin{description}
+	\item[\underline{Stack Item $n^\circ\,1$:}] ---
+	\[
+	\left\{
+		\begin{array}{lcl}
+			\stackItemHeight {1}  _{i} & \!\!\! = \!\!\! & \stackHeight_{i}            \\
+			\stackItemPop    {1}  _{i} & \!\!\! = \!\!\! & 1                           \\
+			\stackItemStamp  {1}  _{i} & \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} \\
+		\end{array}
+	\right.
+	\]
+	\item[\underline{Stack Item $n^\circ\,2$:}] is empty: $\emptyStackItem{2}_{i}$;
+	\item[\underline{Stack Item $n^\circ\,3$:}] is empty: $\emptyStackItem{3}_{i}$;
+	\item[\underline{Stack Item $n^\circ\,4$:}] ---
+	\[
+	\left\{
+		\begin{array}{lcl}
+			\stackItemHeight {4}  _{i} & \!\!\! = \!\!\! & \stackHeight_{i} - \col{b}      \\
+			\stackItemPop    {4}  _{i} & \!\!\! = \!\!\! & \col{b}                         \\
+			\stackItemStamp  {4}  _{i} & \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} + 1 \\
+		\end{array}
+	\right.
+	\]
+	\item[\underline{Height update:}] $\stackHeight\new{}_{i} = \stackHeight{}_{i} - 2 \cdot \col{b}$;
+\end{description}
+For $\col{b} = 0$ the above provides the stack pattern for \inst{LOAD}-type instructions (i.e. \inst{MLOAD}, \inst{SLOAD} and \inst{CALLDATALOAD}.)
+For $\col{b} = 1$ the above provides the stack pattern for \inst{STORE}-type instructions (i.e. \inst{MSTORE}, \inst{MSTORE8} and \inst{SSTORE}.)
+
+
+
+\subsubsection{Graphical representation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\noindent The following is the associated graphical representation:
+\begin{figure}[h!]
+\[
+	\begin{array}{|l|r|c|c|r|}
+	\cline{2-5}
+	\multicolumn{1}{c}{} &
+	\multicolumn{1}{|c|}{\text{Stack}} &
+	\multicolumn{1}{c|}{\text{Stack}} &
+	\multicolumn{1}{c|}{\text{Stack}} &
+	\multicolumn{1}{c|}{\text{Stack}} \\
+	\multicolumn{1}{c}{} &
+	\multicolumn{1}{|c|}{\text{Item 1}} &
+	\multicolumn{1}{c|}{\text{Item 2}} &
+	\multicolumn{1}{c|}{\text{Item 3}} &
+	\multicolumn{1}{c|}{\text{Item 4}} \\ \hline
+	\stackItemHeight{k}_i & \col{h} & \graym{\varnothing} & \graym{\varnothing} & \col{h} \\ \hline
+	\stackItemValHi{k}_{i} / \stackItemValLo{k}_{i} & \col{src} & \graym{\varnothing} & \graym{\varnothing} & \col{value} \\ \hline
+	\stackItemPop{k}_i & 1 & \graym{\varnothing} & \graym{\varnothing} & 0 \\ \hline
+	\stackItemStamp{k}_i & \hubTau \cdot \col{st} & \graym{\varnothing} & \graym{\varnothing} & \hubTau \cdot \col{st} + 1 \\ \hline
+	\end{array}
+	% %
+	% %
+	% \qquad
+	% %
+	% %
+	% \begin{array}{|l|r|c|c|r|}
+	% \cline{2-5}
+	% \multicolumn{1}{c|}{} &
+	% \multicolumn{1}{c|}{\text{Stack}} &
+	% \multicolumn{1}{c|}{\text{Stack}} &
+	% \multicolumn{1}{c|}{\text{Stack}} &
+	% \multicolumn{1}{c|}{\text{Stack}} \\
+	% \multicolumn{1}{c|}{} &
+	% \multicolumn{1}{c|}{\text{Item 1}} &
+	% \multicolumn{1}{c|}{\text{Item 2}} &
+	% \multicolumn{1}{c|}{\text{Item 3}} &
+	% \multicolumn{1}{c|}{\text{Item 4}} \\ \hline
+	% \sHeight{k}_i & \col{h} & \graym{\varnothing} & \graym{\varnothing} & \col{h} - 1 \\ \hline 
+	% \sValHi{k}/\sValLo{k} & \col{ARG1} & \graym{\varnothing} & \graym{\varnothing} & \col{ARG2} \\ \hline
+	% \sPop{k}_i & 1 & \graym{\varnothing} & \graym{\varnothing} & 1 \\ \hline
+	% \sStamp{k}_i & \col{st} + 1 & \graym{\varnothing} & \graym{\varnothing} & \col{st} + 2 \\ \hline
+	% \end{array}
+\]
+\caption{%
+$\loadStoreSP\big[\col{b}\big]_{i}$ with $\col{b} = 0$, i.e. the ``\texttt{load}-variant.''
+We write \col{src} to mean a source location.
+In applications this will either be
+(\emph{a}) an \col{offset} in memory
+(\emph{b}) a (relative) \col{offset} in call data
+(\emph{c}) a (storage) \col{key}.
+We write $\col{h} := \stackHeight_{i}$ and $\col{st} := \hubStamp_{i}$.}
+\end{figure}
+
+\begin{figure}[h!]
+\[
+	\begin{array}{|l|r|c|c|r|}
+	\cline{2-5}
+	\multicolumn{1}{c|}{} &
+	\multicolumn{1}{c|}{\text{Stack}} &
+	\multicolumn{1}{c|}{\text{Stack}} &
+	\multicolumn{1}{c|}{\text{Stack}} &
+	\multicolumn{1}{c|}{\text{Stack}} \\
+	\multicolumn{1}{c|}{} &
+	\multicolumn{1}{c|}{\text{Item 1}} &
+	\multicolumn{1}{c|}{\text{Item 2}} &
+	\multicolumn{1}{c|}{\text{Item 3}} &
+	\multicolumn{1}{c|}{\text{Item 4}} \\ \hline
+	\stackItemHeight{k}_i & \col{h} & \graym{\varnothing} & \graym{\varnothing} & \col{h} - 1 \\ \hline
+	\stackItemValHi{k}_{i} / \stackItemValLo{k}_{i} & \col{tgt} & \graym{\varnothing} & \graym{\varnothing} & \col{value} \\ \hline
+	\stackItemPop{k}_i & 1 & \graym{\varnothing} & \graym{\varnothing} & 1 \\ \hline
+	\stackItemStamp{k}_i & \hubTau \cdot \col{st} & \graym{\varnothing} & \graym{\varnothing} & \hubTau \cdot \col{st} + 1 \\ \hline
+	\end{array}
+	% %
+	% %
+	% \qquad
+	% %
+	% %
+	% \begin{array}{|l|r|c|c|r|}
+	% \cline{2-5}
+	% \multicolumn{1}{c|}{} &
+	% \multicolumn{1}{c|}{\text{Stack}} &
+	% \multicolumn{1}{c|}{\text{Stack}} &
+	% \multicolumn{1}{c|}{\text{Stack}} &
+	% \multicolumn{1}{c|}{\text{Stack}} \\
+	% \multicolumn{1}{c|}{} &
+	% \multicolumn{1}{c|}{\text{Item 1}} &
+	% \multicolumn{1}{c|}{\text{Item 2}} &
+	% \multicolumn{1}{c|}{\text{Item 3}} &
+	% \multicolumn{1}{c|}{\text{Item 4}} \\ \hline
+	% \sHeight{k}_i & \col{h} & \graym{\varnothing} & \graym{\varnothing} & \col{h} - 1 \\ \hline 
+	% \sValHi{k}/\sValLo{k} & \col{ARG1} & \graym{\varnothing} & \graym{\varnothing} & \col{ARG2} \\ \hline
+	% \sPop{k}_i & 1 & \graym{\varnothing} & \graym{\varnothing} & 1 \\ \hline
+	% \sStamp{k}_i & \col{st} + 1 & \graym{\varnothing} & \graym{\varnothing} & \col{st} + 2 \\ \hline
+	% \end{array}
+\]
+\caption{%
+$\loadStoreSP\big[\col{b}\big]_{i}$ with $\col{b} = 1$, i.e. the ``\texttt{store}-variant.''
+We write \col{tgt} to mean a target location.
+In applications this will either be
+(\emph{a}) an \col{offset} in memory
+(\emph{b}) a (storage) \col{key}.
+We write $\col{h} := \stackHeight_{i}$ and $\col{st} := \hubStamp_{i}$.}
+\end{figure}

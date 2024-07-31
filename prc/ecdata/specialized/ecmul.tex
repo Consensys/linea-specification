@@ -1,0 +1,52 @@
+\[
+    \boxed{\text{All constraints in this subsection assume }
+        \left\{ \begin{array}{lcl}
+            \isEcmulData_{i} & =    & 1               \\
+            \ecdataId_{i}    & \neq & \ecdataId_{i-1} \\
+        \end{array} \right.
+    }
+\]
+
+We introduce the following (local) shorthands:
+
+\[
+    \left\{ \begin{array}{lclr}
+        \locPXHi & \define & \ecdataLimb_{i}   \\
+        \locPXLo & \define & \ecdataLimb_{i+1} \\
+        \locPYHi & \define & \ecdataLimb_{i+2} \\
+        \locPYLo & \define & \ecdataLimb_{i+3} \\
+    \end{array} \right.
+    \qquad
+    \left\{ \begin{array}{lclr}
+        \locNHi & \define & \ecdataLimb{}_{i+4} \\
+        \locNLo & \define & \ecdataLimb{}_{i+5} \\
+    \end{array} \right.
+\]
+
+We set the following constraints:
+
+\begin{description}
+    \item[\underline{Row $n^°(i)$:}]
+          we impose
+          \[
+              \callToCOneMembership
+              {i}{0}
+              {\locPXHi}{\locPXLo}{\locPYHi}{\locPYLo}
+          \]
+          as well as define the shorthand
+          \[
+              \locCOneMembership  \define \hurdle_{i}
+          \]
+    \item[\underline{Justifying the \ecdataSuccessBit{}:}]
+          we define the following shorthand
+          \[
+              \locInternalChecksPassed \define \hurdle_{i+\indexMaxEcmulData}
+          \]
+          and impose the following constraints
+          \[
+              \left\{ \begin{array}{lcl}
+                  \locInternalChecksPassed & = & \locCOneMembership       \\
+                  \ecdataSuccessBit_{i}    & = & \locInternalChecksPassed \\
+              \end{array} \right.
+          \]
+\end{description}

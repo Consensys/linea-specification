@@ -1,0 +1,68 @@
+\[
+    \boxed{\text{All constraints in this subsection assume }
+        \begin{cases}
+            \isModexpLog _{i} = 1 \\
+            \isMacro     _{i} = 1 \\
+        \end{cases}}
+\]
+We deal with the preprocessing required by the $\expInstModexpLog$ instruction.
+\begin{description}
+    \def\rowNum{1} \item[Preprocessing row $n^\circ (i + \rowNum)$:]
+          we impose
+          \[
+              \callToLt
+              {i}{\rowNum}
+              {0}{\locCdsCutoff}
+              {\locEbsCutoff}
+          \]
+          we define the shorthand $\locComp \define \ppWcpRes_{i + \rowNum}$ and
+          \begin{enumerate}
+              \item \If $\locComp = 1$ \Then $\locMinCutoff \define  \locCdsCutoff$
+              \item \If $\locComp = 0$ \Then $\locMinCutoff \define  \locEbsCutoff$
+          \end{enumerate}
+          \def\rowNum{2} \item[Preprocessing row $n^\circ (i + \rowNum)$:]
+          we impose
+          \[
+              \callToLt
+              {i}{\rowNum}
+              {0}{\locMinCutoff}
+              {\llarge + 1}
+          \]
+          and we define the shorthand $\locMinCutoffLEQSixteen  \define \ppWcpRes_{i + \rowNum}$
+          \def\rowNum{3} \item[Preprocessing row $n^\circ (i + \rowNum)$:]
+          we impose
+          \[
+              \callToLt
+              {i}{\rowNum}
+              {0}{\locEbsCutoff}
+              {\llarge + 1}
+          \]
+          and we define the shorthand $\locEbsCutoffLEQSixteen  \define \ppWcpRes_{i + \rowNum}$
+          \def\rowNum{4} \item[Preprocessing row $n^\circ (i + \rowNum)$:]
+          we impose
+          \[
+              \callToIszero
+              {i}{\rowNum}
+              {0}{\locRawLeadingWordHi}
+          \]
+          and we define the shorthand $\locRawHiIsZero  \define \ppWcpRes_{i + \rowNum}$
+          \def\rowNum{5} \item[Preprocessing row $n^\circ (i + \rowNum)$:]
+          we impose
+          \[
+              \callToIszero
+              {i}{\rowNum}
+              {0}{\locPaddedLogBaseTwo}
+          \]
+          and we define (and have used) the shorthands
+          \[
+              \left\{ \begin{array}{lcl}
+                  \locPaddedLogBaseTwo & \define & 8 \cdot \locNBytesExcludingLeading + \locNBitsExcludingLeading \\
+                  \locTrivialTrim      & \define & \ppWcpRes_{i + \rowNum}                                        \\
+              \end{array} \right.
+          \]
+\end{description}
+\saNote{} By construction one has that
+\begin{IEEEeqnarray*}{LCL}
+    \locTrivialTrim = 1 & \iff & \locPaddedLogBaseTwo = 0 \\
+    & \iff & \locTrimAcc < 2             \\
+\end{IEEEeqnarray*}

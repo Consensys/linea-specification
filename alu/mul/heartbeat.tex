@@ -1,0 +1,345 @@
+We now state the heartbeat constraints proper. The module stamp follows a familiar pattern:
+\begin{enumerate}
+	\item $\mulStamp_{0} = 0$;
+	\item $\mulStamp_{i + 1} \in \{ \mulStamp_{i}, 1 + \mulStamp_{i} \}$;
+\end{enumerate}
+The constraints below pertains to the \textbf{padding regime}.
+\begin{enumerate}[resume]
+	\item \If $\mulStamp_{i} = 0$ \Then
+	\[
+	\begin{cases}
+	\ct_{i} = 0 \\
+	\oli_{i} = 0 \\
+	\iInst_{i} = 0 \\
+	\end{cases}
+	\]
+	\item \If $\mulStamp_{i} \neq 0$ \Then $\iInst_{i} \in \{ \inst{MUL}, \inst{EXP} \}$;
+	\item \If $\mulStamp_{i + 1} \neq \mulStamp_{i}$ \Then
+	\[
+	\begin{cases}
+		\ct_{i + 1} = 0, \\
+		\nBits_{i + 1} = 0, \\
+		% \snm_{i + 1} = 0; \\ will clash with EXP's first instruction
+	\end{cases}
+	\]
+\end{enumerate}
+\noindent The constraint below pertains to the \textbf{trivial regime} that always last a single counter row.
+\begin{enumerate}[resume]
+	\item \If $\oli_{i} = 1$ \Then $\mulStamp_{i + 1} = 1 + \mulStamp_{i}$;
+\end{enumerate}
+\noindent The constraints below enforce familiar cyclical constraints on $\ct$ which enforce that in nontrivial regimes the counter always counts from $0$ to $\mmediumMO$ and resets.
+\begin{enumerate}[resume]
+	\item \If \Big($\mulStamp_{i} \neq 0$ \et $\oli_{i} = 0$ \et $\ct_{i} \neq \mmediumMO$\Big) \Then
+	$\ct_{i + 1} = 1 + \ct_{i}$.
+%	\[
+%	\left\{
+%	\begin{array}{lcl}
+%		\ct_{i + 1} & \!\!\! = \!\!\! & 1 + \ct_{i} \\
+%		\nBits_{i + 1} & \!\!\! = \!\!\! & \nBits_{i} \\
+%		\snm_{i + 1} & \!\!\! = \!\!\! & \snm_{i} \\
+%		\expBitSrc_{i + 1} & \!\!\! = \!\!\! & \expBitSrc_{i} \\
+%		\expBit_{i + 1} & \!\!\! = \!\!\! & \expBit_{i} \\
+%	\end{array}
+%	\right.
+%	\]
+%	\item \If $\mulStamp_{i} \neq 0$ \Then
+%	\begin{enumerate}
+%		\item \If $\oli_{i} = 1$ \Then $\mulStamp_{i + 1} = 1 + \mulStamp_{i}$
+%		\item \If $\oli_{i} = 0$ \Then 
+%		\begin{enumerate}
+%			\item \If $\ct_{i} \neq \mmediumMO$ \Then
+%			\[
+%				\begin{cases}
+%					\oli_{i + 1} = 0 \\
+%					\ct_{i + 1} = 1 + \ct_{i} \\
+%				\end{cases}
+%			\]
+%		\end{enumerate}
+%	\end{enumerate}
+	\item \If $\ct_{i} = \mmediumMO$ \Then $\ct_{i + 1} = 0$
+\end{enumerate}
+\noindent We say that a column $\col{X}$ is \textbf{counter-constant} if it satisfies
+\[
+	\ct_{i} \neq 0
+	\implies
+	\col{X}_{i} = \col{X}_{i - 1}.
+\]
+We impose that the following columns be counter-constant:
+\begin{multicols}{3}
+\begin{itemize}
+	\item \snm{}
+	\item \nBits{}
+	\item \expBitSrc{}
+	\item \expBit{}
+	\item \expBitAcc{}
+	\item[\vspace{\fill}]
+	%\item[\vspace{\fill}]
+\end{itemize}
+\end{multicols}
+\noindent The constraints below pertain to the first two \textbf{nontrivial regimes}.
+\begin{enumerate}[resume]
+	\item \If $\ct_{i} = \mmediumMO$
+	\begin{enumerate}
+		\item \If $\iInst_{i} = \inst{MUL}$ \Then $\mulStamp_{i + 1} = 1 + \mulStamp_{i}$;
+		\item \If \Big($\iInst_{i} = \inst{EXP}$ \et $\resVanishes = 1$\Big) \Then
+		$\mulStamp_{i + 1} = 1 + \mulStamp_{i}$
+%		\begin{enumerate}
+%			\item \If $\resVanishes = 1$ \Then $\mulStamp_{i + 1} = 1 + \mulStamp_{i}$;
+%			\item \If $\resVanishes = 0$ \Then 
+%			\begin{enumerate}
+%				\item \If $\snm_{i} \neq  \expBit_{i}$ \Then 
+%				\[
+%				\left\{
+%				\begin{array}{lcl}
+%					\nBits_{i + 1} & \!\!\! = \!\!\! & \nBits_{i} \\
+%					\snm_{i + 1} & \!\!\! = \!\!\! & 1 + \snm_{i} \\
+%					\expBitSrc_{i + 1} & \!\!\! = \!\!\! & \expBitSrc_{i} \\
+%					\expBit_{i + 1} & \!\!\! = \!\!\! & \expBit_{i} \\
+%					\expBitAcc_{i + 1} & \!\!\! = \!\!\! & 1 + \expBitAcc_{i} \\
+%				\end{array}
+%				\right.
+%				\]
+%				\item \If $\snm_{i} = \expBit_{i}$ \Then
+%				\begin{enumerate}
+%					\item \If $\mulStamp_{i + 1} = \mulStamp_{i}$ \Then 
+%					\[
+%					\left\{
+%					\begin{array}{lcl}
+%						\nBits_{i + 1} & \!\!\! = \!\!\! & 1 + \nBits_{i} \red{~FALSE!}\\
+%						\snm_{i + 1} & \!\!\! = \!\!\! & 0 \\
+%					\end{array}
+%					\right.
+%					\]
+%				\end{enumerate}
+%			\end{enumerate}
+%		\end{enumerate}
+	\end{enumerate}
+%	\item \If \big($\mulStamp_{N} \neq 0$ \et $\oli_{N} = 0$\big) \Then $\ct_{N} = \mmediumMO$;
+%	\item \If $\mulStamp_{i} \neq 0$ \Then
+%	\begin{enumerate}
+%		\item \If $\oli_{i} = 1$ \Then $\mulStamp_{i + 1} = 1 + \mulStamp_{i}$
+%		\item \If $\oli_{i} = 0$ \Then 
+%		\begin{enumerate}
+%			\item \If $\ct_{i} \neq \mmediumMO$ \Then
+%			\[
+%				\begin{cases}
+%					\oli_{i + 1} = 0 \\
+%					\ct_{i + 1} = 1 + \ct_{i} \\
+%				\end{cases}
+%			\]
+%			\item \If $\ct_{i} =    \mmediumMO$ \Then $\mulStamp_{i + 1} = 1 + \mulStamp_{i}$;
+%		\end{enumerate}
+%	\end{enumerate}
+%	\item \If \big($\mulStamp_{N} \neq 0$ \et $\oli_{N} = 0$\big) \Then $\ct_{N} = \mmediumMO$;
+\end{enumerate}
+In other words, nontrivial \inst{MUL} instructions and nontrivial \inst{EXP} instructions with $\iRes = 0$ take up a single counter-cycle.
+
+We now deal with the nontrivial, nonzero \inst{EXP} instructions. The first (along with other constraints to come) enforces that $\nBits$ always remains $\in\{0,1,\dots, \oneTwoSeven\}$.  
+\begin{enumerate}[resume]
+	\item $\nBits_{i} \neq \oneTwoEight$;
+\end{enumerate}
+We settle conditions pertaining to the final row. Note that the present module is under no obligation to follow chronological order of instructions and may even add superfluous instructions along the way. We choose to do this for the last row. This provides us with a substantial simplification of the final row constraints since we won't have to contend with the possibility of the last instruction being a nontrivial \inst{EXP} instruction. Our choice of final instruction is guided by the fact that the instruction computing $\mathtt{0x0\,\,\^\,0x100}$ is empirically relatively common. We thus impose the following
+\begin{enumerate}[resume]
+	\item \If $\mulStamp_{N} \neq 0$ \Then
+	\[
+	\left\{
+	\begin{array}{lclr}
+		\oli_{N} & \!\!\! = \!\!\! & 1 & \trash \\
+		\iInst_{N} & \!\!\! = \!\!\! & \inst{EXP} & \\
+		\iArgOneHi_{N} & \!\!\! = \!\!\! & 0 & \\
+		\iArgOneLo_{N} & \!\!\! = \!\!\! & 0 & \\
+		\iArgTwoHi_{N} & \!\!\! = \!\!\! & 0 & \\
+		\iArgTwoLo_{N} & \!\!\! = \!\!\! & 256 & \\
+		\iResHi_{N} & \!\!\! = \!\!\! & 0 & \trash \\
+		\iResLo_{N} & \!\!\! = \!\!\! & 0 & \trash \\
+	\end{array}
+	\right.
+	\]
+\end{enumerate}
+Though we dealt with the final we are not done with the heartbeat.
+We now settle the\textbf{nontrivial \inst{EXP} regime with nonzero result}.
+\[
+	\framebox{All constraints written below assume that
+	$\left\{
+	\begin{array}{lcl}
+		\iInst_{i} & \!\!\! = \!\!\! & \inst{EXP} \\
+		\oli_{i} & \!\!\! = \!\!\! & 0 \\
+		\resVanishes_{i} & \!\!\! = \!\!\! & 0 \\
+	\end{array}
+	\right.$}
+\]
+The first set of constraints imposes the \emph{first row} of a \textbf{nontrivial \inst{EXP} regime with nonzero result}
+\begin{enumerate}[resume]
+	\item \If $\mulStamp_{i - 1} \neq \mulStamp_{i}$ \Then
+	\[
+	\left\{
+	\begin{array}{lclr}
+		\snm_{i} & \!\!\! = \!\!\! & 1 & (1) \\
+		\expBit_{i} & \!\!\! = \!\!\! & 1 & (2) \\
+		\expBitAcc_{i} & \!\!\! = \!\!\! & 1 & (3) \\
+		\multicolumn{3}{l}{\If \iArgTwoHi_{i} =    0 ~ \Then \expBitSrc_{i} = 1} & (4) \\
+		\multicolumn{3}{l}{\If \iArgTwoHi_{i} \neq 0 ~ \Then \expBitSrc_{i} = 0} & (4') \\
+		% \nBits_{i} & \!\!\! = \!\!\! & 0 & (5) \\
+	\end{array}
+	\right.
+	\]
+	The interpretation is as follows:
+	$(1)$ means that the first operation is always a multiplication (rather than a squaring);
+	$(2)$ means that the first bit of the exponenent is always nonzero;
+	$(3)$ means that the exponent bit accumulator starts out at $1$;
+	$(4)$ and $(4')$ set the source of bits depending on whether the high part of the exponent is zero or not;
+	%$(5)$ means that during the first round of ``square and multiply'' zero bits of the exponent have been processed;
+	\item \If $\ct_{i} = \mmediumMO$ \Then
+	\begin{enumerate}
+		\item \If $\snm_{i} \neq \expBit_{i}$ \Then
+		\[
+		\left\{
+		\begin{array}{lclr}
+			\mulStamp_{i + 1} & \!\!\! = \!\!\! & \mulStamp_{i} & () \\
+			\snm_{i + 1} & \!\!\! = \!\!\! &  1 + \snm_{i} & () \\
+			\expBit_{i + 1} & \!\!\! = \!\!\! & \expBit_{i} & () \\
+			\expBitAcc_{i + 1} & \!\!\! = \!\!\! & 1 + \expBitAcc_{i} & () \\
+			\expBitSrc_{i + 1} & \!\!\! = \!\!\! & \expBitSrc_{i} & () \\
+			\nBits_{i + 1} & \!\!\! = \!\!\! & \nBits_{i} & () \\
+		\end{array}
+		\right.
+		\]
+		\item \If $\snm_{i} = \expBit_{i}$ \Then
+		\begin{enumerate}
+			\item \If $\expBitSrc_{i} = 0$
+			\begin{enumerate}
+				\item $\mulStamp_{i + 1} = \mulStamp_{i}$
+				\item $\snm_{i + 1} =  0$
+				\item \If $\expBitAcc_{i} \neq \iArgTwoHi_{i}$ \Then
+				\[
+				\left\{
+				\begin{array}{lclr}
+					\expBitSrc_{i + 1} & \!\!\! = \!\!\! & 0 & () \\
+					\expBitAcc_{i + 1} & \!\!\! = \!\!\! & 2 \cdot \expBitAcc_{i} & () \\
+					\nBits_{i + 1} & \!\!\! = \!\!\! & 1 + \nBits_{i} & () \\
+				\end{array}
+				\right.
+				\]
+				\item \If $\expBitAcc_{i} = \iArgTwoHi_{i}$ \Then
+				\[
+				\left\{
+				\begin{array}{lclr}
+					\expBitSrc_{i + 1} & \!\!\! = \!\!\! & 1 & () \\
+					\expBitAcc_{i + 1} & \!\!\! = \!\!\! & 0 & () \\
+					\nBits_{i + 1} & \!\!\! = \!\!\! & 0 & () \\
+				\end{array}
+				\right.
+				\]
+			\end{enumerate}
+			\item \If $\expBitSrc_{i} = 1$ \Then
+			\begin{enumerate}
+				\item \If $\iArgTwoHi_{i} \neq 0$ \et $\nBits_{i} \neq \oneTwoSeven$ \Then
+				\[
+				\left\{
+				\begin{array}{lclr}
+					\snm_{i + 1} & \!\!\! = \!\!\! &  0 \\
+					\mulStamp_{i + 1} & \!\!\! = \!\!\! & \mulStamp_{i} & () \\
+					\expBitSrc_{i + 1} & \!\!\! = \!\!\! & 1 & () \\
+					\expBitAcc_{i + 1} & \!\!\! = \!\!\! & 2 \cdot \expBitAcc_{i} & () \\
+					\nBits_{i + 1} & \!\!\! = \!\!\! & 1 + \nBits_{i} & () \\
+				\end{array}
+				\right.
+				\]
+				\item \If $\iArgTwoHi_{i} \neq 0$ \et $\nBits_{i} = \oneTwoSeven$ \Then
+				\[
+				\left\{
+				\begin{array}{lclr}
+					%\snm_{i + 1} & \!\!\! = \!\!\! &  0 \\
+					\mulStamp_{i + 1} & \!\!\! = \!\!\! & 1 + \mulStamp_{i} & () \\
+					\expBitAcc_{i} & \!\!\! = \!\!\! & \iArgTwoLo_{i} \\
+				\end{array}
+				\right.
+				\]
+				\item \If $\iArgTwoHi_{i} = 0$ \et $\expBitAcc_{i} \neq \iArgTwoLo_{i}$ \Then
+				\[
+				\left\{
+				\begin{array}{lclr}
+					\snm_{i + 1} & \!\!\! = \!\!\! &  0 \\
+					\mulStamp_{i + 1} & \!\!\! = \!\!\! & \mulStamp_{i} & () \\
+					\expBitSrc_{i + 1} & \!\!\! = \!\!\! & 1 & () \\
+					\expBitAcc_{i + 1} & \!\!\! = \!\!\! & 2 \cdot \expBitAcc_{i} & () \\
+					\nBits_{i + 1} & \!\!\! = \!\!\! & 1 + \nBits_{i} & () \\
+				\end{array}
+				\right.
+				\]
+				\item \If $\iArgTwoHi_{i} = 0$ \et $\expBitAcc_{i} = \iArgTwoLo_{i}$ \Then
+				\[
+				\mulStamp_{i + 1} = 1 + \mulStamp_{i}
+				%\left\{
+				%\begin{array}{lclr}
+				% \mulStamp_{i + 1} & \!\!\! = \!\!\! & 1 + \mulStamp_{i} & () \\
+				%\end{array}
+				%\right.
+				\]
+			\end{enumerate}
+%			\[
+%			\left\{
+%			\begin{array}{lclr}
+%				\mulStamp_{i + 1} & \!\!\! = \!\!\! & \mulStamp_{i} & () \\
+%				\snm_{i + 1} & \!\!\! = \!\!\! &  1 + \snm_{i} & () \\
+%				\expBit_{i + 1} & \!\!\! = \!\!\! & \expBit_{i} & () \\
+%				\expBitAcc_{i + 1} & \!\!\! = \!\!\! & 1 + \expBitAcc_{i} & () \\
+%				\expBitSrc_{i + 1} & \!\!\! = \!\!\! & \expBitSrc_{i} & () \\
+%				\nBits_{i + 1} & \!\!\! = \!\!\! & \nBits_{i} & () \\
+%			\end{array}
+%			\right.
+%			\]
+		\end{enumerate}
+	\end{enumerate}
+\end{enumerate}
+We must also settle conditions pertaining to the final row. The present module is under no obligation to follow chronological order of instructions and may even add superfluous instructions along the way. We choose to do this for the last row. This provides us with a substantial simplification of the final row constraints since we won't have to contend with the possibility of the last instruction being a nontrivial \inst{EXP} instruction. Our choice of final instruction is guided by the fact that the instruction computing $\mathtt{0x0\,\,\^\,0x100}$ is empirically relatively common. We thus impose the following
+\begin{enumerate}[resume]
+	\item \If $\mulStamp_{N} \neq 0$ \Then
+	\[
+	\left\{
+	\begin{array}{lclr}
+		\oli_{N} & \!\!\! = \!\!\! & 1 & \trash \\
+		\iInst_{N} & \!\!\! = \!\!\! & \inst{EXP} & \\
+		\iArgOneHi_{N} & \!\!\! = \!\!\! & 0 & \\
+		\iArgOneLo_{N} & \!\!\! = \!\!\! & 0 & \\
+		\iArgTwoHi_{N} & \!\!\! = \!\!\! & 0 & \\
+		\iArgTwoLo_{N} & \!\!\! = \!\!\! & 256 & \\
+		\iResHi_{N} & \!\!\! = \!\!\! & 0 & \trash \\
+		\iResLo_{N} & \!\!\! = \!\!\! & 0 & \trash \\
+	\end{array}
+	\right.
+	\]
+	\iffalse
+	\begin{enumerate}
+		\item $\ct_{N} = \mmediumMO$
+		\item \If $\iInst_{N} = \inst{EXP}$ \et $\resVanishes_{N} = 0$ \Then
+		\begin{enumerate}
+			\item $\expBitSrc_{N} = 1$
+			\item $\snm_{N} = \expBit_{N}$
+			\item $\expBitAcc_{N} = \iArgTwoLo_{N}$
+			\item \If $\iArgTwoHi_{N} \neq 0$ \Then $\nBits_{N} = \oneTwoSeven$
+			\item and the \textbf{target constraint}
+			\[
+			\begin{cases}
+				\iResHi_{N} = \theta \cdot \col{C\_3}_{N} + \col{C\_2}_{N} \\
+				\iResLo_{N} = \theta \cdot \col{C\_1}_{N} + \col{C\_0}_{N} \\
+			\end{cases}
+			\]
+			where $\col{C\_k}$, for $k=3,2,1,0$, are aliases defined in section~\ref{subsec: (alu/mul) aliases}.
+		\end{enumerate}
+	\end{enumerate}
+	\fi
+\end{enumerate}
+\iffalse
+Some notes:
+\begin{enumerate}
+	\item $\oli$ will be stamp-constant (section~\ref{subsec (alu/exp): constancies}) by construction (section~\ref{subsec (alu/exp): tiny base, tiny exponent, oli and result vanishes binary columns})
+\end{enumerate}
+\noindent We say that an instruction is
+\emph{trivial} if $\oli_{i} = 1$ and
+\emph{nontrivial} if $\oli_{i} = 0$. Trivial instructions thus take up a single row of processing.
+
+Note that the following two facts (a) $\mulStamp_{i} = 0 \implies \iInst_{i} = 0$ and (b) the multiplier only deals with two instructions, imply that we may replace conditions such as
+``\If $\mulStamp_{i} \neq 0$ \et $\iInst_{i} = \inst{MUL}$'' with ``\If $\mulStamp_{i} \neq 0$ \et $\iInst_{i} \neq \inst{EXP}$'' and similarly
+``\If $\mulStamp_{i} \neq 0$ \et $\iInst_{i} = \inst{EXP}$'' with ``\If $\mulStamp_{i} \neq 0$ \et $\iInst_{i} \neq \inst{MUL}$''.
+\fi

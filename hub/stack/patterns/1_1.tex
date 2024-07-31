@@ -1,0 +1,58 @@
+\subsubsection{Constraints}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+We let $\oneOneSP_{i}$ stand for the following collection of constraints:
+\begin{description}
+	\item[\underline{Stack Item $n^\circ\,1$:}] ---
+	% depending on the instruction contains either a \textbf{relative offset}, an \textbf{absolute offset} or a \textbf{storage key}:
+	\[
+	\left\{
+		\begin{array}{lcl}
+			\stackItemHeight {1} _{i} & \!\!\! = \!\!\! & \stackHeight_{i},           \\
+			\stackItemPop    {1} _{i} & \!\!\! = \!\!\! & 1,                          \\
+			\stackItemStamp  {1} _{i} & \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} \\
+		\end{array}
+	\right.
+	\]
+	\item[\underline{Stack Item $n^\circ\,2$:}] is empty: $\emptyStackItem{2}_{i}$;
+	\item[\underline{Stack Item $n^\circ\,3$:}] is empty: $\emptyStackItem{3}_{i}$;
+	\item[\underline{Stack Item $n^\circ\,4$:}] ---
+	\[
+	\left\{
+		\begin{array}{lcl}
+			\stackItemHeight {4} _{i} & \!\!\! = \!\!\! & \stackHeight_{i}                \\
+			\stackItemPop    {4} _{i} & \!\!\! = \!\!\! & 0                               \\
+			\stackItemStamp  {4} _{i} & \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} + 1 \\
+		\end{array}
+	\right.
+	\]
+	\item[\underline{Height update:}] $\stackHeight\new{}_{i} = \stackHeight{}_{i}$;
+\end{description}
+
+
+
+\subsubsection{Graphical representation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\noindent The following is the associated graphical representation:
+\begin{figure}[h!]
+\[
+	\begin{array}{|l|r|c|c|r|}
+	\cline{2-5}
+	\multicolumn{1}{c}{}                  & \multicolumn{1}{|c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  \\
+	\multicolumn{1}{c}{}                  & \multicolumn{1}{|c|}{\text{Item 1}} & \multicolumn{1}{c|}{\text{Item 2}} & \multicolumn{1}{c|}{\text{Item 3}} & \multicolumn{1}{c|}{\text{Item 4}} \\ \hline
+	\stackItemHeight{k}_{i}               & \col{h}                             & \graym{\varnothing}                & \graym{\varnothing}                & \col{h}                            \\ \hline
+	\stackItemValHi{k}/\stackItemValLo{k} & \col{arg}                           & \graym{\varnothing}                & \graym{\varnothing}                & \col{res}                          \\ \hline
+	\stackItemPop{k}_{i}                  & 1                                   & \graym{\varnothing}                & \graym{\varnothing}                & 0                                  \\ \hline
+	\stackItemStamp{k}_{i}                & \hubTau \cdot \col{st}              & \graym{\varnothing}                & \graym{\varnothing}                & \hubTau \cdot \col{st} + 1         \\ \hline
+	\end{array}
+\]
+\caption{%
+Graphical representation of $\oneOneSP_{i}$.
+% On the left  hand side is the picture for a $(1,1)$ instruction (i.e. $\decFlag{1}=0$).
+% On the right hand side is the picture for a $(2,0)$ instruction (i.e. $\decFlag{1}=1$).
+We write $\col{h} := \stackHeight_{i}$ and $\col{st} := \hubStamp_{i}$.}
+\end{figure}

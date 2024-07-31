@@ -1,0 +1,13 @@
+The purpose of this small submodule is to record information and data (in separate modules) relative to
+\begin{enumerate}
+	\item logging operations,
+	\item hashing operations,
+	\item and \inst{CREATE} / \inst{CREATE2} triggered deployments.
+\end{enumerate}
+The information part allows us to uniquely tag individual operations of that kind and extract metadata relevant to this operation. For instance:
+\begin{description}
+	\item[For \inst{LOG0}-\inst{LOG4}:] the transaction number, the logger address, the log parameter ($\in\{0,1,2,3,4\}$), the size of the data to log, four topics (set to 0 for when there are fewer than 4 topics), the log number.
+	\item[For \inst{SHA3}:] the size of the data to hash, the result of the hash, the hash number.
+	\item[For \inst{CREATE}/\inst{CREATE2}:] a bit which distinguishes between \inst{CREATE} and \inst{CREATE2} instructions, the address which runs the deployment, its nonce delta, the salt, the size of the initialization code, the resulting deployment address, the deployment number.
+\end{description}
+The Data part allows us to extract relevant data and submit it to the outside proving scheme.

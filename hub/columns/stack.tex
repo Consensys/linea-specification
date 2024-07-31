@@ -1,0 +1,143 @@
+\begin{center}
+	\boxed{\phantom{\Big|}\ob{TODO: get relevant stack columns from the hub}\phantom{\Big|}}
+\end{center}
+\textbf{Stack rows}\label{def: stack row} are characterized by $\peekStack \equiv 1$ and columns pertaining to that perspective are prefixed with the following symbol: $\stackSignifier$.
+The following are names for certain columns on stack rows. The first batch of columns names pertain to stack height.
+The columns below are needed to justify stack underflow/overflow exceptions. They work in conjunction with the instruction decoded $\decDelta$ $\decAlpha$
+\begin{enumerate}[resume]
+	\item $\stackAlpha$    and $\stackDelta$:
+	\item $\stackNbRemove$ and $\stackNbAdd$:
+\end{enumerate}
+A stack row can peek into up to 4 \textbf{stack items} (parametrized by $k=1,2,3,4$). Two line instructions can peek into up to 8 (which, however, are placed on two consecutive stack rows.)
+The next 20 (!) columns contain information about the stack items an instruction touches.
+These 20 columns are comprised of 4 batches  of 5 columns.
+\begin{enumerate}[resume]
+	\item $\stackItemHeight{k}$:
+		column containing the height $\in\{1,\dots,1024\}$\footnote{Note the range difference between the $\stackItemHeight{k}$ columns and the \stackHeight{} column.} of the $k$-th touched stack item;
+	\item $\stackItemValHi{k}$, $\stackItemValLo{k}$:
+		high and low part of a stack value which is either found in the stack at height $\stackItemHeight{k}$ (if $\stackItemPop{k} = 1$) or which is placed at that height (if $\stackItemPop{k} = 0$);
+	\item $\stackItemPop{k}$:
+		binary column; $\stackItemPop{k} = 1$ indicates that the item at height $\stackItemHeight{k}$ was popped; $\stackItemPop{k} = 0$ indicates that the item at height $\stackItemHeight{k}$ was peeked at or pushed; 
+	\item $\stackItemStamp{k}$:
+		stack stamp;
+\end{enumerate}
+How many \textbf{stack items} an instruction touches depends on the instruction itself; consecutive values of $\sStamp{}$ may jump by any value in the range $\{0,1,2,3,4,5,6,7,8\}$; the precise amount by which it jumps is decided by the \textbf{stack pattern} which the instruction follows.
+\begin{enumerate}[resume]
+	\item $\stackInst{}$:
+		instruction column; loaded from the ROM;
+	\item $\stackSTATICGAS$:
+		instruction decoded static gas cost of instruction;
+		abbreviated to $\stackStaticGas{}$;
+\end{enumerate}
+What follows is a collection of (instruction decoded) binary flags that identify instruction families.
+\begin{multicols}{4}
+	\begin{enumerate}[resume]
+		\item $\stackDecAccFlag$
+		\item $\stackDecAddFlag$
+		\item $\stackDecBinFlag$
+		\item $\stackDecBtcFlag$
+		\item $\stackDecCallFlag$
+		\item $\stackDecConFlag$
+		\item $\stackDecCopyFlag$
+		\item $\stackDecCreateFlag$
+		\item $\stackDecDupFlag$
+		\item $\stackDecExtFlag$
+		\item $\stackDecHaltFlag$
+		\item $\stackDecInvalidFlag$
+		\item $\stackDecJumpFlag$
+		\item $\stackDecKecFlag$
+		\item $\stackDecLogFlag$
+		\item $\stackDecMachineStateFlag$
+		\item $\stackDecModFlag$
+		\item $\stackDecMulFlag$
+		\item $\stackDecPushPopFlag$
+		\item $\stackDecShfFlag$
+		\item $\stackDecStackRamFlag$
+		\item $\stackDecStoFlag$
+		\item $\stackDecSwapFlag$
+		\item $\stackDecTxnFlag$
+		\item $\stackDecWcpFlag$
+		\item[\vspace{\fill}]
+		\item[\vspace{\fill}]
+		\item[\vspace{\fill}]
+		\item[\vspace{\fill}]
+	\end{enumerate}
+\end{multicols}
+The following flags allow us to simply distinguish instructions within a given instruction family.
+\begin{multicols}{4}
+	\begin{enumerate}[resume]
+		\item $\decFlag{1}$
+		\item $\decFlag{2}$
+		\item $\decFlag{3}$
+		\item $\decFlag{4}$
+	\end{enumerate}
+\end{multicols}
+The following flags aren't strictly necessary.
+They are useful in that they allow the \zkEvm{} to easily prevent certain exception flags from being switched on by certain opcodes, see section~(\ref{hub: generalities: exceptions: automatic vanishing}).
+\begin{multicols}{2}
+	\begin{enumerate}[resume]
+		\item $\stackDecMxpFlag$
+		\item $\stackDecStaticFlag$
+	\end{enumerate}
+\end{multicols}
+The following columns contain values extracted from the \romMod{} module.
+\begin{enumerate}[resume]
+	\item $\stackPushParamHi$ and $\stackPushParamLo$:
+		instruction argument loaded from the ROM; matters only for \inst{PUSH\_X} instructions;
+	\item $\stackJUMPDESTINATIONVETTING$:
+		binary column; lights up precisely when a \inst{JUMP}-type instruction requires jump destination vetting; abbreviated to \stackJumpDestinationVetting{};
+\end{enumerate}
+The following column names relate to \textsc{evm}-exceptions.
+They are all stack-row-constant binary columns.
+\begin{enumerate}[resume]
+	\item \stackOpcx{}:
+		records the occurrence of \opcxSH{};
+	\item \stackSux{}:
+		records the occurrence of \suxSH{};
+	\item \stackSox{}:
+		records the occurrence of \soxSH{};
+	\item \stackMxpx{}:
+		records the occurrence of \mxpxSH{};
+	\item \stackOogx{}:
+		records the occurrence of \oogxSH{};
+	\item \stackRdcx{}:
+		records the occurrence of \rdcxSH{};
+	\item \stackJumpx{}:
+		records the occurrence of \jumpxSH{};
+	\item \stackStaticx{}:
+		records the occurrence of \staticxSH{};
+	\item \stackSstorex{}:
+		records the occurrence of \sstorexSH{};
+	\item \stackIcpx{}:
+		records the occurrence of \icpxSH{};
+	\item \stackMaxcsx{}:
+		records the occurrence of \maxcsxSH{};
+\end{enumerate}
+\saNote{} The $\stackOpcx{} \equiv \stackDecInvalidFlag{}$ flag is unique among all flags in that it is instruction decoded. The \mxpxSH{} is an exception type which we added. It represents a \emph{subcase} of the \oogxSH{}: the subcase where the gas costs stemming from memory expansion alone has been identified by the \textbf{memory expansion module} (\mxpMod{}) as large enough to force an \oogxSH{}.
+\begin{enumerate}[resume]
+	\item \stackHashInfoFlag{}:
+		binary column that ligts up precisely for those instructions that require a \emph{nontrivial} \inst{KECCAK} hash to be performed;
+		this column is strongly tied to the (shared) \hashInfoStamp{} column; 
+	% \item \stackHashInfoSize{}:
+	% 	(nonzero) size of (nonempty) message to hash;
+	\item \stackHashInfoValHi{} and \stackHashInfoValLo{}:
+		columns that may at times contain (the high and low parts of) a \inst{KECCAK} hash;
+	\item \stackLogFlag{}:
+		binary column that lights up precisely for (unexceptional, unreverted) \inst{LOG}-type instructions;
+\end{enumerate}
+
+\ob{TODO: I don't think we need this many exception flags --- i.e. we may alias them. We should (must) keep individual exception columns such as
+\sux{},
+\sox{},
+\oogx{},
+$\decopcx{}$.
+They hey will nearly always apply and are justified directly in the stack. Also $\opcx$ will be justified through instruction decoding so I imagine we require a dedicated column. The following exceptions
+\rdcx{},
+\jumpx{},
+\staticx{},
+\sstorex{},
+\icpx{},
+\maxcsx{}
+are in a sense nearly disjoint. There are pairs that may be triggered by one instruction:
+$(\staticx{}, \sstorex{})$ and
+$(\icpx{}, \maxcsx{})$. They could very well share a single column which is semantically overloaded.}

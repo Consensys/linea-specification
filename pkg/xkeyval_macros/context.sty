@@ -1,0 +1,179 @@
+\makeatletter
+ 
+\define@cmdkey [CONTEXT] {var} {anchorRow}                      {}
+\define@cmdkey [CONTEXT] {var} {relOffset}                      {}
+\define@cmdkey [CONTEXT] {var} {contextNumber}                  {}
+\define@cmdkey [CONTEXT] {var} {callDataContext}                {}
+\define@cmdkey [CONTEXT] {var} {callStackDepth}                 {}
+\define@cmdkey [CONTEXT] {var} {isRoot}                         {}
+\define@cmdkey [CONTEXT] {var} {isStatic}                       {}
+\define@cmdkey [CONTEXT] {var} {accountAddressHigh}             {}
+\define@cmdkey [CONTEXT] {var} {accountAddressLow}              {}
+\define@cmdkey [CONTEXT] {var} {accountDeploymentNumber}        {}
+\define@cmdkey [CONTEXT] {var} {byteCodeAddressHi}              {}
+\define@cmdkey [CONTEXT] {var} {byteCodeAddressLo}              {}
+\define@cmdkey [CONTEXT] {var} {byteCodeDeploymentNumber}       {}
+\define@cmdkey [CONTEXT] {var} {byteCodeDeploymentStatus}       {}
+\define@cmdkey [CONTEXT] {var} {byteCodeCodeFragmentIndex}      {}
+\define@cmdkey [CONTEXT] {var} {callerAddressHi}                {}
+\define@cmdkey [CONTEXT] {var} {callerAddressLo}                {}
+\define@cmdkey [CONTEXT] {var} {callValue}                      {}
+\define@cmdkey [CONTEXT] {var} {callDataContextNumber}          {}
+\define@cmdkey [CONTEXT] {var} {callDataOffset}                 {}
+\define@cmdkey [CONTEXT] {var} {callDataSize}                   {}
+\define@cmdkey [CONTEXT] {var} {returnAtOffset}                 {}
+\define@cmdkey [CONTEXT] {var} {returnAtCapacity}               {}
+\define@cmdkey [CONTEXT] {var} {initializationParameters}       {}
+\define@cmdkey [CONTEXT] {var} {relOffset}                      {}
+\define@cmdkey [CONTEXT] {var} {returnDataReceiver}             {}
+\define@cmdkey [CONTEXT] {var} {returnDataProvider}             {}
+\define@cmdkey [CONTEXT] {var} {returnDataOffset}               {}
+\define@cmdkey [CONTEXT] {var} {returnDataSize}                 {}
+
+
+\presetkeys    [CONTEXT] {var} {
+	anchorRow                 = \missingParameter,
+	relOffset                 = \missingParameter,
+	contextNumber             = \missingParameter,
+	callStackDepth            = \missingParameter,
+	isRoot                    = \missingParameter,
+	isStatic                  = \missingParameter,
+	accountAddressHigh        = \missingParameter,
+	accountAddressLow         = \missingParameter,
+	accountDeploymentNumber   = \missingParameter,
+	byteCodeAddressHi         = \missingParameter,
+	byteCodeAddressLo         = \missingParameter,
+	byteCodeDeploymentNumber  = \missingParameter,
+	byteCodeDeploymentStatus  = \missingParameter,
+	byteCodeCodeFragmentIndex = \missingParameter,
+	callerAddressHi           = \missingParameter,
+	callerAddressLo           = \missingParameter,
+	callValue                 = \missingParameter,
+	callDataContextNumber     = \missingParameter,
+	callDataOffset            = \missingParameter,
+	callDataSize              = \missingParameter,
+	returnAtOffset            = \missingParameter,
+	returnAtCapacity          = \missingParameter,
+	initializationParameters  = \missingParameter,
+	relOffset                 = \missingParameter,
+	returnDataReceiver        = \missingParameter,
+	returnDataProvider        = \missingParameter,
+	returnDataOffset          = \missingParameter,
+	returnDataSize            = \missingParameter,
+}{}
+
+% \cmdCONTEXT@var@contextNumber             
+% \cmdCONTEXT@var@callStackDepth            
+% \cmdCONTEXT@var@isRoot                    
+% \cmdCONTEXT@var@isStatic                  
+% \cmdCONTEXT@var@accountAddressHigh        
+% \cmdCONTEXT@var@accountAddressLow         
+% \cmdCONTEXT@var@accountDeploymentNumber   
+% \cmdCONTEXT@var@byteCodeAddressHi         
+% \cmdCONTEXT@var@byteCodeAddressLo         
+% \cmdCONTEXT@var@byteCodeDeploymentNumber  
+% \cmdCONTEXT@var@byteCodeDeploymentStatus  
+% \cmdCONTEXT@var@byteCodeCodeFragmentIndex 
+% \cmdCONTEXT@var@callerAddressHi           
+% \cmdCONTEXT@var@callerAddressLo           
+% \cmdCONTEXT@var@callValue                 
+% \cmdCONTEXT@var@callDataContextNumber     
+% \cmdCONTEXT@var@callDataOffset            
+% \cmdCONTEXT@var@callDataSize              
+% \cmdCONTEXT@var@returnAtOffset            
+% \cmdCONTEXT@var@returnAtCapacity          
+
+% anchorRow                   = ,
+% relOffset                   = ,
+% contextNumber               = ,
+% callStackDepth              = ,
+% isRoot                      = ,
+% isStatic                    = ,
+% accountAddressHigh          = ,
+% accountAddressLow           = ,
+% accountDeploymentNumber     = ,
+% byteCodeAddressHi           = ,
+% byteCodeAddressLo           = ,
+% byteCodeDeploymentNumber    = ,
+% byteCodeDeploymentStatus    = ,
+% byteCodeCodeFragmentIndex   = ,
+% callerAddressHi             = ,
+% callerAddressLo             = ,
+% callValue                   = ,
+% callDataContextNumber       = ,
+% callDataOffset              = ,
+% callDataSize                = ,
+% returnAtOffset              = ,
+% returnAtCapacity            = ,
+
+% misc CONTEXT instructions
+\newcommand{\initializeContextName} {\texttt{initializeContext}}
+\newcommand{\initializeContext} [1] {
+	\setkeys[CONTEXT]{var}{#1}
+	\initializeContextName _{\cmdCONTEXT@var@anchorRow}
+	\left[ \begin{array}{llr}
+		\utt{Rel. row offset:}                    & \cmdCONTEXT@var@relOffset                 \\
+		\utt{Context number:}                & \cmdCONTEXT@var@contextNumber             \\
+		\utt{Call stack depth:}              & \cmdCONTEXT@var@callStackDepth            \\
+		\utt{Is root context:}               & \cmdCONTEXT@var@isRoot                    \\
+		\utt{Is static context:}             & \cmdCONTEXT@var@isStatic                  \\
+		\utt{Account address high:}          & \cmdCONTEXT@var@accountAddressHigh        \\
+		\utt{Account address low:}           & \cmdCONTEXT@var@accountAddressLow         \\
+		\utt{Account deployment number:}     & \cmdCONTEXT@var@accountDeploymentNumber   \\
+		\utt{Byte code address high:}        & \cmdCONTEXT@var@byteCodeAddressHi         \\
+		\utt{Byte code address low:}         & \cmdCONTEXT@var@byteCodeAddressLo         \\
+		\utt{Byte code deployment number:}   & \cmdCONTEXT@var@byteCodeDeploymentNumber  \\
+		\utt{Byte code deployment status:}   & \cmdCONTEXT@var@byteCodeDeploymentStatus  \\
+		\utt{Byte code code fragment index:} & \cmdCONTEXT@var@byteCodeCodeFragmentIndex \\
+		\utt{Caller address high:}           & \cmdCONTEXT@var@callerAddressHi           \\
+		\utt{Caller address low:}            & \cmdCONTEXT@var@callerAddressLo           \\
+		\utt{Call value:}                    & \cmdCONTEXT@var@callValue                 \\
+		\utt{Call data context number:}      & \cmdCONTEXT@var@callDataContextNumber     \\
+		\utt{Call data offset:}              & \cmdCONTEXT@var@callDataOffset            \\
+		\utt{Call data size:}                & \cmdCONTEXT@var@callDataSize              \\
+		\utt{Return at offset:}              & \cmdCONTEXT@var@returnAtOffset            \\
+		\utt{Return at capacity:}            & \cmdCONTEXT@var@returnAtCapacity          \\
+		% \utt{returner context:}              & 0                                         \\
+		% \utt{return data offset:}            & 0                                         \\
+		% \utt{return data size:}              & 0                                         \\
+	\end{array} \right]
+	}
+
+\newcommand{\initializeCalleeContextName} {\texttt{initializeCalleeContext}}
+\newcommand{\initializeCalleeContext}      [1]  {
+	\setkeys[CONTEXT]{var}{#1}
+	\initializeCalleeContextName
+	_{\cmdCONTEXT@var@anchorRow}
+	\left[ \begin{array}{llr}
+		\utt{Rel. row offset:} & \cmdCONTEXT@var@relOffset                \\
+		\utt{Parameters:} & \cmdCONTEXT@var@initializationParameters \\
+	\end{array} \right]
+}
+
+\newcommand{\initializeDeploymentContext}  [2]  {\texttt{initializeDeploymentContext}_{#1}  \big[\, #2 \,\big]}
+
+
+\newcommand{\provideReturnDataName} {\contextSignifier\texttt{provideReturnData}}
+\newcommand{\provideReturnData} [1] {
+	\setkeys[CONTEXT]{var}{#1}
+	\provideReturnDataName
+	_{\cmdCONTEXT@var@anchorRow}
+	\left[ \begin{array}{ll}
+		\utt{Rel. row offset:}      & \cmdCONTEXT@var@relOffset          \\
+		\utt{Return data receiver:} & \cmdCONTEXT@var@returnDataReceiver \\
+		\utt{Return data provider:} & \cmdCONTEXT@var@returnDataProvider \\
+		\utt{Return data offset:}   & \cmdCONTEXT@var@returnDataOffset   \\
+		\utt{Return data size:}     & \cmdCONTEXT@var@returnDataSize     \\
+	\end{array} \right]
+}
+
+% \provideReturnData {
+% 	anchorRow          = ,
+% 	relOffset          = ,
+% 	returnDataReceiver = ,
+% 	returnDataProvider = ,
+% 	returnDataOffset   = ,
+% 	returnDataSize     = ,
+% 	}
+
+\makeatother

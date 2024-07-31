@@ -1,0 +1,40 @@
+\[
+    \boxed{\text{All constraints in this subsection assume } \isComputation _{i} = 1.}
+\]
+\begin{enumerate}
+    \item we filter the raw bytes using the \compPlateauBit{} column:
+        \[ \compTrimByte_{i} = \compRawByte_{i} \cdot (1 - \compPlateauBit_{i}) \]
+    \item we impose
+        \[
+            \left\{ \begin{array}{l}
+                \If \compTrimAcc_{i} =    0 ~ \Then \compTanzb_{i} = 0 \\
+                \If \compTrimAcc_{i} \neq 0 ~ \Then \compTanzb_{i} = 1 \\
+            \end{array} \right.
+        \]
+    \item we impose
+        \[
+            \left\{ \begin{array}{l}
+                \If \compMsbAcc_{i} =    0 ~ \Then \compManzb_{i} = 0 \\
+                \If \compMsbAcc_{i} \neq 0 ~ \Then \compManzb_{i} = 1 \\
+            \end{array} \right.
+        \]
+\end{enumerate}
+We further impose ``counting'' constraints for the pair $(\compTanzb, \compTanzbAcc)$:
+\begin{enumerate}[resume]
+    \item \If $\ct_{i} = 0$    \Then $\compTanzbAcc_{i} = \compTanzb_{i}$;
+    \item \If $\ct_{i} \neq 0$ \Then $\compTanzbAcc_{i} = \compTanzbAcc_{i - 1} + \compTanzb_{i}$;
+\end{enumerate}
+Moreover we impose ``counting'' constraints for the pair $(\compManzb, \compManzbAcc)$:
+\begin{enumerate}[resume]
+    \item \If $\ct_{i} = 0$ \Then $\compManzbAcc_{i} = \compManzb_{i}$;
+    \item \If $\ct_{i} \neq 0$ \Then $\compManzbAcc_{i} = \compManzbAcc_{i - 1} + \compManzb_{i}$;
+\end{enumerate}
+\saNote{}
+In the \expInstModexpLog{} case
+\compManzbAcc{} targets the $\lfloor \log_{2} (\cdots) \rfloor$   of the leading byte and
+\compTanzbAcc{} targets the $\lfloor \log_{256} (\cdots) \rfloor$ of the leading word of the exponent.
+
+\saNote{}
+In the \expInstExpLog{} case
+\compManzbAcc{} is irrelevant and
+\compTanzbAcc{} targets the $\lfloor \log_{256} (\cdots) \rfloor$ of the exponent.

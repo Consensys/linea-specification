@@ -1,0 +1,54 @@
+We constrain the binary columns recognizing instructions. We introduce the following shorthands:
+\[
+	\flagSum_{i} =
+	\left[ \begin{array}{cr}
+		+ & \stpCreate_{i}              \\
+		+ & \stpCreateTwo_{i}           \\
+		+ & \stpCall_{i}                \\
+		+ & \stpCallCode_{i}            \\
+		+ & \stpDelegateCall_{i}        \\
+		+ & \stpStaticCall_{i}          \\
+	\end{array} \right]
+	,\quad
+	% \quad\text{and}\quad
+	\instSum_{i} =
+	\left[ \begin{array}{crcl}
+		+ & \inst{CREATE}             & \!\!\! \cdot \!\!\! & \stpCreate_{i}           \\
+		+ & \inst{CREATE2}            & \!\!\! \cdot \!\!\! & \stpCreateTwo_{i}        \\
+		+ & \inst{CALL}               & \!\!\! \cdot \!\!\! & \stpCall_{i}             \\
+		+ & \inst{CALLCODE}           & \!\!\! \cdot \!\!\! & \stpCallCode_{i}         \\
+		+ & \inst{DELEGATECALL}       & \!\!\! \cdot \!\!\! & \stpDelegateCall_{i}     \\
+		+ & \inst{STATICCALL}         & \!\!\! \cdot \!\!\! & \stpStaticCall_{i}       \\
+	\end{array} \right]
+\]
+The constraints are thus as follows:
+\begin{enumerate}
+	\item \If $\stpStamp_{i} =    0$ \Then $\flagSum_{i} = 0$
+	\item \If $\stpStamp_{i} \neq 0$ \Then $\flagSum_{i} = 1$
+	\item $\INST_{i} = \instSum_{i}$
+\end{enumerate}
+We further introduce the following shorthands
+\[ 
+\left\{ \begin{array}{lcl}
+	\isCreate_{i} & = & 
+	\left[ \begin{array}{cr}
+		+ & \stpCreate_{i}              \\
+		+ & \stpCreateTwo_{i}           \\
+	\end{array} \right] \vspace{2mm} \\
+	\isCall  _{i} & = &
+	\left[ \begin{array}{cr}
+		+ & \stpCall_{i}                \\
+		+ & \stpCallCode_{i}            \\
+		+ & \stpDelegateCall_{i}        \\
+		+ & \stpStaticCall_{i}          \\
+	\end{array} \right] \vspace{2mm} \\
+	\cctv_{i}     & = &
+	\left[ \begin{array}{cr}
+		+ & \stpCall_{i}                \\
+		+ & \stpCallCode_{i}            \\
+	\end{array} \right] \vspace{2mm} \\
+\end{array} \right.
+\]
+\saNote{} The acronym \cctv{} stands for ``\textbf{c}all \textbf{c}an \textbf{t}ransfer \textbf{v}alue.''
+
+\saNote{} These are \emph{de facto} binary columns.

@@ -1,0 +1,33 @@
+There are obvious difficulties with uniqueness notions for module traces. Here are some:
+\begin{description}
+    \item[Shape and interpretation:] this is really the purview of the ``levels of analysis'' thread; module constraints should be sufficiently constricting so as to assure a unique scaffolding structure wherein instruction processing may be inserted;
+    \item[Interpretation:] a related question is that of uniqueness of interpreation: the scaffolding ought to be sufficiently constricting so as to impose a unique interpretation as to what is going on and to prevent situations such as two legitimate readings of a trace where one reading sees one set of instructions with one set of arguments being carried out and another reading sees another set of instructions with another set of arguments; 
+    \item[Order of instructions:] for stateless modules there is no canonical order in which operations have to be tackled; in order to be part of a larger valid proof these modules must perform a minimal set of computations;
+    \item[Un-requested instructions:] nothing prevents stateless modules from executing junk instructions that no other module requested; this ought not to be a problem as even instructions with inputs that don't conform to constraints shouldn't infect other modules (connected to the present module via lookups) nor should they infect other instructions in the trace;
+\end{description}
+In its earliest formulation the notion of ``\textbf{essential uniqueness}'' was defined as such, on a module per module basis. Let us come back to the first attempt of defining ``essential uniqueness'' of traces. Take a module \moduleName{} with associated constraint system $\mathcal{C}_\moduleName$. Take a trace $\fullTrace_\moduleName$ which satisfies:
+\begin{enumerate}
+     \item type constraints for \godGiven{} inputs;
+     \item $\zkEvmModuleRel_{\moduleName}(\fullTrace_\moduleName) = \mTrue$
+\end{enumerate}
+Let us assumed that we have established \textbf{uniqueness of scaffolding}. Then we can focus on the computations that fit inside the scaffolding. You can have the following notion of \textbf{essential uniqueness}: the cells that actively participate in the computation are determined by inputs alone. Here we superimpose on the computation which is hopefully captured by the constraint system the idea that some cells represent ``\textbf{inputs}'' while others represent ``\textbf{outputs}''. This is of course a natural point of view but breaks down when you consider the detail of how modules function. Modules typically get their instrutions served with inputs \emph{and} predicted outputs. And in that sense they aren't producing outputs, rather verifying that predicted outputs fit into a constraint system.
+
+Here is a slightly more precise notion. For a given computation performed by a given module one can, given scaffolding guarantees, identify individual cells as carrying ``inputs'' and others as carrying ``outputs''. Constraints apply globally throughout the trace but may be ``prescriptive'' only in certain circumstances e.g.
+\begin{Verbatim}[commandchars=\\\{\}]
+(defconstraint set-res-bit ()
+	(begin
+		\textcolor{gray!75}{;; LT case} 
+		(if-not-zero LT_FLAG
+			(if-zero COMP_HI 
+				(=! RES_LO COMP_LO)
+				(=! RES_LO COMP_HI)))
+		\textcolor{gray!75}{;; GT case} 
+		(if-not-zero GT_FLAG
+			(if-zero COMP_HI 
+				(=! RES_LO COMP_LO)
+				(=! RES_LO COMP_HI)))
+		\textcolor{gray!75}{;; etc ...} 
+\end{Verbatim}
+These constraints will be ``prescriptive'' in the sense that they participate in the definition of an output in case the \col{LT\_FLAG} is on. Then the above constraint is \textbf{active} and \textbf{prescriptive}, while the second constraint isn't.
+
+The idea is that there should be some sort of \textbf{directed structure}, maybe a directed labeled graph (where the labels are the constraints, and the directedness could be deduced from \corset{} annotations) that ideally digs a directed and uniquely prescriptive path from inputs to outputs. The claim of essential uniqueness is then that the cells of this graph (which are individual cells in a constraint system that fits into the scaffolding) should be uniquely fillable with values that satisfy the constraints labeling the graph with the given ``inputs'' and ``outputs.''

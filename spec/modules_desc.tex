@@ -1,0 +1,77 @@
+The \zkEvm{} follows a modular archicture. Modules are given short acronyms / identifiers. The modules are the following:
+\begin{enumerate}
+	\item $\rlpTxnMod$:
+		this module receives the raw \textsc{rlp}-encoded transactions; its purpose is to re-construct said \textsc{rlp} using the fields of a transaction used by the \zkEvm{} (as well as the signature of the transaction); it further constructs the \textsc{rlp} encoding of the transaction stripped of its signature; this string (along with the transaction signature) provides the input for the \texttt{KEC} constraint system and \texttt{ECRECOVER}y which vet said transaction; see chapter~\ref{chap: txn rlp};
+		%%%
+	\item $\txnDataMod{}$:
+		this module corrals the (\textsc{evm}-relevant) transaction data contained in the transaction \textsc{rlp}; it provides that data in an easily accessible and exportable format; see chapter~\ref{chap: txn data};
+		\saNote{} the \btcMod{} module is used to off-load computations performed on transaction data (such as determining the \inst{GASPRICE} of \textsc{eip1559} transactions); see chapter~\ref{chap: txn comp};
+		%%%
+	\item $\btcMod{}$:
+		this module corrals some (\textsc{evm}-relevant) batch data (such as \inst{COINBASE}, \inst{TIMESTAMP}, \dots); see chapter~\ref{chap: btc data};
+		% \ref{chap: log rlp};
+		% \ref{chap: addr rlp};
+		%%%
+	\item $\hubMod{}$:
+		logical centerpiece of the \zkEvm{}: this modules is in charge of the stack, execution context(s) (including gas and program counter), account data, account storage; it further loads instructions from the bytecode found in the \romMod{} module; it dispatches a lot of the work to other more "functional modules" and to the \textsc{ram}; see chapter~\ref{chap: hub};
+		%%%
+	\item $\addMod{}, \extMod{}, \modMod{}, \mulMod{}$:
+		these modules deal with the arithmetic instructions of the \textsc{evm}; addition and subtraction, extended modular arithmetic, modular arithmetic and multiplication and exponentiation respectively;
+	\item $\binMod{}$:
+		binary module; deals with opcodes performing binary operations; see chapter~\ref{chap: };
+		%%%
+	\item $\shfMod{}$:
+		shifting module; deals with opcodes performing bit shifts; see chapter~\ref{chap: shf};
+		%%%
+	\item $\wcpMod{}$:
+		word comparison module; deals with opcodes performing integer comparisons; see chapter~\ref{chap: wcp};
+		%%%
+	\item $\mxpMod{}$:
+		computes memory expansion costs; may raise a flag ($\mxpx$) if offsets are wildly out of bounds; see chapter~\ref{chap: mxp};
+		%%%
+	\item $\romMod{}$:
+		contains the bytecodes (as well as initialization codes) which are run, read (e.g. through \inst{EXTCODECOPY}) and or (temporarily) deployed in a batch of transactions; see chapter~\ref{chap: rom};
+		%%%
+	\item $\mmuMod{}$:
+		first stop in the life time of an opcode execution which touches RAM; performs arithmetic on offsets and various sizes to cut down execution of a single opcode into a sequence of smaller queries; see chapter~\ref{chap: mmu};
+		%%%
+	\item $\ramMod{}$:
+		contains the RAM of all execution context and can communicate with other data sources such as ROM and other data stores; carries out the sequence of small queries commissioned by the $\mmuMod{}$; see chapter~\ref{chap: ram};
+		%%%
+	\item $\oobMod{}$:
+		performs certain range checks required by instructions, e.g. \inst{JUMP}s and \inst{JUMPI}s; see chapter~\ref{chap: oob};
+		%%%
+	\item $\stpMod$:
+		computes the gas stipend provided to new execution contexts (or precompiles) spawned through a \inst{CREATE}-type or \inst{CALL}-type instruction; in particular computes the $L$ function $L(n) = n - \lfloor n/64 \rceil$; 
+		%%%
+	\item $\precInfoMod$:
+		performs some computations when a \inst{CALL} is made to a precompiled contract; these computations include determining whether executing the \inst{CALL} requires the \hubMod{} to send instructions to RAM or not, whether the \inst{CALL} is successful or not and the return data size; 
+		%%%
+	\item $\trmMod{}$:
+		shaves the leading 12 bytes off addresses; see chapter~\ref{chap: trm};
+		% \item $\stoMod{}$:
+		storage module; unique among all modules other than the hub in that it computes its own gas costs; see chapter~\ref{chap: sto};
+		%%%
+		% \item $\accMod{}$:
+		address existence module; loads and udpates account data from the state; \texttt{WIP};
+		%%%
+		% \item $\wrmMod{}$:
+		address warmth module: loads prewarmed addresses; handles address warmth in general; built on similar principles as the storage module; see chapter~\ref{chap: wrm};
+		%%%
+		%\item[\vspace{\fill}]
+\end{enumerate}
+The following are a few very small modules that either perform a very specific task or are used for reference for the prover
+\begin{enumerate}[resume]
+	\item $\ecDataMod$:
+		recipient of data extracted from RAM and provided to specialized circuits computing elliptic curve primitives (e.g. \texttt{ECRECOVER}, \texttt{ECADD}, \texttt{ECMUL}, \texttt{ECPAIRING})
+	\item $\blkMdxMod$:
+		recipient of data extracted from RAM and provided to the \texttt{MODEXP} and the \texttt{BLAKE2f} circuits;
+	\item $\shakiraMod$:
+		recipient of data extracted from RAM and provided to the \texttt{KECCAK}, \texttt{SHA2-256} and the \texttt{RIPEMD-160} circuits;
+		also contains the output of said hash functions;
+	\item $\logMod{}$:
+		same idea for logs; the information module extracts the log parameter ($\in\{09,1,2,3,4\}$), logger address and size in bytes; the second module serves as a data store for the log message;
+	\item $\expMod{}$:
+		computes the dynamic gas cost of the \inst{EXP} instruction; see chapter~\ref{chap: exp};
+\end{enumerate}
+

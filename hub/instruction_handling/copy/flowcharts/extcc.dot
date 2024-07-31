@@ -1,0 +1,281 @@
+# http://www.graphviz.org/content/cluster
+
+digraph G {
+
+  node [fontname = "Handlee"];
+  node [shape=plaintext];
+  edge [fontname = "Handlee"];
+
+  inst [label=<
+  <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
+  <TR>
+  <TD><FONT POINT-SIZE="40">EXTCODECOPY</FONT></TD>
+  </TR>
+  </TABLE>>];
+  sux [
+    label = "\nSUX\n ";
+    shape = diamond;
+    style = filled;
+    fillcolor = "ORANGE";
+    color = "RED";
+  ];
+  mxpx [
+    label = "\nMXPX\n ";
+    shape = diamond;
+    style = filled;
+    fillcolor = "ORANGE";
+    color = "RED";
+  ];
+  oogx [
+    label = "\nOOGX\n ";
+    shape = diamond;
+    style = filled;
+    fillcolor = "ORANGE";
+    color = "RED";
+  ];
+  unexceptional [
+    label = "\nNo Exception\n ";
+    shape = rect;
+    style = filled;
+    fillcolor = "LIGHTBLUE";
+    color = "green";
+  ];
+  wont_revert [
+    label = "\nWon't revert\n ";
+    shape = diamond;
+    style = filled;
+    fillcolor = "LIGHTGREEN";
+    color = "green";
+  ];
+  will_revert [
+    label = "\nWill revert\n ";
+    shape = diamond;
+    style = filled;
+    fillcolor = "LIGHTGREEN";
+    color = "green";
+  ];
+
+  {
+    rank=same;
+    sux; sux_rows;
+  }
+  {
+    rank=same;
+    mxpx; mxpx_rows;
+  }
+  {
+    rank=same;
+    oogx; oogx_rows;
+  }
+  {
+    rank=same;
+    will_revert; will_revert_rows;
+  }
+  {
+    rank=same;
+    wont_revert; wont_revert_rows;
+  }
+
+  inst                       -> sux;
+  sux                        -> sux_rows;
+  sux                        -> mxpx;
+  mxpx                       -> mxpx_rows;
+  mxpx                       -> oogx
+  oogx                       -> oogx_rows;
+  oogx                       -> unexceptional;
+  unexceptional              -> will_revert;
+  will_revert                -> will_revert_rows;
+  will_revert                -> wont_revert;
+  wont_revert                -> wont_revert_rows;
+
+sux_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>i</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>empty stack items</TD>
+  </TR>
+  <TR>
+    <TD>i + 2</TD>
+    <TD>Con</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD COLSPAN="1">update return data: &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+mxpx_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>i</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>offsets and size</TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>MISC</TD>
+    <TD></TD>
+    <TD>MXP🏴 = 1, MXPX = <B><FONT COLOR="#FA5F55">1</FONT></B></TD>
+  </TR>
+  <TR>
+    <TD>i + 2</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD>update return data: &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+oogx_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>i</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>offsets and size</TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>MISC</TD>
+    <TD></TD>
+    <TD>MXP🏴 = 1, MXPX = <B><FONT COLOR="LIMEGREEN">0</FONT></B></TD>
+  </TR>
+  <TR>
+    <TD>i + 2</TD>
+    <TD>ACC</TD>
+    <TD BGCOLOR=" #33FFCC ">target</TD>
+    <TD>TRM🏴 = 1; same warmth; read account;</TD>
+    <TD>τ · h + 0</TD><TD>0</TD>
+  </TR>
+  <TR>
+    <TD>i + 3</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD>update return data: &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+wont_revert_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>i</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>offsets and size</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i + 1</TD>
+    <TD ROWSPAN="2">MISC</TD>
+    <TD ROWSPAN="2"></TD>
+    <TD ROWSPAN="1">MXP🏴 = 1, MXPX = <B><FONT COLOR="LIMEGREEN">0</FONT></B>;</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">MMU🏴 = [size ≠ 0];</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i + 2</TD>
+    <TD ROWSPAN="2">ACC</TD>
+    <TD ROWSPAN="2" BGCOLOR=" #33FFCC ">target</TD>
+    <TD>TRM🏴 = 1; warmth ↗;</TD>
+    <TD ROWSPAN="2">τ · h + 0</TD>
+    <TD ROWSPAN="2">0</TD>
+  </TR>
+  <TR>
+    <TD>CFI_REQUIRED = HAS_CODE * [SIZE != 0];</TD>
+  </TR>
+</TABLE>>];
+
+will_revert_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>i</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>offsets and size</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i + 2</TD>
+    <TD ROWSPAN="2">MISC</TD>
+    <TD ROWSPAN="2"></TD>
+    <TD ROWSPAN="1">MXP🏴 = 1, MXPX = <B><FONT COLOR="LIMEGREEN">0</FONT></B>;</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">MMU🏴 = 0;</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i + 2</TD>
+    <TD ROWSPAN="2">ACC</TD>
+    <TD ROWSPAN="2" BGCOLOR=" #33FFCC ">target</TD>
+    <TD>TRM🏴 = 1; warmth ↗;</TD>
+    <TD ROWSPAN="2">τ · h + 0</TD>
+    <TD ROWSPAN="2">0</TD>
+  </TR>
+  <TR>
+    <TD>CFI_REQUIRED = HAS_CODE * [SIZE != 0];</TD>
+  </TR>
+  <TR>
+    <TD>i + 3</TD>
+    <TD>ACC</TD>
+    <TD BGCOLOR=" #33FFCC ">target</TD>
+    <TD>TRM🏴 = 1; warmth ↶; read account;</TD>
+    <TD>τ · ρ + ε</TD><TD>τ · h + 0</TD>
+  </TR>
+</TABLE>>];
+
+}
+

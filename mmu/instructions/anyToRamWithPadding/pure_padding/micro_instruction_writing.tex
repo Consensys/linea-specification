@@ -1,0 +1,73 @@
+\begin{center}
+	\boxed{ \text{The constraints below assume that } \mmuInstFlagAnyToRamWithPaddingPurePadding _{i} = 1.}
+\end{center}
+\begin{description}
+	\item[Paying forward:]
+		\If $\isMiddleRZ_{i} + \isLastRZ_{i} = 1$ \Then we impose that 
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst        _{i} & = & \valueToBeSet \\
+				\microSize        _{i} & = & \valueToBeSet \\
+				\microSlo         _{i} & = & \nothing \\
+				\microSbo         _{i} & = & \nothing \\
+				\microTlo         _{i} & = & 1 + \microTlo_{i - 1} \\
+				\microTbo         _{i} & = & 0 \\
+				\microLimb        _{i} & = & \nothing \\
+				% \microCns         _{i} & = & \macroSrcId_{i} \\
+				% \microCnt         _{i} & = & \macroTgtId_{i}  \\
+				% \microSuccessBit  _{i} & = & \nothing \\
+				% \microExoSum      _{i} & = & \nothing \\
+				% \microPhase       _{i} & = & \nothing \\
+				% \microIdOne       _{i} & = & \nothing \\
+				% \microIdTwo       _{i} & = & \nothing \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		The constraint ``$\microTbo_{i} = 0$'' is only required for the last row (which might be an excition instruction.)
+		We don't draw the distinction and just impose the above.
+	\item[The ``middle right padding'' rows:] 
+		\If $\isMiddleRZ_{i} = 1$ \Then we impose that 
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst        _{i} & = & \mmioInstRamVanishes  \\
+				\microSize        _{i} & = & \nothing \\
+				% \microSlo         _{i} & = & \nothing \\
+				% \microSbo         _{i} & = & \nothing \\
+				% \microTlo         _{i} & = & 1 + \microTlo_{i - 1} \\
+				% \microTbo         _{i} & = & 0 \\
+				% \microLimb        _{i} & = & \nothing \\
+				% \microCns         _{i} & = & \macroSrcId_{i} \\
+				% \microCnt         _{i} & = & \macroTgtId_{i}  \\
+				% \microSuccessBit  _{i} & = & \nothing \\
+				% \microExoSum      _{i} & = & \nothing \\
+				% \microPhase       _{i} & = & \nothing \\
+				% \microIdOne       _{i} & = & \nothing \\
+				% \microIdTwo       _{i} & = & \nothing \\
+			\end{array} \right.
+		\]
+	\item[The ``last right padding'' row:] 
+		\If $\isLastRZ_{i} = 1$ \Then we impose that 
+		\[
+			\left\{ \begin{array}{lcl}
+				\microInst        _{i} & = & \locLastPaddingInst  \\
+				\microSize        _{i} & = & \locLastPaddingSize_{i} \\
+				% \microSlo         _{i} & = & \nothing \\
+				% \microSbo         _{i} & = & \nothing \\
+				% \microTlo         _{i} & = & 1 + \microTlo_{i - 1} \\
+				% \microTbo         _{i} & = & 0 \\
+				% \microLimb        _{i} & = & \nothing \\
+				% \microCns         _{i} & = & \macroSrcId_{i} \\
+				% \microCnt         _{i} & = & \macroTgtId_{i}  \\
+				% \microSuccessBit  _{i} & = & \nothing \\
+				% \microExoSum      _{i} & = & \nothing \\
+				% \microPhase       _{i} & = & \nothing \\
+				% \microIdOne       _{i} & = & \nothing \\
+				% \microIdTwo       _{i} & = & \nothing \\
+			\end{array} \right.
+		\]
+		where we define the \locLastPaddingInst{} shorthand as follows:
+		\begin{enumerate}
+			\item \If $\locLastPaddingIsFull_{i} = 0$ \Then $\locLastPaddingInst \define \mmioInstRamExcision$
+			\item \If $\locLastPaddingIsFull_{i} = 1$ \Then $\locLastPaddingInst \define \mmioInstRamVanishes$
+		\end{enumerate}
+\end{description}

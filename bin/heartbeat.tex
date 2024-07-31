@@ -1,0 +1,25 @@
+The heartbeat of the binary module is straightforward: the \ct{} columns counts continuously from $0$ to \maxCt{} whereupon it resets.
+\begin{enumerate}
+	\item $\binStamp_{0} = 0$;
+	\item $\binStamp$ is nondecreasing in the sense that $\binStamp_{i + 1} \in \{ \binStamp_{i}, 1 + \binStamp_{i} \}$;
+	\item \If $\binStamp_{i + 1} \neq \binStamp_{i}$ \Then $\ct_{i + 1} = 0$;
+	\item \If $\isNot_{i} = 1$ \Then $\maxCt_{i}=\llargeMO$
+	\item \label{bin: heartbeat: maxCt for BYTE and SIGNEXTEND}
+		\If $\isByte_{i} + \isSignextend_{i}=1$ \Then:
+		\[
+			\begin{cases}
+				\If \argOneHi_{i} =    0 ~ \Then \maxCt_{i}=\llargeMO \\
+				\If \argOneHi_{i} \neq 0 ~ \Then \maxCt_{i}= 0\\
+			\end{cases}
+		\]
+	\item $\ct_{i} \neq \llarge$
+	\item \If $\binStamp_{i} \neq 0$
+		\begin{enumerate}
+			\item
+				\If $\ct_{i} \neq \maxCt_{i}$ \Then $\ct_{i + 1} = 1 + \ct_{i}$
+			\item
+				\If $\ct_{i} =    \maxCt_{i}$ \Then $\binStamp_{i + 1} = 1 + \binStamp_{i}$
+		\end{enumerate}
+	\item $\ct_{N} = \maxCt_{N}$.
+\end{enumerate}
+The above enforce that $0 \leq \ct_i \leq \maxCt_i < \llarge$ holds on non-padding rows (i.e. when $\wcpStamp_{i} \neq 0$).  This is achieved through the above constraint imposing that \ct{} never be equal to $\llarge$ and counter-constancy of \maxCt{}, see section~(\ref{bin: stamp constancies}).

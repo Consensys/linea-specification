@@ -1,0 +1,20 @@
+This section constrains the $\someBits$ column. Recall that $\someBits$ should contain the bits of the leading byte of $\iArgTwo$ and the bits of the least significant byte of $\iArgOne$.
+\begin{enumerate}
+	\item $\someBits$ is a binary column;
+	\item \If $\shfStamp_{i}\neq 0$ \et $\oli_{i} = 0$ \Then
+	\begin{enumerate}
+		\item \If $\ct_{i} = 0$ \Then
+		\[
+		\left\{
+		\begin{array}{lcl}
+			\byteCol{2}_{i} & \!\!\! = \!\!\! & \displaystyle \sum_{k = 0}^{7} 2^{7 - k} \cdot \someBits_{i + k} \\
+			\NEG_{i} & \!\!\! = \!\!\! & \someBits_{i} \\
+		\end{array}
+		\right.
+		\]
+		\item \If $\ct_{i} = \llargeMO$ \Then
+		\[
+		\byteCol{1}_{i} = \sum_{k = 0}^{7} 2^{k} \cdot \someBits_{i - k}
+		\]
+	\end{enumerate}
+\end{enumerate}

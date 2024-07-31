@@ -1,0 +1,49 @@
+\saNote{} All of \locStampIncrement{}, \locIndexResetBit{} and \locLegalTransitionsBit{} are in fact \textbf{binary} expressions.
+
+\noindent We impose the following
+\begin{enumerate}
+        \item $\shakiraStamp_{0} = 0$
+        \item \If $\flagSum_{i} = 0$ \Then
+                \[
+                        \left\{ \begin{array}{lclr}
+                                \shakiraId      _{i} & = & 0 \\
+                                \index         _{i} & = & 0 \\
+                                \indexMax      _{i} & = & 0  & (\trash) \\
+                        \end{array} \right.
+                \]
+        \item $\shakiraStamp_{i + 1} \in \{ \shakiraStamp_{i}, 1 + \shakiraStamp_{i} \}$ \quad(\trash)
+        \item $\shakiraStamp_{i + 1} = \shakiraStamp_{i} + \locStampIncrement_{i}$
+        \item \If $\locIndexResetBit_{i} = 1$ \Then $\index_{i + 1} = 0$
+        \item \If $\shakiraStamp_{i} \neq 0$ \Then
+                \begin{enumerate}
+                        \item $\locLegalTransitionsBit_{i} = 1$
+                        \item \If $\index_{i} \neq \indexMax_{i}$ \Then $\index_{i + 1} = 1 + \index_{i}$
+                                % \[
+                                %         \left\{ \begin{array}{lclr}
+                                %                 \index_{i + 1}        & = & 1 + \index_{i} \\
+                                %                 \locTransitionBit_{i} & = & 0               & (\trash) \\
+                                %         \end{array} \right.
+                                % \] 
+                        \item \If $\index_{i} =    \indexMax_{i}$ \Then $\locIndexResetBit_{i} = 1$
+                                % \[
+                                %         \left\{ \begin{array}{lclr}
+                                %                 \index_{i + 1}        & = & 0  & (\trash) \\
+                                %                 \locTransitionBit_{i} & = & 1 \\
+                                %         \end{array} \right.
+                                % \] 
+                \end{enumerate}
+	\item \If $\locIsResult_{i} = 1$ \Then
+		\[
+			\indexMax_{i} = 1
+		\]
+        \item \If $\shakiraStamp_{N} \neq 0$ \Then
+                \[
+                        \left\{ \begin{array}{lclr}
+                                \index           _{N} & = & \indexMax_{N} & \quad (\trash) \\
+                                \locIsResult     _{N} & = & 1             & \quad (\trash) \\
+                        \end{array} \right.
+                \]
+\end{enumerate}
+\saNote{} The same remark applies for note~(\ref{blkmdx: finalization constraints are useless}).
+
+\saNote{} We are unable to set the value of \indexMax{} at this level of generality. We will do so implicitly in section~(\ref{shakira: stamp increment}).

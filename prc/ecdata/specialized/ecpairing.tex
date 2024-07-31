@@ -1,0 +1,86 @@
+\[
+    \boxed{\text{All constraints in this subsection assume }
+        \left\{ \begin{array}{lcl}
+            \isEcpairingData _{i} & =    & 1                    \\
+            \accPairings     _{i} & \neq & \accPairings_{i - 1} \\
+        \end{array} \right.
+    }
+\]
+We introduce the following (local) shorthands:
+\[
+    \left\{ \begin{array}{lclr}
+        \locAXHi                         & \define & \ecdataLimb _{i}                             \\
+        \locAXLo                         & \define & \ecdataLimb _{i + 1}                         \\
+        \locAYHi                         & \define & \ecdataLimb _{i + 2}                         \\
+        \locAYLo                         & \define & \ecdataLimb _{i + 3}                         \\
+        \locBXImHi                       & \define & \ecdataLimb _{i + 4}                         \\
+        \locBXImLo                       & \define & \ecdataLimb _{i + 5}                         \\
+        \locBXReHi                       & \define & \ecdataLimb _{i + 6}                         \\
+        \locBXReLo                       & \define & \ecdataLimb _{i + 7}                         \\
+        \locBYImHi                       & \define & \ecdataLimb _{i + 8}                         \\
+        \locBYImLo                       & \define & \ecdataLimb _{i + 9}                         \\
+        \locBYReHi                       & \define & \ecdataLimb _{i + 10}                        \\
+        \locBYReLo                       & \define & \ecdataLimb _{i + 11}                        \\
+        \locInternalChecksPassed         & \define & \hurdle     _{i + \indexMaxEcPairingDataMin} \\
+        \locPreviousInternalChecksPassed & \define & \hurdle     _{i - \redm{1}}                  \\
+    \end{array} \right.
+\]
+We introduce the following constraints:
+\begin{description}
+    \item[\underline{Row $n^°(i)$:}]
+          \[
+              \callToCOneMembership
+              {i}{0}
+              {\locAXHi}{\locAXLo}{\locAYHi}{\locAYLo}
+          \]
+
+          \[
+              \locCOneMembership  \define \hurdle_{i}
+          \]
+\end{description}
+
+\begin{description}
+    \item[\underline{Row $n^°(i+4)$:}]
+          \[
+              \callToWellFormedCoordinates{4}{\locBXImHi}{\locBXImLo}{\locBXReHi}{\locBXReLo}{\locBYImHi}{\locBYImLo}{\locBYReHi}{\locBYReLo}
+          \]
+
+          \[
+              \locWellFormedCoordinates \define \hurdle_{i+4}
+          \]
+\end{description}
+\begin{description}
+    \item[\underline{Propagation of \locInternalChecksPassed:}]
+          The following constraint defines the value of $\locInternalChecksPassed$ for the first pair and the subsequents, if any.
+          For each subsequent, $\locPreviousInternalChecksPassed$ is propagated so as to compute the latest $\locInternalChecksPassed$.
+          Note that this approach is adopted to deal with an arbitrary number of input pairings:
+          \begin{enumerate}
+              \item \If $\accPairings_{i} = 1$ \Then
+                    \[
+                        \locInternalChecksPassed = \locCOneMembership \cdot \locWellFormedCoordinates
+                    \]
+              \item \If $\accPairings_{i} \neq 1$ \Then
+                    \begin{enumerate}
+                        \item $\hurdle_{i + 10} = \locCOneMembership \cdot \locWellFormedCoordinates$
+                        \item $\locInternalChecksPassed = \hurdle_{i + 10} \cdot \locPreviousInternalChecksPassed$
+                    \end{enumerate}
+          \end{enumerate}
+\end{description}
+\saNote{} \If $\isEcpairingData_{i} = 0$ \Then $\accPairings_{i} = 0$ and the first pair corresponds to $\accPairings_{i} = 1$.
+\begin{description}
+    \item[\underline{Justifying the \ecdataSuccessBit{}:}]
+          We impose the following constraints
+          \begin{enumerate}
+              \item \If $\internalChecksPassed _{i}= 0$ \Then $\ecdataSuccessBit _{i} = 0$
+              % \item \If $\internalChecksPassed _{i}= 1 ~ \Then \ecdataSuccessBit_{i} = \justifiedByExternalCircuit$
+              \item \If $\internalChecksPassed _{i}= 1$  \Then $\ecdataSuccessBit_{i} = 1 - \notOnGTwoAccMax _{i}$
+              % \item \If $\notOnGTwoAccMax_{i} = 1$ \Then $\ecdataSuccessBit _{i} = 0$
+              % \item \If $\ecdataSuccessBit _{i} = 1$ \Then 
+              % \[
+              %     \left\{ \begin{array}{lcl}
+              %         \internalChecksPassed _{i}    & = & 1 \\
+              %         \notOnGTwoAccMax         _{i} & = & 0 \\
+              %     \end{array} \right. \quad (\trash)
+              % \]
+          \end{enumerate}
+\end{description}

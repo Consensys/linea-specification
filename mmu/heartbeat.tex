@@ -1,0 +1,82 @@
+The heartbeat of the \mmuMod{} goes as follows:
+\begin{enumerate}
+	\item $\mmuStamp_{0} = 0$
+	\item \If $\mmuStamp_{i} = 0$ \Then $\microStamp_{i} = 0$
+	\item $\mmuStamp_{i} = \mmuStamp_{i-1} + \isMacro_{i}$
+	\item $\microStamp_{i} = \microStamp_{i-1} + \isMicro_{i}$
+	\item \label{mmu: single macro instruction row}
+		\If $\isMacro           _{i} = 1$ \Then $\isPreprocessing _{i + 1}                     = 1$
+	\item \If $\isPreprocessing   _{i} = 1$ \Then $\isPreprocessing _{i + 1} + \isMicro_{i + 1}  = 1$ (\trash)
+	\item \If $\isMicro           _{i} = 1$ \Then $\isMicro         _{i + 1} + \isMacro_{i + 1}  = 1$ (\trash)
+\end{enumerate}
+\saNote{} Since $\isMacro$ is a binary column the above enforces in particular that $\mmuStamp_{i + 1} \in \{ \mmuStamp_{i}, 1 + \mmuStamp_{i} \}$.
+
+The idea is that in order to deal with a single ``macro-instruction'' as provided by the \hubMod{}\footnote{E.g. a particular \inst{RETURN} or \inst{MLOAD}} the present \mmuMod{} module goes through three separate phases.
+There is a single row (characterized by $\isMacro \equiv 1$) where the macro-instruction is loaded into the \mmuMod{}.
+This is followed up by a more or less involved pre-processing phase (characterized by $\isPreprocessing \equiv 1$) where various computations are performed (or off-loaded to other modules.)
+The final phase is that of ``micro-instruction-writing'' (and is characterized by $\isMicro \equiv 1$.)
+During that phase the \mmuMod{} produces a sequence of so-called ``micro-instructions'', a total of $\ppTot$-many of them to be precise.
+These are then sent off to the \mmioMod{} for actual execution.
+After this the cycle resumes.
+
+Below we describe the constraints that govern the transition from one such phase to another.
+Observe that constraint~(\ref{mmu: single macro instruction row}) already imposes that the macro-instruction loading only lasts a single row and leads to preprocessing
+The next phase to tackle is thus that of preprocessing.
+This phase has variable length depending on the instruction at hand.
+We use a counter column to track the termination of this phase.
+The initial value of the counter will be deduced from the underlying \mmuMod{} instruction.
+\begin{enumerate} [resume]
+	\item \If $\isPreprocessing_{i} = 1$ \Then: 
+		\begin{enumerate}
+			\item  \If $\ppCt_{i} \neq 0$ \Then:
+				\begin{enumerate}
+					\item $\ppCt_{i + 1} = \ppCt_{i} - 1$
+					\item $\isPreprocessing_{i + 1} = 1$
+				\end{enumerate}
+			\item  \If $\ppCt_{i} = 0$ \Then
+				\begin{enumerate}
+				    \item $\isMicro_{i + 1} = 1$
+				\end{enumerate}
+		\end{enumerate}
+\end{enumerate}
+The ``micro-instruction-writing'' phase lasts \ppTot{} many rows.
+We take the time to deal with other counters that are of interest:
+\ppTotLZ{},
+\ppTotNT{} and
+\ppTotRZ{}.
+\begin{enumerate} [resume]
+	\item $\ppTot_{i} = \ppTotLZ_{i} + \ppTotNT_{i} + \ppTotRZ_{i}$
+	\item \If $\isMicro_{i}=1$ \Then:
+		\begin{enumerate}
+			\item $\ppTot_{i}=\ppTot_{i - 1} - 1$ 
+			\item \If $\ppTot_{i} \neq 0$ \Then $\isMicro_{i + 1}=1$
+			\item \If $\ppTot_{i} =    0$ \Then $\isMacro_{i + 1}=1$
+			\item \If $\ppTot_{i} = 0$ \Then
+				\[
+					(\bigstar)
+					\left\{ \begin{array}{lcl}
+						\ppTotLZ_{i}       & = & 0 \quad (\trash) \\ 
+						\ppTotNT_{i}       & = & 0 \quad (\trash) \\ 
+						\ppTotRZ_{i}       & = & 0 \quad (\trash) \\ 
+					\end{array} \right.
+				\]
+			\item \If $\ppTotLZ_{i - 1} \neq 0$ \Then $\ppTotLZ_{i} = -1 + \ppTotLZ_{i - 1}$
+			\item \If $\ppTotLZ_{i - 1} = 0$ \Then $\ppTotLZ_{i} = 0$
+			\item \If $\ppTotNT_{i - 1} \neq 0$ \Then $\ppTotLZ_{i} + \ppTotNT_{i} = -1 + \ppTotLZ_{i - 1} + \ppTotNT_{i - 1}$
+			\item \If $\ppTotNT_{i - 1} = 0$ \Then $\ppTotNT_{i} = 0$ 
+		\end{enumerate}
+	\item \If $\mmuStamp_{N} \neq 0$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\isMicro_{N}   & = & 1 \\
+				\ppTot_{N}     & = & 0 \\
+			\end{array} \right.
+		\]
+\end{enumerate}
+\saNote{} We will systematically initialize the values of
+\ppTotLZ{},
+\ppTotNT{} and
+\ppTotRZ{}
+during the pre-processing phase to \textbf{nonnegative integer values}.
+As a consequence constraints $(\bigstar)$ aren't strictly necessary.
+Including them (as optional constraints) in the present document may clarify intent.

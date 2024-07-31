@@ -1,0 +1,61 @@
+\begin{center}
+        \boxed{\text{The constraints below assume that }
+        \left\{ \begin{array}{lcl}
+                \locAbs_{i}    & \neq & \locAbs_{i - 1} \\
+                \txIsTypeTwo_{i} & =    & 1                 \\
+        \end{array} \right.}
+\end{center}
+The following constraints apply to type 2 transactions only:
+\begin{description}
+        \item[\underline{\underline{Row n$°(i + \maxFeeVsBaseFeeRowOffset)$: Comparing \locMaxFee{} and \txBasefee{}:}}] 
+                we impose that
+                \[
+                        \left\{ \begin{array}{l}
+                                \smallCallToLt
+                                {i}{\maxFeeVsBaseFeeRowOffset}
+                                {\locMaxFee}
+                                {\txBasefee}
+                                \vspace{2mm}
+                                \\
+                                \resultMustBeFalse
+                                {i}{\maxFeeVsBaseFeeRowOffset}
+                                \\
+                        \end{array} \right.
+                \]
+                \saNote{}
+                The above thus enforces that the result of the comparson $\locMaxFee < \txBasefee$ is \texttt{false}, i.e. that the inequality $\locMaxFee \geq \txBasefee$ is \texttt{true}.
+        \item[\underline{\underline{Row n$°(i + \maxFeeVsMaxPriorityFee)$: Comparing \locMaxFee{} and \locMaxPriorityFee{}:}}]
+                we impose that
+                \[
+                        \left\{ \begin{array}{l}
+                                \smallCallToLt
+                                {i}{\maxFeeVsMaxPriorityFee}
+                                {\locMaxFee        }
+                                {\locMaxPriorityFee}
+                                \vspace{2mm}
+                                \\
+                                \resultMustBeFalse
+                                {i}{\maxFeeVsMaxPriorityFee}
+                                \\
+                        \end{array} \right.
+                \]
+                \saNote{}
+                The above thus enforces that the result of the comparson $\locMaxFee < \locMaxPriorityFee$ is \texttt{false}, i.e. that the inequality $\locMaxFee \geq \locMaxPriorityFee$ is \texttt{true}.
+        \item[\underline{\underline{Row n$°(i + \effectiveGasPriceRowOffset)$: Computing the effective gas price:}}]
+                we impose that
+                \[
+                        \smallCallToLt
+                        {i}{\effectiveGasPriceRowOffset}
+                        {\locMaxFee                     }
+                        {\locMaxPriorityFee + \txBasefee}
+                \]
+                and we define the following shorthand
+                \[
+                        \locGetFullTip \define 1 - \res_{i + \effectiveGasPriceRowOffset}
+                \]
+                \saNote{}
+                By construction
+                \[
+                        \locGetFullTip = 1 \iff \locMaxFee \geq \locMaxPriorityFee + \txBasefee
+                \]
+\end{description}

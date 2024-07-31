@@ -1,0 +1,43 @@
+\begin{center}
+	\boxed{%
+		\text{The shorthands introduced below should only be used given that }
+			\left\{ \begin{array}{lcl}
+				\peekScenario     _{i}                & = & 1 \\
+				\scenReturnSum    _{i}                & = & 1 \\
+			\end{array} \right.}
+\end{center}
+We introduce some shorthands that will be used within the instruction processing of \inst{RETURN}'s.
+\[
+	\left\{ \begin{array}{lcl}
+		\locInst                & \define & \stackInst                          _{i - 1}    \\
+		% \locMxpx                & \define & \stackMxpx                          _{i - 1}    \\
+		% \locOogx                & \define & \stackOogx                          _{i - 1}    \\
+		% \locMaxcsx              & \define & \stackMaxcsx                        _{i - 1}    \\
+		% \locIcpx                & \define & \stackIcpx                          _{i - 1}    \\
+		\locOffsetHi            & \define & \stackItemValHi{1}                  _{i - 1}    \\
+		\locOffsetLo            & \define & \stackItemValLo{1}                  _{i - 1}    \\
+		\locSizeHi              & \define & \stackItemValHi{2}                  _{i - 1}    \\
+		\locSizeLo              & \define & \stackItemValLo{2}                  _{i - 1}    \\
+		% \locTriggerHashInfo     & \define &                                     _{i}        \
+	\end{array} \right.
+	\quad\text{and}\quad
+	\left\{ \begin{array}{lcl}
+		\multicolumn{3}{l}{\locHashInfoCodeHashHi ~ \define ~ \stackHashInfoValHi _{i - 1}}                           \\
+		\multicolumn{3}{l}{\locHashInfoCodeHashLo ~ \define ~ \stackHashInfoValLo _{i - 1}}                           \\
+		\multicolumn{3}{l}{\locDeploymentAddressHi ~ \define ~ \cnCodeAddress\high_{i + \locCurrentContextRowOffset}} \\
+		\multicolumn{3}{l}{\locDeploymentAddressLo ~ \define ~ \cnCodeAddress\low _{i + \locCurrentContextRowOffset}} \\
+		\locIsRoot        & \define & \cnIsRootContext                   _{i + \locCurrentContextRowOffset                }  \\
+		\locDeploys       & \define & \cnCodeDepStatus                   _{i + \locCurrentContextRowOffset                }  \\
+		\locRao           & \define & \cnRao                             _{i + \locCurrentContextRowOffset                }  \\
+		\locRac           & \define & \cnRac                             _{i + \locCurrentContextRowOffset                }  \\
+		\locMxpMtntop     & \define & \miscMxpTypeFourInstMayTriggerMmu  _{i + \locFirstMiscRowOffset                     }  \\
+		\locDeploymentCfi & \define & \accCfi                            _{i + \locNonemptyDeploymentFirstAccountRowOffset}  \\
+	\end{array} \right.
+\]
+\saNote{}
+We remind the reader of the interpretation of the \miscMxpTypeFourInstMayTriggerMmu{} acronym:
+\[
+	\YNMO
+\]
+and that the \mxpMod{} module is responsible for computing this (binary) value, see chapter~(\ref{chap: mxp}).
+We further remind the reader that $\miscMxpTypeFourInstMayTriggerMmu \equiv 1$ if and only if no \mxpxSH{} has occurred and the size parameter of the \mxpMod{} call is nonzero.

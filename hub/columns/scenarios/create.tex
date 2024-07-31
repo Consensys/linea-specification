@@ -1,0 +1,27 @@
+The following scenarios are used to deal with \inst{CREATE}-type instructions. \textbf{All columns below are binary}.
+\begin{enumerate}[resume]
+		% CREATE scenarios:
+	\item \scenCreateException:
+		lights up precisely for \inst{CREATE}-type instructions that raise a (non \staticxSH{}) exception;
+	\item \scenCreateAbort:
+		lights up precisely for \inst{CREATE}-type instructions that don't raise an exception but are aborted;
+	\item \scenCreateFCondWillRevert:
+		lights up precisely for \inst{CREATE}-type instructions that don't raise an exception, aren't aborted but raise a failure condition;
+		on top of that the current execution context will (eventually) revert; 
+	\item \scenCreateFCondWontRevert:
+		lights up precisely for \inst{CREATE}-type instructions that don't raise an exception, aren't aborted but raise a failure condition;
+		on top of that the current execution context won't revert; 
+\end{enumerate}
+Let us say that a \inst{CREATE}-instruction
+\textbf{gets executed}\label{hub: instruction handling: create: definition of 'get executed'}
+if it is \textbf{unexceptional}, \textbf{isn't aborted} and \textbf{doesn't trigger a failure condition}. 
+The following columns are triggered for \inst{CREATE}-instructions that get executed. These scenarios are self describing. 
+\begin{enumerate}[resume]
+	\item \scenCreateEmptyInitCodeWontRevert{}
+	\item \scenCreateEmptyInitCodeWillRevert{}
+	\item \scenCreateNonEmptyInitCodeFailureWontRevert{}
+	\item \scenCreateNonEmptyInitCodeFailureWillRevert{}
+	\item \scenCreateNonEmptyInitCodeSuccessWontRevert{}
+	\item \scenCreateNonEmptyInitCodeSuccessWillRevert{}
+\end{enumerate}
+

@@ -1,0 +1,427 @@
+The present section deals with generalities pertaining to \inst{RETURN} instructions.
+We begin by constraining the acceptable exception flags:
+\begin{description}
+	\item[\underline{Acceptable exception flags:}]
+		\inst{RETURN} instructions that deploy byte code may trigger specific exceptions, as such
+		\If $\peekScenario_{i} = 1$ \Then we impose that
+		\begin{enumerate}
+			\item \If $\scenReturnFromMessageCall _{i} = 1$ \Then
+				\[
+					\xAhoy_{i}
+					= 
+					\left[ \begin{array}{cl}
+						+ & \stackMxpx _{i - 1} \\
+						+ & \stackOogx _{i - 1} \\
+					\end{array} \right]
+				\]
+			\item \If $\scenReturnFromDeployment _{i} = 1$ \Then
+				\[
+					\xAhoy_{i}
+					= 
+					\left[ \begin{array}{cl}
+						+ & \stackMxpx   _{i - 1} \\
+						+ & \stackOogx   _{i - 1} \\
+						+ & \stackMaxcsx _{i - 1} \\
+						+ & \stackIcpx   _{i - 1} \\
+					\end{array} \right]
+				\]
+		\end{enumerate}
+		\saNote{} \inst{RETURN} instructions can trigger a variety of exceptions:
+		(\emph{a}) \suxSH{}'s
+		(\emph{b}) \mxpxSH{}'s
+		(\emph{c}) \oogxSH{}'s
+		as well as, \textbf{and in deployment contexts only},
+		(\emph{d}) \maxcsxSH{}'s
+		(\emph{e}) \icpxSH{}'s.
+		As always stack exceptions are handled through general constraints, and so we directly dive into the remaining exceptions.
+		For a \inst{RETURN} instruction to raise either a \maxcsxSH{} or a \icpxSH{} it is necesssary that it be executed in a deployment context, whence the above dichotomy.
+\end{description}
+From now on we will systematically work under the assuption that the underlying instruction is a \inst{RETURN} instruction.
+As such:
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below are written under the assumption that}
+			\left\{ \begin{array}{lcl}
+				\peekScenario     _{i}                & = & 1 \\
+				\scenReturnSum    _{i}                & = & 1 \\
+			\end{array} \right.}
+\end{center}
+We impose the following:
+\begin{description}
+	\item[\underline{Setting the stack pattern:}]
+		we impose $\twoZeroSP_{i - 1}$;
+	\item[\underline{Setting \nonStackRows{}:}]
+		we impose that
+		% \begin{enumerate}
+		% 	\item \If $\scenReturnException                                _{i} = 1$ \Then $\nonStackRows_{i} = 4$
+		% 	\item \If $\scenReturnFromMessageCallWillTouchRam              _{i} = 1$ \Then $\nonStackRows_{i} = 4$
+		% 	\item \If $\scenReturnFromMessageCallWontTouchRam              _{i} = 1$ \Then $\nonStackRows_{i} = 4$
+		% 	\item \If $\scenReturnFromDeploymentEmptyByteCodeWillRevert    _{i} = 1$ \Then $\nonStackRows_{i} = 6$
+		% 	\item \If $\scenReturnFromDeploymentEmptyByteCodeWontRevert    _{i} = 1$ \Then $\nonStackRows_{i} = 5$
+		% 	\item \If $\scenReturnFromDeploymentNonemptyByteCodeWillRevert _{i} = 1$ \Then $\nonStackRows_{i} = 7$
+		% 	\item \If $\scenReturnFromDeploymentNonemptyByteCodeWontRevert _{i} = 1$ \Then $\nonStackRows_{i} = 6$
+		% \end{enumerate}
+		% \saNote{} We may impose the above with a single constraint as follows:
+		\[
+			\nonStackRows_{i}
+			=
+			\left[ \begin{array}{rcl}
+				4 & \cdot & \scenReturnException                                _{i} \\
+				4 & \cdot & \scenReturnFromMessageCallWillTouchRam              _{i} \\
+				4 & \cdot & \scenReturnFromMessageCallWontTouchRam              _{i} \\
+				6 & \cdot & \scenReturnFromDeploymentEmptyByteCodeWillRevert    _{i} \\
+				5 & \cdot & \scenReturnFromDeploymentEmptyByteCodeWontRevert    _{i} \\
+				7 & \cdot & \scenReturnFromDeploymentNonemptyByteCodeWillRevert _{i} \\
+				6 & \cdot & \scenReturnFromDeploymentNonemptyByteCodeWontRevert _{i} \\
+			\end{array} \right]
+		\]
+	\item[\underline{Setting peeking flags:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\scenReturnException                                _{i} = 1$ \Then 
+				\[
+				\left[ \begin{array}{cr}
+					+ & \peekScenario _{i}                                       \\
+					+ & \peekContext  _{i + \locCurrentContextRowOffset}         \\
+					+ & \peekMisc     _{i + \locFirstMiscRowOffset}              \\
+					+ & \peekContext  _{i + \locCallerContextRowOffsetException} \\
+				\end{array} \right]
+				= \nonStackRows_{i} \]
+			\item \If $\scenReturnFromMessageCallWillTouchRam              _{i} = 1$ \Then 
+				\[
+				\left[ \begin{array}{cr}
+					+ & \peekScenario _{i}                                         \\
+					+ & \peekContext  _{i + \locCurrentContextRowOffset}           \\
+					+ & \peekMisc     _{i + \locFirstMiscRowOffset}                \\
+					+ & \peekContext  _{i + \locCallerContextRowOffsetMessageCall} \\
+				\end{array} \right]
+				= \nonStackRows_{i} \]
+			\item \If $\scenReturnFromMessageCallWontTouchRam              _{i} = 1$ \Then 
+				\[
+				\left[ \begin{array}{cr}
+					+ & \peekScenario _{i}                                         \\
+					+ & \peekContext  _{i + \locCurrentContextRowOffset}           \\
+					+ & \peekMisc     _{i + \locFirstMiscRowOffset}                \\
+					+ & \peekContext  _{i + \locCallerContextRowOffsetMessageCall} \\
+				\end{array} \right]
+				= \nonStackRows_{i} \]
+			\item \If $\scenReturnFromDeploymentEmptyByteCodeWillRevert    _{i} = 1$ \Then 
+				\[
+				\left[ \begin{array}{cr}
+					+ & \peekScenario _{i}                                                       \\
+					+ & \peekContext  _{i + \locCurrentContextRowOffset}                         \\
+					+ & \peekMisc     _{i + \locFirstMiscRowOffset}                              \\
+					+ & \peekAccount  _{i + \locEmptyDeploymentFirstAccountRowOffset }           \\
+					+ & \peekAccount  _{i + \locEmptyDeploymentSecondAccountRowOffset}           \\
+					+ & \peekContext  _{i + \locCallerContextRowOffsetEmptyDeploymentWillRevert} \\
+				\end{array} \right]
+				= \nonStackRows_{i} \]
+			\item \If $\scenReturnFromDeploymentEmptyByteCodeWontRevert    _{i} = 1$ \Then 
+				\[
+				\left[ \begin{array}{cr}
+					+ & \peekScenario _{i}                                                       \\
+					+ & \peekContext  _{i + \locCurrentContextRowOffset}                         \\
+					+ & \peekMisc     _{i + \locFirstMiscRowOffset}                              \\
+					+ & \peekAccount  _{i + \locEmptyDeploymentFirstAccountRowOffset}            \\
+					+ & \peekContext  _{i + \locCallerContextRowOffsetEmptyDeploymentWontRevert} \\
+				\end{array} \right]
+				= \nonStackRows_{i} \]
+			\item \If $\scenReturnFromDeploymentNonemptyByteCodeWillRevert _{i} = 1$ \Then 
+				\[
+				\left[ \begin{array}{cr}
+					+ & \peekScenario _{i}                                                          \\
+					+ & \peekContext  _{i + \locCurrentContextRowOffset}                            \\
+					+ & \peekMisc     _{i + \locFirstMiscRowOffset}                                 \\
+					+ & \peekMisc     _{i + \locSecondMiscRowOffsetDeployAndHash}                   \\
+					+ & \peekAccount  _{i + \locNonemptyDeploymentFirstAccountRowOffset }           \\
+					+ & \peekAccount  _{i + \locNonemptyDeploymentSecondAccountRowOffset}           \\
+					+ & \peekContext  _{i + \locCallerContextRowOffsetNonemptyDeploymentWillRevert} \\
+				\end{array} \right]
+				= \nonStackRows_{i} \]
+			\item \If $\scenReturnFromDeploymentNonemptyByteCodeWontRevert _{i} = 1$ \Then 
+				\[
+				\left[ \begin{array}{cr}
+					+ & \peekScenario _{i}                                                          \\
+					+ & \peekContext  _{i + \locCurrentContextRowOffset}                            \\
+					+ & \peekMisc     _{i + \locFirstMiscRowOffset}                                 \\
+					+ & \peekMisc     _{i + \locSecondMiscRowOffsetDeployAndHash}                   \\
+					+ & \peekAccount  _{i + \locNonemptyDeploymentFirstAccountRowOffset}            \\
+					+ & \peekContext  _{i + \locCallerContextRowOffsetNonemptyDeploymentWontRevert} \\
+				\end{array} \right]
+				= \nonStackRows_{i} \]
+		\end{enumerate}
+		\saNote{} In all cases 
+		$\peekContext  _{i + \locCurrentContextRowOffset} = 1$ and
+		$\peekMisc     _{i + \locFirstMiscRowOffset} = 1$.
+	\item[\underline{First context row:}]
+		we impose $\readContextData{i}{\locCurrentContextRowOffset}{\cn_{i}}$
+	\item[\underline{Refining the \inst{RETURN} scenario:}]
+		we impose that:
+		\begin{enumerate}
+		        \item $\scenReturnException_{i} = \xAhoy_{i - 1}$
+			\item \If $\scenReturnRaisesNoException _{i} = 1$ \Then $\scenReturnFromDeployment = \locDeploys$
+			\item \If $\scenReturnFromDeployment    _{i} = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\scenReturnDeploymentWillRevert _{i} & = & \cnWillRev _{i} \\
+						\scenReturnNonemptyDeployment   _{i} & = & \locMxpMtntop   \\
+					\end{array} \right.
+				\]
+				\saNote{}
+				This uniquely determines one of the \inst{RETURN} scenarios for deployments.
+			\item \If $\scenReturnFromMessageCall   _{i} = 1$ \Then
+				\begin{enumerate}
+					\item \If $\locTouchRamAfterMessageCallExpression =    0$ \Then \[ \scenReturnFromMessageCallWontTouchRam _{i} = 1 \]
+					\item \If $\locTouchRamAfterMessageCallExpression \neq 0$ \Then \[ \scenReturnFromMessageCallWillTouchRam _{i} = 1 \]
+				\end{enumerate}
+				where we use the following shorthand (which is a product of terms)
+				\[
+					\locTouchRamAfterMessageCallExpression
+					\define
+					\left[ \begin{array}{cr}
+                                                \cdot & (1 - \locIsRoot) \\
+						\cdot & \locMxpMtntop    \\
+						\cdot & \locRac          \\
+					\end{array} \right]
+				\]
+				\saNote{} 
+				This completely determines the \inst{RETURN} scenario for message calls.
+				The intent is that for (unexceptional) \inst{RETURN} instructions executed in a message call (internal) transaction
+				the \zkEvm{} will touch \textsc{ram} if and only if
+				(\emph{a}) the current execution context isn't at the root of the call stack
+				(\emph{b}) the \inst{RETURN} instruction provides nonempty return data
+				(\emph{c}) the caller context provided nonempty space wherein to copy (a portion of) the return data.
+		\end{enumerate}
+	\item[\underline{Setting the miscellaneous-row $n^°(i + \locFirstMiscRowOffset)$:}]
+		we impose that
+		\[
+			\weightedMiscFlagSum
+			{i}{\locFirstMiscRowOffset}
+			=
+			\left[ \begin{array}{crcl}
+				+ & \miscMmuWeight & \!\!\!\cdot\!\!\! & \locTriggerMmu \\
+				+ & \miscMxpWeight & \!\!\!\cdot\!\!\! & \locTriggerMxp \\
+				+ & \miscOobWeight & \!\!\!\cdot\!\!\! & \locTriggerOob \\
+			\end{array} \right]
+		\]
+		in other words
+		\[
+			\left\{ \begin{array}{lclr}
+				\miscExpFlag  _{i + \locFirstMiscRowOffset} & = & \gZero         & (\trash) \\
+				\miscMmuFlag  _{i + \locFirstMiscRowOffset} & = & \locTriggerMmu & (\trash) \\
+				\miscMxpFlag  _{i + \locFirstMiscRowOffset} & = & \locTriggerMxp & (\trash) \\
+				\miscOobFlag  _{i + \locFirstMiscRowOffset} & = & \locTriggerOob & (\trash) \\
+				\miscStpFlag  _{i + \locFirstMiscRowOffset} & = & \gZero         & (\trash) \\
+			\end{array} \right.
+		\]
+		\saNote{} We will specify \locTriggerMmu{}, \locTriggerMxp{} and \locTriggerOob{} shortly.
+	\item[\underline{Setting \locTriggerMxp:}]
+		we impose that
+		\[
+			\locTriggerMxp \define \rOne
+		\]
+		\saNote{} In other words the \mxpMod{} must be triggered in all circumstances.
+	\item[\underline{Setting \locTriggerOob:}]
+		we impose that
+		\[
+			\locTriggerOob \define \stackMaxcsx _{i - 1} + \scenReturnNonemptyDeployment _{i}
+		\]
+	\item[\underline{Setting \locTriggerMmu:}]
+		we impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\locTriggerMmu          & \define & \locCheckFirstByte + \locWriteSomeReturnData             \\
+				\locCheckFirstByte      & \define & \stackIcpx _{i - 1} + \scenReturnNonemptyDeployment _{i} \\
+				\locWriteSomeReturnData & \define & \scenReturnFromMessageCallWillTouchRam _{i}              \\
+			\end{array} \right.
+		\]
+	\item[\underline{Setting \locTriggerHashInfo{}:}]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\stackHashInfoFlag_{i - 1} & = & \locTriggerHashInfo                  \\
+				% \stackHashInfoSize_{i - 1} & = & \locTriggerHashInfo \cdot \locSizeLo \\
+			\end{array} \right.
+		\]
+		where we use the shorthand
+		\[
+			\locTriggerHashInfo \define \scenReturnNonemptyDeployment_{i}
+		\]
+		\saNote{} In other words we trigger the \hashInfoMod{} module \emph{iff} \textbf{nonempty} bytecode is being (temporarily, at least) successfully deployed. When \textbf{empty} bytecode is being (\emph{idem}) deployed the associated code hash is $\emptyKeccak$ and requires no computation.
+
+		\saNote{} As we will impose below, for a deployment to trigger the \hashInfoMod{} certain conditions must be met. One of them being that its size parameter be small (in fact: $\leq 24576$.) The above \emph{truncated} size parameter therefore accurately represents the actual size parameter of the instruction (when it matters.)
+\end{description}
+For concreteness we include a table representing the desired behavior of these flags:
+\begin{figure}[!h]
+	\[
+		\hspace*{-2.9cm}
+		\begin{array}{|l|lc||c|c|c|c|c|c|} \hline
+			\textsc{Scenario}                                                            & \textsc{Exception} &                                   & \locTriggerMxp & \locTriggerOob  & \locTriggerMmu & \locTriggerHashInfo \\ \hline \hline
+			\scenReturnException                                                         & \mxpxSH            & (\stackMxpx    _{i - 1} \equiv 1) & \oneCell       & \gZero          & \gZero         & \gZero              \\ \hline
+			\scenReturnException                                                         & \oogxSH            & (\stackOogx    _{i - 1} \equiv 1) & \oneCell       & \gZero          & \gZero         & \gZero              \\ \hline
+			\scenReturnException                                                         & \maxcsxSH          & (\stackMaxcsx  _{i - 1} \equiv 1) & \oneCell       & \oneCell        & \gZero         & \gZero              \\ \hline
+			\scenReturnException                                                         & \icpxSH            & (\stackIcpx    _{i - 1} \equiv 1) & \oneCell       & \gZero          & \oneCell       & \gZero              \\ \hline \hline
+			\multicolumn{3}{|l||}{\scenReturnFromMessageCallWillTouchRam               } & \oneCell           & \gZero                            & \oneCell       & \gZero         \\ \hline
+			\multicolumn{3}{|l||}{\scenReturnFromMessageCallWontTouchRam               } & \oneCell           & \gZero                            & \gZero         & \gZero         \\ \hline
+			\multicolumn{3}{|l||}{\scenReturnFromDeploymentEmptyByteCodeWillRevert     } & \oneCell           & \gZero                            & \gZero         & \gZero         \\ \hline
+			\multicolumn{3}{|l||}{\scenReturnFromDeploymentEmptyByteCodeWontRevert     } & \oneCell           & \gZero                            & \gZero         & \gZero         \\ \hline
+			\multicolumn{3}{|l||}{\scenReturnFromDeploymentNonemptyByteCodeWillRevert  } & \oneCell           & \oneCell                          & \oneCell       & \oneCell       \\ \hline
+			\multicolumn{3}{|l||}{\scenReturnFromDeploymentNonemptyByteCodeWontRevert  } & \oneCell           & \oneCell                          & \oneCell       & \oneCell       \\ \hline
+		\end{array}
+	\]
+	\label{hub: instruction handling: halting: return: desired trigger flags}
+	\caption{When to trigger different module functionalities.}
+\end{figure}
+
+\saNote{} \label{hub: instruction handling: halting: return: desired trigger flags}
+We emphasize that there are \textbf{two distinct reasons for triggering the \mmuMod{} module at this point in instruction processing}.
+The first reasibt is to check for the presence or absence of the invalid code prefix exception.
+This is what is done in the following scenarios:
+\begin{enumerate}
+	\item when $\stackIcpx _{i - 1} \equiv 1$ (a subcase of $\scenReturnException \equiv 1$) we trigger a \textsc{ram} instruction \textbf{expecting to detect} an \icpxSH{};
+	\item when $\scenReturnNonemptyDeployment _{i} \equiv 1$ we trigger a \textsc{ram} instruction \textbf{expecting not to detect} an \icpxSH{}.
+\end{enumerate}
+The other use case is for writing to the caller context's \textsc{ram}.
+This is the usecase for \scenReturnFromMessageCallWillTouchRam{}.
+
+\saNote{} \label{hub: instruction handling: halting: return: why icpx requires an mxp instruction}
+When verifying the presence of a \icpxSH{} there is \emph{a priori} no reason to \emph{also} check for \mxpxSH{}'s, yet the above indicates that the \zkEvm{} does just that.
+The reason for this surprising choice is to ensure that the offset and size parameters with which we provide the \mmuMod{} are \emph{small}.
+Indeed, \textbf{the \mmuMod{} module expects small parameters}, see chapter~(\ref{chap: mmu})
+
+\begin{description}
+	\item[\underline{Setting the \mxpMod{} data:}]
+		\If $\miscMxpFlag _{i + \locFirstMiscRowOffset} = 1$ \Then we impose
+		\[
+			\setMxpInstructionTypeFour {i}{\locFirstMiscRowOffset}
+			\left[ \begin{array}{ll}
+				\utt{Instruction:}       & \locInst     \\
+				\utt{Deploys byte code:} & \locDeploys  \\
+				\utt{Offset high part:}  & \locOffsetHi \\
+				\utt{Offset low  part:}  & \locOffsetLo \\
+				\utt{Size high part:}    & \locSizeHi   \\
+				\utt{Size low  part:}    & \locSizeLo   \\
+			\end{array} \right]
+		\]
+		\saNote{} Recall that by definition $\locInst = \inst{RETURN}$.
+
+		\saNote{} The precondition pertaining to $\miscMxpFlag$ is unncessary given that this flag is \textbf{always} set by the above.
+	\item[\underline{Setting the \oobMod{} data:}]
+		\If $\miscOobFlag _{i + \locFirstMiscRowOffset} = 1$ \Then we impose that
+		\[
+			\setOobInstructionDeployment
+			{i}{\locFirstMiscRowOffset}
+			\left[ \begin{array}{ll}
+				\utt{Code size high:} & \locSizeHi \\
+				\utt{Code size low:}  & \locSizeLo \\
+			\end{array} \right]
+		\]
+		\saNote{} Recall (again) that by construction $\locInst = \inst{RETURN}$.
+	% \item[\underline{Setting the \locTriggerMmu{} flag:}]
+	% 	we impose
+	% 	\[
+	% 		\locTriggerMmu =
+	% 		\left[ \begin{array}{lr}
+	% 			+ & \locTriggerMmuCodePrefixCheck       \\
+	% 			+ & \locTriggerMmuWriteReturnDataToRam  \\
+	% 		\end{array} \right]
+	% 	\]
+	% 	where we set
+	% 	\[
+	% 		\left\{\begin{array}{lcl}
+	% 			\locTriggerMmuCodePrefixCheck & = & 
+	% 			\left[ \begin{array}{lr}
+	% 				+ & \locIcpx                                  \\
+	% 				+ & \scenReturnNonemptyDeployment       _{i}  \\
+	% 			\end{array} \right] \\
+	% 			\locTriggerMmuWriteReturnDataToRam & = & \scenReturnFromMessageCallWillTouchRam_{i}  \\
+	% 		\end{array} \right.
+	% 	\]
+	% 	\saNote{} We need to trigger the \mmuMod{} in the following circumstances:
+	% 	(\emph{a}) an \icpxSH{} (is predicted to) take place
+	% 	(\emph{b}) the \zkEvm{} returns from a message call and requires modifying its caller context's \textsc{ram} 
+	% 	(\emph{c}) the \zkEvm{} returns from a deployment   and will (temporarily or permanently) deploy nonempty byte code, in which case we need to ensure that the leading byte of said (nonempty) byte code isn't \texttt{0xEF}. 
+	\item[\underline{Setting \mmuMod{} data --- first call:}]
+		we impose the following
+		\begin{enumerate}
+			\item \If $\locCheckFirstByte = 1$
+				\[
+					\setMmuInstructionParametersInvalidCodePrefix {
+						anchorRow      = i                      ,
+						relOffset      = \locFirstMiscRowOffset ,
+						sourceId       = \cn _{i}               ,
+						sourceOffsetLo = \locOffsetLo           ,
+						successBit     = \stackIcpx _{i - 1}    ,
+					}
+					% \setMmuInstructionParametersInvalidCodePrefix
+					% {i}{\locFirstMiscRowOffset}
+					% \left[ \begin{array}{ll}
+					% 	\utt{Source ID:}         & \cn  _{i}           \\
+					% 	\utt{Source offset low:} & \locSizeLo          \\
+					% 	\utt{Success bit:}       & \stackIcpx _{i - 1} \\
+					% \end{array} \right]
+				\]
+			\item \If $\locWriteSomeReturnData = 1$
+				\[
+					\setMmuInstructionParametersRamToRamSansPadding {
+						anchorRow       = i                      ,
+						relOffset       = \locFirstMiscRowOffset ,
+						sourceId        = \cn     _{i}           ,
+						targetId        = \caller _{i}           ,
+						sourceOffsetLo  = \locOffsetLo           ,
+						size            = \locSizeLo             ,
+						referenceOffset = \locRao                ,
+						referenceSize   = \locRac                ,
+						}
+					% \setMmuInstructionParametersRamToRamSansPadding
+					% {i}{\locFirstMiscRowOffset}
+					% \left[ \begin{array}{ll}
+					% 	\utt{Source ID:}            & \cn     _{i}          \\
+					% 	\utt{Target ID:}            & \caller _{i}          \\
+					% 	\utt{Source offset low:}    & \locOffsetLo          \\
+					% 	\utt{Size:}                 & \locSizeLo            \\
+					% 	\utt{Reference offset:}     & \locRao               \\
+					% 	\utt{Reference size:}       & \locRac               \\
+					% \end{array} \right]
+				\]
+		\end{enumerate}
+		\saNote{} Recall that the lookup serving the \mmuMod{} module its instructions provides the current context number \cn{} and caller context number \caller{} (so that there is no need to specify those in the above.)
+	\item[\underline{Justifying the \stackMxpx{}:}]
+		we unconditionally impose that
+		\[
+			\stackMxpx _{i - 1} = \miscMxpMxpx _{i + \locFirstMiscRowOffset}
+		\]
+	\item[\underline{Justifying the \stackIcpx{}:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\locCheckFirstByte = 0$ \Then we impose $\stackIcpx _{i - 1} = 0$
+			\item \If $\locCheckFirstByte = 1$ \Then we impose that
+				\[
+					\stackIcpx _{i - 1} = \miscMmuSuccessBit _{i + \locFirstMiscRowOffset} \quad (\trash)
+				\]
+		\end{enumerate}
+		\saNote{} We already (implicitly) constrained \stackIcpx{} when we set the \mmuMod{} instruction checking the first byte of the byte code to deploy.
+	\item[\underline{Justifying the \stackMaxcsx{}:}]
+		and we impose
+		\begin{enumerate}
+			\item \If $\miscOobFlag _{i + \locFirstMiscRowOffset} = 0$ \Then $\stackMaxcsx _{i - 1} = 0$
+			\item \If $\miscOobFlag _{i + \locFirstMiscRowOffset} = 1$ \Then $\stackMaxcsx _{i - 1} = \locOobMaxcsx$
+		\end{enumerate}
+		where we define the following shorthand
+		\[
+			\locOobMaxcsx
+			\define
+			\miscOobDataCol{7} _{i + \locFirstMiscRowOffset}
+		\]
+	\item[\underline{Setting gas cost:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\locGasCostRequired = 0$ \Then $\gasCost_{i} = 0$
+			\item \If $\locGasCostRequired = 1$ \Then $\gasCost_{i} = \stackStaticGas _{i - 1} + \miscMxpGasMxp _{i + \locFirstMiscRowOffset}$
+		\end{enumerate}
+		where we made use of the following shorthand
+		\[
+			\locGasCostRequired \define \stackOogx _{i - 1} + \scenReturnRaisesNoException _{i}
+		\]
+		\saNote{} By construction $\locGasCostRequired \equiv \stackOogx _{i - 1} + \scenReturnRaisesNoException _{i}$ is \textbf{binary}.
+\end{description}

@@ -1,0 +1,87 @@
+\subsubsection{Constraints}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Let $\col{param} \in \{ 1, 2, \dots, 16 \}$ be given.
+We let $\swapSP\big[ \col{param} \big]_{i}$ stand for the following collection of constraints:
+\begin{description}
+	\item[\underline{Stack Item $n^\circ\,1$:}] this excavates a value (``$v_\text{deep}$'') from within the stack:
+	\[
+	\left\{
+		\begin{array}{lcl}
+			\stackItemHeight{1}_{i}	& \!\!\! = \!\!\! & \stackHeight_{i} - \col{param} \\
+			\stackItemPop{1}_{i}	& \!\!\! = \!\!\! & 1 \\
+			\stackItemStamp{1}_{i}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i}
+		\end{array}
+	\right.
+	\]
+	\item[\underline{Stack Item $n^\circ\,2$:}] this excavates the value (``$v_\text{top}$'') from the top of the stack:
+	\[
+	\left\{
+		\begin{array}{lcl}
+			\stackItemHeight{2}_{i}	& \!\!\! = \!\!\! & \stackHeight_{i} \\
+			\stackItemPop{2}_{i}	& \!\!\! = \!\!\! & 1 \\
+			\stackItemStamp{2}_{i}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} + 1
+		\end{array}
+	\right.
+	\]
+	\item[\underline{Stack Item $n^\circ\,2$:}] this inserts ``$v_\text{top}$'' deep within the stack:
+	\[
+	\left\{
+		\begin{array}{lcl}
+			\stackItemHeight{3}_{i}	& \!\!\! = \!\!\! & \stackHeight_{i} - \col{param} \\
+			\stackItemPop{3}_{i}	& \!\!\! = \!\!\! & 0 \\
+			\stackItemValHi{3}_{i}	& \!\!\! = \!\!\! & \stackItemValHi{2}_{i} \\
+			\stackItemValLo{3}_{i}	& \!\!\! = \!\!\! & \stackItemValLo{2}_{i} \\
+			\stackItemStamp{3}_{i}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} + 2
+		\end{array}
+	\right.
+	\]
+	\item[\underline{Stack Item $n^\circ\,4$:}] this inserts ``$v_\text{deep}$'' onto the top of the stack:
+	\[
+	\left\{
+		\begin{array}{lcl}
+			\stackItemHeight{4}_{i}	& \!\!\! = \!\!\! & \stackHeight_{i} \\
+			\stackItemPop{4}_{i}	& \!\!\! = \!\!\! & 0 \\
+			\stackItemValHi{4}_{i}	& \!\!\! = \!\!\! & \stackItemValHi{1}_{i} \\
+			\stackItemValLo{4}_{i}	& \!\!\! = \!\!\! & \stackItemValLo{1}_{i} \\
+			\stackItemStamp{4}_{i}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} + 3
+		\end{array}
+	\right.
+	\]
+	\item[\underline{Height update:}] $\stackHeight{}\new{}_{i} = \stackHeight{}_{i}$; 
+\end{description}
+
+
+\subsubsection{Graphical representation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+The figure below represents the \swapSP{} stack pattern:
+\begin{figure}[h!]
+\[
+	\begin{array}{|l|r|r|r|r|}
+	\cline{2-5}
+	\multicolumn{1}{c|}{} &
+	\multicolumn{1}{c|}{\text{Stack}} &
+	\multicolumn{1}{c|}{\text{Stack}} &
+	\multicolumn{1}{c|}{\text{Stack}} &
+	\multicolumn{1}{c|}{\text{Stack}} \\
+	\multicolumn{1}{c|}{} &
+	\multicolumn{1}{c|}{\text{Item 1}}	&
+	\multicolumn{1}{c|}{\text{Item 2}}	&
+	\multicolumn{1}{c|}{\text{Item 3}}	&
+	\multicolumn{1}{c|}{\text{Item 4}}	\\ \hline
+	\stackItemHeight{k}_{i} 			  & \col{h} - \col{param} & \col{h} & \col{h} - \col{param} & \col{h} \\ \hline
+	\stackItemValHi{k}/\stackItemValLo{k} & v_\text{deep} & v_\text{top} & v_\text{top} & v_\text{deep} \\ \hline
+	\stackItemPop{k}_{i} 				  & 1 & 1 & 0 & 0 \\ \hline
+	\stackItemStamp{k}_{i}				  & \hubTau \cdot \col{st} & \hubTau \cdot \col{st} + 1 & \hubTau \cdot \col{st} + 2 & \hubTau \cdot \col{st} + 3 \\ \hline
+	\end{array}
+\]
+\label{fig: dup stack pattern}
+\caption{%
+Graphical representation of $\swapSP\big[ \col{param} \big]_{i}$.
+In applications this stack pattern applies to \inst{SWAPX} instructions having set $\col{param} := \INST_{i} - \inst{SWAP1} + 1$.
+Thus for \inst{SWAPX} instructions $\col{param} = \inst{X}$.
+We write $\col{h} := \stackHeight_{i}$ and $\col{st} := \hubStamp_{i}$.}
+\end{figure}

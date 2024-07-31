@@ -1,0 +1,55 @@
+\subsubsection{Supported instructions and flags}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\[
+	\begin{array}{|l||c||c|c|}
+		\hline
+		\INST             & \tli  & \stackDecBtcFlag & \decFlag{1} \\ \hline\hline
+		\inst{COINBASE}   & \zero & \oneCell         & \zero       \\ \hline
+		\inst{TIMESTAMP}  & \zero & \oneCell         & \zero       \\ \hline
+		\inst{NUMBER}     & \zero & \oneCell         & \zero       \\ \hline
+		\inst{PREVRANDAO} & \zero & \oneCell         & \zero       \\ \hline
+		\inst{GASLIMIT}   & \zero & \oneCell         & \zero       \\ \hline
+		\inst{CHAINID}    & \zero & \oneCell         & \zero       \\ \hline
+		\inst{BASEFEE}    & \zero & \oneCell         & \zero       \\ \hline
+		\inst{BLOCKHASH}  & \zero & \oneCell         & \oneCell    \\ \hline
+	\end{array}
+\]
+\saNote{} $\decFlag{1}$ singles out the only \oneOneSP{} instruction.
+
+
+\subsubsection{Constraints}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{center}
+	\boxed{%
+		\text{The stack constraints presented below assume }
+		\begin{cases}
+			\peekStack_{i} = 1 \\
+			\stackDecBtcFlag_{i} = 1 \\
+			\stackSux_{i} + \stackSox_{i} = 0 \\
+		\end{cases}}
+\end{center}
+\begin{description}
+	\item[\underline{Setting the stack pattern:}]
+		we impose that
+	\begin{enumerate}
+		\item \If $\decFlag{1}_{i} = 0$ \Then $\zeroOneSP_{i}$
+		\item \If $\decFlag{1}_{i} = 1$ \Then $\oneOneSP_{i}$
+	\end{enumerate}
+	\item[\underline{Setting $\nonStackRows$:}]
+		we impose $\nonStackRows_{i} = \cmc_{i}$;
+	\item[\underline{Setting the peeking flags:}]
+		we don't need to set any;
+
+	\saNote{} Implicitly of course $\cmc_{i} \cdot \peekContext_{i + 1} = \cmc_{i}$ (\trash);
+	\item[\underline{Setting the gas cost:}]
+		we impose that $\gasCost_{i} = \decStaticGas_{i}$;
+	\item[\underline{Value constraints:}]
+		the relevant values are obtained by means of a lookup to either the \btcMod{} module or the \blockHashMod{} module,
+		see sections
+		(\ref{hub: lookups: into block data}) and
+		(\ref{hub: lookups: into block hash}) respectively.
+\end{description}
+\saNote{} For instructions raising the $\stackDecBtcFlag$ one has $\cmc \equiv \xAhoy$.

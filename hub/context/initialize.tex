@@ -1,0 +1,95 @@
+The present section presents a \textbf{parametrized collection of constraints} that serve to initialize an execution context. Such an initialization is required whenever a new execution context is spawned by either
+\begin{enumerate}
+	\item transaction intialization;
+	\item entering a \inst{CALL}-type instruction;
+	\item entering a \inst{CREATE}-type instruction;
+\end{enumerate}
+Caveats apply to all of these scenarios.
+% a \inst{CALL}-type instruction which
+% (\emph{a}) produces no exception,
+% (\emph{b}) isn't aborted and 
+% (\emph{c}) targets an account with nonempty byte code (in particular not a precompiled contract.)
+
+The constraint systems we present are parametrized by a \textbf{fixed positive integer} $\bm{\relof}$. We shall subsume under the following moniker
+\[
+	\initializeContext{
+		anchorRow                   = i                                     ,
+		relOffset                   = \relof                                ,
+		contextNumber               = \col{context\_number}                 ,
+		callStackDepth              = \col{call\_stack\_depth}              ,
+		isRoot                      = \col{is\_root}                        ,
+		isStatic                    = \col{is\_static}                      ,
+		accountAddressHigh          = \col{account\_address\_hi}            ,
+		accountAddressLow           = \col{account\_address\_lo}            ,
+		accountDeploymentNumber     = \col{account\_deployment\_number}     ,
+		byteCodeAddressHi           = \col{byte\_code\_address\_hi}         ,
+		byteCodeAddressLo           = \col{byte\_code\_address\_lo}         ,
+		byteCodeDeploymentNumber    = \col{byte\_code\_deployment\_number}  ,
+		byteCodeDeploymentStatus    = \col{byte\_code\_deployment\_status}  ,
+		byteCodeCodeFragmentIndex   = \col{code\_fragment\_index}           ,
+		callerAddressHi             = \col{caller\_address\_hi}             ,
+		callerAddressLo             = \col{caller\_address\_lo}             ,
+		callValue                   = \col{call\_value}                     ,
+		callDataContextNumber       = \col{call\_data\_context\_number}     ,
+		callDataOffset              = \col{call\_data\_offset}              ,
+		callDataSize                = \col{call\_data\_size}                ,
+		returnAtOffset              = \col{return\_at\_offset}              ,
+		returnAtCapacity            = \col{return\_at\_capacity}            ,
+		}
+	% \initializeContext{\relof}_{i}
+	% \left[ \begin{array}{llr}
+	% 	\utt{context number:}                & \col{context\_number}                \\
+	% 	\utt{call stack depth:}              & \col{call\_stack\_depth}             \\
+	% 	\utt{is root:}                       & \col{is\_root}                       \\
+	% 	\utt{is static:}                     & \col{is\_static}                     \\
+	% 	\utt{account address high:}          & \col{account\_address\_hi}           \\
+	% 	\utt{account address low:}           & \col{account\_address\_lo}           \\
+	% 	\utt{account deployment number:}     & \col{account\_deployment\_number}    \\
+	% 	\utt{byte code address high:}        & \col{byte\_code\_address\_hi}        \\
+	% 	\utt{byte code address low:}         & \col{byte\_code\_address\_lo}        \\
+	% 	\utt{byte code deployment number:}   & \col{byte\_code\_deployment\_number} \\
+	% 	\utt{byte code deployment status:}   & \col{byte\_code\_deployment\_status} \\
+	% 	\utt{byte code code fragment index:} & \col{code\_fragment\_index}          & (\trash) \\
+	% 	\utt{caller address high:}           & \col{caller\_address\_hi}            \\
+	% 	\utt{caller address low:}            & \col{caller\_address\_lo}            \\
+	% 	\utt{call value:}                    & \col{call\_value}                    \\
+	% 	\utt{call data context number:}      & \col{call\_data\_context\_number}    & (\trash) \\
+	% 	\utt{call data offset:}              & \col{call\_data\_offset}             \\
+	% 	\utt{call data size:}                & \col{call\_data\_size}               \\
+	% 	\utt{return at offset:}              & \col{return\_at\_offset}             \\
+	% 	\utt{return at capacity:}            & \col{return\_at\_size}               \\
+	% 	% \utt{returner context:}            & \col{returnerCn}                     \\
+	% 	% \utt{return data offset:}          & \col{returnDataOffset}               \\
+	% 	% \utt{return data size:}            & \col{returnDataSize}                 \\
+	% \end{array} \right]
+\]
+the following collection of constraints:
+\[
+	\left\{ \begin{array}{lclr}
+		\cnCn                        _{i + \relof}   & \!\!\! = \!\!\! & \col{context\_number}                \\
+		\cnCsd                       _{i + \relof}   & \!\!\! = \!\!\! & \col{call\_stack\_depth}             \\
+		\cnIsRootContext             _{i + \relof}   & \!\!\! = \!\!\! & \col{is\_root}                       \\
+		\cnStatic                    _{i + \relof}   & \!\!\! = \!\!\! & \col{is\_static}                     \\
+		\cnAccountAddress\high       _{i + \relof}   & \!\!\! = \!\!\! & \col{account\_address\_hi}           \\
+		\cnAccountAddress\low        _{i + \relof}   & \!\!\! = \!\!\! & \col{account\_address\_lo}           \\
+		\cnAccDepNum                 _{i + \relof}   & \!\!\! = \!\!\! & \col{account\_deployment\_number}    \\
+		\cnCodeAddress\high          _{i + \relof}   & \!\!\! = \!\!\! & \col{byte\_code\_address\_hi}        \\
+		\cnCodeAddress\low           _{i + \relof}   & \!\!\! = \!\!\! & \col{byte\_code\_address\_lo}        \\
+		\cnCodeDepNum                _{i + \relof}   & \!\!\! = \!\!\! & \col{byte\_code\_deployment\_number} \\
+		\cnCodeDepStatus             _{i + \relof}   & \!\!\! = \!\!\! & \col{byte\_code\_deployment\_status} \\
+		\cnCodeCfi                   _{i + \relof}   & \!\!\! = \!\!\! & \col{code\_fragment\_index}          & (\trash) \\
+		\cnCallerAddress\high        _{i + \relof}   & \!\!\! = \!\!\! & \col{caller\_address\_hi}            \\
+		\cnCallerAddress\low         _{i + \relof}   & \!\!\! = \!\!\! & \col{caller\_address\_lo}            \\
+		\cnCallValue                 _{i + \relof}   & \!\!\! = \!\!\! & \col{call\_value}                    \\
+		\cnCallDataContextNumber     _{i + \relof}   & \!\!\! = \!\!\! & \col{call\_data\_context\_number}    & (\trash) \\
+		\cnCdo                       _{i + \relof}   & \!\!\! = \!\!\! & \col{call\_data\_offset}             \\
+		\cnCds                       _{i + \relof}   & \!\!\! = \!\!\! & \col{call\_data\_size}               \\
+		\cnRao                       _{i + \relof}   & \!\!\! = \!\!\! & \col{return\_at\_offset}             \\
+		\cnRac                       _{i + \relof}   & \!\!\! = \!\!\! & \col{return\_at\_size}               \\
+		\cnUpdate                    _{i + \relof}   & \!\!\! = \!\!\! & \rZero                               \\
+		\cnReturner                  _{i + \relof}   & \!\!\! = \!\!\! & \rZero                               \\
+		\cnRdo                       _{i + \relof}   & \!\!\! = \!\!\! & \rZero                               \\
+		\cnRds                       _{i + \relof}   & \!\!\! = \!\!\! & \rZero                               \\
+	\end{array} \right.
+\]
+

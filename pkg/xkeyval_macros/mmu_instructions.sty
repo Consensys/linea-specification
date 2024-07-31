@@ -1,0 +1,503 @@
+\makeatletter
+ 
+\define@cmdkey [MMU] {var} {anchorRow}         {}
+\define@cmdkey [MMU] {var} {relOffset}         {}
+\define@cmdkey [MMU] {var} {mmuInstruction}    {}
+\define@cmdkey [MMU] {var} {sourceId}          {}
+\define@cmdkey [MMU] {var} {targetId}          {}
+\define@cmdkey [MMU] {var} {auxiliaryId}       {}
+\define@cmdkey [MMU] {var} {sourceOffsetHi}    {}
+\define@cmdkey [MMU] {var} {sourceOffsetLo}    {}
+\define@cmdkey [MMU] {var} {targetOffsetLo}    {}
+\define@cmdkey [MMU] {var} {size}              {}
+\define@cmdkey [MMU] {var} {referenceOffset}   {}
+\define@cmdkey [MMU] {var} {referenceSize}     {}
+\define@cmdkey [MMU] {var} {successBit}        {}
+\define@cmdkey [MMU] {var} {limbOne}           {}
+\define@cmdkey [MMU] {var} {limbTwo}           {}
+\define@cmdkey [MMU] {var} {exoSum}            {}
+\define@cmdkey [MMU] {var} {phase}             {}
+
+\presetkeys    [MMU] {var} {
+    anchorRow        = \missingParameter,
+    relOffset        = \missingParameter,
+    mmuInstruction   = \missingParameter,
+    sourceId         = \missingParameter,
+    targetId         = \missingParameter,
+    auxiliaryId      = \missingParameter,
+    sourceOffsetHi   = \missingParameter,
+    sourceOffsetLo   = \missingParameter,
+    targetOffsetLo   = \missingParameter,
+    size             = \missingParameter,
+    referenceOffset  = \missingParameter,
+    referenceSize    = \missingParameter,
+    successBit       = \missingParameter,
+    limbOne          = \missingParameter,
+    limbTwo          = \missingParameter,
+    exoSum           = \missingParameter,
+    phase            = \missingParameter,
+}{}
+
+% misc MMU instructions
+\newcommand{\setMmuInstructionName}                                     {\miscSignifier\texttt{setMmuInstruction}}
+\newcommand{\setMmuInstructionParametersMloadName}                      {\setMmuInstructionName\texttt{Mload}}
+\newcommand{\setMmuInstructionParametersMstoreName}                     {\setMmuInstructionName\texttt{Mstore}}
+\newcommand{\setMmuInstructionParametersMstoreEightName}                {\setMmuInstructionName\texttt{Mstore8}}
+\newcommand{\setMmuInstructionParametersInvalidCodePrefixName}          {\setMmuInstructionName\texttt{InvalidCodePrefix}}
+\newcommand{\setMmuInstructionParametersRightPaddedWordExtractionName}  {\setMmuInstructionName\texttt{RightPaddedWordExtraction}}
+\newcommand{\setMmuInstructionParametersRamToExoWithPaddingName}        {\setMmuInstructionName\texttt{RamToExoWithPadding}}
+\newcommand{\setMmuInstructionParametersExoToRamTransplantsName}        {\setMmuInstructionName\texttt{ExoToRamTransplants}}
+\newcommand{\setMmuInstructionParametersRamToRamSansPaddingName}        {\setMmuInstructionName\texttt{RamToRamSansPadding}}
+\newcommand{\setMmuInstructionParametersAnyToRamWithPaddingName}        {\setMmuInstructionName\texttt{AnyToRamWithPadding}}
+\newcommand{\setMmuInstructionParametersModexpZeroName}                 {\setMmuInstructionName\texttt{ModexpZero}}
+\newcommand{\setMmuInstructionParametersModexpDataName}                 {\setMmuInstructionName\texttt{ModexpData}}
+\newcommand{\setMmuInstructionParametersBlakeName}                      {\setMmuInstructionName\texttt{Blake}}
+
+% misc MMU instructions
+\newcommand{\setMmuInstruction} [1] {
+    \setkeys[MMU]{var}{#1}
+    \setMmuInstructionName
+    _{\cmdMMU@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}       & \cmdMMU@var@relOffset                    \\
+        \utt{\mmuMod{} instruction:} & \cmdMMU@var@mmuInstruction  \vspace{2mm} \\
+        \utt{Source ID:}             & \cmdMMU@var@sourceId                     \\
+        \utt{Target ID:}             & \cmdMMU@var@targetId                     \\
+        \utt{Auxiliary ID:}          & \cmdMMU@var@auxiliaryId                  \\
+        \utt{Source offset high:}    & \cmdMMU@var@sourceOffsetHi               \\
+        \utt{Source offset low:}     & \cmdMMU@var@sourceOffsetLo               \\
+        \utt{Target offset low:}     & \cmdMMU@var@targetOffsetLo               \\
+        \utt{Size:}                  & \cmdMMU@var@size                         \\
+        \utt{Reference offset:}      & \cmdMMU@var@referenceOffset              \\
+        \utt{Reference size:}        & \cmdMMU@var@referenceSize                \\
+        \utt{Success bit:}           & \cmdMMU@var@successBit                   \\
+        \utt{Limb one:}              & \cmdMMU@var@limbOne                      \\
+        \utt{Limb two:}              & \cmdMMU@var@limbTwo                      \\
+        \utt{Exo sum:}               & \cmdMMU@var@exoSum                       \\
+        \utt{Phase:}                 & \cmdMMU@var@phase                        \\
+    \end{array} \right]
+}
+
+% \setMmuInstruction{
+%     anchorRow       = ,
+%     relOffset       = ,
+%     mmuInstruction  = ,
+%     sourceId        = ,
+%     targetId        = ,
+%     auxiliaryId     = ,
+%     sourceOffsetHi  = ,
+%     sourceOffsetLo  = ,
+%     targetOffsetLo  = ,
+%     size            = ,
+%     referenceOffset = ,
+%     referenceSize   = ,
+%     successBit      = ,
+%     limbOne         = ,
+%     limbTwo         = ,
+%     exoSum          = ,
+%     phase           = ,
+%     }
+
+\newcommand{\setMmuInstructionParametersMload} [1] {
+    \setkeys[MMU]{var}{#1}
+    \setMmuInstructionParametersMloadName _{\cmdMMU@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}      & \cmdMMU@var@relOffset      \\
+        \utt{Source ID:}            & \cmdMMU@var@sourceId       \\
+        % \utt{Target ID:}          & \col{tgt\_id}              \\
+        % \utt{Auxiliary ID:}       & \col{aux\_id}              \\
+        % \utt{Source offset high:} & \col{src\_offset\_hi}      \\
+        \utt{Source offset low:}    & \cmdMMU@var@sourceOffsetLo \\
+        % \utt{Target offset low:}  & \col{tgt\_offset\_lo}      \\
+        % \utt{Size:}               & \col{size}                 \\
+        % \utt{Reference offset:}   & \col{ref\_offset}          \\
+        % \utt{Reference size:}     & \col{ref\_size}            \\
+        % \utt{Success bit:}        & \col{success\_bit}         \\
+        \utt{Limb one:}             & \cmdMMU@var@limbOne        \\
+        \utt{Limb two:}             & \cmdMMU@var@limbTwo        \\
+        % \utt{Exo sum:}            & \col{exo\_sum}             \\
+        % \utt{Phase:}              & \col{phase}                \\
+    \end{array} \right]
+    }
+
+% \setMmuInstructionParametersMload {
+%     anchorRow      = ,
+%     relOffset      = ,
+%     sourceId       = ,
+%     sourceOffsetLo = ,
+%     limbOne        = ,
+%     limbTwo        = ,
+% }
+
+\newcommand{\setMmuInstructionParametersMstore} [1] {
+    \setkeys[MMU]{var}{#1}
+    \setMmuInstructionParametersMstoreName _{\cmdMMU@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}      & \cmdMMU@var@relOffset        \\
+        % \utt{Source ID:}          & \cmdMMU@var@sourceId         \\
+        \utt{Target ID:}            & \cmdMMU@var@targetId         \\
+        % \utt{Auxiliary ID:}       & \cmdMMU@var@auxiliaryId      \\
+        % \utt{Source offset high:} & \cmdMMU@var@sourceOffsetHi   \\
+        % \utt{Source offset low:}  & \cmdMMU@var@sourceOffsetLo   \\
+        \utt{Target offset low:}    & \cmdMMU@var@targetOffsetLo   \\
+        % \utt{Size:}               & \cmdMMU@var@size             \\
+        % \utt{Reference offset:}   & \cmdMMU@var@referenceOffset  \\
+        % \utt{Reference size:}     & \cmdMMU@var@referenceSize    \\
+        % \utt{Success bit:}        & \cmdMMU@var@successBit       \\
+        \utt{Limb one:}             & \cmdMMU@var@limbOne          \\
+        \utt{Limb two:}             & \cmdMMU@var@limbTwo          \\
+        % \utt{Exo sum:}            & \cmdMMU@var@exoSum           \\
+        % \utt{Phase:}              & \cmdMMU@var@phase            \\
+    \end{array} \right]
+}
+
+% \setMmuInstructionParametersMstore {
+%     anchorRow      = ,
+%     relOffset      = ,
+%     targetId       = ,
+%     targetOffsetLo = ,
+%     limbOne        = ,
+%     limbTwo        = ,
+% }
+
+\newcommand{\setMmuInstructionParametersMstoreEight} [1] {
+    \setkeys[MMU]{var}{#1}
+    \setMmuInstructionParametersMstoreEightName _{\cmdMMU@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}      & \cmdMMU@var@relOffset        \\
+        % \utt{Source ID:}          & \cmdMMU@var@sourceId         \\
+        \utt{Target ID:}            & \cmdMMU@var@targetId         \\
+        % \utt{Auxiliary ID:}       & \cmdMMU@var@auxiliaryId      \\
+        % \utt{Source offset high:} & \cmdMMU@var@sourceOffsetHi   \\
+        % \utt{Source offset low:}  & \cmdMMU@var@sourceOffsetLo   \\
+        \utt{Target offset low:}    & \cmdMMU@var@targetOffsetLo   \\
+        % \utt{Size:}               & \cmdMMU@var@size             \\
+        % \utt{Reference offset:}   & \cmdMMU@var@referenceOffset  \\
+        % \utt{Reference size:}     & \cmdMMU@var@referenceSize    \\
+        % \utt{Success bit:}        & \cmdMMU@var@successBit       \\
+        \utt{Limb one:}             & \cmdMMU@var@limbOne          \\
+        \utt{Limb two:}             & \cmdMMU@var@limbTwo          \\
+        % \utt{Exo sum:}            & \cmdMMU@var@exoSum           \\
+        % \utt{Phase:}              & \cmdMMU@var@phase            \\
+    \end{array} \right]
+}
+
+% \setMmuInstructionParametersMstoreEight {
+%     anchorRow      = ,
+%     relOffset      = ,
+%     targetId       = ,
+%     targetOffsetLo = ,
+%     limbOne        = ,
+%     limbTwo        = ,
+% }
+
+\newcommand{\setMmuInstructionParametersInvalidCodePrefix} [1] {
+    \setkeys[MMU]{var}{#1}
+    \setMmuInstructionParametersInvalidCodePrefixName _{\cmdMMU@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}         & \cmdMMU@var@relOffset                    \\
+        % \utt{\mmuMod{} instruction:} & \cmdMMU@var@mmuInstruction  \vspace{2mm} \\
+        \utt{Source ID:}               & \cmdMMU@var@sourceId                     \\
+        % \utt{Target ID:}             & \cmdMMU@var@targetId                     \\
+        % \utt{Auxiliary ID:}          & \cmdMMU@var@auxiliaryId                  \\
+        % \utt{Source offset high:}    & \cmdMMU@var@sourceOffsetHi               \\
+        \utt{Source offset low:}       & \cmdMMU@var@sourceOffsetLo               \\
+        % \utt{Target offset low:}     & \cmdMMU@var@targetOffsetLo               \\
+        % \utt{Size:}                  & \cmdMMU@var@size                         \\
+        % \utt{Reference offset:}      & \cmdMMU@var@referenceOffset              \\
+        % \utt{Reference size:}        & \cmdMMU@var@referenceSize                \\
+        \utt{Success bit:}             & \cmdMMU@var@successBit                   \\
+        % \utt{Limb one:}              & \cmdMMU@var@limbOne                      \\
+        % \utt{Limb two:}              & \cmdMMU@var@limbTwo                      \\
+        % \utt{Exo sum:}               & \cmdMMU@var@exoSum                       \\
+        % \utt{Phase:}                 & \cmdMMU@var@phase                        \\
+    \end{array} \right]
+    }
+
+% \setMmuInstructionParametersInvalidCodePrefix {
+%     anchorRow      = ,
+%     relOffset      = ,
+%     sourceId       = ,
+%     sourceOffsetLo = ,
+%     successBit     = ,
+% }
+
+\newcommand{\setMmuInstructionParametersRightPaddedWordExtraction} [1] {
+    \setkeys[MMU]{var}{#1}
+    \setMmuInstructionParametersRightPaddedWordExtractionName _{\cmdMMU@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}         & \cmdMMU@var@relOffset                    \\
+        % \utt{\mmuMod{} instruction:} & \cmdMMU@var@mmuInstruction  \vspace{2mm} \\
+        \utt{Source ID:}               & \cmdMMU@var@sourceId                     \\
+        % \utt{Target ID:}             & \cmdMMU@var@targetId                     \\
+        % \utt{Auxiliary ID:}          & \cmdMMU@var@auxiliaryId                  \\
+        % \utt{Source offset high:}    & \cmdMMU@var@sourceOffsetHi               \\
+        \utt{Source offset low:}       & \cmdMMU@var@sourceOffsetLo               \\
+        % \utt{Target offset low:}     & \cmdMMU@var@targetOffsetLo               \\
+        % \utt{Size:}                  & \cmdMMU@var@size                         \\
+        \utt{Reference offset:}        & \cmdMMU@var@referenceOffset              \\
+        \utt{Reference size:}          & \cmdMMU@var@referenceSize                \\
+        % \utt{Success bit:}           & \cmdMMU@var@successBit                   \\
+        \utt{Limb one:}                & \cmdMMU@var@limbOne                      \\
+        \utt{Limb two:}                & \cmdMMU@var@limbTwo                      \\
+        % \utt{Exo sum:}               & \cmdMMU@var@exoSum                       \\
+        % \utt{Phase:}                 & \cmdMMU@var@phase                        \\
+    \end{array} \right]
+    }
+
+% \setMmuInstructionParametersRightPaddedWordExtraction {
+%     anchorRow       = ,
+%     relOffset       = ,
+%     sourceId        = ,
+%     sourceOffsetLo  = ,
+%     referenceOffset = ,
+%     referenceSize   = ,
+%     limbOne         = ,
+%     limbTwo         = ,
+% }
+
+\newcommand{\setMmuInstructionParametersRamToExoWithPadding} [1] {
+    \setkeys[MMU]{var}{#1}
+    \setMmuInstructionParametersRamToExoWithPaddingName _{\cmdMMU@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}      & \cmdMMU@var@relOffset       \\
+        \utt{Source ID:}            & \cmdMMU@var@sourceId        \\
+        \utt{Target ID:}            & \cmdMMU@var@targetId        \\
+        \utt{Auxiliary ID:}         & \cmdMMU@var@auxiliaryId     \\
+        % \utt{Source offset high:} & \cmdMMU@var@sourceOffsetHi  \\
+        \utt{Source offset low:}    & \cmdMMU@var@sourceOffsetLo  \\
+        % \utt{Target offset low:}  & \cmdMMU@var@targetOffsetLo  \\
+        \utt{Size:}                 & \cmdMMU@var@size            \\
+        % \utt{Reference offset:}   & \cmdMMU@var@referenceOffset \\
+        \utt{Reference size:}       & \cmdMMU@var@referenceSize   \\
+        \utt{Success bit:}          & \cmdMMU@var@successBit      \\
+        % \utt{Limb one:}           & \cmdMMU@var@limbOne         \\
+        % \utt{Limb two:}           & \cmdMMU@var@limbTwo         \\
+        \utt{Exo sum:}              & \cmdMMU@var@exoSum          \\
+        \utt{Phase:}                & \cmdMMU@var@phase           \\
+    \end{array} \right]
+    }
+
+% \setMmuInstructionParametersRamToExoWithPadding {
+%     anchorRow       = ,
+%     relOffset       = ,
+%     sourceId        = ,
+%     targetId        = ,
+%     auxiliaryId     = ,
+%     sourceOffsetLo  = ,
+%     size            = ,
+%     referenceSize   = ,
+%     successBit      = ,
+%     exoSum          = ,
+%     phase           = ,
+% }
+
+\newcommand{\setMmuInstructionParametersExoToRamTransplants}       [1] {
+    \setkeys[MMU]{var}{#1}
+    \setMmuInstructionParametersExoToRamTransplantsName _{\cmdMMU@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}      & \cmdMMU@var@relOffset \\
+        \utt{Source ID:}            & \cmdMMU@var@sourceId         \\
+        \utt{Target ID:}            & \cmdMMU@var@targetId         \\
+        % \utt{Auxiliary ID:}       & \cmdMMU@var@auxiliaryId      \\
+        % \utt{Source offset high:} & \cmdMMU@var@sourceOffsetHi   \\
+        % \utt{Source offset low:}  & \cmdMMU@var@sourceOffsetLo   \\
+        % \utt{Target offset low:}  & \cmdMMU@var@targetOffsetLo   \\
+        \utt{Size:}                 & \cmdMMU@var@size             \\
+        % \utt{Reference offset:}   & \cmdMMU@var@referenceOffset  \\
+        % \utt{Reference size:}     & \cmdMMU@var@referenceSize    \\
+        % \utt{Success bit:}        & \cmdMMU@var@successBit       \\
+        % \utt{Limb one:}           & \cmdMMU@var@limbOne          \\
+        % \utt{Limb two:}           & \cmdMMU@var@limbTwo          \\
+        \utt{Exo sum:}              & \cmdMMU@var@exoSum           \\
+        \utt{Phase:}                & \cmdMMU@var@phase            \\
+    \end{array} \right]
+}
+
+% \setMmuInstructionParametersExoToRamTransplants {
+%         anchorRow = ,
+%         relOffset = ,
+%         sourceId  = ,
+%         targetId  = ,
+%         size      = ,
+%         exoSum    = ,
+%         phase     = ,
+% }
+
+\newcommand{\setMmuInstructionParametersRamToRamSansPadding}       [1] {
+    \setkeys[MMU]{var}{#1}
+    \setMmuInstructionParametersRamToRamSansPaddingName
+    _{\cmdMMU@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}         & \cmdMMU@var@relOffset                    \\
+        % \utt{\mmuMod{} instruction:} & \cmdMMU@var@mmuInstruction  \vspace{2mm} \\
+        \utt{Source ID:}               & \cmdMMU@var@sourceId                     \\
+        \utt{Target ID:}               & \cmdMMU@var@targetId                     \\
+        % \utt{Auxiliary ID:}          & \cmdMMU@var@auxiliaryId                  \\
+        % \utt{Source offset high:}    & \cmdMMU@var@sourceOffsetHi               \\
+        \utt{Source offset low:}       & \cmdMMU@var@sourceOffsetLo               \\
+        % \utt{Target offset low:}     & \cmdMMU@var@targetOffsetLo               \\
+        \utt{Size:}                    & \cmdMMU@var@size                         \\
+        \utt{Reference offset:}        & \cmdMMU@var@referenceOffset              \\
+        \utt{Reference size:}          & \cmdMMU@var@referenceSize                \\
+        % \utt{Success bit:}           & \cmdMMU@var@successBit                   \\
+        % \utt{Limb one:}              & \cmdMMU@var@limbOne                      \\
+        % \utt{Limb two:}              & \cmdMMU@var@limbTwo                      \\
+        % \utt{Exo sum:}               & \cmdMMU@var@exoSum                       \\
+        % \utt{Phase:}                 & \cmdMMU@var@phase                        \\
+    \end{array} \right]
+}
+
+% \setMmuInstructionParametersRamToRamSansPadding {
+%     anchorRow       = ,
+%     relOffset       = ,
+%     sourceId        = ,
+%     targetId        = ,
+%     sourceOffsetLo  = ,
+%     size            = ,
+%     referenceOffset = ,
+%     referenceSize   = ,
+% }
+
+\newcommand{\setMmuInstructionParametersAnyToRamWithPadding}       [1] {
+    \setkeys[MMU]{var}{#1}
+    \setMmuInstructionParametersAnyToRamWithPaddingName
+    _{\cmdMMU@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}         & \cmdMMU@var@relOffset                    \\
+        % \utt{\mmuMod{} instruction:} & \cmdMMU@var@mmuInstruction  \vspace{2mm} \\
+        \utt{Source ID:}               & \cmdMMU@var@sourceId                     \\
+        \utt{Target ID:}               & \cmdMMU@var@targetId                     \\
+        % \utt{Auxiliary ID:}          & \cmdMMU@var@auxiliaryId                  \\
+        \utt{Source offset high:}      & \cmdMMU@var@sourceOffsetHi               \\
+        \utt{Source offset low:}       & \cmdMMU@var@sourceOffsetLo               \\
+        \utt{Target offset low:}       & \cmdMMU@var@targetOffsetLo               \\
+        \utt{Size:}                    & \cmdMMU@var@size                         \\
+        \utt{Reference offset:}        & \cmdMMU@var@referenceOffset              \\
+        \utt{Reference size:}          & \cmdMMU@var@referenceSize                \\
+        % \utt{Success bit:}           & \cmdMMU@var@successBit                   \\
+        % \utt{Limb one:}              & \cmdMMU@var@limbOne                      \\
+        % \utt{Limb two:}              & \cmdMMU@var@limbTwo                      \\
+        \utt{Exo sum:}                 & \cmdMMU@var@exoSum                       \\
+        % \utt{Phase:}                 & \cmdMMU@var@phase                        \\
+    \end{array} \right]
+}
+
+% \setMmuInstructionParametersAnyToRamWithPadding {
+%     anchorRow       = ,
+%     relOffset       = ,
+%     sourceId        = ,
+%     targetId        = ,
+%     sourceOffsetHi  = ,
+%     sourceOffsetLo  = ,
+%     targetOffsetLo  = ,
+%     size            = ,
+%     referenceOffset = ,
+%     referenceSize   = ,
+%     exoSum          = ,
+%     }
+
+\newcommand{\setMmuInstructionParametersModexpZero} [1] {
+    \setkeys[MMU]{var}{#1}
+    \setMmuInstructionParametersModexpZeroName
+    _{\cmdMMU@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}         & \cmdMMU@var@relOffset                    \\
+        % \utt{\mmuMod{} instruction:} & \cmdMMU@var@mmuInstruction  \vspace{2mm} \\
+        % \utt{Source ID:}             & \cmdMMU@var@sourceId                     \\
+        \utt{Target ID:}               & \cmdMMU@var@targetId                     \\
+        % \utt{Auxiliary ID:}          & \cmdMMU@var@auxiliaryId                  \\
+        % \utt{Source offset high:}    & \cmdMMU@var@sourceOffsetHi               \\
+        % \utt{Source offset low:}     & \cmdMMU@var@sourceOffsetLo               \\
+        % \utt{Target offset low:}     & \cmdMMU@var@targetOffsetLo               \\
+        % \utt{Size:}                  & \cmdMMU@var@size                         \\
+        % \utt{Reference offset:}      & \cmdMMU@var@referenceOffset              \\
+        % \utt{Reference size:}        & \cmdMMU@var@referenceSize                \\
+        % \utt{Success bit:}           & \cmdMMU@var@successBit                   \\
+        % \utt{Limb one:}              & \cmdMMU@var@limbOne                      \\
+        % \utt{Limb two:}              & \cmdMMU@var@limbTwo                      \\
+        % \utt{Exo sum:}               & \cmdMMU@var@exoSum                       \\
+        \utt{Phase:}                 & \cmdMMU@var@phase                        \\
+    \end{array} \right]
+}
+
+% \setMmuInstructionParametersModexpZero {
+%     anchorRow  = ,
+%     relOffset  = ,
+%     targetId   = ,
+%     phase      = ,
+% }
+
+\newcommand{\setMmuInstructionParametersModexpData} [1] {
+    \setkeys[MMU]{var}{#1}
+    \setMmuInstructionParametersModexpDataName
+    _{\cmdMMU@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}         & \cmdMMU@var@relOffset                    \\
+        % \utt{\mmuMod{} instruction:} & \cmdMMU@var@mmuInstruction  \vspace{2mm} \\
+        \utt{Source ID:}               & \cmdMMU@var@sourceId                     \\
+        \utt{Target ID:}               & \cmdMMU@var@targetId                     \\
+        % \utt{Auxiliary ID:}          & \cmdMMU@var@auxiliaryId                  \\
+        % \utt{Source offset high:}    & \cmdMMU@var@sourceOffsetHi               \\
+        \utt{Source offset low:}       & \cmdMMU@var@sourceOffsetLo               \\
+        % \utt{Target offset low:}     & \cmdMMU@var@targetOffsetLo               \\
+        \utt{Size:}                    & \cmdMMU@var@size                         \\
+        \utt{Reference offset:}        & \cmdMMU@var@referenceOffset              \\
+        \utt{Reference size:}          & \cmdMMU@var@referenceSize                \\
+        % \utt{Success bit:}           & \cmdMMU@var@successBit                   \\
+        % \utt{Limb one:}              & \cmdMMU@var@limbOne                      \\
+        % \utt{Limb two:}              & \cmdMMU@var@limbTwo                      \\
+        % \utt{Exo sum:}               & \cmdMMU@var@exoSum                       \\
+        \utt{Phase:}                 & \cmdMMU@var@phase                        \\
+    \end{array} \right]
+    }
+
+% \setMmuInstructionParametersModexpData {
+%     anchorRow       = ,
+%     relOffset       = ,
+%     sourceId        = ,
+%     targetId        = ,
+%     sourceOffsetLo  = ,
+%     size            = ,
+%     referenceOffset = ,
+%     referenceSize   = ,
+%     phase           = ,
+% }
+
+\newcommand{\setMmuInstructionParametersBlake} [1] {
+    \setkeys[MMU]{var}{#1}
+    \setMmuInstructionParametersBlakeName
+    _{\cmdMMU@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}         & \cmdMMU@var@relOffset                    \\
+        % \utt{\mmuMod{} instruction:} & \cmdMMU@var@mmuInstruction  \vspace{2mm} \\
+        \utt{Source ID:}               & \cmdMMU@var@sourceId                     \\
+        \utt{Target ID:}               & \cmdMMU@var@targetId                     \\
+        % \utt{Auxiliary ID:}          & \cmdMMU@var@auxiliaryId                  \\
+        % \utt{Source offset high:}    & \cmdMMU@var@sourceOffsetHi               \\
+        \utt{Source offset low:}       & \cmdMMU@var@sourceOffsetLo               \\
+        % \utt{Target offset low:}     & \cmdMMU@var@targetOffsetLo               \\
+        % \utt{Size:}                  & \cmdMMU@var@size                         \\
+        % \utt{Reference offset:}      & \cmdMMU@var@referenceOffset              \\
+        % \utt{Reference size:}        & \cmdMMU@var@referenceSize                \\
+        \utt{Success bit:}             & \cmdMMU@var@successBit                   \\
+        \utt{Limb one:}                & \cmdMMU@var@limbOne                      \\
+        \utt{Limb two:}                & \cmdMMU@var@limbTwo                      \\
+        % \utt{Exo sum:}               & \cmdMMU@var@exoSum                       \\
+        % \utt{Phase:}                 & \cmdMMU@var@phase                        \\
+    \end{array} \right]
+}
+
+
+% \setMmuInstructionParametersBlake {
+%     anchorRow      = ,
+%     relOffset      = ,
+%     sourceId       = ,
+%     targetId       = ,
+%     sourceOffsetLo = ,
+%     successBit     = ,
+%     limbOne        = ,
+%     limbTwo        = ,
+% }
+
+\makeatother

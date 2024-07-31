@@ -1,0 +1,117 @@
+\begin{center}
+	\boxed{%
+		\text{The pre-processing presented below assumes that }
+		\left\{ \begin{array}{lcl}
+			\isMacro                         _{i}      & = & 1 \\
+			\mmuInstFlagAnyToRamWithPadding  _{i}      & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+Recall that the \mmuMod{} module's processing of the \mmuInstAnyToRamWithPadding{} is multiplexed into two subcases, see note~(\ref{mmu: decoding: any to ram with padding multiplexing}).
+We outline the common preprocessing rows
+\begin{description}
+	\item[Number of preprocessing rows:]
+		we impose $\ppTotLZ _{i} = 0$
+	\item[Some shorthands ``target range'' shorthands:]
+		we define
+		\[
+			\left\{ \begin{array}{lcl}
+				\locMinTgtOffset & \define & \macroTgtOffsetLo_{i}                        \\
+				\locMaxTgtOffset & \define & \macroTgtOffsetLo_{i} + (\macroSize_{i} - 1) \\
+			\end{array} \right.
+		\]
+	\def\rowNum{1} \item[Processing row $n^\circ(i + \rowNum)$:]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\callToLt
+				{i}{\rowNum}
+				{\macroSrcOffsetHi_{i}}{\macroSrcOffsetLo_{i}}
+				{\macroRefSize_{i}}
+				\vspace{2mm} \\
+				\callToEuc
+				{i}{\rowNum}
+				{\locMinTgtOffset}
+				{\llarge}
+				\\
+			\end{array} \right.
+		\]
+		and we define the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locPurePadding & \define & 1 - \ppWcpRes   _{i + \rowNum} \\
+				\locMinTlo      & \define & \ppEucQuot      _{i + \rowNum} \\
+				\locMinTbo      & \define & \ppEucRem       _{i + \rowNum} \\
+			\end{array} \right.
+		\]
+		\begin{enumerate}
+			\item \If $\locPurePadding = 1$ \Then $\locMaxSrcOffsetOrZero \define 0$
+			\item \If $\locPurePadding = 0$ \Then $\locMaxSrcOffsetOrZero \define \macroSrcOffsetLo_{i} + \big( \macroSize_{i} - 1 \big)$
+		\end{enumerate}
+	\def\rowNum{2} \item[Processing row $n^\circ(i + \rowNum)$:]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\callToLt
+				{i}{\rowNum}
+				{0}{\locMaxSrcOffsetOrZero_{i}}
+				{\macroRefSize_{i}}
+				\vspace{2mm} \\
+				\callToEuc
+				{i}{\rowNum}
+				{\locMaxTgtOffset}
+				{\llarge}
+				\\
+			\end{array} \right.
+		\]
+		and we \textbf{unconditionally} define the following shorthands
+		\[
+			\left\{ \begin{array}{lclr}
+				\locMixed    & \define & (1 - \locPurePadding) \cdot (1 - \ppWcpRes_{i + \rowNum}) \\
+				\locPureData & \define & (1 - \locPurePadding) \cdot \ppWcpRes_{i + \rowNum}       \\
+				\locMaxTlo   & \define & \ppEucQuot      _{i + \rowNum}                            \\
+				\locMaxTbo   & \define & \ppEucRem       _{i + \rowNum}                            \\
+			\end{array} \right.
+		\]
+		At this stage it also makes sense to define the \locTransferSize{} and \locPaddingSize{} shorthands that will be used later
+		\begin{enumerate}
+			\item \If $\locPurePadding = 1$ \Then 
+				\[ 
+				\left\{ \begin{array}{lcl}
+				\locTransferSize & \define & 0              \\
+				\locPaddingSize  & \define & \macroSize_{i} \\
+				\end{array} \right.
+				\]
+			\item \If $\locMixed       = 1$ \Then 
+				\[ 
+				\left\{ \begin{array}{lcl}
+				\locTransferSize & \define & \macroRefSize_{i} - \macroSrcOffsetLo_{i}                    \\
+				\locPaddingSize  & \define & \macroSize_{i} - (\macroRefSize_{i} - \macroSrcOffsetLo_{i}) \\
+				\end{array} \right.
+				\]
+			\item \If $\locPureData = 1$    \Then 
+				\[ 
+				\left\{ \begin{array}{lcl}
+				\locTransferSize & \define & \macroSize_{i} \\
+				\locPaddingSize  & \define & 0              \\
+				\end{array} \right.
+				\]
+		\end{enumerate}
+		\saNote{} These values satisfy the following:
+		\[
+		\left\{ \begin{array}{lclcl}
+				0 & \leq & \locTransferSize & \leq & \min\Big\{ \macroSize_{i}, \macroRefSize_{i} \Big\} \\
+				0 & \leq & \locPaddingSize  & \leq & \macroSize_{i} \\
+				\multicolumn{5}{l}{\locTransferSize + \locPaddingSize  =  \macroSize_{i}} \\
+			\end{array} \right.
+		\]
+	\item[Justifying the execution path:]
+		we impose the following constraints:
+		\[
+			\left\{ \begin{array}{lcl}
+				\mmuInstFlagAnyToRamWithPaddingPurePadding  _{i} & = & \locPurePadding \\
+				\mmuInstFlagAnyToRamWithPaddingSomeData     _{i} & = & \locMixed + \locPureData    \\
+			\end{array} \right.
+		\]
+\end{description}
+From this point on the analysis follows different paths according to the execution path which was justified above.

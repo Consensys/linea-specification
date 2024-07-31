@@ -1,0 +1,33 @@
+The present section describes the lookup between the \hubMod{} and the \shakiraMod{} module. 
+\begin{description}
+	\item[Selector column:] we use the following selector: $\col{sel}_{i} \define \peekStack_{i} \cdot \stackHashInfoFlag_{i}$
+	\item[Source columns:] ---
+		\begin{multicols}{3}
+			\begin{enumerate}
+				\item $\phaseKeccakResult$
+				\item $1 + \hubStamp_{i}$
+				\item $1$
+				\item[\vspace{\fill}]
+				% \item $\stackHashInfoSize_{i}$
+				\item $\stackHashInfoValHi_{i}$
+				\item $\stackHashInfoValLo_{i}$
+			\end{enumerate}
+		\end{multicols}
+	\item[Target columns:] ---
+		\begin{multicols}{3}
+			\begin{enumerate}
+				\item $\shakiraPhase_{j}$
+				\item $\shakiraId_{j}$
+				\item $\index_{j}$
+				\item[\vspace{\fill}]
+				% \item $\shakiraTotalSize_{j}$
+				\item $\limb_{j - 1}$
+				\item $\limb_{j}$
+			\end{enumerate}
+		\end{multicols}
+\end{description}
+\saNote{}
+The \shakiraMod{}'s ``$\phaseKeccakResult$'' phase occupies two rows where \index{} will take on the values $0$ and $1$ respectively\footnote{This phase is followed by some ``extra-rows''}.
+The first  of these rows, characterized by $\index \equiv 0$ contains the high part of the result in the \limb{} column.
+The second of these rows, characterized by $\index \equiv 1$ contains the low  part of the result in the \limb{} column.
+The lookup we describe above targets the second row and grabs the high and low parts in the first and second row respectively.

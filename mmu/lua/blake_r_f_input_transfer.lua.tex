@@ -1,0 +1,77 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{../../pkg/draculatheme}
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NF Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\begin{document}
+\begin{verbatim}
+We descrive the modus operandi of the following instruction: 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                         ;;
+;;    MMU_INST_blakeParameterExtraction    ;;
+;;                                         ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+What we call ``Blake parameters'' are the rounds parameter
+* rounds = I_d[0..4]
+* f      = I_d[212]
+The goal of the present MMU instruction is thus to extract
+these parameters from RAM and to send them off to the
+BLAKE_DATA module in case the call to the precompile is
+successful.
+
+Its inputs are the following:
+- SRC_ID  = cn
+- TGT_ID  = 1 + HUB_
+- SRC_OFF = cdo
+- VAL_HI  = rounds
+- VAL_LO  = f
+- SUCCESS_BIT = SCEN/PRC_SUCCESS 
+
+NOTE. the above is the reason why we can't rely on the VAL_HI/LO
+columns solely to transfer concrete data from HUB to RAM and why
+a dedicated SUCCESS_BIT column makes sense in the lookup.
+
+This single MMU instruction splits into 2 MMIO instructions.
+- one to extract rounds; putting EXO_BLAKE🏴 := SUCCESS_BIT;
+- one to extract f;      putting EXO_BLAKE🏴 := SUCCESS_BIT;
+
+# For "rounds"
+
+We need to compute
+- cdo = 16 • q + r
+
+The only subtle point is whether
+- r + (4 - 1) > 15 ?
+    - if yes: then [2 => 1 partial, from ∅] with appropriate params
+    - if yes: then [1 => 1 partiao, from ∅] with appropriate params
+
+Set some phase number for the rounds parameter and send the output of the above limb surgery to the EXO module.
+Also set this parameter to the value of val_hi of the HUB instruction.
+
+
+# For "f"
+
+We need to compute
+- cdo + (213 - 1) = 16 • Q + R
+
+The associated MMIO instruction is always the same:
+- [1 => 1 partial, from ∅] with appropriate params.
+
+Set some phase number for the "f" parameter and send the output of the above limb surgery to the EXO module.
+Also set this parameter to the value of val_lo of the HUB instruction.
+\end{verbatim}
+\end{document}

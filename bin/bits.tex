@@ -1,0 +1,14 @@
+The $\BITS$ column is constrained by the first two constraints below; the columns $\NEG$, $\pivotByte$, $\lowFour$ and $\bit{b_4}$ are deduced from it.
+\begin{enumerate}
+	\item \If ($\isByte_{i} + \isSignextend_{i}=1$) \et $\ct_{i} = \llargeMO$ \Then
+	\begin{enumerate}
+		\item $\pivotByte_{i} = \sum_{k=0}^7 2^{7-k} \cdot \bits_{i - \llargeMO + k}$
+		\item $\byteCol{2}_{i} = \sum_{k=0}^7 2^k \cdot \bits_{i-k}$
+		\item $\lowFour_{i} = \sum_{k=0}^3 2^k \cdot \bits_{i-k}$
+		\item $\bit{b_4}_{i} = \bits_{i-4}$
+		\item $\NEG_{i} = \BITS_{i - \llargeMO}$
+	\end{enumerate}
+\end{enumerate}
+\saNote{} We employ the precondition
+``\If $\ct_{i} = \llargeMO$'' rather than the usual 
+``\If $\ct_{i} = \maxCt$'' to enforce that the above only hold when the underlying instruction may not be dealt with in a single row, see constraint~(\ref{bin: heartbeat: maxCt for BYTE and SIGNEXTEND}) 

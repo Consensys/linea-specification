@@ -1,0 +1,35 @@
+Suppose we are given:
+\begin{itemize}
+	\item a byte column \byte{},
+	\item binary columns \col{X} and \col{Y},
+	\item an ``accumulator column'' \ACC{},
+	\item a ``counter column'' \ct{}.
+\end{itemize}
+In applications
+\byte{} will arise as the byte decomposition of a (counter-constant) column \source{},
+\col{X} will satisfy a plateau constraint which jumps at $\col{C}$,
+\col{Y} will satisfy a plateau constraint which jumps at $\col{D}$.
+It will further hold that $0\leq \col{C} < \col{D} \leq \llarge$.
+The goal is for \ACC{} to accumulate (a portion of) said bytes, namely those bytes $\byte_{i}$ of $\source$ for which $\col{C} \leq i < \col{D}$ holds.
+
+Consider he following set of constraints:
+\begin{enumerate}
+	\item \If $\ct_{i} = 0$ \Then
+	\begin{enumerate}
+		\item \If $\col{X}_{i} = 0$ \Then $\ACC_{i} = 0$
+		\item \If $\col{X}_{i} = 1$ \Then $\ACC_{i} = \byte_{i}$
+	\end{enumerate}
+	\item \If $\ct_{i} \neq 0$ \Then
+	\begin{enumerate}
+		\item \If $\col{X}_{i} = 0$ \Then $\ACC_{i} = 0$
+		\item \If $\col{X}_{i} = 1$ \Then
+		\begin{enumerate}
+			\item \If $\col{Y}_{i} = 0$ \Then $\ACC{}_{i} = 256 \cdot \ACC{}_{i-1} + \byte{}_{i}$
+			\item \If $\col{Y}_{i} = 1$ \Then $\ACC{}_{i} = \ACC{}_{i-1}$
+		\end{enumerate}
+	\end{enumerate}
+\end{enumerate}
+We encapsulate these constraints in the following relation
+\[
+	\compChunk(\ACC{}, \byte{}, \col{X}, \col{Y}; \ct{})
+\]

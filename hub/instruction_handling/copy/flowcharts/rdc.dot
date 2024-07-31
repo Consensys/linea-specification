@@ -1,0 +1,265 @@
+# http://www.graphviz.org/content/cluster
+
+digraph G {
+
+  node [fontname = "Handlee"];
+  node [shape=plaintext];
+  edge [fontname = "Handlee"];
+
+  inst [label=<
+  <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
+  <TR>
+  <TD><FONT POINT-SIZE="40">RETURNDATACOPY</FONT></TD>
+  </TR>
+  </TABLE>>];
+  sux [
+    label = "\nSUX\n ";
+    shape = diamond;
+    style = filled;
+    fillcolor = "ORANGE";
+    color = "RED";
+  ];
+  mxpx [
+    label = "\nMXPX\n ";
+    shape = diamond;
+    style = filled;
+    fillcolor = "ORANGE";
+    color = "RED";
+  ];
+  oogx [
+    label = "\nOOGX\n ";
+    shape = diamond;
+    style = filled;
+    fillcolor = "ORANGE";
+    color = "RED";
+  ];
+  rdcx [
+    label = "\nRDCX\n ";
+    shape = diamond;
+    style = filled;
+    fillcolor = "ORANGE";
+    color = "RED";
+  ];
+  unexceptional [
+    label = "\nNo Exception\n ";
+    shape = rect;
+    style = filled;
+    fillcolor = "LIGHTBLUE";
+    color = "green";
+  ];
+  execution [
+    label = "\nExecution\n ";
+    shape = diamond;
+    style = filled;
+    fillcolor = "LIGHTGREEN";
+    color = "green";
+  ];
+
+  {
+    rank=same;
+    sux; sux_rows;
+  }
+  {
+    rank=same;
+    mxpx; mxpx_rows;
+  }
+  {
+    rank=same;
+    oogx; oogx_rows;
+  }
+  {
+    rank=same;
+    rdcx; rdcx_rows;
+  }
+  {
+    rank=same;
+    execution; execution_rows;
+  }
+
+  inst                       -> sux;
+  sux                        -> sux_rows;
+  sux                        -> rdcx;
+  rdcx                       -> rdcx_rows;
+  rdcx                       -> mxpx;
+  mxpx                       -> mxpx_rows;
+  mxpx                       -> oogx
+  oogx                       -> oogx_rows;
+  oogx                       -> unexceptional;
+  unexceptional              -> execution;
+  execution                  -> execution_rows;
+
+sux_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>i</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>empty stack items</TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>Con</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD COLSPAN="1">update return data: &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+rdcx_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>i</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>offsets and size</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2">i + 1</TD>
+    <TD ROWSPAN="2">MISC</TD>
+    <TD ROWSPAN="2"></TD>
+    <TD ROWSPAN="1">MXP🏴 = 0</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">OOB🏴 = 1, EVENT = <B><FONT COLOR="#FA5F55">1</FONT></B></TD>
+  </TR>
+  <TR>
+    <TD>i + 2</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="LIGHTGREEN">caller</TD>
+    <TD>read context; RDS</TD>
+  </TR>
+  <TR>
+    <TD>i + 3</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD>update return data: &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+mxpx_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>i</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>offsets and size</TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>MISC</TD>
+    <TD></TD>
+    <TD>MXP🏴 = 1, MXPX = <B><FONT COLOR="#FA5F55">1</FONT></B></TD>
+  </TR>
+  <TR>
+    <TD>i + 2</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD>update return data: &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+oogx_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>i</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>offsets and size</TD>
+  </TR>
+  <TR>
+    <TD>i + 1</TD>
+    <TD>MISC</TD>
+    <TD></TD>
+    <TD>MXP🏴 = 1, MXPX = <B><FONT COLOR="LIMEGREEN">0</FONT></B></TD>
+  </TR>
+  <TR>
+    <TD>i + 2</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="YELLOW">parent</TD>
+    <TD>update return data: &nbsp; <B>μ<sub>o</sub></B> &shy;&nbsp; ← ∅</TD>
+  </TR>
+</TABLE>>];
+
+execution_rows [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+  <TR>
+    <TD ROWSPAN="2">Row index</TD>
+    <TD ROWSPAN="2">Perspective</TD>
+    <TD ROWSPAN="2">Who</TD>
+    <TD ROWSPAN="2" COLSPAN="1">Actions</TD>
+    <TD ROWSPAN="1" COLSPAN="2">When</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1" COLSPAN="1">Dom</TD>
+    <TD ROWSPAN="1" COLSPAN="1">Sub</TD>
+  </TR>
+  <TR>
+    <TD>i</TD>
+    <TD>STACK</TD>
+    <TD>CT = 0</TD>
+    <TD>offsets and size</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="3">i + 1</TD>
+    <TD ROWSPAN="3">MISC</TD>
+    <TD ROWSPAN="3"></TD>
+    <TD ROWSPAN="1">MXP🏴 = 1, MXPX = <B><FONT COLOR="LIMEGREEN">0</FONT></B>;</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">OOB🏴 = 1, EVENT = <B><FONT COLOR="LIMEGREEN">0</FONT></B>;</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="1">MMU🏴 = [size ≠ 0];</TD>
+  </TR>
+  <TR>
+    <TD>i + 2</TD>
+    <TD>CON</TD>
+    <TD BGCOLOR="LIGHTGREEN">current</TD>
+    <TD>RDO, RDS, RETURNER_CN;</TD>
+  </TR>
+</TABLE>>];
+
+}

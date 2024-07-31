@@ -1,0 +1,92 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below require that }
+		\left\{ \begin{array}{lcl}
+			\peekScenario                     _{i + \callFirstScenarioRowOffset} & = & 1 \\
+			\scenCallSum                      _{i + \callFirstScenarioRowOffset} & = & 1 \\
+			\locOogx + \scenCallUnexceptional _{i + \callFirstScenarioRowOffset} & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+In the present section we describe the various account operations that are required a \inst{CALL}-type instruction depending on the scenario.
+\begin{description}
+	\item[\underline{First \callerr{} account-row $n^°(i + \callFirstCallerAccountRowOffset)$:}] 
+		we impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\accAddressHi _{i + \callFirstCallerAccountRowOffset} & = & \locCurrentAddressHi            \\
+				\accAddressLo _{i + \callFirstCallerAccountRowOffset} & = & \locCurrentAddressLo            \\
+				\multicolumn{3}{l}{\textcolor{solarized-green}{\texttt{<caller balance operation set below>}}} \\
+				\multicolumn{3}{l}{\accSameNonce                     {i}{\callFirstCallerAccountRowOffset}} \\
+				\multicolumn{3}{l}{\accSameCode                      {i}{\callFirstCallerAccountRowOffset}} \\
+				\multicolumn{3}{l}{\accSameWarmth                    {i}{\callFirstCallerAccountRowOffset}} \\
+				\multicolumn{3}{l}{\accSameDeploymentNumber          {i}{\callFirstCallerAccountRowOffset}} \\
+				\multicolumn{3}{l}{\accSameDeploymentStatus          {i}{\callFirstCallerAccountRowOffset}} \\
+				\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag {i}{\callFirstCallerAccountRowOffset}} \\
+				%%%%
+				\accRomLexFlag   _{i + \callFirstCallerAccountRowOffset} & = & 0 \\
+				\accTrmFlag      _{i + \callFirstCallerAccountRowOffset} & = & 0 \\
+				\accRlpAddrFlag  _{i + \callFirstCallerAccountRowOffset} & = & 0 \vspace{2mm} \\
+				\multicolumn{3}{l}{
+					\standardDomSubStamps {
+						anchorRow = i,
+						relOffset = \callFirstCallerAccountRowOffset,
+						domOffset = 0,
+					}
+				} \\
+			\end{array} \right.
+		\]
+	\item[\underline{Setting the \callerr{} balance operation on account-row $n^°(i + \callFirstCallerAccountRowOffset)$:}] 
+		we impose that
+		\begin{enumerate}
+			\item \If $\scenCallBalanceUpdateNotRequired _{i} = 1$ \Then
+				\[
+					\accSameBalance
+					{i}{\callFirstCallerAccountRowOffset}
+				\]
+			\item \If $\scenCallBalanceUpdateRequired _{i} = 1$ \Then
+				\[
+					\accDecrementBalance
+					{i}{\callFirstCallerAccountRowOffset}{\locValueLo}
+				\]
+		\end{enumerate}
+	\item[\underline{First \calleee{} account-row $n^°(i + \callFirstCalleeAccountRowOffset)$:}] 
+		we impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\accAddressHi    _{i + \callFirstCalleeAccountRowOffset} & = & \relevantValue   \\
+				\accAddressLo    _{i + \callFirstCalleeAccountRowOffset} & = & \locRawAddressLo \\
+				\accTrmRawAddrHi _{i + \callFirstCalleeAccountRowOffset} & = & \locRawAddressLo \\
+				\multicolumn{3}{l}{\textcolor{solarized-green}{\texttt{<callee balance operation set below>}}} \\
+				\multicolumn{3}{l}{\accSameNonce             {i}{\callFirstCalleeAccountRowOffset}} \\
+				\multicolumn{3}{l}{\accSameCode              {i}{\callFirstCalleeAccountRowOffset}} \\
+				\multicolumn{3}{l}{\textcolor{solarized-green}{\texttt{<callee warmth operation set below>}}} \\
+				\multicolumn{3}{l}{\accSameDeploymentNumber  {i}{\callFirstCalleeAccountRowOffset}} \\
+				\multicolumn{3}{l}{\accSameDeploymentStatus  {i}{\callFirstCalleeAccountRowOffset}} \\
+				\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag {i}{\callFirstCalleeAccountRowOffset}} \\
+				%%%%
+				\accRomLexFlag   _{i + \callFirstCalleeAccountRowOffset} & = & \scenCallSmc _{i} \\
+				\accTrmFlag      _{i + \callFirstCalleeAccountRowOffset} & = & \rOne \\
+				\accRlpAddrFlag  _{i + \callFirstCalleeAccountRowOffset} & = & 0 \vspace{2mm} \\
+				\multicolumn{3}{l}{
+					\standardDomSubStamps {
+						anchorRow = i,
+						relOffset = \callFirstCalleeAccountRowOffset,
+						domOffset = 1,
+					}
+				} \\
+			\end{array} \right.
+		\]
+	\item[\underline{Setting the \calleee{} balance operation on account-row $n^°(i + \callFirstCalleeAccountRowOffset)$:}] 
+		we impose that
+		\begin{enumerate}
+			\item \If $\scenCallBalanceUpdateNotRequired _{i} = 1$ \Then $\accSameBalance      {i}{\callFirstCalleeAccountRowOffset}$
+			\item \If $\scenCallBalanceUpdateRequired _{i}    = 1$ \Then $\accIncrementBalance {i}{\callFirstCalleeAccountRowOffset}{\locValueLo}$
+		\end{enumerate}
+	\item[\underline{Setting the \calleee{} warmth update on account-row $n^°(i + \callFirstCalleeAccountRowOffset)$:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\scenCallCalleeWarmthUpdateNotRequired _{i} = 1$ \Then $\accSameWarmth    {i}{\callFirstCalleeAccountRowOffset}$
+			\item \If $\scenCallCalleeWarmthUpdateRequired    _{i} = 1$ \Then $\accTurnOnWarmth  {i}{\callFirstCalleeAccountRowOffset}$
+		\end{enumerate}
+\end{description}

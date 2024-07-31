@@ -1,0 +1,24 @@
+We define the following parametrized constraint systems. These will be used to set some parameters of a new execution context.
+\[
+	\left\{ \begin{array}{l}
+		\firstRowOfNewContext {i}{\relof}
+		\left[ \begin{array}{llr}
+			\utt{Next caller context number:} & \col{new\_caller\_context\_number} \\
+			\utt{Next code fragment index:}   & \col{new\_cfi}                     \\
+			\utt{Available gas in new frame:} & \col{new\_initial\_gas}            \\
+		\end{array} \right]
+		\vspace{4mm} \\
+		\qquad \iff
+		\left\{ \begin{array}{lclr}
+			\cn            _{i + \relof} & \!\!\! = \!\!\! & \cn\new _{i}                        & (\trash) \\
+			\caller        _{i + \relof} & \!\!\! = \!\!\! & \col{new\_caller\_context\_number} \\
+			\cfi           _{i + \relof} & \!\!\! = \!\!\! & \col{new\_cfi}                     \\
+			\gasExpected   _{i + \relof} & \!\!\! = \!\!\! & \col{new\_initial\_gas}            \\
+			\pc            _{i + \relof} & \!\!\! = \!\!\! & 0                                   & (\trash) \\
+			\height        _{i + \relof} & \!\!\! = \!\!\! & 0                                   & (\trash) \\
+		\end{array} \right.
+	\end{array} \right.
+\]
+\saNote{} There is no reason to constrain \cn{} given that \cn{} will be inherited from $\cn\new$ on the final row of the previous \hubStamp{}, see section~(\ref{hub: generalities: context: context numbers}).
+
+\saNote{} There is no reason to constrain either \pc{} nor \height{} given that consistency arguments from section~(\ref{hub: consistencies: environment}) already impose vanishing.

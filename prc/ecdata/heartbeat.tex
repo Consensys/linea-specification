@@ -1,0 +1,68 @@
+We impose the following constraints
+\begin{enumerate}
+	\item $\ecDataStamp_{0} = 0$
+	\item \If $\locFlagSum_{i} = 0$ \Then
+	      \[
+		      \left\{ \begin{array}{lcl}
+			      \ecdataIndex_{i} & = & 0 \\
+			      \ecdataId_{i}    & = & 0 \\
+		      \end{array} \right.
+	      \]
+	\item $\ecDataStamp_{i + 1} \in \{ \ecDataStamp_{i}, 1 + \ecDataStamp_{i} \}$ \quad (\trash)
+	\item we impose $ \ecDataStamp_{i + 1} = \ecDataStamp_{i} + \locTransitionToData _{i} $
+	\item \locAddressSum{} is \ecDataStamp{}-constant
+	\item \If $\ecDataStamp_{i} \neq 0$ \Then we impose
+	      \[
+		      \left[ \begin{array}{crcl}
+				      + & \isEcrecoverData_{i}                            & \cdot & \locIsEcrecover_{i + 1}                 \\
+				      + & \isEcaddData_{i}                                & \cdot & \locIsEcadd_{i + 1}                     \\
+				      + & \isEcmulData_{i}                                & \cdot & \locIsEcmul_{i + 1}                     \\
+				      + & \isEcpairingData_{i}                            & \cdot & \locIsEcpairing_{i + 1} \vspace{1mm}    \\
+				      + & \isEcrecoverResult_{i}                          & \cdot & \isEcrecoverResult_{i + 1}              \\
+				      + & \isEcaddResult_{i}                              & \cdot & \isEcaddResult_{i + 1}                  \\
+				      + & \isEcmulResult_{i}                              & \cdot & \isEcmulResult_{i + 1}                  \\
+				      + & \isEcpairingResult_{i}                          & \cdot & \isEcpairingResult_{i + 1} \vspace{1mm} \\
+				      + & \multicolumn{3}{c}{\locTransitionToData   _{i}}                                                   \\
+				      % \locIsResult_{i}       & \cdot & \locIsData_{i + 1}                      \\
+			      \end{array} \right]
+		      = 1
+	      \]
+	\item \If $\locTransitionBit_{i} = 1$ \Then $\ecdataIndex_{i + 1} = 0$
+	\item \If $\ecDataStamp_{i} \neq 0$ \Then
+	      \begin{enumerate}
+		      \item \If $\ecdataIndex_{i} \neq \indexMax_{i}$ \Then $\ecdataIndex_{i + 1} = 1 + \ecdataIndex_{i}$
+		      \item \If $\ecdataIndex_{i} =    \indexMax_{i}$ \Then $\locTransitionBit_{i} = 1$
+	      \end{enumerate}
+	\item \ecdataPhase{} is \ecdataIndex{}-constant \quad (\trash)
+\end{enumerate}
+\saNote{} \ecdataIndex{}-constancy of \ecdataPhase{} implies \ecdataIndex{}-constancy of all of
+\begin{multicols}{2}
+	\begin{enumerate}
+		\item \isEcrecoverData
+		\item \isEcrecoverResult
+		\item \isEcaddData
+		\item \isEcaddResult
+		\item \isEcmulData
+		\item \isEcmulResult
+		\item \isEcpairingData
+		\item \isEcpairingResult
+	\end{enumerate}
+\end{multicols}
+\noindent We resume stating the ``heartbeat'' constraints.
+\begin{enumerate}[resume]
+	%    \item \If $\ecDataStamp_{i} \neq 0$ \et $\ecdataIndex_{i} = \indexMax_{i}$ \Then
+	% \[
+	%     \left[ \begin{array}{rcl}
+	% 	\locIsResult  _{i} & \cdot & \locIsData   _{i + 1} \\
+	% 	\locIsData    _{i} & \cdot & \locIsResult _{i + 1} \\
+	%     \end{array} \right]
+	%     = 1
+	% \]
+	\item \If $\ecDataStamp_{N} \neq 0$ \Then
+	      \[
+		      \left\{ \begin{array}{lcl}
+			      \locIsResult_{N} & = & 1             \\
+			      \ecdataIndex_{N} & = & \indexMax_{N} \\
+		      \end{array} \right.
+	      \]
+\end{enumerate}

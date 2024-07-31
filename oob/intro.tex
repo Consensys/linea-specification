@@ -1,0 +1,76 @@
+The purpose of the \textbf{out of bounds module} \oobMod{} is to perform certain comparisons and ``out of bounds'' detection for the \hubMod{} module.
+It only serves as a stepping stone and data formatting step --- all the \emph{actual} work is done by other modules: \addMod{}, \modMod{} and \wcpMod{} more specifically.
+
+What follows is the list of tasks in which the present module helps the \hubMod{}\footnote{These are deliberately vague, full details are in section~\ref{oob: populating lookups}}:
+\begin{description}
+	\item[\underline{Jump-destination pre-vetting:}]
+		(for \inst{JUMP} and \inst{JUMPI} instructions) compare the proposed (program counter) jump destination with the codesize;
+		and determine if a jump is to take place at all for \inst{JUMPI} instructions;
+		see section~(\ref{oob: populating: jump}) and section~(\ref{oob: populating: jumpi});
+	\item[\underline{\rdcxSH{} detection:}]
+		(for \inst{RETURNDATACOPY} instructions) perform the following addition and comparison: 
+		\[
+			\begin{cases}
+				\text{is either \col{offset} or \col{size} grossly out of bounds ?} \\
+				\col{offset} + \col{size}        \\
+				\col{offset} + \col{size} > \RDS \\
+			\end{cases}
+		\]
+		or not;
+		see section section~(\ref{oob: populating: rdc});
+	\item[\underline{Trivial \inst{CALLDATALOAD} detection:}]
+		(for \inst{CALLDATACOPY} instructions) perform the comparison
+		\[
+			\col{offset} \geq \CDS
+		\]
+		(in which case \inst{CALLDATALOAD} must put $0$ on the stack);
+		see section section~(\ref{oob: populating: cdl});
+	\item[\underline{Exceptional \inst{CALL}'s:}]
+		detect whether $\col{value} \neq 0$;
+	\item[\underline{\inst{CALL}-type and \inst{CREATE}-type abort detection:}]
+		detect $\col{value} > \col{balance}$, $\col{callstackdepth} = 1024$ and $\col{value} \neq 0$;
+		see section~(\ref{oob: populating: call}) and section~(\ref{oob: populating: create});
+	\item[\underline{\sstorexSH{} detection:}]
+		determine if $\col{gas} \leq G_\text{callstipend} = 2300$;
+		see section section~(\ref{oob: populating: sstore});
+	\item[\underline{\maxcsxSH{} detection:}]
+		determine if a \inst{RETURN} in a deployment context returns code that is too big (i.e. $(\col{codesize} > 24576$);
+		see section section~(\ref{oob: populating: return});
+\end{description}
+We furthermore use the \oobMod{} for the pricing of certain precompiles and the testing of certain conditions pertaining to some of the underlying \inst{CALL}'s parameters
+\CDS{} (recall its abbreviation \cds{}) and
+\RAC{} (recall its abbreviation \rac{}.)
+\saNote{} Below we use the \cite{EYP}'s notation $I_\textbf{d}$ for call data.
+\begin{description}
+	\item[\underline{\inst{ECRECOVER}, \inst{SHA2-256}, \inst{RIPEMD-160}, \inst{IDENTITY}, \inst{ECADD}, \inst{ECMUL}, \inst{ECPAIRING} parameters:}]
+		detect both $\cds \equiv 0$ and $\rac \equiv 0$; 
+	\item[\underline{\inst{ECRECOVER}, \inst{ECADD} and \inst{ECMUL} pricing:}]
+		performs the comparison
+		\[
+			\left\{ \begin{array}{llcrcl}
+				\text{for }\inst{ECRECOVER}   : & \locCallGas \leq g_\text{r} & := & 3000 \\
+				\text{for }\inst{ECADD}       : & \locCallGas \leq g_\text{r} & := &  150 \\
+				\text{for }\inst{ECMUL}       : & \locCallGas \leq g_\text{r} & := & 6000 \\
+			\end{array} \right.
+		\]
+	\item[\underline{\inst{SHA2-256}, \inst{RIPEMD-160} and \inst{IDENTITY} pricing:}]
+		compute the ceiling
+		\[ \col{ceil} := \left \lceil \frac{\| I_\textbf{d} \|}{32} \right \rceil \]
+		and respectively perform the comparisons
+		\[
+			\left\{ \begin{array}{llcrcr}
+				\text{for }\inst{SHA2-256}   : & \locCallGas \leq g_\text{r} & := & 60  & + & 12  \cdot \locCeil  \\
+				\text{for }\inst{RIPEMD-160} : & \locCallGas \leq g_\text{r} & := & 600 & + & 120 \cdot \locCeil  \\
+				\text{for }\inst{IDENTITY}   : & \locCallGas \leq g_\text{r} & := & 15  & + & 3   \cdot \locCeil  \\
+			\end{array} \right.
+		\]
+	\item[\underline{\inst{ECPAIRING} pricing:}]
+		verifies that $\| I_\textbf{d} \| \equiv 0 \mod 192$ and performs the comparison 
+		\[ \locCallGas \leq g_\text{r} := 34000 \cdot \frac{\| I_\textbf{d} \|}{192} + 45000 \]
+\end{description}
+
+\saNote{}
+\inst{ECRECOVER}, \inst{ECADD}, \inst{ECMUL} and \inst{ECPAIRING} can throw other exceptions besides ``insufficient gas''.
+The present module is only a preliminary step toward detecting exceptions related to those precompiles.
+
+\saNote{} The pricing of \inst{MODEXP} and \inst{BLAKE2f} requires excavating values stored in \texttt{ram}. Their pricing is \emph{not} dealt with in the present module. 

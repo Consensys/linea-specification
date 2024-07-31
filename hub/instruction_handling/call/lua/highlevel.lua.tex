@@ -1,0 +1,102 @@
+\documentclass[tikz, border = 1cm]{standalone}
+\usepackage{xcolor}
+\usepackage{fontawesome}
+\usepackage{amsmath}
+\usepackage{../../../../pkg/draculatheme}
+\usepackage{../../../../pkg/common}
+\usepackage{../../../../pkg/env}
+\usepackage{../../../../pkg/exceptions}
+\usepackage{../../../../pkg/flags_stamps_selectors}
+\usetikzlibrary{arrows.meta}
+\begin{document}
+\input{hub/instruction_handling/create/_local}
+\begin{tikzpicture}
+\def\BASSS      {-6.5}
+\def\BASS       {-4}
+\def\BAS        {-3}
+\def\Bas        {-2.5}
+\def\bas        {-2}
+\def\droite     {3}
+\def\Droite     {6.5}
+\def\gauche     {-3}
+\def\Gauche     {-6.5}
+
+\begin{scope}[every node/.style={rectangle, thick, draw, rounded corners = 3pt, inner sep = 6pt, outer sep = 4pt}]
+	\node                                                 [draw=draculapurple] (sux) at (0,0)  {\suxSH};
+	\path           (sux)         ++ (0,\Bas)         node[draw=red]           (exception)     {\begin{tabular}{c} exception\\ $\xAhoy \equiv 1$\end{tabular}};
+	\path           (exception)   ++ (0,\BASSS)       node[draw=yellow]        (abort)         {\begin{tabular}{c} aborting condition\\ $\locOobAbortingCondition \equiv 1$\end{tabular}};
+	\path           (abort)       ++ (0,\BASS)        node[draw=draculagreen]  (entry)         {entry};
+	\path           (entry)       ++ (\Gauche, \bas)  node[draw=draculagreen]  (prc call)      {\textsc{prc} - call};
+	\path           (entry)       ++ (0, \bas)        node[draw=draculagreen]  (eoa call)      {\textsc{eoa} - call};
+	\path           (entry)       ++ (\Droite, \bas)  node[draw=draculagreen]  (smc call)      {\textsc{smc} - call};
+\end{scope}
+
+\begin{scope}[every node/.style={rectangle, thick, draw, rounded corners = 3pt, inner sep=6pt, outer sep = 4pt}]
+	\path (exception)                     ++ (\Droite,0)                       node [draw = draculacomment] (staticx)                       {\staticxSH};
+	\path (staticx)                       ++ (0,\bas)                          node [draw = draculacomment] (mxpx)                          {\mxpxSH};
+	\path (mxpx)                          ++ (0,\bas)                          node [draw = draculacomment] (oogx)                          {\oogxSH};
+	\path (abort)                         ++ (\Droite,0)                       node [draw = draculacomment] (abort will revert)             {will revert};
+	\path (abort will revert)             ++ (0,\bas)                          node [draw = draculacomment] (abort wont revert)             {won't revert};
+	\path (prc call)                      ++ (0,\Bas)                          node [draw = draculacomment] (prc call failure)              {failure};
+	\path (prc call failure)              ++ (0,\Bas) ++ (0,\bas)              node [draw = draculacomment] (prc call success)              {success};
+	\path (prc call success)              ++ (\droite,0)                       node [draw = draculacomment] (prc call success will revert)  {will revert};
+	\path (prc call success will revert)  ++ (0,\bas)                          node [draw = draculacomment] (prc call success wont revert)  {won't revert};
+	\path (eoa call)                      ++ (0,\Bas) ++ (0,\Bas) ++ (0,\bas)  node [draw = draculacomment] (eoa call success)              {success};
+	\path (eoa call success)              ++ (\droite,0)                       node [draw = draculacomment] (eoa call success will revert)  {will revert};
+	\path (eoa call success will revert)  ++ (0,\bas)                          node [draw = draculacomment] (eoa call success wont revert)  {won't revert};
+	\path (smc call)                      ++ (0,\Bas)                          node [draw = draculacomment] (smc call failure)              {failure};
+	\path (smc call failure)              ++ (\droite,0)                       node [draw = draculacomment] (smc call failure will revert)  {will revert};
+	\path (smc call failure will revert)  ++ (0,\bas)                          node [draw = draculacomment] (smc call failure wont revert)  {won't revert};
+	\path (smc call failure)              ++ (0,\Bas) ++ (0,\bas)              node [draw = draculacomment] (smc call success)              {success};
+	\path (smc call success)              ++ (\droite,0)                       node [draw = draculacomment] (smc call success will revert)  {will revert};
+	\path (smc call success will revert)  ++ (0,\bas)                          node [draw = draculacomment] (smc call success wont revert)  {won't revert};
+\end{scope}
+
+\begin{scope}[>={latex[draculacomment]},
+              every node/.style={},
+              every edge/.style={draw=draculacomment, very thick}]
+    \path (sux) ++ (\Gauche, 1) node (call type inst) [color=draculacomment] {\Large{\inst{CALL}-type instruction}};
+    \path [->] (call type inst.357)                  edge (sux.north west);
+    \path [->] (sux)                                 edge (exception);
+    \path [->] (exception)                           edge (staticx);
+    \path [->] (exception)                           edge (abort);
+    \path [->] (staticx)                             edge (mxpx);
+    \path [->] (mxpx)                                edge (oogx);
+    \path [->] (abort)                               edge (abort will revert);
+    \path [->] (abort)                               edge (entry);
+    \path [->] (abort will revert)                   edge (abort wont revert);
+    \path [->] (entry)                               edge (prc call);
+    \path [->] (entry)                               edge (eoa call);
+    \path [->] (entry)                               edge (smc call);
+    \path [->] (prc call)                            edge (prc call failure);
+    \path [->] (prc call failure)                    edge (prc call success);
+    \path [->] (eoa call)                            edge (eoa call success);
+    \path [->] (smc call)                            edge (smc call failure);
+    \path [->] (smc call failure)                    edge (smc call success);
+    %
+    % \path [->] (prc call failure)                    edge (prc call failure will revert);
+    % \path [->] (prc call failure will revert)        edge (prc call failure wont revert);
+    \path [->] (prc call success)                    edge (prc call success will revert);
+    \path [->] (prc call success will revert)        edge (prc call success wont revert);
+    %
+    \path [->] (eoa call success)                    edge (eoa call success will revert);
+    \path [->] (eoa call success will revert)        edge (eoa call success wont revert);
+    %
+    \path [->] (smc call failure)                    edge (smc call failure will revert);
+    \path [->] (smc call failure will revert)        edge (smc call failure wont revert);
+    \path [->] (smc call success)                    edge (smc call success will revert);
+    \path [->] (smc call success will revert)        edge (smc call success wont revert);
+    % \path [->] (empty success)                        edge (empty success will revert);
+    % \path [->] (empty success will revert)            edge (empty success wont revert);
+    % \path [->] (entry)                                edge (nonempty);
+    % \path [->] (nonempty)                             edge (nonempty failure);
+    % \path [->] (nonempty failure)                     edge (nonempty failure will revert);
+    % \path [->] (nonempty failure will revert)         edge (nonempty failure wont revert);
+    % \path [->] (nonempty failure)                     edge (nonempty success);
+    % \path [->] (nonempty success)                     edge (nonempty success will revert);
+    % \path [->] (nonempty success will revert)         edge (nonempty success wont revert);
+\end{scope}
+
+\end{tikzpicture}
+\end{document}
+

@@ -1,0 +1,30 @@
+The present section presents vanishing constraints for columns that aren't used depeding on the instruction type. We \emph{may} impose that
+\begin{description}
+	\item[\underline{\inst{CREATE}-type instructions:}] \If $\isCreate_{i} = 1$ \Then
+		\[
+			\left\{\begin{array}{lclr}
+				\gasHi_{i}        & = & 0 & (\trash) \\
+				\gasLo_{i}        & = & 0 & (\trash) \\
+				\warm_{i}         & = & 0 & (\trash) \\
+				\existence_{i}    & = & 0 & (\trash) \\
+			\end{array}\right.
+		\]
+	\item[\underline{\inst{CALL} instructions:}] \If $\stpCall_{i} = 1$ \Then we impose nothing;
+	\item[\underline{\inst{CALLCODE} instructions:}] \If $\stpCallCode_{i} = 1$ \Then we impose \( \existence_{i} = 1 \)
+	\item[\underline{\inst{DELEGATECALL} instructions:}] \If $\stpDelegateCall_{i} = 1$ \Then
+		\[
+			\left\{\begin{array}{lclr}
+				\valHi_{i}        & = & 0 & (\trash) \\
+				\valLo_{i}        & = & 0 & (\trash) \\
+				\existence_{i}    & = & 1 & (\trash) \\
+			\end{array}\right.
+		\]
+	\item[\underline{\inst{STATICCALL} instructions:}] \If $\stpStaticCall_{i} = 1$ \Then
+		\[
+			\left\{\begin{array}{lclr}
+				\valHi_{i}        & = & 0 & (\trash) \\
+				\valLo_{i}        & = & 0 & (\trash) \\
+			\end{array}\right.
+		\]
+\end{description}
+\ob{TODO: are these restrictions desirable ? These are obviously harmless constraints, they make for slighty smaller lookups if we segregate them by instruction type, and potentially add constraints if we don't.} 

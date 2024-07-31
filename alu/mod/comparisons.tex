@@ -1,0 +1,43 @@
+This section is about justifying the comparison bits $\col{lt\_k}$ and $\col{eq\_k}$, $k=0,1,2,3$.
+To do so we impose the following constraints:
+\[
+\left\{
+\begin{array}{lcl}
+	\big(2 \cdot \col{lt\_3} - 1\big) \cdot \big(\col{B\_3} - \col{R\_3}\big) & \!\!\! = \!\!\! & \col{$\Delta$\_3} + \col{lt\_3} \\
+	\big(2 \cdot \col{lt\_2} - 1\big) \cdot \big(\col{B\_2} - \col{R\_2}\big) & \!\!\! = \!\!\! & \col{$\Delta$\_2} + \col{lt\_2} \\
+	\big(2 \cdot \col{lt\_1} - 1\big) \cdot \big(\col{B\_1} - \col{R\_1}\big) & \!\!\! = \!\!\! & \col{$\Delta$\_1} + \col{lt\_1} \\
+	\big(2 \cdot \col{lt\_0} - 1\big) \cdot \big(\col{B\_0} - \col{R\_0}\big) & \!\!\! = \!\!\! & \col{$\Delta$\_0} + \col{lt\_0} \\
+\end{array}
+\right.
+\]
+The interpretation is as follows:
+\[
+\left\{
+\begin{array}{lcl}
+	\col{lt\_3} = 1 & \!\!\! \iff \!\!\! & \col{B\_3} > \col{R\_3} \\
+	\col{lt\_2} = 1 & \!\!\! \iff \!\!\! & \col{B\_2} > \col{R\_2} \\
+	\col{lt\_1} = 1 & \!\!\! \iff \!\!\! & \col{B\_1} > \col{R\_1} \\
+	\col{lt\_0} = 1 & \!\!\! \iff \!\!\! & \col{B\_0} > \col{R\_0} \\
+\end{array}
+\right.
+\]
+``Equality bits'' are stored in the first half of $\cmp{2}$. We constrain these values as follows:
+\[
+\left\{
+\begin{array}{l}
+	\If \col{B\_3} =    \col{R\_3} ~ \Then \col{eq\_3} = 1              \\
+	\If \col{B\_3} \neq \col{R\_3} ~ \Then \col{eq\_3} = 0 \vspace{2mm} \\
+	\If \col{B\_2} =    \col{R\_2} ~ \Then \col{eq\_2} = 1              \\
+	\If \col{B\_2} \neq \col{R\_2} ~ \Then \col{eq\_2} = 0 \vspace{2mm} \\
+	\If \col{B\_1} =    \col{R\_1} ~ \Then \col{eq\_1} = 1              \\
+	\If \col{B\_1} \neq \col{R\_1} ~ \Then \col{eq\_1} = 0 \vspace{2mm} \\
+	\If \col{B\_0} =    \col{R\_0} ~ \Then \col{eq\_0} = 1              \\
+	\If \col{B\_0} \neq \col{R\_0} ~ \Then \col{eq\_0} = 0              \\
+\end{array}
+\right.
+\]
+Finally we enforce the comparison constraint of euclidean division, that is, that the remainder be $<$ than what one divides by:
+\[
+	\col{lt\_3} ~ + ~ \col{eq\_3} \cdot \col{lt\_2} ~ + ~ \col{eq\_3} \cdot \col{eq\_2} \cdot \col{lt\_1} ~ + ~ \col{eq\_3} \cdot \col{eq\_2} \cdot \col{eq\_1} \cdot \col{lt\_0} = 1
+\]
+This amounts to imposing $0 \leq \res < \argTwo$.

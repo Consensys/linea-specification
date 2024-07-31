@@ -1,0 +1,86 @@
+The present section deals with several context number and context change related columns, in particular
+\begin{multicols}{4}
+	\begin{enumerate}
+		\item \cmc
+		\item \cn
+		\item $\cn\new$
+		\item \caller
+	\end{enumerate}
+\end{multicols}
+Context numbers only bear any real significance during the execution phase of a transaction.
+Their main purpose is to provide a unique identifier to execution context data.
+This includes a reference to the caller context (\caller) and a reference to the bytecode which is executing in the present context (\cfi.)
+It also includes environment variables, the stack and memory.
+
+For various reasons the execution context may switch during execution.
+Note that there are circumstances where the execution context \textbf{is guaranteed to change} e.g. whenever
+(\emph{a}) an \textbf{exception} occurs or
+(\emph{b}) the current instruction is a \textbf{halting instruction}.
+At times the execution context is \textbf{poised to change} but may or may not actually change.
+This happens whenever the current instruction is either
+(\emph{c}) of \textbf{\inst{CALL}-type} or
+(\emph{d}) of \textbf{\inst{CREATE}-type}.
+Determining when a context change may happen is therfore comparatively easy.
+This is the purpose of the \cmc{}.
+
+\saNote{} Whenever the execution context \emph{may change} the \zkEvm{} \textbf{must} perform various sanity checks (such as making sure that its gas supply pre-opcode is nonnegative.)
+
+Determining when there is a change in execution contexts is trickier.
+Consider the following possibilities:
+\begin{description}
+	\item[Exception:]
+		if an exception of any sort occurs (i.e. $\xAhoy_{i} = 1$), the \zkEvm{} resets the \caller{}'s return data 
+		and resumes its exeuction (unless the current context is the root context);
+	\item[Unexceptional halting instruction:]
+		no exception occurs (i.e. $\xAhoy_{i} = 0$) and the present instruction is a halting instruction (i.e. $\haltFlag_{i} = 1$);
+		the \zkEvm{} sets the caller context's return data accordingly (which include the case of a \inst{RETURN} in a deployment context)
+		and resumes its exeuction (unless the current context is the root context);
+	\item[Unexceptional \inst{CALL}-type instruction:]
+		no exception has occurred (i.e. $\xAhoy_{i} = 0$) and the present instruction is a \inst{CALL}-type (i.e. $\callFlag \equiv 1$);
+		then either:
+		\begin{enumerate}
+			\item
+				the call is aborted due to either \balAbortSH{} or \csdAbortSH{};
+				the current execution context continues execution;
+				the \zkEvm{} resets its return data to be empty;
+			\item
+				the call isn't aborted;
+				the \zkEvm{} \emph{could} enter a new context but doesn't because this is a call to a precompile;
+				the \zkEvm{} sets the current execution context's return data to the relevant values depending on whether the precompile succeeds or not;
+				the current execution context continues execution;
+			\item
+				the call isn't aborted;
+				the \zkEvm{} \emph{could} enter a new context but doesn't because the \inst{CALL} is a simple transfer i.e. the target account has empty code (but isn't a precompile);
+				the \zkEvm{} resets the current execution context's return data to be empty;
+				the current execution context continues execution;
+			\item
+				the call isn't aborted;
+				the target address has nonempty byte code;
+				the \zkEvm{} spawns (i.e. initializes) a ``child'' message call context;
+				in this case the new child context starts executing at the next \hubStamp{};
+		\end{enumerate}
+	\item[Unexceptional \inst{CREATE}-type instruction:]
+		no exception has occurred (i.e. $\xAhoy_{i} = 0$) and the present instruction is a \inst{CREATE}-type instruction;
+		then either
+		\begin{enumerate}
+			\item
+				the deployment is aborted due to either \balAbortSH{} or \csdAbortSH{};
+				the current execution context continues execution;
+				the \zkEvm{} resets its return data to be empty;
+			\item
+				the deployment isn't aborted but raises a failure condition (the deployment address either has a nonzero nonce or nonempty byte code);
+				the current execution context resumes execution;
+				the \zkEvm{} resets its return data to be empty;
+			\item
+				deployment is neither aborted nor does it raise a failure condition;
+				but the instruction is provided with empty initialization code and no deployment context is spawned;
+				the current execution context then resumes execution;
+				the \zkEvm{} must reset its return data to be empty;
+			\item
+				deployment is neither aborted nor does it raise a failure condition;
+				the instruction is provided with nonempty initialization code;
+				the \zkEvm{} spawns (i.e. initializes) a ``child'' deployment context;
+				in this case the new child context starts executing at the next \hubStamp{};
+		\end{enumerate}
+\end{description}
+\saNote{} From the \zkEvm{}'s point of view the execution context \textbf{does, infact, change} \emph{if and only if} $\cn \not\equiv \cn\new$.

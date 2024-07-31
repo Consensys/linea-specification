@@ -1,0 +1,283 @@
+Suppose we are given two unsigned $256$-bit integers
+$0 \leq \col{A}, \col{B} < 2^{256}$ with $\col{B} \neq 0$.
+We explain how to verify a quotient and remainder pair $(\col{Q}, \col{R})$ (two $256$-bit integers) representing the (supposed) euclidean division of $\col{A}$ by $\col{B}$. Recall that $\col{Q}$ and $\col{R}$ must satisfy the following:
+\[
+	\left\{
+	\begin{array}{lr}
+		0 \leq \col{R} < \col{B}
+		& \qquad (1) \\
+		A = \col{Q} \cdot \col{B} + \col{R}
+		& \qquad (2) \\
+ 	\end{array}
+	\right.
+\]
+where $(2)$ is supposed to hold \emph{over the integers} rather than the $\text{mod} ~ 2^{256}$ arithmetic of the \textsc{evm}. The verification procedure is contained in the following:
+\begin{lem}
+Let $\col{A}$, $\col{B} \neq 0$, $\col{Q}$ and $\col{R}$ be $256$-bit integers.
+Define, for $k = 0, 1, 2, 3$, bits
+$\col{eq}_{k}$ and
+$\col{lt}_{k}$ by imposing that
+\[
+	\left\{
+	\begin{array}{lcc}
+		\col{eq}_{k} = 1	& \iff & \col{R}_{k} = \col{B}_{k}\\
+		\col{lt}_{k} = 1	& \iff & \col{R}_{k} < \col{B}_{k}\\
+ 	\end{array}
+	\right.
+\]
+Then the pair $(\col{Q}, \col{R})$ represents the quotient and remainder respectively of the euclidean division of $\col{A}$ by $\col{B}$ \emph{iff}
+\[
+	\col{lt}_{3}
+	+
+	\col{eq}_{3} \cdot \col{lt}_{2}
+	+
+	\col{eq}_{3} \cdot \col{eq}_{2} \cdot \col{lt}_{1}
+	+
+	\col{eq}_{3} \cdot \col{eq}_{2} \cdot \col{eq}_{1} \cdot \col{lt}_{0}
+	=
+	1
+	\tag{$\bigstar$}
+\]
+and
+\[
+	\renewcommand{\arraystretch}{1.5}
+	\left(\begin{array}{crcl}
+	& \col{R}\high \\
+	+ & \beta + \col{H}_{1} + \theta \cdot \alpha\\
+	+ & 
+	\Big(
+		\col{Q}_{0}\col{B}_{2}
+		+
+		\col{Q}_{1}\col{B}_{1}
+		+
+		\col{Q}_{2}\col{B}_{0}
+	\Big) \\
+	+ &
+	\theta \cdot \Big(
+		\col{Q}_{0}\col{B}_{3}
+		+
+		\col{Q}_{1}\col{B}_{2}
+		+
+		\col{Q}_{2}\col{B}_{1}
+		+
+		\col{Q}_{3}\col{B}_{0}
+	\Big) \\
+	\hline
+	= & 
+	\col{A}\high
+	\end{array}\right)
+	\quad\text{and}\quad
+	\left(
+	\begin{array}{crcl}
+	& \col{Q}_{3}\col{B}_{1} + \col{Q}_{2}\col{B}_{2} + \col{Q}_{1}\col{B}_{3} \\
+	+ & \col{Q}_{3}\col{B}_{2} + \col{Q}_{2}\col{B}_{3}\\
+	+ & \col{Q}_{3}\col{B}_{3} \\
+	\hline
+	= & 0 \\
+	\end{array}
+	\right)
+\]
+where $0 \leq \col{H}_{0}, \col{H}_{1} < \theta$ and $0 \leq \alpha \leq 1$, $0 \leq \beta \leq 2$ are defined by
+\[	
+	\left\{
+	\begin{array}{lcl}
+		\col{Q}_{1}\col{B}_{0}
+		+
+		\col{Q}_{0}\col{B}_{1}
+		& \equiv &
+		[0
+		\,|\, \alpha
+		\,|\, \col{H}_{1}
+		\,|\, \col{H}_{0}
+		] \\
+		\col{Q}_{0}\col{B}_{0}
+		+
+		\theta \cdot \col{H}_{0}
+		+
+		\col{R}\low
+		& \equiv &
+		[
+		\beta \,\|\, \col{A}\low
+		]
+	\end{array}
+	\right.
+\]
+\end{lem}
+
+\paragraph{Verifying ${0 \leq \colm{R} < \colm{B}}$.}
+Note that the condition $0 \leq \col{R} < \col{B}$ is equivalent to
+\[
+	\left\{
+	\begin{array}{lc}
+	\phantom{\big(}
+	\col{lt}_{3} = 1 & \OR \\
+	\big( \col{eq}_{3} = 1 \et \col{lt}_{2} = 1 \big) & \OR \\
+	\big( \col{eq}_{3} = 1 \et \col{eq}_{2} = 1 \et \col{lt}_{1} = 1 \big) & \OR \\
+	\big( \col{eq}_{3} = 1 \et \col{eq}_{2} = 1 \et \col{eq}_{1} = 1 \et \col{lt}_{0} = 1 \big) & \OR \\
+ 	\end{array}
+	\right.
+\]
+Seeing as all these options are mutually exclusive this boils down to
+\(
+	\col{lt}_{3}
+	+
+	\col{eq}_{3} \cdot \col{lt}_{2}
+	+
+	\col{eq}_{3} \cdot \col{eq}_{2} \cdot \col{lt}_{1}
+	+
+	\col{eq}_{3} \cdot \col{eq}_{2} \cdot \col{eq}_{1} \cdot \col{lt}_{0}
+	=
+	1
+\) i.e. we recover $(\bigstar)$.
+
+\paragraph{Verifying ${\colm{A}} = {\colm{Q} \cdot \colm{B}} + {\colm{R}}$ over the integers.}
+For the second condition consider the multiplication table
+\[
+	\renewcommand{\arraystretch}{1.5}
+	\begin{array}{|c|c|c|c|c|}
+	\cline{2-5}
+	\multicolumn{1}{c|}{} & \col{B}_{0} & \col{B}_{1} & \col{B}_{2} & \col{B}_{3} \\
+	\hline
+	\col{Q}_{0}	& {\cellcolor{\romCol}\col{Q}_{0}\col{B}_{0}} & {\cellcolor{\stackCol}\col{Q}_{0}\col{B}_{1}} & {\cellcolor{\txcdCol}\col{Q}_{0}\col{B}_{2}} & {\cellcolor{\shaCol}\col{Q}_{0}\col{B}_{3}} \\
+	\hline
+	\col{Q}_{1}	& {\cellcolor{\stackCol}\col{Q}_{1}\col{B}_{0}} & {\cellcolor{\txcdCol}\col{Q}_{1}\col{B}_{1}} & {\cellcolor{\shaCol}\col{Q}_{1}\col{B}_{2}} & \col{Q}_{1}\col{B}_{3} \\
+	\hline
+	\col{Q}_{2}	& {\cellcolor{\txcdCol}\col{Q}_{2}\col{B}_{0}} & {\cellcolor{\shaCol}\col{Q}_{2}\col{B}_{1}} & \col{Q}_{2}\col{B}_{2} & \col{Q}_{2}\col{B}_{3} \\
+	\hline
+	\col{Q}_{3}	& {\cellcolor{\shaCol}\col{Q}_{3}\col{B}_{0}} & \col{Q}_{3}\col{B}_{1} & \col{Q}_{3}\col{B}_{2} & \col{Q}_{3}\col{B}_{3} \\
+	\hline
+	\end{array}
+\]
+One has the equality over the \emph{integers}
+\begin{IEEEeqnarray*}{RCL}
+	\col{Q} \cdot \col{B} + \col{R}
+	& = &
+	\col{Q}_{0}\col{B}_{0} \\
+	& &
+	+ \theta\cdot
+	\big(
+	\col{Q}_{1}\col{B}_{0}
+	+ \col{Q}_{0}\col{B}_{1}
+	\big) \\
+	& &
+	+ \theta^{2}\cdot
+	\big(
+	\col{Q}_{2}\col{B}_{0}
+	+ \col{Q}_{1}\col{B}_{1}
+	+ \col{Q}_{0}\col{B}_{2}
+	\big) \\
+	& &
+	+ \theta^{3}\cdot
+	\big(
+	\col{Q}_{3}\col{B}_{0}
+	+ \col{Q}_{2}\col{B}_{1}
+	+ \col{Q}_{1}\col{B}_{2}
+	+ \col{Q}_{0}\col{B}_{3}
+	\big) \\
+	& &
+	+ \theta^{4}\cdot
+	\big(
+	\col{Q}_{3}\col{B}_{1}
+	+ \col{Q}_{2}\col{B}_{2}
+	+ \col{Q}_{1}\col{B}_{3}
+	\big) \\
+	& &
+	+ \theta^{5}\cdot
+	\big(
+	\col{Q}_{3}\col{B}_{2}
+	+ \col{Q}_{2}\col{B}_{3}
+	\big) \\
+	& &
+	+ \theta^{6}\cdot
+	\col{Q}_{3}\col{B}_{3}
+	 \\
+	& &
+	+ \col{R}\low
+	+ \theta^2 \cdot \col{R}\high
+\end{IEEEeqnarray*}
+If we intend to have $\col{Q} \cdot \col{B} + \col{R} = \col{A}$ then the terms preceded by $\theta^{4}$, $\theta^{5}$ and $\theta^{6}$ must vanish. Furthermore the term
+$\col{Q}_{0}\col{B}_{0}
++ \theta\cdot
+\big(
+\col{Q}_{1}\col{B}_{0}
++ \col{Q}_{0}\col{B}_{1}
+\big)$ determines $\col{Q} \cdot \col{B} + \col{R} \mod 2^{128}$ which would then be $\col{A}\low$.
+We thus introduce more notation. Let us write
+\[
+	\col{Q}_{1}\col{B}_{0}
+	+
+	\col{Q}_{0}\col{B}_{1}
+	\equiv
+	[0
+	\,|\, \alpha
+	\,|\, \col{H}_{1}
+	\,|\, \col{H}_{0}
+	]
+\]
+Note that $0 \leq \col{Q}_{k},\col{B}_{k} \leq \theta - 1$ implies that $0 \leq \col{Q}_{1}\col{B}_{0} + \col{Q}_{0}\col{B}_{1} \leq 2 \theta^2 - 4\cdot\theta + 2 < 2 \theta^2$ so that $\alpha\in\{0,1\}$. The first constraint we must impose is therefore
+\[
+	\col{Q}_{0}\col{B}_{0}
+	+
+	\theta \cdot \col{H}_{0}
+	+
+	\col{R}\low
+	=
+	\col{A}\low + \theta^2 \cdot \beta
+\]
+where
+\[
+	\left\{
+	\begin{array}{ccccl}
+		0 & \!\!\! \leq \!\!\! & \col{Q}_{0}\col{B}_{0} & \!\!\! \leq \!\!\! & \theta^2 - 2\theta + 1 \\
+		0 & \!\!\! \leq \!\!\! & \theta \cdot \col{H}_{0} & \!\!\! \leq \!\!\! & \theta^2 - \theta \\
+		0 & \!\!\! \leq \!\!\! & \col{R}\low & \!\!\! \leq \!\!\! & \theta^2 - 1 \\
+	\end{array}
+	\right\}
+	\text{ imply }
+	\beta\in\{0,1,2\}.
+\]
+Similarly we could write
+\[
+	\col{Q}_{0}\col{B}_{3}
+	+
+	\col{Q}_{1}\col{B}_{2}
+	+
+	\col{Q}_{2}\col{B}_{1}
+	+
+	\col{Q}_{3}\col{B}_{0}
+	\equiv
+	[0 \,|\,
+	\zeta \,|\,
+	\col{H}_{3} \,|\,
+	\col{H}_{2} ].
+\]
+for some $\zeta\in\{0, 1, 2, 3\}$ (where one expects to have $\zeta = 0$ and $\col{H}_{3} = 0$.) One would then impose
+\[
+	\left\{\begin{array}{l}
+	\zeta = 0 \\
+	\col{H}_{3} = 0 \\
+	\beta + \col{H}_{1} + \theta \cdot \alpha + \theta\col{H}_{2} \\
+	\quad + 
+	\col{Q}_{0}\col{B}_{2}
+	+
+	\col{Q}_{1}\col{B}_{1}
+	+
+	\col{Q}_{2}\col{B}_{0} + \col{R}\high = \col{A}\high
+	+ \theta^2 \cdot \gamma \\
+	\text{for some }\gamma\in\{0,1,2,3,4\} \\
+	\gamma = 0 \\
+	\end{array}
+	\right.
+	\quad\text{and}\quad
+	\left\{
+	\begin{array}{l}
+	\col{Q}_{3}\col{B}_{1} = 0 \\
+	\col{Q}_{2}\col{B}_{2} = 0 \\
+	\col{Q}_{1}\col{B}_{3} = 0 \vspace{2mm} \\
+	\col{Q}_{3}\col{B}_{2} = 0 \\
+	\col{Q}_{2}\col{B}_{3} = 0 \vspace{2mm} \\
+	\col{Q}_{3}\col{B}_{3} = 0 \\
+	\end{array}
+	\right.
+\]
+Given the ranges of the integers at play we can add up all equations $\cdots = 0$ and get an equivalent system. This leads us to the following conclusion \dots{} \ob{TODO: finish this mess}

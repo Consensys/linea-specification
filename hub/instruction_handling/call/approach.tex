@@ -1,0 +1,66 @@
+We explain our general appproach for the instruction processing of \inst{CALL}'s.
+The first step in instruction processing is detecting exceptions / proving their absence.
+Recall that \inst{CALL}-type instructions can trigger the following exceptions:
+\begin{itemize}
+	\item \suxSH{}
+	\item \staticxSH{} (may only be triggered by \inst{CALL})
+	\item \mxpxSH{}
+	\item \oogxSH{}
+\end{itemize}
+The processing we present below, like any instruction processing, applies \emph{if and only if} no \suxSH{} was triggered (as witnessed by the $\stackSux + \stackSox \equiv 0$ precondition.)
+The second step in instruction processing (of \emph{unexceptional} \inst{CALL}-type instructions) is detecting aborting conditions / proving their absence.
+Recall that a \inst{CALL}-type instruction will be aborted for any of the following reasons
+\begin{itemize}
+	\item \balAbortSH{}
+	\item \csdAbortSH{}
+\end{itemize}
+\inst{CALL}-type instructions that make it past these hurdles then undergo specialized processing depending on whether the \inst{CALL} targets an \textbf{externally owned account}, a \textbf{smart contract} or a \textbf{precompile}.
+In our arithmetization
+\begin{description}
+	\item[\textsc{Externally owned accounts}]
+		are characterized by having empty code ($\accHasCode \equiv 0$) and not being a precompile ($\accTrmIsPrecompile \equiv 0$);
+	\item[\textsc{Smart contracts}]
+		are characterized by having nonempty code ($\accHasCode \equiv 1$);
+	\item[\textsc{Precompiles}]
+		are characterized by raising the a precompile flag (i.e. $\accTrmIsPrecompile \equiv 1$).
+\end{description}
+Instruction processing beyond that point is either done in a single phase or subdivided two phases.
+In more detail:
+\begin{itemize}
+	\item
+		For \inst{CALL}'s to \textsc{externally owned accounts}' processing happens in one go (i.e. \textbf{one phase}) and culminates in the update of the present execution context's return data (which is reset to being empty $(\,)$).
+
+		The final processing row is a \textbf{context-row}.
+	\item For \inst{CALL}'s to \textsc{smart contracts}' processing, too, happens in one go (i.e. \textbf{one phase}) and culminates with:
+		\begin{itemize}
+			\item Backpropagating certain values pertaining to the success / failure of the child context;
+			\item Initializating the execution context spawned by the \inst{CALL};
+			\item Setting up the first row of the execution of the newly spawned execution environment;
+		\end{itemize}
+		See section~(\ref{hub: instruction handling: call: finishing: cases: smc}) for more details.
+		The final processing row is a \textbf{context-row}.
+	\item For \inst{CALL}'s to \textsc{precompiles}' processing is subdivided into \textbf{two phases}:
+		\begin{enumerate}
+		        \item
+				The first phase is similar to the processing of \inst{CALL}'s to \textsc{eoa}'s and to \textsc{smc}'s and their processing is shared.
+				However, rather than finishing on a context-row the final row of this phase is a \textbf{scenario-row}, where, among other things, we determine the relevant precompile scenario
+
+				This first phase culminates with a (second) scenario-row where we set, for some positive (scenario-dependent) row offset $\exampleOffset$,
+				\[
+					\left\{ \begin{array}{lcl}
+						\peekScenario_{i + \exampleOffset}        & = & 1 \\
+						\scenSomePrecompile _{i + \exampleOffset} & = & 1 \\
+						\multicolumn{3}{l}{\!\!\!\! \left. \begin{array}{lcl}
+							\scenPrcSuccessWillRevert _{i + \exampleOffset} & = & \varepsilon    \\
+							\scenPrcSuccessWontRevert _{i + \exampleOffset} & = & \varepsilon'   \\
+							\scenPrcFailureKnownToHub _{i + \exampleOffset} & = & \varepsilon''  \\
+							\scenPrcFailureKnownToRam _{i + \exampleOffset} & = & \varepsilon''' \\
+						\end{array} \right \} \text{ precisely one is set to $1$.}}
+					\end{array} \right.
+				\]
+			\item
+				The second phase is entirely determined by the precompile address and the success/failure prediction made on the final row of the first phase.
+		\end{enumerate}
+\end{itemize}
+In all cases the first phase deals with detecting exceptions, aborting conditions and updates to accounts (as well as undoing said upates in case of future rollbacks.)
+the first phase The precise precompile address being called, as well as the success or failure of the relevant precompile, have 

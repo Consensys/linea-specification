@@ -1,0 +1,18 @@
+The present section deals with the $\expInstExpLog$ instruction.
+Its purpose is as follows.
+One is given the following data:
+(\emph{a}) an \evm{} word \locExponent{} split into high and low parts, \locExponentHi{} and \locExponentLo{} respectively;
+one is tasked with computing (an approximation to) its $\log_{256}$ as defined below
+\begin{IEEEeqnarray*}{LCL}
+	\locExponentLog & \equiv  &
+	\left\{ \begin{array}{ll}
+		0                                           & \If \exponent =    0     \\
+		1 + \lfloor \log_{256}(\exponent) \rfloor   & \If \exponent \neq 0     \\
+	\end{array} \right. \\
+	& \equiv  &
+	\left\{ \begin{array}{ll}
+		0                                                 & \If \big(\ehi = 0 ~ \et \elo = 0\big)       \\
+		1 + \lfloor \log_{256}(\elo) \rfloor              & \If \big(\ehi = 0 ~ \et \elo \neq 0\big)    \\
+		1 + \lfloor \log_{256}(\ehi) \rfloor + \llarge    & \If \ehi \neq 0                             \\
+	\end{array} \right. \\
+\end{IEEEeqnarray*}

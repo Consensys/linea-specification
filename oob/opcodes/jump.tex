@@ -1,0 +1,57 @@
+The present section describes the data layout for the \inst{JUMP} case. As such:
+\[
+	\boxed{\text{All constraints in this subsection further assume }\oobInstIsJump_{i} = 1}
+\]
+We remind the reader that the objective of the \oobMod{} module in this particular case is to perform the following \textbf{preliminary check}:
+\green{(\emph{a})} compare \locPcNew{} and \locCodeSize{}.
+
+\noindent We introduce the following shorthands:
+\[
+	\left\{ \begin{array}{lclr}
+		\locPcNewHi                 & \define & \oobDataCol{1}   _{i} \\
+		\locPcNewLo                 & \define & \oobDataCol{2}   _{i} \\
+		%                           & \define & \oobDataCol{3}   _{i} \\
+		%                           & \define & \oobDataCol{4}   _{i} \\
+		\locCodeSize                & \define & \oobDataCol{5}   _{i} \\
+		%                           & \define & \oobDataCol{6}   _{i} \\
+		\locJumpGuaranteedException & \define & \oobDataCol{7}_{i}     & \prediction \\
+		\locJumpMustBeAttempted     & \define & \oobDataCol{8}_{i}     & \prediction \\
+	\end{array} \right.
+\]
+We impose the following constraints:
+\begin{description}
+	\item[\underline{Row n°$(i)$:}] we impose the following:
+		\[
+			\oobCallToLt
+			{i}{0}
+			{\col{pc\_new\_hi}}{\col{pc\_new\_lo}}
+			{0}{\col{codesize}}
+		\]
+		we also define the shorthand
+		\[
+			\locValidPcNew \define \outgoingResLo _{i}
+		\]
+		It follows that $\locValidPcNew = 1 \iff \locPcNew < \locCodeSize$.
+	\item[\underline{Justifying \hubMod{} predictions:}] we impose 
+		\[
+			\left\{ \begin{array}{lcl}
+				\locJumpGuaranteedException & = & 1 - \locValidPcNew \\
+				\locJumpMustBeAttempted     & = & \locValidPcNew     \\
+			\end{array} \right.
+		\]
+		\saNote{} In other words $\locInvalidPcNew \equiv 1 \iff$ the \inst{JUMP} instruction leads to an (attempted) jump that takes the program counter out of bounds relative to the byte code under execution and its code size. Since byte code is zero padded beyond its code size this automatically leads to a \jumpxSH{}. Indeed, the zero byte $\utt{00}$ corresponds to the \inst{STOP} opcode which differs from the \inst{JUMPDEST} opcode where any unexceptional \inst{JUMP}-type instruction must land.
+\end{description}
+\saNote{} The above has implicit consequences which we list below which don't need to be incorporated into the implementation:
+\begin{enumerate}
+	\item $\locJumpGuaranteedException$ is binary \quad (\trash)
+	\item $\locJumpMustBeAttempted    $ is binary \quad (\trash)
+	\item furthermore
+		\[
+			\left[ \begin{array}{cr}
+				+ & \locJumpGuaranteedException \\
+				+ & \locJumpMustBeAttempted     \\
+			\end{array} \right]
+			\equiv 1
+			\quad (\trash)
+		\]
+\end{enumerate}

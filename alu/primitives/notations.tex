@@ -1,0 +1,31 @@
+Throughout we set
+\[
+	\framebox{%
+		$\theta = 2^{64} =
+		256^\mmedium$.}
+	\]
+Note that $\theta^2 = 2^{128} = 256^\llarge$ and $\theta^4 = 2^{256}$.
+If $0\leq \col{X} < 2^{256}$ is an \emph{unsigned $256$-bit integer} we write
+$\col{X} \equiv [\col{X}\high \,\|\, \col{X}\low]$ and
+$\col{X} \equiv [\col{X}_{3} \,|\, \col{X}_{2} \,|\, \col{X}_{1} \,|\, \col{X}_{0}]$ to mean the base $\theta^2$ and base $\theta$ representations of $\col{X}$ respectively:
+\[
+	\left\{
+	\begin{array}{lclcl}
+		\col{X}
+		& \!\!\! = \!\!\! & \theta^2 \cdot \col{X}\high + \col{X}\low \\
+		\multicolumn{3}{l}{\text{with } 0 \leq \col{X}\high, \col{X}\low < \theta^2} \vspace{2mm} \\
+		\col{X}& \!\!\! = \!\!\! &
+		\theta^3 \cdot \col{X}_{3}
+		+ \theta^2 \cdot \col{X}_{2}
+		+ \theta \cdot \col{X}_{1}
+		+ \col{X}_{0} \\
+		\multicolumn{3}{l}{\text{with } 0 \leq \col{X}_{3}, \col{X}_{2}, \col{X}_{1}, \col{X}_{0} < \theta} \\
+	\end{array}
+	\right.
+\]
+Note that $\col{X}\high = \theta \cdot \col{X}_{3} +  \col{X}_{2}$ and $\col{X}\low = \theta \cdot \col{X}_{1} +  \col{X}_{0}$. When manipulating $512$-bit integers $\col{Y}$ (as one must for $\inst{MULMOD}$) we naturally extend notation as one would expect:
+$\col{Y} \equiv [\col{Y}_{3} \,\|\, \col{Y}_{2} \,\|\, \col{Y}_{1} \,\|\, \col{Y}_{0}]$
+and 
+$\col{Y} \equiv [\col{Y}_{7} \,|\, \cdots \,|\, \col{Y}_{1} \,|\, \col{Y}_{0}]$. \vspace{2mm}
+
+\noindent \saNote{} These two notations are at odds with one another. However they will never apply to the \emph{same} underlying $512$-bit integer. Note furthermore that the only time we require manipulation of $512$-bit integers is when dealing with \inst{MULMOD} which we deal with in the extended modular arithmetic module.

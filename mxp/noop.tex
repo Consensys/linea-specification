@@ -1,0 +1,51 @@
+The present section computes the $\noop{}$ flag. Its definition is simple: a \col{noop} \emph{from the point of view of memory expansion} happens precisely when all relevant size parameters are zero. No-op dependent constraints are subordinate to $\roob{} = 0$, in other words: the value of $\noop$ matters only when $\roob{} = 0$. As such the zk-evm focuses on the low part of the size parameter(s). The ``no-operation'' check could be handled in the main execution trace, but for simplicity it is handled in the present module.
+\begin{enumerate}
+	\item $\noop$ is binary;
+	\item \If $\roob_{i} = 1$ \Then $\noop_{i} = 0$
+\end{enumerate}
+		\saNote{}\label{mxp: noop: roob + noop is binary} It follows that $\roob + \noop$ is a boolean column.
+\begin{enumerate}[resume]
+	\item \If $\roob_{i} = 0$ \Then 
+	\begin{enumerate}
+		\item \If $\decMxpType{1}_{i} + \decMxpType{2}_{i} + \decMxpType{3}_{i} \neq 0$ \Then%
+		\[
+			\noop_{i} = \decMxpType{1}_{i}
+		\]
+		\item \If $\decMxpType{4}_{i} = 1$ \Then
+		\[
+		\left\{
+		\begin{array}{l}
+			\If \sizeLo{1}_{i} = 0 		~ \Then \noop_{i} = 1 \\
+			\If \sizeLo{1}_{i} \neq 0 	~ \Then \noop_{i} = 0 \\
+		\end{array}
+		\right.
+		\]
+		\item \If $\decMxpType{5}_{i} = 1$ \Then
+		\[
+		\left\{
+		\begin{array}{l}
+			\If \Big( \sizeLo{1}_{i} = 0 ~ \et \sizeLo{2}_{i} = 0 \Big) ~ \Then \noop_{i} = 1 \\
+			\If \sizeLo{1}_{i} \neq 0 	~ \Then \noop_{i} = 0 \\
+			\If \sizeLo{2}_{i} \neq 0 	~ \Then \noop_{i} = 0 \\
+		\end{array}
+		\right.
+		\]
+	\end{enumerate}
+\end{enumerate}
+\saNote{} The constraints from section~\ref{mxp: sec: noop} and section~\ref{mxp: sec: counter-constancies} imply that \noop{} is counter-constant.
+
+We further settle the expected behaviour in case of a (from the point of view of the memory expansion module) \col{noop}. No memory expansion happens, memory size remains the same. The associated  constraints are thus:
+\begin{enumerate}
+	\item \If $\noop_{i} = 1$ \Then
+\[
+	\left\{
+	\begin{array}{lcl}
+		\mxpQuadGas_{i} & \!\!\! = \!\!\! & 0 \\
+		\mxpLinGas_{i} & \!\!\! = \!\!\! & 0 \\
+		\memSize_{i}\new & \!\!\! = \!\!\! & \memSize_{i} \\
+		\expCost\new_{i} & \!\!\! = \!\!\! & \expCost_{i} \\
+	\end{array}
+	\right.
+\]
+\end{enumerate}
+Recall that \inst{MSIZE} is the only \textbf{type 0} instruction. The constraints in that case push the memory size onto the stack.

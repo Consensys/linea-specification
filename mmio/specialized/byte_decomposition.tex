@@ -1,0 +1,21 @@
+Suppose we are given
+\begin{enumerate}
+	\item a counter-constant column \source{},
+	\item and a byte column \source{}\byte{},
+	\item an ``accumulator column'' \ACC{},
+	\item a ``counter column'' \ct{}.
+\end{enumerate}
+The desiered interpreation is that
+\source{}\byte{} column contains the supposed byte decomposition of \source{} and
+\ACC{} accumulates said bytes. The collision at the end of the counter-cycle between \ACC{} and \source{} confirms the byte decomposition.
+
+Thus consider he following set of constraints:
+\begin{enumerate}
+	\item \If $\ct_i = 0$ \Then $\ACC{}_i = \source{}\byte{}_i$,
+	\item \If $\ct_{i} \neq 0$ \Then $\ACC{}_{i} = 256\cdot\ACC{}_{i - 1} + \source{}\byte{}_{i}$,
+	\item \If $\ct_{i} = \llargeMO$ \Then $\ACC{}_{i} = \source{}_i$.
+\end{enumerate}
+We encapsulate these constraints in the following relation
+\[
+	\byteDec(\source{}; \source{}\byte{}; \ACC{}; \ct{})
+\]

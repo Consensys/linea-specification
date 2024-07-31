@@ -1,0 +1,170 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below assume that }
+		\left\{ \begin{array}{lcl}
+			\peekScenario_{i}        & = & 1 \\
+			\left[ \begin{array}{cr}
+				+ & \scenShaTwo        _{i}  \\
+				+ & \scenRipemd        _{i}  \\
+			\end{array} \right]      & = & 1 \\
+			\scenPrcSuccess_{i}      & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+We are thus (again) assuming that the present row is the first of the second phase of dealing with the 
+\inst{SHA2-256} and
+\inst{RIPEMD-160} precompiles.
+However, this time we are also assuming that $\scenPrcSuccess \equiv 1$.
+\begin{description}
+	\item[\underline{Miscellaneous-row $n^°(i + \prcStandardSuccessSecondMiscRowOffset)$:}]
+		\begin{description}
+			\item[\underline{Setting lookup flags:}]
+				we impose
+				\[
+					\weightedMiscFlagSum
+					{i}{\prcStandardSuccessSecondMiscRowOffset}
+					=
+					\miscMmuWeight
+				\]
+				in other words:
+				\[
+					\left\{ \begin{array}{lclr}
+						\miscExpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero & (\trash) \\
+						\miscMmuFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \one   & (\trash) \\
+						\miscMxpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero & (\trash) \\
+						\miscOobFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero & (\trash) \\
+						\miscStpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero & (\trash) \\
+					\end{array} \right.
+				\]
+			\item[\underline{\mmuMod{} data:}]
+				for simplicity we distinguish the empty call data case from the nonempty call data case:
+				\begin{description}
+					\item[\underline{The empty call data case:}] 
+						\If $\locOobResultEmptyCallData{} = 1$ \Then we impose
+						\[
+							\setMmuInstructionParametersMstore {
+								anchorRow      = i                                      ,
+								relOffset      = \prcStandardSuccessSecondMiscRowOffset ,
+								targetId       = 1 + \hubStamp_{i}                      ,
+								targetOffsetLo = 0                                      ,
+								limbOne        = \locEmptyHashHi                        ,
+								limbTwo        = \locEmptyHashLo                        ,
+								}
+						\]
+						where we have set
+						\[
+							\left\{ \begin{array}{lcl}
+								\locEmptyHashHi & \define & 
+								\left[ \begin{array}{rcl}
+									\scenShaTwo_{i} & \cdot & \emptyShaTwoHi \\        
+									\scenRipemd_{i} & \cdot & \emptyRipemdHi \\        
+								\end{array} \right] \\
+								\locEmptyHashLo & \define &
+								\left[ \begin{array}{rcl}
+									\scenShaTwo_{i} & \cdot & \emptyShaTwoLo \\        
+									\scenRipemd_{i} & \cdot & \emptyRipemdLo \\        
+								\end{array} \right] \\ 
+							\end{array} \right.
+						\]
+						where we set 
+						\[
+							\left\{ \begin{array}{lcl}
+								\emptyShaTwoHi & \define & \texttt{0x\,e3b0c44298fc1c149afbf4c8996fb924}              \\
+								\emptyShaTwoLo & \define & \texttt{0x\,27ae41e4649b934ca495991b7852b855} \vspace{2mm} \\
+								\emptyRipemdHi & \define & \texttt{0x\,0000000000000000000000009c1185a5}              \\
+								\emptyRipemdLo & \define & \texttt{0x\,c5e9fc54612808977ee8f548b2258d31}              \\
+							\end{array} \right. \\ 
+						\]
+						\saNote{} The reader will recognize the high and low parts of 
+						the \inst{SHA2-256}   hash of the empty string and 
+						% e3b0c44298fc1c149afbf4c8996fb924 27ae41e4649b934ca495991b7852b855
+						the \inst{RIPEMD-160} hash of the empty string respectively. 
+						% 0000000000000000000000009c1185a5 c5e9fc54612808977ee8f548b2258d31
+					\item[\underline{The nonempty call data case:}] 
+						\If $\locOobResultExtractCallData{} = 1$ \Then we impose
+						\[
+							\setMmuInstructionParametersExoToRamTransplants {
+								anchorRow = i                                      ,
+								relOffset = \prcStandardSuccessSecondMiscRowOffset ,
+								sourceId  = 1 + \hubStamp_{i}                      ,
+								targetId  = 1 + \hubStamp_{i}                      ,
+								size      = \evmWordSize                           ,
+								exoSum    = \exoWeightRipSha                       ,
+								phase     = \locShaTwoRipemdResultPhase            ,
+								}
+						\]
+						where
+						\[
+							\locShaTwoRipemdResultPhase \define
+							\left[ \begin{array}{crcl}
+								+ & \phaseShaTwoResult       & \cdot & \scenShaTwo        _{i}  \\
+								+ & \phaseRipemdResult       & \cdot & \scenRipemd        _{i}  \\
+							\end{array} \right]
+						\]
+				\end{description}
+		\end{description}
+	\item[\underline{Miscellaneous-row $n^°(i + \prcStandardSuccessThirdMiscRowOffset)$:}] 
+		\begin{description}
+			\item[\underline{Setting lookup flags:}]
+				we impose
+				\[
+					\weightedMiscFlagSum
+					{i}{\prcStandardSuccessThirdMiscRowOffset}
+					=
+					\miscMmuWeight \cdot \locOobResultNonzeroRac
+				\]
+				in other words:
+				\[
+					\left\{ \begin{array}{lclr}
+						\miscExpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\trash) \\
+						\miscMmuFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \locOobResultNonzeroRac & (\trash) \\
+						\miscMxpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\trash) \\
+						\miscOobFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\trash) \\
+						\miscStpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\trash) \\
+					\end{array} \right.
+				\]
+			\item[\underline{\mmuMod{} data:}]
+				\If $\miscMmuFlag_{i + \prcStandardSuccessThirdMiscRowOffset} = 1$ \Then we impose
+				\[
+					\setMmuInstructionParametersRamToRamSansPadding {
+						anchorRow       = i                                     ,
+						relOffset       = \prcStandardSuccessThirdMiscRowOffset ,
+						sourceId        = 1 + \hubStamp_{i}                     ,
+						targetId        = \cn_{i}                               ,
+						sourceOffsetLo  = 0                                     ,
+						size            = \evmWordSize                          ,
+						referenceOffset = \locPrcRao                            ,
+						referenceSize   = \locPrcRac                            ,
+						}
+					% \left\{ \begin{array}{lcl}
+					% 	\miscMmuInst        _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \mmuInstRamToRamSansPadding \\
+					% 	\miscMmuSrcId       _{i + \prcStandardSuccessThirdMiscRowOffset} & = & 1 + \hubStamp_{i}           \\
+					% 	\miscMmuTgtId       _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \cn_{i}                     \\
+					% 	\miscMmuAuxId       _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \nothing                    \\
+					% 	\miscMmuSrcOffsetHi _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \nothing                    \\
+					% 	\miscMmuSrcOffsetLo _{i + \prcStandardSuccessThirdMiscRowOffset} & = & 0                           \\
+					% 	\miscMmuTgtOffsetLo _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \nothing                    \\
+					% 	\miscMmuSize        _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \evmWordSize                \\
+					% 	\miscMmuRefOffset   _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \locPrcRao                  \\
+					% 	\miscMmuRefSize     _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \locPrcRac                  \\
+					% 	\miscMmuSuccessBit  _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \nothing                    \\
+					% 	\miscMmuLimbOne     _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \nothing                    \\
+					% 	\miscMmuLimbTwo     _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \nothing                    \\
+					% 	\miscMmuExoSum      _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \nothing                    \\
+					% 	\miscMmuPhase       _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \nothing                    \\
+					% \end{array} \right.
+				\]
+		\end{description}
+	\item[\underline{Context-row $n^°(i + \prcStandardSuccessCallerContextRowRowOffset)$:}] 
+		we impose \
+		\[
+			\provideReturnData {
+				anchorRow          = i                                            ,
+				relOffset          = \prcStandardSuccessCallerContextRowRowOffset ,
+				returnDataReceiver = \cn_{i}                                      ,
+				returnDataProvider = 1 + \hubStamp_{i}                            ,
+				returnDataOffset   = 0                                            ,
+				returnDataSize     = \evmWordSize                                 ,
+			}
+		\]
+\end{description}

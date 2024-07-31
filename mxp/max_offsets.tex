@@ -1,0 +1,66 @@
+This section defines maximal offsets. We define a pair of maximal offsets (even in case the instruction requires only one offset, size pair). Definitions depend on the memory expansion type.
+\begin{enumerate}
+	\item \If $\decMxpType{2}_{i} = 1$
+	\[
+		\left\{
+		\begin{array}{l}
+			\lastOffset{1}_{i} = \offsetLo{1}_{i} + (32 - 1)\\
+			\lastOffset{2}_{i} = 0 \\
+		\end{array}
+		\right.
+	\]
+	\item \If $\decMxpType{3}_{i} = 1$
+	\[
+		\left\{
+		\begin{array}{l}
+			\lastOffset{1}_{i} = \offsetLo{1}_{i} + (1 - 1)\\
+			\lastOffset{2}_{i} = 0 \\
+		\end{array}
+		\right.
+	\]
+	\item \If $\decMxpType{4}_{i} = 1$
+	\[
+		\left\{
+		\begin{array}{l}
+			\lastOffset{1}_{i} = \offsetLo{1}_{i} + (\sizeLo{1}_{i} - 1) \\
+			\lastOffset{2}_{i} = 0 \\
+		\end{array}
+		\right.
+	\]
+	\item \If $\decMxpType{5}_{i} = 1$
+	\[
+		\left\{
+		\begin{array}{l}
+			\begin{cases}
+				\If \sizeLo{1}_{i} \neq 0 ~ \Then
+				\lastOffset{1}_{i} = \offsetLo{1}_{i} + (\sizeLo{1}_{i} - 1) \\
+				\If \sizeLo{1}_{i} = 0    ~ \Then
+				\lastOffset{1}_{i} = 0 \\
+			\end{cases} \vspace{2mm} \\
+			\begin{cases}
+				\If \sizeLo{1}_{i} \neq 0 ~ \Then
+				\lastOffset{2}_{i} = \offsetLo{2}_{i} + (\sizeLo{2}_{i} - 1) \\
+				\If \sizeLo{1}_{i} = 0    ~ \Then
+				\lastOffset{2}_{i} = 0 \\
+			\end{cases} \\
+		\end{array}
+		\right.
+	\]
+\end{enumerate}
+Let us clarify the preceding constraints.
+If $\decMxpType{4} = 1$ the standing assumption $\noop = 0$ implies that $\sizeLo{1} \geq 1$.
+If $\decMxpType{5} = 1$ it may happen that one of the size parameters is zero i.e.
+\[
+	\left\{
+	\begin{array}{lclr}
+		256^{\llarge} \cdot \sizeHi{1} + \sizeLo{1}
+		& \!\!\! = \!\!\! & \sizeLo{1} = 0 & \text{i.e. }\CDS = 0 \vspace{1mm} \\
+		\qquad \OR \vspace{1mm}\\
+		256^{\llarge} \cdot \sizeHi{2} + \sizeLo{2}
+		& \!\!\! = \!\!\! & \sizeLo{2} = 0 & \text{i.e. }\col{RETURNDATACAPACITY} = 0 \\
+	\end{array}
+	\right.
+\]
+that the \inst{CALL}-type instruction provides either no call data or no space for return data\footnote{but, given our standing assumption that $\roob = \noop = 0$, at least one or the other}.) In that case the relevant empty memory segment has no impact on the computation and we set the corresponding $\lastOffset{k}$ to $0$. Note furthermore that this prevents the edge case where one of the $\lastOffset{k}$ is accidentally set to $-1$.
+
+$\lastOffset{1}$ and $\lastOffset{2}$ are thus nonnegative and the sum of two $\llarge$ byte integers. They are thus $\lllarge$ byte integers.

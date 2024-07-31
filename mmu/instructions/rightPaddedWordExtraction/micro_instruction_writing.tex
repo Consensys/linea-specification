@@ -1,0 +1,102 @@
+\begin{center}
+	\boxed{%
+		\text{The pre-processing presented below assumes that }
+		\left\{ \begin{array}{lcl}
+			\isMacro                                      _{i}      & = & 1 \\
+			\mmuInstFlagRightPaddedWordExtraction{}       _{i}      & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+\begin{description}
+	\def\rowNum{\nppMmuInstRightPaddedWordExtractionValuePO} \item[Setting micro-instruction-writing-constant values:]
+		we impose
+		\[ \left\{ \begin{array}{lclr}		
+			% \microInst        _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \locMicroInst  \\
+			% \microSize        _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \nothing \\
+			% \microSlo         _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \locSlo \\
+			% \microSbo         _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \locSbo \\
+			% \microTlo         _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \nothing \\
+			% \microTbo         _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \nothing \\
+			% \microLimb        _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \nothing \\
+			\microCns           _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \macroSrcId_{i} \\
+			\microCnt           _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \nothing \\
+			\microSuccessBit    _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \nothing \\
+			\microExoSum        _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \rZero \\
+			\microPhase         _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \nothing \\
+			\microIdOne         _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \nothing \\
+			\microIdTwo         _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \nothing \\
+			\microTotalSize     _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \nothing \\
+		\end{array} \right.
+		\]
+		\saNote{} It is important to set the \microExoSum{} to $\rZero$ as we will be using an exogenous data instruction in case the second limb is void.
+	\item[First micro-instruction:]
+		we impose that 
+		\[ \left\{ \begin{array}{lcl}		
+			\microInst          _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \locFirstMicroInst  \\
+			\microSize          _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \locFirstLimbByteSize \\
+			\microSlo           _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \locSlo \\
+			\microSbo           _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \locSbo \\
+			\microTlo           _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \nothing \\
+			\microTbo           _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & 0 \\
+			\microLimb          _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \macroLimbOne_{i} \\
+			% \microCns         _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \macroTgtId_{i} \\
+			% \microCnt         _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \nothing \\
+			% \microSuccessBit  _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \nothing \\
+			% \microExoSum      _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \nothing \\
+			% \microPhase       _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \nothing \\
+			% \microIdOne       _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \nothing \\
+			% \microIdTwo       _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \nothing \\
+			% \microTotalSize   _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \nothing \\
+		\end{array} \right.
+		\]
+		where \locFirstMicroInst is a shorthand defined as follows:
+		\begin{enumerate}
+			\item \If $\locFirstLimbSingleSource = 1$ \Then
+				\begin{enumerate}
+				        \item \If $\locFirstLimbIsFull = 1$ \Then $\locFirstMicroInst = \mmioInstRamToLimbTransplant$
+				        \item \If $\locFirstLimbIsFull = 0$ \Then $\locFirstMicroInst = \mmioInstRamToLimbOneSource$
+				\end{enumerate}
+			\item \If $\locFirstLimbSingleSource = 0$ \Then $\locFirstMicroInst = \mmioInstRamToLimbTwoSource$
+		\end{enumerate}
+	\def\rowNum{\nppMmuInstRightPaddedWordExtractionValuePT} \item[Second micro-instruction:]
+		we impose that 
+		\[ \left\{ \begin{array}{lcl}		
+			\microInst          _{i + \nppMmuInstRightPaddedWordExtractionValuePT} & = & \locSecondMicroInst  \\
+			\microSize          _{i + \nppMmuInstRightPaddedWordExtractionValuePT} & = & \locSecondLimbByteSize \\
+			\microSlo           _{i + \nppMmuInstRightPaddedWordExtractionValuePT} & = & \locSlo + 1 \\
+			\microSbo           _{i + \nppMmuInstRightPaddedWordExtractionValuePT} & = & \locSbo \\
+			\microTlo           _{i + \nppMmuInstRightPaddedWordExtractionValuePT} & = & \nothing \\
+			\microTbo           _{i + \nppMmuInstRightPaddedWordExtractionValuePT} & = & 0 \\
+			\microLimb          _{i + \nppMmuInstRightPaddedWordExtractionValuePT} & = & \macroLimbTwo_{i} \\
+			% \microCns         _{i + \nppMmuInstRightPaddedWordExtractionValuePT} & = & \macroTgtId_{i} \\
+			% \microCnt         _{i + \nppMmuInstRightPaddedWordExtractionValuePT} & = & \nothing \\
+			% \microSuccessBit  _{i + \nppMmuInstRightPaddedWordExtractionValuePT} & = & \nothing \\
+			% \microExoSum      _{i + \nppMmuInstRightPaddedWordExtractionValuePT} & = & \nothing \\
+			% \microPhase       _{i + \nppMmuInstRightPaddedWordExtractionValuePT} & = & \nothing \\
+			% \microIdOne       _{i + \nppMmuInstRightPaddedWordExtractionValuePT} & = & \nothing \\
+			% \microIdTwo       _{i + \nppMmuInstRightPaddedWordExtractionValuePT} & = & \nothing \\
+			% \microTotalSize   _{i + \nppMmuInstRightPaddedWordExtractionValuePO} & = & \nothing \\
+		\end{array} \right.
+		\]
+		where \locLastMicroInst is a shorthand defined as follows:
+		\begin{enumerate}
+			\item \If $\locSecondLimbVoid = 1$ \Then 
+			\begin{enumerate}
+				\item $\macroLimbTwo_{i} = 0$ 
+				\item $\locSecondMicroInst \define \mmioInstLimbVanishes$
+			\end{enumerate}
+			\item \If $\locSecondLimbVoid = 0$ \Then
+			\begin{enumerate}
+				\item \If $\locSecondLimbSingleSource = 1$ \Then
+					\begin{enumerate}
+						\item \If $\locSecondLimbPadded = 0$ \Then $\locSecondMicroInst \define \mmioInstRamToLimbTransplant$
+						\item \If $\locSecondLimbPadded = 1$ \Then $\locSecondMicroInst \define \mmioInstRamToLimbOneSource$
+					\end{enumerate}
+				\item \If $\locSecondLimbSingleSource = 0$ \Then $\locSecondMicroInst \define \mmioInstRamToLimbTwoSource$
+			\end{enumerate}
+		\end{enumerate}
+		\saNote{} The \mmioMod{} is going to carry out a second micro-instrution even if the second limb to be extracted is empty i.e. in case $\locSecondLimbVoid \equiv 1$.
+		We have chosen for that instruction to be \mmioInstLimbVanishes{}.
+		In order for this instruction to not affect exogenous data modules we impose that no exogneous data be loaded.
+		This follows from $\microExoSum \equiv 0$.
+\end{description}

@@ -1,0 +1,42 @@
+\saNote{} The $\setOobInstructionCommonName$ constraints may only be used on rows with row index $i + \relof$ that are \textbf{miscellaneous-rows}.
+\[
+        \left\{ \begin{array}{l}
+                \setOobInstructionCommon {
+                        anchorRow        = i,
+                        relOffset        = \relof,
+                        oobInstruction   = \locCommonPrecompile,
+                        callGas          = \locCallGas,
+                        callDataSize     = \locCds,
+                        returnAtCapacity = \locRac,
+                        }
+                \vspace{2mm} \\
+                \qquad \qquad \define
+                \setOobInstruction{i}
+                \left[ \begin{array}{llr}
+                        \multicolumn{3}{l}{\utt{\oobMod{} instruction:} \quad \locCommonPrecompile } \\
+                        \multicolumn{3}{l}{\utt{Rel. row offset:}            \quad \relof}         \vspace{2mm} \\
+                        \utt{Data 1:} & \locCallGas         \\
+                        \utt{Data 2:} & \locCds             \\
+                        \utt{Data 3:} & \locRac             \\
+                        \utt{Data 4:} & \locHubSuccess       & \prediction \\
+                        \utt{Data 5:} & \locReturnGas        & \prediction \\
+                        \utt{Data 6:} & \locExtractCallData  & \prediction \\
+                        \utt{Data 7:} & \locEmptyCallData    & \prediction \\
+                        \utt{Data 8:} & \locRacIsNonzero     & \prediction \\
+                \end{array} \right] \\
+        \end{array} \right.
+\]
+In applications \locCommonPrecompile{} is one of the following
+\begin{multicols}{3}
+        \begin{enumerate}
+                \item \oobInstEcrecover{}
+                \item \oobInstEcadd{}
+                \item \oobInstEcmul{}
+                \item \oobInstShaTwo{}
+                \item \oobInstRipemd{}
+                \item \oobInstIdentity{}
+                \item \oobInstEcpairing{}
+                \item[\vspace{\fill}]
+                \item[\vspace{\fill}]
+        \end{enumerate}
+\end{multicols}

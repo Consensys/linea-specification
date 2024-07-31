@@ -1,0 +1,67 @@
+\begin{center}
+	\boxed{%
+		\text{The next constraints are written assuming that}
+			\left\{ \begin{array}{lcl}
+				\peekScenario           _{i}   & = & 1 \\
+				\scenCreateSimpleRevert _{i}   & = & 1 \\
+			\end{array} \right. }
+\end{center}
+We deal with the ``simple revert'' case first. Recall that, by definition of $\scenCreateSimpleRevert$, this encompasses the following cases:
+\begin{itemize}
+	\item $\scenCreateFCondWillRevert$
+	\item $\scenCreateNonEmptyInitCodeSuccessWillRevert$
+	\item $\scenCreateEmptyInitCodeWillRevert$
+\end{itemize}
+we impose the following constraints:
+\begin{description}
+	\item[\underline{Undoing creator account operations on row $n^°(i + \createSecondCreatorAccountRowOffset)$:}] 
+		we impose that
+		\[
+			\left\{ \begin{array}{lclr}
+				\multicolumn{3}{l}{\accSameAddr                      {i}{\createSecondCreatorAccountRowOffset}{\createFirstCreatorAccountRowOffset}} \\ % address
+				\multicolumn{3}{l}{\accUndoBalanceUpdate             {i}{\createSecondCreatorAccountRowOffset}{\createFirstCreatorAccountRowOffset}} \\ % balance
+				\multicolumn{3}{l}{\accUndoNonceUpdate               {i}{\createSecondCreatorAccountRowOffset}{\createFirstCreatorAccountRowOffset}} \\ % nonce
+				\multicolumn{3}{l}{\accSameCode                      {i}{\createSecondCreatorAccountRowOffset}}                                      \\ % code
+				\multicolumn{3}{l}{\accSameWarmth                    {i}{\createSecondCreatorAccountRowOffset}}                                      \\ % warmth
+				\multicolumn{3}{l}{\accSameDeployment                {i}{\createSecondCreatorAccountRowOffset}}                                      \\ % deployment number and status
+				\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag {i}{\createSecondCreatorAccountRowOffset}} \vspace{4mm}                         \\
+				\accTrmFlag      _{i + \createSecondCreatorAccountRowOffset} & = & 0              \\ % TRM
+				\accRomLexFlag   _{i + \createSecondCreatorAccountRowOffset} & = & 0              \\ % ROM_LEX
+				\accRlpAddrFlag  _{i + \createSecondCreatorAccountRowOffset} & = & 0 \vspace{4mm} \\ % RLP_ADDR
+				\multicolumn{3}{l}{
+					\revertDomSubStamps {
+						anchorRow        = i,
+						relOffset        = \createSecondCreatorAccountRowOffset,
+						subOffset        = 0,
+						}
+					} \\
+			\end{array} \right.
+		\]
+	\item[\underline{Undoing createe account operations on row $n^°(i + \createSecondCreateeAccountRowOffset)$:}] 
+		we impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\multicolumn{3}{l}{\accSameAddr                            {i}{\createSecondCreateeAccountRowOffset}{\createFirstCreateeAccountRowOffset}} \\ % address
+				\multicolumn{3}{l}{\accUndoBalanceUpdate                   {i}{\createSecondCreateeAccountRowOffset}{\createFirstCreateeAccountRowOffset}} \\ % balance
+				\multicolumn{3}{l}{\accUndoNonceUpdate                     {i}{\createSecondCreateeAccountRowOffset}{\createFirstCreateeAccountRowOffset}} \\ % nonce
+				\multicolumn{3}{l}{\accUndoCodeUpdate                      {i}{\createSecondCreateeAccountRowOffset}{\createFirstCreateeAccountRowOffset}} \\ % code
+				\multicolumn{3}{l}{\accUndoWarmthUpdate                    {i}{\createSecondCreateeAccountRowOffset}{\createFirstCreateeAccountRowOffset}} \\ % warmth
+				\multicolumn{3}{l}{\accUndoDeploymentStatusAndNumberUpdate {i}{\createSecondCreateeAccountRowOffset}{\createFirstCreateeAccountRowOffset}} \\ % deployment number and status
+				\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag       {i}{\createSecondCreateeAccountRowOffset}} \vspace{4mm}                         \\
+				\accTrmFlag     _{i + \createSecondCreateeAccountRowOffset} & = & 0              \\ % TRM
+				\accRomLexFlag  _{i + \createSecondCreateeAccountRowOffset} & = & 0              \\ % ROM_LEX
+				\accRlpAddrFlag _{i + \createSecondCreateeAccountRowOffset} & = & 0 \vspace{4mm} \\ % RLP_ADDR
+				\multicolumn{3}{l}{
+					\revertDomSubStamps {
+						anchorRow        = i                                   ,
+						relOffset        = \createSecondCreateeAccountRowOffset,
+						subOffset        = 1                                   ,
+						}
+					} \\
+			\end{array} \right.
+		\]
+		\saNote{} The only nontrivial operations which the above ``undoes'' are
+		the nonce update,
+		the warmth update and
+		the \accDepStatus{} udpate (\accDepNumber{} updates are \emph{never} undone.)
+\end{description}

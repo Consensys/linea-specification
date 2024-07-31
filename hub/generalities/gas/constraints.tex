@@ -1,0 +1,42 @@
+The following constraints enforce some of the relationships between gas columns.
+\begin{enumerate}
+	\item \If $\txExec_{i} = 1$ \Then
+		\begin{enumerate}
+			\item \If $\xAhoy_{i} = 0$ \Then $\gasNext_{i} = \gasActual_{i} - \gasCost_{i}$
+			\item \If $\xAhoy_{i} = 1$ \Then $\gasNext_{i} = 0$\footnote{The ``\If $\txExec_{i} = 1$ \Then \dots'' precondition may be dropped here.}
+		\end{enumerate}
+	\item \If 
+		\[
+			\left\{ \begin{array}{lcl}
+				\hubStamp_{i + 1} & \neq & \hubStamp_{i} \\
+				\txExec_{i}       & =    & 1             \\
+				\txExec_{i + 1}   & =    & 1             \\
+			\end{array} \right.
+		\]
+		\Then we impose
+		\begin{enumerate}
+			\item\label{hub: generalities: gas: could blow up} \If $\cn\new_{i} = \cn_{i}$ \Then $\gasActual_{i + 1} = \gasExpected_{i + 1}$
+			\item\label{hub: generalities: gas: resuming execution gas constraint} \If $\cn\new_{i} = \caller_{i}$ \Then
+				$\gasActual_{i + 1} = \gasExpected_{i + 1} + \gasNext_{i}$
+			\item\label{hub: generalities: gas: spawning new context} \If $\cn\new_{i} = 1 + \hubStamp_{i}$ \Then 
+				\[
+					\left\{ \begin{array}{lcl}
+						\gasExpected_{i + 1} & = & \relevantValue            \\
+						\gasActual_{i + 1}   & = & \gasExpected_{i + 1} \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+\end{enumerate}
+Some details:
+(\ref{hub: generalities: gas: resuming execution gas constraint}) asserts that when an execution context reaches its conclusion (as witnessed by $\cn\new_{i} = \caller_{i}$) the $\gasNext$ column on that row must contain the left over gas in the present context.
+We are unable to settle the ``call gas'' or ``create gas'' provided to a child context spawned through a \inst{CREATE}-type or \inst{CALL}-type instruction at this level of generatlity, whence the \relevantValue{} in constraint~(\ref{hub: generalities: gas: spawning new context}). It is a complex question and will be settled when we deal with the processing of those instruction families.
+
+\issue{Constraint~(\ref{hub: generalities: gas: could blow up}) could blow up if we don't handle precompiles, pure transfers and deployments with empty code correctly.}
+
+We further impose that
+\begin{enumerate}[resume]
+	\item
+		\If $\peekStack _{i} = 1$ \et $\stackOogx _{i} + (1 - \xAhoy_{i}) \neq 1$ \Then $\gasCost _{i} = 0$.
+\end{enumerate}
+\saNote{} Along stack-rows it holds that $\col{cond} \equiv \stackOogx _{i} + (1 - \xAhoy_{i})$ is actually \textbf{binary} so that $\col{cond} \neq 1$ really means $\col{cond} = 0$.
+Indeed, by construction, and along stack-rows, $0 \leq \stackOogx _{i} \leq \xAhoy_{i} \leq 1$ so that if $\stackOogx _{i} \equiv 1$ then $(1 - \xAhoy_{i}) \equiv 0$.

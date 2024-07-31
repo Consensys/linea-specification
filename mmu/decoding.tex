@@ -1,0 +1,98 @@
+We impose that the following columns be \textbf{binary} and \textbf{stamp-constant}:
+\begin{multicols}{2}
+    \begin{enumerate}
+	\item \mmuInstFlagMload{}
+	\item \mmuInstFlagMstore{}
+	\item \mmuInstFlagMstoreEight{}
+	\item \mmuInstFlagInvalidCodePrefix{}
+	\item \mmuInstFlagRightPaddedWordExtraction{}
+	\item \mmuInstFlagRamToExoWithPadding{}
+	\item \mmuInstFlagExoToRamTransplants{}
+	\item \mmuInstFlagRamToRamSansPadding{}
+	\item \mmuInstFlagAnyToRamWithPaddingSomeData{}:
+	\item \mmuInstFlagAnyToRamWithPaddingPurePadding{}:
+	\item \mmuInstFlagModexpZero{}
+	\item \mmuInstFlagModexpData{}
+	\item \mmuInstFlagBlake{}
+    \end{enumerate}
+\end{multicols}
+\saNote{} Given that these columns are \textbf{binary} (and in fact \textbf{exclusive binary} as will be imposed below)
+the implementation can (and should) enforce the single stamp-constancy constraint for $\col{bin\_flag\_sum}$ defined by the following expression
+\[
+    \col{bin\_flag\_sum}_{i} \define
+    \left[ \begin{array}{rcl}
+	+  1 & \!\!\!\cdot\!\!\! & \mmuInstFlagMload                                  _{i} \\
+	+  2 & \!\!\!\cdot\!\!\! & \mmuInstFlagMstore                                 _{i} \\
+	+  3 & \!\!\!\cdot\!\!\! & \mmuInstFlagMstoreEight                            _{i} \\
+	+  4 & \!\!\!\cdot\!\!\! & \mmuInstFlagInvalidCodePrefix                      _{i} \\
+	+  5 & \!\!\!\cdot\!\!\! & \mmuInstFlagRightPaddedWordExtraction              _{i} \\
+	+  6 & \!\!\!\cdot\!\!\! & \mmuInstFlagRamToExoWithPadding                    _{i} \\
+	+  7 & \!\!\!\cdot\!\!\! & \mmuInstFlagExoToRamTransplants                    _{i} \\
+	+  8 & \!\!\!\cdot\!\!\! & \mmuInstFlagRamToRamSansPadding                    _{i} \\
+	+  9 & \!\!\!\cdot\!\!\! & \mmuInstFlagAnyToRamWithPaddingSomeData            _{i} \\
+	+ 10 & \!\!\!\cdot\!\!\! & \mmuInstFlagAnyToRamWithPaddingPurePadding         _{i} \\
+	+ 11 & \!\!\!\cdot\!\!\! & \mmuInstFlagModexpZero                             _{i} \\
+	+ 12 & \!\!\!\cdot\!\!\! & \mmuInstFlagModexpData                             _{i} \\
+	+ 13 & \!\!\!\cdot\!\!\! & \mmuInstFlagBlake                                  _{i} \\
+    \end{array} \right]
+\]
+\noindent We define the following shorthands
+\[
+    \hspace*{-1.5cm}
+    \left\{ \begin{array}{lcl}
+	\multicolumn{3}{l}{\mmuInstFlagAnyToRamWithPadding_{i} \define 
+	\left[ \begin{array}{cl}
+	    +  &  \mmuInstFlagAnyToRamWithPaddingSomeData            _{i} \\
+	    +  &  \mmuInstFlagAnyToRamWithPaddingPurePadding         _{i} \\
+	\end{array} \right]} \\
+	\mmuInstFlagSum_{i} & \define &
+	\left[ \begin{array}{cl}
+	    +  &  \mmuInstFlagMload                                  _{i} \\
+	    +  &  \mmuInstFlagMstore                                 _{i} \\
+	    +  &  \mmuInstFlagMstoreEight                            _{i} \\
+	    +  &  \mmuInstFlagInvalidCodePrefix                      _{i} \\
+	    +  &  \mmuInstFlagRightPaddedWordExtraction              _{i} \\
+	    +  &  \mmuInstFlagRamToExoWithPadding                    _{i} \\
+	    +  &  \mmuInstFlagExoToRamTransplants                    _{i} \\
+	    +  &  \mmuInstFlagRamToRamSansPadding                    _{i} \\
+	    +  &  \mmuInstFlagAnyToRamWithPadding                    _{i} \\
+	    +  &  \mmuInstFlagModexpZero                             _{i} \\
+	    +  &  \mmuInstFlagModexpData                             _{i} \\
+	    +  &  \mmuInstFlagBlake                                  _{i} \\
+	\end{array} \right] \vspace{2mm} \\
+	\mmuInstWeightedSum_{i} & \define &
+	\left[ \begin{array}{crcl}
+	    + & \mmuInstMload                              &  \!\!\! \cdot \!\!\!  &  \mmuInstFlagMload                           _{i} \\
+	    + & \mmuInstMstore                             &  \!\!\! \cdot \!\!\!  &  \mmuInstFlagMstore                          _{i} \\
+	    + & \mmuInstMstoreEight                        &  \!\!\! \cdot \!\!\!  &  \mmuInstFlagMstoreEight                     _{i} \\
+	    + & \mmuInstInvalidCodePrefix                  &  \!\!\! \cdot \!\!\!  &  \mmuInstFlagInvalidCodePrefix               _{i} \\
+	    + & \mmuInstRightPaddedWordExtraction          &  \!\!\! \cdot \!\!\!  &  \mmuInstFlagRightPaddedWordExtraction       _{i} \\
+	    + & \mmuInstRamToExoWithPadding                &  \!\!\! \cdot \!\!\!  &  \mmuInstFlagRamToExoWithPadding             _{i} \\
+	    + & \mmuInstExoToRamTransplants                &  \!\!\! \cdot \!\!\!  &  \mmuInstFlagExoToRamTransplants             _{i} \\
+	    + & \mmuInstRamToRamSansPadding                &  \!\!\! \cdot \!\!\!  &  \mmuInstFlagRamToRamSansPadding             _{i} \\
+	    + & \mmuInstAnyToRamWithPadding                &  \!\!\! \cdot \!\!\!  &  \mmuInstFlagAnyToRamWithPadding             _{i} \\
+	    + & \mmuInstModexpZero                         &  \!\!\! \cdot \!\!\!  &  \mmuInstFlagModexpZero                      _{i} \\
+	    + & \mmuInstModexpData                         &  \!\!\! \cdot \!\!\!  &  \mmuInstFlagModexpData                      _{i} \\
+	    + & \mmuInstBlake                              &  \!\!\! \cdot \!\!\!  &  \mmuInstFlagBlake                           _{i} \\
+	\end{array} \right]
+    \end{array} \right.
+\]
+\saNote{} \label{mmu: decoding: any to ram with padding multiplexing}
+The single \mmuMod{} instruction ``\mmuInstAnyToRamWithPadding'' is multiplexed into two different ``execution paths'':
+\begin{center}
+    \begin{tabular}{lcl}
+	\textbf{``some data'' path}              & $\iff$ & $\mmuInstFlagAnyToRamWithPaddingSomeData     \equiv 1$ \\
+	\textbf{``pure padding'' path}           & $\iff$ & $\mmuInstFlagAnyToRamWithPaddingPurePadding  \equiv 1$ \\
+\end{tabular}
+\end{center}
+
+We further impose the following:
+\begin{enumerate}
+    \item $\mmuInstFlagSum$ is binary \quad (\trash);
+    \item \If $\mmuStamp_{i} =    0$ \Then $\mmuInstFlagSum_{i} = 0$
+    \item \If $\mmuStamp_{i} \neq 0$ \Then $\mmuInstFlagSum_{i} = 1$
+    \item \If $\isMacro_{i} = 1$ \Then $\mmuInstWeightedSum_{i} = \macroInst_{i}$
+\end{enumerate}
+The above thus enforces that the are indeed exclusive binary columns.
+
+\saNote{} In the implementation \textbf{one can (and should)} replace the first three constraints by the following single constraint $\mmuInstFlagSum_{i} = \flagSum_{i}$.

@@ -1,0 +1,36 @@
+The table below contains the summary of what will be imposed by means of the previous constraint.
+The numerical values that are found in that table are the values of \nonStackRows{} associated with the various execution scenarios of the various precompiled contracts.
+It is a concretization of 
+the setting of \nonStackRows{} in section~(\ref{hub: instruction handling: call: precompiles: generalities}),
+the definition of \locFirstPhaseNsr{} in the section~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr})
+as well as the definitions of the various \locNsrXxx{} in section~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr}).
+\begin{figure}[!h]
+	\centering
+
+	\begin{tabular}{|l||c|c|c|c|} \hline
+		\textsc{Precompile} & \locFkth         & \locFktr         & \locSwill            & \locSwont            \\ \hline \hline
+		\inst{ECRECOVER}    & \locStandardFail & \johnSnow        & \locStandardSuccWill & \locStandardSuccWont \\ \hline
+		\inst{SHA2-256}     & \locStandardFail & \johnSnow        & \locStandardSuccWill & \locStandardSuccWont \\ \hline
+		\inst{RIPEMD-160}   & \locStandardFail & \johnSnow        & \locStandardSuccWill & \locStandardSuccWont \\ \hline
+		\inst{IDENTITY}     & \locStandardFail & \johnSnow        & \locIdentitySuccWill & \locIdentitySuccWont \\ \hline
+		\inst{MODEXP}       & \johnSnow        & \locModexpFKTR   & \locModexpSuccWill   & \locModexpSuccWont   \\ \hline
+		\inst{ECADD}        & \locStandardFail & \locStandardFail & \locStandardSuccWill & \locStandardSuccWont \\ \hline
+		\inst{ECMUL}        & \locStandardFail & \locStandardFail & \locStandardSuccWill & \locStandardSuccWont \\ \hline
+		\inst{ECPAIRING}    & \locStandardFail & \locStandardFail & \locStandardSuccWill & \locStandardSuccWont \\ \hline
+		\inst{BLAKE2f}      & \locBlakeFKTH    & \locBlakeFKTR    & \locBlakeSuccWill    & \locBlakeSuccWont    \\ \hline
+	\end{tabular}
+
+	\label{hub: instruction handling: call: precompiles: table of non stack-rows classifying failures known to the HUB vs. to RAM}
+	\caption{The numerical values in the table above represent the value of \nonStackRows{} for each precompile depending on the execution scenario.
+	To save space we have used the following abbreviations \\
+	\centering
+	\begin{tabular}{lcl}
+		\locFkth     & $ \longleftrightarrow $ & \scenPrcFailureKnownToHub \\
+		\locFktr     & $ \longleftrightarrow $ & \scenPrcFailureKnownToRam \\
+		\locSwill    & $ \longleftrightarrow $ & \scenPrcSuccessWillRevert \\
+		\locSwont    & $ \longleftrightarrow $ & \scenPrcSuccessWontRevert \\
+	\end{tabular}
+	} 
+\end{figure}
+
+

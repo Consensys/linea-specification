@@ -1,0 +1,84 @@
+\textbf{Account-rows} are characterized by $\peekAccount \equiv 1$ and columns pertaining to that perspective are prefixed with the following symbol: $\accountSignifier$. The following are names for certain columns on account-rows.
+\begin{enumerate}
+	\item $\accAddress\high$ and $\accAddress\low$:
+		high and low parts of the address of the account which the arithmetization is currently peeking into;
+	\item $\accNonce$ and $\accNonce\new$:
+		account nonce and its updated value;
+	\item $\accBalance$ and $\accBalance\new$:
+		account balance and its updated value;
+	\item $\accCodesize$ and $\accCodesize\new$:
+		account code size and its updated value;
+	\item $\accCodehashHi$ and $\accCodehashHi\new$, $\accCodehashLo$ and $\accCodehashLo\new$:
+		account code hash and its updated value;
+	\item $\accHasCode$ and $\accHasCode\new$:
+		binary columns indicating whether the account has empty code;
+	\item $\accCfi$:
+		the \CFI{} of the account's code; only listed if necessary;
+	\item $\accRomLexFlag$:
+		binary column which lights up whenever the account's \CFI{} is required;
+\end{enumerate}
+% \saNote{} $\accCodehash$ and $\accCodehash\new$ are (both) split into high and low parts.
+
+\saNote{} The constraints will implement $\accHasCode = 1 \iff \accCodehash \neq \emptyKeccak$ i.e. we don't use the $\accCodesize$; recall that while a contract is deploying its code is empty from the point of view of the world state yet its code size is that of the initialization code.
+\begin{enumerate}[resume]
+	\item $\accExists$ and $\accExists\new$:
+		binary columns indicating the account's existence and its updated value;
+\end{enumerate}
+Recall that post EIP-\ob{TODO: What's the number?} an address $\textsf{a}$ is deemed to be \textbf{non-existent} in the world state $\sigma$ if
+its nonce $\sigma[\textsf{a}]_\text{n}$ and balance $\sigma[\textsf{a}]_\text{b}$ vanish and
+its code is empty i.e. $\sigma[\textsf{a}]_\text{c} = \texttt{KEC}\big((~)\big)$.
+\begin{enumerate}[resume]
+	\item $\accWarmth$ and $\accWarmth\new$:
+		binary columns containing the account's warmth and its updated value; 
+\end{enumerate}
+The above columns track the address' \emph{warmth} (which impacts the pricing of certain opcodes.)
+We furthermore introduce a binary column which will allow us to recognize addresses that were marked for \inst{SELFDESTRUCT} within a given transaction.
+\begin{enumerate}[resume]
+	\item $\accMarkedForSelfdestruct$ and $\accMarkedForSelfdestruct\new$:
+		binary columns;
+		track whether an address was successfullly marked for selfdestruction within a given transaction;
+\end{enumerate}
+The following columns are \textsc{zk-evm} specific columns. We explain their purpose in section~\ob{TODO: write section and point to it}.
+\begin{enumerate}[resume]
+	\item $\accDepNumber$ and $\accDepNumber\new$:
+		deployment number of the current address $\accAddress$ pre-instruction and the updated deployment number; 
+	\item $\accDepStatus$ and $\accDepStatus\new$:
+		binary columns indicating the deployment status ($1 \iff$ under deployment, $0 \iff $ (currenly) deployed) of the current address $\accAddress$ pre-instruction and its updated value;
+\end{enumerate}
+The following columns are used when an account has its balance decremented either at the onset of a transaction or when performing a \inst{CALL}-type or \inst{CREATE}-type transaction.
+The following column turns on \emph{if and only if} the account on the present row is about to create a new address either at the beginning of transaction processing (if $T_\text{t} = \varnothing$ i.e. $\txIsDeployment = 1$) or through a \inst{CREATE} instruction. \ob{TODO: for the \inst{CREATE2} path we can surely do it in terms of the create flag and flag 1.}
+\begin{enumerate}[resume]
+	\item \ob{TODO: unconstrained as of yet}$\accDepNumber^\infty$ and $\accExists^\infty$:
+		address-constant columns;
+\end{enumerate}
+These are $\accAddress$-constant columns that contain, respectively, the larges deployment number of that address and its final existence status: $\accExists^\infty = 1$ means that the address will exist in the world state once all the batches of transactions are dealt with. Both are set the very last time the address is ``seen in the trace.'' They exist for one reason and one reason only: for \emph{storage-rows} to have access to that information. Indeed one needs to distinguish between values written in storage during a failed previous attempt of deployment vs others \dots{} \red{I think this may be useless after all. Failed attempts are reverted, and so are the changes that would have applied to that address's storage \dots{} Phew, this means that this may just end up being useless after all \dots} \ob{TODO: CORRECTION: These account-columns aren't useless \emph{at all} ! We use them in the storage. The only storage values to be committed are those for accounts with $\accExists^\infty = 1$ and only for those values that are committed at $\accDepNumber = \accDepNumber^\infty$.}
+
+The next batch of columns allow us to perform certain operations using as inputs fields from an account or stack arguments. We start with data required for trimming stack items ($32$-byte integers split as a pair of high and low parts) which ought to be interpreted as addresses of their leading $12$ bytes:
+(\emph{b})
+\begin{enumerate}[resume]
+	\item \accTrmFlag: binary column which turns on whenever a stack argument has to be interpreted as an address; used as a selector bit for lookup arguments;
+	\item $\accTrmRawAddrHi$: duplicate of the relevant high part of the stack argument to be interpreted as an address;
+	\item $\accTrmIsPrecompile$:
+		binary column which $=1$ if and only if the address is that of a precompile\footnote{i.e. $\accAddress \in \{1, 2, \dots, 9 \}$};
+		: disjoint binary columns that turn on for accounts which raise the \accTrmIsPrecompile{} flag; they are used when dealing with \inst{CALL}-type instructions to precompiles;
+\end{enumerate}
+\saNote{} The \trmMod{} module requires the following inputs from the \hubMod{}:
+$\rawAddrHi$ and $\rawAddrLo$,
+$\trmAddrHi$,
+$\isPrecompile$.
+All fields in question already have their equivalent on the current account row, except for the raw high part of the address field, for which we introduced the $\accTrmRawAddrHi$ column above.
+
+The next collection of columns is required for computing deployment addresses of \inst{CREATE}-type instructions.
+\begin{enumerate}[resume]
+	\item $\accRlpAddrFlag$:
+		binary column which switches on whenever a deployment address has to be computed;
+	\item $\accRlpAddrRecipe$:
+		``recipe'' column which distinguishes between the two ``recipes'' for computing a deployment address; see \ob{TODO: add reference to \rlpAddrMod{} module chapter}; 
+	\item $\accRlpAddrDepAddrHi$ and $\accRlpAddrDepAddrLo$:
+		high and low part of the deployment address as verified in the \rlpAddrMod{} module;
+	\item $\accRlpAddrSaltHi$ and $\accRlpAddrSaltLo$:
+		high and low part of the relevant stack argument to be interpreted as \textbf{salt}; 
+	\item $\accRlpAddrKecHi$ and $\accRlpAddrKecLo$:
+		high and low part of the hash of initialization code (if relevant);
+\end{enumerate}
+\saNote{} The \rlpAddrMod{} module further requires the creator address' (high and low parts) and the current nonce (pre-deployment); these fields are already present on the current account row.

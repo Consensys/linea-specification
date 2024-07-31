@@ -1,0 +1,34 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{../../../pkg/draculatheme}
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NF Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\begin{document}
+\begin{verbatim}
+X  ≡ ⬜⬜⬜⬜⬜⬜⬜⬛⬛⬛⬛⬛⬛⬛⬛⬛  satisfies Plateau(X, c; CT)
+                                           (0 < c = 7 < 16)
+
+P  ≡ 🟦🟦🟦🟦🟦🟦🟦🟩🟨🟧🟥🟪🏿🟫🏽🏻  satisfies Power(P, X; CT)
+
+CT ≡  0 1 2 3 4 5 6 7      ...      15
+
+Where:   🟦 ≡ 256 ^ 0 =     1 ;     🟪 ≡ 256 ^ 5 = ... ;
+         🟩 ≡ 256 ^ 1 =   256 ;     🏿 ≡ 256 ^ 6 = ... ;
+         🟨 ≡ 256 ^ 2 = 65536 ;     🟫 ≡ 256 ^ 7 = ... ;
+         🟧 ≡ 256 ^ 3 =   ... ;     🏽 ≡ 256 ^ 8 = ... ;
+         🟥 ≡ 256 ^ 4 =   ... ;     🏻 ≡ 256 ^ 9 = ... ;
+       
+and:     ⬜ ≡ 0               ;     ⬛ ≡ 1.
+\end{verbatim}
+\end{document}

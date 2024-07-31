@@ -1,0 +1,409 @@
+% \subsubsection{Supported instructions and flags}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% \subsubsection{The \inst{SELFDESTRUCT} case}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% \begin{center}
+% \boxed{%
+% \text{The stack constraints presented below assume }
+% \left\{
+% \begin{array}{lcl}
+% \peekStack_{i}					& \!\!\! = \!\!\! & 1 \\
+% \stackDecHaltFlag_{i}				& \!\!\! = \!\!\! & 1 \\
+% \decFlag{4}_{i}					& \!\!\! = \!\!\! & 1 \\
+% \stackSux_{i} + \stackSox_{i}	& \!\!\! = \!\!\! & 0 \\
+% \end{array}
+% \right.}
+% \end{center}
+% \begin{description}
+% 	\item[\underline{Setting the stack pattern:}] we impose $\oneZeroSP_{i}$
+% 	\item[\underline{Setting $\nonStackRows$:}] ---
+% 	\begin{enumerate}
+% 		\item
+% 			\label{case: SELFDESTRUCT: non stack rows: no roll back}
+% 			\If $\cnWillRev_{i} = 0$
+% 			\Then \( \nonStackRows_{i} = 5 \)
+% 		\item
+% 			\label{case: SELFDESTRUCT: non stack rows: will be rolled back}
+% 			\If \Big[$\cnWillRev_{i} = 1$ \et $\cnSelfRev_{i} = 0$\Big]
+% 			\Then \( \nonStackRows_{i} = 6 \)
+% 		\item
+% 			\label{case: SELFDESTRUCT: non stack rows: self roll back}
+% 			\If $\cnSelfRev_{i} = 1$
+% 			\Then \( \nonStackRows_{i} = 3 \)
+% 	\end{enumerate}
+% 	\saNote{} 
+% 	Case~(\ref{case: SELFDESTRUCT: non stack rows: no roll back})
+% 	corresponds to a \inst{SELFDESTRUCT} that raises no exception and is enacted at the end of the transaction.
+% 	Case~(\ref{case: SELFDESTRUCT: non stack rows: will be rolled back})
+% 	corresponds to a \inst{SELFDESTRUCT} that raises no exception but is rolled back later through a reverting parent context.
+% 	Case~(\ref{case: SELFDESTRUCT: non stack rows: self roll back})
+% 	corresponds to a \inst{SELFDESTRUCT} that raises an exception (other than a stack exception.)
+% 	\item[\underline{Setting the peeking flags:}] ---
+% 	\begin{enumerate}
+% 		\item
+% 			\label{case: SELFDESTRUCT: peeking flags: no roll back}
+% 			\If $\cnWillRev_{i} = 0$
+% 			\Then
+% 			\[
+% 			\left[
+% 			\begin{array}{lr}
+% 			&	  \peekContext_{i + 1}	\\
+% 			&	+ \peekAccount_{i + 2}
+% 				+ \peekAccount_{i + 3}
+% 				+ \peekAccount_{i + 4}	\\
+% 			(\trash)
+% 			&	+ \peekContext_{i + 5}	\\
+% 			\end{array}
+% 			\right]
+% 			= 5
+% 			\]
+% 		\item
+% 			\label{case: SELFDESTRUCT: peeking flags: will be rolled back}
+% 			\If \Big[$\cnWillRev_{i} = 1$ \et $\cnSelfRev_{i} = 0$\Big]
+% 			\Then
+% 			\[
+% 			\left[
+% 			\begin{array}{lr}
+% 			&	  \peekContext_{i + 1}	\\
+% 			& 	+ \peekAccount_{i + 2}
+% 				+ \peekAccount_{i + 3}
+% 				+ \peekAccount_{i + 4}
+% 				+ \peekAccount_{i + 5}	\\
+% 			(\trash)
+% 			&	+ \peekContext_{i + 6}	\\
+% 			\end{array}
+% 			\right]
+% 			= 6
+% 			\]
+% 		\item
+% 			\label{case: SELFDESTRUCT: peeking flags: self roll back}
+% 			\If $\cnSelfRev_{i} = 1$
+% 			\Then 
+% 			\[
+% 			\left[
+% 			\begin{array}{lr}
+% 			&	  \peekContext_{i + 1}	\\
+% 			&	+ \peekAccount_{i + 2}
+% 				+ \peekAccount_{i + 3}	\\
+% 			(\trash)
+% 			&	+ \peekContext_{i + 4}  \\
+% 			\end{array}
+% 			\right]
+% 			= 3
+% 			\]
+% 	\end{enumerate}
+% 	\saNote{} There is some regularity to this: the first non stack-row is always a context-row. This row will always peek into the current execution context.
+% 	The final row is also always a context-row. It always peeks into the parent context and provides empty return data. \saNote{} Constraining the last row to be a context-row is redundant given that any halting instruction raises the \cmc{}.
+% 	\item[\underline{Setting the first context-row $n°(i + 1)$:}] we impose
+% 	\[
+% 	\left\{
+% 	\begin{array}{lcl}
+% 		\multicolumn{3}{l}{\readContextData {1}{\cn_{i + 1}} _{i}} \\
+% 		\stackStaticx_{i}	& \!\!\! = \!\!\! & \cnStatic_{i + 1} \\
+% 	\end{array}
+% 	\right.
+% 	\]
+% 	The above fully justifies the $\stackStaticx$ exception flag.
+% 	\saNote{} $\cn_{i + 1} = \cn_{i}$.
+% \end{description}
+% What follows (value constraints, gas, \dots{}) is heavily dependent on whether the present scenario reverts or not, and if it does, whether it causes its own rollback or is forcefully rolled back by a parent context rolling back.
+% \begin{description}
+% 	\item[\underline{Setting the following account-rows:}] ---
+% 	\begin{enumerate}
+% 		\item \label{case: SELFDESTRUCT: value constraints: no roll back}
+% 			\If $\cnWillRev_{i} = 0$ \Then
+% 			\begin{description}
+% 				\item[\underline{Row $n°(i + 2)$:}] the first account-row peeks into the account which \inst{SELFDESTRUCT}'s and depletes its balance:
+% 				\[
+% 				\left\{
+% 				\begin{array}{lcl}
+% 				\multicolumn{3}{l}{\accOpening_{i + 2}} \\
+% 				\accAddress\high_{i + 2}		& \!\!\! = \!\!\! & \cnAccountAddress\high_{i + 1} \\
+% 				\accAddress\low _{i + 2}		& \!\!\! = \!\!\! & \cnAccountAddress\low _{i + 1} \\
+% 				\accBalance\new_{i + 2}		& \!\!\! = \!\!\! & 0 \\
+% 				\multicolumn{3}{l}{\standardDomSubStamps\big[0\big]_{i + 2}} \\
+% 				\end{array}
+% 				\right.
+% 				\]
+% 				\item[\underline{Row $n°(i + 3)$:}] the second account-row (again) peeks into the account which \inst{SELFDESTRUCT}'s and deletes it at transaction end:
+% 				\[
+% 				\left\{
+% 				\begin{array}{lcl}
+% 				\multicolumn{3}{l}{\accSameAddrDepNumAndDepStage_{i + 3}} \\
+% 				\accDeletion_{i + 3} \\
+% 				\multicolumn{3}{l}{\selfdestructDomSubStamps_{i + 3}} \\
+% 				\end{array}
+% 				\right.
+% 				\]
+% 				\item[\underline{Row $n°(i + 4)$:}] the third account-row peeks into the recipient account and adds to its balance (unless the recipient coincides with the account \inst{SELFDESTRUCT}'ing, in which case its balance was already depleted and it should remain so for now):
+% 				\[
+% 				\left\{
+% 				\begin{array}{lcl}
+% 				\multicolumn{3}{l}{\accOpening_{i + 4}} \\
+% 				\multicolumn{3}{l}{\accAddress\low _{i + 4}	= \stackItemValLo{1}_{i}} \\
+% 				\If \accAddress\high_{i + 4} \neq \accAddress\high_{i + 2} & \!\!\! \Then \!\!\! & \accBalance_{i + 4}\new = \accBalance_{i + 4} + \accBalance_{i + 2} \\
+% 				\If \accAddress\low _{i + 4} \neq \accAddress\low _{i + 2} & \!\!\! \Then \!\!\! & \accBalance_{i + 4}\new = \accBalance_{i + 4} + \accBalance_{i + 2} \\
+% 				\If
+% 				\left\{
+% 				\begin{array}{c}
+% 				\accAddress\low _{i + 4} = \accAddress\low _{i + 2} \\
+% 				\accAddress\low _{i + 4} = \accAddress\low _{i + 2} \\
+% 				\end{array}
+% 				\right\}
+% 				& \!\!\! \Then \!\!\! &
+% 				\begin{cases}
+% 				\accBalance_{i + 4}\new = \accBalance_{i + 4}	& \\
+% 				\accBalance_{i + 4}     = 0						& (\trash) \\
+% 				\end{cases}
+% 				\\
+% 				\multicolumn{3}{l}{\accTurnOnWarmth_{i + 4}} \\
+% 				\multicolumn{3}{l}{\standardDomSubStamps\big[1\big]_{i + 4}} \\
+% 				\end{array}
+% 				\right.
+% 				\]
+% 				\saNote{} \inst{SELFDESTRUCT} raises the \trmFlag{}; the high part of the recipient address (i.e. $\accAddress\high_{i + 4}$) will be filled in by the \trmMod{} module. \ob{TODO: plookup into \trmMod{}}
+% 				\item[\underline{Row $n°(i + 5)$:}] a successful \inst{SELFDESTRUCT} returns empty return data; in this row we update the caller context's return data:
+% 				\[ \executionProvidesEmptyReturnData {5} _{i}\]
+% 				% \[
+% 				% \left\{
+% 				% \begin{array}{lcl}
+% 				% \multicolumn{3}{l}{\accOpening_{i + 2}} \\
+% 				% \accAddress\high_{i + 2}		& \!\!\! = \!\!\! & \cnAccountAddress\high_{i + 1} \\
+% 				% \accAddress\low _{i + 2}		& \!\!\! = \!\!\! & \cnAccountAddress\low _{i + 1} \\
+% 				% \accBalance\new_{i + 2}		& \!\!\! = \!\!\! & 0 \\
+% 				% \multicolumn{3}{l}{\standardDomSubStamps {2}{0} _{i} } \\
+% 				% \end{array}
+% 				% \right.
+% 				% \]
+% 			\end{description}
+% 		\item \label{case: SELFDESTRUCT: value constraints: will be rolled back}
+% 			\If \Big[$\cnWillRev_{i} = 1$ \et $\cnSelfRev_{i} = 0$\Big]
+% 			\Then
+% 			\begin{description}
+% 				\item[\underline{Row $n°(i + 2)$:}] the first account-row peeks into the account which seems on track to \inst{SELFDESTRUCT} and (temporarily) depletes its balance:
+% 				\[
+% 				\left\{
+% 				\begin{array}{lcl}
+% 				\multicolumn{3}{l}{\accOpening_{i + 2}} \\
+% 				\accAddress\high_{i + 2}		& \!\!\! = \!\!\! & \cnAccountAddress\high_{i + 1} \\
+% 				\accAddress\low _{i + 2}		& \!\!\! = \!\!\! & \cnAccountAddress\low _{i + 1} \\
+% 				\accBalance\new_{i + 2}		& \!\!\! = \!\!\! & 0 \\
+% 				\multicolumn{3}{l}{\standardDomSubStamps\big[0\big]_{i + 2}} \\
+% 				\end{array}
+% 				\right.
+% 				\]
+% 				\item[\underline{Row $n°(i + 3)$:}] the second account-row (again) peeks into the account which seemed on track to \inst{SELFDESTRUCT} (yet will not) and restores it to its previous state:
+% 				\[
+% 				\left\{
+% 				\begin{array}{lcl}
+% 				\accSameAddrDepNumAndDepStage_{i + 3} \\
+% 				\accOpening_{i + 3} \\
+% 				\accUndoBalanceUpdate_{i + 3} \\
+% 				\revertDomSubStamps\big[0\big]_{i + 3} \\
+% 				\end{array}
+% 				\right.
+% 				\]
+% 				$\selfdestructDomSubStamps$
+% 				\item[\underline{Row $n°(i + 4)$:}] the third account-row peeks into the recipient account and adds to its balance (unless the recipient coincides with the account \inst{SELFDESTRUCT}'ing, in which case its balance was already depleted and it should remain so for now):
+% 				\[
+% 				\left\{
+% 				\begin{array}{lcl}
+% 				\multicolumn{3}{l}{\accOpening_{i + 4}} \\
+% 				\multicolumn{3}{l}{\accAddress\low _{i + 4}	= \stackItemValLo{1}_{i}} \\
+% 				\If \accAddress\high_{i + 4} \neq \accAddress\high_{i + 2} & \!\!\! \Then \!\!\! & \accBalance_{i + 4}\new = \accBalance_{i + 4} + \accBalance_{i + 2} \\
+% 				\If \accAddress\low _{i + 4} \neq \accAddress\low _{i + 2} & \!\!\! \Then \!\!\! & \accBalance_{i + 4}\new = \accBalance_{i + 4} + \accBalance_{i + 2} \\
+% 				\If
+% 				\left\{
+% 				\begin{array}{c}
+% 				\accAddress\low _{i + 4} = \accAddress\low _{i + 2} \\
+% 				~ \et{} \\
+% 				\accAddress\low _{i + 4} = \accAddress\low _{i + 2} \\
+% 				\end{array}
+% 				\right\}
+% 				& \!\!\! \Then \!\!\! &
+% 				\begin{cases}
+% 				\accBalance_{i + 4}\new = \accBalance_{i + 4}	& \\
+% 				\accBalance_{i + 4}     = 0						& (\trash) \\
+% 				\end{cases}
+% 				\\
+% 				\multicolumn{3}{l}{\accTurnOnWarmth_{i + 4}} \\
+% 				\multicolumn{3}{l}{\standardDomSubStamps\big[1\big]_{i + 4}} \\
+% 				\end{array}
+% 				\right.
+% 				\]
+% 				\saNote{} \inst{SELFDESTRUCT} raises the \trmFlag{}; the high part of the recipient address (i.e. $\accAddress\high_{i + 4}$) will be filled in by the \trmMod{} module. \ob{TODO: plookup into \trmMod{}}
+% 				\item[\underline{Row $n°(i + 5)$:}] the fourth account-row (again) peeks into the account was posed to be the recipient of the value tranfer of the \inst{SELFDESTRUCT} and restores it to its previous state:
+% 				\[
+% 				\left\{
+% 				\begin{array}{lcl}
+% 				\accSameAddrDepNumAndDepStage_{i + 5} \\
+% 				\accOpening_{i + 5} \\
+% 				\accUndoWarmthUpdate_{i + 5} \\
+% 				\accUndoBalanceUpdate_{i + 5} \\
+% 				\revertDomSubStamps\big[1\big]_{i + 5} \\
+% 				\end{array}
+% 				\right.
+% 				\]
+% 				\item[\underline{Row $n°(i + 6)$:}] in this row we update the caller context's return data:
+% 				\[ \executionProvidesEmptyReturnData {6} _{i}\]
+% 			\end{description}
+% 			% \[
+% 			% \left\{
+% 			% \begin{array}{lcl}
+% 			% \accAddress\high_{i + 2}	& \!\!\! = \!\!\! & \cnAccountAddress\high_{i + 1} \\
+% 			% \accAddress\low _{i + 2}	& \!\!\! = \!\!\! & \cnAccountAddress\low _{i + 1} \\
+% 			% \multicolumn{3}{l}{\accSameAddrDepNumAndDepStage_{i + 3}} \\
+% 			% \accAddress\low _{i + 4}	& \!\!\! = \!\!\! & \stackItemValLo{1}_{i} \\
+% 			% \multicolumn{3}{l}{\accSameAddrDepNumAndDepStage_{i + 5}} \\
+% 			% \end{array}
+% 			% \right.
+% 			% \]
+% 		\item \label{case: SELFDESTRUCT: value constraints: self roll back}
+% 			\If $\cnSelfRev_{i} = 1$
+% 			\Then
+% 			\begin{description}
+% 				\item[\underline{Row $n°(i + 2)$:}] the first account-row views the account trying to \inst{SELFDESTRUCT} but only to gather its balance:
+% 				\[
+% 				\left\{
+% 				\begin{array}{lcl}
+% 				\multicolumn{3}{l}{\accViewing {2} _{i}} \\
+% 				\multicolumn{3}{l}{\accSameWarmth {2} _{i}} \\
+% 				\accAddress\high_{i + 2}		& \!\!\! = \!\!\! & \cnAccountAddress\high_{i + 1} \\
+% 				\accAddress\low _{i + 2}		& \!\!\! = \!\!\! & \cnAccountAddress\low _{i + 1} \\
+% 				\multicolumn{3}{l}{\standardDomSubStamps {2}{0} _{i}} \\
+% 				\end{array}
+% 				\right.
+% 				\]
+% 				\item[\underline{Row $n°(i + 3)$:}] the second account-row views the recipient account but only to gather its warmth and existence:
+% 				\[
+% 				\left\{
+% 				\begin{array}{lcl}
+% 				\multicolumn{3}{l}{\accViewing {3} _{i}} \\
+% 				\multicolumn{3}{l}{\accSameWarmth {3} _{i}} \\
+% 				\multicolumn{3}{l}{\accAddress\low _{i + 3}	= \stackItemValLo{1}_{i}} \\
+% 				\multicolumn{3}{l}{\standardDomSubStamps {3}{1} _{i}} \\
+% 				\end{array}
+% 				\right.
+% 				\]
+% 			\end{description}
+% 			\saNote{} The recipient account warmth \accWarmth{} and existence $\accExists$ are required to correctly price the instruction.
+% 			\saNote{} There is no reason to switch on its warmth (only to undo it later.) 
+% 			\saNote{} As previously mentioned: the \inst{SELFDESTRUCT} raises the \trmFlag{}; the high part of the recipient address (i.e. $\accAddress\high_{i + 3}$) will be filled in by the \trmMod{} module. \ob{TODO: plookup into \trmMod{}}
+% 			\begin{description} 
+% 				\item[\underline{Row $n°(i + 4)$:}] we update the caller context's return data:
+% 				\[ \executionProvidesEmptyReturnData {4} _{i}\]
+% 			\end{description}
+% 			\saNote{} The only way a \inst{SELFDESTRUCT} can produce an exception is through a
+% 			\suxSH{},
+% 			\staticxSH{} or an
+% 			\oogxSH{}.
+% 			Given that in the current paragraph we are assuming
+% 			(\emph{a})
+% 			$\stackSux + \stackSox \equiv 0$ and
+% 			(\emph{b})
+% 			$\cnSelfRev_{i} = 1$
+% 			we know that the present \inst{SELFDESTRUCT} \textbf{must} trigger either
+% 			a \staticxSH{} or a \oogxSH{}.
+% 			The information contained in row $n°(i + 1)$ suffices to justify a \staticxSH{},
+% 			while that contained in row $n°(i + 2)$ suffices to jusify the \oogxSH{}.
+% 			% \[
+% 			% \left\{
+% 			% \begin{array}{lcl}
+% 			% \accAddress\low_{i + 2}	& \!\!\! = \!\!\! & \stackItemValLo{1}_{i} \\
+% 			% \end{array}
+% 			% \right.
+% 			% \]
+% 	\end{enumerate}
+% 	\item[\underline{Setting the gas cost:}] the gas cost of a \inst{SELFDESTRUCT} instruction depends on two factors
+% 	(\emph{})
+% 	whether the recipient account is warm or not
+% 	(\emph{})
+% 	whether the account on path to \inst{SELFDESTRUCT}'ing has positive or zero balance.
+% 	\begin{enumerate}
+% 		\item \If $\cnSelfRev_{i} = 0$ \Then
+% 		\begin{enumerate}
+% 			\item \If $\accBalance_{i + 2} \neq 0$ \Then (setting $\col{W} := \accWarmth_{i + 4}$ and $\col{E} := \accExists_{i + 4}$)
+% 			\[
+% 			\gasCost_{i} =
+% 			\left[
+% 			\begin{array}{r}
+% 			G_\text{selfdestruct} \\
+% 			+ \col{W} \cdot G_\text{coldaccountaccess} \\
+% 			+ \col{E} \cdot G_\text{newaccount} \\
+% 			\end{array}
+% 			\right]
+% 			\]
+% 			\item \If $\accBalance_{i + 2} = 0$ \Then
+% 			\[
+% 			\gasCost_{i} =
+% 			\left[
+% 			\begin{array}{r}
+% 			G_\text{selfdestruct} \\
+% 			+ \col{W} \cdot G_\text{coldaccountaccess} \\
+% 			\end{array}
+% 			\right]
+% 			\]
+% 		\end{enumerate}
+% 		\item \If $\cnSelfRev_{i} = 1$ \Then
+% 		\begin{enumerate}
+% 			\item \If $\accBalance_{i + 2} \neq 0$ \Then (setting $\col{W} := \accWarmth_{i + 3}$ and $\col{E} := \accExists_{i + 3}$)
+% 			\[
+% 			\gasCost_{i} =
+% 			\left[
+% 			\begin{array}{r}
+% 			G_\text{selfdestruct} \\
+% 			+ \col{W} \cdot G_\text{coldaccountaccess} \\
+% 			+ \col{E} \cdot G_\text{newaccount} \\
+% 			\end{array}
+% 			\right]
+% 			\]
+% 			\item \If $\accBalance_{i + 2} = 0$ \Then
+% 			\[
+% 			\gasCost_{i} =
+% 			\left[
+% 			\begin{array}{r}
+% 			G_\text{selfdestruct} \\
+% 			+ \col{W} \cdot G_\text{coldaccountaccess} \\
+% 			\end{array}
+% 			\right]
+% 			\]
+% 		\end{enumerate}
+% 		\ob{TODO: should we introduce an \texttt{\textbackslash{}accHasBalance} or so ?}
+% 	\end{enumerate}
+% \end{description}
+
+
+% \subsubsection{Address trimming lookup $\hubMod \hookrightarrow \trmMod$}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% As previously mentioned the address argument of the \inst{SELFDESTRUCT} must be trimmed down before being provided to the account rows. This is the purpose of the \trmMod{} and the present is a description of the lookup. The selector is more complex than otherwise because of the dichotomy between
+% (\emph{a})
+% \inst{SELFDESTRUCT}'s that fail at the instruction level (i.e. $\cnSelfRev_{i} = 1$)
+% (\emph{b})
+% \inst{SELFDESTRUCT}'s that don't (i.e. $\cnSelfRev_{i} = 0$.)
+% In particular a single selector won't do, this dichotomy bleeds over into the source column definitions.
+% \saNote{} For simplicity we write $\sigma := \cnSelfRev_{i}$.
+
+% \begin{description}
+% 	\item[Row selector.] $\col{sel}_{i} := \peekStack_{i} \cdot \stackDecHaltFlag_{i} \cdot \stackDecTrmFlag_{i}$: this selects for the \inst{SELFDESTRUCT} instruction;
+% 	\item[Source columns.] ---
+% 	\begin{enumerate}
+% 		\item $(1 - \sigma) \cdot \cnAccountAddress\high_{i + 4} + \sigma \cdot \cnAccountAddress\high_{i + 3}$
+% 		\item $\stackItemValHi{1}_{i}$
+% 		\item $\stackItemValLo{1}_{i}$
+% 		\item $(1 - \sigma) \cdot \accTrmIsPrecompile_{i + 4} + \sigma \cdot \accTrmIsPrecompile_{i + 3}$
+% 	\end{enumerate}
+% 	\item[Target columns.] ---
+% 	\begin{enumerate}
+% 		\item $\trmAddrHi_{j}$
+% 		\item $\addr\high_{j}$
+% 		\item $\addr\low_{j}$
+% 		\item $\isPrecompile_{j}$
+% 	\end{enumerate}
+% \end{description}
+% \saNote{} The present collection of instructions does not care about the $\accTrmIsPrecompile$ flag. Others will, though, and we include it in the lookup for greater uniformity and mergeability with other lookups into the \trmMod{} module.

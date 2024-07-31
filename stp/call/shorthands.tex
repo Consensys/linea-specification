@@ -1,0 +1,40 @@
+For greater expressivity we use the following shorthands
+\[
+	\left\{ \begin{array}{lcl}
+		\locTransfersValue    & \define & 1 - \resLo_{i + 1} \\
+		\locZeroValue         & \define & \resLo_{i + 1} \\
+		\locGasAccess         & \define & 
+		\begin{cases}
+			\If \locWarm = 1: & G_\text{warmaccess} \\
+			\If \locWarm = 0: & G_\text{coldaccountaccess} \\
+		\end{cases} \\
+		\locGasTransfer       & \define &
+		\begin{cases}
+			\If \locCctv = 1 \wedge \locTransfersValue = 1: & G_\text{callvalue} \\
+			\If \locCctv = 0 \vee   \locTransfersValue = 0:    & 0 \\
+		\end{cases} \\
+		\locGasNewAcc         & \define &
+		\begin{cases}
+			\If \locExists = 1: & 0 \\
+			\If \locExists = 0: & G_\text{newaccount} \\
+		\end{cases} \\
+		\locGasXtra           & \define & \locGasAccess + \locGasTransfer + \locGasNewAcc \\
+		\locGasUpfrontCall    & \define & \locGasMxp + \locGasXtra \\
+		\locDiff              & \define & \locGasActl ~ - ~ \locGasUpfrontCall \\
+		\locOneSixtyFourth    & \define & \resLo_{i + 3} \\
+		\locLOfGasDiff        & \define & \locGasDiff ~ - ~ \locOneSixtyFourth \\
+		\locGasCompBit        & \define & \resLo_{i + 4} \\
+		\locMin               & \define &
+		\begin{cases}
+			\If \locGasCompBit = 0 : & \locLOfGasDiff \\
+			\If \locGasCompBit = 1 : & \gasLo_{i} \\
+		\end{cases} \\
+	\end{array} \right.
+\]
+These are only to be used if the row index $i$ is such that
+\[
+	\begin{cases}
+		\stpStamp_{i} \neq \stpStamp_{i - 1} \\
+		\isCall  _{i} =    1                 \\
+	\end{cases}
+\]

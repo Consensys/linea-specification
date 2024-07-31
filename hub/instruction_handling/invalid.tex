@@ -1,0 +1,46 @@
+\subsubsection{Supported instructions and flags}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\[
+\begin{array}{|l||c||c|c|}
+	\hline
+	\INST 				& \tli	& \stackDecInvalidFlag	& \decFlag{1}	\\ \hline\hline
+	\inst{notOpCode}	& \zero	& \oneCell			& \zero			\\ \hline
+	\inst{INVALID}		& \zero	& \oneCell			& \oneCell		\\ \hline
+\end{array}
+\]
+\dots{} where \inst{notOpCode} stands for any byte that isn't an opcode.
+
+
+\subsubsection{Constraints}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{center}
+	\boxed{%
+		\text{The stack constraints presented below assume }
+		\begin{cases}
+			\peekStack_{i} = 1 \\
+			\stackDecInvalidFlag_{i} = 1 \\
+		\end{cases}}
+\end{center}
+\saNote{}
+The \inst{INVALID} opcode (and any byte that raises the \invalidFlag{}) can raise neither \suxSH{} nor \soxSH{} exceptions.
+Excluding stack exceptions as we do for most other instruction families by filtering agains ``$\stackSux + \stackSox \equiv 0$'' is terefore redundant.
+\begin{description}
+	\item[\underline{Setting the stack pattern:}] we impose $\zeroZeroSP_{i}$
+	\item[\underline{Setting $\stackOpcx$:}] we impose $\stackOpcx_{i} = \stackDecInvalidFlag_{i}$;
+	\item[\underline{Setting $\nonStackRows$:}] we impose $\nonStackRows_{i} = \cmc_{i}$;
+	\item[\underline{Setting the peeking flags:}] we don't need to set any;
+
+	\saNote{} Implicitly of course $\cmc_{i} \cdot \peekContext_{i + 1} = \cmc_{i}$ (\trash);
+	\item[\underline{Setting the gas cost:}] we impose that $\gasCost_{i} = \decStaticGas_{i}$;
+	\item[\underline{Value constraints:}] implicit in the stack pattern, see section~\ref{hub: stack patterns: 0_0}; %\If $\cmc_{i} = 0$ \Then
+\end{description}
+\saNote{} For instructions raising the $\invalidFlag$ one has $\cmc \equiv \xAhoy \equiv \stackOpcx \equiv 1$ thus
+(\emph{a})
+$\cmc_{i} = \xAhoy_{i} = 1$
+(\emph{b})
+$\nonStackRows_{i} = 1$
+(\emph{c})
+$\peekContext_{i + 1} = 1$.

@@ -1,0 +1,43 @@
+Suppose we are given:
+\begin{itemize}
+	\item a binary column \col{X},
+	\item a ``powers column'' \col{P},
+	\item a ``counter column'' \ct{}.
+\end{itemize}
+We say that the pair $(\col{P}, \col{X})$ satisfies a \textbf{power-constraint}\label{def: power constraint} if it satisfies the following constraints:
+
+We say that the pair $(\col{P}, \col{X})$ satisfies a \textbf{anti-power-constraint}\label{def: anti power constraint} if it satisfies the following constraints:
+\begin{enumerate}
+	\item \If $\ct_{i} = 0$ \Then:
+	\begin{enumerate}
+		\item \If $\col{X}_{i} = 0$ \Then $\col{P}_{i} = 1$ 
+		\item \If $\col{X}_{i} = 1$ \Then $\col{P}_{i} = 256$
+	\end{enumerate}
+	\item \If $\ct_{i} \neq 0$ \Then:
+	\begin{enumerate}
+		\item \If $\col{X}_{i} = 0$ \Then $\col{P}_{i} = \col{P}_{i - 1}$
+		\item \If $\col{X}_{i} = 1$ \Then $\col{P}_{i} = 256 \cdot \col{P}_{i - 1}$
+	\end{enumerate}
+\end{enumerate}
+Power constraints will be applied in the case where \col{X} satisfies a plateau constraint so that \col{P} is initially constant $=1$ and then grows geometrically until the end of the current counter-cycle:
+\begin{figure}[h!]
+\centering
+\[
+	\begin{array}{|l|c|c|c|c|c|c|c|c|c|}
+		\hline
+		\ct{}   & 0 & 1 & 2 & \cdots & c-1 & c & c+1 & \cdots & \llargeMO \\
+		\hline
+		\col{X} & \zero & \zero & \zero & \cdots & \zero & \one & \one & \cdots & \one \\
+		\hline
+		\col{P} & 1 & 1 & 1 & \cdots & 1 & 256 & 256^2 & \cdots &  256^{d} \\
+		\hline
+	\end{array}
+\]
+\caption{In the picture above $\col{X}$ satisfies the plateau constraint $\plateau(\col{X},c)$, $0<c<\llarge$, and \col{P} satisfies a power constraint $\power(\col{P}, \col{X})$. We have set $d=\llarge-c$.}
+\end{figure}
+
+Its value at the end of the counter-cycle is in the set $\{256^i\mid i = 0,1,\dots,\llargeMO\}$. We use the short hand
+\[
+	\power(\col{P}, \col{X}; \ct{})
+\]
+to signify that the columns \col{P} and \col{X} satisfy a power-constraint and we may say that \textbf{\col{P} is pegged to \col{X}}\label{def: powers of 256 column pegged against binary column}.

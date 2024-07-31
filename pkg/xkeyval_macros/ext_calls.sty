@@ -1,0 +1,58 @@
+\makeatletter
+% DEFINING KEYS
+
+\define@cmdkey [EXT] {var} {anchorRow}   {} % "i" in the spec, ALWAYS use this name
+\define@cmdkey [EXT] {var} {relOffset}   {} % relative offset, ALWAYS use this name
+\define@cmdkey [EXT] {var} {argOneHi}    {}
+\define@cmdkey [EXT] {var} {argOneLo}    {}
+\define@cmdkey [EXT] {var} {argTwoHi}    {}
+\define@cmdkey [EXT] {var} {argTwoLo}    {}
+\define@cmdkey [EXT] {var} {argThreeHi}  {}
+\define@cmdkey [EXT] {var} {argThreeLo}  {}
+% the above defines macros à la "\cmdEXT@var@anchorRow"
+
+% DEFAULT VALUES
+\presetkeys [EXT] {var} {
+	anchorRow = \missingParameter,
+	relOffset = \missingParameter,
+	argOneHi  = \missingParameter,
+	argOneLo  = \missingParameter,
+	argTwoHi  = \missingParameter,
+	argTwoLo  = \missingParameter,
+	argThreeHi  = \missingParameter,
+	argThreeLo  = \missingParameter
+}{}
+
+% "call to ADDMOD" macro
+\newcommand{\extCallToAddModName} {\texttt{extCallToADDMOD}}
+\newcommand{\extCallToAddMod} [1] {
+	\setkeys[EXT]{var}{#1}
+	\extCallToAddModName _{\cmdEXT@var@anchorRow}
+	\left[ \begin{array}{ll}
+			\utt{Rel. row offset:}        & \cmdEXT@var@relOffset  \\
+			\utt{First argument (high):}  & \cmdEXT@var@argOneHi   \\
+			\utt{First argument (low):}   & \cmdEXT@var@argOneLo   \\
+			\utt{Second argument (high):} & \cmdEXT@var@argTwoHi   \\
+			\utt{Second argument (low):}  & \cmdEXT@var@argTwoLo   \\
+			\utt{Third argument (high):}  & \cmdEXT@var@argThreeHi \\
+			\utt{Third argument (low):}   & \cmdEXT@var@argThreeLo \\
+		\end{array} \right]
+}
+
+% "call to MULLMOD" macro
+\newcommand{\extCallToMulModName} {\texttt{extCallToMULMOD}}
+\newcommand{\extCallToMulMod} [1] {
+	\setkeys[EXT]{var}{#1}
+	\extCallToMulModName _{\cmdEXT@var@anchorRow}
+	\left[ \begin{array}{ll}
+			\utt{Rel. row offset:}        & \cmdEXT@var@relOffset  \\
+			\utt{First argument (high):}  & \cmdEXT@var@argOneHi   \\
+			\utt{First argument (low):}   & \cmdEXT@var@argOneLo   \\
+			\utt{Second argument (high):} & \cmdEXT@var@argTwoHi   \\
+			\utt{Second argument (low):}  & \cmdEXT@var@argTwoLo   \\
+			\utt{Third argument (high):}  & \cmdEXT@var@argThreeHi \\
+			\utt{Third argument (low):}   & \cmdEXT@var@argThreeLo \\
+		\end{array} \right]
+}
+
+\makeatother

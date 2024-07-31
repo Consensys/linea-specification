@@ -1,0 +1,70 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{../../pkg/draculatheme}
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NF Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\begin{document}
+\begin{verbatim}
+We will specify a
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                                        ;;
+;;    MMU_INST_transferPrecompileResultsToDedicatedRam    ;;
+;;                                                        ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+Precompiles that comes into play for the following precompiles:
+- ECRECOVER
+- SHA2-256   (nonempty input data case)
+- RIPEMD-160 (nonempty input data case)
+- MODEXP
+- ECADD
+- ECMUL
+- ECPAIRING  (nonempty input data case)
+- BLAKE
+
+In other words: all precompiles other than IDENTITY.
+
+NOTE. the IDENTITY precompile tansfers its call data to the (ficitious)
+used to house it (with context number 1 + HUB_ ) in the same way that
+data is transferred from RAM to RAM under a RETURN instruction.
+
+It will take as inputs the following:
+
+- ID_SRC = 1 + HUB_
+- ID_TGT = 1 + HUB_
+- NUMBER_OF_LIMBS_TO_TRANSFER
+- PHASE_NUMBER (?)
+
+NUMBER_OF_LIMBS_TO_TRANSFER (stored in one of the size columns) whose value depends purely on the precompile at hand:
+
+|------------+-----------------------------+----------------------|
+| precompile | NUMBER_OF_LIMBS_TO_TRANSFER | output size in bytes |
+|------------+-----------------------------+---------------------:|
+| ECRECOVER  | 2                           |                   32 |
+| SHA2-256   | 2                           |                   32 |
+| RIPEMD-160 | 2                           |                   32 |
+| MODEXP     | 32                          |                  512 |
+| ECADD      | 4                           |                   64 |
+| ECMUL      | 4                           |                   64 |
+| ECPAIRING  | 2                           |                   32 |
+| BLAKE      | 4                           |                   64 |
+|------------+-----------------------------+----------------------|
+
+NOTE. For MODEXP we will always transfer 512 bytes where the first 512 - mbs bytes are zero (or should be zero) and the last mbs bytes occupy the actual return data.
+The HUB module (and the current context in particular) remember the relevant rdo (512 - mbs) and rds (mbs)
+
+The phase number could be removed if we make an effort to have all the results stored under the same phase number in all of the precompile modules. 
+\end{verbatim}
+\end{document}

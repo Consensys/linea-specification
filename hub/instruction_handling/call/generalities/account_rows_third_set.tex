@@ -1,0 +1,41 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below require that }
+		\left\{ \begin{array}{lcl}
+			\peekScenario                 _{i + \callFirstScenarioRowOffset} & = & 1 \\
+			\scenCallSmcFailureWillRevert _{i + \callFirstScenarioRowOffset} & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+The present section finishes the ``reverting/undoing'' of \textbf{callee} account operations in the
+\[
+	\scenCallSmcFailureWillRevert
+\]
+case. What remains to be done is to undo the warmth update induced by the underlying \inst{CALL}-instruction.
+\begin{description}
+	\item[\underline{Account-row $n^°(i + \callThirdCalleeAccountRowOffset)$:}] 
+		we impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\multicolumn{3}{l}{\accSameAddr             {i}{\callThirdCalleeAccountRowOffset}{\callSecondCalleeAccountRowOffset}} \\
+				\multicolumn{3}{l}{\accSameBalance          {i}{\callThirdCalleeAccountRowOffset}} \\
+				\multicolumn{3}{l}{\accSameNonce            {i}{\callThirdCalleeAccountRowOffset}} \\
+				\multicolumn{3}{l}{\accSameCode             {i}{\callThirdCalleeAccountRowOffset}} \\
+				\multicolumn{3}{l}{\accUndoWarmthUpdate     {i}{\callThirdCalleeAccountRowOffset}{\callFirstCalleeAccountRowOffset}} \\
+				\multicolumn{3}{l}{\accSameDeploymentNumber {i}{\callThirdCalleeAccountRowOffset}} \\
+				\multicolumn{3}{l}{\accSameDeploymentStatus {i}{\callThirdCalleeAccountRowOffset}} \\
+				%%%%
+				\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag {i}{\callThirdCalleeAccountRowOffset}} \\
+				\accRomLexFlag   _{i + \callThirdCalleeAccountRowOffset} & = & 0 \\
+				\accTrmFlag      _{i + \callThirdCalleeAccountRowOffset} & = & 0 \\
+				\accRlpAddrFlag  _{i + \callThirdCalleeAccountRowOffset} & = & 0 \vspace{2mm} \\
+				\multicolumn{3}{l}{
+					\revertDomSubStamps {
+						anchorRow        = i,
+						relOffset        = \callThirdCalleeAccountRowOffset,
+						subOffset        = 4,
+						}
+					} \\
+			\end{array} \right.
+		\]
+\end{description}

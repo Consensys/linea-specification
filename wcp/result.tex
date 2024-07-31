@@ -1,0 +1,27 @@
+We will use the following shorthands to express what follows:
+\[
+	\left\{ \begin{array}{lcl}
+		\col{eq}_{i} & \!\!\! \define \!\!\! & \bit{1}_{i} \cdot \bit{2}_{i} \\
+		\col{gt}_{i} & \!\!\! \define \!\!\! & \bit{3}_{i} + \bit{1}_{i} \cdot \bit{4}_{i} \\
+		\col{lt}_{i} & \!\!\! \define \!\!\! & 1 - \Big(\bit{3}_{i} + \bit{1}_{i} \cdot \bit{4}_{i} + \bit{1}_{i} \cdot \bit{2}_{i}\Big) \\
+		& \!\!\! = \!\!\!& 1 - \Big( \col{gt}_{i} + \col{eq}_{i}\Big). \\
+	\end{array} \right.
+\]
+The behavior of $\res$ is instruction dependent. We settle its behaviour below:
+\begin{enumerate}
+	\item \If $\oli_{i} = 1$ \Then $\res_{i} = \col{eq}_{i}$
+	\item \If $\isLt   _{i} = 1$ \Then $\res_{i} = \col{lt}_{i}$
+	\item \If $\isGt   _{i} = 1$ \Then $\res_{i} = \col{gt}_{i}$
+	\item \If $\isLeq  _{i} = 1$ \Then $\res_{i} = \col{lt}_{i} + \col{eq}_{i}$
+	\item \If $\isGeq  _{i} = 1$ \Then $\res_{i} = \col{gt}_{i}  + \col{eq}_{i}$
+	\item \If $\isSlt  _{i} = 1$ \Then
+		\begin{enumerate}
+			\item \If $\negCol{1}_{i} \neq \negCol{2}_{i}$ \Then $\res_{i} = \negCol{1}_{i}$
+			\item \If $\negCol{1}_{i} =    \negCol{1}_{i}$ \Then $\res_{i} = \col{lt}_{i}$
+		\end{enumerate}
+	\item \If $\isSgt _{i} = 1$ \Then
+		\begin{enumerate}
+			\item \If $\negCol{1}_{i} \neq \negCol{2}_{i}$ \Then $\res_{i} = \negCol{2}_{i}$
+			\item \If $\negCol{1}_{i} =    \negCol{1}_{i}$ \Then $\res_{i} = \col{gt}_{i}$
+		\end{enumerate}
+\end{enumerate}

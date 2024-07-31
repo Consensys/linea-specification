@@ -1,0 +1,37 @@
+We provide some \textbf{partial peeking flag sums for precompiles} below.
+We can't precisely predict the number of required rows at this point in time. 
+We will be setting \nonStackRows{} and associated peeking flag sums on the scenario row that marks the end of the first half of peeking flags for \inst{CALL}'s to precompiles. 
+This will be achieved in 
+section~(\ref{hub: instruction handling: call: precompiles: generalities}) and
+section~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr}).
+\begin{description}
+	\item[\underline{Precompile failure:}]
+		\[
+			\peekingSumPrcFailureFH
+			\define
+			\left[ \begin{array}{lcl}
+				+ & \extendedPeekingSumForCalls                                 \\
+				+ & \peekScenario _{i + \callPrcFailureSecondScenarioRowOffset} \\
+			\end{array} \right]
+		\]
+	\item[\underline{Precompile success, current context will revert:}]
+		\[
+			\peekingSumPrcSuccessWillRevertFH
+			\define
+			\left[ \begin{array}{lcl}
+				+ & \extendedPeekingSumForCalls                                           \\
+				+ & \peekAccount  _{i + \callSecondCallerAccountRowOffset}                \\
+				+ & \peekAccount  _{i + \callSecondCalleeAccountRowOffset}                \\
+				+ & \peekScenario _{i + \callPrcSuccessWillRevertSecondScenarioRowOffset} \\
+			\end{array} \right]
+		\]
+	\item[\underline{Precompile success, current context won't revert:}]
+		\[
+			\peekingSumPrcSuccessWontRevertFH
+			\define
+			\left[ \begin{array}{lcl}
+				+ & \extendedPeekingSumForCalls                                           \\
+				+ & \peekScenario _{i + \callPrcSuccessWontRevertSecondScenarioRowOffset} \\
+			\end{array} \right]
+		\]
+\end{description}

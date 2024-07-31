@@ -1,0 +1,41 @@
+The present section describes the data layout for the \inst{CALLDATALOAD} case. As such:
+\[
+	\boxed{\text{All constraints in this subsection further assume } \oobInstIsCdl_{i} = 1.}
+\]
+We remind the reader that the objective of the \oobMod{} module in this particular case is to perform the comparison
+\green{(\emph{a})} justify the result of the comparison $\locOffset < \locCallDataSize$.
+\saNote{} The purpose of this comparison isn't to detect an exception; rather it allows the \hubMod{} to bypass a call to the \mmuMod{} as the output of the \inst{CALLDATALOAD} opcode will be to put a $0$ on the stack. 
+
+\noindent We use the following shorthands for the values in the \oobDataCol{k} columns:
+\[
+	\left\{ \begin{array}{lclr}
+		\locOffsetHi       & \define & \oobDataCol{1}    _{i} \\
+		\locOffsetLo       & \define & \oobDataCol{2}    _{i} \\
+		% \loc             & \define & \oobDataCol{3}    _{i} \\
+		% \loc             & \define & \oobDataCol{4}    _{i} \\
+		\locCds            & \define & \oobDataCol{5}    _{i} \\
+		% \loc             & \define & \oobDataCol{6}    _{i} \\
+		\locCdlOutOfBounds & \define & \oobDataCol{7}    _{i}  & \prediction \\
+		% \loc             & \define & \oobDataCol{8}    _{i} \\
+	\end{array} \right.
+\]
+We impose the following constraints:
+\begin{description}
+	\item[\underline{Row n°$(i)$:}] we impose the following:
+		\[
+			\oobCallToLt
+			{i}{0}
+			{\locOffsetHi}{\locOffsetLo}
+			{0}{\locCds}
+		\]
+		and we define the following shorthand
+		\[
+			\locCdlTouchesRam \define \outgoingResLo _{i}
+		\]
+		It follows that $\locOffset < \locCds \iff \locCdlTouchesRam = 1$
+	\item[\underline{Justifying \hubMod{} predictions:}]
+		we impose
+		\[
+			\locCdlOutOfBounds = 1 - \locCdlTouchesRam
+		\]
+\end{description}

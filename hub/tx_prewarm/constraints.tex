@@ -1,0 +1,85 @@
+\begin{center}
+	\boxed{\text{All constraints in this subsection assume that $\txWarm_{i} = 1$.}}
+\end{center}
+We impose the following:
+\begin{enumerate}
+	\item the following constraints hold unconditionally:
+		\[
+			\left\{ \begin{array}{l}
+			        \peekAccount_{i} + \peekStorage_{i} = 1 \\
+				\standardDomSubStamps {
+					anchorRow        = i,
+					relOffset        = 0,
+					domOffset        = 0,
+				}
+				% \standardDomSubStamps {i}{0}{0}
+			\end{array} \right.
+		\]
+		i.e. pre-warming-rows either peek into accounts or storage and we apply the standard $\domStamp/\subStamp$ pattern;
+	\item \If $\txWarm _{i - 1} = 0$ \Then $\peekAccount _{i} = 1$
+	\item \If \Big($\txWarm _{i - 1} = 1$ \et $\peekStorage _{i} = 1$\Big) \Then
+		\begin{enumerate}
+			\item \If $\peekAccount _{i - 1} = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\stoAddressHi        _{i} & \define & \accAddressHi  _{i - 1} \\
+						\stoAddressHi        _{i} & \define & \accAddressLo  _{i - 1} \\
+						\stoDeploymentNumber _{i} & \define & \accDepNumber  _{i - 1} \\
+					\end{array} \right.
+				\]
+			\item \If $\peekStorage _{i - 1} = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\stoAddressHi        _{i} & \define & \stoAddressHi        _{i - 1} \\
+						\stoAddressHi        _{i} & \define & \stoAddressHi        _{i - 1} \\
+						\stoDeploymentNumber _{i} & \define & \stoDeploymentNumber _{i - 1} \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+	\item \If $\peekAccount_{i} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lclr}
+				\multicolumn{3}{l}{\accTrimAddress
+				{i}{0}
+				{\accAddressHi_{i}}
+				{\accAddressLo_{i}}}                                              & \quad (\trash) \\
+				\multicolumn{3}{l}{\accSameBalance                     {i}{0}} \\
+				\multicolumn{3}{l}{\accSameNonce                       {i}{0}} \\
+				\multicolumn{3}{l}{\accSameCode                        {i}{0}} \\
+				\multicolumn{3}{l}{\accSameDeployment                  {i}{0}} \\
+				\multicolumn{3}{l}{\accTurnOnWarmth                    {i}{0}} \\
+				\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag   {i}{0}} \\
+				\multicolumn{3}{l}{
+					\standardDomSubStamps {
+						anchorRow        = i,
+						relOffset        = 0,
+						domOffset        = 0,
+					}
+				} \\
+					% \standardDomSubStamps               {i}{0}{0} } & \quad (\trash) \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		Every first occurrence of an address will be trimmed in order to detect precompiles, see section~(\ref{hub: consistencies: account: constraints}).
+		Furthermore the \rlpTxnMod{} already produces addresses that are trimmed ($\addr\high \in \mathbb{B}_{4}$) and so one might wonder why the arithmetization enforces trimming.
+		In the above the purpose isn't the trimming of incoming addresses \emph{per se}.
+		Rather the above allows us to set \accTrmRawAddrHi{} to the expected value in case the above is the first time the address undergoes trimming.
+		Strictly speaking this isn't necessary.
+	\item \If $\peekStorage_{i} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lr}
+				\storageReading        {i}{0}    \\
+				\stoTurnOnWarmth       {i}{0}    \\
+				\standardDomSubStamps {
+					anchorRow        = i,
+					relOffset        = 0,
+					domOffset        = 0,
+				}
+				% \standardDomSubStamps  {i}{0}{0}  & \quad (\trash) \\
+			\end{array} \right.
+		\]
+\end{enumerate}
+\saNote{}
+The above is compatible with both (pathological) cases where either
+an account address is included more than once in the access set or
+a storage key of a particular account is included more than once in the access set.

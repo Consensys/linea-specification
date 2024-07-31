@@ -1,0 +1,37 @@
+We impose the following constraints.
+\begin{description}
+	\item[\underline{Forward setting of \emph{some} \inst{CREATE}-scenario:}] we enforce that
+		\[
+			\If
+			\left\{ \begin{array}{lcl}
+				\peekStack_{i}	       & = & 1 \\
+				\stackDecCreateFlag_{i}     & = & 1 \\
+				\ct_{i}                & = & 0 \\
+				\stackSux_{i}          & = & 0 \\
+			\end{array} \right.
+			\Then
+			\left\{ \begin{array}{lcl}
+				\peekScenario_{i + 2}                 & = & 1 \\
+				\scenCreateSum_{i + 2}                & = & 1 \\
+			\end{array} \right.
+		\]
+\end{description}
+\saNote{} In the upcoming sections row $n^°(i + 2)$ will become the new vantage point for dealing with \inst{CREATE} instructions.
+\begin{description}
+	\item[\underline{Backwards setting of the \inst{CREATE}-type instruction:}] we \emph{may} want to enforce that
+		\[
+			\underbrace{\If
+			\left\{ \begin{array}{lcl}
+				\peekScenario_{i}                 & = & 1 \\
+				\scenCreateSum_{i}                & = & 1 \\
+			\end{array} \right.
+			\Then
+			\left\{ \begin{array}{lcl}
+				\peekStack           _{i - \createFirstStackRowOffset} & = & 1 \\
+				\stackDecCreateFlag  _{i - \createFirstStackRowOffset} & = & 1 \\
+				\ct                  _{i - \createFirstStackRowOffset} & = & 0 \\
+				\stackSux            _{i - \createFirstStackRowOffset} & = & 0 \\
+			\end{array} \right.}_{\displaystyle (\trash)}
+		\]
+\end{description}
+\saNote{} Recall that \inst{CREATE}-type instructions are $\TLI$. The above thus sets the first non stack row of such an instruction. 

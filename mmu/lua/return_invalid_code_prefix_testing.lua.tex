@@ -1,0 +1,52 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{../../pkg/draculatheme}
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NF Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\begin{document}
+\begin{verbatim}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                                       ;;
+;;    MMU_INST_extractAndVetLeadingByteOfCodeToDeploy    ;;
+;;                                                       ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+Inputs:
+- SRC_ID       : cn
+- SRC_OFF      : µ[0]_lo
+- TGT_ID       : ∅
+- VAL_HI       : ∅
+- VAL_LO       : [lead]
+- SUCCCESS_BIT : [lead ≠ 0xEF]
+
+
+This single MMU instruction gives rise to a single MMIO instruction which
+HUB:
+- the HUB predicts the leading byte [lead] and the associated SUCCESS_BIT ≡ [lead ≠ 0xEF]
+MMU:
+- the MMU then performs a CALL to WCP with the EQ instruction comparing the extracted byte to 0xEF
+- the result of the comparison is then confronted with SUCCESS_BIT as predicted by the HUB 
+- the MMU sends an instruction to the MMIO which extracts the leading byte of the code to deploy
+- 
+MMIO:
+- the MMIO extracts said byte and confronts the value to VAL_LO
+- remembers the result and sends it back to the MMU
+
+NOTE. We DO need 3 different columns VAL_HI, VAL_LO, SUCCESS_BIT; reason being the BLAKE_extract_r_and_f
+MMU instruction requires these fields
+\end{verbatim}
+\end{document}

@@ -1,0 +1,40 @@
+\subsubsection{Supported instructions and flags}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+The \inst{DUPX}-instructions are all one line instructions (i.e. $\tli = 0$.) For instructions that conform to the \dupSP{} the value of $\inst{X}$ can be derived from the instruction via $\inst{X} = \INST - \inst{DUP1} + 1$. Locally within section~\ref{hub: stack patterns: dup} we use the shorthand $\param := \INST - \inst{DUP1} = \inst{X} - 1$.
+\[
+\begin{array}{|l||c||c|r|}
+	\hline
+	\INST			& \tli	& \stackDecDupFlag	& \param		\\ \hline\hline
+	\inst{DUP1-16}	& \zero	& \oneCell		& \inst{X} - 1	\\ \hline
+\end{array}
+\]
+
+
+\subsubsection{Constraints}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{center}
+\boxed{%
+\text{The stack constraints presented below assume }
+\begin{cases}
+\peekStack_{i} = 1 \\
+\stackDecDupFlag_{i} = 1 \\
+\stackSux_{i} + \stackSox_{i} = 0 \\
+\end{cases}}
+\end{center}
+
+\begin{description}
+	\item[\underline{Setting the stack pattern:}] we impose $\dupSP\big[ \INST_{i} - \inst{DUP1} \big]_{i}$
+	\item[\underline{Setting $\nonStackRows$:}] we impose $\nonStackRows_{i} = \cmc_{i}$;
+	\item[\underline{Setting the peeking flags:}] we impose
+		\[
+			\cmc_{i} \cdot \peekContext_{i + 1} = \nonStackRows_{i} \quad (\trash)
+		\]
+	\item[\underline{Setting the gas cost:}] we impose that $\gasCost_{i} = \decStaticGas_{i}$;
+	\item[\underline{Value constraints:}] implicit in the stack pattern; %\If $\cmc_{i} = 0$ \Then
+\end{description}
+\saNote{} For instructions raising the $\stackDecDupFlag$ one has $\cmc \equiv \xAhoy$.

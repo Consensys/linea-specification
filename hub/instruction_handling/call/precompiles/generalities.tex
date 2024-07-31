@@ -1,0 +1,40 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below are written under the assumption that }
+		\left\{ \begin{array}{lcl}
+			\peekScenario          _{i}    & = & 1 \\
+			\scenPrecompileSum     _{i}    & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+We list some high level generalities for the second phase of precompile processing. 
+\begin{description}
+	\item[\underline{Admissible failure scenarios:}]
+		we impose thath
+		\begin{enumerate}
+			\item \If $\scenPrecompileMayOnlyFailInHub _{i} = 1$ \Then $\scenPrcFailureKnownToRam _{i} = 0$
+			\item \If $\scenPrecompileMayOnlyFailInRam _{i} = 1$ \Then $\scenPrcFailureKnownToHub _{i} = 0$
+		\end{enumerate}
+		\saNote{}
+		In the implementation we may omit the ``$\scenPrecompileSum _{i} = 1$'' precondition when imposing the above
+		as this condition is weaker than any of the preconditions we provide in the preceding.
+	\item[\underline{Setting \gasNext{}:}] we settle the value of \gasNext{}:
+		\begin{enumerate}
+			\item $\gasNext_{i} = \locPrcCallerGas + \locPrcReturnGas$
+			\item \If $\scenPrcFailure_{i} = 1$ \Then $\locPrcReturnGas = 0$.
+			\item \If $\scenPrcSuccess_{i} = 1$ \Then we must work on a precompile per precompile basis;
+		\end{enumerate}
+	\item[\underline{Setting \nonStackRows{}:}]
+		we impose
+		\[ \nonStackRows_{i} = \locFirstPhaseNsr + \locNsrPrecompilesSH \]
+\end{description}
+\saNote{} This fulfils a promise we made in
+section~(\ref{hub: instruction handling: call: peeking flags and nRows no precompiles}) and more to the point in
+section~(\ref{hub: instruction handling: call: peeking flags and nRows for precompiles first half}).
+\begin{description}
+	\item[\underline{Setting the peeking flags for the second processing phase:}]
+		we impose
+		\[ \locFlagSumPrecompilesSH = \locNsrPrecompilesSH \]
+\end{description} 
+\saNote{} 
+Neither of these shorthands have been defined at this point. This is done in section~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr}).

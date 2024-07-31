@@ -1,0 +1,38 @@
+\[
+	\begin{array}{l}
+		\setMxpInstructionTypeFour
+		{i}{\relof}
+		\left[ \begin{array}{lcl}
+			\utt{Instruction:}         & \col{instruction} \\
+			\utt{Deploys byte code:}   & \col{deploys} \\
+			\utt{Offset high part:}    & \col{offset\_hi}  \\
+			\utt{Offset low  part:}    & \col{offset\_lo}  \\
+			\utt{Size high part:}      & \col{size\_hi}    \\
+			\utt{Size low  part:}      & \col{size\_lo}    \\
+		\end{array} \right]
+		\define \vspace{2mm} \\
+		\qquad
+		\left\{ \begin{array}{lclr}
+			% \miscMxpFlag             _{i + \relof}  & = & automatic              \\
+			% \miscMxpStamp            _{i + \relof}  & = & automatic              \\
+			% \cn                      _{i + \relof}  & = & automatic              \\
+			\miscMxpInst                         _{i + \relof} & = & \col{instruction} \\
+			\miscMxpCodeDeployment               _{i + \relof} & = & \col{deploys}     \\
+			\miscMxpOffsetOneHi                  _{i + \relof} & = & \col{offset\_hi}  \\
+			\miscMxpOffsetOneLo                  _{i + \relof} & = & \col{offset\_lo}  \\
+			\miscMxpSizeOneHi                    _{i + \relof} & = & \col{size\_hi}    \\
+			\miscMxpSizeOneLo                    _{i + \relof} & = & \col{size\_lo}    \\
+			\miscMxpOffsetTwoHi                  _{i + \relof} & = & \nothing          \\
+			\miscMxpOffsetTwoLo                  _{i + \relof} & = & \nothing          \\
+			\miscMxpSizeTwoHi                    _{i + \relof} & = & \nothing          \\
+			\miscMxpSizeTwoLo                    _{i + \relof} & = & \nothing          \\
+			\miscMxpTypeFourInstMayTriggerMmu    _{i + \relof} & = & \prediction       \\
+			\miscMxpMxpx                         _{i + \relof} & = & \prediction       \\
+			\miscMxpWords                        _{i + \relof} & = & \prediction       \\
+			\miscMxpGasMxp                       _{i + \relof} & = & \prediction       \\
+		\end{array} \right.
+	\end{array}
+\]
+\saNote{}
+So-called ``type 4 \mxpMod{} instructions'' are the only ones that require the \mxpMod{} module to check for nonzeroness of the size parameter.
+Depending on other factors (such as the absence of certain exceptions) this is a requirement for triggering the \mmuMod{} module with instructions from that instruction family.

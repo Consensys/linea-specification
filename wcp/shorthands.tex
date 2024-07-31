@@ -1,0 +1,49 @@
+We use the following shorthands
+\[
+	\left\{ \begin{array}{lcl}
+		\locOli_{i} & \define & 
+		\left[ \begin{array}{cr}
+		+ & \isEq         _{i}   \\
+		+ & \isIszero     _{i}   \\
+		\end{array} \right] \vspace{2mm} \\
+		\locVli_{i} & \define &
+		\left[ \begin{array}{cr}
+			+ & \isLt          _{i}   \\
+			+ & \isGt          _{i}   \\
+			+ & \isLeq         _{i}   \\
+			+ & \isGeq         _{i}   \\
+			+ & \isSlt         _{i}   \\
+			+ & \isSgt         _{i}   \\
+		\end{array} \right] \vspace{2mm} \\
+	\end{array} \right.
+\]
+We further define
+\[
+	\locFlagSum_{i} \define
+	\left[ \begin{array}{cr}
+		+ & \locOli         _{i}   \\
+		+ & \locVli         _{i}   \\
+	\end{array} \right]
+	\quad\text{and}\quad
+	\locWeightedFlagSum_{i} \define
+	\left[ \begin{array}{crcl}
+		+ & \inst{EQ}         & \cdot & \isEq         _{i}   \\
+		+ & \inst{ISZERO}     & \cdot & \isIszero     _{i}   \\
+		+ & \inst{LT}         & \cdot & \isLt         _{i}   \\
+		+ & \inst{GT}         & \cdot & \isGt         _{i}   \\
+		+ & \inst{GEQ}        & \cdot & \isGeq        _{i}   \\
+		+ & \inst{LEQ}        & \cdot & \isLeq        _{i}   \\
+		+ & \inst{SLT}        & \cdot & \isSlt        _{i}   \\
+		+ & \inst{SGT}        & \cdot & \isSgt        _{i}   \\
+	\end{array} \right]
+\]
+\saNote{} In the above we must introduce numerical values for the ``\inst{LEQ} and \inst{GEQ} instructions.''
+The only requirement is that that these values be different from 
+\inst{EQ}, \inst{ISZERO}, \inst{LT}, \inst{GT}, \inst{SLT} and \inst{SGT} respectively.
+We suggest setting
+\[
+	\begin{cases}
+		\inst{LEQ} \define \texttt{0x\,0E} \\
+		\inst{GEQ} \define \texttt{0x\,0F} \\
+	\end{cases}
+\]

@@ -1,0 +1,26 @@
+The (counter-constant binary) column $\known{}$ matters only when $\oli = 0$ (i.e. $\iInst = \inst{SAR}$ or $\iArgOneHi = 0$.) It lights up whenever the result of the shifting operation is known in advance, that is the shift parameter is larger than a byte. In other words
+\begin{enumerate}
+	\item \If $\ct_{i} = \llargeMO$ \Then
+	\begin{enumerate}
+		\item \If $\iInst_{i} = \inst{SAR}$ \Then
+		\[
+		\left\{
+		\begin{array}{lcl}
+			\If \iArgOneHi_{i} \neq 0 ~ \Then \known_{i} = 1 \\
+			\If \iArgOneHi_{i} = 0 ~ \Then
+			\begin{cases}
+				\If \iArgOneLo_{i} \neq \byteCol{1}_{i} ~ \Then \known_{i} = 1 \\
+				\If \iArgOneLo_{i}  =   \byteCol{1}_{i} ~ \Then \known_{i} = 0 \\
+			\end{cases} \\
+		\end{array}
+		\right.
+		\]
+		\item \If $\iInst_{i} \neq \inst{SAR}$ \Then
+		\[
+		\begin{cases}
+			\If \iArgOneLo_{i} \neq \byteCol{1}_{i} ~ \Then \known_{i} = 1 \\
+			\If \iArgOneLo_{i}  =   \byteCol{1}_{i} ~ \Then \known_{i} = 0 \\
+		\end{cases}
+		\]
+	\end{enumerate}
+\end{enumerate}

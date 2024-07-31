@@ -1,0 +1,88 @@
+\def\toOob            {$\rightsquigarrow$ \oobMod{}}
+In the present section we go over the various precompiles and the failures they can provoke.
+We distinguish between two failure modes: $\scenPrcFailureKnownToHub$ and $\scenPrcFailureKnownToRam$.
+The general idea is that all failure scenarios that are detectable without interacting with \textsc{ram} trigger the $\scenPrcFailureKnownToHub$ flag, while those that require reading or even extracting data from \textsc{ram} fall into the $\scenPrcFailureKnownToRam$ category.
+In particular we explain which precompiles may raise the $\scenPrcFailureKnownToRam$ flag.
+\begin{figure}[!h]
+	\centering
+	\begin{tabular}{|l||l|c|l|} \hline
+		\textsc{Precompile}               & \multicolumn{2}{c|}{\scenPrcFailureKnownToHub} & \scenPrcFailureKnownToRam \\ \hline \hline
+		\inst{ECRECOVER}                  & insufficient gas                               & \toOob                     & $\nothing$                                                       \\ \hline
+		\inst{SHA2-256}                   & insufficient gas                               & \toOob                     & $\nothing$                                                       \\ \hline
+		\inst{RIPEMD-160}                 & insufficient gas                               & \toOob                     & $\nothing$                                                       \\ \hline
+		\inst{IDENTITY}                   & insufficient gas                               & \toOob                     & $\nothing$                                                       \\ \hline
+		\multirow{2}{*}{\inst{MODEXP}}    & \multirow{2}{*}{$\nothing$}                    &                            & insufficient gas                                                 \\
+		\iffalse\fi                       &                                                &                            & extracting $\ell_B,\ell_E,\ell_M,\ell_E'$                        \\ \hline
+		\multirow{2}{*}{\inst{ECADD}}     & \multirow{2}{*}{insufficient gas}              & \multirow{2}{*}{\toOob}    & malformed data:                                                  \\
+		\iffalse\fi                       &                                                &                            & $x = \varnothing \vee y = \varnothing$                           \\ \hline
+		\multirow{2}{*}{\inst{ECMUL}}     & \multirow{2}{*}{insufficient gas}              & \multirow{2}{*}{\toOob}    & malformed data:                                                  \\
+		\iffalse\fi                       &                                                &                            & $x = \varnothing$                                                \\ \hline
+		\multirow{2}{*}{\inst{ECPAIRING}} & insufficient gas                               & \multirow{2}{*}{\toOob}    & malformed data:                                                  \\
+		\iffalse\fi                       & $\cds\not\equiv0\mod192$                       &                            & $\exists j$ such that $a_j = \varnothing \vee b_j = \varnothing$ \\ \hline
+		\multirow{2}{*}{\inst{BLAKE2f}}   & \multirow{2}{*}{$\cds\neq213$}                 & \multirow{2}{*}{\toOob}    & $r$ (gas cost) too high                                          \\
+		\iffalse\fi                       &                                                &                            & $f$ is not a bit                                                 \\ \hline
+	\end{tabular}
+	\label{hub: instruction handling: call: precompiles: table classifying failures known to the HUB vs. to RAM}
+	\caption{All justifications for \scenPrcFailureKnownToHub{}'s are done through the \oobMod{} module. Notations such as ``$x = \varnothing''$ are from the \cite{EYP}.}
+\end{figure}
+
+\noindent We now give full details. 
+\begin{description}
+	\item[\inst{ECRECOVER}:]
+		failure is entirely detectable using \hubMod{} data; 
+		failure can only be due to insufficient gas;
+		gas cost is fixed;
+		the precompile may however return either $()$ if data is malformed or no public address is recoverable;
+		otherwise it returns $\textbf{o} \in \mathbb{B}_{32}$ a $32$ byte slice containing a $20$ byte address. 
+	\item[\inst{SHA2-256}, \inst{RIPEMD-160} and \inst{IDENTITY}:]
+		failure is entirely detectable using \hubMod{} data; 
+		failure can only be due to insufficient gas;
+		computing the gas cost can be done entirely in terms of the underlying \inst{CALL}-type instruction's \CDS{} which is a stack argument (and is available in the scenario row by virtue of the constraints in section~(\ref{hub: instruction handling: call: finishing: cases: prc}));
+	\item[\inst{MODEXP}:]
+		this is by far the most complex precompile from the point of view of the arithmetization of \inst{CALL}-type instructions in the \hubMod{} module;
+		this holds true on all levels: \hubMod{} general workflow, \oobMod{}, \expMod{}, \mmuMod{} and \textsc{ram} interaction;
+		failure can only be due to insufficient gas;
+		but computing the gas cost requires interacting with \textsc{ram} in order to extract certain parameters
+		($\locBase$, $\locExponent$, $\locModulus$ and $\locExponentLogEYP$ using notations from the \cite{EYP});
+		data extraction is complicated by the fact that $\cds$, the $\CDS$, may be arbitrary long / short;
+		shortness may lead to the extraction of fewer parameters according to the result of the following comparisons $\cds > 0 $, $\cds > 32$, $\cds > 64$;
+		on the other hand the result of comparisons such as $0 < \cds < 32$, $32 <\cds < 64$, $64 < \cds < 96$ impacts whether or not data must be trimmed before use;
+		if trimming is necessary the \expMod{} module is tasked with carrying it out;
+		furthermore extracting some of these parameters (e.g. $\locExponentLogEYP$) requires previously having extrated other parameters (namely $\locBase$ and $\locModulus$);
+		one must carry out some potentially complex ``$\lfloor \log_2(\cdots) \rfloor$-style'' computation;
+		one half of this computation (i.e. computing the $\lfloor \log_2(\cdots) \rfloor$ of the leading bytes of the exponent $\text{E}$) is done by the \expMod{} module;
+		return data is also a complex matter as it is \textbf{variable size};
+		indeed return data is a slice $\textbf{o} \in \mathbb{B}^*$ of length $\locModulus$;
+	\item[\inst{ECADD} and \inst{ECMUL}:]
+		these can fail for several independent reasons, some known to the \hubMod{}, others known to the \mmuMod{}:
+		(\emph{a}) insufficient gas (which triggers the \scenPrcFailureKnownToHub{})
+		(\emph{b}) sufficient gas but malformed call data (which triggers the \scenPrcFailureKnownToRam{});
+		if none of these conditions are triggered the output is a 32 byte integer slice $\textbf{o} \in \mathbb{B}_{32}$;
+	\item[\inst{ECPARIRING}:]
+		this can fail both for reasons known to the \hubMod{} module and for reasons known to \textsc{ram};
+		(\emph{a}) whenever $\CDS \not\equiv 0 \mod 192$
+		(\emph{b}) insufficient gas
+		(\emph{c}) malformed data;
+		conditions (\emph{a}) and (\emph{b}) are detected by the \scenPrcFailureKnownToHub{} flag;
+		only (\emph{c}) requires touching \textsc{ram} in order to detect;
+		it is detected by \scenPrcFailureKnownToRam{};
+		if none of these conditions are triggered the output is a 32 byte integer slice $\textbf{o} \in \mathbb{B}_{32}$;
+		the output slice is either
+		$
+		\utt{00}\,
+		\utt{00} \cdots
+		\utt{00} \in \mathbb{B}_{32}$
+		or
+		$
+		\utt{00}\,
+		\utt{00} \cdots
+		\utt{01} \in \mathbb{B}_{32}$.
+	\item[\inst{BLAKE2f}:]
+		this can fail for several independent reasons;
+		(\emph{a}) whenever $\CDS \neq 213$
+		(\emph{b}) insufficient gas
+		(\emph{c}) the ``$f$'' parameter isn't a bit;
+		the first point (\emph{a}) is detectable without touching \textsc{ram} and is detected by \scenPrcFailureKnownToHub{} 
+		in order to address points (\emph{b}) and (\emph{c}) the arithmetization has to extract certain parameters from \textsc{ram} ($r$ and $f$ in \cite{EYP} notation);
+		these conditions are thus detected by \scenPrcFailureKnownToRam{};
+\end{description}

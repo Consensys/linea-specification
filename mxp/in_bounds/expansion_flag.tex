@@ -1,0 +1,41 @@
+\begin{enumerate}
+	\item \mexpEvent{} is a counter-constant binary column; we ask that $\mexpEvent{} = 1$ \emph{iff} $\maxOffset > \memSize$; the following constraints ensure this:
+	\begin{enumerate}
+		\item \If $\ct_i = 0$ \Then $\expAcc_i = \expByte_i$
+		\item \If $\ct_i \neq 0$ \Then $\expAcc_i = 256 \cdot \expAcc_{i-1} + \expByte_i$
+		\item \If $\ct_i = 2$ \Then 
+		\begin{enumerate}
+			\item \If $\mexpEvent_{i} = 1$:
+			\[
+				\expAcc_{i} = \maxOffset_{i} - \memSize_{i} - 1
+			\]
+			\item \If $\mexpEvent_{i} = 0$:
+			\[
+				\expAcc_{i} = \memSize_{i} - \maxOffset_{i}
+			\]
+		\end{enumerate}
+		In other words when $\ct_i = 2$:
+		\[
+			\expAcc_{i}
+			=
+			\big(\maxOffset_{i} - \memSize_{i}\big)\cdot(2\cdot\mexpEvent_i - 1)
+			-
+			\mexpEvent_i.
+		\]
+	\end{enumerate}
+	\item \If $\mexpEvent_i = 0$ \Then
+	\[
+		\begin{cases}
+			\memSize_{i}\new = \memSize_{i}, \\
+			\expCost_{i}\new = \expCost_{i},
+		\end{cases}		
+	\]
+	\item \If $\mexpEvent_i = 1$ \Then
+	\[
+		\begin{cases}
+			\memSize_{i}\new = \memSize_{i}, \\
+			\expCost_{i}\new = \text{compute the updated expansion cost in the following section \dots{}}
+		\end{cases}		
+	\]
+	$\memSize_{i}\new = \maxOffset_{i}$
+\end{enumerate}

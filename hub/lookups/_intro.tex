@@ -1,0 +1,27 @@
+This section collects all the lookup arguments that connect the \hubMod{} module to other modules in the arithmetization. In order to specify a lookup we will typically provide the following data:
+\begin{description}
+	\item[Selector column:] a binary column \col{sel} used to ``filter'' the rows of some (or all) input columns;
+	\item[Source columns:] a family of columns $(\col{SRC\_COL\_k})_{1 \leq k \leq \col{w}}$ from the source module (here: the \hubMod{} module); 
+	\item[Target columns:] the corresponding family of columns $(\col{TGT\_COL\_k})_{1 \leq k \leq \col{w}}$ the target module;
+\end{description}
+The lookup will bypically prove the inclusion of the ``row selected'' row vectors
+\[
+	\Big(
+		\col{sel}_{i} \cdot \col{SRC\_1}_{i}, ~
+		\col{sel}_{i} \cdot \col{SRC\_2}_{i}, ~
+		\col{sel}_{i} \cdot \col{SRC\_3}_{i}, ~
+		\dots, ~
+		\col{sel}_{i} \cdot \col{SRC\_w}_{i}
+	\Big)_{0 \leq i \leq N}
+\]
+in the corresponding set of row vectors $(\col{TGT\_COL\_k})_{1 \leq k \leq \col{w}}$.
+\[
+	\Big(
+		\col{TGT\_1}_{j}, ~
+		\col{TGT\_2}_{j}, ~
+		\col{TGT\_3}_{j}, ~
+		\dots, ~
+		\col{TGT\_w}_{j}
+	\Big)_{0 \leq j \leq N'}
+\]
+\saNote{} The number of columns in the lookup \col{w} is the common width of both the (row selected) source matrix and target matrix. $N$ is the index of the last row in the source module (here: the \hubMod{} module) and $N'$ the index of the last row in the relevant target module.

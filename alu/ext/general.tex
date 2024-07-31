@@ -1,0 +1,135 @@
+The following constraints are imposed regardless of the instruction $\argOne \cdot \argTwo$.
+The first one relates to the product $\argOne \cdot \argTwo$.
+\[
+\left\{
+\begin{array}{lcr}
+	  \col{A\_1} \cdot \col{B\_0}
+	+ \col{A\_0} \cdot \col{B\_1} & \!\!\! = \!\!\! &
+	\theta^2 \cdot \alpha + \theta \cdot \col{H\_1} + \col{H\_0} \\
+	  \col{A\_3} \cdot \col{B\_0}
+	+ \col{A\_2} \cdot \col{B\_1}
+	+ \col{A\_1} \cdot \col{B\_2}
+	+ \col{A\_0} \cdot \col{B\_3} & \!\!\! = \!\!\! &
+	\theta^2 \cdot \beta + \theta \cdot \col{H\_3} + \col{H\_2} \\
+	  \col{A\_3} \cdot \col{B\_2}
+	+ \col{A\_2} \cdot \col{B\_3} & \!\!\! = \!\!\! &
+	\theta^2 \cdot \gamma + \theta \cdot \col{H\_5} + \col{H\_4} \\
+\end{array}
+\right.
+\]
+\noindent The next roster of constraints is related to extracting certain parameters needed to justify the base-$\theta$ representation of an expression of the form $\col{Q} \cdot \col{C} + \col{R}$ where
+$\col{Q}$ is a 512 bit integer and
+$\col{C}, \col{R}$ are 256 bit integers.
+\[
+\left\{
+\begin{array}{lcr}
+	  \col{Q\_1} \cdot \col{C\_0}
+	+ \col{Q\_0} \cdot \col{C\_1} & \!\!\! = \!\!\! &
+	\theta^2 \cdot \sigma
+	+ \,\, \theta \cdot \col{I\_1} + \col{I\_0} \\
+	  \col{Q\_3} \cdot \col{C\_0}
+	+ \col{Q\_2} \cdot \col{C\_1}
+	+ \col{Q\_1} \cdot \col{C\_2}
+	+ \col{Q\_0} \cdot \col{C\_3} & \!\!\! = \!\!\! &
+	\theta^2 \cdot \tau
+	+ \,\, \theta \cdot \col{I\_3} + \col{I\_2} \\
+	  \col{Q\_5} \cdot \col{C\_0}
+	+ \col{Q\_4} \cdot \col{C\_1}
+	+ \col{Q\_3} \cdot \col{C\_2}
+	+ \col{Q\_2} \cdot \col{C\_3} & \!\!\! = \!\!\! &
+	\theta^2 \cdot \rho
+	+ \,\, \theta \cdot \col{I\_5} + \col{I\_4} \\
+	  \col{Q\_7} \cdot \col{C\_0}
+	+ \col{Q\_6} \cdot \col{C\_1}
+	+ \col{Q\_5} \cdot \col{C\_2}
+	+ \col{Q\_4} \cdot \col{C\_3} & \!\!\! = \!\!\! &
+	\col{I\_6} \\
+\end{array}
+\right.
+\]
+and
+\[
+\left\{
+\begin{array}{l}
+	\col{Q\_7} \cdot \col{C\_1}
+	+	\col{Q\_6} \cdot \col{C\_2}
+	+	\col{Q\_5} \cdot \col{C\_3} \\
+	\phantom{\col{Q\_7} \cdot \col{C\_1}}
+	+	\col{Q\_7} \cdot \col{C\_2}
+	+	\col{Q\_6} \cdot \col{C\_3} \\
+	\phantom{\col{Q\_7} \cdot \col{C\_1} + \col{Q\_7} \cdot \col{C\_1}}
+	+	\col{Q\_7} \cdot \col{C\_3}
+\end{array}
+\right\} = 0
+\]
+\noindent The following constraints establish the base-$\theta$ representation
+$
+\col{Q} \cdot \col{C} + \col{R}
+\equiv
+[\col{J\_7} \,|\, \col{J\_6} \,|\, \col{J\_5} \,|\, \col{J\_4} \,|\, 
+\col{J\_3} \,|\, \col{J\_2} \,|\, \col{J\_1} \,|\, \col{J\_0}]
+$
+\[
+\left\{
+\begin{array}{crlcr}
+	&
+	\col{Q\_0} \cdot \col{C\_0}
+	&
+	\!\!\!\!\!
+	+ \,\, \theta \cdot \col{I\_0}
+	+ \Big[\theta \cdot \col{R\_1} + \col{R\_0}\Big]
+	& \!\!\!\! = \!\!\!\! & 
+	\theta^2 \cdot \varphi + \theta \cdot \col{J\_1} + \col{J\_0} \vspace{1mm} \\
+	\varphi
+	+ \col{I\_1}
+	+ \theta\cdot\sigma
+	&
+	+
+	\left[\begin{array}{r}
+		\col{Q\_2} \cdot \col{C\_0} \\
+	+	\col{Q\_1} \cdot \col{C\_1} \\
+	+	\col{Q\_0} \cdot \col{C\_2} \\
+	\end{array}\right]
+	&
+	\!\!\!\!\!
+	+ \,\, \theta \cdot \col{I\_2}
+	+ \Big[\theta \cdot \col{R\_3} + \col{R\_2}\Big]
+	& \!\!\!\! = \!\!\!\! & 
+	\theta^2 \cdot \psi + \theta \cdot \col{J\_3} + \col{J\_2} \vspace{1mm} \\
+	\psi
+	+ \col{I\_3}
+	+ \theta\cdot\tau
+	&
+	\!\!\!\!
+	+
+	\left[\begin{array}{r}
+		\col{Q\_4} \cdot \col{C\_0} \\
+	+	\col{Q\_3} \cdot \col{C\_1} \\
+	+	\col{Q\_2} \cdot \col{C\_2} \\
+	+	\col{Q\_1} \cdot \col{C\_3} \\
+	\end{array}\right]
+	&
+	\!\!\!\!\!
+	+ \,\, \theta \cdot \col{I\_4}
+	& \!\!\!\! = \!\!\!\! & 
+	\theta^2 \cdot \chi + \theta \cdot \col{J\_5} + \col{J\_4} \vspace{1mm} \\
+	\chi
+	+ \col{I\_5}
+	+ \theta\cdot\rho
+	&
+	\!\!\!\!
+	+
+	\left[\begin{array}{r}
+		\col{Q\_6} \cdot \col{C\_0} \\
+	+	\col{Q\_5} \cdot \col{C\_1} \\
+	+	\col{Q\_4} \cdot \col{C\_2} \\
+	+	\col{Q\_3} \cdot \col{C\_3} \\
+	\end{array}\right]
+	&
+	\!\!\!\!\!
+	+ \,\, \theta \cdot \col{I\_6}
+	& \!\!\!\! = \!\!\!\! &
+	\theta \cdot \col{J\_7} + \col{J\_6} \\
+\end{array}
+\right.
+\]

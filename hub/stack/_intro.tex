@@ -1,0 +1,35 @@
+The present section provides various definitions for so-called stack patterns. A \textbf{stack pattern}\label{def: stack pattern} is a collection of constraints which involve the following 22\footnote{$22 = 4 \cdot 5 + 2$} columns (where $k \in \{1, 2, 3, 4 \}$):
+\begin{multicols}{3}
+\begin{enumerate}
+	\item $\stackItemHeight{k}$
+	\item $\stackItemPop{k}$
+	\item $\stackItemValHi{k}$, $\stackItemValLo{k}$
+	\item $\stackItemStamp{k}$
+	\item $\stackHeight$, $\stackHeight\new$
+\end{enumerate}
+\end{multicols}
+\noindent Although we don't impose this condition in the present section, in applications stack pattern constraints will \emph{only} apply to stack rows\footnote{i.e. rows $i$ satisfying $\peekStack = 1$; this is implicit in the column names which involve the signifier $\stackSignifier$ of stack-rows}. A stack pattern defines a \textbf{layout for stack items in a stack row}. The \zkEvm{} arithmetization provides 4 \textbf{stack items}\label{def: stack item} per stack row, labeled by $k \in \{1, 2, 3, 4 \}$. Each stack item is either empty (see section~\ref{hub: stack patterns: empty item}) or provides us with a view into the (current execution context's) stack. We provide the desired interpretation of what is on display in the $k$-th stack item (\emph{given that it is nonempty}):
+\begin{description}
+	\item[\underline{$\stackItemHeight{k}$:}] contains the height $\in \{1, 2, \dots, 1024 \}$ within the stack of the stack item on display;
+	\item[\underline{$\stackItemPop{k}$:}] bit detailing whether a value is to be removed\footnote{\label{footnote: pop at height bla}at height $\stackItemHeight{k}$} from the stack ($\stackItemPop{k} = 1$) or inserted\cref{footnote: pop at height bla} ($\stackItemPop{k} = 0$);
+	\item[\underline{$\stackItemValHi{k} \, / \, \stackItemValLo{k}$:}] value either removed at $\stackItemHeight{k}$ (if $\stackItemPop{k} = 1$) or inserted at $\stackItemHeight{k}$ (if $\stackItemPop{k} = 0$);
+	\item[\underline{$\stackItemStamp{k}$:}] a time stamp; the four time stamps (as $k$ ranges over $\{1, 2, 3, 4 \}$) define the order in which the stack operations (removing items, inserting items) are to be executed.
+\end{description}
+\saNote{} A stack item's height may also take on the value $0$ but only if the item is empty, see section~\ref{hub: stack patterns: empty item}.
+
+\saNote{}\label{note: touch stack items at any height} Our arithmetization allows us to remove and insert values \emph{at any height of the stack}. This is important for for \inst{DUPX} and \inst{SWAPX} instructions in particular.
+
+\saNote{} In our arithmetization of the stack there is no such thing as simply ``peeking at'' a value in the stack.
+Every inspection of a value on the stack is destructive in the sense that it triggers the relevant $\stackItemPop{k}$ flag.
+If an item is simply to be looked at (as is the case for \inst{DUPX} instructions for instance) the item must first be popped then again pushed onto the same slot on the stack.
+To be slightly more precise with \inst{DUPX} instructions our arithmetization
+(\emph{a}) pops the value to be duplicated (in stack item $n°1$), thus $\stackItemPop{1} = 1$;
+(\emph{b}) reinserts it at the same height (in stack item $n°2$), thus $\stackItemPop{2} = 0$;
+(\emph{c}) duplicates the value (in stack item $n°4$) i.e. $\stackItemPop{4} = 0$; see section~\ref{hub: stack patterns: dup}. A similar dance happens for \inst{SWAPX} instructions, see section~\ref{hub: stack patterns: swap}.
+
+Every stack row displays $0$, $1$, $2$, $3$, or $4$ stack items (depending on how many are empty.)
+As already mentioned, the stack pattern specifies the layout of the data i.e. which stack items are empty and which aren't, and, for the nonempty ones, whether the value is removed or inserted and at what height.
+\textbf{Every instruction follows a particular stack pattern}. Many instructions share the same stack pattern. There are thus fewer stack patterns than there are instructions. For instance all \inst{DUP\_X}-instructions share the same stack pattern (\dupSP.)
+
+We make a fundamental distinction between instructions in terms of \textbf{whether their stack pattern spans one or two rows}. Instructions therefore come with an instruction decoded binary flag $\tli$ specifying whether it is a $\TLI$. Typically instructions $w$ with $\alpha_{w} + \delta_{w} > 4$ must span two rows. Thus \inst{CALL}'s pop seven items off the stack ($\delta_{\inst{CALL}} = 7$) and push one onto it $(\alpha_\inst{CALL} = 1$) and must therefore span two rows. But our arithmetization also considers \inst{CREATE} to be a $\TLI$ (despite the fact that $\alpha_{\inst{CREATE}} + \delta_{\inst{CREATE}} = 1 + 3 = 4$.) We have made this choice to achieve greater uniformity among the \inst{CREATE}-type instructions given that \inst{CREATE2} is by necessity a $\TLI$. Similar choices have been made elsewhere, e.g. all \inst{LOG}-type instructions are $\TLI$'s.
+

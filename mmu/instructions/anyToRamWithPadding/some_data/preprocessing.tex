@@ -1,0 +1,256 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints below assume that }
+		\left\{ \begin{array}{lcl}
+			\isMacro                                _{i} & = & 1 \\
+			\mmuInstFlagAnyToRamWithPaddingSomeData _{i} & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+This section deals with \textbf{parts} of the pre-processing of the \mmuInstAnyToRamWithPadding{}
+in the two subcases where some ``source data'' is beind copied over.
+We outline the common preprocessing rows
+\begin{description}
+	\def\rowNum{3} \item[Processing row $n^\circ(i + \rowNum)$:]
+		we determine whether to use
+		``\texttt{ramToRam}''-type micro-instructions (e.g. for \inst{CALLDATACOPY} and \inst{RETURNDATACOPY}) or
+		``\texttt{exoToRam}''-type micro-instructions (e.g. for \inst{CODECOPY} and \inst{EXTCODECOPY}.)
+		\[
+			\callToIszero
+			{i}{\rowNum}
+			{0}{\macroExoSum_{i}}
+		\]
+		and we impose the following constraint $\locDataSourceIsRam = \ppWcpRes_{i + \rowNum}$.
+
+		We further impose that \If $\locDataSourceIsRam = 0$ \Then $\macroExoSum_{i} = \exoWeightRom$ (\trash).
+	\item[Total number of nontrivial operations:]
+		we impose that 
+		\[
+			\left\{ \begin{array}{lclr}
+				\ppTotLZ    _{i} & = & 0                               \\
+				\ppTotNT    _{i} & = & \locMaxSlo{} - \locMinSlo{} + 1 \\
+				\ppTotRZ    _{i} & = & \valueToBeSet                   \\
+			\end{array} \right.
+		\]
+		\saNote{} The shorthands \locMaxSlo{} and \locMinSlo{} are defined below.
+	\def\rowNum{4} \item[Processing row $n^\circ(i + \rowNum)$:]
+		we impose
+		\[
+			\callToEq
+			{i}{\rowNum}
+			{0}{\ppTotNT_{i}}
+			{1}
+		\]
+		we introduce the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locTotntIsOne            & \define & \ppWcpRes_{i + \rowNum} \\
+				\locOnlyDataTransferSize  & \define & \locTransferSize        \\
+				\locFirstDataTransferSize & \define & \llarge - \locMinSbo    \\
+			\end{array} \right.
+		\]
+		and the following constraint
+		\[
+			\locLastDataTransferSize_{i} = \locMaxSbo + 1
+		\]
+	\def\rowNum{5} \item[Processing row $n^\circ(i + \rowNum)$:]
+		we perform computations on the minimal source domain offset and determine alignment
+		\[
+			\left\{ \begin{array}{lcl}
+				\callToEuc
+				{i}{\rowNum}
+				{\locMinSrcOffset}
+				{\llarge}
+				\vspace{2mm} \\
+				\callToEq
+				{i}{\rowNum}
+				{0}{\locMinTbo}
+				{\locMinSbo}
+				\\
+			\end{array} \right.
+		\]
+		where we define / have used the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locMinSrcOffset & \define & \macroSrcOffsetLo _{i}  + \macroRefOffset_{i} \\
+				\locMinSlo       & \define & \ppEucQuot        _{i + \rowNum}              \\
+				\locMinSbo       & \define & \ppEucRem         _{i + \rowNum}              \\
+			\end{array} \right.
+		\]
+		and we impose the following constraint
+		\[
+			\locAligned = \ppWcpRes_{i + \rowNum}
+		\]
+	\def\rowNum{6} \item[Processing row $n^\circ(i + \rowNum)$:]
+		we perform computations on the maximal source domain offset:
+		\[
+			\callToEuc
+			{i}{\rowNum}
+			{\locMaxSrcOffset}
+			{\llarge}
+		\]
+		where we define / have used the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locMaxSrcOffset & \define & \locMinSrcOffset _{i} + (\locTransferSize - 1) \\
+				\locMaxSlo       & \define & \ppEucQuot        _{i + \rowNum}               \\
+				\locMaxSbo       & \define & \ppEucRem         _{i + \rowNum}               \\
+			\end{array} \right.
+		\]
+	\def\rowNum{7} \item[Processing row $n^\circ(i + \rowNum)$:]
+		\If $\locTotntIsOne = 1$ \Then 
+		\[
+			\left\{ \begin{array}{l}
+				\callToEuc
+				{i}{\rowNum}
+				{\locMinTbo + (\locOnlyDataTransferSize - 1)}
+				{\llarge}
+				\vspace{2mm}
+				\\
+				\callToEq
+				{i}{\rowNum}
+				{0}{\ppEucRem_{i + \rowNum}}
+				{\llargeMO}
+				\\
+			\end{array} \right.
+		\]
+		and we define the following shorthands
+		\[
+			\left\{ \begin{array}{lclr}
+				\locOnlyDataTransferSingleTarget   & \define & 1 - \ppEucQuot  _{i + \rowNum} \\
+				\locOnlyDataTransferMaxesOutTarget & \define & \ppWcpRes   _{i + \rowNum} \\
+			\end{array} \right.
+		\]
+	\def\rowNum{8} \item[Processing row $n^\circ(i + \rowNum)$:]
+		\If $\locTotntIsOne = 0$ \Then 
+		\[
+			\left\{ \begin{array}{lcl}
+				\callToEuc
+				{i}{\rowNum}
+				{\locMinTbo + (\locFirstDataTransferSize - 1)}
+				{\llarge}
+				\vspace{2mm}
+				\\
+				\callToEq
+				{i}{\rowNum}
+				{0}{\ppEucRem_{i + \rowNum}}
+				{\llargeMO}
+				\\
+			\end{array} \right.
+		\]
+		and we define the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locFirstDataTransferSingleTarget   & \define & 1 - \ppEucQuot  _{i + \rowNum} \\
+				\locFirstDataTransferMaxesOutTarget & \define & \ppWcpRes   _{i + \rowNum} \\
+			\end{array} \right.
+		\]
+		and we impose the following constraints:
+		\begin{enumerate}
+		        \item \If $\locFirstDataTransferMaxesOutTarget = 1$ \Then $\locMiddleTbo = 0$ 
+			\item \If $\locFirstDataTransferMaxesOutTarget = 0$ \Then $\locMiddleTbo = 1 + \ppEucRem _{i + \rowNum}$ 
+		\end{enumerate}
+	\def\rowNum{9} \item[Processing row $n^\circ(i + \rowNum)$:]
+		\If $\locTotntIsOne = 0$ \Then 
+		\[
+			\left\{ \begin{array}{lcl}
+				\callToEuc
+				{i}{\rowNum}
+				{\locMiddleTbo + (\locLastDataTransferSize - 1)}
+				{\llarge}
+				\vspace{2mm}
+				\\
+				\callToEq
+				{i}{\rowNum}
+				{0}{\ppEucRem_{i + \rowNum}}
+				{\llargeMO}
+				\\
+			\end{array} \right.
+		\]
+		and we impose the following constraints
+		\[
+			\left\{ \begin{array}{lcl}
+				\locLastDataTransferSingleTarget   & = & 1 - \ppEucQuot  _{i + \rowNum} \\
+				\locLastDataTransferMaxesOutTarget & = & \ppWcpRes   _{i + \rowNum} \\
+			\end{array} \right.
+		\]
+	\item[Justifying \locTloIncrementAfterFirst{}:]
+		and we impose the following constraints:
+		\begin{enumerate}
+		        \item \If $\locTotntIsOne = 1$ \Then $\locTloIncrementAfterFirst = 0$
+		        \item \If $\locTotntIsOne = 0$ \Then
+				\begin{enumerate}
+					\item \If $\locFirstDataTransferSingleTarget = 0$ \Then $\locTloIncrementAfterFirst = 1$
+					\item \If $\locFirstDataTransferSingleTarget = 1$ \Then $\locTloIncrementAfterFirst = \locFirstDataTransferMaxesOutTarget$
+				\end{enumerate}
+		\end{enumerate}
+	\item[Justifying \locTloIncrementAtTransition{}:]
+		and we impose the following constraints:
+		\begin{enumerate}
+		        \item \If $\locTotntIsOne = 1$ \Then 
+				\begin{enumerate}
+					\item \If $\locOnlyDataTransferSingleTarget = 0$ \Then $\locTloIncrementAtTransition = 1$
+					\item \If $\locOnlyDataTransferSingleTarget = 1$ \Then $\locTloIncrementAtTransition = \locOnlyDataTransferMaxesOutTarget$
+				\end{enumerate}
+		        \item \If $\locTotntIsOne = 0$ \Then
+				\begin{enumerate}
+					\item \If $\locLastDataTransferSingleTarget = 0$ \Then $\locTloIncrementAtTransition = 1$
+					\item \If $\locLastDataTransferSingleTarget = 1$ \Then $\locTloIncrementAtTransition = \locLastDataTransferMaxesOutTarget$
+				\end{enumerate}
+		\end{enumerate}
+	\def\rowNum{10} \item[Processing row $n^\circ(i + \rowNum)$:]
+		we impose the folloiwng \textbf{unconditionally}
+		\[
+			\left\{ \begin{array}{l}
+				\callToEq
+				{i}{\rowNum}
+				{0}{\ppTotRZ_{i}}
+				{1}
+				\vspace{2mm}
+				\\
+				\callToEuc
+				{i}{\rowNum}
+				{\locFirstPaddingOffset}
+				{\llarge}
+				\\
+			\end{array} \right.
+		\]
+		where we set \ppTotRZ{}:
+		\begin{enumerate}
+		        \item \If $\locPureData = 1$ \Then \( \ppTotRZ _{i} = 0 \)
+			\item \If $\locMixed = 1$ \Then \( \ppTotRZ _{i} = \locLastPlo - \locFirstPlo + 1. \)
+		\end{enumerate}
+		and we introduce the following shorthand
+		\[
+			\locTotrzIsOne \define \ppWcpRes_{i + \rowNum}
+		\]
+		and we define the following associated shortands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locFirstPaddingOffset & \define & \locMinTgtOffset + \locTransferSize \\
+				\locFirstPlo           & \define & \ppEucQuot _{i + \rowNum}           \\
+				\locFirstPbo           & ~ = ~   & \locMixed \cdot \ppEucRem  _{i + \rowNum}           \\
+				\locLastPlo            & \define & \locMaxTlo                          \\
+				\locLastPbo            & \define & \locMaxTbo                          \\
+			\end{array} \right.
+		\]
+		and we impose that
+		\begin{enumerate}
+		        \item \If $\locTotrzIsOne = 1$ \Then
+				\[
+					\left\{ \begin{array}{lclr}
+						\locFirstPaddingSize & = & \locPaddingSize \\
+						\locLastPaddingSize  & = & 0               & (\trash) \\
+					\end{array} \right.
+				\]
+			\item \If $\locTotrzIsOne = 0$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\locFirstPaddingSize & = & \locMixed \cdot ( \llarge - \locFirstPbo )                 \\
+						\locLastPaddingSize  & = & \locMixed \cdot ( 1 + \locLastPbo ) \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+\end{description}
+\saNote{} The shorthand \locFirstPaddingOffset{} and the associated euclidean division above only make sense (semantically and procedurally) when $\locMixed \equiv 1$.
+To simplify things we carry it out regardless.

@@ -1,0 +1,37 @@
+\textbf{Storage-rows} are characterized by $\peekStorage \equiv 1$ and columns pertaining to that perspective are prefixed with the following symbol: $\storageSignifier$.
+\begin{enumerate}
+	\item $\stoAddressHi$, $\stoAddressLo$:
+		high and low parts of an account address;
+	\item $\stoDeploymentNumber$:
+		currently valid deployment number of said account address;
+	\item $\stoKeyHi$, $\stoKeyLo$:
+		high and low parts of a storage key of said account address;
+	\item $\stoOrigValueHi$, $\stoOrigValueLo$:
+		high and low parts of the value originally found in storage at the beginning of the transaction;
+	\item $\stoCurrValueHi$, $\stoCurrValueLo$:
+		high and low parts of the value currently found at the storage key;
+	\item $\stoNextValueHi$, $\stoNextValueLo$:
+		high and low parts of the updated value in storage;
+	\item $\stoWarmth$, $\stoWarmth\new$:
+		binary columns containing the storage key's warmth and its updated warmth; 
+	\item
+		$\stoOrigValueIsZero$,
+		$\stoCurrValueIsOrig$,
+		$\stoCurrValueIsZero$,
+		$\stoNextValueIsCurr$,
+		$\stoNextValueIsZero$,
+		$\stoNextValueIsOrig$:
+		binary columns whose purpose is to streamline the computation of gas costs of \inst{SSTORE} instructions.
+\end{enumerate}
+The desired interpretation is straightfoward:
+\[
+	\left\{ \begin{array}{lclclcl}
+		\stoOrigValueIsZero & \!\!\! = \!\!\! & 1 & \iff & \stoOrigValue & \!\!\! = \!\!\! & 0           \\
+		\stoCurrValueIsZero & \!\!\! = \!\!\! & 1 & \iff & \stoCurrValue & \!\!\! = \!\!\! & 0           \\
+		\stoNextValueIsZero & \!\!\! = \!\!\! & 1 & \iff & \stoNextValue & \!\!\! = \!\!\! & 0           \\
+		\stoCurrValueIsOrig & \!\!\! = \!\!\! & 1 & \iff & \stoCurrValue & \!\!\! = \!\!\! & \stoOrigValue \\
+		\stoNextValueIsOrig & \!\!\! = \!\!\! & 1 & \iff & \stoNextValue & \!\!\! = \!\!\! & \stoOrigValue \\
+		\stoNextValueIsCurr & \!\!\! = \!\!\! & 1 & \iff & \stoCurrValue & \!\!\! = \!\!\! & \stoNextValue \\
+	\end{array} \right.
+\]
+See section~\ref{hub: storage-rows: gas cost binary columns}.

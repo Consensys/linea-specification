@@ -1,0 +1,17 @@
+\begin{center}
+		\boxed{%
+			\text{The constraints below apply whenever }
+			\left\{ \begin{array}{lcl}
+				\peekScenario          _{i + \callFirstScenarioRowOffset}     & = & \one \\
+				\scenCallPrc           _{i + \callFirstScenarioRowOffset}     & = & \one \quad (\trash) \\
+			\end{array} \right.}
+\end{center}
+We indicate $\scenCallPrc \equiv 1$ only for greater clarity but it should be omitted from implementations.
+Indeed, the constraints below are guarded by a more stringent precondition (the relevant \inst{CALL}-scenario.)
+The purpose of this section is to set the second scenario row associated with a \inst{CALL} to a precompile. 
+We impose that
+\begin{enumerate}
+	\item \If $\scenCallPrcFailure          _{i + \callFirstScenarioRowOffset} = \one$ \Then \[ \precompileScenarioRow {i}{\callPrcFailureSecondScenarioRowOffset          } \]
+	\item \If $\scenCallPrcSuccessWillRevert_{i + \callFirstScenarioRowOffset} = \one$ \Then \[ \precompileScenarioRow {i}{\callPrcSuccessWillRevertSecondScenarioRowOffset} \]
+	\item \If $\scenCallPrcSuccessWontRevert_{i + \callFirstScenarioRowOffset} = \one$ \Then \[ \precompileScenarioRow {i}{\callPrcSuccessWontRevertSecondScenarioRowOffset} \]
+\end{enumerate}
