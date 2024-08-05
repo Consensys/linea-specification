@@ -13,6 +13,7 @@ We are in the success case.
 We still need to copy the result of the precompile over to a designated \textsc{ram} slot and to potentially do a partial transfer of that result to the current execution context's \textsc{ram}.
 \begin{description}
 	\item[\underline{\underline{Miscellaneous-row $n^°(i + \prcBlakeThirdMiscRowOffset)$:}}]
+		we impose that
 		\begin{description}
 			\item[\underline{Setting lookup flags:}]
 				we impose
@@ -32,17 +33,17 @@ We still need to copy the result of the precompile over to a designated \textsc{
 						\miscStpFlag _{i + 3} & = & \gZero & (\trash) \\
 					\end{array} \right.
 				\]
-			\item[\underline{\mmuMod{} data:}]
+			\item[\underline{Setting the \mmuMod{} instruction:}]
 				we impose
 				\[
 					\setMmuInstructionParametersExoToRamTransplants {
-						anchorRow = i                     ,
-						relOffset = 3                     ,
-						sourceId  = 1 + \hubStamp_{i}     ,
-						targetId  = 1 + \hubStamp_{i}     ,
-						size      = \blakeReturnDataSize  ,
-						exoSum    = \exoWeightBlakeModexp ,
-						phase     = \phaseBlakeResult     ,
+						anchorRow = i                           ,
+						relOffset = \prcBlakeThirdMiscRowOffset ,
+						sourceId  = 1 + \hubStamp_{i}           ,
+						targetId  = 1 + \hubStamp_{i}           ,
+						size      = \blakeReturnDataSize        ,
+						exoSum    = \exoWeightBlakeModexp       ,
+						phase     = \phaseBlakeResult           ,
 						}
 					% \left\{ \begin{array}{lcl}
 					% 	\miscMmuInst          _{i + 3} & = & \mmuInstExoToRamTransplants \\
@@ -62,7 +63,7 @@ We still need to copy the result of the precompile over to a designated \textsc{
 					% 	\miscMmuPhase         _{i + 3} & = & \phaseBlakeResult           \\
 					% \end{array} \right.
 				\]
-				\saNote{} The output of a successful call to the \inst{BLAKE2f} precompile has length $\blakeReturnDataSize$.
+				\saNote{} The output of a successful call to the \inst{BLAKE2f} precompile has length $\blakeReturnDataSize$ bytes.
 		\end{description}
 	\item[\underline{\underline{Miscellaneous-row $n^°(i + \prcBlakeFourthMiscRowOffset)$:}}]
 		the next step is to proceed (when relevant) to a (partial) transfer of return data to the caller context:

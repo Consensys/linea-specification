@@ -83,10 +83,10 @@ In particular return data is $\textbf{o} =
 \in \mathbb{B}_{\evmWordSize}$ as already pointed out in
 section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 \begin{description}
-	\item[\underline{\underline{Setting \mmuMod{} data:}}]
+	\item[\underline{\underline{Setting the \mmuMod{} instruction:}}]
 		we begin with the description of the ``trivial pairing'' case and then move onto the remaining case;
 		\begin{description}
-			\item[\underline{``Trivial pairing'' result writing:}]
+			\item[\underline{``Trivial pairing'' full return data transfer:}]
 				\If $\locTrivialPairing = 1$ \Then we impose that
 				% \[
 				% 	\scenEcpairing _{i} = 1$ \et $\locOobResultEmptyCallData = 1
@@ -102,7 +102,7 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 						limbTwo        = 1                                      ,
 					}
 				\]
-			\item[\underline{``Nontrivial case'' result writing:}]
+			\item[\underline{``Nontrivial case'' full return data transfer:}]
 				we impose that
 				\If 
 				\[
@@ -240,7 +240,7 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 				\inst{ECMUL} respectively,
 				there is no reason for us to set the result in either of those cases.
 			\end{description}
-		\item[\underline{Miscellaneous-row $n^°(i + \prcStandardSuccessThirdMiscRowOffset)$:}]
+		\item[\underline{\underline{Miscellaneous-row $n^°(i + \prcStandardSuccessThirdMiscRowOffset)$:}}]
 			row $n^°(i + \prcStandardSuccessThirdMiscRowOffset)$ serves to copy over a portion of the return data to the current execution context's \textsc{ram}.
 			\begin{description}
 				\item[\underline{Setting lookup flags:}]
@@ -264,7 +264,7 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 			\end{description}
 			\saNote{} In other words the ``result transfer'' step of a call to the \inst{ECADD}, \inst{ECMUL}, \inst{ECPAIRING} is only required if the \inst{CALL} is provided with nonzero \RAC{}.
 			\begin{description}
-				\item[\underline{\mmuMod{} data:}]
+				\item[\underline{Setting the \mmuMod{} instruction for partial return data copy:}]
 					\If $\miscMmuFlag_{i + \prcStandardSuccessThirdMiscRowOffset} = 1$ \Then we impose
 					\[
 						\setMmuInstructionParametersRamToRamSansPadding {

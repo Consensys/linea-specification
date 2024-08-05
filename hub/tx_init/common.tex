@@ -61,6 +61,8 @@ We deal with setting the contents of the various peeking rows.
 					% \standardDomSubStamps              {i}{\locTxInitRecipientAccountRowOffset}{1}} \\
 			\end{array} \right.
 		\]
+		\saNote{} The above explicitly disallows transactions targeting a precompile address.
+
 		We must again distinguish between message calls ($\txIsDeployment \equiv 0$) and deployments ($\txIsDeployment \equiv 1$).
 		We thus define the following shorthand
 		\[
@@ -87,6 +89,7 @@ We deal with setting the contents of the various peeking rows.
 							{\txTo  \high  _{i + \locTxInitTransactionRowOffset}}
 							{\txTo  \low   _{i + \locTxInitTransactionRowOffset}}
 						\]
+						\saNote{} This condition isn't strictly speaking necessary as we impose that every first occurrence of an address and deployment number, in the permuted realm, be trimmed.
 				\end{description}
 			\item[\underline{Nontrivial deployments:}] 
 				\If $\locTxInitIsDeployment = 1$ \Then

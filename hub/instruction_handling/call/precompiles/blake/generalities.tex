@@ -36,7 +36,7 @@ The first row is always a miscellaneous-row.
 				We are thus always calling the \oobMod{} and only calling the \mmuMod{} if the call to the \oobMod{} 
 
 				\saNote{} The shorthand \locOobResultHubSuccess{} which we label with $\undefinedStar$ will be set below.
-			\item[\underline{Setting \oobMod{} values and shorthands:}] 
+			\item[\underline{Setting the \oobMod{} instruction and shorthands:}] 
 				we impose the following constraints
 				\[
 					\setOobInstructionBlakeCds {
@@ -59,7 +59,7 @@ The first row is always a miscellaneous-row.
 					% 	\miscOobDataCol{8} _{i + \prcBlakeFirstMiscRowOffset} & = & \relevantValue \\
 					% \end{array} \right.
 				\]
-				We also define the following shorthands
+				We introduce the following shorthands:
 				\[
 					\left\{ \begin{array}{lcl} \label{hub: instruction handling: call: precompiles: blake: shorthands}
 						% & \define & \miscOobDataCol{1}_{i + \prcBlakeFirstMiscRowOffset} \\
@@ -72,16 +72,25 @@ The first row is always a miscellaneous-row.
 						\locOobResultNonzeroRac      & \define & \miscOobDataCol{8}_{i + \prcBlakeFirstMiscRowOffset} \\
 					\end{array} \right.
 				\]
-				\saNote{} We have, by construction and by the computation in the \oobMod{} module, the following relations:
+				\saNote{}
+				The very same shorthands were already defined previously in section~(\ref{hub: instruction handling: call: precompiles: common: generalities}).
+				We repeat their definition here since the previously introduced shorthands featured explicitly in the ``common precompile'' section.
+				The fact that these shorthands coincide is by design yet fortuitous in the sense that the \oobMod{} processing is fundamentally different for
+				$\setOobInstructionBlakeCdsName$ \oobMod{}-instructions than it is for ``common precompiles.''
+
+				\saNote{} We have, by construction and by the computations performed in the \oobMod{} module, the following relations:
 				\[
-						\locOobResultHubSuccess \equiv \text{binary} 
+					\left\{ \begin{array}{lcl}
+					        \locOobResultHubSuccess & \equiv & \text{binary} \\
+					        \locOobResultNonzeroRac & \equiv & \text{binary} \\
+					\end{array} \right.
 				\]
 			\item[\underline{Setting \scenPrcFailureKnownToHub{}:}] 
 				we impose
 				\[
 					\scenPrcFailureKnownToHub_{i} = 1 - \locOobResultHubSuccess.
 				\]
-			\item[\underline{Setting \mmuMod{} values:}]
+			\item[\underline{Setting the \mmuMod{} instruction:}]
 				\If $\miscMmuFlag_{i + \prcBlakeFirstMiscRowOffset} = 1$ \Then
 				\[
 					\setMmuInstructionParametersBlake {
@@ -90,12 +99,20 @@ The first row is always a miscellaneous-row.
 						sourceId       = \cn_{i}                     ,
 						targetId       = 1 + \hubStamp_{i}           ,
 						sourceOffsetLo = \locPrcCdo                  ,
-						successBit     = \scenPrcSuccess_{i}         ,
-						limbOne        = \relevantValue              ,
-						limbTwo        = \relevantValue              ,
+						% successBit     = \scenPrcSuccess_{i}         ,
+						% limbOne        = \relevantValue              ,
+						% limbTwo        = \relevantValue              ,
 					}
 				\]
-				We also define the following shorthands
+				We further constrain the call's success
+				\[
+					\miscMmuSuccessBit_{i + \prcBlakeFirstMiscRowOffset}
+					=
+					\scenPrcSuccess_{i}.
+				\]
+				\saNote{} Recall the discussion from section~(\ref{hub: misc: blake}).
+
+				\saNote{} We also define the following shorthands
 				\[
 					\left\{ \begin{array}{lcl} \label{hub: instruction handling: call: precompiles: blake: shorthands}
 						\locBlakeR & \define & \miscMmuLimbOne _{i + \prcBlakeFirstMiscRowOffset} \\
@@ -108,6 +125,6 @@ The first row is always a miscellaneous-row.
 
 				\saNote{}
 				At this point only $\scenPrcFailureKnownToHub$ was set.
-				The distinction between the two remaing cases ($\scenPrcFailureKnownToRam$ nor $\scenPrcSuccess$) has been set.
+				Furthermore in case $\scenPrcFailureKnownToHub \equiv 0$ we have also set $\scenPrcSuccess$ and thus implicitly $\scenPrcFailureKnownToRam$.
 		\end{description}
 	\end{description}
