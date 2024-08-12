@@ -1,29 +1,38 @@
 The present section deals with the $\expInstModexpLog$ instruction.
 Its purpose is as follows.
 One is given the following data:
-(\emph{a}) an \evm{} word $\locRawLeadingWord \in \mathbb{B}_{32}$ split into high and low parts, \locRawLeadingWordHi{} and \locRawLeadingWordLo{} respectively
-(\emph{b}) two integers $\locCdsCutoff$ and $\locEbsCutoff$ which are guaranteed to be in the range $[\![ 1, 32\, ]\!]$
-one is tasked with computing $\lfloor \log_{2}(\locLeadingWord) \rfloor$ where we define $\locLeadingWord$ using the following slice of bytes:
+(\emph{a}) an \evm{} word $\locRawLeadingWord \in \mathbb{B}_{\evmWordSize}$ split into high and low parts, \locRawLeadingWordHi{} and \locRawLeadingWordLo{} respectively
+(\emph{b}) two integers $\locCdsCutoff$ and $\locEbsCutoff$ which are guaranteed to be in the range $[\![ 1, \evmWordSize\, ]\!]$
+one is tasked with computing $\lfloor \log_{2}(\locLeadingWord) \rfloor$, using the \cite{EYP} convention that $\log_{2}(0)  = 0$,
+where we define $\locLeadingWord$ using the following slice of bytes:
 \[
-	\left\{ \begin{array}{l}
-		\locLeadingWord \in \mathbb{B}_{\locEbsCutoff} \\
-		\locLeadingWord[i]  =
-		\begin{cases}
-			\If i <    \locCdsCutoff: & \locRawLeadingWord[i] \\
-			\If i \geq \locCdsCutoff: & 0                      \\
-		\end{cases}
+	\left\{ \begin{array}{lcl}
+		\left\{ \begin{array}{lcl}
+			\locRawLeadingWord & \in    & \mathbb{B}_{\evmWordSize}                                                                          \vspace{1mm} \\
+			\locRawLeadingWord & \equiv & \big(\locRawLeadingWord[0], \locRawLeadingWord[1], \dots, \locRawLeadingWord[\evmWordSizeMO] \big)              \\
+		\end{array} \right.
+		\vspace{2mm} \\
+		~ \locMinCutoff = \locEbsCutoff \; \wedge \; \locCdsCutoff 
+		\vspace{2mm} \\
+		\left\{ \begin{array}{lcl}
+			\locTrim & \in    & \mathbb{B}_{\evmWordSize}                                            \vspace{1mm} \\
+			\locTrim & \equiv & \big(\locTrim[0], \locTrim[1], \dots, \locTrim[\evmWordSizeMO] \big)              \\
+			\locTrim[i] & \equiv &
+			\begin{cases}
+				\If i <    \locMinCutoff: & \locRawLeadingWord[i] \\
+				\If i \geq \locMinCutoff: & 0                     \\
+			\end{cases} \\
+		\end{array} \right.
+		\vspace{2mm} \\
+		\left\{ \begin{array}{lcl}
+			\locLeadingWord    & \in    & \mathbb{B}_{\locEbsCutoff}                                                                   \vspace{1mm} \\
+			\locLeadingWord    & \equiv & \big(\locLeadingWord[0], \locLeadingWord[1], \dots, \locLeadingWord[\locEbsCutoff - 1] \big) \vspace{1mm} \\
+			\locLeadingWord[i] & \equiv & \locTrim[i]                                                                                               \\
+		\end{array} \right.
+		\\
 	\end{array} \right.
-	\quad\text{and}\quad
-	\begin{cases}
-		\locTrim \in \mathbb{B}_{\evmWordSize} \\
-		\locTrim[i]  =
-		\begin{cases}
-			\If i <    \locEbsCutoff: & \locLeadingWord[i] \\
-			\If i \geq \locEbsCutoff: & 0                  \\
-		\end{cases}
-	\end{cases}
 \]
-using the standard convention that $\log_{2}(0)  = 0$ and where we use the notation $\col{B}[i]$ to access the $i$-th byte of a slice of bytes $\col{B}\in\mathbb{B}^*$.
+and where we use the notation $\col{B}[i]$ to access the $i$-th byte of a slice of bytes $\col{B}\in\mathbb{B}^*$.
 
 \saNote{} There are two different cutoff: \locEbsCutoff{} and \locCdsCutoff{}. The present module will have to compare the two.
 

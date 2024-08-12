@@ -1,7 +1,7 @@
 \begin{enumerate}
 	\item $\expStamp_{0} = 0$;
-	\item \If $\expStamp_{i} = 0$ \Then $\ct_{i} = 0$
 	\item $\expStamp_{i + 1} = \expStamp_{i} + \isComputation_{i + 1} \cdot (1 - \isComputation_{i})$
+	\item \If $\expStamp_{i} = 0$ \Then $\ct_{i} = 0$
 	\item $\maxCt_{i} = \maxCtFlagSum_{i}$.
 	      % \item \If
 	      % 	\[
@@ -22,13 +22,11 @@
 			      \end{array} \right]
 		      = 0
 	      \]
-	      to define the unallowed perspective transitions.
+	      to define the disallowed perspective transitions.
 \end{enumerate}
 \saNote{} The above enforces implicitly that the ``$\isMacro$'' phase may only last one row.
 \begin{enumerate}[resume]
-	\item We also impose
-
-	      \If \Big($\expStamp_{i} \neq 0$ \et $\ct_{i} = \maxCt_{i}$\Big) \Then
+	\item \If \Big($\expStamp_{i} \neq 0$ \et $\ct_{i} = \maxCt_{i}$\Big) \Then we also impose that
 	      \[
 		      \left[ \begin{array}{lrcl}
 				      + & \isComputation_{i}   & \!\!\! \cdot \!\!\! & \isMacro          _{i + 1} \\
@@ -47,7 +45,13 @@
 \saNote{} The constraint imposes the vanishing of the next counter whenever the counter reaches its maximum value is mostly redundant with the previous constraints.
 Note that this constraint is also active on the final padding-row i.e. at the transition point from padding-rows to non-padding-rows (since $\expStamp_{i} = \ct_{i} = \maxCt_{i} = \maxCtFlagSum_{i} = 0$).
 
-% \saNote{} The heartbeat imposes in particular that if $\expStamp_{i} = 0$ the exponent is zero as is the dynamic cost. This is compatible with \inst{EXP}'s dynamic pricing model.
-
 \saNote{} The above implies that $\expStamp$ is nondecreasing in the sense that $\expStamp_{i + 1} \in \{ \expStamp_{i}, 1 + \expStamp_{i} \}$.
-
+\begin{enumerate}[resume]
+	\item \lispTodo{} \If $\expStamp_{N} \neq 0$ \Then we impose finalization constraints
+		\[
+			\left\{ \begin{array}{lcl}
+				\isPreprocessing _{N} & = & 1           \\
+				\ct              _{N} & = & \maxCt _{N} \\
+			\end{array} \right.
+		\]
+\end{enumerate}

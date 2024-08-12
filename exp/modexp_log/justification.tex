@@ -1,59 +1,60 @@
+\[
+        \boxed{\text{All constraints and shorthand definitions assume that}
+        \begin{cases}
+                \isModexpLog _{i} = 1 \\
+                \isMacro     _{i} = 1 \\
+        \end{cases}}
+\]
 We now go on to justify the \hubMod{} module prediction of \locLeadingWordLog{}.
 \begin{enumerate}
-      \item \If $\locTrivialTrim = 1$ \Then
-            \begin{enumerate}
-                  \item \If $\locRawHiIsZero = 1$ \Then $ \locLeadingWordLog = 0 $
-                  \item \If $\locRawHiIsZero = 0$ \Then
-                        \begin{enumerate}
-                              \item \If $\locEbsCutoffLEQSixteen = 1$  \Then
-                                      $ \locLeadingWordLog = 0 $\footnote{and $\locTrim$ is extracted from $\locRawLeadingWordHi$}
-                              \item \If $\locEbsCutoffLEQSixteen = 0$ \Then
-                                    $ \locLeadingWordLog = 8 \cdot (\locEbsCutoff - \llarge) $\footnote{and $\locTrim$ is extracted from $\locRawLeadingWordHi$}
-                        \end{enumerate}
-            \end{enumerate}
-      \item \If $\locTrivialTrim = 0$ \Then
-            \begin{enumerate}
-                  \item \If $\locEbsCutoffLEQSixteen = 1$ \Then
-                        \[ \locLeadingWordLog = \locPaddedLogBaseTwo - 8 \cdot (\llarge - \locEbsCutoff)\footnote{and $\locTrim$ is extracted from $\locRawLeadingWordHi$} \]
-                  \item \If $\locEbsCutoffLEQSixteen = 0$ \Then
-                        \begin{enumerate}
-                              \item \If $\locRawHiIsZero = 1$ \Then
-                                    \[ \locLeadingWordLog = \locPaddedLogBaseTwo - 8 \cdot (\evmWordSize - \locEbsCutoff)\footnote{and $\locTrim$ is extracted from $\locRawLeadingWordLo$} \]
-                              \item \If $\locRawHiIsZero = 0$ \Then
-                                    \[ \locLeadingWordLog = \locPaddedLogBaseTwo + 8 \cdot (\locEbsCutoff - \llarge)\footnote{and $\locTrim$ is extracted from $\locRawLeadingWordHi$} \]
-                        \end{enumerate}
-            \end{enumerate}
+        \item \If $\locMinCutoffLEQSixteen = 1$ \Then
+                \begin{enumerate}
+                        \item \If $\locTrimAccIsZero = 1$ \Then $\locLeadingWordLog = 0$
+                        \item \If $\locTrimAccIsZero = 0$ \Then $\locLeadingWordLog = \locPaddedLogBaseTwo - 8 \cdot (\llarge - \locEbsCutoff)$
+                \end{enumerate}
+        \item \If $\locMinCutoffLEQSixteen = 0$ \Then
+                \begin{enumerate}
+                        \item \If $\locRawHiIsZero = 1$ \Then
+                                \begin{enumerate}
+                                        \item \If $\locTrimAccIsZero = 1$ \Then $\locLeadingWordLog = 0$
+                                        \item \If $\locTrimAccIsZero = 0$ \Then $\locLeadingWordLog = \locPaddedLogBaseTwo - 8 \cdot (\evmWordSize - \locEbsCutoff)$
+                                \end{enumerate}
+                        \item \If $\locRawHiIsZero = 0$ \Then $\locLeadingWordLog = \locPaddedLogBaseTwo + 8 \cdot (\locEbsCutoff - \llarge)$
+                \end{enumerate}
 \end{enumerate}
-\saNote{}
-Special care has to be taken for the following edge case: the underlying \evm{} word is of the form
-\[
-        \locRawLeadingWord
-        \;\equiv
-        \overbrace{
-        \underbrace{
-                \phantom{\bigg|}
-                \utt{00}\;
-		\utt{00}\;
-		\utt{00}\;
-		\utt{00}\;
-		\utt{00}\;
-		\utt{00}\;
-		\utt{00}\;
-		\utt{00}\;
-		\utt{00}\;
-		\utt{00}\;
-		\utt{00}\;
-		\utt{00}\;
-		\utt{00}\;
-		\utt{00}\;
-		\utt{00}\;
-		 \utt{01}
-                \phantom{\bigg|}
-        }_{\displaystyle \in \mathbb{B}_{\llarge}}
-        \utt{??}\; \cdots \; \underline{\texttt{??}}}^{\displaystyle \in \mathbb{B}_{\evmWordSize}},
-\]
-the exponent byte size (cutoff) \locEbsCutoff{} is $> \llarge$ and $\locCdsCutoff$ is $\geq \llarge$. This is the only configuration wherein the high part gets trimmed and after trimming equals 1.
-When $\locEbsCutoff > \llarge$ the \locLeadingWord{} is a singular $\utt{01}$ followed by $\locEbsCutoff - \llarge$ many bytes so that (the floor of) its logarithm base $2$ is $8 \cdot (\locEbsCutoff - \llarge)$.
-This is the purpose of the subcase ``\If $\locTrivialTrim = 1$ \et $\locRawHiIsZero = 0$.''
+% \saNote{}
+% Recall from section~(\ref{exp: modexp log: preprocessing: trivial trim interpretation}) that $\locTrivialTrim = 1 \iff \locTrimAcc \in \{ 0, 1 \}$.
 
-\saNote{} Similar precautions are taken in the \shfMod{} module.
+% \saNote{}
+% Special care has to be taken for the following edge case: the underlying \evm{} word is of the form
+% \[
+%         \locRawLeadingWord
+%         \;\equiv
+%         \overbrace{
+%                 \underbrace{
+%                         \phantom{\bigg|}
+%                         \utt{00}\;
+%                         \utt{00}\;
+%                         \utt{00}\;
+%                         \utt{00}\;
+%                         \utt{00}\;
+%                         \utt{00}\;
+%                         \utt{00}\;
+%                         \utt{00}\;
+%                         \utt{00}\;
+%                         \utt{00}\;
+%                         \utt{00}\;
+%                         \utt{00}\;
+%                         \utt{00}\;
+%                         \utt{00}\;
+%                         \utt{00}\;
+%                         \utt{01}
+%                         \phantom{\bigg|}
+%                 }_{\displaystyle \in \mathbb{B}_{\llarge}}
+%                 \utt{??}\; \cdots \; \underline{\texttt{??}}}^{\displaystyle \in \mathbb{B}_{\evmWordSize}},
+% \]
+% the exponent byte size (cutoff) \locEbsCutoff{} is $> \llarge$ and $\locCdsCutoff$ is $\geq \llarge$. This is the only configuration wherein the high part gets trimmed and after trimming equals 1.
+% When $\locEbsCutoff > \llarge$ the \locLeadingWord{} is a singular $\utt{01}$ followed by $\locEbsCutoff - \llarge$ many bytes so that (the floor of) its logarithm base $2$ is $8 \cdot (\locEbsCutoff - \llarge)$.
+% This is the purpose of the subcase ``\If $\locTrivialTrim = 1$ \et $\locRawHiIsZero = 0$.''
+%
+% \saNote{} Similar precautions are taken in the \shfMod{} module.

@@ -1,18 +1,28 @@
 The present section deals with the $\expInstExpLog$ instruction.
 Its purpose is as follows.
-One is given the following data:
-(\emph{a}) an \evm{} word \locExponent{} split into high and low parts, \locExponentHi{} and \locExponentLo{} respectively;
-one is tasked with computing (an approximation to) its $\log_{256}$ as defined below
+One is given an exponent $\exponent  \in \mathbb{B}_{\evmWordSize}$ i.e.
+\[
+	\left\{ \begin{array}{lcl}
+		\multicolumn{3}{l}{\exponent \equiv (\ehi, \elo)} \vspace{1mm} \\
+		\exponent & \in & \mathbb{B}_{\evmWordSize} \\
+		\ehi      & \in & \mathbb{B}_{\llarge}      \\
+		\elo      & \in & \mathbb{B}_{\llarge}      \\
+	\end{array} \right.
+\] in terms of its high and low parts.
+In applications $\exponent \equiv \bm{\mu}_\textbf{s}[1]$ corresponds to the second argument of an \inst{EXP} opcode.
+
+The present module is then tasked with computing \locExponentLog{} defined as follows:
 \begin{IEEEeqnarray*}{LCL}
-	\locExponentLog & \equiv  &
-	\left\{ \begin{array}{ll}
-		0                                           & \If \exponent =    0     \\
-		1 + \lfloor \log_{256}(\exponent) \rfloor   & \If \exponent \neq 0     \\
-	\end{array} \right. \\
+	\locExponentLog
 	& \equiv  &
 	\left\{ \begin{array}{ll}
-		0                                                 & \If \big(\ehi = 0 ~ \et \elo = 0\big)       \\
-		1 + \lfloor \log_{256}(\elo) \rfloor              & \If \big(\ehi = 0 ~ \et \elo \neq 0\big)    \\
-		1 + \lfloor \log_{256}(\ehi) \rfloor + \llarge    & \If \ehi \neq 0                             \\
+		1 + \lfloor \log_{256}(\exponent) \rfloor & \If \exponent \neq 0 \vspace{1mm} \\
+		0                                         & \If \exponent =    0 \\
+	\end{array} \right. \vspace{2mm} \\
+	& \equiv  &
+	\left\{ \begin{array}{ll}
+		1 + \lfloor \log_{256}(\ehi) \rfloor + \llarge & \If \ehi \neq 0                          \vspace{1mm} \\
+		1 + \lfloor \log_{256}(\elo) \rfloor           & \If \big(\ehi = 0 ~ \et \elo \neq 0\big) \vspace{1mm} \\
+		0                                              & \If \big(\ehi = 0 ~ \et \elo = 0\big)    \\
 	\end{array} \right. \\
 \end{IEEEeqnarray*}
