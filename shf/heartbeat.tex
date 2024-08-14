@@ -1,13 +1,13 @@
-The heartbeat of the shifting module is simple: once the $\iShfStamp$ is nonzero every instruction occupies either $1$ line or $\llarge$ lines depending on whether $\oli = 1$ or $\oli = 0$.
+The heartbeat of the shifting module is simple: once the $\shfStamp$ is nonzero every instruction occupies either $1$ line or $\llarge$ lines depending on whether $\oli = 1$ or $\oli = 0$.
 \begin{enumerate}
-	\item $\iShfStamp_0 = 0$
-	\item $\iShfStamp_{i + 1} \in \{ \iShfStamp_{i}, 1 + \iShfStamp_{i} \}$
-	\item \If $\iShfStamp_{i} = 0$ \Then $\iomf_{i} = 0$
-	\item \If $\iShfStamp_{i} \neq 0$ \Then $\iomf_{i} = 1$
-	\item \If $\iShfStamp_{i + 1} \neq \iShfStamp_{i}$ \Then $\ct_{i + 1} = 0$
-	\item \If $\iShfStamp_{i} \neq 0$ \Then
+	\item $\shfStamp_0 = 0$
+	\item $\shfStamp_{i + 1} \in \{ \shfStamp_{i}, 1 + \shfStamp_{i} \}$
+	\item \If $\shfStamp_{i} = 0$ \Then $\iomf_{i} = 0$
+	\item \If $\shfStamp_{i} \neq 0$ \Then $\iomf_{i} = 1$
+	\item \If $\shfStamp_{i + 1} \neq \shfStamp_{i}$ \Then $\ct_{i + 1} = 0$
+	\item \If $\shfStamp_{i} \neq 0$ \Then
 	\begin{enumerate}
-		\item \If $\oli_{i} = 1$ \Then $\iShfStamp_{i + 1} = 1 + \iShfStamp_{i}$
+		\item \If $\oli_{i} = 1$ \Then $\shfStamp_{i + 1} = 1 + \shfStamp_{i}$
 		\item \If $\oli_{i} = 0$
 		\begin{enumerate}
 			\item \If $\ct_{i} \neq \llargeMO$ \Then
@@ -19,9 +19,9 @@ The heartbeat of the shifting module is simple: once the $\iShfStamp$ is nonzero
 			\end{array}
 			\right.
 			\]
-			\item \If $\ct_{i} = \llargeMO$ \Then $\iShfStamp_{i + 1} = 1 + \iShfStamp_{i}$
+			\item \If $\ct_{i} = \llargeMO$ \Then $\shfStamp_{i + 1} = 1 + \shfStamp_{i}$
 		\end{enumerate}
 	\end{enumerate}
-	\item \If $\iShfStamp_{N} \neq 0$ \et $\oli_{N} = 0$ \Then $\ct_{N} = \llargeMO$
+	\item \If $\shfStamp_{N} \neq 0$ \et $\oli_{N} = 0$ \Then $\ct_{N} = \llargeMO$
 \end{enumerate}
 \ob{TODO: do we need to impose that instructions be $\in\{\inst{SHL}, \inst{SHR}, \inst{SAR}\}$ when $\shfStamp \neq 0$ and $0$ otherwise ? We do it in some modules \dots{}}

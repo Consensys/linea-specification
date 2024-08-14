@@ -1,7 +1,7 @@
-This section contains the desription of two families of constraints: $\rightShiftBy_{k}$ and $\leftShiftBy_{k}$ indexed by $k\in\{1,\dots,\llargeMO\}$.
-Their ``signatures'' differ slightly because \rightShiftBy{} is used both by \inst{SHR} and \inst{SAR}.
+This section contains the desription of two families of constraints: $\rightShiftBy{k}$ and $\leftShiftBy{k}$ indexed by $k\in\{1,\dots,\llargeMO\}$.
+Their ``signatures'' differ slightly because $\rightShiftBy{k}$ is used both by \inst{SHR} and \inst{SAR}.
 
-\subsubsection{\leftShiftBy{} constraints}
+\subsubsection{$\leftShiftBy{k}$ constraints}
 
 Suppose we are given an integer $k\in\{1,\dots,\llargeMO\}$ and
 \begin{enumerate}
@@ -19,7 +19,7 @@ together they make up the byte decomposition of two limbs (the high and low part
 $\byteCol{1}^\sigma$ and $\byteCol{2}^\sigma$ either coincide with $\byteCol{1}$ and $\byteCol{2}$
 (if $\bit{b} = 0$) or contain the bytes of the two limbs which represent the high and low part respectively of the left shift by $k$ bytes of the previously mentioned EVM word (if $\bit{b} = 1$.)
 
-We collect under the moniker $\leftShiftBy_{k}$ the following constraints:
+We collect under the moniker $\leftShiftBy{k}$ the following constraints:
 \begin{description}
 	\item[Plateau constraint.] We impose $\plateau(\bit{1}, \llarge - k)$
 	\item[Shifts / non shifts.] We impose that,
@@ -46,7 +46,7 @@ We collect under the moniker $\leftShiftBy_{k}$ the following constraints:
 \end{description}
 We subsume the preceding constraints in the expression
 \[
-	\leftShiftBy_{k}
+	\leftShiftBy{k}
 	\left(
 	\begin{array}{c}
 	\bit{b}, \bit{1}; \\
@@ -57,7 +57,7 @@ We subsume the preceding constraints in the expression
 \]
 Again, the dependence on $\ct$ is implicit.
 
-\subsubsection{\rightShiftBy{} constraints}
+\subsubsection{$\rightShiftBy{k}$ constraints}
 
 Suppose we are given an integer $k\in\{1,\dots,\llargeMO\}$ and
 \begin{enumerate}
@@ -80,7 +80,7 @@ if $\bit{b} \equiv 0$ then $\byteCol{1}^\sigma$ and $\byteCol{2}^\sigma$ coincid
 if $\bit{b} \equiv 1$ then $\byteCol{1}^\sigma$ and $\byteCol{2}^\sigma$ contain the bytes of the two limbs which represent the high and low part respectively of the right shift by $k$ bytes of the previously mentioned EVM word padded with $\texttt{11111111} = \texttt{0x\;ff}$'s if the ``sign bit'' $\col{N}$ is one and the ``instruction column'' $\INST$ equals \inst{SAR}.
 Note that the constraints depend (implicitly) on the $\ct$ column.
 
-We collect under the moniker $\rightShiftBy_{k}$ the following constraints:
+We collect under the moniker $\rightShiftBy{k}$ the following constraints:
 \begin{description}
 	\item[Plateau constraint.] We impose $\plateau(\bit{1}, k)$
 	\item[Non shifts.] We impose that, \If $\bit{b}_{i} = 0$ \Then
@@ -108,7 +108,7 @@ We collect under the moniker $\rightShiftBy_{k}$ the following constraints:
 \end{description}
 We subsume the preceding constraints in the expression
 \[
-	\rightShiftBy_{k}
+	\rightShiftBy{k}
 	\left(
 	\begin{array}{c}
 	\bit{b}, \bit{1}, \col{N}, \INST{}; \\

@@ -1,39 +1,39 @@
 The following are the columns of the shifting module. The first collection of columns determines the heartbeat.
 \begin{enumerate}
-	\item $\iShfSTAMP$: imported column containing the shifting module stamp; grows monotonically; abbreviatged to $\iShfStamp$
+	\item $\shfSTAMP$: imported column containing the shifting module stamp; grows monotonically; abbreviatged to $\shfStamp$
 	\item \iomf{}:
 	bit column, is zero when the stamp is zero, one when the stamp is not zero; 
 	\item $\CT$: column which either hovers around 0 or grows monotonically from $0$ to $\llargeMO$ and resets to $0$; abbreviated to $\ct$;
 	\item $\OLI$: counter-constant binary column; determines if an instruction can be dealt with in one line or requires $\llarge$ lines to process; abbreviated to $\oli$;
 \end{enumerate}
-The first argument $\iArgOne = \col{s}$ of a shift instruction is the integer by which one shifts, the second argument $\iArgTwo = \col{v}$ is the value which one shifts. For instance: $\inst{SHL}$ computes $\col{v}\ll\col{s}$ and \inst{SHR} computes $\col{v}\gg\col{s}$. The result is recorded in $\iRes$.
+The first argument $\argOne = \col{s}$ of a shift instruction is the integer by which one shifts, the second argument $\argTwo = \col{v}$ is the value which one shifts. For instance: $\inst{SHL}$ computes $\col{v}\ll\col{s}$ and \inst{SHR} computes $\col{v}\gg\col{s}$. The result is recorded in $\res$.
 \begin{enumerate}[resume]
-	\item $\iArgOneHi$, $\iArgOneLo$: high and low part of the first argument of a shift instruction;
-	\item $\iArgTwoHi$, $\iArgTwoLo$: high and low part of the second argument of a shift instruction;
-	\item $\iResHi$, $\iResLo$: high and low part of the result of executing the opcode;
+	\item $\argOneHi$, $\argOneLo$: high and low part of the first argument of a shift instruction;
+	\item $\argTwoHi$, $\argTwoLo$: high and low part of the second argument of a shift instruction;
+	\item $\resHi$, $\resLo$: high and low part of the result of executing the opcode;
 \end{enumerate}
 Given the stack pattern used for shift-instructions (i.e. $\stdSP$)
-$\iArgOneHi$ and $\iArgOneLo$ are imports of $\sValHi{1}$ and $\sValLo{1}$, 
-$\iArgTwoHi$ and $\iArgTwoLo$ are imports of $\sValHi{3}$ and $\sValLo{3}$, 
-$\iResHi$ and $\iResLo$ are imports of $\sValHi{4}$ and $\sValLo{4}$ respectively.
+$\argOneHi$ and $\argOneLo$ are imports of $\sValHi{1}$ and $\sValLo{1}$, 
+$\argTwoHi$ and $\argTwoLo$ are imports of $\sValHi{3}$ and $\sValLo{3}$, 
+$\resHi$ and $\resLo$ are imports of $\sValHi{4}$ and $\sValLo{4}$ respectively.
 \begin{enumerate}[resume]
-	\item $\iInst$: imported instruction column;
+	\item $\INST$: imported instruction column;
 	\item $\SHD$: binary column; abbreviated to $\shd$
 	\item $\someBits$: binary column;
 	\item $\NEG$: counter-constant binary column;
 	\item $\known$: counter-constant binary column;
 \end{enumerate}
-When $\oli = 1$ the \someBits{} column is made to contain the bit decomposition of the most significant byte of $\iArgTwo$ and the least significant byte of $\iArgOne$. The most significant bit of $\iArgTwo$ is stored in the (counter-constant binary) column $\NEG$: when $\iArgTwo$ is interpreted as a signed integer, as in the case of a \inst{SAR} instruction, $\NEG$ thus contains the sign bit. If $\iArgOne$ differs from its least significant byte the result of applying \inst{SHR} or \inst{SHL} will be zero. The binary column $\known$ determines how $\iResHi$ and $\iResLo$ are computed: when $\known = 1$ the result of the shift is ``known in advance.''
+When $\oli = 1$ the \someBits{} column is made to contain the bit decomposition of the most significant byte of $\argTwo$ and the least significant byte of $\argOne$. The most significant bit of $\argTwo$ is stored in the (counter-constant binary) column $\NEG$: when $\argTwo$ is interpreted as a signed integer, as in the case of a \inst{SAR} instruction, $\NEG$ thus contains the sign bit. If $\argOne$ differs from its least significant byte the result of applying \inst{SHR} or \inst{SHL} will be zero. The binary column $\known$ determines how $\resHi$ and $\resLo$ are computed: when $\known = 1$ the result of the shift is ``known in advance.''
 \begin{enumerate}[resume]
-	\item $\decLaHi$, $\decRaHi$, $\decLaLo$, $\decRaLo$: instruction decoded byte columns;
+	\item $\laHi$, $\raHi$, $\laLo$, $\raLo$: instruction decoded byte columns;
 	\item $\LT$: counter-constant columns with values in $\{0,1,\dots,7\}$;
 	\item $\MSHP$: counter-constant column with values in $\{0,1,\dots,7,8\}$; abbreviated to $\mshp$;
 \end{enumerate}
 The interpretation is as follows:
-$\LT$ records the 3 least significant bits of $\iArgOne$;
+$\LT$ records the 3 least significant bits of $\argOne$;
 $\mshp$ equals either $\LT$ or to $8 - \LT$ depending on whether the instruction shifts to the right or to the left;
-$\decLaHi$, $\decRaHi$ are left aligned suffixes and right aligned prefixes of $\iArgTwoHi$ respectively;
-$\decLaLo$, $\decRaLo$ are left aligned suffixes and right aligned prefixes of $\iArgTwoLo$ respectively.
+$\laHi$, $\raHi$ are left aligned suffixes and right aligned prefixes of $\argTwoHi$ respectively;
+$\laLo$, $\raLo$ are left aligned suffixes and right aligned prefixes of $\argTwoLo$ respectively.
 Thus $\argTwoHi$ and $\argTwoLo$ are split in half at the bit index $\mshp$ and the resulting prefix and suffix are right-shifted and left-shifted respectively.
 \begin{enumerate}[resume]
 	\item $\bit{k}$ for $k \in \{1, 2, 3, 4\}$: counter-constant binary columns
