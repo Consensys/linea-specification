@@ -1,6 +1,6 @@
-# Linea zk-EVM specification
+# Linea zkEVM specification
 
-This repository hosts the specification of the constraint system underlying Linea's zk-EVM.
+This repository hosts the specification of the constraint system underlying Linea's zkEVM.
 
 Constraints are mathematical equations and a constraint system is a collection of such equations. Linea’s constraint system aims to capture the logic of valid EVM executions.
 
@@ -22,7 +22,7 @@ todo -->
 
 Linea's stack is made up of multiple repositories, these include:
 
-- This repo, [linea-specification](https://github.com/Consensys/linea-specification): Specification of the constraint system defining Linea's zk-EVM
+- This repo, [linea-specification](https://github.com/Consensys/linea-specification): Specification of the constraint system defining Linea's zkEVM
 - [linea-monorepo](https://github.com/Consensys/linea-monorepo): The main repository for the Linea stack & network 
 - [linea-besu](https://github.com/Consensys/linea-besu): Fork of Besu to implement the Linea-Besu client
 - [linea-sequencer](https://github.com/Consensys/linea-sequencer): A set of Linea-Besu plugins for the sequencer and RPC nodes

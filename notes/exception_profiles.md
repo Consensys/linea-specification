@@ -4,11 +4,11 @@ The present note is a record of the way exceptions may arise and be dealt with o
 
 ## Exceptions
 
-Our zk-evm knows the following exceptions with associated stack columns:
+Our zkEVM knows the following exceptions with associated stack columns:
 - OPCX: invalidOpCodeException:
 - SUX: stack underflow exception: stack underflow exception
 - SOX: stack overflow exception
-- MXPX: memory expansion exeption (a subcase of the out of gas exception)
+- MXPX: memory expansion exception (a subcase of the out of gas exception)
 - OOGX: out of gas exception
 - RDCX: RETURNDATACOPY exception
 - JUMPX: invalid JUMP exception

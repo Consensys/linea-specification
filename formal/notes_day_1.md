@@ -83,7 +83,7 @@ with several revert stamps
     - philosophy changes (counter-constancy vs. IOMF/DONE) paradigm)
     - major updates (e.g. v1 -> v2) of modules
     - reinterpretation of constraints (field change)
-    - field agnostic zk-evm
+    - field agnostic zkEVM
     - **Question** To what extent is the formal verification dependent on the constraints ? Joanne's approach isn't scalable --- what approach is ? What are the properties that can a more or less implementation independent formal proof which can be updated as spec changes roll in ? 
     - How to **automatize** lisp -> (dafny / coq / ...) so that formal verification of properties survives ? 
 - when is an appropriate time to think of formal verification ?
@@ -97,7 +97,7 @@ with several revert stamps
     - valid traces are always producible given a valid input state and valid (''relatively cheap'') transactions
     - for all Soundness, "compliance with the EVM", control flow of complex opcodes (e.g. CALLs, CREATEs, precompiles) ...
 - **Soundness** (lofty goal):
-- Can we use the zk-evm as a kind of **execution client** ?
+- Can we use the zkEVM as a kind of **execution client** ?
     - Comparisons with other clients, e.g.
         - abstract away the hashing and other precompiles 
 

@@ -102,5 +102,5 @@ lua_clean:
 
 # adding e.g. 
 # alias pdf='make -C ~/Documents/latex/zk-evm-notes/'
-# (or whatever your path is to the zk-evm-notes folder) to ~/.bashrc
+# (or whatever your path is to the zkevm-notes folder) to ~/.bashrc
 # allows one to execute commands like 'pdf oob' to view the oob module pdf from anywhere.

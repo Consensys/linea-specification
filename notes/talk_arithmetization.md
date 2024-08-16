@@ -1,4 +1,4 @@
-# zk-evm
+# zkEVM
 
 # Arithmetization
 
@@ -27,6 +27,6 @@
 - RLP everywhere
 - size issues ("type system")
 	- stack items must be small
-	- byte decomposition of data flowing into the zkevm
+	- byte decomposition of data flowing into the zkEVM
 	- tx rlp + ROM + storage
 - precompiles (magic values appearing in RAM)
