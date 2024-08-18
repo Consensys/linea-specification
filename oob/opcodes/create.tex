@@ -21,11 +21,12 @@ Next it detects failure conditions for \inst{CREATE}-type instructions:
 		\locCallStackDepth     & \define & \oobDataCol  {6}  _{i} \\
 		\locAbortingCondition  & \define & \oobDataCol  {7}  _{i} & \prediction \\
 		\locFailureCondition   & \define & \oobDataCol  {8}  _{i} & \prediction \\
+		\locCreatorNonce       & \define & \oobDataCol  {9}  _{i} \\
 	\end{array} \right.
 \]
 We impose the following constraints:
 \begin{description}
-	\item[\underline{Rows n°$(i)$, n°$(i + 1)$ and n°$(i + 2)$:}] 
+	\item[\underline{Rows n°$(i)$, n°$(i + 1)$, n°$(i + 2)$ and n°$(i + 3)$:}] 
 		this row compares the balance to the value to transfer:
 		\[
 			\left\{ \begin{array}{l}
@@ -42,30 +43,39 @@ We impose the following constraints:
 				\oobCallToIszero
 				{i}{2}
 				{0}{\locNonce}
-				\\
+				\vspace{2mm} \\
+				\oobCallToLt
+				{i}{3}
+				{0}{\locCreatorNonce}
+				{0}{\maxNonce}
 			\end{array} \right.
 		\]
 		and we introduce the following shorthands
 		\[
 			\left\{ \begin{array}{lcl}
-				\locBalanceAbort  & \define & \outgoingResLo          _{i    } \\
-				\locCsdAbort      & \define & 1 - \outgoingResLo      _{i + 1} \\
-				\locNonzeroNonce  & \define & 1 - \outgoingResLo      _{i + 2} \\
+				\locBalanceAbort  				   & \define & \outgoingResLo          _{i    } \\
+				\locCsdAbort                       & \define & 1 - \outgoingResLo      _{i + 1} \\
+				\locNonzeroNonce                   & \define & 1 - \outgoingResLo      _{i + 2} \\
+				\locCreatorNonceAbort              & \define & 1 - \outgoingResLo      _{i + 3} \\				 
 			\end{array} \right.
 		\]
 		Thus by construction
 		$\locBalanceAbort = 1 \iff \locBalance        <    \locValue $,
-		$\locCsdAbort     = 1 \iff \locCallStackDepth \geq \col{1024}$ and
-		$\locNonzeroNonce = 1 \iff \locNonce          \neq 0$.
+		$\locCsdAbort     = 1 \iff \locCallStackDepth \geq \col{1024}$,
+		$\locNonzeroNonce = 1 \iff \locNonce          \neq 0$ and
+		$\locCreatorNonceAbort = 1 \iff \locCreatorNonce \geq \maxNonce$. Recall that $\maxNonce = 2^{64} - 1$.
 	\item[\underline{Justifying \hubMod{} predictions:}] 
 		we impose
 		\[
 			\left\{ \begin{array}{lcl}
-				\locAbortingCondition & = &
-				\left[ \begin{array}{crcl}
-					+ & \locBalanceAbort       \\
-					+ & (1 - \locBalanceAbort)  & \cdot & \locCsdAbort \\
-				\end{array} \right] \vspace{2mm} \\
+				\locAbortingConditionsSum & \define & 
+				\left[ \begin{array}{cr}
+					+ & \locBalanceAbort \\
+					+ & \locCsdAbort     \\
+					+ & \locCreatorNonceAbort \\
+				\end{array} \right] \\
+				\If \locAbortingConditionsSum & = & 0 ~ \Then \locAbortingCondition = 0 \\
+				\If \locAbortingConditionsSum & \neq & 0 ~ \Then \locAbortingCondition = 1 \\
 				\locFailureCondition  & = &
 				(1 - \locAbortingCondition) \cdot
 				\left[ \begin{array}{crcl}

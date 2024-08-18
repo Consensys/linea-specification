@@ -27,9 +27,12 @@ What follows is the list of tasks in which the present module helps the \hubMod{
 		see section section~(\ref{oob: populating: cdl});
 	\item[\underline{Exceptional \inst{CALL}'s:}]
 		detect whether $\col{value} \neq 0$;
-	\item[\underline{\inst{CALL}-type and \inst{CREATE}-type abort detection:}]
-		detect $\col{value} > \col{balance}$, $\col{callstackdepth} = 1024$ and $\col{value} \neq 0$;
-		see section~(\ref{oob: populating: call}) and section~(\ref{oob: populating: create});
+	\item[\underline{\inst{CALL}-type abort detection:}]
+		detect $\col{value} > \col{balance}$, $\col{callstackdepth} \ge 1024$, $\col{value} \neq 0$;
+		see section~(\ref{oob: populating: call});
+	\item[\underline{\inst{CREATE}-type abort detection:}]
+		detect $\col{value} > \col{balance}$, $\col{callstackdepth} \ge 1024$, $\locNonce \neq 0$ and $\locCreatorNonce \geq 2^{64} - 1$;
+		see section~(\ref{oob: populating: create});
 	\item[\underline{\sstorexSH{} detection:}]
 		determine if $\col{gas} \leq G_\text{callstipend} = 2300$;
 		see section section~(\ref{oob: populating: sstore});
