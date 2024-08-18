@@ -1,6 +1,18 @@
 The purpose of the present \gasMod{} module is very simple.
-Whenever the \cmc{} flag lights up in the \hubMod{}, the present module is called upon and tasked with checking that
-(\emph{a})
-the currently available gas after any potential refunds (i.e. \gasActual{}) is nonnegative
-(\emph{b})
-checking the \stackOogx{} flag in terms of \gasActual{} and \gasCost{}. The only \emph{actual} work carried out by the present module are byte decompositions.
+Whenever the \CONTEXTMAYCHANGE{} flag lights up along a stack-row in the \hubMod{},
+see section~(\ref{hub: lookups: into gas}), that is, whenever the \hubMod{} encounters at least one of the following conditions
+\begin{enumerate}
+	\item a halting instruction (i.e. $\haltFlag \equiv 1$)
+        \item a call instruction (i.e. $\callFlag \equiv 1$)
+        \item a create instruction (i.e. $\createFlag \equiv 1$)
+	\item an exception of any kind (i.e. $\xAhoy \equiv 1$) including, but not limited to, an \oogxSH{}
+\end{enumerate}
+the present module is called upon and tasked with checking that
+(\emph{a}) the currently available gas (i.e. \gasActual{}) is nonnegative and
+(\emph{b}) the gas cost (i.e. \gasActual{}) is nonnegative. \ob{TODO: is this utterly pointless ?}
+Furthermore, if the call is predicted to be unexceptional (i.e. $\xAhoy \equiv 0$) the present module checks that
+(\emph{c.1}) the available gas covers the instruction's (upfront) gas cost i.e. $\gasActual \geq \gasCost$ while
+if the call is predicted to be exceptional due to an \oogxSH{} (i.e. $\oogx \equiv 1$) 
+(\emph{c.2}) in case of an out of gas exception that $\gasActual < \gasCost$.
+
+\saNote{} If the trigger was an exception other than an \oogxSH{} the present module does not perform the ``available gas \emph{vs.} gas cost'' comparison.

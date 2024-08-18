@@ -1,0 +1,36 @@
+\[
+	\boxed{\text{All constraints below are written under the assumption that }\first _{i} = 1.}
+\]
+The present section defines the computations which the \gasMod{} module off-loads to the \wcpMod{} module.
+\begin{description}
+	\def\rowNum{\yellowm{0}} \item[\underline{Row $n^\circ(i + \rowNum)$: Asserting the leftover gas is $\geq 0$:}]
+		we impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\wcpArgOneLo _{i + \rowNum} & = & 0               \\
+				\wcpArgTwoLo _{i + \rowNum} & = & \gasActual _{i} \\
+				\wcpInst     _{i + \rowNum} & = & \inst{LEQ}      \\
+				\wcpRes      _{i + \rowNum} & = & \rOne           \\
+			\end{array} \right.
+		\]
+	\def\rowNum{\yellowm{1}} \item[\underline{Row $n^\circ(i + \rowNum)$: Asserting the gas cost      is $\geq 0$:}]
+		we impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\wcpArgOneLo _{i + \rowNum} & = & 0             \\
+				\wcpArgTwoLo _{i + \rowNum} & = & \gasCost _{i} \\
+				\wcpInst     _{i + \rowNum} & = & \inst{LEQ}    \\
+				\wcpRes      _{i + \rowNum} & = & \rOne         \\
+			\end{array} \right.
+		\]
+	\def\rowNum{\yellowm{2}} \item[\underline{Row $n^\circ(i + \rowNum)$: Comparing leftover gas and gas cost:}]
+		\If $\xAhoy_{i} \cdot (1 - \oogx_{i}) = 0$ \Then we impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\wcpArgOneLo _{i + \rowNum} & = & \gasActual _{i} \\
+				\wcpArgTwoLo _{i + \rowNum} & = & \gasCost   _{i} \\
+				\wcpInst     _{i + \rowNum} & = & \inst{LT}       \\
+				\wcpRes      _{i + \rowNum} & = & \oogx      _{i} \\
+			\end{array} \right.
+		\]
+\end{description}
