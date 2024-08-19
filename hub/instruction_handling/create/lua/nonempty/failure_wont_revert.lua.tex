@@ -121,7 +121,7 @@
 |           |        |                                                    | .   acc/HAS_CODE = 0                                        |                    |           |
 |           |        |                                                    | .   (<== this triggers OOB_failure_condition ≡ 0)           |                    |           |
 |-----------+--------+----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
-|   i + 5   | ACC    | Load account with address I_a                      |                                                             | τ ∙ ρ_chld + ε_rev | 2         |
+|   i + 5   | ACC    | Load account with address I_a                      |                                                             | τ ∙ ρ_chld + ε_rev | τ ∙ h + 2 |
 |           |        | ♻️sameAddress[5,3]                                 |                                                             |                    |           |
 |           |        | ⏪sameNonce[5]                                     |                                                             |                    |           |
 |           |        | ⏪undoBalanceUpdate[5,3]                           |                                                             |                    |           |
@@ -129,7 +129,7 @@
 |           |        |                                                    | * acc/BALANCE                                               |                    |           |
 |           |        |                                                    | * acc/DEPLOYMENT_ADDRESS ≡ δ                                |                    |           |
 |-----------+--------+----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
-|   i + 6   | ACC    | Read account with address δ                        |                                                             | τ ∙ ρ_chld + ε_rev | 3         |
+|   i + 6   | ACC    | Read account with address δ                        |                                                             | τ ∙ ρ_chld + ε_rev | τ ∙ h + 3 |
 |           |        | ♻️sameAddress[6,4]                                 |                                                             |                    |           |
 |           |        | ⏪undoNonceUpdate[6,4]                             |                                                             |                    |           |
 |           |        | ⏪undoBalanceUpdate[6,4]                           |                                                             |                    |           |
@@ -143,6 +143,11 @@
 |           |        | firstRowOfDeploymentContext( next context )        |
 |           |        | justifyCreateeRevertData( next context )           |
 |-----------+--------+----------------------------------------------------|
+
+NOTE. We use the following shorthands
+
+        * h      ≡ HUB_STAMP
+        * ρ_chld ≡ CONTEXT_REVERT_STAMP of child context
 
 \end{verbatim}
 \end{document}
