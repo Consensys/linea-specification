@@ -1,8 +1,18 @@
 For greater expressivity we use the following shorthands
 \[
-	\left\{ \begin{array}{lcl}
-		\locTransfersValue    & \define & 1 - \resLo_{i + 1} \\
-		\locZeroValue         & \define & \resLo_{i + 1} \\
+	\left\{ \begin{array}{lrl}
+		\locTransfersValue    & \define &
+		\begin{cases}
+			\If \locCctv = 0: & 0                  \\
+			\If \locCctv = 1: & 1 - \resLo_{i + 1} \\
+		\end{cases} \\
+		& \equiv & \locCctv \cdot (1 - \resLo_{i + 1}) \vspace{2mm} \\ 
+		\locZeroValue         & \define &
+		\begin{cases}
+			\If \locCctv = 0: & 0              \\
+			\If \locCctv = 1: & \resLo_{i + 1} \\
+		\end{cases} \\
+		& \equiv & \locCctv \cdot \resLo_{i + 1} \vspace{2mm} \\ 
 		\locGasAccess         & \define & 
 		\begin{cases}
 			\If \locWarm = 1: & G_\text{warmaccess} \\
@@ -10,20 +20,22 @@ For greater expressivity we use the following shorthands
 		\end{cases} \\
 		\locGasTransfer       & \define &
 		\begin{cases}
-			\If \locCctv = 1 \wedge \locTransfersValue = 1: & G_\text{callvalue} \\
-			\If \locCctv = 0 \vee   \locTransfersValue = 0:    & 0 \\
+			\If \locTransfersValue = 1: & G_\text{callvalue} \\
+			\If \locTransfersValue = 0:    & 0 \\
 		\end{cases} \\
+		& \equiv & \locTransfersValue \cdot G_\text{callvalue} \vspace{2mm} \\
 		\locGasNewAcc         & \define &
 		\begin{cases}
-			\If \locExists = 1: & 0 \\
-			\If \locExists = 0: & G_\text{newaccount} \\
+			\If \locExists = 1 \vee   \locTransfersValue = 0: & 0 \\
+			\If \locExists = 0 \wedge \locTransfersValue = 1: & G_\text{newaccount} \\
 		\end{cases} \\
+		& \equiv & (1 - \locExists) \cdot \locTransfersValue \cdot G_\text{newaccount} \vspace{2mm} \\
 		\locGasXtra           & \define & \locGasAccess + \locGasTransfer + \locGasNewAcc \\
-		\locGasUpfrontCall    & \define & \locGasMxp + \locGasXtra \\
-		\locDiff              & \define & \locGasActl ~ - ~ \locGasUpfrontCall \\
+		\locGasUpfrontCall    & \define & \locGasMxp + \locGasXtra \vspace{2mm} \\
 		\locOneSixtyFourth    & \define & \resLo_{i + 3} \\
-		\locLOfGasDiff        & \define & \locGasDiff ~ - ~ \locOneSixtyFourth \\
 		\locGasCompBit        & \define & \resLo_{i + 4} \\
+		\locDiff              & \define & \locGasActl ~ - ~ \locGasUpfrontCall \\
+		\locLOfGasDiff        & \define & \locGasDiff ~ - ~ \locOneSixtyFourth \\
 		\locMin               & \define &
 		\begin{cases}
 			\If \locGasCompBit = 0 : & \locLOfGasDiff \\
