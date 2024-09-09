@@ -1,39 +1,81 @@
-\subsection{Columns description}
 
-The following column is used for book-keeping of different code fragments within the ROM.
+The following column is used for book-keeping of different code fragments within the \romMod{} module.
 \begin{enumerate}
-    \item \CFI{}: code-fragment-constant column; an unique (block)-identifier of a code fragment; abbreviated to \cfi{};
-    \item $\cfiMax$: batch-wide maximal code fragment index;
-    \item \CS{}: a code-fragment-constant column containing the code size of the bytecode currently being loaded into ROM; abbreviated to \cs{};
-    \item \CSR{}: a binary column that equals 0 at the onset of a given bytecode and reaches 1 at the point where $\pc_i=\CS_i$; abbreviated to \csr{};
-    \item \pc{}: program counter (i.e. index of the byte in the current bytecode);
-    \item \limb{}: containing the 16 bytes slice of the padded bytecode;
-    \item \index{}: contains the index of the current \limb{}; starts at 0:
-    \item \nBytes{}: number of non-padded bytes of the \limb;
-    \item \nBytesAcc{}: an accumulator for \nBytes{};
-    \item \ct{}: a periodic counter; it counts up from 0 to \ctMax{} in increments of 1 and resets;
-    \item \ctMax{}: a \ct{}-constant colomn, gives the high bound of \ct{};
-    \item \PBCB{}: raw byte from the \limb{}; the \pbcb{} column lists the bytes from said bytecode one by one as well as some extraneous \texttt{0x00}'s beyond the \CS{} (padding); abbreviated to \pbcb{};
-    \item \ACC{}: accumulate the \pbcb{} bytes;
+    \item \CFI{}:
+	code-fragment-constant column;
+	an unique (block)-identifier of a code fragment;
+	abbreviated to \cfi{};
+    \item $\cfiMax$:
+	conflation-wide maximal code fragment index;
+    \item \CS{}:
+	a code-fragment-constant column containing the code size of the bytecode currently being loaded into \romMod{} module;
+	abbreviated to \cs{};
+    \item \CSR{}:
+	a binary column that equals 0 at the onset of a given bytecode and reaches 1 at the point where $\pc_i=\CS_i$;
+	abbreviated to \csr{};
+    \item \pc{}:
+	program counter (i.e. index of the byte in the current bytecode);
+    \item \limb{}:
+	containing the $\llarge$ bytes slice of (zero padded) bytecode;
+    \item \index{}:
+	contains the index of the current \limb{};
+	starts at 0:
+    \item \nBytes{}:
+	number of non-padded bytes of the \limb;
+    \item \nBytesAcc{}:
+	an accumulator for \nBytes{};
+    \item \ct{}:
+	a periodic counter;
+	it counts up from 0 to \ctMax{} in increments of 1 and resets;
+    \item \ctMax{}:
+	a \ct{}-constant colomn, gives the high bound of \ct{};
+    \item \PBCB{}:
+	raw byte from the \limb{};
+	the \pbcb{} column lists the bytes from said bytecode one by one as well as some extraneous \texttt{0x00}'s beyond the \CS{} (padding);
+	abbreviated to \pbcb{};
+    \item \ACC{}:
+	accumulate the \pbcb{} bytes;
 \end{enumerate}
 The following columns relate to the \inst{PUSH\_X} instructions that require particular constraints to work properly.
 \begin{enumerate}[resume]
-    \item \IP{}: instruction decoded binary flag column that lights up for push instructions; abbreviated to \ip{};
-    \item \PP{}: contains $X$ for \inst{PUSH\_X} instruction and the (\col{X}) data rows that follow that instruction; abbreviated to \pp{};
-    \item \CP{}: counter who counts from 1 to \PP{} while under a \inst{PUSH}, else 0;
-    \item \IPD{}: binary flag that lights up for the $\col{X}$ rows following a \inst{PUSH\_X} instruction i.e. while $\ppo{} \neq 0$; abbreviated to \ipd{}; this flag selects those bytes from the bytecode that contribute to a push instruction's $\PV\HIGH$ or $\PV\LOW$; it also sets the \opc{} of said lines to \inst{INVALID}; abbreviated to \ipd{};
-    \item \PV\HIGH{} and \PV\LOW{}: high and low part of the value that a push instruction pushes on stack; abbreviated to $\pv\high$ and $\pv\low$ respectively;
-    \item \PVA: ``accumulator'' variables used to construct $\PV\HIGH$ and $\PV\LOW$ byte by byte out of ``data carrying bytes''; abbreviated to $\pva$;
-    \item \PFB{}: a binary flag that matters for correctly contructing \PV\HIGH{} and \PV\LOW{}; abbreviated to \pfb{};
+    \item \IP{}:
+	instruction decoded binary flag column that lights up for push instructions;
+	abbreviated to \ip{};
+    \item \PP{}:
+	contains $X$ for \inst{PUSH\_X} instruction and the (\col{X}) data rows that follow that instruction;
+	abbreviated to \pp{};
+    \item \CP{}:
+	counter who counts from 1 to \PP{} while under a \inst{PUSH}, else 0;
+    \item \IPD{}:
+	binary flag that lights up for the $\col{X}$ rows following a \inst{PUSH\_X} instruction i.e. while $\ppo{} \neq 0$;
+	abbreviated to \ipd{};
+	this flag selects those bytes from the bytecode that contribute to a push instruction's $\PV\HIGH$ or $\PV\LOW$;
+	it also sets the \opc{} of said lines to \inst{INVALID};
+	abbreviated to \ipd{};
+    \item \PV\HIGH{} and \PV\LOW{}:
+	high and low part of the value that a push instruction pushes on stack;
+	abbreviated to $\pv\high$ and $\pv\low$ respectively;
+    \item \PVA:
+	``accumulator'' variables used to construct $\PV\HIGH$ and $\PV\LOW$ byte by byte out of ``data carrying bytes'';
+	abbreviated to $\pva$;
+    \item \PFB{}:
+	a binary flag that matters for correctly contructing \PV\HIGH{} and \PV\LOW{};
+	abbreviated to \pfb{};
 \end{enumerate}
 
 The columns below are related to the bytecode itself: the bytes that make it up, how to interpret them (i.e. do they code for instructions or are they data carriers for a \inst{PUSH\_X} instruction?), how much to pad with \texttt{0x00}'s etc\dots:
 \begin{enumerate}[resume]
-    \item \opc{}: the opcode associated to the \pbcb{}; depends on the the context i.e. on whether the byte is shadowed by a \inst{PUSH} instruction (i.e. \( \ipd{}=1 \)) and whether the \CSR{} flag is on (at which point we impose $\pbcb=\opc=\texttt{0x00}$); in all other circumstances \( \opc{} = \PBCB{} \);
+    \item \opc{}:
+	the opcode associated to the \pbcb{};
+	depends on the the context i.e. on whether the byte is shadowed by a \inst{PUSH} instruction (i.e. \( \ipd{}=1 \)) and whether the \CSR{} flag is on (at which point we impose $\pbcb=\opc=\texttt{0x00}$);
+	in all other circumstances \( \opc{} = \PBCB{} \);
 \end{enumerate}
 
 The last column is a binary column:
 \begin{enumerate}[resume]
-    \item \ISVALIDJUMPDESTINATION{}: lights up when the \opc{} is a \inst{JUMPDEST};
+    \item \ISVALIDJUMPDESTINATION{}:
+	lights up when the \opc{} is a \inst{JUMPDEST};
 \end{enumerate}
-\saNote{} The \opc{} and \pbcb{} columns differ and what may be a byte corresponding to the \inst{JUMPDEST} opcode in the \pbcb{} column may be obscured in the \opc{} column if that byte pertains to a \inst{PUSH} instruction. As such the above precisely recognizes valid jump destinations as specified in the \ob{ref. to the EYP}.
+\saNote{}
+The \opc{} and \pbcb{} columns differ in that what may be a byte corresponding to the \inst{JUMPDEST} opcode in the \pbcb{} column may be obscured in the \opc{} column if that byte ``belongs'' to the \col{X} (zero-padded) bytes following a \inst{PUSHX} instruction.
+As such the above precisely recognizes valid jump destinations as specified in the \cite{EYP}.

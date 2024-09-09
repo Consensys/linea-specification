@@ -1,9 +1,9 @@
 In this section we define certain constancy conditions. We say that a column $\col{X}$
 \begin{description}
-	\item[\textbf{batch-constant}] if it satisfies
+	\item[\textbf{block-constant}] if it satisfies
 		\[
 			\If
-			\batchNum_{i} \neq 1 + \batchNum_{i - 1}
+			\relativeBlockNumber_{i} \neq 1 + \relativeBlockNumber_{i - 1}
 			~\Then
 			\col{X}_{i} = \col{X}_{i - 1}
 		\]
@@ -42,11 +42,11 @@ In this section we define certain constancy conditions. We say that a column $\c
 		\ob{TODO: context-constanct should be defined after re-ordering \dots{} Not sure this is the right notion.}
 \end{description}
 
-Given the monotony constraints imposed on \absTxNum{} and \batchNum{} in section~\ref{hub: heartbeat: absTxNum and batchNum} and  on \hubStamp{} in section~\ref{hub: heartbeat: hub stamp}, these constancy conditions are equivalent to
+Given the monotony constraints imposed on \absTxNum{} and \relativeBlockNumber{} in section~\ref{hub: heartbeat: absTxNum and relativeBlockNumber} and  on \hubStamp{} in section~\ref{hub: heartbeat: hub stamp}, these constancy conditions are equivalent to
 \If $\col{NUM}_{i} = \col{NUM}_{i - 1}$ \Then $\col{X}_{i} = \col{X}_{i - 1}$ where 
-$\col{NUM} = \batchNum, \absTxNum, \hubStamp$ respectively.
+$\col{NUM} = \relativeBlockNumber, \absTxNum, \hubStamp$ respectively.
 
-\noindent \ob{TODO: is there \emph{any} batch-constant column other than $\batchNum$ itself?}
+\noindent \ob{TODO: is there \emph{any} block-constant column other than $\relativeBlockNumber$ itself?}
 
 \noindent \ob{TODO: find all transaction-constant columns}
 
@@ -55,7 +55,7 @@ $\col{NUM} = \batchNum, \absTxNum, \hubStamp$ respectively.
 \noindent We impose transaction-constancy conditions on the following columns:
 \begin{multicols}{2}
 \begin{itemize}
-	\item \batchNum{}
+	\item \relativeBlockNumber{}
 	\item[\vspace{\fill}]
 \end{itemize}
 \end{multicols}

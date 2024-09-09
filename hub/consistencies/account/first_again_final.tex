@@ -1,0 +1,149 @@
+The present section specifies the behaviour of the following columns:
+\begin{multicols}{3}
+	\begin{enumerate}
+		\item $\accFirstInConflation$
+		\item $\accAgainInConflation$
+		\item $\accFinalInConflation$
+		\item $\accFirstInBlock$
+		\item $\accAgainInBlock$
+		\item $\accFinalInBlock$
+		\item $\accFirstInTransaction$
+		\item $\accAgainInTransaction$
+		\item $\accFinalInTransaction$
+	\end{enumerate}
+\end{multicols}
+\noindent Contrary to what their name suggests these columns aren't a permutation of existing columns.
+These columns existe purely ``in the permuted domain.''
+We provide a full specification of these columns here.
+\begin{description}
+	\item[\underline{\underline{Generalities:}}]
+		we impose the following
+		\begin{enumerate}
+			\item $\accFirstInConflation$,  $\accAgainInConflation$  and $\accFinalInConflation$  are binary
+			\item $\accFirstInBlock$,       $\accAgainInBlock$       and $\accFinalInBlock$       are binary
+			\item $\accFirstInTransaction$, $\accAgainInTransaction$ and $\accFinalInTransaction$ are binary
+			\item $\If \order{\peekAccount} _{i} = 0$ \Then
+				\[
+					\left[ \begin{array}{clclcl}
+						+ & \accFirstInConflation   _{i} & + & \accAgainInConflation   _{i} & + & \accFinalInConflation   _{i} \\
+						+ & \accFirstInBlock        _{i} & + & \accAgainInBlock        _{i} & + & \accFinalInBlock        _{i} \\
+						+ & \accFirstInTransaction  _{i} & + & \accAgainInTransaction  _{i} & + & \accFinalInTransaction  _{i} \\
+					\end{array} \right]
+					=
+					0
+				\]
+		\end{enumerate}
+\end{description}
+Before continuing we introduce the following local shorthands
+\[
+	\left\{ \begin{array}{lclcl}
+		\locAccTransitionConflation  & \define & \accFinalInConflation  _{i - 1} & + & \accFirstInConflation  _{i}              \\
+		\locAccTransitionBlock       & \define & \accFinalInBlock       _{i - 1} & + & \accFirstInBlock       _{i}              \\
+		\locAccTransitionTransaction & \define & \accFinalInTransaction _{i - 1} & + & \accFirstInTransaction _{i} \vspace{2mm} \\
+		\locAccTransitionSum         & \define &
+		\multicolumn{3}{l}{
+		\left[ \begin{array}{cl}
+			+ & \locAccTransitionConflation   \\
+			+ & \locAccTransitionBlock        \\
+			+ & \locAccTransitionTransaction  \\
+		\end{array} \right] } \\
+	\end{array} \right.
+\]
+\begin{description}
+	\item[\underline{\underline{First account row:}}] 
+		\If
+		\[
+			\left\{ \begin{array}{lclc}
+				\order{\peekAccount} _{i - 1} & = & 0  & \et \\
+				\order{\peekAccount} _{i}     & = & 1 \\
+			\end{array} \right.
+		\]
+		\Then $\locAccTransitionSum = 3$ i.e.
+		\[
+			\left[ \begin{array}{cl}
+				+ & \accFirstInConflation  _{i} \\
+				+ & \accFirstInBlock       _{i} \\
+				+ & \accFirstInTransaction _{i} \\
+			\end{array} \right]
+			= 3 \quad (\trash)
+		\]
+	\item[\underline{\underline{Repeat account encounter:}}] 
+		\If
+		\[
+			\left\{ \begin{array}{lclc}
+				\order{\peekAccount} _{i - 1} & = & 1 & \et \\
+				\order{\peekAccount} _{i}     & = & 1 \\
+			\end{array} \right.
+		\]
+		\Then we impose that
+		\begin{description}
+			\item[\underline{At the conflation  level:}] we impose that
+				\begin{enumerate}
+					\item \label{hub: consistency: account: first and final: conflation} \If $\locAccFullAddress _{i} \neq \locAccFullAddress_{i - 1}$ \Then
+						$ \locAccTransitionConflation ~=~ 2 $
+					\item \If $\locAccFullAddress _{i} =    \locAccFullAddress_{i - 1}$ \Then
+						$ \locAccTransitionConflation ~=~ 0 $
+				\end{enumerate}
+			\item[\underline{At the block       level:}] we impose that
+				\begin{enumerate}[resume]
+					\item \label{hub: consistency: account: first and final: block} \If $\locAccFullAddress _{i} \neq \locAccFullAddress_{i - 1}$ \Then
+						$ \locAccTransitionBlock ~=~ 2 $
+					\item \If $\order{\relBlockNum}_{i} \neq \order{\relBlockNum}_{i - 1}$ \Then
+						$ \locAccTransitionBlock ~=~ 2 $
+					\item \If $\locAccFullAddress _{i} =    \locAccFullAddress_{i - 1}$ \et $\order{\relBlockNum}_{i} =    \order{\relBlockNum}_{i - 1}$ \Then
+						$ \locAccTransitionBlock ~=~ 0 $
+				\end{enumerate}
+			\item[\underline{At the transaction level:}] we impose that
+				\begin{enumerate}[resume]
+					\item \label{hub: consistency: account: first and final: transaction} \If $\locAccFullAddress _{i} \neq \locAccFullAddress_{i - 1}$ \Then
+						$ \locAccTransitionTransaction ~=~ 2 $
+					\item \If $\order{\absTxNum}_{i} \neq \order{\absTxNum}_{i - 1}$ \Then
+						$ \locAccTransitionTransaction ~=~ 2 $
+					\item \If $\locAccFullAddress _{i} =    \locAccFullAddress_{i - 1}$ \et $\order{\absTxNum}_{i} =    \order{\absTxNum}_{i - 1}$ \Then
+						$ \locAccTransitionTransaction ~=~ 0 $
+				\end{enumerate}
+		\end{description}
+		\saNote{}
+		The implementation may merge constraints
+		(\ref{hub: consistency: account: first and final: conflation}),
+		(\ref{hub: consistency: account: first and final: block}) and
+		(\ref{hub: consistency: account: first and final: transaction}) into a single contraint.
+	\item[\underline{\underline{Final account row (1):}}]
+		\If
+		\[
+			\left\{ \begin{array}{lclc}
+				\order{\peekAccount} _{i - 1} & = & 1 & \et \\
+				\order{\peekAccount} _{i}     & = & 0 \\
+			\end{array} \right.
+		\]
+		\Then $\locAccTransitionSum = 3$ i.e.
+		\[
+			\left[ \begin{array}{cl}
+				+ & \accFinalInConflation  _{i - 1} \\
+				+ & \accFinalInBlock       _{i - 1} \\
+				+ & \accFinalInTransaction _{i - 1} \\
+			\end{array} \right]
+			= 3
+		\]
+	\item[\underline{\underline{Final account row (2):}}]
+		\If $\order{\peekAccount} _{N} = 1$ \Then
+		\[
+			\left[ \begin{array}{cl}
+				+ & \accFinalInConflation  _{N} \\
+				+ & \accFinalInBlock       _{N} \\
+				+ & \accFinalInTransaction _{N} \\
+			\end{array} \right]
+			= 3
+		\]
+	\item[\underline{\underline{Constraining the ```\col{AGAIN}'' columns:}}]
+		we unconditionally impose
+		\[
+			\left\{ \begin{array}{lclcl}
+				\accFirstInConflation  _{i} & + & \accAgainInConflation  _{i} & = & \order{\peekAccount} _{i} \\
+				\accFirstInBlock       _{i} & + & \accAgainInBlock       _{i} & = & \order{\peekAccount} _{i} \\
+				\accFirstInTransaction _{i} & + & \accAgainInTransaction _{i} & = & \order{\peekAccount} _{i} \\
+			\end{array} \right.
+		\]
+		\saNote{} These constraints along with the previous constraint imply that, for any $\col{XXX} = \col{TXN}, \col{BLC}, \col{CNF}$, the 
+		$\accFirstInXxx$ and $\accAgainInXxx$ are exclusive binary columns with precisely one of them lighting up on any (reordered) account-row.
+\end{description}

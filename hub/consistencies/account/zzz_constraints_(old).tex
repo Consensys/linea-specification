@@ -1,0 +1,130 @@
+We impose the following consistency constraint:
+\begin{description}
+	\item[\underline{\underline{Initialization constraints:}}]
+		we impose that
+		\begin{description}
+			\item[\underline{At the conflation level:}]
+				\If $\accFirstInConflation  _{i} = 1$
+				\Then we impose that
+				\begin{enumerate}
+					\item $\order{\accTrmFlag}_{i} = \rOne$
+					\item $\order{\accDeploymentNumber}_{i} = 0$
+				\end{enumerate}
+				\saNote{}
+				The first time execution encounters a given address the \zkEvm{} is required to make a call to the \trmMod{} module.
+				This call is enforced by the \accTrmFlag{}.
+				This way the \zkEvm{} justifies the \accTrmIsPrecompile{} flag.
+				Below we further enforce constancy of that flag along account-rows of a given address.
+			\item[\underline{At the block level:}]
+				\If $\accFirstInBlock       _{i} = 1$
+				\Then we impose that
+				\begin{enumerate}
+					\item $\order{\accDeploymentNumberFirstInBlock} _{i} = \order{\accDeploymentNumber} _{i}$
+				\end{enumerate}
+			\item[\underline{At the transaction level:}]
+				\If $\accFirstInTransaction _{i} = 1$
+				\Then we impose that
+				\begin{enumerate}
+					\item $\order{\accWarmth}_{i} = \order{\accTrmIsPrecompile}_{i}$
+					\item $\order{\accDeploymentStatus}_{i} = 0$
+					\item $\order{\accMarkedForSelfdestruct}_{i} = 0$
+				\end{enumerate}
+		\end{description}
+	\item[\underline{\underline{Linking constraints:}}]
+		we impose that
+		\begin{description}
+			\item[\underline{At the conflation level:}]
+				\If
+				\[
+					\left\{ \begin{array}{lclc}
+						\order{\peekAccount} _{i} & = & 1  & \et \\
+						\accFirstInConflation_{i} & = & 0 \\
+					\end{array} \right.
+				\]
+				\Then we impose that
+				\[
+					\left\{ \begin{array}{lcl}
+						\order{\accNonce            }_{i} & = & \order{\accNonce               \new }_{i - 1}              \\
+						\order{\accBalance          }_{i} & = & \order{\accBalance             \new }_{i - 1}              \\
+						\order{\accCodesize         }_{i} & = & \order{\accCodesize            \new }_{i - 1}              \\
+						\order{\accCodehashHi       }_{i} & = & \order{\accCodehashHi          \new }_{i - 1}              \\
+						\order{\accCodehashLo       }_{i} & = & \order{\accCodehashLo          \new }_{i - 1}              \\
+						\order{\accDeploymentNumber }_{i} & = & \order{\accDeploymentNumber    \new }_{i - 1}              \\
+						\order{\accDeploymentStatus }_{i} & = & \order{\accDeploymentStatus    \new }_{i - 1} \vspace{2mm} \\
+					\end{array} \right.
+				\]
+				We further impose
+				\[
+					\left\{ \begin{array}{l}
+						\order{\accDeploymentNumber \new }_{i} \in \{ \order{\accDeploymentNumber  }_{i}, 1 + \order{\accDeploymentNumber  }_{i} \} \\
+						\order{\accTrmIsPrecompile  }_{i} = \order{\accTrmIsPrecompile          }_{i - 1}                                           \\
+					\end{array} \right.
+				\]
+				\saNote{} The final constraint is less of a ``linking'' constraint an more of an ``address-constancy'' condition for \accTrmIsPrecompile{}.
+			\item[\underline{At the block level:}]
+				\If
+				\[
+					\left\{ \begin{array}{lclc}
+						\order{\peekAccount} _{i} & = & 1  & \et \\
+						\accFirstInBlock     _{i} & = & 0 \\
+					\end{array} \right.
+				\]
+				\Then we impose that
+				\[
+					\left\{ \begin{array}{lcl}
+						\order{\accDeploymentNumberFirstInBlock} _{i} & = & \order{\accDeploymentNumberFirstInBlock} _{i - 1} \\
+						\order{\accDeploymentNumberFinalInBlock} _{i} & = & \order{\accDeploymentNumberFinalInBlock} _{i - 1} \\
+					\end{array} \right.
+				\]
+			\item[\underline{At the transaction level:}]
+				\If
+				\[
+					\left\{ \begin{array}{lclc}
+						\order{\peekAccount}   _{i} & = & 1  & \et \\
+						\accFirstInTransaction _{i} & = & 0 \\
+					\end{array} \right.
+				\]
+				\Then we impose
+				\begin{enumerate}
+					\item $\order{\accWarmth}_{i}                = \order{\accWarmth\new}_{i                - 1} $
+					\item $\order{\accMarkedForSelfdestruct}_{i} = \order{\accMarkedForSelfdestruct\new}_{i - 1} $
+					\item \label{hub: consistency: account: linking at the transaction level: marked for selfdestruct is monotonous} \If $\order{\accMarkedForSelfdestruct}_{i} = 1$ \Then $\order{\accMarkedForSelfdestruct\new}_{i}~=~1$
+				\end{enumerate}
+				\saNote{}
+				Constraint (\ref{hub: consistency: account: linking at the transaction level: marked for selfdestruct is monotonous})
+				enforces monotony of \accMarkedForSelfdestruct{} on the transaction level.
+			\item[\underline{For the \CFI{}:}]
+				\If
+				\[
+					\left\{ \begin{array}{lclc}
+						\order{\peekAccount} _{i}             & = & 1                                 & \et \\
+						\accFirstInConflation_{i}             & = & 0                                \\
+						\order{\accDeploymentNumber \new}_{i} & = & \order{\accDeploymentNumber}_{i} \\
+						\order{\accDeploymentStatus \new}_{i} & = & \order{\accDeploymentStatus}_{i} \\
+					\end{array} \right.
+				\]
+				\Then $\order{\accCfi} _{i} = \order{\accCfi} _{i - 1}$
+				\ob{TODO: the complexity of this one constraint would almost justify the introduction of a $\accCfi\new$ column \dots{}}
+		\end{description}
+	\item[\underline{\underline{Finalization constraints:}}]
+		we impose that
+		\begin{description}
+			% \item[\underline{At the conflation level:}]
+			% 	\If $\accFinalInConflation_{i} = 1$ \Then
+			% 	we impose the following
+			% 	\begin{enumerate}
+			% 		\item $\order{\accDeploymentNumber^\infty}_{i} = \order{\accDeploymentNumber}_{i}$ 
+			% 		\item $\order{\accDeploymentStatus^\infty}_{i} = \order{\accDeploymentStatus}_{i}$ 
+			% 	\end{enumerate}
+			\item[\underline{At the block level:}]
+				\If $\accFinalInBlock _{i} = 1$ \Then
+				\begin{enumerate}
+					\item $\order{\accDeploymentNumberFinalInBlock} _{i} = \order{\accDeploymentNumber} _{i}$
+				\end{enumerate}
+			% \item[\underline{At the transaction level:}]
+			% 	\If $\accFinalInTransaction _{i} = 1$ \Then
+			% \item[\underline{Monotony constraints:}]
+			% 	\If $\order{\peekAccount}_{i} = 1$ \Then
+			% 	we impose that
+		\end{description}
+\end{description}

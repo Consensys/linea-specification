@@ -21,9 +21,9 @@ In other words: row $i$ marks the beginning of the processing of a new transacti
 		\nsrTransactionSkippingPhase.
 	\]
 \end{enumerate}
-% \saNote{} The above enforces (through other constraints) that $\batchNum_{j}$, $\txNum_{j}$, $\hubStamp_{j}$ and $\txSkip_{j}$ (for $i\leq j \leq i+3$) remain constant throughout; furthermore, if the trace contains an $(i+4)$-th row, then at that row the pair $\big[ \batchNum, \txNum \big]$ changes and $\hubStamp$ jumps by $1$.
+% \saNote{} The above enforces (through other constraints) that $\relativeBlockNumber_{j}$, $\txNum_{j}$, $\hubStamp_{j}$ and $\txSkip_{j}$ (for $i\leq j \leq i+3$) remain constant throughout; furthermore, if the trace contains an $(i+4)$-th row, then at that row the pair $\big[ \relativeBlockNumber, \txNum \big]$ changes and $\hubStamp$ jumps by $1$.
 \saNote{} Given the heartbeat constraints, the above has several \emph{implicit} consequences\footnote{which the implemenation need \textbf{not} enforce through new constraints}. The following are some of them:
 \begin{itemize}
-	\item $\batchNum_{j}$, $\txNum_{j}$, $\hubStamp_{j}$, $\txSkip_{j}$ remain constant on the rows $i \leq j < i + 4$;
+	\item $\relativeBlockNumber_{j}$, $\txNum_{j}$, $\hubStamp_{j}$, $\txSkip_{j}$ remain constant on the rows $i \leq j < i + 4$;
 	\item $\hubStamp_{i + 4} = 1 + \hubStamp_{i}$;
 \end{itemize}

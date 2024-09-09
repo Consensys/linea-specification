@@ -128,8 +128,8 @@ We deal with setting the contents of the various peeking rows.
 						\[
 							\left\{ \begin{array}{lclr}
 								\multicolumn{3}{l}{\accIncrementDeploymentNumber  {i}{\locTxInitRecipientAccountRowOffset}} \\
-								\accDepStatus      _{i + \locTxInitRecipientAccountRowOffset} & = & 0      & (\trash) \\
-								\accDepStatus\new  _{i + \locTxInitRecipientAccountRowOffset} & = & \rOne \\
+								\accDeploymentStatus      _{i + \locTxInitRecipientAccountRowOffset} & = & 0      & (\trash) \\
+								\accDeploymentStatus\new  _{i + \locTxInitRecipientAccountRowOffset} & = & \rOne \\
 							\end{array} \right.
 						\]
 				\end{description}
@@ -197,28 +197,28 @@ We deal with setting the contents of the various peeking rows.
 		we initialize the next execution context as follows:
 		\[
 			\initializeContext{
-				anchorRow                   = i                                                             ,
-				relOffset                   = \locTxInitContextRowOffset                                    ,
-				contextNumber               = \cn\new _{i}                                                  ,
-				callStackDepth              = \rZero                                                        ,
-				isRoot                      = \rOne                                                         ,
-				isStatic                    = \rZero                                                        ,
-				accountAddressHigh          = \txTo  \high       _{i + \locTxInitTransactionRowOffset}      ,
-				accountAddressLow           = \txTo  \low        _{i + \locTxInitTransactionRowOffset}      ,
-				accountDeploymentNumber     = \accDepNumber \new _{i + \locTxInitRecipientAccountRowOffset} ,
-				byteCodeAddressHi           = \txTo  \high       _{i + \locTxInitTransactionRowOffset}      ,
-				byteCodeAddressLo           = \txTo  \low        _{i + \locTxInitTransactionRowOffset}      ,
-				byteCodeDeploymentNumber    = \accDepNumber \new _{i + \locTxInitRecipientAccountRowOffset} ,
-				byteCodeDeploymentStatus    = \accDepStatus \new _{i + \locTxInitRecipientAccountRowOffset} ,
-				byteCodeCodeFragmentIndex   = \accCfi            _{i + \locTxInitRecipientAccountRowOffset} ,
-				callerAddressHi             = \txFrom  \high     _{i + \locTxInitTransactionRowOffset}      ,
-				callerAddressLo             = \txFrom  \low      _{i + \locTxInitTransactionRowOffset}      ,
-				callValue                   = \txValue           _{i + \locTxInitTransactionRowOffset}      ,
-				callDataContextNumber       = \locTxInitCallDataContextNumber                               ,
-				callDataOffset              = 0                                                             ,
-				callDataSize                = \txCallDataSize    _{i + \locTxInitTransactionRowOffset}      ,
-				returnAtOffset              = 0                                                             ,
-				returnAtCapacity            = 0                                                             ,
+				anchorRow                   = i                                                                    ,
+				relOffset                   = \locTxInitContextRowOffset                                           ,
+				contextNumber               = \cn\new _{i}                                                         ,
+				callStackDepth              = \rZero                                                               ,
+				isRoot                      = \rOne                                                                ,
+				isStatic                    = \rZero                                                               ,
+				accountAddressHigh          = \txTo  \high              _{i + \locTxInitTransactionRowOffset}      ,
+				accountAddressLow           = \txTo  \low               _{i + \locTxInitTransactionRowOffset}      ,
+				accountDeploymentNumber     = \accDeploymentNumber \new _{i + \locTxInitRecipientAccountRowOffset} ,
+				byteCodeAddressHi           = \txTo  \high              _{i + \locTxInitTransactionRowOffset}      ,
+				byteCodeAddressLo           = \txTo  \low               _{i + \locTxInitTransactionRowOffset}      ,
+				byteCodeDeploymentNumber    = \accDeploymentNumber \new _{i + \locTxInitRecipientAccountRowOffset} ,
+				byteCodeDeploymentStatus    = \accDeploymentStatus \new _{i + \locTxInitRecipientAccountRowOffset} ,
+				byteCodeCodeFragmentIndex   = \accCfi                   _{i + \locTxInitRecipientAccountRowOffset} ,
+				callerAddressHi             = \txFrom  \high            _{i + \locTxInitTransactionRowOffset}      ,
+				callerAddressLo             = \txFrom  \low             _{i + \locTxInitTransactionRowOffset}      ,
+				callValue                   = \txValue                  _{i + \locTxInitTransactionRowOffset}      ,
+				callDataContextNumber       = \locTxInitCallDataContextNumber                                      ,
+				callDataOffset              = 0                                                                    ,
+				callDataSize                = \txCallDataSize           _{i + \locTxInitTransactionRowOffset}      ,
+				returnAtOffset              = 0                                                                    ,
+				returnAtCapacity            = 0                                                                    ,
 				}
 			% \initializeContext{\locTxInitContextRowOffset}_{i}
 			% \left[ \begin{array}{llr}
@@ -228,11 +228,11 @@ We deal with setting the contents of the various peeking rows.
 			% 	\utt{is static:}                     & \rZero                                                        \\
 			% 	\utt{account address high:}          & \txTo  \high       _{i + \locTxInitTransactionRowOffset}      \\
 			% 	\utt{account address low:}           & \txTo  \low        _{i + \locTxInitTransactionRowOffset}      \\
-			% 	\utt{account deployment number:}     & \accDepNumber \new _{i + \locTxInitRecipientAccountRowOffset} \\
+			% 	\utt{account deployment number:}     & \accDeploymentNumber \new _{i + \locTxInitRecipientAccountRowOffset} \\
 			% 	\utt{byte code address high:}        & \txTo  \high       _{i + \locTxInitTransactionRowOffset}      \\
 			% 	\utt{byte code address low:}         & \txTo  \low        _{i + \locTxInitTransactionRowOffset}      \\
-			% 	\utt{byte code deployment number:}   & \accDepNumber \new _{i + \locTxInitRecipientAccountRowOffset} \\
-			% 	\utt{byte code deployment status:}   & \accDepStatus \new _{i + \locTxInitRecipientAccountRowOffset} \\
+			% 	\utt{byte code deployment number:}   & \accDeploymentNumber \new _{i + \locTxInitRecipientAccountRowOffset} \\
+			% 	\utt{byte code deployment status:}   & \accDeploymentStatus \new _{i + \locTxInitRecipientAccountRowOffset} \\
 			% 	\utt{byte code code fragment index:} & \accCfi            _{i + \locTxInitRecipientAccountRowOffset} \\
 			% 	\utt{caller address high:}           & \txFrom  \high     _{i + \locTxInitTransactionRowOffset}      \\
 			% 	\utt{caller address low:}            & \txFrom  \low      _{i + \locTxInitTransactionRowOffset}      \\

@@ -1,28 +1,15 @@
-\subsection{Introduction}
 
-The ROM contains the bytecodes of the contracts used within a batch of transaction as well as some associated metadata such as code size and code hash. Its main role in the overall design is to provide the Main Execution Trace with the correct sequence of instructions. Most of the arithmetization below focuses on building the ROM as a seqence of padded byte codes and of extracting the correct push values from it (i.e. the $X$-byte long arguments of actual \inst{PUSH\_X} instructions).
+The \romMod{} module contains \emph{nonempty} bytecodes (i.e. words $\in\mathbb{B}^*$) of contracts used within a conflation of blocks (and thus all transactions contained therein) as well as some associated metadata.
+Its main role in the overall design is to provide the \hubMod{} module with the correct sequence of instructions.
+It furthermore is responsible for assembling the \inst{PUSH}-values and for tagging (in)valid jump destinations as required by \textsc{jump destination analysis}.
+Most of the arithmetization below focuses on building the \romMod{} module  as a seqence of padded byte codes and of extracting the correct push values from it (i.e. the $X$-byte long arguments of actual \inst{PUSH\_X} instructions).
 
-There are three kinds of accesses to bytecode that the ROM deals with, with contract deployment being subdivided into 1 or 2 phases (since deployments may fail):
+There are three kinds of accesses to bytecode that the \romMod{} module  deals with, with contract deployment being subdivided into 1 or 2 phases (since deployments may fail):
 \begin{enumerate}
-%    \item loading auxiliary data associated to an address (i.e. its code size (\cs{})) for \inst{EXTCODESIZE} instructions);
-    \item loading the full bytecode of an already deployed smart contract to run it or to \inst{EXTCODECOPY} from it (or both);
-    \item deploying a smart contract through a transaction or \inst{CREATE(2)}:
-    \begin{enumerate}
-        \item loading the init code into ROM;
-        \item for successful deployments loading the bytecode that will be deployed at the relevant address into ROM.
-    \end{enumerate}
+    \item loading the full bytecode of an already deployed smart contract to \inst{CALL} it or to \inst{EXTCODECOPY} from it (or both);
+    \item deploying a smart contract through a deployment transaction or an (unexceptional, unaborted and no failure condition raising) \inst{CREATE(2)} instruction:
+        \begin{enumerate}
+            \item loading the initialization code into \romMod{};
+            \item and for (temporarily) successful deployments loading the bytecode that will be deployed at the relevant address into \romMod{}.
+        \end{enumerate}
 \end{enumerate}
-\iffalse
-\begin{enumerate}
-    \item the bytecodes of contracts whose bytecode is executed,
-    \item the initcodes of contract deployment (both through a deployment transaction and by means of \inst{CREATE} and \inst{CREATE2} instructions), whether deployment is successful or not,
-    \item the deployed bytecodes of contracts created during the transaction (regardless of whether it gets executed or not in that same transaction),
-    \item the bytecodes read through \inst{EXTCODECOPY}.
-\end{enumerate}
-The overarching proof system must check that the loaded bytecodes match the originally deployed bytecode. This requires hashing the bytecode and comparing it to the codehash found in the matching account. This validates the claimed codehash, codesize and the bytecode itself.
-
-But the ROM also contains small fragments of information about bytecodes that were accessed without being executed, i.e.
-\begin{enumerate}
-    \item smart contracts whose bytecode was indirectly accessed through \inst{EXTCODEHASH} and \inst{EXTCODESIZE}. 
-\end{enumerate}
-\fi

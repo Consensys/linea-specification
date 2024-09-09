@@ -14,6 +14,34 @@ We consider a row permutation $\col{X}\rightsquigarrow\order{\col{X}}$ with the 
 	\end{array} \right]
 \]
 \noindent
-(\emph{a}) padding-rows precede all non-padding-rows and
-(\emph{b}) all \textbf{(reordered) storage-rows}\footnote{by extension rows where $\order{\peekStorage} \equiv 1$} are contiguous
+(\emph{a}) (reordered) padding-rows precede all non-padding-rows
+(\emph{b}) \textbf{(reordered) storage-rows}\footnote{by extension rows where $\order{\peekStorage} \equiv 1$} are contiguous
 (\emph{c}) along the (reordered) storage-rows the remaining columns are $(+, +, +, +, +, +, -)$-lexicographically ordered.
+\begin{figure}[h!]
+	\[
+		\begin{array}{|c|c|c|c|c|c|c||c|} \hline
+			\order{\peekStorage} & \order{\stoAddressHi} & \order{\stoAddressLo} & \order{\stoKeyHi} & \order{\stoKeyLo} & \order{\domStamp} & \order{\subStamp} & \textsc{Type}              \\ \hline \hline
+                                             &                       &                       &                   &                   &                   &                   & \cellcolor{draculacomment} \\ \hline
+			\vdots               & \vdots                & \vdots                & \vdots            & \vdots            & \vdots            & \vdots            & \cellcolor{draculacomment} \\ \hline
+                                             &                       &                       &                   &                   &                   &                   & \cellcolor{draculacomment} \\ \hline
+			\gZero               &                       &                       &                   &                   &                   &                   &                            \\ \hline
+			\vdots               &                       &                       &                   &                   &                   &                   &                            \\ \hline
+			\gZero               &                       &                       &                   &                   &                   &                   &                            \\ \hline
+			\rOne                & \cdots                & \cdots                & \cdots            & \cdots            & \cdots            & \cdots            & \cellcolor{draculagreen}   \\ \hline
+			\rOne                & \cdots                & \cdots                & \cdots            & \cdots            & \cdots            & \cdots            & \cellcolor{draculagreen}   \\ \hline
+			\vdots               & \vdots                & \vdots                & \vdots            & \vdots            & \vdots            & \vdots            & \cellcolor{draculagreen}   \\ \hline
+			\rOne                & \cdots                & \cdots                & \cdots            & \cdots            & \cdots            & \cdots            & \cellcolor{draculagreen}   \\ \hline
+			\rOne                & \cdots                & \cdots                & \cdots            & \cdots            & \cdots            & \cdots            & \cellcolor{draculagreen}   \\ \hline
+			\gZero               &                       &                       &                   &                   &                   &                   &                            \\ \hline
+			\vdots               &                       &                       &                   &                   &                   &                   &                            \\ \hline
+			\gZero               &                       &                       &                   &                   &                   &                   &                            \\ \hline
+		\end{array}
+	\]
+	\caption{The above is a coarse representation of a row-permutation satisfying conditions
+	(\emph{a}),
+	(\emph{b}) and
+	(\emph{c}).
+	Rows with a purple cell represent \textbf{(reordered) padding-rows}, rows with a green cell represent \textbf{(reordered) storage-rows}.
+	}\label{hub: consistency: account: graphical representation of permutation}
+\end{figure}
+
