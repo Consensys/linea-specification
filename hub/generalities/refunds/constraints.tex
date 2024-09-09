@@ -1,38 +1,35 @@
-
 The constraints below enforce the behavior described above.
 \begin{enumerate}
-	\item \If $\txExec_{i}     = 0$ \Then
+        \item we impose hub-stamp-constancy on
+		\begin{multicols}{2}
+			\begin{enumerate}
+				\item \refund
+				\item $\refund\new$
+			\end{enumerate}
+		\end{multicols}
+	\item \If $\txExec_{i} = 0$ \Then
 		\[
 			\left\{ \begin{array}{lcl}
 				\refund_{i}     & = & 0 \\
 				\refund\new_{i} & = & 0 \\
 			\end{array} \right.
 		\]
-	\item \If $\hubStamp_{i} \neq \hubStamp_{i - 1}$ \et $\txExec_{i} = 1$ \Then $\refund_{i} = \refund\new_{i - 1}$
+	\item \If $\txExec_{i} = 1$ \et $\hubStamp_{i} \neq \hubStamp_{i - 1}$ \Then $\refund_{i} = \refund\new_{i - 1}$
 \end{enumerate}
 The above is the transition constraint for gas refunds.
+
 Recall that \textbf{along stack-rows} one has
 \[
-	\begin{cases}
-		\stackDecStoFlag \cdot \decFlag{1} \equiv 1  & \text{precisely for \inst{SSTORE},       see section~\ref{hub: instruction handling: sto};}  \\
-		\stackDecHaltFlag \cdot \decFlag{4} \equiv 1 & \text{precisely for \inst{SELFDESTRUCT}, see section~\ref{hub: instruction handling: halt};} \\
-	\end{cases}
+		\stackDecStoFlag \cdot \decFlag{1} \equiv 1  \quad \text{precisely for \inst{SSTORE}, see section~(\ref{hub: instruction handling: sto});}
 \]
-and that $\stackDecStoFlag$ and $\stackDecHaltFlag$ are mutually exclusive binary flags.
 \begin{enumerate}[resume]
-	\item \If $\cnWillRev_{i} = 1$ \Then $\refund\new_{i} = \refund_{i}$
-	\item \If $\peekStack_{i} = 1$ \et $
-		\left[ \begin{array}{cr}
-			+ & \stackDecStoFlag  _{i} \cdot \decFlag{1}_{i} \\
-			+ & \stackDecHaltFlag _{i} \cdot \decFlag{4}_{i} \\
-		\end{array} \right]
-		= 0$ \Then $\refund\new_{i} = \refund_{i}$
-	\item \If $\cnWillRev_{i} = 0$ \et $\peekStack_{i} = 1$ \Then
-		\begin{enumerate}
-			\item \If $\stackDecStoFlag_{i} \cdot \decFlag{1}_{i}  = 1$ \Then \dots{} see section~(\ref{hub: instruction handling: sto})
-			\item \If $\stackDecHaltFlag_{i} \cdot \decFlag{4}_{i} = 1$ \Then \dots{} see section~(\ref{hub: instruction handling: halt})
-		\end{enumerate}
+	\item \If $\cnWillRev_{i} = 1$
+		\Then $\refund\new_{i} = \refund_{i}$
+	\item \If $\peekStack_{i} = 1$ \et $\stackDecStoFlag  _{i} \cdot \decFlag{1}_{i} = 0$
+		\Then $\refund\new_{i} = \refund_{i}$
+	\item \If $\cnWillRev_{i} = 0$ \et $\peekStack_{i} = 1$ \If $\stackDecStoFlag_{i} \cdot \decFlag{1}_{i}  = 1$ \Then \dots{} see section~(\ref{hub: instruction handling: sto})
 \end{enumerate}
-\saNote{} In the implementation one may replace condition
-``\If $\stackDecStoFlag_{i} \cdot \decFlag{1}_{i} + \stackDecHaltFlag_{i} \cdot \decFlag{4}_{i} = 0$'' with condition
-``\If $\stackDecStoFlag_{i} \cdot \decFlag{1}_{i} + \stackDecHaltFlag_{i} \cdot \decFlag{4}_{i} \neq 1$''.
+The above thus enforces that
+(\emph{a}) execution context that will revert don't contribute to the refunds
+(\emph{b}) only the \inst{SSTORE} opcode may change the refund counter.
+Details as to what exactly this entails will be presented in the relevant section.

@@ -123,25 +123,35 @@ The following binary columns serve as indicators of what data is on display on a
 	\item $\gasCost$:
 		stamp-constant column; contains the ``upfront'' gas cost of an instruction;
 	\item $\gasNext$:
-		stamp-constant column; contains the gas amount which is expected to remain after instruction processing\footnote{and prior to any ``remaining gas refunds''}
+		stamp-constant column; contains the gas amount which is expected to be leftover after instruction processing\footnote{and prior to any ``leftover gas refunds''}
 	\item $\refund$, $\refund\new$:
 		 stamp-constant columns; contain the cumulative gas refund up to this point as well as the updated value;
 \end{enumerate}
 The idea behind these gas columns is as follows.
-Anytime an instruction begins processing the current execution context (CEC) has an expectation as to how much gas it ``currently owns\footnote{i.e. prior to any refunds or expenses}.'' This is $\gasExpected$.
-As we shall explain shortly, this \emph{expected} gas amount may not always reflect to the \emph{actual} gas amount available to the instruction. The $\gasActual$ column thus contains this ``actual gas amount.''
-The $\gasCost$ column holds the \emph{upfront gas cost} of an instruction. This gas cost is the sum of various gas expenses\footnote{Static and dynamic gas costs e.g. memory expansion cost, costs related to address / storage key warmth, any gas endowment passed on to a child contexts spawned by the current instruction \dots{}}. Thus when we check for $\oogxSH$ we shall always compare $\gasActual$ and $\gasCost$.
-The $\gasNext$ column contains the gas amount the CEC expects to have at its disposal the next time an instruction executes. Whenever it makes sense it stores $\gasActual- \gasCost$, but it may also be set to 0 under certain conditions\ob{TODO: now that I've spelled it out in full, it seems this column is completely and utterly useless.}
+Anytime an instruction begins processing the current execution context, which we abbreviate here to \textsc{cec}, has an expectation as to how much gas it ``currently owns\footnote{i.e. prior to any refunds or expenses}.''
+This is $\gasExpected$.
+As we shall explain shortly, this \emph{expected} gas amount may not always reflect to the \emph{actual} gas amount available to the instruction.
+This will typically be the case if the last instruction processed in the \textsc{cec} was of \inst{CALL}-type or of \inst{CREATE}-type.
+The $\gasActual$ column thus contains this ``actual gas amount.''
+The $\gasCost$ column holds the \emph{upfront gas cost} of an instruction.
+This gas cost is the sum of various gas expenses\footnote{Static and dynamic gas costs e.g. memory expansion cost, costs related to address / storage key warmth, any gas endowment passed on to a child contexts spawned by the current instruction \dots{}}.
+Thus when we check for $\oogxSH$ we shall always compare $\gasActual$ and $\gasCost$.
+The $\gasNext$ column contains the gas amount the \textsc{cec} expects to have at its disposal the next time an instruction executes.
+Whenever it makes sense it stores $\gasActual- \gasCost$, but it may also be set to 0 under certain conditions\ob{TODO: now that I've spelled it out in full, it seems this column is completely and utterly useless.}
 Finally the \gasStipend{} column contains the amount of gas which may be provided to a child context spawned through a \inst{CALL}-type or \inst{CREATE}-type instruction. 
 
 We now go into slightly more detail. Whenever a new execution context is spawned $\gasExpected$ is set \emph{manually}. This can happen in two ways: 
-(\emph{a})
-at the start of a transaction
-(\emph{b})
-through a \inst{CALL}-type or \inst{CREATE}-type instruction.
+(\emph{a}) at the start of a transaction
+(\emph{b}) through a \inst{CALL}-type or \inst{CREATE}-type instruction.
 In all other cases it is set using the previously valid value of $\gasNext$. Let us expand on this point. There are two cases.
-The first (and most common) case is that the current instruction \emph{and} the previously executed instruction take place in the same execution context. In this case we set $\gasExpected$ is set to the previous value of $\gasNext$ (which can be found in the \emph{previous row}.)
-The second (and final) case happens when the present row marks the reprisal of execution\footnote{within the current context} after a direct descendant context encountered a halting condition. In that case the value of $\gasExpected$ is set to $\gasNext$ from the last instruction executed in the present context (and which spawned the execution context from whence execution just returned.) This value (which may be \emph{anywhere among past rows} of the trace) must be confirmed by means of a row permutation. This permutation must juxtapose, in order of ascending context numbers and in chronological order, all rows pertaining to a given execution context.
+The first (and most common) case is that the current instruction \emph{and} the previously executed instruction take place in the same execution context.
+In this case we set $\gasExpected$ is set to the previous value of $\gasNext$ (which can be found in the \emph{previous row}.)
+The second (and final) case happens when the present row marks the the \textsc{cec} resuming execution\footnote{within the current context} after a direct descendant context encountered a halting condition.
+In that case the value of $\gasExpected$ is set to $\gasNext$ from the last instruction executed in the \textsc{cec} (and which spawned the execution context where execution just terminated.)
+
+\saNote{}
+The value of $\gasNext$ (which may be \emph{anywhere among past rows} of the trace) must be confirmed by means of a consistency argument.
+This permutation must juxtapose, in order of ascending context numbers and in chronological order, all rows pertaining to a given execution context.
 We further note that it is the perview of the \stpMod{} module to compute the \gasStipend{} column whenever applicable.
 
 Note that the "the reprisal of execution" case is also when $\gasExpected$ may differ from $\gasActual$, as this is when ``remaining gas refunds'' can be added to $\gasExpected$.
@@ -158,8 +168,17 @@ The following are two sets of ``counter/maximal counter value'' columns. Within 
 		counter; remains constant while $\ct\neq\tli$ and the counts up until $\nonStackRows$;
 \end{enumerate}
 The pairs
-$\ct$/$\tli$ and  $\nonStackRowsCounter$/$\nonStackRows$ pairs only matter along execution rows. Along execution rows an instruction occupies precisely
+$\ct$/$\tli$ and
+$\nonStackRowsCounter$/$\nonStackRows$
+only matter along execution rows.
+Along execution rows an instruction occupies precisely
 \[
 	\big( 1 + \tli \big) + \nonStackRows
 \]
-individual rows. $\tli$ is instruction decoded (on stack rows.) It indicates whether dealing with the instruction requires one stack row or two. Thus, along stack rows $\ct$ counts from $0$ to $\tli$. $\nonStackRows$ is constructed by hand on stack rows ($\tli$ is shorthand for $\TLI{}$.) It indicates how many (if any) non stack-rows are required to deal with the instruction at hand. As soon as $\ct$ reaches $\tli$ the $\nonStackRowsCounter$ column starts counting up from $1$ to $\nonStackRows$.
+individual rows.
+$\tli$ is instruction decoded (on stack rows.)
+It indicates whether dealing with the instruction requires one stack row or two.
+Thus, along stack rows $\ct$ counts from $0$ to $\tli$.
+$\nonStackRows$ is constructed by hand on stack rows ($\tli$ is shorthand for $\TLI{}$.)
+It indicates how many (if any) non stack-rows are required to deal with the instruction at hand.
+As soon as $\ct$ reaches $\tli$ the $\nonStackRowsCounter$ column starts counting up from $1$ to $\nonStackRows$.

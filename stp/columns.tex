@@ -39,14 +39,20 @@ $\gasUpfront$, $\gasPoop$ and $\gasStipend$.
 	\item $\gasMxp$: \godGiven{};
 		\ccc{}; memory expansion costs (plus the ``linear'' costs of \inst{CREATE2} instructions);
 	\item $\gasUpfront$: \godGiven{};
-		\ccc{}; cost of the instruction prior to gas refunds coming from leftover gas from the \inst{CALL}/\inst{CREATE}-type instruction;
+		\ccc{}; upfront gas cost of the instruction;
 		% \item $\gasNext$:
-		the amount of gas left over to the caller / creator contract prior just as the \inst{CALL}/\inst{CREATE} instruction is about to start; 
+		% the amount of gas left over to the caller / creator contract prior just as the \inst{CALL}/\inst{CREATE} instruction is about to start; 
 	\item $\gasPoop$: \godGiven{};
 		\ccc{}; gas amount ``paid out of pocket'' from the remaining gas of the \callerr{}/\creator{} to the \calleee{}/\createe{};	
 	\item $\gasStipend$: \godGiven{};
 		\ccc{}; call gas stipend provided to the callee context of a \inst{CALL} or \inst{CALLCODE} if the transfer value is nonzero; 
 \end{enumerate}
+\saNote{}
+The \gasUpfront{} excludes
+(\emph{a}) gas paid out of pocket by the caller to the callee (resp. creator to the createe);
+(\emph{b}) leftover gas that gets paid back after the \inst{CALL}/\inst{CREATE}-type instruction terminates execution and the current context resumes.
+Thus \gasUpfront{} is the part of the instruction's gas cost that determines whether one of these instrutions raises an \oogxSH{}.
+
 We further introduce columns that allow us to duplicate values from the current module and make them available in a straightforward manner to the \wcpMod{} and \modMod{} modules for certain computations.
 \begin{enumerate}[resume]
 	\item \wcpLookupFlag{}:
