@@ -1,58 +1,35 @@
 \begin{center}
-\framebox{%
-All constraints in this section are written under the assumption that
-$\begin{cases}
-\iInst_{i} = \inst{MUL} \\
-% \oli_{i} = 0 \\ % useless given that we also impose \ct_{i} = \mmediumMO
-\ct_{i} = \mmediumMO \\
-\end{cases}$}
+	\framebox{%
+		All constraints in this section are written under the assumption that
+		$\begin{cases}
+			\iInst_{i} = \inst{MUL} \\
+			\ct_{i} = \mmediumMO \\
+		\end{cases}$}
 \end{center}
-i.e. we jump straight to the last row of a nontrivial \inst{MUL} instruction\footnote{%
-given that $\ct_{i} \neq 0$ and thus $\mulStamp_{i}\neq0$ the condition
-``$\iInst_{i} = \inst{MUL}$'' is equivalent to
-``$\iInst_{i} \neq \inst{EXP}$''}.
+i.e. we jump straight to the last row of a nontrivial \inst{MUL} instruction%
+\footnote{given that $\ct_{i} \neq 0$ and thus $\mulStamp_{i}\neq0$ the condition ``$\iInst_{i} = \inst{MUL}$'' is equivalent to ``$\iInst_{i} \neq \inst{EXP}$''}.
 \begin{description}
-	\iffalse
-	\item[Aliases.] To simplify notations we introduce some aliases which are only valid in the present context:
-	\[
-		\begin{cases}
-		\alpha = \bits_{i-5} \\
-		\beta_{0} = \bits_{i-4} \\
-		\beta_{1} = \bits_{i-3} \\
-		\end{cases}
-		\quad\text{and}\quad
-		\begin{cases}
-		\eta = \bits_{i-2} \\
-		\mu_{0} = \bits_{i-1} \\
-		\mu_{1} = \bits_{i} \\
-		\end{cases}
-	\]
-	\fi
 	\item[Target constraints.] We impose that
-	\[
-	\left\{
-	\begin{array}{lcl}
-		\iArgOneHi_{i} & \!\!\! = \!\!\! & \theta \cdot \col{A\_3}_{i} + \col{A\_2}_{i} \\
-		\iArgOneLo_{i} & \!\!\! = \!\!\! & \theta \cdot \col{A\_1}_{i} + \col{A\_0}_{i} \vspace{2mm} \\
-		\iArgTwoHi_{i} & \!\!\! = \!\!\! & \theta \cdot \col{B\_3}_{i} + \col{B\_2}_{i} \\
-		\iArgTwoLo_{i} & \!\!\! = \!\!\! & \theta \cdot \col{B\_1}_{i} + \col{B\_0}_{i} \vspace{2mm} \\
-		\iResHi_{i} & \!\!\! = \!\!\! & \theta \cdot \col{C\_3}_{i} + \col{C\_2}_{i} \\
-		\iResLo_{i} & \!\!\! = \!\!\! & \theta \cdot \col{C\_1}_{i} + \col{C\_0}_{i} \\
-	\end{array}
-	\right.
-	\]
+		\[
+			\left\{ \begin{array}{lcl}
+				\iArgOneHi _{i} & \!\!\! = \!\!\! & \theta \cdot \col{A\_3}_{i} + \col{A\_2}_{i}              \\
+				\iArgOneLo _{i} & \!\!\! = \!\!\! & \theta \cdot \col{A\_1}_{i} + \col{A\_0}_{i} \vspace{2mm} \\
+				\iArgTwoHi _{i} & \!\!\! = \!\!\! & \theta \cdot \col{B\_3}_{i} + \col{B\_2}_{i}              \\
+				\iArgTwoLo _{i} & \!\!\! = \!\!\! & \theta \cdot \col{B\_1}_{i} + \col{B\_0}_{i} \vspace{2mm} \\
+				\iResHi    _{i} & \!\!\! = \!\!\! & \theta \cdot \col{C\_3}_{i} + \col{C\_2}_{i}              \\
+				\iResLo    _{i} & \!\!\! = \!\!\! & \theta \cdot \col{C\_1}_{i} + \col{C\_0}_{i}              \\
+			\end{array} \right.
+		\]
 	\item[Multiplication constraints.] We impose that
-	\[
-		\setMultiplication
-		\left(
-		\begin{array}{c}
-			\col{A\_3}_{i}, \col{A\_2}_{i}, \col{A\_1}_{i}, \col{A\_0}_{i}; \\
-			\col{B\_3}_{i}, \col{B\_2}_{i}, \col{B\_1}_{i}, \col{B\_0}_{i}; \\
-			\col{C\_3}_{i}, \col{C\_2}_{i}, \col{C\_1}_{i}, \col{C\_0}_{i}; \\
-			\col{H\_3}_{i}, \col{H\_2}_{i}, \col{H\_1}_{i}, \col{H\_0}_{i}; \\
-			\alpha, 2\beta_{1} + \beta_{0};
-			\eta, 2\mu_{1} + \mu_{0}; \\
-		\end{array}
-		\right)
-	\]
+		\[
+			\setMultiplication
+			\left( \begin{array}{c}
+				\col{A\_3}_{i}, \col{A\_2}_{i}, \col{A\_1}_{i}, \col{A\_0}_{i}; \\
+				\col{B\_3}_{i}, \col{B\_2}_{i}, \col{B\_1}_{i}, \col{B\_0}_{i}; \\
+				\col{C\_3}_{i}, \col{C\_2}_{i}, \col{C\_1}_{i}, \col{C\_0}_{i}; \\
+				\col{H\_3}_{i}, \col{H\_2}_{i}, \col{H\_1}_{i}, \col{H\_0}_{i}; \\
+				\alpha, 2\beta_{1} + \beta_{0};
+				\eta, 2\mu_{1} + \mu_{0}; \\
+			\end{array} \right)
+		\]
 \end{description}

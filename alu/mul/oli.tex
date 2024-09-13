@@ -1,46 +1,42 @@
 The present section constrains the following binary columns: $\tinyBase$, $\tinyExponent$, $\oli{}$ and $\resVanishes$.
 \begin{center}
-\framebox{All constraints are written under the assumption that $\mulStamp_{i} \neq 0$.}
+	\framebox{All constraints are written under the assumption that $\mulStamp_{i} \neq 0$.}
 \end{center}
-%\ob{TODO: maybe we should instead impose vanishing conditions when $\mulStamp_{i} = 0$. Probably not \dots{}}
 We impose the following:
 \begin{enumerate}
 	\item \If $\iArgOneHi_{i} \neq 0$ \Then $\TINYBASE_{i} = 0$,
 	\item \If $\iArgOneHi_{i} =    0$ \Then
-	\begin{enumerate}
-		\item \If $\iArgOneLo_{i} \cdot (1 - \iArgOneLo_{i}) \neq 0$ \Then $\TINYBASE_{i} = 0$;
-		\item \If $\iArgOneLo_{i} \cdot (1 - \iArgOneLo_{i}) =    0$ \Then $\TINYBASE_{i} = 1$,
-	\end{enumerate}
+		\begin{enumerate}
+			\item \If $\iArgOneLo_{i} \cdot (1 - \iArgOneLo_{i}) \neq 0$ \Then $\TINYBASE_{i} = 0$;
+			\item \If $\iArgOneLo_{i} \cdot (1 - \iArgOneLo_{i}) =    0$ \Then $\TINYBASE_{i} = 1$,
+		\end{enumerate}
 \end{enumerate}
 similarly
 \begin{enumerate}
 	\item \If $\iArgTwoHi_{i} \neq 0$ \Then $\TINYEXPONENT_{i} = 0$;
 	\item \If $\iArgTwoHi_{i} =    0$ \Then
-	\begin{enumerate}
-		\item \If $\iArgTwoLo_{i} \cdot (\iArgTwoLo_{i} - 1) \neq 0$ \Then $\TINYEXPONENT_{i} = 1$;
-		\item \If $\iArgTwoLo_{i} \cdot (\iArgTwoLo_{i} - 1) =    0$ \Then $\TINYEXPONENT_{i} = 0$.
-	\end{enumerate}
+		\begin{enumerate}
+			\item \If $\iArgTwoLo_{i} \cdot (\iArgTwoLo_{i} - 1) \neq 0$ \Then $\TINYEXPONENT_{i} = 0$;
+			\item \If $\iArgTwoLo_{i} \cdot (\iArgTwoLo_{i} - 1) =    0$ \Then $\TINYEXPONENT_{i} = 1$.
+		\end{enumerate}
 \end{enumerate}
 further set
 \begin{enumerate}
 	\item \If $\iResHi_{i} \neq 0$ \Then $\RESVANISHES_{i} = 0$;
 	\item \If $\iResHi_{i} =    0$ \Then
-	\begin{enumerate}
-		\item \If $\iResLo_{i} \neq 0$ \Then $\RESVANISHES_{i} = 0$;
-		\item \If $\iResLo_{i} =    0$ \Then $\RESVANISHES_{i} = 1$.
-	\end{enumerate}
+		\begin{enumerate}
+			\item \If $\iResLo_{i} \neq 0$ \Then $\RESVANISHES_{i} = 0$;
+			\item \If $\iResLo_{i} =    0$ \Then $\RESVANISHES_{i} = 1$.
+		\end{enumerate}
 \end{enumerate}
 In other words
 \[
-	\left\{
-	\begin{array}{lcl}
+	\left\{ \begin{array}{lcl}
 		\tinyBase = 1 & \iff & \iArgOne \in \{0,1\} \\
 		\tinyExponent = 1 & \iff & \iArgTwo \in \{0,1\} \\
 		\resVanishes = 1 & \iff & \iRes = 0 \\
-	\end{array}
-	\right.
+	\end{array} \right.
 \]
-%\red{Note: we don't know at this point that $\iResHi$ and $\iResLo$ are indeed $\llarge$-byte integers. We thus \emph{can't} replace this by the simpler condition that $\resVanishes_{i} = 1$ \emph{iff} $\iResHi_{i} + \iResLo_{i} = 0$ as one might be tempted to do.}
 Finally we set $\oli$ via $\oli = 1$ \emph{iff} \big($\tinyBase_{i} = 1$ \OR{} $\tinyExponent_{i} = 1$\big) i.e.
 \[
 	\oli_{i} =
