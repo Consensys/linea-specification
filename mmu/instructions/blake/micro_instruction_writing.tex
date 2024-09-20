@@ -13,13 +13,13 @@ We now do the initialization of the micro-instruction-writing phase.
 		we impose
 		\[
 			\left\{ \begin{array}{lcl}
-				\microInst        _{i + \nppMmuInstBlakeValuePO} & = & \locFirstMicroInst  \\
-				\microSize        _{i + \nppMmuInstBlakeValuePO} & = & 4                   \\
-				\microSlo         _{i + \nppMmuInstBlakeValuePO} & = & \locSloBlakeR       \\
-				\microSbo         _{i + \nppMmuInstBlakeValuePO} & = & \locSboBlakeR       \\
-				\microTlo         _{i + \nppMmuInstBlakeValuePO} & = & 0                   \\
-				\microTbo         _{i + \nppMmuInstBlakeValuePO} & = & \llarge - 4         \\
-				\microLimb        _{i + \nppMmuInstBlakeValuePO} & = & \locPredictedBlakeR \\
+				\microInst   _{i + \nppMmuInstBlakeValuePO} & = & \locFirstMicroInst                  \\
+				\microSize   _{i + \nppMmuInstBlakeValuePO} & = & \locBlakeParameterSizeOfR           \\
+				\microSlo    _{i + \nppMmuInstBlakeValuePO} & = & \locSloBlakeR                       \\
+				\microSbo    _{i + \nppMmuInstBlakeValuePO} & = & \locSboBlakeR                       \\
+				\microTlo    _{i + \nppMmuInstBlakeValuePO} & = & 0                                   \\
+				\microTbo    _{i + \nppMmuInstBlakeValuePO} & = & \llarge - \locBlakeParameterSizeOfR \\
+				\microLimb   _{i + \nppMmuInstBlakeValuePO} & = & \locPredictedBlakeR                 \\
 			\end{array} \right.
 		\]
 		where we define the shorthand \locFirstMicroInst{} as follows:
@@ -31,14 +31,16 @@ We now do the initialization of the micro-instruction-writing phase.
 		we impose
 		\[
 			\left\{ \begin{array}{lcl}
-				\microInst        _{i + \nppMmuInstBlakeValuePT} & = & \mmioInstRamToLimbOneSource \\
-				\microSize        _{i + \nppMmuInstBlakeValuePT} & = & 1                                 \\
-				\microSlo         _{i + \nppMmuInstBlakeValuePT} & = & \locSloBlakeF                     \\
-				\microSbo         _{i + \nppMmuInstBlakeValuePT} & = & \locSboBlakeF                     \\
-				\microTlo         _{i + \nppMmuInstBlakeValuePT} & = & 1                                 \\
-				\microTbo         _{i + \nppMmuInstBlakeValuePT} & = & \llarge - 1                       \\
-				\microLimb        _{i + \nppMmuInstBlakeValuePT} & = & \locPredictedBlakeF               \\
+				\microInst   _{i + \nppMmuInstBlakeValuePT} & = & \mmioInstRamToLimbOneSource         \\
+				\microSize   _{i + \nppMmuInstBlakeValuePT} & = & \locBlakeParameterSizeOfF           \\
+				\microSlo    _{i + \nppMmuInstBlakeValuePT} & = & \locSloBlakeF                       \\
+				\microSbo    _{i + \nppMmuInstBlakeValuePT} & = & \locSboBlakeF                       \\
+				\microTlo    _{i + \nppMmuInstBlakeValuePT} & = & 1                                   \\
+				\microTbo    _{i + \nppMmuInstBlakeValuePT} & = & \llarge - \locBlakeParameterSizeOfF \\
+				\microLimb   _{i + \nppMmuInstBlakeValuePT} & = & \locPredictedBlakeF                 \\
 			\end{array} \right.
 		\]
 \end{description}
 \saNote{} The target limb offsets are required as they will be set to the exogenous data limb offsets.
+
+
