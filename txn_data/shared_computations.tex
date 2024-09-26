@@ -2,7 +2,7 @@
 	\boxed{\text{The constraints below assume that } \locAbs_{i} \neq \locAbs_{i - 1}.}
 \end{center}
 The present section constrains the columns that offload comparisons to the \wcpMod{} module.
-The following constraints hold for all transaction types: 
+The following constraints hold for all transaction types:
 \begin{description}
 	\item[\underline{\underline{Row n$^\circ(i + \nonceRowOffset)$: Initial nonce check:}}]
 		we impose that
@@ -19,64 +19,59 @@ The following constraints hold for all transaction types:
 				\\
 			\end{array}\right.
 		\]
+		\saNote{}
+		In other words we require that
+		$\txNonce_{i} < \maxNonce$.
 	\item[\underline{\underline{Row n$^\circ(i + \balanceRowOffset)$: Initial balance check:}}]
 		we impose that
 		\[
 			\left\{\begin{array}{l}
-				\smallCallToLt
+				\smallCallToLeq
 				{i}{\balanceRowOffset}
-				{\txInitialBalance_{i}}
 				{\locValue + \locMaxFee \cdot \locGasLimit}
+				{\txInitialBalance_{i}}
 				\vspace{2mm}
 				\\
-				\resultMustBeFalse
+				\resultMustBeTrue
 				{i}{\balanceRowOffset}
 				\\
 			\end{array}\right.
 		\]
-		\saNote{} We thus require $\txInitialBalance_{i} \geq \locValue + \locMaxFee \cdot \locGasLimit$.
+		\saNote{}
+		In other words we require that
+		$\locValue + \locMaxFee \cdot \locGasLimit \leq \txInitialBalance_{i}$.
 	\item[\underline{\underline{Row n$°(i + \gasLimitRowOffset)$: Sufficient gas limit:}}]
+		we impose that
+		\[
+			\left\{\begin{array}{l}
+				\smallCallToLeq
+				{i}{\gasLimitRowOffset}
+				{\locUpfrontGasCost}
+				{\locGasLimit}
+				\vspace{2mm}
+				\\
+				\resultMustBeTrue
+				{i}{\gasLimitRowOffset}
+				\\
+			\end{array}\right.
+		\]
+		where, in order to define the transaction's upfront gas cost \locUpfrontGasCost{}
 		we must distinguish between transaction types that support access sets (types 1 and 2) and those that do not (type 0)
-		\begin{enumerate}
-			\item \If $\txIsLegacy_{i} = 1$ \Then
-				\[
-					\left\{\begin{array}{l}
-						\smallCallToLt
-						{i}{\gasLimitRowOffset}
-						{\locGasLimit}
-						{\locLegacyUpfrontGasCost}
-						\vspace{2mm}
-						\\
-						\resultMustBeFalse
-						{i}{\gasLimitRowOffset}
-						\\
-					\end{array}\right.
-				\]
-			\item \If $\txIsLegacy_{i} = 0$ \Then
-				\[
-					\left\{\begin{array}{l}
-						\smallCallToLt
-						{i}{\gasLimitRowOffset}
-						{\locGasLimit}
-						{\locAccessUpfrontGasCost}
-						\vspace{2mm}
-						\\
-						\resultMustBeFalse
-						{i}{\gasLimitRowOffset}
-						\\
-					\end{array}\right.
-				\]
-		\end{enumerate}
-		Where we define the following shorthands
 		\[
 			\left\{ \begin{array}{lcl}
+				\locUpfrontGasCost & \define &
+				\left[ \begin{array}{crcl}
+					+ \!\!\! & \txIsLegacy    _{i} & \cdot & \locLegacyUpfrontGasCost \\
+					+ \!\!\! & \txIsAccessSet _{i} & \cdot & \locAccessUpfrontGasCost \\
+					+ \!\!\! & \txIsTypeTwo   _{i} & \cdot & \locAccessUpfrontGasCost \\
+				\end{array} \right] \vspace{4mm} \\
 				\locLegacyUpfrontGasCost & \define &
 				\left[ \begin{array}{crcl}
 					+ \!\!\! &           &       & \locDataCost           \\
 					+ \!\!\! &           &       & G_{\text{transaction}} \\
 					+ \!\!\! & \locIsDep & \cdot & G_{\text{txcreate}}    \\
 				\end{array} \right] \vspace{4mm} \\
-				\locAccessUpfrontGasCost & \define & 
+				\locAccessUpfrontGasCost & \define &
 				\left[ \begin{array}{crcl}
 					+ \!\!\! &             &                     & \locDataCost               \\
 					+ \!\!\! &             &                     & G_{\text{transaction}}     \\
@@ -86,13 +81,18 @@ The following constraints hold for all transaction types:
 				\end{array} \right] \\
 			\end{array} \right.
 		\]
-		and we use the following constants
+		\saNote{}
+		In other words we require that
+		$\locUpfrontGasCost \leq \locGasLimit$.
+
+		\saNote{}
+		We remind the reader of the values of the following constants
 		\[
 			\left\{ \begin{array}{lcr}
-				G_\text{transaction} 		& \!\!\! = \!\!\! & 21\,000 \\
-				G_\text{create} 		& \!\!\! = \!\!\! & 32\,000 \\
-				G_\text{accesslistaddress}	& \!\!\! = \!\!\! & 2\,400 \\
-				G_\text{accessliststorage}	& \!\!\! = \!\!\! & 1\,900 \\
+				G_\text{transaction}       & \!\!\! = \!\!\! & 21\,000 \\
+				G_\text{create}            & \!\!\! = \!\!\! & 32\,000 \\
+				G_\text{accesslistaddress} & \!\!\! = \!\!\! & 2\,400  \\
+				G_\text{accessliststorage} & \!\!\! = \!\!\! & 1\,900  \\
 			\end{array} \right.
 		\]
 	\item[\underline{\underline{Row n$°(i + \maxRefundRowOffset)$: Upper limit for refunds:}}]
@@ -115,6 +115,11 @@ The following constraints hold for all transaction types:
 		\[
 			\locRefundLimit \equiv \displaystyle \left\lfloor\frac{\locExecutionGasCost}\maxRefundQuotient\right\rfloor
 		\]
+		\saNote{}
+		We have used the following definition
+		\[
+			\maxRefundQuotient = 5
+		\]
 	\item[\underline{\underline{Row n$°(i + \effectiveRefundRowOffset)$: Effective refund:}}]
 		we impose that
 		\[
@@ -132,8 +137,8 @@ The following constraints hold for all transaction types:
 		\saNote{}
 		The interpretation is as follows:
 		\begin{IEEEeqnarray*}{LCL}
-			\locGetFullRefund = 1 & \iff & \txFinalRefundCounter _{i} < \locRefundLimit                                                    \\
-                                              & \iff & \txFinalRefundCounter _{i} < \left\lfloor\frac{\locGasLimit - \txLeftoverGas_{i}}2\right\rfloor \\
+			\locGetFullRefund = 1 & \iff & \txFinalRefundCounter _{i} < \locRefundLimit                                                                     \\
+                                              & \iff & \txFinalRefundCounter _{i} < \left\lfloor\frac{\locGasLimit - \txLeftoverGas_{i}}\maxRefundQuotient\right\rfloor \\
 		\end{IEEEeqnarray*}
 	\item[\underline{\underline{Row n$°(i + \detectingEmptyCallDataRowOffset)$: Detecting empty call data:}}]
 		\[
@@ -145,4 +150,31 @@ The following constraints hold for all transaction types:
 		\[
 			\locNonzeroDataSize \define 1 - \res_{i + \detectingEmptyCallDataRowOffset}
 		\]
+        \item[\underline{\underline{Row n$°(i + \maxFeeVsBaseFeeRowOffset)$: Comparing the maximum gas price and \txBasefee{}:}}]
+                we impose that
+                \[
+                        \left\{ \begin{array}{l}
+                                \smallCallToLeq
+                                {i}{\maxFeeVsBaseFeeRowOffset}
+                                {\txBasefee}
+				{\locMaximalGasPrice}
+                                \vspace{2mm}
+                                \\
+                                \resultMustBeTrue
+                                {i}{\maxFeeVsBaseFeeRowOffset}
+                                \\
+                        \end{array} \right.
+                \]
+		where we set
+		\[
+			\locMaximalGasPrice \define
+			\left[ \begin{array}{clcl}
+				+ \!\!\! & \txIsLegacy    _{i} & \cdot & \locGasPrice \\
+				+ \!\!\! & \txIsAccessSet _{i} & \cdot & \locGasPrice \\
+				+ \!\!\! & \txIsTypeTwo   _{i} & \cdot & \locMaxFee   \\
+			\end{array} \right]
+		\]
+		\saNote{}
+		In other words we require that
+                $\txBasefee \leq \locMaximalGasPrice$.
 \end{description}
