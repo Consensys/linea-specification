@@ -2,35 +2,40 @@
     \item Output columns:
         \begin{enumerate}
             \item $\limb$:
-                output of the module, contains 16 bytes data.
+                output of the module;
+                may contain up to $\llarge{}$ bytes of data;
             \item $\limbsize$:
-                number of meaningful bytes of the $\limb$. Those bytes are shifted to the left with $\llarge - \limbsize$ zeros on the right;
+                number of meaningful bytes of the $\limb$;
+        \end{enumerate}
+        data bytes are left aligned on the $\llarge$-th big-endian byte shifted to the left with $\llarge - \limbsize$ zeros on the right;
+        \begin{enumerate}[resume]
             \item \col{LIMB\_CONSTRUCTED}:
-                binary column; equals $1$ when the $\limb$ is in one of the two RLP bytestring $\widetilde{L}_{\mathrm{T}}$ or $\widetilde{L}_{\mathrm{X}}$, otherwise equals $0$;
+                binary column;
+                is equal to $1$ when the $\limb$ is part of either \rlp{} bytestrings $\locLtTilde$ or $\locLxTilde$, otherwise is equal to $0$;
                 abbreviated to $\lc$;
             \item $\lt$:
-                binary column; equals $1$ when the constructed $\limb$ is in $\widetilde{L}_{\mathrm{T}}$, otherwise equals $0$;
+                binary column; equal to $1$ when the constructed $\limb$ is part of $\locLtTilde$, otherwise equal to $0$;
             \item $\lx$:
-                binary column; equals $1$ when the constructed $\limb$ is in $\widetilde{L}_{\mathrm{X}}$, otherwise equals $0$;
+                binary column; equal to $1$ when the constructed $\limb$ is part of $\locLxTilde$, otherwise equal to $0$;
             \item $\indext$:
-                index of the current limb within the current string of $\widetilde{L}_{\mathrm{T}}$. Starts at 0 when starting a new transaction and increments by 1 when $\lc$ and $\lt$ are one; 
-            \item $\indexx$:
-                index of the current limb within the current string of $\widetilde{L}_{\mathrm{X}}$. Starts at 0 when starting a new transaction and increments by 1 when $\lc$ and $\lx$ are one;
+                index of the current limb within the current string of $\locLtTilde$. Starts at 0 when starting a new transaction and increments by 1 when $\lc$ and $\lt$ are one; 
+            \item $\indexx$:                                                       
+                index of the current limb within the current string of $\locLxTilde$. Starts at 0 when starting a new transaction and increments by 1 when $\lc$ and $\lx$ are one;
             \item \toHashByProver{}:
                 binary column; equals $\lc \cdot \lx$; is a selector to extract data for the prover. 
         \end{enumerate} 
     \item Columns used exclusively for lookup connexion with other modules:
         \begin{enumerate}
             \item $\absTxNum$:
-		transaction number column, starts at 0 and is incremented by one when starting a new transaction.
+                transaction number column, starts at 0 and is incremented by one when starting a new transaction.
             \item $\outgoingDataSymb\high$ and $\outgoingDataSymb\low$:
-		used for lookup with the transaction data module.
+                used for lookup with the transaction data module.
             \item \CFI{}: 
                 an unique (block)-identifier of a code fragment;
             \item \txRequiresEvmExecution{}:
                 binary column; is 1 when the transaction requires evm execution (ie when calling a smart contract, or when a contract creation with a non-empty init code)
             \item \Phase{}:
-        column used as an identifier for the lookups;
+                column used as an identifier for the lookups;
         \end{enumerate}
     \item Columns used for heartbeat
         \begin{enumerate}
