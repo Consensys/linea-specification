@@ -19,9 +19,10 @@ The following constraints hold for all transaction types:
 				\\
 			\end{array}\right.
 		\]
+		where, as per \cite{EIP2681}, $\maxNonce \define 2^{64} - 1$.
+
 		\saNote{}
-		In other words we require that
-		$\txNonce_{i} < \maxNonce$.
+		In other words we require that $\txNonce_{i} < \maxNonce$.
 	\item[\underline{\underline{Row n$^\circ(i + \balanceRowOffset)$: Initial balance check:}}]
 		we impose that
 		\[
@@ -38,8 +39,7 @@ The following constraints hold for all transaction types:
 			\end{array}\right.
 		\]
 		\saNote{}
-		In other words we require that
-		$\locValue + \locMaxFee \cdot \locGasLimit \leq \txInitialBalance_{i}$.
+		In other words we require that $\locValue + \locMaxFee \cdot \locGasLimit \leq \txInitialBalance_{i}$.
 	\item[\underline{\underline{Row n$°(i + \gasLimitRowOffset)$: Sufficient gas limit:}}]
 		we impose that
 		\[
@@ -110,16 +110,12 @@ The following constraints hold for all transaction types:
 				\locRefundLimit      & \define & \res_{i + \maxRefundRowOffset}    \\
 			\end{array} \right.
 		\]
-		\saNote{}
-		By construction
-		\[
-			\locRefundLimit \equiv \displaystyle \left\lfloor\frac{\locExecutionGasCost}\maxRefundQuotient\right\rfloor
-		\]
-		\saNote{}
-		We have used the following definition
+		where we have set
 		\[
 			\maxRefundQuotient = 5
 		\]
+		\saNote{}
+		By construction $\locRefundLimit \equiv \displaystyle \left\lfloor\frac{\locExecutionGasCost}\maxRefundQuotient\right\rfloor$.
 	\item[\underline{\underline{Row n$°(i + \effectiveRefundRowOffset)$: Effective refund:}}]
 		we impose that
 		\[
