@@ -40,7 +40,7 @@ We first compute the RLP prefix and in the case of an empty list, end the phase:
 						\ct,
 						\nbstep,
 						\done,
-						\phase{10}; \\
+						\phaseAccessList{}; \\
 						\accsize,
 						\Power,
 						\phaseAccessList,
@@ -73,7 +73,7 @@ We now deal with an access list item. We first compute the RLP prefix of an acce
 						\ct,
 						\nbstep,
 						\done,
-						\phase{10}; \\
+						\phaseAccessList{}; \\
 						\accsize,
 						\Power,
 						\phaseAccessList,
@@ -138,7 +138,7 @@ Then we compute the RLP prefix of the list of StorageKey in this access tuple:
 						\ct,
 						\nbstep,
 						\done,
-						\phase{10}; \\
+						\phaseAccessList{}; \\
 						\accsize,
 						\Power,
 						\phaseAccessList,
@@ -183,7 +183,7 @@ Here we define initialisation and decrementation of $\phasesize$, $\col{ACCESS\_
 	\item \If $\Depth1_{i}=0$ \Then $\phasesize_{i} = \phasesize_{i+1}$.
 	\item \If $\Depth1_{i}=1$ \Then $\phasesize_{i} = \phasesize_{i-1} - \lc_{i} \cdot \limbsize_{i}$. 
 \end{enumerate}
-In other words $\phasesize$ is initialized at the begining of $\phase{10}$ and then decreased by the number of bytes in the $\limb$ when $\lc$ is nonzero.
+In other words $\phasesize$ is initialized at the begining of $\phaseAccessList{}$ and then decreased by the number of bytes in the $\limb$ when $\lc$ is nonzero.
 \begin{enumerate}[resume]
 
 	\item \If ($\Depth1_{i}=1$ \et ($\isprefix_{i}=0$ \Or $\Depth2_{i}=1$) \footnote{It is implemented \If $\isprefix_{i} \cdot (1 - \Depth2_{i})=0$ \Then} \Then $\col{ACCESS\_TUPLE\_BYTESIZE}_{i}=\col{ACCESS\_TUPLE\_BYTESIZE}_{i-1} - \lc_{i} \cdot \limbsize_{i}$
