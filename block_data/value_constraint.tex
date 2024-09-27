@@ -5,11 +5,11 @@
 	\item Setting $\inst{COINBASE}$:
 		\begin{enumerate}
 			\item $\INST_{i + \rowShiftCoinbase} = \inst{COINBASE}$
-			\item $\sum_{k = 0}^{\llargeMO-4} \byteCol{HI\_k}_{i + \rowShiftCoinbase} = 0$
-				\saNote{} This imposes that $\blockDataHi_{i + \rowShiftCoinbase}$ be a $4$ byte integer, thus the high part of an address.
 			\item $\blockDataHi _{i + \rowShiftCoinbase} = \coinbase\high_{i}$
 			\item $\blockDataLo _{i + \rowShiftCoinbase} = \coinbase\low_{i}$
+			\item $\sum_{k = 0}^{\llargeMO-\yellowm{4}} \byteCol{HI\_k}_{i + \rowShiftCoinbase} = 0$
 		\end{enumerate}
+		\saNote{} The final constraint imposes that $\blockDataHi_{i + \rowShiftCoinbase}$ be a $\yellowm{4}$ byte integer, thus the high part of an address.
 	\item Setting $\inst{TIMESTAMP}$:
 		\begin{enumerate}[resume]
 			\item $\INST_{i + \rowShiftTimestamp} = \inst{TIMESTAMP}$
@@ -18,16 +18,16 @@
 		\saNote{} This imposes a lookup to the \wcpMod{} module, constraining the timestamp to be greater than the previous one. We don't need it for the first block of the batch.
 		\begin{enumerate}[resume]
 			\item $\blockDataHi _{i + \rowShiftTimestamp} = 0$
-			\item $\sum_{k = 0}^{\llargeMO-6} \byteCol{LO\_k}_{i + \rowShiftTimestamp} = 0$
+			\item $\sum_{k = 0}^{\llargeMO-\yellowm{6}} \byteCol{LO\_k}_{i + \rowShiftTimestamp} = 0$
 		\end{enumerate}
 		\saNote{}
-		The above imposes that \inst{TIMESTAMP}'s are ``small'' (in the sense that they are 6 byte integers.)
+		The above imposes that \inst{TIMESTAMP}'s are ``small'' (in the sense that they are $\yellowm{6}$ byte integers.)
 	\item Setting $\inst{NUMBER}$:
 		\begin{enumerate}[resume]
 			\item $\INST_{i + \rowShiftNumber} = \inst{NUMBER}$
 			\item $\blockDataHi_{i + \rowShiftNumber} = 0$
-			\item $\sum_{k = 0}^{\llargeMO-6} \byteCol{LO\_k}_{i + \rowShiftNumber} = 0$
 			\item $\blockDataLo_{i + \rowShiftNumber} = \blockNumberOfFirstBlockInConflation_{i} + \relBlock_{i} - 1$
+			\item $\sum_{k = 0}^{\llargeMO-\yellowm{6}} \byteCol{LO\_k}_{i + \rowShiftNumber} = 0$
 		\end{enumerate}
 		\saNote{}
 		The same remark applies as in the \inst{TIMESTAMP} case.
