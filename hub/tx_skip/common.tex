@@ -2,8 +2,8 @@
 	\boxed{\text{All constraints in this section are written under the assumption that
 	\(
 	\begin{cases}
-		\hubStamp_{i - 1} \neq \hubStamp_{i} \\ 
-		\txSkip_{i} = 1 \\
+		\hubStamp _{i - 1} \neq \hubStamp_{i} \\
+		\txSkip   _{i}     =     1            \\
 	\end{cases}
 	\)}}
 \end{center}
@@ -51,9 +51,6 @@ We now populate the rows of the initialization phase.
 				\accAddress    \high _{i + \locTxSkipRecipientAccountRowOffset} & = & \txTo  \high  _{i + \locTxSkipTransactionRowOffset}              \\
 				\accAddress    \low  _{i + \locTxSkipRecipientAccountRowOffset} & = & \txTo  \low   _{i + \locTxSkipTransactionRowOffset} \vspace{2mm} \\
 				\multicolumn{3}{l}{\accIncrementBalance {i}{\locTxSkipRecipientAccountRowOffset}{\txValue_{i + \locTxSkipTransactionRowOffset}}} \\
-				% \multicolumn{3}{l}{\accSameNonce                  {i}{\locTxSkipRecipientAccountRowOffset}} \\
-				% \multicolumn{3}{l}{\accSameCode                   {i}{\locTxSkipRecipientAccountRowOffset}} \\
-				% \multicolumn{3}{l}{\accSameDeployment             {i}{\locTxSkipRecipientAccountRowOffset}} \\
 				\texttt{Nonce:}      & \multicolumn{2}{l}{\valueToBeSet} \\
 				\texttt{Code:}       & \multicolumn{2}{l}{\valueToBeSet} \\
 				\texttt{Deployment:} & \multicolumn{2}{l}{\valueToBeSet} \\
@@ -123,7 +120,18 @@ We now populate the rows of the initialization phase.
 								\accDeploymentStatus\new  _{i + \locTxSkipRecipientAccountRowOffset} & = & 0 \\
 							\end{array} \right.
 						\]
-						\saNote{} As no deployment phase (in the sense of: execution of initialization code) will happen given that the transaction provided initialization code is empty we directly skip to the "deployed status" of the account through $\accDeploymentStatus\new \equiv 0$.
+						\saNote{}
+						As no deployment phase (in the sense of: execution of initialization code) will happen given that the transaction provided initialization code is empty we directly skip to the "deployed status" of the account through $\accDeploymentStatus\new \equiv 0$.
+
+						\saNote{}
+						It seems tempting to further impose that the deployment number should (initially) be zero (and go to one.)
+						While this will be true in practice there are scenarios in the \evm{} test suite where this assumption is violated.
+						In \texttt{BlockchainReferenceTest\_612/suicideStorageCheck\_London}, for instance,
+						the initial (world) state is made to contain an account with nonempty bytecode which allowing it to \inst{SELFDESTRUCT}.
+						In a subsequent deployment transaction this account is resurrected (with different bytecode.)
+						In that particular scenario the initial deployment number is 0.
+						It goes to 1 after the \inst{SELFDESTRUCT}.
+						It then goes from 1 to 2 with the deployment transaction resurrecting said acount.
 				\end{description}
 		\end{description}
 		we further impose
