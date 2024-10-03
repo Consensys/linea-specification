@@ -31,7 +31,7 @@ What follows is the list of tasks in which the present module helps the \hubMod{
 		detect $\col{value} > \col{balance}$, $\col{callstackdepth} \ge 1024$, $\col{value} \neq 0$;
 		see section~(\ref{oob: populating: call});
 	\item[\underline{\inst{CREATE}-type abort detection:}]
-		detect $\col{value} > \col{balance}$, $\col{callstackdepth} \ge 1024$, $\locNonce \neq 0$ and $\locCreatorNonce \geq 2^{64} - 1$;
+		detect $\col{value} > \col{balance}$, $\col{callstackdepth} \ge 1024$, $\locNonce \neq 0$ and $\locCreatorNonce \geq \maxNonce$;
 		see section~(\ref{oob: populating: create});
 	\item[\underline{\sstorexSH{} detection:}]
 		determine if $\col{gas} \leq G_\text{callstipend} = 2300$;
@@ -51,9 +51,9 @@ We furthermore use the \oobMod{} for the pricing of certain precompiles and the 
 		performs the comparison
 		\[
 			\left\{ \begin{array}{llcrcl}
-				\text{for }\inst{ECRECOVER}   : & \locCallGas \leq g_\text{r} & := & 3000 \\
-				\text{for }\inst{ECADD}       : & \locCallGas \leq g_\text{r} & := &  150 \\
-				\text{for }\inst{ECMUL}       : & \locCallGas \leq g_\text{r} & := & 6000 \\
+				\text{for }\inst{ECRECOVER}   : & \locCalleeGas \leq g_\text{r} & := & 3000 \\
+				\text{for }\inst{ECADD}       : & \locCalleeGas \leq g_\text{r} & := &  150 \\
+				\text{for }\inst{ECMUL}       : & \locCalleeGas \leq g_\text{r} & := & 6000 \\
 			\end{array} \right.
 		\]
 	\item[\underline{\inst{SHA2-256}, \inst{RIPEMD-160} and \inst{IDENTITY} pricing:}]
@@ -62,14 +62,14 @@ We furthermore use the \oobMod{} for the pricing of certain precompiles and the 
 		and respectively perform the comparisons
 		\[
 			\left\{ \begin{array}{llcrcr}
-				\text{for }\inst{SHA2-256}   : & \locCallGas \leq g_\text{r} & := & 60  & + & 12  \cdot \locCeil  \\
-				\text{for }\inst{RIPEMD-160} : & \locCallGas \leq g_\text{r} & := & 600 & + & 120 \cdot \locCeil  \\
-				\text{for }\inst{IDENTITY}   : & \locCallGas \leq g_\text{r} & := & 15  & + & 3   \cdot \locCeil  \\
+				\text{for }\inst{SHA2-256}   : & \locCalleeGas \leq g_\text{r} & := & 60  & + & 12  \cdot \locCeil  \\
+				\text{for }\inst{RIPEMD-160} : & \locCalleeGas \leq g_\text{r} & := & 600 & + & 120 \cdot \locCeil  \\
+				\text{for }\inst{IDENTITY}   : & \locCalleeGas \leq g_\text{r} & := & 15  & + & 3   \cdot \locCeil  \\
 			\end{array} \right.
 		\]
 	\item[\underline{\inst{ECPAIRING} pricing:}]
 		verifies that $\| I_\textbf{d} \| \equiv 0 \mod 192$ and performs the comparison 
-		\[ \locCallGas \leq g_\text{r} := 34000 \cdot \frac{\| I_\textbf{d} \|}{192} + 45000 \]
+		\[ \locCalleeGas \leq g_\text{r} := 34000 \cdot \frac{\| I_\textbf{d} \|}{192} + 45000 \]
 \end{description}
 
 \saNote{}

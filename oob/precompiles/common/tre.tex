@@ -37,7 +37,7 @@ Besides verifying whether the precompile was provided with sufficient gas we mus
 				\[
 					\oobCallToLt
 					{i}{4}
-					{0}{\locCallGas}
+					{0}{\locCalleeGas}
 					{0}{\locPrecompileCost}
 				\]
 				where we use the following shorthand
@@ -48,7 +48,7 @@ Besides verifying whether the precompile was provided with sufficient gas we mus
 				\[
 					\locInsufficientGas \define \outgoingResLo_{i + 4}
 				\]
-				It follows that $\locCallGas < \locPrecompileCost \iff \locInsufficientGas = 1$.
+				It follows that $\locCalleeGas < \locPrecompileCost \iff \locInsufficientGas = 1$.
 		\end{enumerate}
 	\item[\underline{Justifying the remaining \hubMod{} predictions:}]
 		we impose that
@@ -60,7 +60,7 @@ Besides verifying whether the precompile was provided with sufficient gas we mus
 		we further impose that
 		\begin{enumerate}
 			\item \If $\locHubSuccess = 0$ \Then $\locReturnGas = 0$
-			\item \If $\locHubSuccess = 1$ \Then $\locReturnGas = \locCallGas - \locPrecompileCost$
+			\item \If $\locHubSuccess = 1$ \Then $\locReturnGas = \locCalleeGas - \locPrecompileCost$
 		\end{enumerate}
 \end{description}
-\saNote{} In other words $\locHubSuccess \equiv 1 \iff$ \Big($\cds \equiv 0 \mod 192$ \et{} $\locCallGas \geq \locPrecompileCost$\Big).
+\saNote{} In other words $\locHubSuccess \equiv 1 \iff$ \Big($\cds \equiv 0 \mod 192$ \et{} $\locCalleeGas \geq \locPrecompileCost$\Big).

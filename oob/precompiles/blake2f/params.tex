@@ -3,7 +3,7 @@ The present section describes the data layout for the first way in which the \oo
 	\boxed{\text{All constraints in this subsection further assume } \oobInstIsBlakeParams_{i} = 1 }
 \]
 We remind the reader that the objective of the \oobMod{} module in this particular case is to
-\green{(\emph{a})} compare the \locCallGas{} to the number of rounds \locBlakeR{}
+\green{(\emph{a})} compare the \locCalleeGas{} to the number of rounds \locBlakeR{}
 \green{(\emph{b})} verify that $\locBlakeF{} \in \{0, 1\}$
 \green{(\emph{c})} verify the \hubMod{}'s prediction as to the (non)vanishing of \locRac{}
 \green{(\emph{d})} justify the failure / success of the precompile
@@ -12,7 +12,7 @@ We remind the reader that the objective of the \oobMod{} module in this particul
 We thus introduce the following (local) shorthands:
 \[
 	\left\{ \begin{array}{lclr}
-		\locCallGas    & \define & \oobDataCol {1} _{i}               \\
+		\locCalleeGas    & \define & \oobDataCol {1} _{i}               \\
 		%              & \define & \oobDataCol {2} _{i} \\
 		%              & \define & \oobDataCol {3} _{i} \\
 		\locRamSuccess & \define & \oobDataCol {4} _{i} & \prediction \\
@@ -30,7 +30,7 @@ We impose the following constraints:
 		      \left\{ \begin{array}{l}
 			      \oobCallToLt
 			      {i}{0}
-			      {0}{\locCallGas}
+			      {0}{\locCalleeGas}
 			      {0}{\locBlakeR}
 			      \vspace{2mm} \\
 			      \oobCallToEq
@@ -47,7 +47,7 @@ We impose the following constraints:
 			      \locFisABit       & \define & \outgoingResLo _{i + 1} \\
 		      \end{array} \right.
 	      \]
-	      It follows that $\locInsufficientGas = 1 \iff \locCallGas < \locBlakeR$ i.e. if and only if the \inst{BLAKE2f} precompile was provided with insufficient gas.
+	      It follows that $\locInsufficientGas = 1 \iff \locCalleeGas < \locBlakeR$ i.e. if and only if the \inst{BLAKE2f} precompile was provided with insufficient gas.
 	      It follows that $\locFNotABit = 1 \iff \locBlakeF \notin \{0, 1\}$.
 	      \saNote{} There is no issue with \locBlakeR{} overflowing the \wcpMod{} as that parameter will have been extracted from \textsc{ram} as a 4-Byte integer.
 	      \saNote{} The parameter \locBlakeF{} will have been extracted from \textsc{ram} as a single byte. There is no danger of overflowing the \wcpMod{} by providing it with the square of \locBlakeF{} as one of its inputs.
@@ -58,7 +58,7 @@ We impose the following constraints:
 	      \]
 	      we further impose that
 	      \begin{enumerate}
-		      \item \If $\locRamSuccess = 1$ \Then \( \locReturnGas = \locCallGas - \locBlakeR \);
+		      \item \If $\locRamSuccess = 1$ \Then \( \locReturnGas = \locCalleeGas - \locBlakeR \);
 		      \item \If $\locRamSuccess = 0$ \Then \( \locReturnGas = 0 \).
 	      \end{enumerate}
 \end{description}
