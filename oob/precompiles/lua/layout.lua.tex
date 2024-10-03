@@ -36,17 +36,17 @@
 |---------------------------+------------+------------+---------------+---------------------------+-------------------------------+----------------------------+----------------------------+----------------------------+------------|
 | OOB_INST                  | OOB_DATA_1 | OOB_DATA_2 | OOB_DATA_3    | OOB_DATA_4                | OOB_DATA_5                    | OOB_DATA_6                 | OOB_DATA_7                 | OOB_DATA_8                 | OOB_DATA_9 |
 |---------------------------+------------+------------+---------------+---------------------------+-------------------------------+----------------------------+----------------------------+----------------------------+------------|
-| ⟦OOB_INST_ecrecover⟧      | call_gas   | cds        | r@c           | hub_success ≡             | return_gas ≡                  | extract_call_data ≡        | empty_call_data ≡          | r@c_nonzero ≡              |            |
-| ⟦OOB_INST_sha2-256⟧       |            |            |               | .   [gas_cost ≤ call_gas] | .   0 ∨ [call_gas - gas_cost] | .   hub_success            | .   hub_success            | .   [r@c ≠ 0]              |            |
+| ⟦OOB_INST_ecrecover⟧      | callee_gas | cds        | r@c           | hub_success ≡             | return_gas ≡                  | extract_call_data ≡        | empty_call_data ≡          | r@c_nonzero ≡              |            |
+| ⟦OOB_INST_sha2-256⟧       |            |            |               | . [gas_cost ≤ callee_gas] | . 0 ∨ [callee_gas - gas_cost] | .   hub_success            | .   hub_success            | .   [r@c ≠ 0]              |            |
 | ⟦OOB_INST_ripemd-160⟧     |            |            |               |                           |                               | .   ∧ [cds ≠ 0]            | .   ∧ [cds = 0]            |                            |            |
 | ⟦OOB_INST_identity⟧       |            |            |               |                           |                               |                            |                            |                            |            |
 | ⟦OOB_INST_ecadd⟧          |            |            |               |                           |                               |                            |                            |                            |            |
 | ⟦OOB_INST_ecmul⟧          |            |            |               |                           |                               |                            |                            |                            |            |
 |                           | ✓ trusted  | ✓ trusted  | ✓ trusted     | ⟦ π ⟧                     | ⟦ π ⟧                         | ⟦ π ⟧                      | ⟦ π ⟧                      | ⟦ π ⟧                      |            |
 |---------------------------+------------+------------+---------------+---------------------------+-------------------------------+----------------------------+----------------------------+----------------------------+------------|
-| ⟦OOB_INST_ecpairing⟧      | call_gas   | cds        | r@c           | hub_success ≡             | return_gas ≡                  | extract_call_data ≡        | empty_call_data ≡          | r@c_nonzero ≡              |            |
-|                           |            |            |               | .   [gas_cost ≤ call_gas] | .   0 ∨ [call_gas - gas_cost] | .   hub_success            | .   hub_success            | .   [r@c ≠ 0]              |            |
-|                           |            |            |               | .   ∧ [cds ≡ 0 mod 192]   | .   (if hub_success ≡ true)   | .   ∧ [cds ≠ 0]            | .   ∧ [cds = 0]            |                            |            |
+| ⟦OOB_INST_ecpairing⟧      | callee_gas | cds        | r@c           | hub_success ≡             | return_gas ≡                  | extract_call_data ≡        | empty_call_data ≡          | r@c_nonzero ≡              |            |
+|                           |            |            |               | . [gas_cost ≤ callee_gas] | . 0 ∨ [callee_gas - gas_cost] | .   hub_success            | .   hub_success            | .   [r@c ≠ 0]              |            |
+|                           |            |            |               | . ∧ [cds ≡ 0 mod 192]     | . (if hub_success ≡ true)     | .   ∧ [cds ≠ 0]            | .   ∧ [cds = 0]            |                            |            |
 |                           |            |            |               |                           |                               |                            |                            |                            |            |
 |                           | ✓ trusted  | ✓ trusted  | ✓ trusted     | ⟦ π ⟧                     | ⟦ π ⟧                         | ⟦ π ⟧                      | ⟦ π ⟧                      | ⟦ π ⟧                      |            |
 |---------------------------+------------+------------+---------------+---------------------------+-------------------------------+----------------------------+----------------------------+----------------------------+------------|
@@ -68,8 +68,8 @@
 |                           |            |            |               |                           |                               |                            |                            |                            |            |
 |                           | ✓ trusted  | ✓ trusted  | ✓ trusted     | ⟦ π ⟧                     |                               | ⟦ π ⟧                      | ⟦ π ⟧                      | ⟦ π ⟧                      |            |
 |---------------------------+------------+------------+---------------+---------------------------+-------------------------------+----------------------------+----------------------------+----------------------------+------------|
-| ⟦OOB_INST_modexp_pricing⟧ | call_gas   |            | r@c           | ram_success ≡             | return_gas ≡                  | exponent_log               | max_mbs_bbs                | r@c_nonzero ≡              |            |
-|                           |            |            |               | .   [gas_cost ≤ call_gas] | .   0 ∨ [call_gas - gas_cost] |                            |                            | .   [r@c ≠ 0]              |            |
+| ⟦OOB_INST_modexp_pricing⟧ | callee_gas |            | r@c           | ram_success ≡             | return_gas ≡                  | exponent_log               | max_mbs_bbs                | r@c_nonzero ≡              |            |
+|                           |            |            |               | . [gas_cost ≤ callee_gas] | . 0 ∨ [callee_gas - gas_cost] |                            |                            | .   [r@c ≠ 0]              |            |
 |                           |            |            |               |                           |                               |                            |                            |                            |            |
 |                           | ✓ trusted  |            | ✓ trusted     | ⟦ π ⟧                     | ⟦ π ⟧                         | ✓ trusted                  | ✓ trusted                  | ⟦ π ⟧                      |            |
 |---------------------------+------------+------------+---------------+---------------------------+-------------------------------+----------------------------+----------------------------+----------------------------+------------|
@@ -86,15 +86,15 @@
 | (we could merge it        |            |            |               |                           |                               |                            |                            |                            |            |
 | with others)              |            | ✓ trusted  | ✓ trusted     | ⟦ π ⟧                     |                               |                            |                            | ⟦ π ⟧                      |            |
 |---------------------------+------------+------------+---------------+---------------------------+-------------------------------+----------------------------+----------------------------+----------------------------+------------|
-| ⟦OOB_INST_blake_params⟧   | call_gas   |            |               | ram_success ≡             | return_gas ≡                  | r                          | f                          |                            |            |
-|                           |            |            |               | .   [r ≤ call_gas]        | .   0 ∨ [call_gas - r]        |                            |                            |                            |            |
+| ⟦OOB_INST_blake_params⟧   | callee_gas |            |               | ram_success ≡             | return_gas ≡                  | r                          | f                          |                            |            |
+|                           |            |            |               | .   [r ≤ callee_gas]      | .   0 ∨ [callee_gas - r]      |                            |                            |                            |            |
 |                           |            |            |               | .   ∧ [f ≡ bit]           |                               |                            |                            |                            |            |
 |                           |            |            |               |                           |                               |                            |                            |                            |            |
 |                           | ✓ trusted  |            |               | ⟦ π ⟧                     | ⟦ π ⟧                         | ✓ trusted                  | ✓ trusted                  |                            |            |
 |---------------------------+------------+------------+---------------+---------------------------+-------------------------------+----------------------------+----------------------------+----------------------------+------------|
 
 Comments: 
-- call_gas, cds and r@c always occupy the same columns (when present);
+- callee_gas, cds and r@c always occupy the same columns (when present);
 - return_gas, r@c_nonzero and hub_success/ram_success always occupy the same columns (when present);
 - the data layout for
         * ⟦OOB_ecrecover⟧        * ⟦OOB_sha2-256⟧         * ⟦OOB_ecpairing⟧
@@ -105,7 +105,7 @@ Comments:
 
 While the data layout is the same the underlying computations performed by the OOB module are distinct
 - the "gas_cost" computation are precompile specific;
-- the "hub_success" condition are always just [call_gas ≤ gas_cost] except for ⟦OOB_ecpairing⟧ which also requires a congruence condition.
+- the "hub_success" condition are always just [callee_gas ≤ gas_cost] except for ⟦OOB_ecpairing⟧ which also requires a congruence condition.
 
 NOTE. ECADD, ECMUL and ECPAIRING can have hard failures unrelated to insufficient gas induced by MALFORMED DATA.
 Detection of these, however, requires reading input data from RAM. Such failures will be detected by the SCEN/PRC_FAILURE_KNOWN_TO_RAM 
