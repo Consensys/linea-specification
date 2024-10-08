@@ -4,8 +4,8 @@
 
 Could be tackled in any order (modulo computational endpoints)
 
-- SHAKIRA: trivial data storey to send data to some (gnark) circuit;
-- BLAKEMODEXP: trivial data store to send data to some (gnark) ciruict;
+- SHAKIRA: trivial data store to send data to some (gnark) circuit;
+- BLAKEMODEXP: trivial data store to send data to some (gnark) circuit;
 - LOG_DATA / LOG_INFO: trivial data stores to prepare data to send to RLP_TXN_RCPT (the transaction receipt module);
 - ROM_LEX: nearly trivial internal logic; associates every nonempty bytecode with a unique identifier (CODE_FRAGMENT_INDEX); complex relationship with the HUB;
 - ROM: somewhat complex internal logic; parses bytecode / initialization code; performs jumpdestination analysis; constructs push values;
@@ -44,7 +44,7 @@ Could be tackled in any order:
 # Memory
 
 - MXP: detects wildly out of bounds arguments for instructions that may trigger memory expansion; STATEFUL module (it provides e.g. the number of active words in memory for MSIZE);
-- MMU: breaks complext memory instructions (MSTORE, MLOAD, MSTORE8, SHA3, RETURN, REVERT, CREATE's, COPY-instructions, ...) down into simpler custom ones;
+- MMU: breaks complex memory instructions (MSTORE, MLOAD, MSTORE8, SHA3, RETURN, REVERT, CREATE's, COPY-instructions, ...) down into simpler custom ones;
 - MMIO: executes the custom instructions prepared by the MMU; STATEFUL module;
 
 # Hub
