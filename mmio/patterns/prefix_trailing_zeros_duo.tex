@@ -4,11 +4,11 @@ Supppose we are given
 	\item binary columns $\bit{1}$, $\bit{2}$, $\bit{3}$ and $\bit{4}$,
 	\item counter-constant columns  \sourceOne{}, \sourceTwo{}, \target{},
 	\item byte columns \sourceOne{}\byte{} and \sourceTwo{}\byte{},
-	\item counter-constant columns \sourceOne{}\mark{} and \size{},
+	\item counter-constant columns \sourceOne{}\mark{}, \target{}\mark{} and \size{},
 	\item accumulator columns \acc{1} and \acc{2},
 	\item two columns \col{P1} and \col{P2},
 	\item a ``counter column'' \ct{}.
-	%\item[\vspace{\fill}]
+		%\item[\vspace{\fill}]
 \end{itemize}
 %\end{multicols}
 The interpreation is as follows:
@@ -19,60 +19,77 @@ The interpreation is as follows:
 \sourceOne{}\byte{} and \sourceTwo{}\byte{} are the respective byte decompositions;
 \sourceOne{}\mark{} is the offset within \sourceOne{} from where we start harvesting bytes;
 \size{} is the total number of bytes to harvest;
-\target{} will be made to contain the prefix extracted from \sourceOne{} followed by the prefix extracted from \sourceTwo{} (left aligned);
-the assumption is that $\sourceOne{}\mark{} + \size{} > \llarge$ so that two byte sources are required to build \target{};
+as such we shall assume that
+\begin{multicols}{3}
+	\begin{enumerate}
+		\item $0 \leq \sourceOne\mark \leq \llargeMO$
+		\item $0 < \size \leq \llarge$
+		\item $\sourceOne{}\mark{} + (\size{}-1) > \llargeMO$
+	\end{enumerate}
+\end{multicols}
+\noindent
+\target{}\mark{} is the offset within \target{} where we start writing bytes;
+\target{} will be made to contain the suffix extracted from \sourceOne{} followed by the prefix extracted from \sourceTwo{};
+as such we shall assume that
+\begin{multicols}{2}
+	\begin{enumerate}
+		\item $0 \leq \target\mark \leq \llargeMO$
+		\item $\target{}\mark{} + (\size{}-1) \leq \llargeMO$
+	\end{enumerate}
+\end{multicols}
+\noindent 
 $\bit{1}$ plateaus at \sourceOne{}\mark{};
 $\bit{2}$ plateaus at $\sourceOne{}\mark{} + \size{} - \llarge$;
-$\bit{3}$ plateaus at $\llarge - \sourceOne{}\mark{}$;
-$\bit{4}$ plateaus at $\size{}$;
-$\col{P1}$ and $\col{P2}$ are ``powers of 256'' columns with $\col{P1}$ pegged to $\bit{3}$ and $\col{P2}$ pegged to $\bit{4}$;
+$\bit{3}$ plateaus at $\target\mark + \llarge - \sourceOne{}\mark{}$;
+$\bit{4}$ plateaus at $\target\mark + \size{}$;
+$\col{P1}$ and $\col{P2}$ are ``powers of 256'' columns;
+$\col{P1}$ should be pegged to $\bit{3}$;
+$\col{P2}$ should be pegged to $\bit{4}$;
 together they build the correct powers of 256 required for shifting the extracted prefix and suffix and building \target{}. Compare with figure~\ref{fig: two to one padded}.
 
 The following collection of constraints ensures the desired behaviour:
 \begin{enumerate}
 	\item binary plateau constraints:
-	\begin{enumerate}
-		\item $\plateau(\bit{1}, \sourceOne{}\mark{}; \ct{})$,
-		\item $\plateau(\bit{2}, \sourceOne{}\mark{} + \size{} - \llarge; \ct{})$,
-		\item $\plateau(\bit{3}, \llarge - \sourceOne{}\mark{}; \ct{})$;
-		\item $\plateau(\bit{4}, \size{}; \ct{})$;
-	\end{enumerate}
+		\begin{enumerate}
+			\item $\plateau(\bit{1}, \sourceOne{}\mark{}; \ct{})$,
+			\item $\plateau(\bit{2}, \sourceOne{}\mark{} + \size{} - \llarge; \ct{})$,
+			\item $\plateau(\bit{3}, \target{}\mark{} + \llarge - \sourceOne{}\mark{}; \ct{})$;
+			\item $\plateau(\bit{4}, \target{}\mark{} + \size{}; \ct{})$;
+		\end{enumerate}
 	\item prefix and suffix constraints:
-	\begin{enumerate}
-		\item  $\compSuffix(\acc{1}, \sourceOne{}\byte{}, \bit{1}; \ct{})$;
-		\item  $\compPrefix(\acc{2}, \sourceTwo{}\byte{}, \bit{2}; \ct{})$;
-	\end{enumerate}
+		\begin{enumerate}
+			\item  $\compSuffix(\acc{1}, \sourceOne{}\byte{}, \bit{1}; \ct{})$;
+			\item  $\compPrefix(\acc{2}, \sourceTwo{}\byte{}, \bit{2}; \ct{})$;
+		\end{enumerate}
 	\item power constraints: 
-	\begin{enumerate}
-		\item $\power(\col{P1}, \bit{3}; \ct{})$;
-		\item $\power(\col{P2}, \bit{4}; \ct{})$;
-	\end{enumerate}
+		\begin{enumerate}
+			\item $\power(\col{P1}, \bit{3}; \ct{})$;
+			\item $\power(\col{P2}, \bit{4}; \ct{})$;
+		\end{enumerate}
 	\item value enforcement
-	\[
-		\If\ct{}_{i} = \llargeMO~
-		\Then
-		\target{}_{i}
-		=
-		\acc{1}_{i}\cdot \col{P1}_{i}
-		+
-		\acc{2}_{i}\cdot \col{P2}_{i}.
-	\]
+		\[
+			\If\ct{}_{i} = \llargeMO~
+			\Then
+			\target{}_{i}
+			=
+			\acc{1}_{i}\cdot \col{P1}_{i}
+			+
+			\acc{2}_{i}\cdot \col{P2}_{i}.
+		\]
 \end{enumerate}
 We use the short hand 
 \[
 	\twoToOnePadded
-	\left(
-	\begin{array}{c}
-	\sourceOne{}, \sourceTwo{}, \target{}; \sourceOne{}\byte{}, \sourceTwo{}\byte{};\\
-	\acc{1}, \acc{2}; \col{P1}, \col{P2};\\
-	\sourceOne{}\mark{}, \size{}; \bit{1}, \bit{2}, \bit{3}, \bit{4}; \ct{};
-	\end{array}
-	\right)
+	\left( \begin{array}{c}
+		\sourceOne{}, \sourceTwo{}, \target{}; \sourceOne{}\byte{}, \sourceTwo{}\byte{};\\
+		\acc{1}, \acc{2}; \col{P1}, \col{P2};\\
+		\sourceOne{}\mark{}, \target{}\mark{}, \size{}; \bit{1}, \bit{2}, \bit{3}, \bit{4}; \ct{};
+	\end{array} \right)
 \]
 
 \begin{figure}[h!]
-\centering
-\includegraphics[width = 0.5\textwidth]{drawing/2_to_1_padded}
-\label{fig: two to one padded}
-\caption{Representation of the constraints implemented by $\twoToOnePadded$.}
+	\centering
+	\includegraphics[width = 0.5\textwidth]{drawing/2_to_1_padded}
+	\label{fig: two to one padded}
+	\caption{Representation of the constraints implemented by $\twoToOnePadded$.}
 \end{figure}

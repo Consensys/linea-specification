@@ -8,7 +8,7 @@ Supppose we have
 	\item accumulator columns $\acc{1}, \acc{2}, \acc{3}, \acc{4}$,
 	\item a column \col{P},
 	\item a ``counter column'' \ct{}.
-	%\item[\vspace{\fill}]
+		%\item[\vspace{\fill}]
 \end{itemize}
 %\end{multicols}
 The interpreation is as follows:
@@ -25,41 +25,39 @@ The following collection of constraints ensures the desired behaviour.
 % The interpreation of the greek letters ($\alpha'$, $\beta$, $\beta'$, $\gamma$) is given in \ob{TODO} figure~\ref{fig: one full to two}.
 \begin{description}
 	\item[Plateau constraints:]
-	\begin{enumerate}
-		\item $\plateau(\bit{1}, \targetOne{}\mark{}; \ct{})$
-		\item $\plateau(\bit{2}, 16 - \targetOne{}\mark{}; \ct{})$
-	\end{enumerate}
+		\begin{enumerate}
+			\item $\plateau(\bit{1}, \targetOne{}\mark{}; \ct{})$
+			\item $\plateau(\bit{2}, 16 - \targetOne{}\mark{}; \ct{})$
+		\end{enumerate}
 	\item[Prefix and suffix constraints:]
-	\begin{enumerate}
-		\item $\compSuffix(\acc{1}, \targetOne{}\byte{}, \bit{1}; \ct{})$, %i.e. $\acc{1}\implies\alpha'$,
-		\item $\compPrefix(\acc{2}, \targetTwo{}\byte{}, \bit{1}; \ct{})$, %i.e. $\acc{2}\implies\beta$,
-		\item $\compPrefix(\acc{3}, \source{}\byte{}, \bit{2}; \ct{})$, %i.e. $\acc{3}\implies\gamma$,
-		\item $\compSuffix(\acc{4}, \source{}\byte{}, \bit{2}; \ct{})$, %i.e. $\acc{4}\implies\gamma'$,
-	\end{enumerate}
+		\begin{enumerate}
+			\item $\compSuffix(\acc{1}, \targetOne{}\byte{}, \bit{1}; \ct{})$, %i.e. $\acc{1}\implies\alpha'$,
+			\item $\compPrefix(\acc{2}, \targetTwo{}\byte{}, \bit{1}; \ct{})$, %i.e. $\acc{2}\implies\beta$,
+			\item $\compPrefix(\acc{3}, \source{}\byte{}, \bit{2}; \ct{})$, %i.e. $\acc{3}\implies\gamma$,
+			\item $\compSuffix(\acc{4}, \source{}\byte{}, \bit{2}; \ct{})$, %i.e. $\acc{4}\implies\gamma'$,
+		\end{enumerate}
 	\item[Power constraint:] $\power(\col{P}, \bit{1}; \ct{})$,
 	\item[Update constraints:] \If $\ct_{i} = \llargeMO$ \Then
-	\begin{enumerate}
-		\item $\targetOne\new_i = \targetOne_i + (\acc{3}_i - \acc{1}_i)$
-		\item $\targetTwo\new_i = \targetTwo_i + (\acc{4}_i - \acc{2}_i) \cdot \col{P}_i$
-	\end{enumerate}
+		\begin{enumerate}
+			\item $\targetOne\new_i = \targetOne_i + (\acc{3}_i - \acc{1}_i)$
+			\item $\targetTwo\new_i = \targetTwo_i + (\acc{4}_i - \acc{2}_i) \cdot \col{P}_i$
+		\end{enumerate}
 \end{description}
 We encapsulate all these constraints under a single relation
 \[
 	\oneFullToTwo
-	\left(
-	\begin{array}{c}
-	\source{}, \targetOne{}, \targetTwo{}, \targetOne{}\new{}, \targetTwo{}\new{};\\
-	\source{}\byte{}, \targetOne{}\byte{}, \targetTwo{}\byte{};\\
-	\acc{1}, \acc{2},\\
-	\acc{3}, \acc{4}, \col{P}; \\
-	\targetOne{}\mark{}, \bit{1}, \bit{2}; \ct{};
-	\end{array}
-	\right)
+	\left( \begin{array}{c}
+		\source{}, \targetOne{}, \targetTwo{}, \targetOne{}\new{}, \targetTwo{}\new{};\\
+		\source{}\byte{}, \targetOne{}\byte{}, \targetTwo{}\byte{};\\
+		\acc{1}, \acc{2},\\
+		\acc{3}, \acc{4}, \col{P}; \\
+		\targetOne{}\mark{}, \bit{1}, \bit{2}; \ct{};
+	\end{array} \right)
 \]
 
 \begin{figure}[h!]
-\centering
-\includegraphics[width = 0.5\textwidth]{drawing/1_full_to_2}
-\label{fig: one full to two}
-\caption{This diagram explains the $\oneFullToTwo{}$ constraint and the greek letters mentioned in the constraints.}
+	\centering
+	\includegraphics[width = 0.5\textwidth]{drawing/1_full_to_2}
+	\label{fig: one full to two}
+	\caption{This diagram explains the $\oneFullToTwo{}$ constraint and the greek letters mentioned in the constraints.}
 \end{figure}

@@ -1,14 +1,14 @@
 Suppose we are given
 \begin{itemize}
 	\item counter-constant columns
-	\source{},
-	\target{} and
-	$\target{}\new{}$,
+		\source{},
+		\target{} and
+		$\target{}\new{}$,
 	\item byte columns
-	\source{}\byte{} and 
-	\target{}\byte{},
+		\source{}\byte{} and 
+		\target{}\byte{},
 	\item binary columns
-	$\bit{1}$ and $\bit{2}$,
+		$\bit{1}$ and $\bit{2}$,
 	\item an ``accumulator'' column \ACC{},
 	\item a counter-constant column $\target\mark$,
 	\item a column \col{P},
@@ -25,40 +25,38 @@ the resulting limb is recorded in $\target{}\new{}$.
 We give the set of conditions below under a name:
 \begin{enumerate}
 	\item binary plateau constraints:
-	\begin{enumerate}
-		\item $\plateau(\bit{1}, \target\mark; \ct{})$
-		\item $\plateau(\bit{2}, \target\mark + 1; \ct{})$;
-	\end{enumerate}
+		\begin{enumerate}
+			\item $\plateau(\bit{1}, \target\mark; \ct{})$
+			\item $\plateau(\bit{2}, \target\mark + 1; \ct{})$;
+		\end{enumerate}
 	\item chunk constraint: $\compChunk(\ACC{}, \target{}\byte{}, \bit{1}, \bit{2}; \ct{})$;
 	\item power constraint: $\power(\col{P}, \bit{2}; \ct{})$;
 	\item update constraint:
-	\[
-		\If\ct_{i} = \llargeMO~
-		\Then
-		\target{}\new{}_{i} = 
-		\target{}_{i} + 
-		(\source{}\byte{}_{i} - \ACC{}_{i})
-		\cdot
-		\col{P}_{i}
-	\]
+		\[
+			\If\ct_{i} = \llargeMO~
+			\Then
+			\target{}\new{}_{i} = 
+			\target{}_{i} + 
+			(\source{}\byte{}_{i} - \ACC{}_{i})
+			\cdot
+			\col{P}_{i}
+		\]
 \end{enumerate}
 We encapsulate these constraints in a relation
 \[
 	\byteSwap
-	\left(
-	\begin{array}{c}
+	\left( \begin{array}{c}
 		\source{}, \target{}, \target{}\new{};
 		\source{}\byte{}, \target{}\byte{};
 		\\
 		\ACC{}, \col{P};
 		\target{}\mark{}, \bit{1}, \bit{2}; \ct{};
 		\\
-	\end{array}
-	\right)
+	\end{array} \right)
 \]
 \begin{figure}[h!]
-\centering
-\includegraphics[width = 0.4\textwidth]{drawing/byte_swap}
-\label{fig: one partial to one padded}
-\caption{Representation of the constraints implemented by $\byteSwap$.}
+	\centering
+	\includegraphics[width = 0.4\textwidth]{drawing/byte_swap}
+	\label{fig: one partial to one padded}
+	\caption{Representation of the constraints implemented by $\byteSwap$.}
 \end{figure}
