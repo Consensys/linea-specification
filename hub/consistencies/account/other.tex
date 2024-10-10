@@ -3,4 +3,36 @@ We collect here some other constraints that don't fit in the previous trichotomy
 	\item
 		\If $\order{\peekAccount} _{i} = 1$
 		\Then $\order{\accDeploymentNumber \new }_{i} \in \{ \order{\accDeploymentNumber  }_{i}, 1 + \order{\accDeploymentNumber  }_{i} \}$
+	\item
+		\If $\order{\peekAccount} _{i} = 1$
+		\et $\order{\accDeploymentNumber \new }_{i} \neq \order{\accDeploymentNumber  }_{i}$
+		\begin{enumerate}
+			\item
+				\If $\order{\accDeploymentStatus \new }_{i} = 0$
+				\Then
+				\begin{enumerate}
+					\item $\order{\accNonce        \new } _{i} = 0$ \quad (\trash)
+					\item $\order{\accCodesize     \new } _{i} = 0$ \quad (\trash)
+					\item $\order{\accHasCode      \new } _{i} = 0$ \quad (\trash)
+					\item $\order{\accDeploymentStatus  } _{i} = 0$ \quad (\trash)
+				\end{enumerate}
+				\saNote{}
+				The above can happen in the following scenarios:
+				(\emph{a}) deployment transactions with empty initialization code
+				(\emph{b}) \inst{CREATE(2)} instructions with empty initialization code
+				(\emph{c}) the account wiping operation following a successful \inst{SELFDESTRUCT} at transaction end.
+			\item
+				\If $\order{\accDeploymentStatus \new }_{i} = 1$
+				\Then
+				\begin{enumerate}
+					\item $\order{\accNonce             } _{i} = 0$
+					\item $\order{\accCodesize          } _{i} = 0$
+					\item $\order{\accDeploymentStatus  } _{i} = 0$
+				\end{enumerate}
+				\saNote{}
+				The above constraints are sanity checks.
+				They impose that \emph{for nontrivial deployments} the deployment address
+				initially has zero nonce and zero code size.
+				The balance may of course be nonzero.
+		\end{enumerate}
 \end{enumerate}
