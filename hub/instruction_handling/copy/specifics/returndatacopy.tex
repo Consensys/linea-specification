@@ -40,16 +40,14 @@ The specialized constraints are as follows:
 	\item[\underline{\underline{Setting the context-row $n^°(i + \locCopyCurrentContextRow)$:}}]
 		depending on whether the instruction produces an exception or not we either peek into the caller context (and provide it with empty return data) or inspect the current execution frame and extract from it the following: call data offset, call data size and whether or not it is the root context; as such we impose
 		\begin{enumerate}
-			\item \If $\stackRdcx _{i} = 1$      \Then
+			\item we unconditionally impose
 				\[
-					\left\{ \begin{array}{l}
-						\readContextData                  {i}{\locCopyCurrentContextRow}{\cn_{i}}   \\
-						\executionProvidesEmptyReturnData {i}{\locCopyCallerContextRowLarge}  (\trash) \\
-					\end{array} \right.
+					\readContextData {i}{\locCopyCurrentContextRow}{\cn_{i}}
 				\]
-			\item \If $\stackMxpx _{i} = 1$ \Then $\executionProvidesEmptyReturnData {i}{\locCopyCurrentContextRow} $ (\trash)
-			\item \If $\stackOogx _{i} = 1$ \Then $\executionProvidesEmptyReturnData {i}{\locCopyCurrentContextRow} $ (\trash)
-			\item \If $\xAhoy     _{i} = 0$ \Then $\readContextData {i}{\locCopyCurrentContextRow}{\cn_{i}}$
+			\item \If $\xAhoy     _{i} = 1$ \Then
+				\[
+					\executionProvidesEmptyReturnData {i}{\locCopyCallerContextRowLarge}  \quad (\trash)
+				\]
 		\end{enumerate}
 		\saNote{} We remind the reader that raising the \rdcxSH{} requires \emph{two} context rows.
 \end{description}

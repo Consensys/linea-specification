@@ -26,27 +26,17 @@ The constraints are as follows:
 					= \nonStackRows_{i}
 				\]
 			\item[\underline{The \inst{RETURNDATACOPY} case:}]
-				\If $\locIsRdc   = 1$ \Then $\nonStackRows_{i} = 2 + \stackRdcx_{i}$ furthermore
-				\begin{enumerate}
-					\item \If $\stackRdcx_{i} = 1$ \Then
-						\[
-							\left[ \begin{array}{cr}
-								+ & \peekMisc    _{i + \locCopyMiscRowOffset         } \\
-								+ & \peekContext _{i + \locCopyCurrentContextRow     } \\
-								+ & \peekContext _{i + \locCopyCallerContextRowLarge } \\
-							\end{array} \right]
-							= \nonStackRows_{i}
-						\]
-					\item \If $\stackRdcx_{i} = 0$ \Then
-						\[
-							\left[ \begin{array}{cr}
-								+ & \peekMisc                     _{i + \locCopyMiscRowOffset     } \\
-								+ & \peekContext                  _{i + \locCopyCurrentContextRow } \\
-							\end{array} \right]
-							= \nonStackRows_{i}
-						\]
-				\end{enumerate}
-				\saNote{} \rdcxSH{} induce an extra row of instruction processing of \inst{RETURNDATACOPY},
+				\If   $\locIsRdc   = 1$
+				\Then $\nonStackRows _{i} = 2 + \xAhoy _{i}$
+				furthermore
+				\[
+					\left[ \begin{array}{crcl}
+						+ &             &                   & \peekMisc    _{i + \locCopyMiscRowOffset}         \\
+						+ &             &                   & \peekContext _{i + \locCopyCurrentContextRow}     \\
+						+ & \xAhoy _{i} & \!\!\!\cdot\!\!\! & \peekContext _{i + \locCopyCallerContextRowLarge} \\
+					\end{array} \right]
+					= \nonStackRows_{i}
+				\]
 			\item[\underline{The \inst{CODECOPY} case:}]
 				\If $\locIsCc    = 1$ \Then $\nonStackRows_{i} = 2 + (1 - \xAhoy_{i})$ furthermore
 				\begin{enumerate}
