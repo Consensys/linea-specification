@@ -139,7 +139,7 @@ Note that by definition, see section~(\ref{hub: scenarios: shorthands: selfdestr
 				\[
 					\gasCost_{i} =
 					\left[ \begin{array}{crcl}
-						+ &                           & \!\!\!       \!\!\! & G_\text{selfdestruct}      \\
+						+ &                           & \!\!\!       \!\!\! & \stackStaticGas _{i - 1}   \\
 						+ & (1 - \locRecipientWarmth) & \!\!\! \cdot \!\!\! & G_\text{coldaccountaccess} \\
 					\end{array} \right]
 				\]
@@ -147,12 +147,14 @@ Note that by definition, see section~(\ref{hub: scenarios: shorthands: selfdestr
 				\[
 					\gasCost_{i} =
 					\left[ \begin{array}{crcl}
-						+ &                           & \!\!\!       \!\!\! & G_\text{selfdestruct}      \\
+						+ &                           & \!\!\!       \!\!\! & \stackStaticGas _{i - 1}   \\
 						+ & (1 - \locRecipientWarmth) & \!\!\! \cdot \!\!\! & G_\text{coldaccountaccess} \\
 						+ & (1 - \locRecipientExists) & \!\!\! \cdot \!\!\! & G_\text{newaccount}        \\
 					\end{array} \right]
 				\]
 		\end{enumerate}
+		\saNote{}
+		For \inst{SELFDESTRUCT} we have $\stackStaticGas \equiv G_\text{selfdestruct} \equiv 5000$.
 	\item[\underline{Generalities about the first acount row:}]
 		the first account row peeks into the account which is currently accessible i.e. with address $I_\text{a}$, using \cite{EYP} notations i.e. the account which stands to \inst{SELFDESTRUCT};
 		this account will be accessed in all cases except for that of a \staticxSH{}.
