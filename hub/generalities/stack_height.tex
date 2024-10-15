@@ -1,0 +1,22 @@
+We provide partial constraints for the $\height$ and $\height\new$ columns.
+\begin{enumerate}
+	\item Recall that $\height$ and $\height\new$ are hub-stamp-constant, see section~(\ref{hub: heartbeat: constancy conditions})
+	\item \If $\txExec_{i} = 0$ \Then $\height_{i} = 0$ and $\height\new _{i} = 0$ \quad (\trash)
+	\item \If $\peekStack _{i} = 1$ \Then
+		\begin{enumerate}
+			\item \If $\stackSux _{i} + \stackSox _{i} = 1$ \Then $\height\new _{i} = 0$ \quad (\trash)
+		        \item \If $\stackSux _{i} + \stackSox _{i} = 0$ \Then $\height\new _{i} = \height_{i} - \stackDelta + \stackAlpha$
+		\end{enumerate}
+\end{enumerate}
+Changes to $\height$ and $\height\new$ are derived from the sequence of instructions, see
+section~(\ref{hub: instruction handling}),
+in particular from the relevant stack pattern, see
+section~(\ref{hub: stack: patterns}).
+The permuted domain further imposes ``linking constraints'', ensuring continuity of stack heights at the boundaries of (execution) context changes, see section~(\ref{hub: consistencies: stack}).
+
+\saNote{}
+The $(\trash)$ constraints above reflect the fact that the stack height is irrelevant (undefined, really) outside of transaction execution.
+As such there is no reason to impose a ``new height'' if the present instruction raises a stack exception.
+Stack exceptions (\suxSH{} and \soxSH{} are detected by means of two lookups $\hubMod\hookrightarrow\wcpMod$, see
+section~(\ref{hub: lookups: into wcp for stack underflow}) and
+section~(\ref{hub: lookups: into wcp for stack overflow}).
