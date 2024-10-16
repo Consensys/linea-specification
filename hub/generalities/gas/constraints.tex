@@ -1,16 +1,57 @@
-The following constraints enforce some of the relationships between gas columns.
+We impose the following general constraints on gas columns:
 \begin{enumerate}
-	\item \If $\txExec_{i} = 1$ \Then
+	\item the following columns are hub-stamp-constant, see section~(\ref{hub: heartbeat: constancy conditions}),
+		\begin{multicols}{2}
+			\begin{enumerate}
+				\item \gasExpected{} \quad (\sanityCheck)
+				\item \gasNext{}     \quad (\sanityCheck)
+				\item \gasActual{}   \quad (\sanityCheck)
+				\item \gasCost{}     \quad (\sanityCheck)
+			\end{enumerate}
+		\end{multicols}
+	\item \If $\txExec _{i} = 0$ \Then
+		\[
+			\left\{ \begin{array}{lclr}
+				\gasExpected _{i} & = & 0 & (\trash) \\
+				\gasNext     _{i} & = & 0 & (\trash) \\
+				\gasActual   _{i} & = & 0 & (\trash) \\
+				\gasCost     _{i} & = & 0 & (\trash) \\
+			\end{array} \right.
+		\]
+\end{enumerate}
+The automatic vanishing constraints aren't necessary \emph{per se}.
+The following constraints enforce some of the relationships between gas columns.
+\begin{enumerate}[resume]
+	\item \If $\peekStack _{i} = 1$ \Then
 		\begin{enumerate}
-			\item \If $\xAhoy_{i} = 0$ \Then $\gasNext_{i} = \gasActual_{i} - \gasCost_{i}$
-			\item \If $\xAhoy_{i} = 1$ \Then $\gasNext_{i} = 0$\footnote{The ``\If $\txExec_{i} = 1$ \Then \dots'' precondition may be dropped here.}
+			\item \If $\xAhoy_{i} = 1$ \Then $\gasNext_{i} = 0$\footnote{One may drop the ``\If $\peekStack _{i} = 1$ \Then'' precondition in the implementation.}
+			\item \If $\xAhoy_{i} = 0$ \Then
+				\begin{enumerate}
+					\item \If $\stackDecCreateFlag _{i} + \stackDecCallFlag _{i} = 0$ \Then
+						\[ \gasNext_{i} = \gasActual_{i} - \gasCost_{i} \]
+					\item \If $\stackDecCreateFlag _{i} = 1$ \Then $\gasNext_{i} = \dots$ see section~(\ref{hub: instruction handling: create})
+					\item \If $\stackDecCallFlag   _{i} = 1$ \Then $\gasNext_{i} = \dots$ see section~(\ref{hub: instruction handling: call})
+				\end{enumerate}
 		\end{enumerate}
+\end{enumerate}
+\saNote{}
+Earlier versions of the present arithmetization featured a constraint of the form
+``\If $\locNonOogExceptions _{i} = 1$ \Then $\gasCost _{i} = 0$''
+where $\locNonOogExceptions _{i} \def \xAhoy _{i} - \stackOogx_{i}$.
+This constraint was supposed to facilitate the job of the \gasMod{} module.
+This precaution isn't required anymore as the \gasMod{} now only compares the gas cost to the available gas in case of an \oogxSH{} or in case the opcode is (predicted to be) unexceptional.
+
+The gas cost of an instruction matters to the present arithmetization \emph{if and only if} it is either unexceptional or raises an \oogxSH{} in the arithmetization.
+For exceptional instructions the \zkEvm{} sets the next gas value to $0$.
+For (most) unexceptional instructions the next value of gas is (unsurprisingly) obtained by substracting the gas cost from the currently avaialble gas.
+However, pricing is special for \inst{CALL}-type and \inst{CREATE}-type instructions and we defer to the relevant instruction handling section.
+\begin{enumerate}[resume]
 	\item \If 
 		\[
 			\left\{ \begin{array}{lcl}
-				\hubStamp_{i + 1} & \neq & \hubStamp_{i} \\
-				\txExec_{i}       & =    & 1             \\
-				\txExec_{i + 1}   & =    & 1             \\
+				\hubStamp _{i + 1} & \neq & \hubStamp_{i} \\
+				\txExec   _{i    } & =    & 1             \\
+				\txExec   _{i + 1} & =    & 1             \\
 			\end{array} \right.
 		\]
 		\Then we impose
@@ -32,11 +73,3 @@ Some details:
 We are unable to settle the ``call gas'' or ``create gas'' provided to a child context spawned through a \inst{CREATE}-type or \inst{CALL}-type instruction at this level of generatlity, whence the \relevantValue{} in constraint~(\ref{hub: generalities: gas: spawning new context}). It is a complex question and will be settled when we deal with the processing of those instruction families.
 
 \issue{Constraint~(\ref{hub: generalities: gas: could blow up}) could blow up if we don't handle precompiles, pure transfers and deployments with empty code correctly.}
-
-We further impose that
-\begin{enumerate}[resume]
-	\item
-		\If $\peekStack _{i} = 1$ \et $\stackOogx _{i} + (1 - \xAhoy_{i}) \neq 1$ \Then $\gasCost _{i} = 0$.
-\end{enumerate}
-\saNote{} Along stack-rows it holds that $\col{cond} \equiv \stackOogx _{i} + (1 - \xAhoy_{i})$ is actually \textbf{binary} so that $\col{cond} \neq 1$ really means $\col{cond} = 0$.
-Indeed, by construction, and along stack-rows, $0 \leq \stackOogx _{i} \leq \xAhoy_{i} \leq 1$ so that if $\stackOogx _{i} \equiv 1$ then $(1 - \xAhoy_{i}) \equiv 0$.
