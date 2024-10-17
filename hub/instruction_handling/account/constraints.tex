@@ -9,7 +9,7 @@
 \end{center}
 
 \begin{description}
-	\item[\underline{Setting the stack pattern:}]
+	\item[\line{Setting the stack pattern:}]
 		we impose that
 		\begin{enumerate}
 			\item \If $\locRequiresTrimming = 1$ \Then $\oneOneSP  _{i}$
@@ -23,7 +23,8 @@
 			\item \If $\locRequiresTrimming = 1$ \Then $\nonStackRows_{i} = 1 + \cnWillRev_{i} + \cmc_{i}$
 			\item \If $\locCurrentAccount   = 1$ \Then $\nonStackRows_{i} = 1 + (1 - \cmc_{i})$
 		\end{enumerate}
-		\saNote{} For instructions raising the $\stackDecAccFlag$ one has $\cmc \equiv \xAhoy$.
+		\saNote{}
+		For instructions raising the $\stackDecAccFlag$ one has $\cmc \equiv \xAhoy$.
 	\item[\underline{Setting the peeking flags:}]
 		we impose that
 		\begin{enumerate}
@@ -72,7 +73,8 @@
 						+ & (1 - \locWarmth) & \cdot & G_{\text{coldaccountaccess}} \\
 					\end{array} \right]
 				\]
-				\saNote{} Recall that
+				\saNote{}
+				Recall that
 				$G_{\text{coldaccountaccess}} = 2600$ and
 				$G_{\text{warmaccess}} = 100$.
 			\item \If $\locCurrentAccount   = 1$ \Then
@@ -80,7 +82,8 @@
 					\gasCost_{i} = \stackStaticGas_{i}
 					% = G_{\text{low}} + \decFlag {4} _{i} \cdot ( G_{\text{base}} - G_{\text{low}} )
 				\]
-				\saNote{} In other words for
+				\saNote{}
+				In other words for
 				\inst{CODESIZE}    one has $\gasCost \equiv G_{\text{base}} \equiv 2$ while for
 				\inst{SELFBALANCE} one has $\gasCost \equiv G_{\text{low}}  \equiv 5$.
 		\end{enumerate}
@@ -177,7 +180,8 @@
 												\accAddressLo    _{i + 2} & = & \locAccountAddressLo \\
 											\end{array} \right.
 										\]
-										\saNote{} This is the \inst{SELFBALANCE} case.
+										\saNote{}
+										This is the \inst{SELFBALANCE} case.
 									\item \If $\decFlag{4}_{i} = 1$ \Then
 										\[
 											\left\{ \begin{array}{lcl}
@@ -185,7 +189,8 @@
 												\accAddressLo    _{i + 2} & = & \locCodeAddressLo \\
 											\end{array} \right.
 										\]
-										\saNote{} This is the \inst{CODESIZE} case.
+										\saNote{}
+										This is the \inst{CODESIZE} case.
 								\end{enumerate}
 						\end{description}
 					\item \If $\xAhoy_{i} = 1$ \Then we don't need to impose anything;
@@ -208,17 +213,21 @@
 				\[
 					\left\{ \begin{array}{lcl}
 						\stackItemValHi{4}_{i} & \!\!\! = \!\!\! & 0 \\
-						\stackItemValLo{4}_{i} & \!\!\! = \!\!\! & \accCodesize_{i + 1} \\
+						\stackItemValLo{4}_{i} & \!\!\! = \!\!\! & \accCodesize_{i + 1} \cdot \accHasCode_{i + 1} \\
 					\end{array} \right.
 				\]
+				\saNote{}
+				We provide more details below.
 			\item[\underline{The \inst{EXTCODEHASH} case:}]
 				\If $\decFlag{3}_{i} = 1$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
-						\stackItemValHi{4}_{i} & \!\!\! = \!\!\! & \accCodehash_{i + 1}\high \\
-						\stackItemValLo{4}_{i} & \!\!\! = \!\!\! & \accCodehash_{i + 1}\low \\
+						\stackItemValHi{4}_{i} & \!\!\! = \!\!\! & \accCodehash_{i + 1}\high \cdot \accExists_{i + 1}\\
+						\stackItemValLo{4}_{i} & \!\!\! = \!\!\! & \accCodehash_{i + 1}\low  \cdot \accExists_{i + 1}\\
 					\end{array} \right.
 				\]
+				\saNote{}
+				We provide more details below.
 			\item[\underline{The \inst{CODESIZE} case:}]
 				\If $\decFlag{4}_{i} = 1$ \Then
 				\[
@@ -249,15 +258,98 @@
 		\end{description}
 \end{description}
 
-% \begin{enumerate}
-% 	\item \If $\locRequiresTrimming = 1$ \Then
-% 		\begin{enumerate}
-% 			\item \If $\cnWillRev_{i} = 0$ \Then
-% 			\item \If $\cnWillRev_{i} = 1$ \Then
-% 		\end{enumerate}
-% 	\item \If $\locCurrentAccount   = 1$ \Then
-% 		\begin{enumerate}
-% 			\item \If $\xAhoy_{i} = 0$ \Then
-% 			\item \If $\xAhoy_{i} = 1$ \Then
-% 		\end{enumerate}
-% \end{enumerate}
+\saNote{}
+\label{hub: instruction handling: account: extcodesize and extcodehash: subtleties in the EVM}
+We provide more details on the \inst{EXTCODEHASH} and \inst{EXTCODESIZE} cases.
+In doing so we recall several facts about the \evm{}.
+Below we write $x \define \bm{\mu}_\textbf{s}\big[0\big]$ and $a \define (x \mod 2^{160})$.
+\begin{itemize}
+	\item 
+		The return value $\col{ech}$ of \inst{EXTCODEHASH} on input $x$ is
+		\[
+			\specialStar ~ \col{ech}
+			\equiv
+			\begin{cases}
+				0                & \text{if $\bm{\sigma}[a] =    \varnothing$} \\
+				\bm{\sigma}[a]_c & \text{if $\bm{\sigma}[a] \neq \varnothing$} \\
+			\end{cases}
+		\]
+		where, assuming that $\bm{\sigma}[a] \neq \varnothing$,
+		$\bm{\sigma}[a]_c$ is the code hash of the account with address $a$.
+	\item 
+		The return value $\col{ecs}$ of \inst{EXTCODESIZE} on input $x$ is
+		\[
+			\specialStar' ~ \col{ecs}
+			\equiv
+			\begin{cases}
+				0              & \text{if $\bm{\sigma}[a] = \varnothing$}     \\
+				\| \mathbf{b} \| & \text{if $\bm{\sigma}[a] \neq \varnothing$} \\
+			\end{cases}
+		\]
+		where, assuming that $\bm{\sigma}[a] \neq \varnothing$,
+		$\mathbf{b}$ is the byte array such that $\texttt{KECCAK}(\mathbf{b}) = \bm{\sigma}[a]_c$.
+	\item 
+		While a deployment is under way at some address $a'$ the associated account's code hash is set to $\bm{\sigma}[a']_c \equiv \emptyKeccak$.
+\end{itemize}
+
+\saNote{}
+\label{hub: instruction handling: account: extcodesize and extcodehash: subtleties in the zkEVM}
+Extracting the size $\|\mathbf{b}\|$ from the arithmetization requires some care.
+The issue is that this quantity \emph{may or may not} be represented by $\accCodesize$.
+We further recall several facts about the \zkEvm.
+\begin{itemize}
+	\item 
+		The code hash of the account with address $a$, i.e. $\bm{\sigma}[a]_c$, is represented by the pair
+		\[ \big( \accCodehashHi, \accCodehashLo \big) \]
+	\item 
+		By the defining property of \accHasCode{} in section~(\ref{hub: account: empty code}),
+		\[
+			\begin{array}{lcl}
+				\accHasCode \equiv 0 & \iff &
+				\left\{ \begin{array}{lcl}
+					\accCodehashHi & = & \emptyKeccakHi \\
+					\accCodehashLo & = & \emptyKeccakLo \\
+				\end{array} \right. \\
+				& \iff &
+				\bm{\sigma}[a]_c = \emptyKeccak \\
+			\end{array}
+		\]
+	\item 
+		By the very definition of $\accExists$ in section~(\ref{hub: account: account existence}),
+		it holds that
+		\[ \accExists \cdot \accHasCode \equiv \accHasCode \]
+\end{itemize}
+
+\saNote{}
+\label{hub: instruction handling: account: extcodesize and extcodehash: justifying our treatment of EXTCODESIZE}
+Let us simplify notations by writing $\locCodeSizeCandidate \equiv \accCodesize \cdot \accHasCode$.
+The acronym \locCodeSizeCandidate{} stands for ``\locCodeSizeCandidateFull.''
+
+Our first observation is that if the foreign account does not (currently) exist in the state (i.e. if $\accExists \equiv 0$) then
+$\locCodeSizeCandidate \equiv 0$. This is compatible with $\specialStar$. We shall now assume that the account does exist in the state.
+
+When the target account \textbf{isn't} (currently) undergoing deployment $\accCodesize$ represents the code size and $\accCodesize \equiv \|\mathbf{b}\|$.
+Furthermore $(\accCodehashHi, \accCodehashLo)$ contains the code hash $\bm{\sigma}[a]_c$.
+One therefore has
+\[
+	\begin{array}{lcl}
+		\accHasCode \equiv 0 & \iff & \bm{\sigma}[a]_c = \emptyKeccak \\
+                                     & \iff & \| \mathbf{b} \| = 0            \\
+	\end{array}
+\]
+One therefore finds that
+\( \accCodesize \cdot \accHasCode \equiv \accCodesize \)
+and always coincides with $\col{ecs} \equiv \| \mathbf{b} \|$,
+in accordance with expectations $\specialStar$.
+
+When the target account \textbf{is} (currently) undergoing deployment then $\mathbf{b} = ()$ and $\bm{\sigma}[a]_c = \emptyKeccak$.
+It follows that $\accHasCode \equiv 0$ and so $\accCodesize \cdot \accHasCode \equiv 0$ always coincides with $\col{ecs} \equiv \|\mathbf{b}\|$
+in accordance with expectations $\specialStar$.
+This happens despite the fact that $\accCodesize$ contains the initialization code size.
+
+Therefore $\accCodesize \cdot \accHasCode$ always contains the correct return value of the \inst{EXTCODESIZE} opcode.
+
+\saNote{}
+\label{hub: instruction handling: account: extcodesize and extcodehash: justifying our treatment of EXTCODEHASH}
+Not much justification is required given the above reminder of the functioning of \inst{EXTCODEHASH}.
+The only thing to point out is that while an address is undergoing deployment it exists (since its nonce is initially $=1$ and may only grow until the end of the deployment) and is provided by both the \evm{} and the present \zkEvm{} with $\bm{\sigma}[a]_c = \emptyKeccak$.
