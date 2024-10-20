@@ -1,34 +1,34 @@
 \begin{enumerate}
-    \item $\absTxNum$: transaction number column, starts at 0 and is incremented by one when starting a new transaction.
-    \item $\absTxNumInfty$: batch constant column, indicating the number of transaction in the batch;
+    \item $\absTxNum$: transaction number column; starts at $0$ and is incremented by one when starting a new transaction;
+    \item $\absTxNumInfty$: conflation-constant column, indicating the number of transaction in the conflation;
     \item $\absLogNum$: number of the current log entry, only used in $\phase{5}$;
     \item $\absLogNumMax$: number of log entries in a given transaction;
     \item Output columns:
         \begin{enumerate}
-            \item $\limb$: output of the module, contains $\llarge$ byte integers left aligned on the $\llarge$-th byte\footnote{ and thus with $\llarge - \limbsize$ zeros occupying the least significant bytes}
-            \item $\limbsize$: number of meaningful bytes of the $\limb$
-            \item \col{LIMB\_CONSTRUCTED} abbreviated $\lc$: binary column.
-            \item $\index$: index of the current limb within the current string; starts at 0 when starting a new transaction and increments by 1 in the row \emph{following} $\lc = 1$.
-            \item $\indexlocal$: local index, used to reconstruct data $O_{\mathbf{d}}$ and the 256 bytes hash $R_{\mathrm{b}}$.
+            \item $\limb$: output of the module, contains $\llarge$ byte integers left aligned on the $\llarge$-th byte\footnote{ and thus with $\llarge - \limbsize$ zeros occupying the least significant bytes};
+            \item $\limbsize$: number of meaningful bytes of the $\limb$;
+            \item \col{LIMB\_CONSTRUCTED} abbreviated $\lc$: binary column;
+            \item $\index$: index of the current limb within the current string; starts at 0 when starting a new transaction and increments by 1 in the row \emph{following} $\lc = 1$;
+            \item $\indexlocal$: local index, used to reconstruct data $O_{\mathbf{d}}$ and the 256 bytes hash $R_{\mathrm{b}}$;
         \end{enumerate} 
     \item Columns used for heartbeat
         \begin{enumerate}
-            \item \phase{1} to \phase{5}: 5 binary columns that indicates the phase.
-            \item $\phasend$: binary column. Is one at the last row of a phase, 0 elsewhere.
-            \item $\col{COUNTER}$, abbreviated $\ct$: internal counter, byte column. Counts from 0 to $\nbstep - 1$ and resets.
-            \item $\nbstep$: byte column, with value between 1 and $\llarge$.
-            \item $\Done$: binary column to be one when at the end of a \ct-loop, else 0.
+            \item \phase{1} to \phase{5}: binary columns that indicates the phase;
+            \item $\phasend$: binary column. Is one at the last row of a phase, $0$ elsewhere;
+            \item $\col{COUNTER}$, abbreviated $\ct$: internal counter, byte column. Counts from 0 to $\nbstep - 1$ and resets;
+            \item $\nbstep$: byte column, with value between $1$ and $\llarge$;
+            \item $\Done$: binary column to be one when at the end of a \ct{}-loop, otherwise $0$;
         \end{enumerate}
     \item Columns used in several phase for computation
         \begin{enumerate}
-            \item $\logsize$: Byte size of the log, must be 0 at the end of the transaction.
-            \item $\Input k$, $k=1,2, 3, 4$: 0-16 bytes data.
-            \item $\byteCol{k}$, $k=1,2, 3, 4$: byte columns used for byte decompositions, and its accumulators $\acc{k}$.
-            \item $\accsize$: byte column used to count the bytesize of $\acc{1}$.
-            \item $\col{BIT}$: binary column.
-            \item $\col{BIT\_ACC}$, bit accumulator column.
-            \item $\Power$, a power of 256, to calculate the offset (left shifting) for the $\limb$.
-            \item \isprefix: binary column, to declare when computing a \rlp{} prefix ($\phase{4}$ and $\phase{5}$) or concatenating the type of the transaction ($\phase{1}$).
+            \item $\logsize$: Byte size of the log, must be $0$ at the end of the transaction;
+            \item $\Input k$, $k=1,2, 3, 4$: contains $0$ to $\llarge$ bytes of data;
+            \item $\byteCol{k}$, $k=1,2, 3, 4$: byte columns used for byte decompositions, and its accumulators $\acc{k}$;
+            \item $\accsize$: byte column used to count the bytesize of $\acc{1}$;
+            \item $\col{BIT}$: binary column;
+            \item $\col{BIT\_ACC}$, bit accumulator column;
+            \item $\Power$, a power of $256$, to calculate the offset (left shifting) for the $\limb$;
+            \item \isprefix: binary column, to declare when computing a \rlp{} prefix ($\phase{4}$ and $\phase{5}$) or concatenating the type of the transaction ($\phase{1}$);
             \item \ispadding: binary column; equals $1$ \emph{iff} the current \ct{}-loop produces no limb;
         \end{enumerate}
         \saNote{} \ispadding{} can only be on during phase 1 or phase 5: for phase 1 it turns on for transactions of type 0 (which require not prepending of a transaction type byte); during phase 5 it turns on whenever the data consists of a single byte in the range $\texttt{0x\,00} < \texttt{b} < \texttt{0x\,80}$.
