@@ -1,20 +1,22 @@
-The \textbf{Tiny Euclidean Division Module} \eucMod{} computes \quotient{}'s and \remainder{}'s of euclidean divisions with tiny inputs,
-i.e. where both arguments, 
-\dividend{} and 
-\divisor{}, are (at most) 8 byte integers and 
-\divisor{} is \textbf{nonzero}
+The \textbf{Tiny Euclidean Division Module} \eucMod{} is able to compute (and thereby justify) the \quotient{}'s and \remainder{}'s of \textbf{certain} euclidean divisions with small, typically tiny, inputs. For any such euclidean division the present module also computes the associated ceiling \ceiling{}.
+
+Let us make precise what we mean by ``\textbf{certain} euclidean divisions.''
+The \eucMod{} module is able to carry out any euclidean division with
+(\emph{a}) nonzero \divisor{} and
+(\emph{b}) where both the \divisor{}\footnote{and therefore the \remainder{}, too} and the \quotient{} are (at most) $\mmedium{}$-byte integers
+i.e.
 \[
 	\left\{ \begin{array}{l}
 		\col{a} = \col{b} \cdot \col{q} + \col{r} \text{ with } 0 \leq \col{r} < \col{b} \vspace{2mm} \\
-
-				0 \leq \col{a} < 256 ^ \mmedium \\
 		0 <    \col{b} < 256 ^ \mmedium \\
+		0 \leq \col{q} < 256 ^ \mmedium \\
 	\end{array} \right.
 \]
-Such computations may be required by other modules (e.g. the \mmuMod{} module) where it may prove cheaper to offload said computations rather than to perform them \emph{in situ}.
-% TODO: \mxpMod{}, \modMod{}
+Such computations are required by some modules where it may prove cheaper to offload said computations rather than to perform them \emph{in situ}.
+The most frequent use case will be to justify integer divisions by $\llarge$ which are myriad in the \mmuMod{} module.
+
+\saNote{} In theory this allows for \dividend{}'s in the range $[\![\, 0, 256^\llarge [\![$. In applications the \dividend{} will be tiny, too.
 
 \saNote{} As already pointed out, the present module is only equipped to deal with divisions where the \divisor{} is \textbf{nonzero}. 
 This limitation has to be taken into account by modules which defer computations to the present module.
 This inability to deal by division by zero stems from the specification of the lookup to the \wcpMod{} module which expects the comparison (\inst{LT}) between the \remainder{} and the \divisor{} to return a result of one, see section~(\ref{euc: lookup}). 
-% TODO: update description whenever we offload MOD instructions to it ...
