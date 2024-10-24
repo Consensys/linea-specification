@@ -1,10 +1,13 @@
-\subsubsection{Constraints}
+\subsubsubsection{Constraints}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 Suppose we are given a bit $\col{b} \in \{ 0, 1\}$. We let $\copySP\big[\col{b}\big]_{i}$ stand for the following collection of constraints.
 \begin{description}
-	\item[\underline{Stack Item $n^\circ\,1$:}] the first stack item will contain a source offset:
+	\item[\underline{Stack Item $n^\circ\,1$:}]
+		the first stack item contains the target offset,
+		i.e. the least byte offset in the current context's memory
+		which may be modified by the present opcode:
 		\[
 			\left\{ \begin{array}{lcl}
 				\stackItemHeight{1}_{i}	& \!\!\! = \!\!\! & \stackHeight_{i} - (0 + \col{b}) \\
@@ -12,7 +15,8 @@ Suppose we are given a bit $\col{b} \in \{ 0, 1\}$. We let $\copySP\big[\col{b}\
 				\stackItemStamp{1}_{i}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} + 1  \\
 			\end{array} \right.
 		\]
-	\item[\underline{Stack Item $n^\circ\,2$:}] the second stack item will contain a size:
+	\item[\underline{Stack Item $n^\circ\,2$:}]
+		the second stack item contains a size:
 		\[
 			\left\{ \begin{array}{lcl}
 				\stackItemHeight{2}_{i}	& \!\!\! = \!\!\! & \stackHeight_{i} - (2 + \col{b}) \\
@@ -20,7 +24,11 @@ Suppose we are given a bit $\col{b} \in \{ 0, 1\}$. We let $\copySP\big[\col{b}\
 				\stackItemStamp{2}_{i}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} + 2  \\
 			\end{array} \right.
 		\]
-	\item[\underline{Stack Item $n^\circ\,3$:}] the third stack item will contain a target offset:
+	\item[\underline{Stack Item $n^\circ\,3$:}]
+		the third stack item contains the source offset,
+		i.e. the least byte offset in either
+		call data, byte code or return data
+		which may be read by the present opcode:
 		\[
 			\left\{ \begin{array}{lcl}
 				\stackItemHeight{3}_{i}	& \!\!\! = \!\!\! & \stackHeight_{i} - (1 + \col{b}) \\
@@ -28,7 +36,8 @@ Suppose we are given a bit $\col{b} \in \{ 0, 1\}$. We let $\copySP\big[\col{b}\
 				\stackItemStamp{3}_{i}	& \!\!\! = \!\!\! & \hubTau \cdot \hubStamp_{i} + 3  \\
 			\end{array} \right.
 		\]
-	\item[\underline{Stack Item $n^\circ\,4$:}] the fourth stack item \emph{may contain} an address
+	\item[\underline{Stack Item $n^\circ\,4$:}]
+		the fourth stack item \emph{may contain} an address:
 		\[
 			\left\{ \begin{array}{lcl}
 				\stackItemHeight{4}_{i}	& \!\!\! = \!\!\! & \stackHeight_{i} \cdot \col{b}            \\
@@ -41,7 +50,7 @@ Suppose we are given a bit $\col{b} \in \{ 0, 1\}$. We let $\copySP\big[\col{b}\
 In applications $\col{b}$ will $=1$ for \inst{EXTCODECOPY} only among all instructions in the \inst{COPY}-instruction family.
 This bit dictates whether or not the copy instruction requires an address argument or not.
 
-\subsubsection{Graphical representation}
+\subsubsubsection{Graphical representation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -53,7 +62,7 @@ For this set of instructions the interpretation of $\decFlag{4}$ is that it equa
 			\multicolumn{1}{c|}{}                         & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  \\
 			\multicolumn{1}{c|}{}                         & \multicolumn{1}{c|}{\text{Item 1}} & \multicolumn{1}{c|}{\text{Item 2}} & \multicolumn{1}{c|}{\text{Item 3}} & \multicolumn{1}{c|}{\text{Item 4}} \\ \hline
 			\stackItemHeight{k}_{i}                       & \col{h}                            & \col{h} - 2                        & \col{h} - 1                        & \nothing                           \\ \hline
-			\stackItemValHi{k}_{i}/\stackItemValLo{k}_{i} & \col{destOffset}                   & \col{size}                         & \col{(rel)offset}                  & \nothing                           \\ \hline
+			\stackItemValHi{k}_{i}/\stackItemValLo{k}_{i} & \col{tgt\_offset}                   & \col{size}                         & \col{src\_offset}                  & \nothing                           \\ \hline
 			\stackItemPop{k}_{i}                          & 1                                  & 1                                  & 1                                  & \nothing                           \\ \hline
 			\stackItemStamp{k}_{i}                        & \hubTau \cdot \col{st} + 1         & \hubTau \cdot \col{st} + 3         & \hubTau \cdot \col{st} + 2         & \nothing                           \\ \hline
 		\end{array}
@@ -64,7 +73,7 @@ For this set of instructions the interpretation of $\decFlag{4}$ is that it equa
 			\multicolumn{1}{c|}{}                         & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  \\
 			\multicolumn{1}{c|}{}                         & \multicolumn{1}{c|}{\text{Item 1}} & \multicolumn{1}{c|}{\text{Item 2}} & \multicolumn{1}{c|}{\text{Item 3}} & \multicolumn{1}{c|}{\text{Item 4}} \\ \hline
 			\stackItemHeight{k}_{i}                       & \col{h} - 1                        & \col{h} - 3                        & \col{h} - 2                        & \col{h}                            \\ \hline 
-			\stackItemValHi{k}_{i}/\stackItemValLo{k}_{i} & \col{destOffset}                   & \col{size}                         & \col{(rel)offset}                  & \col{addr}                         \\ \hline
+			\stackItemValHi{k}_{i}/\stackItemValLo{k}_{i} & \col{tgt\_offset}                   & \col{size}                         & \col{src\_offset}                  & \col{addr}                         \\ \hline
 			\stackItemPop{k}_{i}                          & 1                                  & 1                                  & 1                                  & 1                                  \\ \hline
 			\stackItemStamp{k}_{i}                        & \hubTau \cdot \col{st} + 1         & \hubTau \cdot \col{st} + 3         & \hubTau \cdot \col{st} + 2         & \hubTau \cdot \col{st}             \\ \hline
 		\end{array}

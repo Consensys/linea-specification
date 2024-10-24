@@ -99,7 +99,7 @@ The constraints are as follows:
 				\saNote{} \oogxSH{}'s and unexceptional but later on reverted \inst{EXTCODECOPY} induce an extra instruction processing row.
 		\end{description}
 	\item[\underline{\underline{Setting the miscellaneous-row $n^°(i + \locCopyMiscRowOffset)$:}}]
-		observe that every processing path bigstarts with a \textbf{miscellaneous-row}
+		observe that every processing path starts with a \textbf{miscellaneous-row}
 		\begin{description}
 			\item[\underline{Setting module flags:}] 
 				\[
@@ -132,7 +132,9 @@ The constraints are as follows:
 			\item[\underline{Specifying \locTriggerMxp{}:}]
 				we technically don't have to call the \mxpMod{} module in case of \inst{RETURNDATACOPY} instructions raising the \rdcxSH{};
 				this exception is enough to justify the exceptional halting condition; this behaviour is reflected in the assignment of the \miscMxpFlag{} since we impose
-				\[ \locTriggerMxp = \one - \stackRdcx_{i} \]
+				\[
+					\locTriggerMxp = \one - \stackRdcx_{i}
+				\]
 			\item[\underline{Specifying \locTriggerMmu{}:}]
 				\label{locTriggerMmu for the copy family}
 				for a \inst{COPY}-type instruction to trigger the \mmuMod{} is is necessary and sufficient that the instruction raise no exception and be provided with a nonzero size parameter;
@@ -182,6 +184,11 @@ The constraints are as follows:
 					\item \If $\miscMxpFlag _{i + \locCopyMiscRowOffset} = 0$ \Then we impose $\stackMxpx_{i} = 0$ \quad (\trash)
 				        \item \If $\miscMxpFlag _{i + \locCopyMiscRowOffset} = 1$ \Then we impose $\stackMxpx_{i} = \locMxpMxpx$
 				\end{enumerate}
+				\saNote{}
+				The (\trash) constraint follows from exception flag exclusivity,
+				see section~(\ref{hub: generalities: exceptions: the stack's exception are exclusive binary flags}).
+				For $\miscMxpFlag _{i + \locCopyMiscRowOffset} = \locTriggerMxp$ to vanish one must have $\stackRdcx_{i} = 1$. 
+				But then no other exception flag may be set.
 			\item[\underline{Setting \mmuMod{} data:}]
 				\If $\miscMmuFlag _{i + \locCopyMiscRowOffset} = 1$ \Then we impose
 				\[

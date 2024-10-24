@@ -16,6 +16,6 @@ Adding more and more constraints to the mix:
   - MMU
 - simple instruction families:
   - everything arithmetic
-  - batch data & BLOCKHASH
+  - BLOCK_DATA & BLOCK_HASH
   - 
 - duplicate the HUB spec's setXxxInstructionBlaBla methods in the Java implementation

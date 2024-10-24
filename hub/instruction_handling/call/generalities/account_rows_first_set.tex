@@ -53,22 +53,26 @@ In the present section we describe the various account operations that are requi
 	\item[\underline{First \calleee{} account-row $n^°(i + \callFirstCalleeAccountRowOffset)$:}] 
 		we impose that
 		\[
-			\left\{ \begin{array}{lcl}
-				\accAddressHi    _{i + \callFirstCalleeAccountRowOffset} & = & \relevantValue   \\
-				\accAddressLo    _{i + \callFirstCalleeAccountRowOffset} & = & \locRawAddressLo \\
-				\accTrmRawAddrHi _{i + \callFirstCalleeAccountRowOffset} & = & \locRawAddressLo \\
-				\multicolumn{3}{l}{\textcolor{solarized-green}{\texttt{<callee balance operation set below>}}} \\
-				\multicolumn{3}{l}{\accSameNonce             {i}{\callFirstCalleeAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accSameCode              {i}{\callFirstCalleeAccountRowOffset}} \\
-				\multicolumn{3}{l}{\textcolor{solarized-green}{\texttt{<callee warmth operation set below>}}} \\
-				\multicolumn{3}{l}{\accSameDeploymentNumber  {i}{\callFirstCalleeAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accSameDeploymentStatus  {i}{\callFirstCalleeAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag {i}{\callFirstCalleeAccountRowOffset}} \\
+			\left\{ \begin{array}{lcll}
+				\accAddressHi    _{i + \callFirstCalleeAccountRowOffset} & = & \relevantValue   & (\trash) \\
+				\accAddressLo    _{i + \callFirstCalleeAccountRowOffset} & = & \locRawAddressLo & (\trash) \\
+				\accTrmRawAddrHi _{i + \callFirstCalleeAccountRowOffset} & = & \locRawAddressHi & (\trash) \\
+				\multicolumn{4}{l}{\textcolor{solarized-green}{\texttt{<callee balance operation set below>}}} \\
+				\multicolumn{4}{l}{\accSameNonce             {i}{\callFirstCalleeAccountRowOffset}} \\
+				\multicolumn{4}{l}{\accSameCode              {i}{\callFirstCalleeAccountRowOffset}} \\
+				\multicolumn{4}{l}{\textcolor{solarized-green}{\texttt{<callee warmth operation set below>}}} \\
+				\multicolumn{4}{l}{\accSameDeploymentNumber  {i}{\callFirstCalleeAccountRowOffset}} \\
+				\multicolumn{4}{l}{\accSameDeploymentStatus  {i}{\callFirstCalleeAccountRowOffset}} \\
+				\multicolumn{4}{l}{\accSameMarkedForSelfdestructFlag {i}{\callFirstCalleeAccountRowOffset}} \\
 				%%%%
 				\accRomLexFlag   _{i + \callFirstCalleeAccountRowOffset} & = & \scenCallSmc _{i} \\
-				\accTrmFlag      _{i + \callFirstCalleeAccountRowOffset} & = & \rOne \\
+				\multicolumn{4}{l}{\accTrimAddress
+				{i}{\callFirstCalleeAccountRowOffset}
+				{\locRawAddressHi}
+				{\locRawAddressLo}} \\
+				\accTrmFlag      _{i + \callFirstCalleeAccountRowOffset} & = & \rOne & (\trash) \\
 				\accRlpAddrFlag  _{i + \callFirstCalleeAccountRowOffset} & = & 0 \vspace{2mm} \\
-				\multicolumn{3}{l}{
+				\multicolumn{4}{l}{
 					\standardDomSubStamps {
 						anchorRow = i,
 						relOffset = \callFirstCalleeAccountRowOffset,
@@ -77,6 +81,8 @@ In the present section we describe the various account operations that are requi
 				} \\
 			\end{array} \right.
 		\]
+		\saNote{}
+		The various $(\trash)$ constraints above are redundant with the ``address trimming'' constraint.
 	\item[\underline{Setting the \calleee{} balance operation on account-row $n^°(i + \callFirstCalleeAccountRowOffset)$:}] 
 		we impose that
 		\begin{enumerate}

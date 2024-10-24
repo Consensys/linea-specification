@@ -14,7 +14,7 @@ In this section we define certain constancy conditions. We say that a column $\c
 			~\Then
 			\col{X}_{i} = \col{X}_{i - 1}
 		\]
-	\item[\textbf{stamp-constant}] if it satisfies
+	\item[\textbf{hub-stamp-constant}] if it satisfies
 		\[
 			\If
 			\hubStamp_{i} \neq 1 + \hubStamp_{i - 1}
@@ -46,39 +46,33 @@ Given the monotony constraints imposed on \absTxNum{} and \relativeBlockNumber{}
 \If $\col{NUM}_{i} = \col{NUM}_{i - 1}$ \Then $\col{X}_{i} = \col{X}_{i - 1}$ where 
 $\col{NUM} = \relativeBlockNumber, \absTxNum, \hubStamp$ respectively.
 
-\noindent \ob{TODO: is there \emph{any} block-constant column other than $\relativeBlockNumber$ itself?}
+\noindent \ob{TODO: are there \emph{any} block-constant columns other than $\relativeBlockNumber$ itself?}
 
-\noindent \ob{TODO: find all transaction-constant columns}
+\noindent \ob{TODO: make sure all all transaction-constant columns are marked as such in their respective sections.}
 
-\noindent \ob{TODO: find all stamp-constant columns}
+\noindent \ob{TODO: make sure all all hub-stamp-constant columns are marked as such in their respective sections.}
 
 \noindent We impose transaction-constancy conditions on the following columns:
 \begin{multicols}{2}
-\begin{itemize}
-	\item \relativeBlockNumber{}
-	\item[\vspace{\fill}]
-\end{itemize}
+	\begin{itemize}
+		\item \relativeBlockNumber{}
+		\item[\vspace{\fill}]
+	\end{itemize}
 \end{multicols}
 
-\noindent We impose stamp-constancy condition on the following columns:
-\begin{multicols}{4}
-\begin{enumerate}
-	\item $\cn$
-	\item $\cn\new$
-	\item $\pc$
-	\item $\pc\new$
-	\item $\height$
-	\item $\height\new$
-	\item $\tli$
-	\item $\nonStackRows$
-	\item $\gasExpected$
-	\item $\gasActual$
-	\item $\gasCost$
-	\item $\gasNext$
-	\item $\cmc$
-	\item $\xAhoy$
-	\item[\vspace{\fill}]
-	\item[\vspace{\fill}]
-	%\item[\vspace{\fill}]
-\end{enumerate}
+\noindent We impose hub-stamp-constancy condition at various places in the specification, e.g. in sections
+(\ref{hub: generalities: program counter}),
+(\ref{hub: generalities: stack height}),
+(\ref{hub: generalities: exceptions}),
+(\ref{hub: generalities: context changes}),
+(\ref{hub: generalities: gas}),
+(\ref{hub: generalities: refunds}),
+(\ref{hub: generalities: auxiliary stamps and flags}).
+We further impose hub-stamp-constancy on the following columns:
+\begin{multicols}{2}
+	\begin{enumerate}
+		\item $\tli$
+		\item $\nonStackRows$
+			%\item[\vspace{\fill}]
+	\end{enumerate}
 \end{multicols}

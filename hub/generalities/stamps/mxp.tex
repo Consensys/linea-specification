@@ -5,3 +5,8 @@ The \mxpSTAMP{} (abbreviated to \mxpStamp{}) keeps a running tally of all the ti
 	\item $\mxpStamp_{i} = \mxpStamp_{i - 1} + \peekMisc_{i} \cdot \miscMxpFlag_{i}$
 \end{enumerate}
 In other words, the only time the \mxpStamp{} \emph{may} change is when dealing with a memory expansion inducing instruction that isn't squashed by a \suxSH{} or \soxSH{}. The precise conditions which lead to an increment in $\mxpStamp$ will be dealt with in a case by case fashion in section~\ref{hub: classifiers}.
+
+\saNote{}
+We \textbf{did not} impose hub-stamp-constancy conditions on the \mxpStamp{} column.
+While any one instruction can trigger at most one call to the \mxpMod{}, this call (and the condition that triggers it, $\peekMisc \cdot \miscMxpFlag \equiv 1$, won't happen on the first row of the instruction processing.
+In other words the \mxpStamp{} may change value in the middle of transaction processing.

@@ -19,6 +19,19 @@
 	\end{array} \right.
 \]
 
+\paragraph*{Account fresh new deployment number.}
+The following set of constraints will be used in \inst{SELFDESTRUCT} to ``wipe'' an existing from the state
+\[
+	\accFreshNewDeploymentStatusAndNumber{\relof}_{i}
+	\iff
+	\left\{ \begin{array}{lclr}
+		\accDeploymentNumber\new   _{i + \relof} & \!\!\! = \!\!\! & 1 + \accDeploymentNumber  _{i + \relof} \\
+		\accDeploymentStatus\new   _{i + \relof} & \!\!\! = \!\!\! & 0                                       \\
+		\accDeploymentStatus       _{i + \relof} & \!\!\! = \!\!\! & 0                                        & (\trash) \\
+	\end{array} \right.
+\]
+It provides a given address with ``a fresh new identity'' and helps e.g. make previous storage inaccessible.
+
 \paragraph*{Account deletion constraints.} The following set of constraints imposes the deletion of an account:
 \[
 	\accDeletion {i}{\relof}
@@ -35,7 +48,8 @@
 \]
 
 \paragraph*{Working with the same account.}
-The following collection of constraints which spans two consecutive rows impose that the \zkEvm{} has a view into the same deployment over two consecutive rows:
+
+The following constraints, which span two distinct rows with offsets $\reluo$ and $\reldo$ relatively to the current row with row index $i$, impose that the \zkEvm{} has a view into the same deployment over two consecutive rows:
 \[
 	\accSameAddr  {i}{\reluo}{\reldo}
 	\iff
@@ -62,7 +76,8 @@ and
 		\accDeploymentStatus_{i + \reluo} & \!\!\! = \!\!\! & \accDeploymentStatus\new_{i + \reldo} \\
 	\end{array} \right.
 \]
-\saNote{} These constraints should only be applied when (it is known that) $\peekAccount_{i} = \peekAccount_{i - \relof} = 1$.
+\saNote{}
+These constraints should be applied only when it is known that $\peekAccount_{i + \reluo} = \peekAccount_{i + \reldo} = 1$.
 
 
 % TODO: fix this

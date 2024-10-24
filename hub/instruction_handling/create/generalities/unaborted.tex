@@ -32,7 +32,11 @@ In order to detect the triggering of the failure condition $\yellowPaperFailureC
 				\multicolumn{3}{l}{\textcolor{solarized-green}{\texttt{<deployment status operation set below>}}}   \\
 				\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag {i}{\createFirstCreateeAccountRowOffset}}      \\
 				\accRomLexFlag   _{i + \createFirstCreateeAccountRowOffset}                                          & = & \locTriggerRomLex               \\
-				\accTrmFlag      _{i + \createFirstCreateeAccountRowOffset}                                          & = & \valueUnknown                   \\
+				\multicolumn{3}{l}{%
+					\accTrimAddress
+					{i}{\createFirstCreateeAccountRowOffset}
+					{\locCreateeAddressHi}
+					{\locCreateeAddressLo}} \\
 				\accRlpAddrFlag  _{i + \createFirstCreateeAccountRowOffset}                                          & = & 0                  \vspace{2mm} \\
 				\multicolumn{3}{l}{
 					\standardDomSubStamps {
@@ -44,9 +48,26 @@ In order to detect the triggering of the failure condition $\yellowPaperFailureC
 					% \standardDomSubStamps {i}{\createFirstCreateeAccountRowOffset}{1}}               \\
 			\end{array} \right.
 		\]
-		\saNote{}
-		Given the premise of this section ($\scenCreateUnexceptional \equiv 1$) one will have $\accRlpAddrFlag \equiv 1$ unless $\scenCreateAbort \equiv 1$. 
 \end{description}
+\saNote{}
+Given the premise of this section ($\scenCreateUnexceptional \equiv 1$) one will have $\accRlpAddrFlag \equiv 1$ unless $\scenCreateAbort \equiv 1$. 
+
+\saNote{}
+There is absolutely no \emph{functional reason} to triggering the \trmMod{} module here.
+Indeed the ``createe'' address obtained from the \rlpAddrMod{} module is already trimmed,
+and correctly represents a $\addressSize$-byte address split into a $\ssmall$-byte ``high part'' and a $\llarge$-byte ``low part.''
+Yet we do it anyway, as there is a simplifying \emph{structural reason} for doing so.
+Indeed, the first time \textbf{any address} is encountered in a conflation of blocks, it gets trimmed as part of the account-consistency argument.
+See section~(\ref{hub: consistencies: account}),
+specifically constraint~(\ref{hub: consistency: account: trimming first appearance of an address}).
+This \textbf{automatic trimming} applies in particular to deployment addresses.
+By imposing the above we lift any ambiguity as to the value of the $\accTrmFlag_{i + \createFirstCreateeAccountRowOffset}$ which otherwise could be either $\rOne$ or $\rZero$.
+It would \emph{implicitly} be set to $\rOne$ by consistency constraints if this were the first time the deployment address is encountered in the present conflation of blocks.
+It would be left \emph{unconstrained}        in consistency constraints if this weren't the first encounter with that address.
+E.g. the deployment address may have previously been touched by an \textbf{opcode}
+(\inst{BALANCE}, some \inst{EXTCODExxx}, a \inst{CALL}-type opcode, \dots)
+through address \textbf{pre-warming} or by a previous (reverted or not\footnote{e.g. if the underlying instruction is \inst{CREATE2}}) \textbf{deployment}.
+
 \saNote{}
 For the upcoming set of constraints it suffices to impose the weaker precondition that $\peekScenario _{i} = 1$ i.e. one may drop the assumption that $\scenCreateComputeAddress _{i} = 1$.
 Indeedd this precondition follows from each and every precondition we will be imposing below.

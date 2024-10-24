@@ -51,16 +51,25 @@ The following column turns on \emph{if and only if} the account on the present r
 	\item \ob{TODO: unconstrained as of yet}$\accDeploymentNumber^\infty$ and $\accExists^\infty$:
 		address-constant columns;
 \end{enumerate}
-These are $\accAddress$-constant columns that contain, respectively, the larges deployment number of that address and its final existence status: $\accExists^\infty = 1$ means that the address will exist in the world state once all the batches of transactions are dealt with. Both are set the very last time the address is ``seen in the trace.'' They exist for one reason and one reason only: for \emph{storage-rows} to have access to that information. Indeed one needs to distinguish between values written in storage during a failed previous attempt of deployment vs others \dots{} \red{I think this may be useless after all. Failed attempts are reverted, and so are the changes that would have applied to that address's storage \dots{} Phew, this means that this may just end up being useless after all \dots} \ob{TODO: CORRECTION: These account-columns aren't useless \emph{at all} ! We use them in the storage. The only storage values to be committed are those for accounts with $\accExists^\infty = 1$ and only for those values that are committed at $\accDeploymentNumber = \accDeploymentNumber^\infty$.}
+These are $\accAddress$-constant columns that contain, respectively, the largest deployment number of that address and its final existence status attained in the processing of a given conflation of blocks.
+Note that $\accExists^\infty \equiv 1$ means that an account will exist at that address at the end of processing of the conflation of blocks.
+Both are set the very last time the address is ``seen in the trace.''
+They exist for one reason and one reason only: for \emph{storage-rows} to have access to that information.
+Indeed one needs to distinguish between values written in storage during a failed previous attempt of deployment vs others \dots{} \red{I think this may be useless after all.
+Failed attempts are reverted, and so are the changes that would have applied to that address's storage \dots{} Phew, this means that this may just end up being useless after all \dots}
+\ob{TODO: CORRECTION: These account-columns aren't useless \emph{at all} ! We use them in the storage.
+The only storage values to be committed are those for accounts with $\accExists^\infty \equiv 1$ and only for those values that are committed at $\accDeploymentNumber = \accDeploymentNumber^\infty$.}
 
-The next batch of columns allow us to perform certain operations using as inputs fields from an account or stack arguments. We start with data required for trimming stack items ($32$-byte integers split as a pair of high and low parts) which ought to be interpreted as addresses of their leading $12$ bytes:
-(\emph{b})
+The next set of columns allow us to perform certain operations using as inputs fields from an account or stack arguments.
+We start with columns required for dealing with stack items which ought to be interpreted as addresses.
+Recall that this requires trimming \evm{} words, i.e. $\evmWordSize$-byte integers split as a pair of high and low parts in our arithmetization,
+of their leading $12$ bytes.
 \begin{enumerate}[resume]
 	\item \accTrmFlag: binary column which turns on whenever a stack argument has to be interpreted as an address; used as a selector bit for lookup arguments;
 	\item $\accTrmRawAddrHi$: duplicate of the relevant high part of the stack argument to be interpreted as an address;
 	\item $\accTrmIsPrecompile$:
 		binary column which $=1$ if and only if the address is that of a precompile\footnote{i.e. $\accAddress \in \{1, 2, \dots, 9 \}$};
-		: disjoint binary columns that turn on for accounts which raise the \accTrmIsPrecompile{} flag; they are used when dealing with \inst{CALL}-type instructions to precompiles;
+		disjoint binary columns that turn on for accounts which raise the \accTrmIsPrecompile{} flag; they are used when dealing with \inst{CALL}-type instructions to precompiles;
 \end{enumerate}
 \saNote{} The \trmMod{} module requires the following inputs from the \hubMod{}:
 $\rawAddrHi$ and $\rawAddrLo$,

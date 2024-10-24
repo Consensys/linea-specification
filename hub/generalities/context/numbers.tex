@@ -1,5 +1,4 @@
 This section presents some of the basic constraints pertaining to the context number columns $\cn$ and $\cn\new$.
-Recall that both are stamp-constant, see section~\ref{hub: constancy conditions}.
 \begin{enumerate}
 	\item $\cn$ and $\cn\new$ are hub-stamp-constant
 	\item \If $\txInit_{i} = 1$ \Then
@@ -16,9 +15,11 @@ Recall that both are stamp-constant, see section~\ref{hub: constancy conditions}
 		\end{enumerate}
 	\item \If $\hubStamp_{i + 1} \neq \hubStamp_{i}$ \Then
 		\begin{enumerate}
-			\item \If $\cmc_{i}    = 1$ \Then $\peekContext_{i} = 1$
-			\item \If $\xAhoy_{i}  = 1$ \Then $\executionProvidesEmptyReturnData {i}{0} $
-			\item\label{hub: generalitiles: context: how to trigger finalization phase} \If $\txExec_{i} = 1$
+			\item \label{hub: generalities: context: whenever the context may change the final row is a context row}
+				\If $\cmc_{i}    = 1$ \Then $\peekContext_{i} = 1$
+			\item \label{hub: generalities: context: exceptions lead to providing empty return data}
+				\If $\xAhoy_{i}  = 1$ \Then $\executionProvidesEmptyReturnData {i}{0} $
+			\item \label{hub: generalities: context: how to trigger finalization phase} \If $\txExec_{i} = 1$
 				\begin{enumerate}
 				        \item \If $\cn\new_{i} \neq 0$ \Then $\txExec_{i + 1} = 1$
 				        \item \If $\cn\new_{i} =    0$ \Then $\txFinl_{i + 1} = 1$
@@ -27,6 +28,36 @@ Recall that both are stamp-constant, see section~\ref{hub: constancy conditions}
 	\item \If $\xAhoy_{i} = 1$ \Then $\cn\new_{i} = \caller_{i}$
 	\item \If \big($\peekStack_{i} = 1$ \et $\haltFlag_{i} = 1$\big) \Then $\cn\new_{i} = \caller_{i}$
 \end{enumerate}
-\saNote{} Constraint~(\ref{hub: generalitiles: context: how to trigger finalization phase}) settles the question of when execution stops and the finalization phase starts.
+\saNote{} \label{hub: generalities: context: consequences of CMC and XAHOY}
+Constraints~(\ref{hub: generalities: context: whenever the context may change the final row is a context row}) and
+(\ref{hub: generalities: context: exceptions lead to providing empty return data}) may seem inconspicuous and cryptic but they are \textbf{very important}.
+In light of the definition of the \CONTEXTMAYCHANGE{} flag given in section~(\ref{hub: generalities: context: cmc flag}),
+constraint~(\ref{hub: generalities: context: whenever the context may change the final row is a context row})
+enforces that every time the \zkEvm{} encounters
+a \inst{CALL}-type instruction ($\stackDecCallFlag \equiv 1$),
+a \inst{CREATE}-type instruction ($\stackDecCreateFlag \equiv 1$),
+a halting instruction ($\stackDecHaltFlag \equiv 1$),
+or raises an exception ($\xAhoy \equiv 1$),
+instruction processing \textbf{must end on a context row}.
+This manifests all over instruction handling,
+see section~(\ref{hub: instruction handling}),
+in extraneous constraints of the form
+\[
+	\left\{ \begin{array}{l}
+	        \nonStackRows _{i} = \texttt{<numerical value>} + \cmc_{i}                                                                \\
+		\texttt{<peeking flag sum>} = \texttt{<functional peeking flag sum>} + \peekContext_{i + \yellowm{\omega}} \cdot \cmc_{i} \\
+	\end{array} \right.
+\]
+Furthermore constraint~(\ref{hub: generalities: context: exceptions lead to providing empty return data}) ensures that
+in case of an exception, this context row is one \textbf{squashing the parent context's return data.}
 
-\saNote{} We refer to section~\ref{hub: generalities: context: context constraints} for the definition of $\executionProvidesEmptyReturnData {i}{\relof}$.
+\saNote{} \label{hub: generalities: context: automatic gas checks}
+Further note that $\cmc \equiv 1$ along with section~(\ref{hub: lookups: into gas}), triggers the \gasMod{} module.
+Thus an \textbf{automatic gas check} is perfomed.
+These automatic gas checks are the only time\footnote{outside of some gas checks carried out when computing memory expansion costs or when determining whether a \inst{CALL}-type or \inst{CREATE}-type instruction will produce an \oogxSH{}} the \zkEvm{} conducts gas checks.
+Their importance cannot be overstated.
+See the \gasMod{} chapter~(\ref{chap: gas}) for more details on what this entails.
+
+\saNote{} Constraint~(\ref{hub: generalities: context: how to trigger finalization phase}) settles the question of when execution stops and the finalization phase starts.
+
+\saNote{} We refer to section~\ref{hub: context-rows: specialized constraints} for the definition of $\executionProvidesEmptyReturnData {i}{\relof}$.

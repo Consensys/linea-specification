@@ -1,0 +1,72 @@
+\begin{center}
+	\boxed{%
+		\text{The stack constraints presented below assume }
+		\left\{ \begin{array}{lcl}
+			\peekStack_{i}                & = & 1 \\
+			\stackDecConFlag_{i}          & = & 1 \\
+			\stackSux_{i} + \stackSox_{i} & = & 0 \\
+		\end{array} \right.
+		}
+\end{center}
+
+\begin{description}
+	\item[\underline{Setting the stack pattern:}]
+		we impose $\zeroOneSP_{i}$
+	\item[\underline{Setting admissible exceptions:}]
+		we impose $ \xAhoy _{i} = \stackOogx _{i} $
+	\item[\underline{Setting the gas cost:}]
+		we impose $\gasCost_{i} = \decStaticGas_{i}$
+	\item[\underline{Setting $\nonStackRows$:}]
+		we impose $\nonStackRows_{i} = 1 + \cmc_{i}$
+	\item[\underline{Setting the peeking flags:}]
+		we impose that
+		\[
+			\left[ \begin{array}{cr}
+				+ & \peekContext_{i + \locContextInstructionContextRow} \\
+				+ & \cmc_{i} \cdot \peekContext_{i + 2} \\
+			\end{array} \right]
+			= \nonStackRows_{i}
+		\]
+		we further unconditionally set $\readContextData {i}{\locContextInstructionContextRow}{\cn_{i}} = 1$
+	\item[\underline{Value constraints:}]
+		\If $\xAhoy_{i} = 0$ \Then
+		\begin{enumerate}
+			\item \If $\locIsAddress = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\locResultHi & \!\!\! = \!\!\! & \cnAccountAddress\high_{i + \locContextInstructionContextRow} \\
+						\locResultLo & \!\!\! = \!\!\! & \cnAccountAddress\low _{i + \locContextInstructionContextRow} \\
+					\end{array} \right.
+				\]
+			\item \If $\locIsCaller = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\locResultHi & \!\!\! = \!\!\! & \cnCallerAddress\high_{i + \locContextInstructionContextRow} \\
+						\locResultLo & \!\!\! = \!\!\! & \cnCallerAddress\low _{i + \locContextInstructionContextRow} \\
+					\end{array} \right.
+				\]
+			\item \If $\locIsCallValue = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\locResultHi & \!\!\! = \!\!\! & 0                                                   \\
+						\locResultLo & \!\!\! = \!\!\! & \cnCallValue_{i + \locContextInstructionContextRow} \\
+					\end{array} \right.
+				\]
+			\item \If $\locIsCallDataSize = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\locResultHi & \!\!\! = \!\!\! & 0                                             \\
+						\locResultLo & \!\!\! = \!\!\! & \cnCds_{i + \locContextInstructionContextRow} \\
+					\end{array} \right.
+				\]
+			\item \If $\locIsReturnDataSize = 0$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\locResultHi & \!\!\! = \!\!\! & 0                                             \\
+						\locResultLo & \!\!\! = \!\!\! & \cnRds_{i + \locContextInstructionContextRow} \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+\end{description}
+\saNote{}
+For instructions raising the $\stackDecConFlag$ one has $\cmc \equiv \xAhoy$.

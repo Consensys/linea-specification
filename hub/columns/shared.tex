@@ -1,6 +1,6 @@
 \begin{enumerate}
 	\item \absTxNum{}: monotone column containing the \ABSTXNUM{};
-	\item \relativeBlockNumber{}: transaction-constant, monotone column containing the \BATCHNUM{};
+	\item \relativeBlockNumber{}: transaction-constant, monotone column containing the \RELATIVEBLOCKNUMBER{};
 \end{enumerate}
 \saNote{} The \relativeBlockNumber{} is extracted through a lookup to the \textbf{transaction data} module, see section~\ref{hub: heartbeat: absTxNum and relativeBlockNumber}.
 
@@ -30,11 +30,16 @@ The following columns, starting with $\hubStamp$ provide a finer comb with which
 The following columns pertain to execution contexts. Every execution context has a unique identifier, a nonzero context number, and several environment variables. 
 \begin{enumerate}[resume]
 	\item $\CONTEXTMAYCHANGE$:
-		$\hubStamp{}$-constant binary column which turns on \emph{if and only if} the present execution context may change as a result of the present instruction; abbreviated to \cmc{};
+		hub-stamp-constant binary column which turns on \emph{if and only if} the present execution context may change as a result of the present instruction; abbreviated to \cmc{};
 	\item $\XAHOY$:
-		$\hubStamp{}$-constant binary column which turns on \emph{if and only if} the present instruction triggers an exception; abbreviated to $\xAhoy$;
+		hub-stamp-constant binary column which turns on \emph{if and only if} the present instruction triggers an exception; abbreviated to $\xAhoy$;
 \end{enumerate}
-Within execution rows context numbers \emph{may} only change when the $\cmc$ flag is set. This happens \emph{precisely} when encountering an \textbf{exceptional halting condition} (henceforth simply \textbf{exception}), a \textbf{halting instruction}, a \textbf{\inst{CALL}-type} or \textbf{\inst{CREATE}-type} instruction, see section~\ref{hub: generalities: execution context may change flag}, executing on a \inst{CREATE} or \inst{CREATE2} instruction.
+Within execution rows context numbers \emph{may} only change when the $\cmc$ flag is set.
+This happens \emph{precisely} when encountering
+an \textbf{exceptional halting condition} (henceforth simply \textbf{exception}),
+a \textbf{halting instruction},
+a \textbf{\inst{CALL}-type} or
+a \textbf{\inst{CREATE}-type} instruction, see section~(\ref{hub: generalities: context changes}).
 
 We introduce stamp columns that pertain to memory expansion and to calls to \textsc{ram}
 \begin{enumerate}[resume]
@@ -54,7 +59,7 @@ The $\oobFlag$ may only turn on for instructions that may go out of bounds. Thes
 \ob{TODO: make sure list is exhaustive}
 \begin{enumerate}[resume]
 	\item $\cn{}$ and $\cn{}\new$:
-		$\hubStamp{}$-constant columns containing the current and upcoming context number;
+		hub-stamp-constant columns containing the current and upcoming context number;
 	\item $\caller{}$:
 		context-constant column containing the context number of the caller;
 \end{enumerate}
@@ -76,8 +81,10 @@ $\cnSelfRev = 1$ \emph{iff} the present execution contexts reverts through its o
 \end{IEEEeqnarray*}
 Knowing whether a rollback of all changes resulting from the execution of a particular (execution) context is the ``fault'' of that context or of some parent context isn't, \emph{a priori}, as important as knowing whether these changes should be rolled back or not. What \emph{is} important, though, is knowing \emph{when} to undo said changes. This crucial piece of information is deduced, in our arithmetization, from $\cnRevStamp$. The purpose of this colums is to record the $\hubStamp{}$ at the point at which the relevant reverting condition (an exception or the \inst{REVERT} opcode) is encountered. Note that when an execution context ``inherits''  a rollback from a parent context (i.e. $\cnGetsRev = 1$ \et $\cnSelfRev = 0$) \textbf{it inherits its parent's $\cnRevStamp$}. On the other hand when an execution context is ``responsible'' for its own rollback (i.e. $\cnSelfRev = 1$) \textbf{it sets its own $\cnRevStamp$}\footnote{and passes it on to each of its direct descendant context(s) who will similarly revert, either by virtue of their parent reverting or at their own hand.}  Our arithmetization ensures all relevant (i.e. revertible) changes are undone precisely when $\hubStamp = \cnRevStamp$ and in \emph{reverse chronological order of occurrence}. The arithmetization achieves this by earmarking revertible events as they happen. This is the purpose of the $\domStamp{}$ / $\subStamp{}$ pair. 
 \begin{enumerate}[resume]
-	\item \cfi: context-constant column; contains the code fragment index of the bytecode being run in the current execution context; 
-	\item \pc{} and $\pc\new$: stamp-constant columns containing the current \textbf{program counter} and its (expected) next value;
+	\item \cfi:
+		context-constant column; contains the code fragment index of the bytecode being run in the current execution context; 
+	\item \pc{} and $\pc\new$:
+		hub-stamp-constant columns containing the current \textbf{program counter} and its (expected) next value;
 	\item \height{} and $\height\new$:
 		contains the current and updated stack heights of the current execution context;
 		the height is in the range $\{0,1,\dots,1024\}$; $\stackHeight{}=0$ signifies an empty stack;
@@ -117,15 +124,15 @@ The following binary columns serve as indicators of what data is on display on a
 \noindent We list some gas columns:
 \begin{enumerate}[resume]
 	\item $\gasExpected$:
-		stamp-constant column; contains the ``expected'' currently available  gas amount prior to instruction processing;
+		hub-stamp-constant column; contains the ``expected'' currently available  gas amount prior to instruction processing;
 	\item $\gasActual$:
-		stamp-constant column; contains the ``actual'' available  gas amount prior to instruction processing;
+		hub-stamp-constant column; contains the ``actual'' available  gas amount prior to instruction processing;
 	\item $\gasCost$:
-		stamp-constant column; contains the ``upfront'' gas cost of an instruction;
+		hub-stamp-constant column; contains the ``upfront'' gas cost of an instruction;
 	\item $\gasNext$:
-		stamp-constant column; contains the gas amount which is expected to be leftover after instruction processing\footnote{and prior to any ``leftover gas refunds''}
+		hub-stamp-constant column; contains the gas amount which is expected to be leftover after instruction processing\footnote{and prior to any ``leftover gas refunds''}
 	\item $\refund$, $\refund\new$:
-		 stamp-constant columns; contain the cumulative gas refund up to this point as well as the updated value;
+		hub-stamp-constant columns; contain the cumulative gas refund up to this point as well as the updated value;
 \end{enumerate}
 The idea behind these gas columns is as follows.
 Anytime an instruction begins processing the current execution context, which we abbreviate here to \textsc{cec}, has an expectation as to how much gas it ``currently owns\footnote{i.e. prior to any refunds or expenses}.''
@@ -159,11 +166,11 @@ Note that the "the reprisal of execution" case is also when $\gasExpected$ may d
 The following are two sets of ``counter/maximal counter value'' columns. Within execution rows the counters $\ct$ and $\nonStackRowsCounter$ impose at what point the \hubStamp{} changes (i.e. increases by $1$.)
 \begin{enumerate}[resume]
 	\item $\tli{}$:
-		stamp-constant binary column;
+		hub-stamp-constant binary column;
 	\item $\ct$:
 		binary counter column;
 	\item $\nonStackRows$:
-		stamp-constant column containing the number of non stack-rows required for the present instruction;
+		hub-stamp-constant column containing the number of non stack-rows required for the present instruction;
 	\item $\nonStackRowsCounter$:
 		counter; remains constant while $\ct\neq\tli$ and the counts up until $\nonStackRows$;
 \end{enumerate}

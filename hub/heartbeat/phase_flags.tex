@@ -43,7 +43,8 @@ Phases follow a cyclical pattern where the order is set (the prewarming phase be
 The above specifies precisely, for non padding rows $i$, when $\absTxNum$ is required to change from row $i$ to row $i + 1$. It remains unchanged in all cases \emph{except} if the transaction requires no \textsc{evm}-execution and the present row peeks into transaction data \emph{or} the transaction requires \textsc{evm}-execution, is in the finalization phase and and the present row peeks into transaction data. In this case the next row thus marks the beginning of the processing of a new transaction.
 
 We now deal with the cyclical nature of the process.
-\paragraph{Transactions whose processing requires no \textsc{evm} execution.}
+
+\paragraph{Transactions whose processing requires no \textsc{evm} execution}
 \begin{enumerate}[resume]
 	\item
 		\label{hub: heartbeat: skipping phase finishes on a transaction row}
@@ -51,7 +52,7 @@ We now deal with the cyclical nature of the process.
 \end{enumerate}
 \saNote{} The case $\txSkip_{i} = 1$ \et $\peekTransaction_{i} = 1$ is already known: the $\absTxNum$ changes at the following row and so by the above $\locAcceptableTransactionPhaseFlagsAtFirstRowOfNewTransaction$.
 
-\paragraph{Transactions whose processing \emph{does} require \textsc{evm} execution.}
+\paragraph{Transactions whose processing \emph{does} require \textsc{evm} execution}
 \begin{enumerate}[resume]
 	\item \If $\txWarm_{i} = 1$ \Then $\txWarm_{i + 1} + \txInit_{i + 1} = 1$
 	\item
@@ -71,7 +72,11 @@ We now deal with the cyclical nature of the process.
 \saNote{}
 Just as above we note that the case $\txFinl_{i} = 1$ \et $\peekTransaction_{i} = 1$ was already known.
 Indeed, in that case the absolute transaction number must change at the next row due to constraint~(\ref{hub: heartbeat: abs tx num increments}).
-It follows from constraint~(\ref{hub: heartbeat: acceptable tx phases at first row of new transaction}) that $\locAcceptableTransactionPhaseFlagsAtFirstRowOfNewTransaction$.
-By flag exclusivity~(\ref{hub: heartbeat: tx phase flag exclusivity}) it follows in particular that $\txFinl_{i + 1} = 0$.
+It follows from constraint,
+see section~(\ref{hub: heartbeat: acceptable tx phases at first row of new transaction}),
+that $\locAcceptableTransactionPhaseFlagsAtFirstRowOfNewTransaction$.
+By flag exclusivity,
+see section~(\ref{hub: heartbeat: tx phase flag exclusivity}),
+it follows in particular that $\txFinl_{i + 1} = 0$.
 
 The above enforces the basic cycling behaviour as depicted in figure~\ref{fig: processing phase transition graph}. Prewarming rows (if any) lead to initialization rows which lead to execution rows which lead to finalization rows. Furthermore, the finalization phase may only end on a row that peeks into transaction data. The number of rows of each phase will be specified later.

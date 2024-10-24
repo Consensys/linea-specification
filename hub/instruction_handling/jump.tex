@@ -81,10 +81,10 @@ We now proceed to write down relevant constraints:
 			\item \If $\stackOogx_{i} = 0$ \Then
 				\[
 					\left[ \begin{array}{r}
-						+ \peekContext_{i + 1}             \\
-						+ \peekAccount_{i + 2}             \\
-						+ \peekMisc_{i + 3}                \\
-						+ \cmc_{i} \cdot \peekContext_{i + 4} \\
+						+ \peekContext                _{i + 1} \\
+						+ \peekAccount                _{i + 2} \\
+						+ \peekMisc                   _{i + 3} \\
+						+ \cmc_{i} \cdot \peekContext _{i + 4} \\
 					\end{array} \right]
 					= \nonStackRows_{i}
 				\]
@@ -95,16 +95,19 @@ We now proceed to write down relevant constraints:
 			\item \If $\stackOogx_{i} = 1$ \Then $\executionProvidesEmptyReturnData {i}{1} $ \quad (\trash);
 			\item \If $\stackOogx_{i} = 0$ \Then $\readContextData {i}{1}{\cn_{i}}$;
 		\end{enumerate}
+		\saNote{}
+		The (\trash) constraint follows from ``automatic constraints'',
+		see section~(\ref{hub: generalities: context: exceptions lead to providing empty return data}).
 \end{description}
-The constraints that follow are written under the following further stronger hypothesis:
+The constraints that follow are written under the following, stronger hypothesis:
 \begin{center}
 	\boxed{%
 		\text{The stack constraints presented below assume }
 		\left\{ \begin{array}{lcl}
-			\peekStack    _{i}                    & = & 1 \\
-			\stackDecJumpFlag  _{i}               & = & 1 \\
-			\stackSux     _{i} + \stackSox   _{i} & = & 0 \\
-			\stackOogx_{i}                        & = & 0 \\
+			\peekStack                 _{i} & = & 1 \\
+			\stackDecJumpFlag          _{i} & = & 1 \\
+			\stackSux _{i} + \stackSox _{i} & = & 0 \\
+			\stackOogx                 _{i} & = & 0 \\
 		\end{array} \right.}
 \end{center}
 \begin{description}

@@ -9,12 +9,12 @@
 \end{center}
 
 \begin{description}
-	\item[\underline{Setting the stack pattern:}] we impose $\loadStoreSP\big[\decFlag{1}_{i}\big]_{i}$
+	\item[\underline{Setting the stack pattern:}] we impose $\loadStoreSP\big[ \locIsSstore \big]_{i}$
 	\item[\underline{Valid exceptions:}]
 		the constraints below don't need to be imposed in the implementation:
 		\begin{enumerate}
-			\item \If $\decFlag{1}_{i} = 0$ \Then $\xAhoy_{i} = \stackOogx_{i}$ \quad (\trash)
-			\item \If $\decFlag{1}_{i} = 1$ \Then $\xAhoy_{i} = \stackStaticx_{i} + \stackSstorex_{i} + \stackOogx_{i}$ \quad (\trash)
+			\item \If $\locIsSload  = 1$ \Then $\xAhoy_{i} = \stackOogx_{i}$ \quad (\trash)
+			\item \If $\locIsSstore = 1$ \Then $\xAhoy_{i} = \stackStaticx_{i} + \stackSstorex_{i} + \stackOogx_{i}$ \quad (\trash)
 		\end{enumerate}
 		\saNote{} Given section~(\ref{hub: generalities: exceptions: automatic vanishing})
 		\inst{SSLOAD} may only raise stack exceptions or \oogxSH{}
@@ -46,11 +46,11 @@
 			\item \If $\stackOogx_{i} = 1$ \Then $\nonStackRows_{i} = 5$ and furthermore
 				\[
 					\left[ \begin{array}{cr}
-						+ & \peekContext  _{i + \locFirstCon          } \\
-						+ & \peekMisc     _{i + \locOogxMisc          } \\
-						+ & \peekStorage  _{i + \locOogxDoStorage     } \\
-						+ & \peekStorage  _{i + \locOogxUndoStorage   } \\
-						+ & \peekContext  _{i + \locOogxSecondCon     } \\
+						+ & \peekContext  _{i + \locFirstCon        } \\
+						+ & \peekMisc     _{i + \locOogxMisc        } \\
+						+ & \peekStorage  _{i + \locOogxDoStorage   } \\
+						+ & \peekStorage  _{i + \locOogxUndoStorage } \\
+						+ & \peekContext  _{i + \locOogxSecondCon   } \\
 					\end{array} \right]
 					=
 					\nonStackRows_{i}
@@ -70,7 +70,8 @@
 	\item[\underline{The first context row:}]
 		we \textbf{unconditionally} impose that $\readContextData {i}{\locFirstCon}{\cn_{i}}$
 	\item[\underline{Setting \stackStaticx{} flag:}]
-		we impose that $\stackStaticx_{i} = \decFlag{1}_{i} \cdot \cnStatic_{i + \locFirstCon}$;
+		we impose that
+		$\stackStaticx_{i} = \locIsSstore \cdot \cnStatic_{i + \locFirstCon}$;
 
 		\saNote{} Recall that (among instructions raising the $\stackDecStoFlag$ flag) only \inst{SSTORE} may raise a \staticxSH{}.
 	\item[\underline{Setting the miscellaneous-row:}]
@@ -80,19 +81,19 @@
 				\[
 					\weightedMiscFlagSum {i}{\locMiscRowOffset}
 					=
-					\miscOobWeight \cdot \decFlag{1}_{i}
+					\miscOobWeight \cdot \locIsSstore
 				\]
 				in other words	
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag          _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \gZero           & (\trash) \\
-						\miscMmuFlag          _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \rZero           & (\trash) \\
-						\miscMxpFlag          _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \rZero           & (\trash) \\
-						\miscOobFlag          _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \decFlag{1}_{i}  & (\trash) \\
-						\miscStpFlag          _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \gZero           & (\trash) \\
+						\miscExpFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \gZero       & (\trash) \\
+						\miscMmuFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \rZero       & (\trash) \\
+						\miscMxpFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \rZero       & (\trash) \\
+						\miscOobFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \locIsSstore & (\trash) \\
+						\miscStpFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \gZero       & (\trash) \\
 					\end{array} \right.
 				\]
-			\item \If $\decFlag{1}_{i} = 1$ \Then we further impose that
+			\item \If $\locIsSstore = 1$ \Then we further impose that
 				\[
 					\setOobInstructionSstore {i}{\locMiscRowOffset}
 					\Big[ \begin{array}{ll}
@@ -103,7 +104,7 @@
 	\item[\underline{Justifying the \stackSstorex{} flag:}]
 		\begin{enumerate}
 		\If $\peekMisc_{i + \locMiscRowOffset} = 1$ \Then 
-			\item \If $\decFlag{1}_{i} = 1$ \Then we impose that $\stackSstorex_{i} = \miscOobDataCol{7}_{i + \locMiscRowOffset}$
+			\item \If $\locIsSstore = 1$ \Then we impose that $\stackSstorex_{i} = \miscOobDataCol{7}_{i + \locMiscRowOffset}$
 		\end{enumerate}
 \end{description}
 \saNote{}
@@ -130,8 +131,8 @@ Note however that in case of an exception triggered by the present instruction o
 				\stoAddressHi         _{i + \locFirstStoRowOffset}                                   & = & \cnAccountAddress\high  _{i + \locFirstCon} \\
 				\stoAddressLo         _{i + \locFirstStoRowOffset}                                   & = & \cnAccountAddress\low   _{i + \locFirstCon} \\
 				\stoDeploymentNumber  _{i + \locFirstStoRowOffset}                                   & = & \cnAccDepNum            _{i + \locFirstCon} \\
-				\stoKeyHi             _{i + \locFirstStoRowOffset}                                   & = & \stackItemValHi  {1}    _{i}                \\
-				\stoKeyLo             _{i + \locFirstStoRowOffset}                                   & = & \stackItemValLo  {1}    _{i}                \\
+				\stoKeyHi             _{i + \locFirstStoRowOffset}                                   & = & \locStorageKeyHi                \\
+				\stoKeyLo             _{i + \locFirstStoRowOffset}                                   & = & \locStorageKeyLo                \\
 				\multicolumn{3}{l}{\stoTurnOnWarmth      {i}{\locFirstStoRowOffset}     } \\
 				\multicolumn{3}{l}{
 					\standardDomSubStamps {
@@ -147,20 +148,20 @@ Note however that in case of an exception triggered by the present instruction o
 		\If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \Then
 		\begin{description}
 			\item[\underline{The \inst{SLOAD} case:}]
-				\If $\decFlag{1}_{i} = 0$ \Then
+				\If $\locIsSload = 1$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
 						\multicolumn{3}{l}{\storageReading{i}{\locFirstStoRowOffset}} \\
-						\stackItemValHi  {4}  _{i} & \!\!\! = \!\!\! & \stoCurrValueHi_{i + \locFirstStoRowOffset} \\
-						\stackItemValLo  {4}  _{i} & \!\!\! = \!\!\! & \stoCurrValueLo_{i + \locFirstStoRowOffset} \\
+						\locLoadedValueHi & \!\!\! = \!\!\! & \stoCurrValueHi_{i + \locFirstStoRowOffset} \\
+						\locLoadedValueLo & \!\!\! = \!\!\! & \stoCurrValueLo_{i + \locFirstStoRowOffset} \\
 					\end{array} \right.
 				\]
 			\item[\underline{The \inst{SSTORE} case:}]
-				\If $\decFlag{1}_{i} = 1$ \Then
+				\If $\locIsSstore = 1$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
-						\stoNextValueHi _{i + \locFirstStoRowOffset} & \!\!\! = \!\!\! & \stackItemValHi{4}_{i} \\
-						\stoNextValueLo _{i + \locFirstStoRowOffset} & \!\!\! = \!\!\! & \stackItemValLo{4}_{i} \\
+						\stoNextValueHi _{i + \locFirstStoRowOffset} & \!\!\! = \!\!\! & \locValueToStoreHi \\
+						\stoNextValueLo _{i + \locFirstStoRowOffset} & \!\!\! = \!\!\! & \locValueToStoreLo \\
 					\end{array} \right.
 				\]
 			\item[\underline{The inverse, undoing operation:}]
@@ -196,7 +197,7 @@ We will use the following shorthands:
 		\If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \Then
 		\begin{description}
 			\item[\underline{The \inst{SLOAD} case:}]
-				\If $\decFlag{1}_{i} = 0$ \Then
+				\If $\locIsSload = 1$ \Then
 				\[
 					\begin{cases}
 						\If \stoWarmth_{i + \locFirstStoRowOffset} = 0 ~ \Then \gasCost_{i} = G_{\text{coldsload}}\\
@@ -204,7 +205,7 @@ We will use the following shorthands:
 					\end{cases}
 				\]
 			\item[\underline{The \inst{SSTORE} case:}]
-				\If $\decFlag{1}_{i} = 1$ \Then
+				\If $\locIsSstore = 1$ \Then
 				\begin{enumerate}
 					\item \If $\locNextIsCurr = 1$ \Then $ \gasCost_{i} = \locColdStorageSlot \cdot G_\text{coldsload} + G_\text{warmaccess} $
 					\item \If $\locCurrIsOrig = 0$ \Then $ \gasCost_{i} = \locColdStorageSlot \cdot G_\text{coldsload} + G_\text{warmaccess} $
@@ -224,7 +225,7 @@ We will use the following shorthands:
 		Futhermore refunds may only be granted in non reverting contexts.
 		See section~(\ref{hub: generalities: refunds: refunds}) for more details.
 
-		\If \Big($\cnWillRev_{i} = 0$ \et $\decFlag{1}_{i} = 1$\Big) \Then we thus impose that
+		\If \Big($\cnWillRev_{i} = 0$ \et $\locIsSstore = 1$\Big) \Then we thus impose that
 		\begin{enumerate}
 			\item \If $\locNextIsCurr = 1$ \Then $\refund\new_{i} = \refund_{i}$
 			\item \If $\locNextIsCurr = 0$ \Then

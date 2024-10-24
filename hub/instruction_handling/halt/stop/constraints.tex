@@ -30,40 +30,49 @@ The present section deals with handling \inst{STOP} instructions.
 		\saNote{} We isolate this constraint for readability. It justifies several of the shorthands introduced in section~(\ref{hub: instruction handling: halt: stop: shorthands}). 
 	\item[\underline{Setting $\nonStackRows$ and peeking flags:}] we impose the following
 		\begin{enumerate}
-			\item \If $\locDeploys = 0$ \Then $\nonStackRows_{i} = 2$ and
+			\item \If $\locDeploys = 0$ \Then
 				\[
-					\left[ \begin{array}{r}
-						+ \peekContext_{i + 1} \\
-						+ \peekContext_{i + 2} \\
-					\end{array} \right]
-					= \nonStackRows_{i}
-					\quad\text{and}\quad
-					\executionProvidesEmptyReturnData {i}{2}  \quad(\trash)
+					\left\{ \begin{array}{l}
+						\nonStackRows_{i} = 2 \\
+						\nonStackRows_{i} =
+						\left[ \begin{array}{r}
+							+ \peekContext_{i + 1} \\
+							+ \peekContext_{i + 2} \\
+						\end{array} \right]
+						\vspace{2mm} \\
+						\executionProvidesEmptyReturnData {i}{2} \\
+					\end{array} \right.
 				\]
 			\item \If $\locDeploys = 1$ \Then 
 				\begin{enumerate}
-					\item \If $\locWillRevert = 0$ \Then $\nonStackRows_{i} = 3$;
+					\item \If $\locWillRevert = 0$ \Then
 						\[
-							\left[ \begin{array}{r}
-								+ \peekContext_{i + 1} \\
-								+ \peekAccount_{i + \locFirstAccountRow} \\
-								+ \peekContext_{i + 3} \\
-							\end{array} \right]
-							= \nonStackRows_{i}
-							\quad\text{and}\quad
-							\executionProvidesEmptyReturnData {i}{3}  \quad(\trash)
+							\left\{ \begin{array}{l}
+								\nonStackRows_{i} = 3 \\
+								\nonStackRows_{i} =
+								\left[ \begin{array}{r}
+									+ \peekContext_{i + 1} \\
+									+ \peekAccount_{i + \locFirstAccountRow} \\
+									+ \peekContext_{i + 3} \\
+								\end{array} \right]
+								\vspace{2mm} \\
+								\executionProvidesEmptyReturnData {i}{3} \\
+							\end{array} \right.
 						\]
-					\item \If $\locWillRevert = 1$ \Then $\nonStackRows_{i} = 4$;
+					\item \If $\locWillRevert = 1$ \Then
 						\[
-							\left[ \begin{array}{r}
-								+ \peekContext_{i + 1} \\
-								+ \peekAccount_{i + \locFirstAccountRow} \\
-								+ \peekAccount_{i + \locSecondAccountRow} \\
-								+ \peekContext_{i + 4} \\
-							\end{array} \right]
-							= \nonStackRows_{i}
-							\quad\text{and}\quad
-							\executionProvidesEmptyReturnData {i}{4}  \quad(\trash)
+							\left\{ \begin{array}{l}
+								\nonStackRows_{i} = 4 \\
+								\nonStackRows_{i} =
+								\left[ \begin{array}{r}
+									+ \peekContext_{i + 1} \\
+									+ \peekAccount_{i + \locFirstAccountRow} \\
+									+ \peekAccount_{i + \locSecondAccountRow} \\
+									+ \peekContext_{i + 4} \\
+								\end{array} \right]
+								\vspace{2mm} \\
+								\executionProvidesEmptyReturnData {i}{4} \\
+							\end{array} \right.
 						\]
 				\end{enumerate}
 		\end{enumerate}

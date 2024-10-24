@@ -1,7 +1,12 @@
+The present section differs from the preceding ones in two meaningful ways:
+\begin{enumerate}
+        \item we define a ``flag'' column but no associated ``stamp'' column;
+	\item the ``flag'' column in question, \stackHashInfoFlag{}, isn't a ``shared column'' but belongs to the $\peekStack$ perspective.
+\end{enumerate}
 The only instructions which \emph{may} trigger the \stackHashInfoFlag{} flag are
-(\emph{a}) \inst{SHA3} (self explanatory)
+(\emph{a}) \inst{SHA3}    (self explanatory)
 (\emph{b}) \inst{CREATE2} (for computing the \inst{KECCAK} hash of the initialization code)
-(\emph{c}) \inst{RETURN} (for computing the \inst{KECCAK} hash of a newly deployed bytecode fragment.)
+(\emph{c}) \inst{RETURN}  (for computing the \inst{KECCAK} hash of a newly deployed bytecode fragment.)
 
 We provide some details pertaining to the \stackHashInfoFlag{} flag: 
 \begin{enumerate}[resume]
@@ -10,20 +15,35 @@ We provide some details pertaining to the \stackHashInfoFlag{} flag:
 			\item \stackHashInfoFlag{} is binary;
 			\item \If $\stackHashInfoFlag_{i} = 1$ \Then
 				\[
-					\left[ \begin{array}{r}
-						+ \stackDecKecFlag_{i}                                 \\
-						+ \stackDecCreateFlag_{i}     \cdot \decFlag{2}_{i}    \\
-						+ \stackDecHaltFlag_{i}       \cdot \decFlag{1}_{i}    \\
+					\left[ \begin{array}{cl}
+						+ & \locInstructionIsShaThree  \\
+						+ & \locInstructionIsCreateTwo \\
+						+ & \locInstructionIsReturn    \\
 					\end{array} \right]
 					\cdot \big(1 - \xAhoy_{i} \big)
 					= 1
+				\]
+				where we have made use of the following shorthands
+				\[
+					\left\{ \begin{array}{lcl}
+						\locInstructionIsShaThree  & \define & \stackDecKecFlag    _{i}                       \\
+						\locInstructionIsCreateTwo & \define & \stackDecCreateFlag _{i} \cdot \decFlag{2}_{i} \\
+						\locInstructionIsReturn    & \define & \stackDecHaltFlag   _{i} \cdot \decFlag{1}_{i} \\
+					\end{array} \right.
 				\]
 		\end{enumerate}
 \end{enumerate}
 \saNote{} 
 In other words: in order to raise the $\stackHashInfoFlag$ it is \textbf{necessary (though not sufficient)} that the instruction be \textbf{unexceptional} and one of \inst{SHA3}, \inst{CREATE2} or \inst{RETURN}.
-The \inst{SHA3} case is self explanatory.
-The \inst{CREATE2} case corresponds to hashing the initialization code.
-The \inst{RETURN} case corresponds to deployments at which point it may be necessary to compute a code hash.
-We will provide more details on the triggering of this flag in the relevant sections.
-\ob{TODO! make sure it's up to date, too.}
+
+\saNote{} 
+We refer the reader to the ``decoded flag tables'' in
+section~(\ref{hub: instruction handling: create}) and section~(\ref{hub: instruction handling: halt})
+for the justification concerning the interpretation of ``$\stackDecCreateFlag \cdot \decFlag{2}$'' and ``$\stackDecHaltFlag   \cdot \decFlag{1}$''.
+
+\saNote{}
+Other than the underlying instrution being unexceptional, the arithmetization only triggers the \stackHashInfoFlag{} when the relevant \texttt{size} parameter is nonzero.
+When the size parameter is zero the \hashInfoMod{} module does not get called upon, rather we manually insert $\emptyKeccak{}$\footnote{Or, more accurately $\emptyKeccakHi$ and $\emptyKeccakLo$} in the relevant cells of the trace.
+
+\saNote{}
+Observe that we defined a \stackHashInfoFlag{} but we didn't define an associated stamp.

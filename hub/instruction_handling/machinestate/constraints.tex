@@ -1,0 +1,77 @@
+\begin{center}
+	\boxed{%
+		\text{The stack constraints presented below assume }
+		\left\{ \begin{array}{lcl}
+			\peekStack_{i}                & = & 1 \\
+			\stackDecMachineStateFlag_{i} & = & 1 \\
+			\stackSux_{i} + \stackSox_{i} & = & 0 \\
+		\end{array} \right. }
+\end{center}
+We impose the following constraints:
+\begin{description}
+	\item[\underline{Setting the stack pattern:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\locIsntJumpDest = 1$ \Then $\zeroOneSP_{i}$
+			\item \If $\locIsJumpDest   = 1$ \Then $\zeroZeroSP_{i}$
+		\end{enumerate}
+		Indeed all instructions raising the \machineStateFlag{} are \zeroOneSP{} instructions except for \inst{JUMPDEST} which is a \zeroZeroSP{} instruction.
+	\item[\underline{Excluding certain exceptions:}]
+		we impose that $\xAhoy_{i} = \stackOogx_{i}$.
+
+		\saNote{}
+		Without this restriction the \inst{MSIZE} opcode could \emph{a priori} throw a \mxpxSH{}.
+		Also recall that given the preconditions prefacing this section stack exceptions (that is \soxSH{}'s) have been ruled out.
+
+		\saNote{}
+		For instructions raising the \machineStateFlag{} it holds that
+		$\cmc \equiv \xAhoy$ (\trash).
+	\item[\underline{Setting $\nonStackRows$:}]
+		we impose $\nonStackRows_{i} = \locIsMsize + \cmc_{i}$;
+	\item[\underline{Setting the peeking flags:}]
+		we impose
+		\begin{enumerate}
+			\item \If $\locIsntMsize = 1$ \Then $\cmc_{i} \cdot \peekContext_{i + 1} = \nonStackRows_{i}$
+			\item \If $\locIsMsize   = 1$ \Then $\peekMisc_{i + \locMachineStateMiscRow} + \cmc_{i} \cdot \peekContext_{i + 2} = \nonStackRows_{i}$
+		\end{enumerate}
+	\item[\underline{Setting the miscellaneous row for \inst{MSIZE}:}]
+		\If $\locIsMsize = 1$ \Then
+		\[
+			\weightedMiscFlagSum {i}{\locMachineStateMiscRow}
+			=
+			\miscMxpWeight
+		\]
+		in other words
+		\[
+			\left\{ \begin{array}{lclr}
+				\miscExpFlag_{i + \locMachineStateMiscRow} & = & \gZero  & (\trash) \\
+				\miscMmuFlag_{i + \locMachineStateMiscRow} & = & \rZero  & (\trash) \\
+				\miscMxpFlag_{i + \locMachineStateMiscRow} & = & \rOne   & (\trash) \\
+				\miscOobFlag_{i + \locMachineStateMiscRow} & = & \gZero  & (\trash) \\
+				\miscStpFlag_{i + \locMachineStateMiscRow} & = & \gZero  & (\trash) \\
+			\end{array} \right.
+		\]
+		Furthermore
+		\[
+			\setMxpInstructionTypeOne {i}{\locMachineStateMiscRow}
+		\]
+	\item[\underline{Setting the gas cost:}]
+		we impose that $\gasCost_{i} = \decStaticGas_{i}$;
+	\item[\underline{Value constraints:}]
+		\If $\xAhoy_{i} = 0$ \Then we impose the following
+		\begin{enumerate}
+			\item $\locResultHi = 0$ holds universally;
+			\item
+				\If $\locIsPc = 1$
+				\Then $\locResultLo = \pc_{i}$
+			\item
+				\If $\locIsMsize = 1$
+				\Then $\locResultLo = \miscMxpWords_{i + \locMachineStateMiscRow}$;
+			\item
+				\If $\locIsGas = 1$
+				\Then $\locResultLo = \gasNext_{i}$;
+		\end{enumerate}
+		\saNote{}
+		Given the stack pattern provided for the \inst{JUMPDEST} case no further value constraints are required.
+\end{description}
+\saNote{} For instructions raising the $\stackDecMachineStateFlag$ one has $\cmc \equiv \xAhoy$.

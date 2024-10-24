@@ -2,7 +2,7 @@
 	\boxed{\phantom{\Big|}\ob{TODO: get relevant stack columns from the hub}\phantom{\Big|}}
 \end{center}
 \textbf{Stack rows}\label{def: stack row} are characterized by $\peekStack \equiv 1$ and columns pertaining to that perspective are prefixed with the following symbol: $\stackSignifier$.
-The following are names for certain columns on stack rows. The first batch of columns names pertain to stack height.
+The following are names for certain columns on stack rows. The first set of columns names pertain to stack height.
 The columns below are needed to justify stack underflow/overflow exceptions. They work in conjunction with the instruction decoded $\decDelta$ $\decAlpha$
 \begin{enumerate}[resume]
 	\item $\stackAlpha$    and $\stackDelta$:
@@ -10,7 +10,7 @@ The columns below are needed to justify stack underflow/overflow exceptions. The
 \end{enumerate}
 A stack row can peek into up to 4 \textbf{stack items} (parametrized by $k=1,2,3,4$). Two line instructions can peek into up to 8 (which, however, are placed on two consecutive stack rows.)
 The next 20 (!) columns contain information about the stack items an instruction touches.
-These 20 columns are comprised of 4 batches  of 5 columns.
+These 20 columns are comprised of 4 sets of 5 columns.
 \begin{enumerate}[resume]
 	\item $\stackItemHeight{k}$:
 		column containing the height $\in\{1,\dots,1024\}$\footnote{Note the range difference between the $\stackItemHeight{k}$ columns and the \stackHeight{} column.} of the $k$-th touched stack item;
@@ -117,9 +117,6 @@ They are all stack-row-constant binary columns.
 \begin{enumerate}[resume]
 	\item \stackHashInfoFlag{}:
 		binary column that ligts up precisely for those instructions that require a \emph{nontrivial} \inst{KECCAK} hash to be performed;
-		this column is strongly tied to the (shared) \hashInfoStamp{} column; 
-	% \item \stackHashInfoSize{}:
-	% 	(nonzero) size of (nonempty) message to hash;
 	\item \stackHashInfoValHi{} and \stackHashInfoValLo{}:
 		columns that may at times contain (the high and low parts of) a \inst{KECCAK} hash;
 	\item \stackLogFlag{}:
