@@ -12,59 +12,56 @@
 	\item[\underline{Setting the stack pattern:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locRequiresTrimming = 1$ \Then $\oneOneSP  _{i}$
-			\item \If $\locCurrentAccount   = 1$ \Then $\zeroOneSP _{i}$
+			\item \If $\locTouchesForeignAddress = 1$ \Then $\oneOneSP  _{i}$
+			\item \If $\locTouchesCurrentAddress   = 1$ \Then $\zeroOneSP _{i}$
 		\end{enumerate}
 	\item[\underline{Setting allowable exceptions:}]
 		we impose $\xAhoy_{i} = \stackOogx_{i}$ \quad (\trash)
 	\item[\underline{Setting $\nonStackRows$:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locRequiresTrimming = 1$ \Then $\nonStackRows_{i} = 1 + \cnWillRev_{i} + \cmc_{i}$
-			\item \If $\locCurrentAccount   = 1$ \Then $\nonStackRows_{i} = 1 + (1 - \cmc_{i})$
+			\item \If $\locTouchesForeignAddress = 1$ \Then $\nonStackRows_{i} = 1 + \cnWillRev_{i} \cdot (1 + \cmc_{i})$
+			\item \If $\locTouchesCurrentAddress = 1$ \Then $\nonStackRows_{i} = 1 + (1 - \cmc_{i})$
 		\end{enumerate}
 		\saNote{}
 		For instructions raising the $\stackDecAccFlag$ one has $\cmc \equiv \xAhoy$.
 	\item[\underline{Setting the peeking flags:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locRequiresTrimming = 1$ \Then
+			\item \If $\locTouchesForeignAddress = 1$ \Then
 				\begin{enumerate}
 					\item \If $\cnWillRev_{i} = 0$ \Then
 						\[
-							\left[ \begin{array}{cr}
-								+ & \peekAccount_{i + 1} \\ 
-								+ & \cmc_{i} \cdot \peekContext_{i + 2} \\ 
-							\end{array} \right]
+							\peekAccount _{i + \locRoffAccFamForeignAccountDoingRow}
 							= \nonStackRows_{i}
 						\]
 					\item \If $\cnWillRev_{i} = 1$ \Then
 						\[
 							\left[ \begin{array}{cr}
-								+ & \peekAccount_{i + 1} \\ 
-								+ & \peekAccount_{i + 2} \\ 
-								+ & \cmc_{i} \cdot \peekContext_{i + 3} \\ 
+								+ & \peekAccount_{i + \locRoffAccFamForeignAccountDoingRow  }             \\
+								+ & \peekAccount_{i + \locRoffAccFamForeignAccountUndoingRow}             \\
+								+ & \cmc_{i} \cdot \peekContext_{i + \locRoffAccFamForeignAccountFailure} \\
 							\end{array} \right]
 							= \nonStackRows_{i}
 						\]
 				\end{enumerate}
-			\item \If $\locCurrentAccount   = 1$ \Then
+			\item \If $\locTouchesCurrentAddress   = 1$ \Then
 				\begin{enumerate}
 					\item \If $\xAhoy_{i} = 0$ \Then
 						\[
 							\left[ \begin{array}{cr}
-								+ & \peekContext_{i + 1} \\ 
-								+ & \peekAccount_{i + 2} \\ 
+								+ & \peekContext_{i + \locRoffAccFamCurrentContextRow       } \\ 
+								+ & \peekAccount_{i + \locRoffAccFamCurrentAccountReadingRow} \\ 
 							\end{array} \right]
 							= \nonStackRows_{i}
 						\]
-					\item \If $\xAhoy_{i} = 1$ \Then $\peekContext_{i + 1} = \nonStackRows_{i}$
+					\item \If $\xAhoy_{i} = 1$ \Then $\peekContext_{i + \locRoffAccFamCurrentAccountFailure} = \nonStackRows_{i}$
 				\end{enumerate}
 		\end{enumerate}
 	\item[\underline{Setting the gas cost:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locRequiresTrimming = 1$ \Then
+			\item \If $\locTouchesForeignAddress = 1$ \Then
 				\[
 					\gasCost_{i}
 					=
@@ -77,7 +74,7 @@
 				Recall that
 				$G_{\text{coldaccountaccess}} = 2600$ and
 				$G_{\text{warmaccess}} = 100$.
-			\item \If $\locCurrentAccount   = 1$ \Then
+			\item \If $\locTouchesCurrentAddress   = 1$ \Then
 				\[
 					\gasCost_{i} = \stackStaticGas_{i}
 					% = G_{\text{low}} + \decFlag {4} _{i} \cdot ( G_{\text{base}} - G_{\text{low}} )
@@ -90,31 +87,29 @@
 	\item[\underline{Garnishing the non stack rows:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locRequiresTrimming = 1$ \Then
+			\item \If $\locTouchesForeignAddress = 1$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
-						\accRomLexFlag   _{i + 1} & = & \nothing             \\
+						\accRomLexFlag   _{i + \locRoffAccFamForeignAccountDoingRow} & = & 0 \\
 						\multicolumn{3}{l}{\accTrimAddress
-						{i}{1}
-						{\stackItemValHi {1} _{i}}
-						{\stackItemValLo {1} _{i}}} \\
+						{i}{\locRoffAccFamForeignAccountDoingRow}
+						{\locRawAddressHi}
+						{\locRawAddressLo}} \\
 						% \accTrmFlag      _{i + 1} & = & \rOne                    \\
 						% \accTrmRawAddrHi _{i + 1} & = & \stackItemValHi {1} _{i} \\
 						% \accAddressLo    _{i + 1} & = & \stackItemValLo {1} _{i} \\
-						\multicolumn{3}{l}{\accSameBalance                      {i}{1}} \\
-						\multicolumn{3}{l}{\accSameNonce                        {i}{1}} \\
-						\multicolumn{3}{l}{\accSameCode                         {i}{1}} \\
-						\multicolumn{3}{l}{\accSameDeployment                   {i}{1}} \\
-						\multicolumn{3}{l}{\accTurnOnWarmth                     {i}{1}} \\
-						\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag    {i}{1}} \\
+						\multicolumn{3}{l}{\accSameBalance                    {i}{\locRoffAccFamForeignAccountDoingRow}} \\
+						\multicolumn{3}{l}{\accSameNonce                      {i}{\locRoffAccFamForeignAccountDoingRow}} \\
+						\multicolumn{3}{l}{\accSameCode                       {i}{\locRoffAccFamForeignAccountDoingRow}} \\
+						\multicolumn{3}{l}{\accSameDeployment                 {i}{\locRoffAccFamForeignAccountDoingRow}} \\
+						\multicolumn{3}{l}{\accTurnOnWarmth                   {i}{\locRoffAccFamForeignAccountDoingRow}} \\
+						\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag  {i}{\locRoffAccFamForeignAccountDoingRow}} \\
 						\multicolumn{3}{l}{
 							\standardDomSubStamps {
-								anchorRow        = i,
-								relOffset        = 1,
-								domOffset        = 0,
-							}
-						} \\
-							% \standardDomSubStamps                {i}{1}{0}} \\
+								anchorRow        = i                                    ,
+								relOffset        = \locRoffAccFamForeignAccountDoingRow ,
+								domOffset        = 0                                    ,
+							}} \\
 					\end{array} \right.
 				\]
 				\begin{enumerate}
@@ -122,50 +117,49 @@
 					\item \If $\cnWillRev_{i} = 1$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
-						\accRomLexFlag   _{i + 2} & = & \nothing             \\
-						\accTrmFlag      _{i + 2} & = & \nothing             \\
-						\accSameAddr                                   {i}{2}{1} \\
-						\accUndoBalanceUpdate                          {i}{2}{1} \\
-						\accUndoNonceUpdate                            {i}{2}{1} \\
-						\accUndoCodeUpdate                             {i}{2}{1} \\
-						\accUndoDeploymentStatusAndNumberUpdate        {i}{2}{1} \\
-						\accUndoWarmthUpdate                           {i}{2}{1} \\
-						\accSameMarkedForSelfdestructFlag              {i}{2}    \\
-						\revertDomSubStamps {
-							anchorRow        = i,
-							relOffset        = 2,
-							subOffset        = 1,
-						} \\
-						% \revertDomSubStamps {i}{2}{1} \\
+						\accRomLexFlag   _{i + \locRoffAccFamForeignAccountUndoingRow} & = & 0                    \\
+						\accTrmFlag      _{i + \locRoffAccFamForeignAccountUndoingRow} & = & \nothing             \\
+						\multicolumn{3}{l}{\accSameAddr                                   {i}{\locRoffAccFamForeignAccountUndoingRow}{\locRoffAccFamForeignAccountDoingRow}} \\
+						\multicolumn{3}{l}{\accUndoBalanceUpdate                          {i}{\locRoffAccFamForeignAccountUndoingRow}{\locRoffAccFamForeignAccountDoingRow}} \\
+						\multicolumn{3}{l}{\accUndoNonceUpdate                            {i}{\locRoffAccFamForeignAccountUndoingRow}{\locRoffAccFamForeignAccountDoingRow}} \\
+						\multicolumn{3}{l}{\accUndoCodeUpdate                             {i}{\locRoffAccFamForeignAccountUndoingRow}{\locRoffAccFamForeignAccountDoingRow}} \\
+						\multicolumn{3}{l}{\accUndoDeploymentStatusAndNumberUpdate        {i}{\locRoffAccFamForeignAccountUndoingRow}{\locRoffAccFamForeignAccountDoingRow}} \\
+						\multicolumn{3}{l}{\accUndoWarmthUpdate                           {i}{\locRoffAccFamForeignAccountUndoingRow}{\locRoffAccFamForeignAccountDoingRow}} \\
+						\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag              {i}{\locRoffAccFamForeignAccountUndoingRow}                                      } \\
+						\multicolumn{3}{l}{\revertDomSubStamps {
+							anchorRow = i                                      ,
+							relOffset = \locRoffAccFamForeignAccountUndoingRow ,
+							subOffset = 1                                      ,
+						}} \\
 					\end{array} \right.
 				\]
 				\end{enumerate}
-			\item \If $\locCurrentAccount   = 1$ \Then
+			\item \If $\locTouchesCurrentAddress   = 1$ \Then
 				\begin{enumerate}
 					\item \If $\xAhoy_{i} = 0$ \Then we impose
 						\begin{description}
 							\item[\underline{Context row:}]
 								we impose
-								$\readContextData {i}{1}{\cn_{i}}$
+								$\readContextData {i}{\locRoffAccFamCurrentContextRow}{\cn_{i}}$
 							\item[\underline{Account row:}]
 								we impose
 								\[
 									\left\{ \begin{array}{lcl}
-										\accTrmFlag      _{i + 2} & = & \nothing      \\
-										\accRomLexFlag   _{i + 2} & = & \nothing      \\
-										\accAddressHi    _{i + 2} & = & \valueToBeSet \\
-										\accAddressLo    _{i + 2} & = & \valueToBeSet \\
-										\multicolumn{3}{l}{\accSameBalance                     {i}{2}} \\
-										\multicolumn{3}{l}{\accSameNonce                       {i}{2}} \\
-										\multicolumn{3}{l}{\accSameCode                        {i}{2}} \\
-										\multicolumn{3}{l}{\accSameDeployment                  {i}{2}} \\
-										\multicolumn{3}{l}{\accTurnOnWarmth                    {i}{2}} \\
-										\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag   {i}{2}} \\
+										\accTrmFlag      _{i + \locRoffAccFamCurrentAccountReadingRow} & = & \nothing      \\
+										\accRomLexFlag   _{i + \locRoffAccFamCurrentAccountReadingRow} & = & 0             \\
+										\accAddressHi    _{i + \locRoffAccFamCurrentAccountReadingRow} & = & \valueToBeSet \\
+										\accAddressLo    _{i + \locRoffAccFamCurrentAccountReadingRow} & = & \valueToBeSet \\
+										\multicolumn{3}{l}{\accSameBalance                     {i}{\locRoffAccFamCurrentAccountReadingRow}} \\
+										\multicolumn{3}{l}{\accSameNonce                       {i}{\locRoffAccFamCurrentAccountReadingRow}} \\
+										\multicolumn{3}{l}{\accSameCode                        {i}{\locRoffAccFamCurrentAccountReadingRow}} \\
+										\multicolumn{3}{l}{\accSameDeployment                  {i}{\locRoffAccFamCurrentAccountReadingRow}} \\
+										\multicolumn{3}{l}{\accTurnOnWarmth                    {i}{\locRoffAccFamCurrentAccountReadingRow}} \\
+										\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag   {i}{\locRoffAccFamCurrentAccountReadingRow}} \\
 										\multicolumn{3}{l}{
 											\standardDomSubStamps {
-												anchorRow        = i,
-												relOffset        = 2,
-												domOffset        = 0,
+												anchorRow        = i                                      ,
+												relOffset        = \locRoffAccFamCurrentAccountReadingRow ,
+												domOffset        = 0                                      ,
 											}
 										} \\
 											% \standardDomSubStamps               {i}{2}{0}} \\
@@ -173,24 +167,20 @@
 								\]
 								furthermore
 								\begin{enumerate}
-									\item \If $\decFlag{4}_{i} = 0$ \Then
+									\item \If $\locIsCodeSize = 1$ \Then
 										\[
 											\left\{ \begin{array}{lcl}
-												\accAddressHi    _{i + 2} & = & \locAccountAddressHi \\
-												\accAddressLo    _{i + 2} & = & \locAccountAddressLo \\
+												\accAddressHi    _{i + \locRoffAccFamCurrentAccountReadingRow} & = & \locCodeAddressHi \\
+												\accAddressLo    _{i + \locRoffAccFamCurrentAccountReadingRow} & = & \locCodeAddressLo \\
 											\end{array} \right.
 										\]
-										\saNote{}
-										This is the \inst{SELFBALANCE} case.
-									\item \If $\decFlag{4}_{i} = 1$ \Then
+									\item \If $\locIsSelfBalance = 1$ \Then
 										\[
 											\left\{ \begin{array}{lcl}
-												\accAddressHi    _{i + 2} & = & \locCodeAddressHi \\
-												\accAddressLo    _{i + 2} & = & \locCodeAddressLo \\
+												\accAddressHi    _{i + \locRoffAccFamCurrentAccountReadingRow} & = & \locAccountAddressHi \\
+												\accAddressLo    _{i + \locRoffAccFamCurrentAccountReadingRow} & = & \locAccountAddressLo \\
 											\end{array} \right.
 										\]
-										\saNote{}
-										This is the \inst{CODESIZE} case.
 								\end{enumerate}
 						\end{description}
 					\item \If $\xAhoy_{i} = 1$ \Then we don't need to impose anything;
@@ -201,59 +191,48 @@
 		we impose the following
 		\begin{description}
 			\item[\underline{The \inst{BALANCE} case:}]
-				\If $\decFlag{1}_{i} = 1$ \Then
+				\If $\locIsBalance = 1$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
-						\stackItemValHi{4}_{i} & \!\!\! = \!\!\! & 0 \\
-						\stackItemValLo{4}_{i} & \!\!\! = \!\!\! & \accBalance_{i + 1} \\
+						\locResultHi & \!\!\! = \!\!\! & 0 \\
+						\locResultLo & \!\!\! = \!\!\! & \accBalance_{i + \locRoffAccFamForeignAccountDoingRow} \\
 					\end{array} \right.
 				\]
 			\item[\underline{The \inst{EXTCODESIZE} case:}]
-				\If $\decFlag{2}_{i} = 1$ \Then
+				\If $\locIsExtCodeSize = 1$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
-						\stackItemValHi{4}_{i} & \!\!\! = \!\!\! & 0 \\
-						\stackItemValLo{4}_{i} & \!\!\! = \!\!\! & \accCodesize_{i + 1} \cdot \accHasCode_{i + 1} \\
+						\locResultHi & \!\!\! = \!\!\! & 0 \\
+						\locResultLo & \!\!\! = \!\!\! & \accCodesize_{i + \locRoffAccFamForeignAccountDoingRow} \cdot \accHasCode_{i + \locRoffAccFamForeignAccountDoingRow} \\
 					\end{array} \right.
 				\]
 				\saNote{}
 				We provide more details below.
 			\item[\underline{The \inst{EXTCODEHASH} case:}]
-				\If $\decFlag{3}_{i} = 1$ \Then
+				\If $\locIsExtCodeHash = 1$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
-						\stackItemValHi{4}_{i} & \!\!\! = \!\!\! & \accCodehash_{i + 1}\high \cdot \accExists_{i + 1}\\
-						\stackItemValLo{4}_{i} & \!\!\! = \!\!\! & \accCodehash_{i + 1}\low  \cdot \accExists_{i + 1}\\
+						\locResultHi & \!\!\! = \!\!\! & \accCodehash_{i + \locRoffAccFamForeignAccountDoingRow}\high \cdot \accExists_{i + \locRoffAccFamForeignAccountDoingRow}\\
+						\locResultLo & \!\!\! = \!\!\! & \accCodehash_{i + \locRoffAccFamForeignAccountDoingRow}\low  \cdot \accExists_{i + \locRoffAccFamForeignAccountDoingRow}\\
 					\end{array} \right.
 				\]
 				\saNote{}
 				We provide more details below.
 			\item[\underline{The \inst{CODESIZE} case:}]
-				\If $\decFlag{4}_{i} = 1$ \Then
+				\If $\locIsCodeSize = 1$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
-						\stackItemValHi{4}_{i} & \!\!\! = \!\!\! & 0 \\
-						\stackItemValLo{4}_{i} & \!\!\! = \!\!\! & \accCodesize_{i + 2} \\
+						\locResultHi & \!\!\! = \!\!\! & 0 \\
+						\locResultLo & \!\!\! = \!\!\! & \accCodesize_{i + \locRoffAccFamCurrentAccountReadingRow} \\
 					\end{array} \right.
 				\]
 			\item[\underline{The \inst{SELFBALANCE} case:}]
-				\If $\locDecFlagSumAccount = 0$ \Then
+				\If $\locIsSelfBalance = 1$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
-						\stackItemValHi{4}_{i} & \!\!\! = \!\!\! & 0 \\
-						\stackItemValLo{4}_{i} & \!\!\! = \!\!\! & \accBalance_{i + 2} \\
+						\locResultHi & \!\!\! = \!\!\! & 0 \\
+						\locResultLo & \!\!\! = \!\!\! & \accBalance_{i + \locRoffAccFamCurrentAccountReadingRow} \\
 					\end{array} \right.
-				\]
-				where
-				\[
-					\locDecFlagSumAccount
-					\define
-					\left[ \begin{array}{cr}
-						+ & \decFlag{1}_{i} \\
-						+ & \decFlag{2}_{i} \\
-						+ & \decFlag{3}_{i} \\
-						+ & \decFlag{4}_{i} \\
-					\end{array} \right]
 				\]
 		\end{description}
 \end{description}
@@ -334,7 +313,7 @@ One therefore has
 \[
 	\begin{array}{lcl}
 		\accHasCode \equiv 0 & \iff & \bm{\sigma}[a]_c = \emptyKeccak \\
-                                     & \iff & \| \mathbf{b} \| = 0            \\
+		& \iff & \| \mathbf{b} \| = 0            \\
 	\end{array}
 \]
 One therefore finds that
