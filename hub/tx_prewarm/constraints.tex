@@ -8,9 +8,9 @@ We impose the following:
 			\left\{ \begin{array}{l}
 			        \peekAccount_{i} + \peekStorage_{i} = 1 \\
 				\standardDomSubStamps {
-					anchorRow        = i,
-					relOffset        = 0,
-					domOffset        = 0,
+					anchorRow        = i      ,
+					relOffset        = \rZero ,
+					domOffset        = 0      ,
 				}
 				% \standardDomSubStamps {i}{0}{0}
 			\end{array} \right.
@@ -42,7 +42,7 @@ We impose the following:
 				\multicolumn{3}{l}{\accTrimAddress
 				{i}{\rZero}
 				{\accAddressHi_{i}}
-				{\accAddressLo_{i}}}                                              & \quad (\trash) \\
+				{\accAddressLo_{i}}} \\
 				\multicolumn{3}{l}{\accSameBalance                     {i}{\rZero}} \\
 				\multicolumn{3}{l}{\accSameNonce                       {i}{\rZero}} \\
 				\multicolumn{3}{l}{\accSameCode                        {i}{\rZero}} \\
@@ -54,9 +54,8 @@ We impose the following:
 						anchorRow        = i,
 						relOffset        = \rZero,
 						domOffset        = 0,
-					}
+					} \quad (\trash)
 				} \\
-					% \standardDomSubStamps               {i}{0}{0} } & \quad (\trash) \\
 			\end{array} \right.
 		\]
 		\saNote{}
@@ -65,6 +64,9 @@ We impose the following:
 		In the above the purpose isn't the trimming of incoming addresses \emph{per se}.
 		Rather the above allows us to set \accTrmRawAddrHi{} to the expected value in case the above is the first time the address undergoes trimming.
 		Strictly speaking this isn't necessary.
+
+		\saNote{}
+		The reason for the $(\trash)$ is that the $\domStamp/\subStamp$ constraints were already unconditionally dealt with at the start.
 	\item \If $\peekStorage_{i} = 1$ \Then
 		\[
 			\left\{ \begin{array}{lr}
@@ -74,7 +76,7 @@ We impose the following:
 					anchorRow        = i,
 					relOffset        = \rZero,
 					domOffset        = 0,
-				}
+				} & \quad (\trash) \\
 				% \standardDomSubStamps  {i}{0}{0}  & \quad (\trash) \\
 			\end{array} \right.
 		\]

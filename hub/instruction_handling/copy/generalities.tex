@@ -11,7 +11,7 @@ The constraints are as follows:
 \begin{description}
 	\item[\underline{\underline{Setting the stack pattern:}}]
 		we impose $\copySP_{i} \big[ \locIsExtcc \big]$;
-	\item[\underline{\underline{Allowable exceptions:}}]
+	\item[\underline{\underline{Setting allowable exceptions:}}]
 		we impose
 		\[ \xAhoy _{i} = \locIsRdc \cdot \stackRdcx _{i} + \stackMxpx _{i} + \stackOogx _{i} \quad (\trash) \]
 	\item[\underline{\underline{Setting $\nonStackRows$ and peeking flags:}}] we impose the following
@@ -173,7 +173,7 @@ The constraints are as follows:
 						anchorRow     = i                     ,
 						relOffset     = \locCopyMiscRowOffset ,
 						instruction   = \locInst              ,
-						deploys       = \varnothing           ,
+						deploys       = \nothing              ,
 						offsetHi      = \locTargetOffsetHi    ,
 						offsetLo      = \locTargetOffsetLo    ,
 						sizeHi        = \locSizeHi            ,
@@ -238,10 +238,10 @@ The constraints are as follows:
 						we impose
 						\[
 							\left\{ \begin{array}{lcl}
-								\locSourceId        & \define & \accCfi      _{i + \locCopyCurrentAccountRow} \\
-								\locReferenceOffset & \define & 0                                             \\
-								\locReferenceSize   & \define & \accCodesize _{i + \locCopyCurrentAccountRow} \\
-								\locExoSum          & \define & \exoWeightRom                                 \\
+								\locSourceId        & \define & \locCurrentCfi      \\
+								\locReferenceOffset & \define & 0                   \\
+								\locReferenceSize   & \define & \locCurrentCodeSize \\
+								\locExoSum          & \define & \exoWeightRom       \\
 							\end{array} \right.
 						\]
 					\item[The \inst{EXTCODECOPY} case:] 
@@ -249,10 +249,10 @@ The constraints are as follows:
 						we impose
 						\[
 							\left\{ \begin{array}{lcl}
-								\locSourceId        & \define & \accCfi      _{i + \locCopyOutsideAccountRowFirst} \\
-								\locReferenceOffset & \define & 0                                                  \\
-								\locReferenceSize   & \define & \accCodesize _{i + \locCopyOutsideAccountRowFirst} \cdot \accHasCode _{i + \locCopyOutsideAccountRowFirst} \\
-								\locExoSum          & \define & \exoWeightRom                                      \\
+								\locSourceId        & \define & \locForeignAddressCfi                                      \\
+								\locReferenceOffset & \define & 0                                                          \\
+								\locReferenceSize   & \define & \locForeignAddressCodeSize \cdot \locForeignAddressHasCode \\
+								\locExoSum          & \define & \exoWeightRom                                              \\
 							\end{array} \right.
 						\]
 				\end{description}

@@ -54,9 +54,10 @@ The specialized constraints are as follows:
 					\left\{ \begin{array}{lclr}
 						\accAddressHi          _{i + \locCopyCurrentAccountRow} & = & \cnCodeAddress\high _{i + \locCopyCurrentContextRow} \\
 						\accAddressLo          _{i + \locCopyCurrentAccountRow} & = & \cnCodeAddress\low  _{i + \locCopyCurrentContextRow} \\
-						\accDeploymentNumber   _{i + \locCopyCurrentAccountRow} & = & \cnAccDepNum        _{i + \locCopyCurrentContextRow}  & (\trash) \\
-						\accCfi                _{i + \locCopyCurrentAccountRow} & = & \cfi_{i}                                              & (\trash) \\
-						\accRomLexFlag         _{i + \locCopyCurrentAccountRow} & = & \rOne                                                 & (\trash) \\
+						\accDeploymentNumber   _{i + \locCopyCurrentAccountRow} & = & \relevantValue                                       \\
+						\accDeploymentStatus   _{i + \locCopyCurrentAccountRow} & = & \relevantValue                                       \\
+						\accCfi                _{i + \locCopyCurrentAccountRow} & = & \relevantValue                                       \\
+						\accRomLexFlag         _{i + \locCopyCurrentAccountRow} & = & \nothing                                             \\
 						\multicolumn{4}{l}{\accSameBalance                    {i}{\locCopyCurrentAccountRow}}    \\
 						\multicolumn{4}{l}{\accSameNonce                      {i}{\locCopyCurrentAccountRow}}    \\
 						\multicolumn{4}{l}{\accSameCode                       {i}{\locCopyCurrentAccountRow}}    \\
@@ -70,10 +71,23 @@ The specialized constraints are as follows:
 								domOffset        = 0,
 							}
 						} \\
-							% \standardDomSubStamps              {i}{\locCopyCurrentAccountRow}{0}} \\
 					\end{array} \right.
 				\]
+				\saNote{}
+				The values of $\accDeploymentNumber _{i + \locCopyCurrentAccountRow}$ and $\accCfi _{i + \locCopyCurrentAccountRow}$ are implicitly constrained by account consistency constraints,
+				see section~(\ref{hub: consistencies: account}).
+				We may nonetheless include some ``sanity check'' constraints labeled by (\sanityCheck) to make the intent explicit:
+				\[
+					\left\{ \begin{array}{lcll}
+						\accDeploymentNumber   _{i + \locCopyCurrentAccountRow} & = & \cnCodeDepNum       _{i + \locCopyCurrentContextRow} & (\sanityCheck)              \\
+						\accDeploymentStatus   _{i + \locCopyCurrentAccountRow} & = & \cnCodeDepStatus    _{i + \locCopyCurrentContextRow} & (\sanityCheck)              \\
+						\accCfi                _{i + \locCopyCurrentAccountRow} & = & \cnCodeCfi          _{i + \locCopyCurrentContextRow} & (\sanityCheck)              \\
+						\accCfi                _{i + \locCopyCurrentAccountRow} & = & \cfi_{i}                                             & (\sanityCheck) \vspace{2mm} \\
+						\accRomLexFlag         _{i + \locCopyCurrentAccountRow} & = & \rOne                                                & (\sanityCheck) ~ (\trash)   \\
+					\end{array} \right.
+				\]
+				These constraints confront \textbf{account data} with \textbf{context data}.
+				One constraint confronts \textbf{account data} with \textbf{shared data}.
+				Note furthermore that turning on the \accRomLexFlag{} also leads to a confrontation between \textbf{account data} and \romMod{} module data.
 		\end{description}
-		% % I don't do this anymore ... even though it's valid; this avoids useless complications;
-		% \saNote{} We provide some explanation. There is no need to specify the address nor the deployment number or status as these are deduced in the \romLexMod{} module from the \accCfi{}. Observe furthermore that the lookup to the \romLexMod{} module \textbf{is active} as we impose $\accRomLexFlag \equiv \one$.
 \end{description}

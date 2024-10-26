@@ -13,12 +13,33 @@
 		we impose $\loadStoreSP\big[ \locIsStoreInst \big]_{i}$;
 
 		\saNote{}
-		The sum $\locIsStoreInst \equiv \decFlag{3} + \decFlag{4}$ is binary.
+		Flag exclusivity as well as the sum defining $\locIsStoreInst$ make this flag binary.
 		It is equal to $1$ \emph{iff} the underlying instruction stores data in memory.
+	\item[\underline{Setting allowable exceptions:}]
+		we impose
+		\begin{enumerate}
+			\item \If $\locIsCallDataLoad = 1$ \Then $\xAhoy _{i} =                   \stackOogx _{i}$ \quad (\trash)
+			\item \If $\locIsMSomething   = 1$ \Then $\xAhoy _{i} = \stackMxpx _{i} + \stackOogx _{i}$ \quad (\trash)
+		\end{enumerate}
+		\saNote{}
+		Both constraints \ob{should (?)} follow from general constraints, see section~(\ref{hub: generalities: exceptions: automatic vanishing}).
+
+		\saNote{}
+		Note furthermore that for $\stackDecStackRamFlag$ instructions $\cmc \equiv \xAhoy$.
 	\item[\underline{Setting $\nonStackRows$ and peeking flags:}]
-		\inst{MLOAD}, \inst{}, \inst{} require computing memory expansion costs and possibly calling for a memory instruction;
-		\inst{CALLDATALOAD} requires retrieving the call data size from the execution context and possibly calling for a memory instruction;
-		we thus impose $\nonStackRows_{i} =  1 + \decFlag{1}_{i} + \cmc_{i}$.
+		\inst{MLOAD},
+		\inst{MSTORE},
+		\inst{MSTORE8}
+		require computing memory expansion cost;
+		\inst{CALLDATALOAD}, on the other hand, does not incur memory expansion;
+		it does however require retrieving the \col{CALL\_DATA\_SIZE} from the execution context;
+		we thus impose
+		\[
+			\nonStackRows_{i} =  1 + \locIsCallDataLoad + \cmc_{i}.
+		\]
+		\saNote{}
+		Any of these instructions may trigger a memory instruction.
+		The only caveat worth mentioning is that \inst{CALLDATALOAD} can avoid a memory instruction if offsets land outisde of the call data segment.
 	\item[\underline{Setting the peeking flags:}]
 		the analysis depends on whether the instruction is \inst{CALLDATALOAD} (i.e. $\locIsCallDataLoad = 1$) or not (i.e. $\locIsMSomething = 1$):
 		\begin{enumerate}
@@ -64,23 +85,27 @@
 			\weightedMiscFlagSum {i}{\stackramMiscRowOffset}
 			=
 			\left[ \begin{array}{crcl}
-				+ & \miscMmuWeight & \!\!\! \cdot \!\!\! & \locTriggerMmu     \\
-				+ & \miscMxpWeight & \!\!\! \cdot \!\!\! & \locIsMSomething   \\
-				+ & \miscOobWeight & \!\!\! \cdot \!\!\! & \locIsCallDataLoad \\
+				+ & \miscMmuWeight & \!\!\! \cdot \!\!\! & \locTriggerMmu \\
+				+ & \miscMxpWeight & \!\!\! \cdot \!\!\! & \locTriggerMxp \\
+				+ & \miscOobWeight & \!\!\! \cdot \!\!\! & \locTriggerOob \\
 			\end{array} \right]
 		\]
 		in other words we impose
 		\[
 			\left\{ \begin{array}{lclr}
-				\miscExpFlag  _{i + \stackramMiscRowOffset} & = & \gZero             & (\trash) \\
-				\miscMmuFlag  _{i + \stackramMiscRowOffset} & = & \locTriggerMmu     & (\trash) \\
-				\miscMxpFlag  _{i + \stackramMiscRowOffset} & = & \locIsMSomething   & (\trash) \\
-				\miscOobFlag  _{i + \stackramMiscRowOffset} & = & \locIsCallDataLoad & (\trash) \\
-				\miscStpFlag  _{i + \stackramMiscRowOffset} & = & \gZero             & (\trash) \\
+				\miscExpFlag  _{i + \stackramMiscRowOffset} & = & \gZero         & (\trash) \\
+				\miscMmuFlag  _{i + \stackramMiscRowOffset} & = & \locTriggerMmu & (\trash) \\
+				\miscMxpFlag  _{i + \stackramMiscRowOffset} & = & \locTriggerMxp & (\trash) \\
+				\miscOobFlag  _{i + \stackramMiscRowOffset} & = & \locTriggerOob & (\trash) \\
+				\miscStpFlag  _{i + \stackramMiscRowOffset} & = & \gZero         & (\trash) \\
 			\end{array} \right.
 		\]
-		\saNote{} The binary flag \locTriggerMmu{} will be defined below.
-	\item[\underline{Defining \locTriggerMmu{}:}] we define it as follows:
+		\saNote{} The binary flags ``\locTriggerXxx{}'' will be defined below.
+	\item[\underline{Defining \locTriggerMxp{}:}] we define
+		$\locTriggerMxp \define \locIsMSomething$.
+	\item[\underline{Defining \locTriggerOob{}:}] we define
+		$\locTriggerOob \define \locIsCallDataLoad$.
+	\item[\underline{Defining \locTriggerMmu{}:}] we define \locTriggerMmu{} as follows:
 		\begin{enumerate}
 			\item \If $\locIsCallDataLoad = 1$ \Then
 				\(
@@ -95,8 +120,12 @@
 					1 - \xAhoy_{i}
 				\)
 		\end{enumerate}
+		\saNote{}
+		Therefore, in case of a \inst{CALLDATALOAD} instruction,
+		the \zkEvm{} activates the \mmuMod{} \emph{if and only if}
+		the instruction is unexceptional and the instruction's offset does not land within the ``$0$-padding'' of call data.
 	\item[\underline{Miscellaneous-row $n°(i + \stackramMiscRowOffset)$: \oobMod{} data:}]
-		\If $\locIsCallDataLoad = 1$ \Then we impose
+		\If $\miscOobFlag _{i + \stackramMiscRowOffset} = 1$ \Then we impose
 		\[
 			\setOobInstructionCdl {i}{\stackramMiscRowOffset}
 			\left[ \begin{array}{ll}
@@ -107,9 +136,8 @@
 		\]
 		\saNote{}
 		Only \inst{CALLDATALOAD} requires a lookup to the \oobMod{} module.
-
-		\saNote{}
 		The purpose of the \oobMod{} module call is to decide whether the offset parameter exceeds the call data size, in which case \textsc{ram} need not be touched by the instruction.
+		See section~(\ref{oob: populating: opcodes: cdl}) for more details.
 		Recall that we set $ \locCallDataLoadIsOob \define \miscOobDataCol{7}_{i + \stackramMiscRowOffset} $
 		To be precise
 		\[
@@ -126,10 +154,8 @@
 				\locValueLo & = & 0 \\
 			\end{array} \right.
 		\]
-	\item[\underline{Context-row $n^°(i + \stackramContextRowOffset)$:}]
-		we impose that \If $\locIsCallDataLoad = 1$ \Then $\readContextData {i}{\stackramContextRowOffset}{\cn_{i}}$
 	\item[\underline{Miscellaneous-row $n^°(i + \stackramMiscRowOffset)$: \mxpMod{} data:}]
-		\If $\miscMxpFlag_{i + \stackramMiscRowOffset} = 1$
+		\If $\miscMxpFlag _{i + \stackramMiscRowOffset} = 1$
 		\Then we compute memory expansion cost:
 		\begin{enumerate}
 			\item
@@ -155,21 +181,21 @@
 				\]
 		\end{enumerate}
 	\item[\underline{Miscellaneous-row $n^°(i + \stackramMiscRowOffset)$: \mmuMod{} data:}]
-		\If $\miscMmuFlag_{i + \stackramMiscRowOffset} = 1$ \Then
+		\If $\miscMmuFlag _{i + \stackramMiscRowOffset} = 1$ \Then
 		we impose
 		\begin{description}
 			\item[\underline{The \inst{CALLDATALOAD} case:}] 
 				\If $\locIsCallDataLoad = 1$ \Then we impose
 				\[
 					\setMmuInstructionParametersRightPaddedWordExtraction {
-						anchorRow       = i                        ,
-						relOffset       = \stackramMiscRowOffset   ,
-						sourceId        = \cnCallDataContextNumber _{i + \stackramContextRowOffset} ,
-						sourceOffsetLo  = \locOffsetLo             ,
-						referenceOffset = \locCallDataOffset       ,
-						referenceSize   = \locCallDataSize         ,
-						limbOne         = \locValueHi              ,
-						limbTwo         = \locValueLo              ,
+						anchorRow       = i                         ,
+						relOffset       = \stackramMiscRowOffset    ,
+						sourceId        = \locCallDataContextNumber ,
+						sourceOffsetLo  = \locOffsetLo              ,
+						referenceOffset = \locCallDataOffset        ,
+						referenceSize   = \locCallDataSize          ,
+						limbOne         = \locValueHi               ,
+						limbTwo         = \locValueLo               ,
 					}
 				\]
 			\item[\underline{The \inst{MLOAD} case:}] 
@@ -209,4 +235,6 @@
 					}
 				\]
 		\end{description}
+	\item[\underline{Context-row $n^°(i + \stackramContextRowOffset)$:}]
+		we impose that \If $\locIsCallDataLoad = 1$ \Then $\readContextData {i}{\stackramContextRowOffset}{\cn_{i}}$
 \end{description}
