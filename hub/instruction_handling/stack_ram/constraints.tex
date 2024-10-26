@@ -106,7 +106,7 @@
 			\end{array} \right] \vspace{2mm} \\
 		\]
 		\saNote{}
-		Only \inst{CALLDATALOAD} requires a lookup to the \oobMod{}.
+		Only \inst{CALLDATALOAD} requires a lookup to the \oobMod{} module.
 
 		\saNote{}
 		The purpose of the \oobMod{} module call is to decide whether the offset parameter exceeds the call data size, in which case \textsc{ram} need not be touched by the instruction.
@@ -129,22 +129,37 @@
 	\item[\underline{Context-row $n^°(i + \stackramContextRowOffset)$:}]
 		we impose that \If $\locIsCallDataLoad = 1$ \Then $\readContextData {i}{\stackramContextRowOffset}{\cn_{i}}$
 	\item[\underline{Miscellaneous-row $n^°(i + \stackramMiscRowOffset)$: \mxpMod{} data:}]
-		\If $\miscMxpFlag_{i + \stackramMiscRowOffset} = 1$ \Then
-		we compute memory expansion cost:
-		\[
-			\setMxpInstructionTypeTwo {i}{\stackramMiscRowOffset}
-			\left[ \begin{array}{ll}
-				\utt{Instruction:}      & \locInst     \\
-				\utt{Offset high part:} & \locOffsetHi \\
-				\utt{Offset low  part:} & \locOffsetLo \\
-			\end{array} \right]
-		\]
+		\If $\miscMxpFlag_{i + \stackramMiscRowOffset} = 1$
+		\Then we compute memory expansion cost:
+		\begin{enumerate}
+			\item
+				\If $\locIsMload + \locIsMstore = 1$ \Then
+				\[
+					\setMxpInstructionTypeTwo{
+						anchorRow   = i                      ,
+						relOffset   = \stackramMiscRowOffset ,
+						instruction = \locInst               ,
+						offsetHi    = \locOffsetHi           ,
+						offsetLo    = \locOffsetLo           ,
+					}
+				\]
+			\item
+				\If $\locIsMstoreEight = 1$ \Then
+				\[
+					\setMxpInstructionTypeThree{
+						anchorRow = i                      ,
+						relOffset = \stackramMiscRowOffset ,
+						offsetHi  = \locOffsetHi           ,
+						offsetLo  = \locOffsetLo           ,
+					}
+				\]
+		\end{enumerate}
 	\item[\underline{Miscellaneous-row $n^°(i + \stackramMiscRowOffset)$: \mmuMod{} data:}]
 		\If $\miscMmuFlag_{i + \stackramMiscRowOffset} = 1$ \Then
 		we impose
 		\begin{description}
 			\item[\underline{The \inst{CALLDATALOAD} case:}] 
-				\If $\decFlag{1}_{i} = 1$ \Then we impose
+				\If $\locIsCallDataLoad = 1$ \Then we impose
 				\[
 					\setMmuInstructionParametersRightPaddedWordExtraction {
 						anchorRow       = i                        ,
@@ -158,19 +173,19 @@
 					}
 				\]
 			\item[\underline{The \inst{MLOAD} case:}] 
-				\If $\decFlag{2}_{i} = 1$ \Then we impose
+				\If $\locIsMload = 1$ \Then we impose
 				\[
 					\setMmuInstructionParametersMload {
-					    anchorRow      = i,
-					    relOffset      = \stackramMiscRowOffset,
-					    sourceId       = \cn_{i},
-					    sourceOffsetLo = \locOffsetLo,
-					    limbOne        = \locValueHi,
-					    limbTwo        = \locValueLo,
+						anchorRow      = i,
+						relOffset      = \stackramMiscRowOffset,
+						sourceId       = \cn_{i},
+						sourceOffsetLo = \locOffsetLo,
+						limbOne        = \locValueHi,
+						limbTwo        = \locValueLo,
 					}
 				\]
 			\item[\underline{The \inst{MSTORE} case:}] 
-				\If $\decFlag{3}_{i} = 1$ \Then we impose
+				\If $\locIsMstore = 1$ \Then we impose
 				\[
 					\setMmuInstructionParametersMstore {
 						anchorRow      = i                      ,
@@ -182,7 +197,7 @@
 					}
 				\]
 			\item[\underline{The \inst{MSTORE8} case:}] 
-				\If $\decFlag{4}_{i} = 1$ \Then we impose
+				\If $\locIsMstoreEight = 1$ \Then we impose
 				\[
 					\setMmuInstructionParametersMstoreEight {
 						anchorRow      = i                      ,
@@ -191,7 +206,7 @@
 						targetOffsetLo = \locOffsetLo           ,
 						limbOne        = \locValueHi            ,
 						limbTwo        = \locValueLo            ,
-						}
+					}
 				\]
 		\end{description}
 \end{description}

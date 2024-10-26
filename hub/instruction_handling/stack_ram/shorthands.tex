@@ -1,18 +1,32 @@
 We will use the following shorthands
 \[
 	\left\{ \begin{array}{lcl}
-		\locInst              & \define & \stackInst           _{i} \\
-		\locIsCallDataLoad    & \define & \decFlag         {1} _{i} \\
-		\locIsStoreInst       & \define & \left[ \begin{array}{cr} + & \decFlag{3}_{i} \\ + & \decFlag{4}_{i} \\ \end{array} \right] \vspace{1mm} \\
-		\locIsMSomething      & \define & \left[ \begin{array}{cr} + & \decFlag{2}_{i} \\ + & \decFlag{3}_{i} \\ + & \decFlag{4}_{i} \\ \end{array} \right] \\
-		\locOffsetHi          & \define & \stackItemValHi  {1} _{i}                          \\
-		\locOffsetLo          & \define & \stackItemValLo  {1} _{i}                          \\
-		\locValueHi           & \define & \stackItemValHi  {4} _{i}                          \\
-		\locValueLo           & \define & \stackItemValLo  {4} _{i}                          \\
-		\locCallDataLoadIsOob & \define & \miscOobDataCol  {7} _{i + \stackramMiscRowOffset} \\
-		\locMxpGas            & \define & \miscMxpGasMxp       _{i + \stackramMiscRowOffset} \\
-		\locCallDataSize      & \define & \cnCds               _{i + \stackramContextRowOffset}                      \\
-		\locCallDataOffset    & \define & \cnCdo               _{i + \stackramContextRowOffset} \vspace{2mm}         \\
+		\locInst           & \define & \stackInst       _{i} \\
+		\locIsCallDataLoad & \define & \decFlag     {1} _{i} \\
+		\locIsMload        & \define & \decFlag     {2} _{i} \\
+		\locIsMstore       & \define & \decFlag     {3} _{i} \\
+		\locIsMstoreEight  & \define & \decFlag     {4} _{i} \\
+		\locIsStoreInst    & \define &
+		\left[ \begin{array}{cr}
+			+ & \locIsMstore      \\
+			+ & \locIsMstoreEight \\
+		\end{array} \right] \vspace{1mm} \\
+		\locIsMSomething      & \define &
+		\left[ \begin{array}{cr}
+			+ & \locIsMload       \\
+			+ & \locIsMstore      \\
+			+ & \locIsMstoreEight \\
+		\end{array} \right] \\
+	\end{array} \right.
+	\left\{ \begin{array}{lcl}
+		\locOffsetHi          & \define & \stackItemValHi  {1} _{i}                                          \\
+		\locOffsetLo          & \define & \stackItemValLo  {1} _{i}                                          \\
+		\locValueHi           & \define & \stackItemValHi  {4} _{i}                                          \\
+		\locValueLo           & \define & \stackItemValLo  {4} _{i}                                          \\
+		\locCallDataLoadIsOob & \define & \miscOobDataCol  {7} _{i + \stackramMiscRowOffset}                 \\
+		\locMxpGas            & \define & \miscMxpGasMxp       _{i + \stackramMiscRowOffset}                 \\
+		\locCallDataSize      & \define & \cnCds               _{i + \stackramContextRowOffset}              \\
+		\locCallDataOffset    & \define & \cnCdo               _{i + \stackramContextRowOffset} \vspace{2mm} \\
 		\multicolumn{3}{l}{\locMxpx  \define  \miscMxpMxpx     _{i + \stackramMiscRowOffset}}  \\
 	\end{array} \right.
 \]

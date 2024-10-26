@@ -3,6 +3,11 @@
 \define@cmdkey [MXP] {var} {anchorRow}            {}
 \define@cmdkey [MXP] {var} {relOffset}            {}
 \define@cmdkey [MXP] {var} {instruction}          {}
+\define@cmdkey [MXP] {var} {deploys}              {}
+\define@cmdkey [MXP] {var} {offsetHi}             {}
+\define@cmdkey [MXP] {var} {offsetLo}             {}
+\define@cmdkey [MXP] {var} {sizeHi}               {}
+\define@cmdkey [MXP] {var} {sizeLo}               {}
 \define@cmdkey [MXP] {var} {callDataOffsetHi}     {}
 \define@cmdkey [MXP] {var} {callDataOffsetLo}     {}
 \define@cmdkey [MXP] {var} {callDataSizeHi}       {}
@@ -17,6 +22,11 @@
 	anchorRow          = \missingParameter,
 	relOffset          = \missingParameter,
         instruction        = \missingParameter,
+        deploys            = \missingParameter,
+        offsetHi           = \missingParameter,
+        offsetLo           = \missingParameter,
+        sizeHi             = \missingParameter,
+        sizeLo             = \missingParameter,
         callDataOffsetHi   = \missingParameter,
         callDataOffsetLo   = \missingParameter,
         callDataSizeHi     = \missingParameter,
@@ -36,14 +46,46 @@
 
 % misc/MXP instructions
 \newcommand{\setMxpInstructionTypeOne}      [2]     {\setMxpInstructionTypeOneName   _{#1} \big[\;#2\;]}
-\newcommand{\setMxpInstructionTypeTwo}      [2]     {\setMxpInstructionTypeTwoName   _{#1} \big[\;#2\;]}
-\newcommand{\setMxpInstructionTypeThree}    [2]     {\setMxpInstructionTypeThreeName _{#1} \big[\;#2\;]}
-\newcommand{\setMxpInstructionTypeFour}     [2]     {\setMxpInstructionTypeFourName  _{#1} \big[\;#2\;]}
+\newcommand{\setMxpInstructionTypeTwo}      [1]     {
+    \setkeys[MXP]{var}{#1}
+    \setMxpInstructionTypeTwoName _{\cmdMXP@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}  & \cmdMXP@var@relOffset   \\
+        \utt{Instruction:}      & \cmdMXP@var@instruction \\
+        \utt{Offset high part:} & \cmdMXP@var@offsetHi    \\
+        \utt{Offset low  part:} & \cmdMXP@var@offsetLo    \\
+    \end{array} \right]
+}
+
+\newcommand{\setMxpInstructionTypeThree}    [1]     {
+    \setkeys[MXP]{var}{#1}
+    \setMxpInstructionTypeThreeName _{\cmdMXP@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}  & \cmdMXP@var@relOffset \\
+        \utt{Offset high part:} & \cmdMXP@var@offsetHi  \\
+        \utt{Offset low  part:} & \cmdMXP@var@offsetLo  \\
+    \end{array} \right]
+}
+
+\newcommand{\setMxpInstructionTypeFour}     [1]     {
+    \setkeys[MXP]{var}{#1}
+    \setMxpInstructionTypeFourName _{\cmdMXP@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}     & \cmdMXP@var@relOffset   \\
+        \utt{Instruction:}         & \cmdMXP@var@instruction \\
+        \utt{Deploys byte code:}   & \cmdMXP@var@deploys     \\
+        \utt{Offset high part:}    & \cmdMXP@var@offsetHi    \\
+        \utt{Offset low  part:}    & \cmdMXP@var@offsetLo    \\
+        \utt{Size high part:}      & \cmdMXP@var@sizeHi      \\
+        \utt{Size low  part:}      & \cmdMXP@var@sizeLo      \\
+    \end{array} \right]
+}
+
 \newcommand{\setMxpInstructionTypeFive}     [1]     {
     \setkeys[MXP]{var}{#1}
     \setMxpInstructionTypeFiveName _{\cmdMXP@var@anchorRow}
     \left[ \begin{array}{ll}
-        \utt{Rel. row offset:}                   & \cmdMXP@var@relOffset          \\
+        \utt{Rel. row offset:}              & \cmdMXP@var@relOffset          \\
         \utt{Instruction:}                  & \cmdMXP@var@instruction        \\
         \utt{Call data offset high part:}   & \cmdMXP@var@callDataOffsetHi   \\
         \utt{Call data offset low  part:}   & \cmdMXP@var@callDataOffsetLo   \\

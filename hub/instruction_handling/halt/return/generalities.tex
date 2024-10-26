@@ -283,15 +283,17 @@ Indeed, \textbf{the \mmuMod{} module expects small parameters}, see chapter~(\re
 	\item[\underline{Setting the \mxpMod{} data:}]
 		\If $\miscMxpFlag _{i + \locFirstMiscRowOffset} = 1$ \Then we impose
 		\[
-			\setMxpInstructionTypeFour {i}{\locFirstMiscRowOffset}
-			\left[ \begin{array}{ll}
-				\utt{Instruction:}       & \locInst     \\
-				\utt{Deploys byte code:} & \locDeploys  \\
-				\utt{Offset high part:}  & \locOffsetHi \\
-				\utt{Offset low  part:}  & \locOffsetLo \\
-				\utt{Size high part:}    & \locSizeHi   \\
-				\utt{Size low  part:}    & \locSizeLo   \\
-			\end{array} \right]
+			\setMxpInstructionTypeFour
+			{
+				anchorRow    = i                      ,
+				relOffset    = \locFirstMiscRowOffset ,
+				instruction  = \locInst               ,
+				deploys      = \locDeploys            ,
+				offsetHi     = \locOffsetHi           ,
+				offsetLo     = \locOffsetLo           ,
+				sizeHi       = \locSizeHi             ,
+				sizeLo       = \locSizeLo             ,
+			}
 		\]
 		\saNote{} Recall that by definition $\locInst = \inst{RETURN}$.
 
@@ -307,30 +309,6 @@ Indeed, \textbf{the \mmuMod{} module expects small parameters}, see chapter~(\re
 			\end{array} \right]
 		\]
 		\saNote{} Recall (again) that by construction $\locInst = \inst{RETURN}$.
-	% \item[\underline{Setting the \locTriggerMmu{} flag:}]
-	% 	we impose
-	% 	\[
-	% 		\locTriggerMmu =
-	% 		\left[ \begin{array}{lr}
-	% 			+ & \locTriggerMmuCodePrefixCheck       \\
-	% 			+ & \locTriggerMmuWriteReturnDataToRam  \\
-	% 		\end{array} \right]
-	% 	\]
-	% 	where we set
-	% 	\[
-	% 		\left\{\begin{array}{lcl}
-	% 			\locTriggerMmuCodePrefixCheck & = & 
-	% 			\left[ \begin{array}{lr}
-	% 				+ & \locIcpx                                  \\
-	% 				+ & \scenReturnNonemptyDeployment       _{i}  \\
-	% 			\end{array} \right] \\
-	% 			\locTriggerMmuWriteReturnDataToRam & = & \scenReturnFromMessageCallWillTouchRam_{i}  \\
-	% 		\end{array} \right.
-	% 	\]
-	% 	\saNote{} We need to trigger the \mmuMod{} in the following circumstances:
-	% 	(\emph{a}) an \icpxSH{} (is predicted to) take place
-	% 	(\emph{b}) the \zkEvm{} returns from a message call and requires modifying its caller context's \textsc{ram} 
-	% 	(\emph{c}) the \zkEvm{} returns from a deployment   and will (temporarily or permanently) deploy nonempty byte code, in which case we need to ensure that the leading byte of said (nonempty) byte code isn't \texttt{0xEF}. 
 	\item[\underline{Setting \mmuMod{} data --- first call:}]
 		we impose the following
 		\begin{enumerate}
@@ -346,7 +324,8 @@ Indeed, \textbf{the \mmuMod{} module expects small parameters}, see chapter~(\re
 				\]
 			\item \If $\locWriteSomeReturnData = 1$
 				\[
-					\setMmuInstructionParametersRamToRamSansPadding {
+					\setMmuInstructionParametersRamToRamSansPadding
+					{
 						anchorRow       = i                      ,
 						relOffset       = \locFirstMiscRowOffset ,
 						sourceId        = \cn     _{i}           ,
@@ -355,7 +334,7 @@ Indeed, \textbf{the \mmuMod{} module expects small parameters}, see chapter~(\re
 						size            = \locSizeLo             ,
 						referenceOffset = \locRao                ,
 						referenceSize   = \locRac                ,
-						}
+					}
 				\]
 		\end{enumerate}
 		\saNote{} Recall that the lookup serving the \mmuMod{} module its instructions provides the current context number \cn{} and caller context number \caller{} (so that there is no need to specify those in the above.)

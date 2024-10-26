@@ -120,15 +120,17 @@ We impose the following constraints:
 	\item[\underline{Miscellaneous-row $n^°(i + \locLogMiscRowOffset)$: \mxpMod{} data:}]
 		\If $\stackStaticx_{i} = 0$ \Then
 		\[
-			\setMxpInstructionTypeFour {i}{\locLogMiscRowOffset}
-			\left[ \begin{array}{ll}
-				\utt{Instruction:}       & \locInst     \\
-				\utt{Deploys byte code:} & \nothing     \\
-				\utt{Offset high part:}  & \locOffsetHi \\
-				\utt{Offset low  part:}  & \locOffsetLo \\
-				\utt{Size high part:}    & \locSizeHi   \\
-				\utt{Size low  part:}    & \locSizeLo   \\
-			\end{array} \right]
+			\setMxpInstructionTypeFour
+			{
+				anchorRow    = i                    ,
+				relOffset    = \locLogMiscRowOffset ,
+				instruction  = \locInst             ,
+				deploys      = \nothing             ,
+				offsetHi     = \locOffsetHi         ,
+				offsetLo     = \locOffsetLo         ,
+				sizeHi       = \locSizeHi           ,
+				sizeLo       = \locSizeLo           ,
+			}
 		\]
 		\saNote{} We deal with the memory expansion cost only if \staticxSH{} does not occur.
 	\item[\underline{Constraining \locTriggerMmu{}:}]
@@ -164,22 +166,5 @@ We impose the following constraints:
 				exoSum            = \exoWeightLog         ,
 				phase             = \nothing              ,
 				}
-			% \setMmuInstructionParametersRamToExoWithPadding  {i}{\locLogMiscRowOffset} 
-			% \left[ \begin{array}{ll}
-			% 	\utt{Source ID:}            & \cn_{i}               \\
-			% 	\utt{Target ID:}            & \logStamp_{i}         \\
-			% 	\utt{Auxiliary ID:}         & \nothing              \\
-			% 	% \utt{Source offset high:} & \col{src\_offset\_hi} \\
-			% 	\utt{Source offset low:}    & \locOffsetLo          \\
-			% 	% \utt{Target offset low:}  & \col{tgt\_offset\_lo} \\
-			% 	\utt{Size:}                 & \locSizeLo            \\
-			% 	% \utt{Reference offset:}   & \col{ref\_offset}     \\
-			% 	\utt{Reference size:}       & \locSizeLo            \\
-			% 	\utt{Success bit:}          & \nothing              \\
-			% 	% \utt{Limb one:}           & \col{limb\_1}         \\
-			% 	% \utt{Limb two:}           & \col{limb\_2}         \\
-			% 	\utt{Exo sum:}              & \exoWeightLog         \\
-			% 	\utt{Phase:}                & \nothing              \\
-			% \end{array} \right]
 		\]
 \end{description}

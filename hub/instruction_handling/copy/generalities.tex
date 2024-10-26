@@ -168,15 +168,17 @@ The constraints are as follows:
 			\item[\underline{Setting \mxpMod{} data:}]
 				\If $\miscMxpFlag _{i + \locCopyMiscRowOffset} = 1$ \Then we impose
 				\[
-					\setMxpInstructionTypeFour {i}{\locCopyMiscRowOffset}
-					\left[ \begin{array}{ll}
-						\utt{Instruction:}       & \locInst           \\
-						\utt{Deploys byte code:} & 0                  \\
-						\utt{Offset high part:}  & \locTargetOffsetHi \\
-						\utt{Offset low  part:}  & \locTargetOffsetLo \\
-						\utt{Size high part:}    & \locSizeHi         \\
-						\utt{Size low  part:}    & \locSizeLo         \\
-					\end{array} \right]
+					\setMxpInstructionTypeFour
+					{
+						anchorRow     = i                     ,
+						relOffset     = \locCopyMiscRowOffset ,
+						instruction   = \locInst              ,
+						deploys       = \varnothing           ,
+						offsetHi      = \locTargetOffsetHi    ,
+						offsetLo      = \locTargetOffsetLo    ,
+						sizeHi        = \locSizeHi            ,
+						sizeLo        = \locSizeLo            ,
+					}
 				\]
 			\item[\underline{Setting $\stackMxpx_{i}$:}]
 				we impose
@@ -192,7 +194,8 @@ The constraints are as follows:
 			\item[\underline{Setting \mmuMod{} data:}]
 				\If $\miscMmuFlag _{i + \locCopyMiscRowOffset} = 1$ \Then we impose
 				\[
-					\setMmuInstructionParametersAnyToRamWithPadding {
+					\setMmuInstructionParametersAnyToRamWithPadding
+					{
 						anchorRow       = i                     ,
 						relOffset       = \locCopyMiscRowOffset ,
 						sourceId        = \locSourceId          ,
@@ -205,37 +208,12 @@ The constraints are as follows:
 						referenceSize   = \locReferenceSize     ,
 						exoSum          = \locExoSum            ,
 					}
-					% \setMmuInstructionParametersAnyToRamWithPadding {i}{\locCopyMiscRowOffset}
-					% \left[ \begin{array}{llr}
-					% 	\utt{Source ID:}          & \locSourceId         & (\bigstar) \\
-					% 	\utt{Target ID:}          & \cn_{i}             \\
-					% 	% \utt{Auxiliary ID:}     & \col{aux\_id}       \\
-					% 	\utt{Source offset high:} & \locSourceOffsetHi  \\
-					% 	\utt{Source offset low:}  & \locSourceOffsetLo  \\
-					% 	\utt{Target offset low:}  & \locTargetOffsetLo  \\
-					% 	\utt{Size:}               & \locSizeLo          \\
-					% 	\utt{Reference offset:}   & \locReferenceOffset  & (\bigstar) \\
-					% 	\utt{Reference size:}     & \locReferenceSize    & (\bigstar) \\
-					% 	% \utt{Success bit:}      & \col{success\_bit}  \\
-					% 	% \utt{Limb one:}         & \col{limb\_1}       \\
-					% 	% \utt{Limb two:}         & \col{limb\_2}       \\
-					% 	\utt{Exo sum:}            & \locExoSum           & (\bigstar) \\
-					% 	% \utt{Phase:}            & \col{phase}         \\
-					% \end{array} \right]
 				\]
 				where the fields labeled with $(\bigstar)$ are (currently undefined) shorthands for which we now produce definitions
 				\begin{description}
 					\item[The \inst{CALLDATACOPY} case:] 
 						\If $\locIsCdc = 1$ \Then
 						we impose
-						% \[
-						% \left\{ \begin{array}{lcl}
-						% \locSourceId        & \define & \cnCallDataContextNumber _{i + \locCopyCurrentContextRow} \\
-						% \locReferenceOffset & \define & \cnCdo                   _{i + \locCopyCurrentContextRow} \\
-						% \locReferenceSize   & \define & \cnCds                   _{i + \locCopyCurrentContextRow} \\
-						% \locExoSum          & \define & 0                                                         \\
-						% \end{array} \right.
-						% \]
 						\[
 							\left\{ \begin{array}{lcl}
 								\locSourceId        & \define & \locCallDataContext \\
@@ -247,14 +225,6 @@ The constraints are as follows:
 					\item[The \inst{RETURNDATACOPY} case:] 
 						\If $\locIsRdc = 1$ \Then
 						we impose
-						% \[
-						% \left\{ \begin{array}{lcl}
-						% \locSourceId        & \define & \cnReturner _{i + \locCopyCurrentContextRow} \\
-						% \locReferenceOffset & \define & \cnRdo      _{i + \locCopyCurrentContextRow} \\
-						% \locReferenceSize   & \define & \cnRds      _{i + \locCopyCurrentContextRow} \\
-						% \locExoSum          & \define & 0                                            \\
-						% \end{array} \right.
-						% \]
 						\[
 							\left\{ \begin{array}{lcl}
 								\locSourceId        & \define & \locReturnDataContext \\
