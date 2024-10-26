@@ -4,7 +4,7 @@
 		\left\{ \begin{array}{lcl}
 			\peekStack                 _{i} & \!\!\! = \!\!\! & 1 \\
 			\stackDecHaltFlag          _{i} & \!\!\! = \!\!\! & 1 \\
-			\decFlag                {2}_{i} & \!\!\! = \!\!\! & 1 \\
+			\locHaltingIsRevert             & \!\!\! = \!\!\! & 1 \\
 			\stackSux _{i} + \stackSox _{i} & \!\!\! = \!\!\! & 0 \\
 		\end{array} \right.}
 \end{center}
@@ -49,9 +49,15 @@ The present section deals with handling \inst{REVERT} instructions.
 	\item[\underline{Setting the context rows:}]
 		we impose the following
 		\begin{enumerate}
-			\item \If $\xAhoy_{i} = 1$ \Then we impose
+			\item
+				\If $\xAhoy_{i} = 1$ \Then we impose
 				\[ \executionProvidesEmptyReturnData {i}{\locRevertCurrentContextRowOffset} \quad (\trash) \]
-			\item \If $\xAhoy_{i} = 0$ \Then we impose
+				\saNote{}
+				This formally follows from
+				section~(\ref{hub: generalities: context: exceptions lead to providing empty return data}),
+				whence the (\trash).
+			\item
+				\If $\xAhoy_{i} = 0$ \Then we impose
 				\begin{enumerate}
 					\item $\readContextData {i}{\locRevertCurrentContextRowOffset}{\locCurrentContext}$
 					\item \If $\locCurrentContextIsRoot = 1$ \Then $\readContextData {i}{\locRevertParentContextRowOffset}{\locCallerContext}$
@@ -62,15 +68,9 @@ The present section deals with handling \inst{REVERT} instructions.
 								relOffset          = \locRevertParentContextRowOffset ,
 								returnDataReceiver = \locCallerContext                ,
 								returnDataProvider = \locCurrentContext               ,
-								returnDataOffset   = \locOffsetLo                     ,
-								returnDataSize     = \locSizeLo                       ,
+								returnDataOffset   = \locTypeSafeReturnDataOffset     ,
+								returnDataSize     = \locTypeSafeReturnDataSize       ,
 							}
-							% \provideReturnData
-							% {i}{\locRevertParentContextRowOffset} 
-							% {\locCallerContext }         % Return data receiver
-							% {\locCurrentContext}         % Return data provider
-							% {\locOffsetLo      }         % Return data offset
-							% {\locSizeLo        }         % Return data size 
 						\]
 						In other words: execution provides return data to its caller context provided that it isn't the root context.
 				\end{enumerate}

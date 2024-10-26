@@ -9,35 +9,68 @@
 We introduce some shorthands that will be used within the instruction processing of \inst{RETURN}'s.
 \[
 	\left\{ \begin{array}{lcl}
-		\locInst                & \define & \stackInst                          _{i - 1}    \\
-		% \locMxpx                & \define & \stackMxpx                          _{i - 1}    \\
-		% \locOogx                & \define & \stackOogx                          _{i - 1}    \\
-		% \locMaxcsx              & \define & \stackMaxcsx                        _{i - 1}    \\
-		% \locIcpx                & \define & \stackIcpx                          _{i - 1}    \\
-		\locOffsetHi            & \define & \stackItemValHi{1}                  _{i - 1}    \\
-		\locOffsetLo            & \define & \stackItemValLo{1}                  _{i - 1}    \\
-		\locSizeHi              & \define & \stackItemValHi{2}                  _{i - 1}    \\
-		\locSizeLo              & \define & \stackItemValLo{2}                  _{i - 1}    \\
-		% \locTriggerHashInfo     & \define &                                     _{i}        \
+		\locInst     & \define & \stackInst          _{i - \locStackRowOffset} \\
+		% \locMxpx   & \define & \stackMxpx          _{i - \locStackRowOffset} \\
+		% \locOogx   & \define & \stackOogx          _{i - \locStackRowOffset} \\
+		% \locMaxcsx & \define & \stackMaxcsx        _{i - \locStackRowOffset} \\
+		% \locIcpx   & \define & \stackIcpx          _{i - \locStackRowOffset} \\
+		\locOffsetHi & \define & \stackItemValHi{1}  _{i - \locStackRowOffset} \\
+		\locOffsetLo & \define & \stackItemValLo{1}  _{i - \locStackRowOffset} \\
+		\locSizeHi   & \define & \stackItemValHi{2}  _{i - \locStackRowOffset} \\
+		\locSizeLo   & \define & \stackItemValLo{2}  _{i - \locStackRowOffset} \\
+		% \locTriggerHashInfo & \define &  \\
+		\multicolumn{3}{l}{\locHashInfoCodeHashHi ~ \define ~ \stackHashInfoValHi _{i - \locStackRowOffset}} \\
+		\multicolumn{3}{l}{\locHashInfoCodeHashLo ~ \define ~ \stackHashInfoValLo _{i - \locStackRowOffset}} \\
 	\end{array} \right.
 	\quad\text{and}\quad
 	\left\{ \begin{array}{lcl}
-		\multicolumn{3}{l}{\locHashInfoCodeHashHi ~ \define ~ \stackHashInfoValHi _{i - 1}}                           \\
-		\multicolumn{3}{l}{\locHashInfoCodeHashLo ~ \define ~ \stackHashInfoValLo _{i - 1}}                           \\
-		\multicolumn{3}{l}{\locDeploymentAddressHi ~ \define ~ \cnCodeAddress\high_{i + \locCurrentContextRowOffset}} \\
-		\multicolumn{3}{l}{\locDeploymentAddressLo ~ \define ~ \cnCodeAddress\low _{i + \locCurrentContextRowOffset}} \\
-		\locIsRoot        & \define & \cnIsRootContext                   _{i + \locCurrentContextRowOffset                }  \\
-		\locDeploys       & \define & \cnCodeDepStatus                   _{i + \locCurrentContextRowOffset                }  \\
-		\locRao           & \define & \cnRao                             _{i + \locCurrentContextRowOffset                }  \\
-		\locRac           & \define & \cnRac                             _{i + \locCurrentContextRowOffset                }  \\
-		\locMxpMtntop     & \define & \miscMxpTypeFourInstMayTriggerMmu  _{i + \locFirstMiscRowOffset                     }  \\
-		\locDeploymentCfi & \define & \accCfi                            _{i + \locNonemptyDeploymentFirstAccountRowOffset}  \\
+		\multicolumn{3}{l}{\locDeploymentAddressHi ~ \define ~ \cnCodeAddress\high _{i + \locCurrentContextRowOffset}} \\
+		\multicolumn{3}{l}{\locDeploymentAddressLo ~ \define ~ \cnCodeAddress\low  _{i + \locCurrentContextRowOffset}} \\
+		\locIsRoot                     & \define & \cnIsRootContext                   _{i + \locCurrentContextRowOffset}                  \\
+		\locDeploys                    & \define & \cnCodeDepStatus                   _{i + \locCurrentContextRowOffset}                  \\
+		\locRao                        & \define & \cnRao                             _{i + \locCurrentContextRowOffset}                  \\
+		\locRac                        & \define & \cnRac                             _{i + \locCurrentContextRowOffset}                  \\
+		\locMxpMxpGas                  & \define & \miscMxpGasMxp                     _{i + \locFirstMiscRowOffset}                       \\
+		\locMxpMxpx                    & \define & \miscMxpMxpx                       _{i + \locFirstMiscRowOffset}                       \\
+		\locMxpMtntop                  & \define & \miscMxpTypeFourInstMayTriggerMmu  _{i + \locFirstMiscRowOffset}                       \\
+		\locMxpSizeOneNonzeroAndNoMxpx & \define & \miscMxpSizeOneNonzeroNoMxpx       _{i + \locFirstMiscRowOffset}                       \\
+		\locDeploymentCfi              & \define & \accCfi                            _{i + \locNonemptyDeploymentFirstAccountRowOffset}  \\
 	\end{array} \right.
 \]
+We further define
+\[
+	\left\{ \begin{array}{lcl}
+		\locTypeSafeReturnDataOffset & \define & \locOffsetLo \cdot \locMxpSizeOneNonzeroAndNoMxpx \\
+		\locTypeSafeReturnDataSize   & \define & \locSizeLo                                        \\
+	\end{array} \right.
+\]
+\saNote{} \label{hub: instruction handling: halt: return: type safe offsets and sizes}
+We briefly explain what makes the above shorthand(s) ``type safe'' and preferrable to the ``unfiltered'' version(s).
+The main issue that these address is the possibility of \texttt{offset} to be enormous without triggering a \mxpxSH{} due to having zero \texttt{size}.
+The above prevents us from providing the caller/creator context with the following combo: zero \texttt{return data size} and humouguous \texttt{return data offset}.
+See section~(\ref{hub: misc: mxp: type4: purpose of checking nonzeroness of size 1}) for a (slightly) more detailed explanation.
+
+\saNote{}
+Given the specification of
+\[
+	\sizeOneNonzeroNoMxpx[]
+\]
+see chapter~(\ref{chap: mxp}),
+there is really no reason to filter \locSizeLo{} in the same way we filter \locOffsetLo{}.
+Thus the above just provides us with a ``meaningful alias'' to \locSizeLo{} to have similarly named shorthands for later.
+
 \saNote{}
 We remind the reader of the interpretation of the \miscMxpTypeFourInstMayTriggerMmu{} acronym:
 \[
 	\YNMO
+\]
+and that the \mxpMod{} module is responsible for computing this (binary) value, see chapter~(\ref{chap: mxp}).
+We further remind the reader that $\miscMxpTypeFourInstMayTriggerMmu \equiv 1$ if and only if no \mxpxSH{} has occurred and the size parameter of the \mxpMod{} call is nonzero.
+
+\saNote{}
+We similarly remind the reader of the interpretation of the \miscMxpSizeOneNonzeroNoMxpx{} acronym:
+\[
+	\sizeOneNonzeroNoMxpx[]
 \]
 and that the \mxpMod{} module is responsible for computing this (binary) value, see chapter~(\ref{chap: mxp}).
 We further remind the reader that $\miscMxpTypeFourInstMayTriggerMmu \equiv 1$ if and only if no \mxpxSH{} has occurred and the size parameter of the \mxpMod{} call is nonzero.

@@ -10,8 +10,8 @@ We begin by constraining the acceptable exception flags:
 					\xAhoy_{i}
 					= 
 					\left[ \begin{array}{cl}
-						+ & \stackMxpx _{i - 1} \\
-						+ & \stackOogx _{i - 1} \\
+						+ & \stackMxpx _{i - \locStackRowOffset} \\
+						+ & \stackOogx _{i - \locStackRowOffset} \\
 					\end{array} \right]
 				\]
 			\item \If $\scenReturnFromDeployment _{i} = 1$ \Then
@@ -19,10 +19,10 @@ We begin by constraining the acceptable exception flags:
 					\xAhoy_{i}
 					= 
 					\left[ \begin{array}{cl}
-						+ & \stackMxpx   _{i - 1} \\
-						+ & \stackOogx   _{i - 1} \\
-						+ & \stackMaxcsx _{i - 1} \\
-						+ & \stackIcpx   _{i - 1} \\
+						+ & \stackMxpx   _{i - \locStackRowOffset} \\
+						+ & \stackOogx   _{i - \locStackRowOffset} \\
+						+ & \stackMaxcsx _{i - \locStackRowOffset} \\
+						+ & \stackIcpx   _{i - \locStackRowOffset} \\
 					\end{array} \right]
 				\]
 		\end{enumerate}
@@ -49,19 +49,9 @@ As such:
 We impose the following:
 \begin{description}
 	\item[\underline{Setting the stack pattern:}]
-		we impose $\twoZeroSP_{i - 1}$;
+		we impose $\twoZeroSP_{i - \locStackRowOffset}$;
 	\item[\underline{Setting \nonStackRows{}:}]
 		we impose that
-		% \begin{enumerate}
-		% 	\item \If $\scenReturnException                                _{i} = 1$ \Then $\nonStackRows_{i} = 4$
-		% 	\item \If $\scenReturnFromMessageCallWillTouchRam              _{i} = 1$ \Then $\nonStackRows_{i} = 4$
-		% 	\item \If $\scenReturnFromMessageCallWontTouchRam              _{i} = 1$ \Then $\nonStackRows_{i} = 4$
-		% 	\item \If $\scenReturnFromDeploymentEmptyByteCodeWillRevert    _{i} = 1$ \Then $\nonStackRows_{i} = 6$
-		% 	\item \If $\scenReturnFromDeploymentEmptyByteCodeWontRevert    _{i} = 1$ \Then $\nonStackRows_{i} = 5$
-		% 	\item \If $\scenReturnFromDeploymentNonemptyByteCodeWillRevert _{i} = 1$ \Then $\nonStackRows_{i} = 7$
-		% 	\item \If $\scenReturnFromDeploymentNonemptyByteCodeWontRevert _{i} = 1$ \Then $\nonStackRows_{i} = 6$
-		% \end{enumerate}
-		% \saNote{} We may impose the above with a single constraint as follows:
 		\[
 			\nonStackRows_{i}
 			=
@@ -133,7 +123,7 @@ We impose the following:
 					+ & \peekContext  _{i + \locCurrentContextRowOffset}                            \\
 					+ & \peekMisc     _{i + \locFirstMiscRowOffset}                                 \\
 					+ & \peekMisc     _{i + \locSecondMiscRowOffsetDeployAndHash}                   \\
-					+ & \peekAccount  _{i + \locNonemptyDeploymentFirstAccountRowOffset }           \\
+					+ & \peekAccount  _{i + \locNonemptyDeploymentFirstAccountRowOffset}            \\
 					+ & \peekAccount  _{i + \locNonemptyDeploymentSecondAccountRowOffset}           \\
 					+ & \peekContext  _{i + \locCallerContextRowOffsetNonemptyDeploymentWillRevert} \\
 				\end{array} \right]
@@ -158,7 +148,7 @@ We impose the following:
 	\item[\underline{Refining the \inst{RETURN} scenario:}]
 		we impose that:
 		\begin{enumerate}
-		        \item $\scenReturnException_{i} = \xAhoy_{i - 1}$
+		        \item $\scenReturnException_{i} = \xAhoy_{i - \locStackRowOffset}$
 			\item \If $\scenReturnRaisesNoException _{i} = 1$ \Then $\scenReturnFromDeployment = \locDeploys$
 			\item \If $\scenReturnFromDeployment    _{i} = 1$ \Then
 				\[
@@ -224,14 +214,14 @@ We impose the following:
 	\item[\underline{Setting \locTriggerOob:}]
 		we impose that
 		\[
-			\locTriggerOob \define \stackMaxcsx _{i - 1} + \scenReturnNonemptyDeployment _{i}
+			\locTriggerOob \define \stackMaxcsx _{i - \locStackRowOffset} + \scenReturnNonemptyDeployment _{i}
 		\]
 	\item[\underline{Setting \locTriggerMmu:}]
 		we impose that
 		\[
 			\left\{ \begin{array}{lcl}
 				\locTriggerMmu          & \define & \locCheckFirstByte + \locWriteSomeReturnData             \\
-				\locCheckFirstByte      & \define & \stackIcpx _{i - 1} + \scenReturnNonemptyDeployment _{i} \\
+				\locCheckFirstByte      & \define & \stackIcpx _{i - \locStackRowOffset} + \scenReturnNonemptyDeployment _{i} \\
 				\locWriteSomeReturnData & \define & \scenReturnFromMessageCallWillTouchRam _{i}              \\
 			\end{array} \right.
 		\]
@@ -239,8 +229,8 @@ We impose the following:
 		we impose
 		\[
 			\left\{ \begin{array}{lcl}
-				\stackHashInfoFlag_{i - 1} & = & \locTriggerHashInfo                  \\
-				% \stackHashInfoSize_{i - 1} & = & \locTriggerHashInfo \cdot \locSizeLo \\
+				\stackHashInfoFlag_{i - \locStackRowOffset} & = & \locTriggerHashInfo                  \\
+				% \stackHashInfoSize_{i - \locStackRowOffset} & = & \locTriggerHashInfo \cdot \locSizeLo \\
 			\end{array} \right.
 		\]
 		where we use the shorthand
@@ -257,10 +247,10 @@ For concreteness we include a table representing the desired behavior of these f
 		\hspace*{-2.9cm}
 		\begin{array}{|l|lc||c|c|c|c|c|c|} \hline
 			\textsc{Scenario}                                                            & \textsc{Exception} &                                   & \locTriggerMxp & \locTriggerOob  & \locTriggerMmu & \locTriggerHashInfo \\ \hline \hline
-			\scenReturnException                                                         & \mxpxSH            & (\stackMxpx    _{i - 1} \equiv 1) & \oneCell       & \gZero          & \gZero         & \gZero              \\ \hline
-			\scenReturnException                                                         & \oogxSH            & (\stackOogx    _{i - 1} \equiv 1) & \oneCell       & \gZero          & \gZero         & \gZero              \\ \hline
-			\scenReturnException                                                         & \maxcsxSH          & (\stackMaxcsx  _{i - 1} \equiv 1) & \oneCell       & \oneCell        & \gZero         & \gZero              \\ \hline
-			\scenReturnException                                                         & \icpxSH            & (\stackIcpx    _{i - 1} \equiv 1) & \oneCell       & \gZero          & \oneCell       & \gZero              \\ \hline \hline
+			\scenReturnException                                                         & \mxpxSH            & (\stackMxpx    _{i - \locStackRowOffset} \equiv 1) & \oneCell       & \gZero          & \gZero         & \gZero              \\ \hline
+			\scenReturnException                                                         & \oogxSH            & (\stackOogx    _{i - \locStackRowOffset} \equiv 1) & \oneCell       & \gZero          & \gZero         & \gZero              \\ \hline
+			\scenReturnException                                                         & \maxcsxSH          & (\stackMaxcsx  _{i - \locStackRowOffset} \equiv 1) & \oneCell       & \oneCell        & \gZero         & \gZero              \\ \hline
+			\scenReturnException                                                         & \icpxSH            & (\stackIcpx    _{i - \locStackRowOffset} \equiv 1) & \oneCell       & \gZero          & \oneCell       & \gZero              \\ \hline \hline
 			\multicolumn{3}{|l||}{\scenReturnFromMessageCallWillTouchRam               } & \oneCell           & \gZero                            & \oneCell       & \gZero         \\ \hline
 			\multicolumn{3}{|l||}{\scenReturnFromMessageCallWontTouchRam               } & \oneCell           & \gZero                            & \gZero         & \gZero         \\ \hline
 			\multicolumn{3}{|l||}{\scenReturnFromDeploymentEmptyByteCodeWillRevert     } & \oneCell           & \gZero                            & \gZero         & \gZero         \\ \hline
@@ -278,7 +268,7 @@ We emphasize that there are \textbf{two distinct reasons for triggering the \mmu
 The first reasibt is to check for the presence or absence of the invalid code prefix exception.
 This is what is done in the following scenarios:
 \begin{enumerate}
-	\item when $\stackIcpx _{i - 1} \equiv 1$ (a subcase of $\scenReturnException \equiv 1$) we trigger a \textsc{ram} instruction \textbf{expecting to detect} an \icpxSH{};
+	\item when $\stackIcpx _{i - \locStackRowOffset} \equiv 1$ (a subcase of $\scenReturnException \equiv 1$) we trigger a \textsc{ram} instruction \textbf{expecting to detect} an \icpxSH{};
 	\item when $\scenReturnNonemptyDeployment _{i} \equiv 1$ we trigger a \textsc{ram} instruction \textbf{expecting not to detect} an \icpxSH{}.
 \end{enumerate}
 The other use case is for writing to the caller context's \textsc{ram}.
@@ -347,19 +337,12 @@ Indeed, \textbf{the \mmuMod{} module expects small parameters}, see chapter~(\re
 			\item \If $\locCheckFirstByte = 1$
 				\[
 					\setMmuInstructionParametersInvalidCodePrefix {
-						anchorRow      = i                      ,
-						relOffset      = \locFirstMiscRowOffset ,
-						sourceId       = \cn _{i}               ,
-						sourceOffsetLo = \locOffsetLo           ,
-						successBit     = \stackIcpx _{i - 1}    ,
+						anchorRow      = i                                    ,
+						relOffset      = \locFirstMiscRowOffset               ,
+						sourceId       = \cn _{i}                             ,
+						sourceOffsetLo = \locOffsetLo                         ,
+						successBit     = \stackIcpx _{i - \locStackRowOffset} ,
 					}
-					% \setMmuInstructionParametersInvalidCodePrefix
-					% {i}{\locFirstMiscRowOffset}
-					% \left[ \begin{array}{ll}
-					% 	\utt{Source ID:}         & \cn  _{i}           \\
-					% 	\utt{Source offset low:} & \locSizeLo          \\
-					% 	\utt{Success bit:}       & \stackIcpx _{i - 1} \\
-					% \end{array} \right]
 				\]
 			\item \If $\locWriteSomeReturnData = 1$
 				\[
@@ -373,39 +356,29 @@ Indeed, \textbf{the \mmuMod{} module expects small parameters}, see chapter~(\re
 						referenceOffset = \locRao                ,
 						referenceSize   = \locRac                ,
 						}
-					% \setMmuInstructionParametersRamToRamSansPadding
-					% {i}{\locFirstMiscRowOffset}
-					% \left[ \begin{array}{ll}
-					% 	\utt{Source ID:}            & \cn     _{i}          \\
-					% 	\utt{Target ID:}            & \caller _{i}          \\
-					% 	\utt{Source offset low:}    & \locOffsetLo          \\
-					% 	\utt{Size:}                 & \locSizeLo            \\
-					% 	\utt{Reference offset:}     & \locRao               \\
-					% 	\utt{Reference size:}       & \locRac               \\
-					% \end{array} \right]
 				\]
 		\end{enumerate}
 		\saNote{} Recall that the lookup serving the \mmuMod{} module its instructions provides the current context number \cn{} and caller context number \caller{} (so that there is no need to specify those in the above.)
 	\item[\underline{Justifying the \stackMxpx{}:}]
 		we unconditionally impose that
 		\[
-			\stackMxpx _{i - 1} = \miscMxpMxpx _{i + \locFirstMiscRowOffset}
+			\stackMxpx _{i - \locStackRowOffset} = \locMxpMxpx
 		\]
 	\item[\underline{Justifying the \stackIcpx{}:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locCheckFirstByte = 0$ \Then we impose $\stackIcpx _{i - 1} = 0$
+			\item \If $\locCheckFirstByte = 0$ \Then we impose $\stackIcpx _{i - \locStackRowOffset} = 0$
 			\item \If $\locCheckFirstByte = 1$ \Then we impose that
 				\[
-					\stackIcpx _{i - 1} = \miscMmuSuccessBit _{i + \locFirstMiscRowOffset} \quad (\trash)
+					\stackIcpx _{i - \locStackRowOffset} = \miscMmuSuccessBit _{i + \locFirstMiscRowOffset} \quad (\trash)
 				\]
 		\end{enumerate}
 		\saNote{} We already (implicitly) constrained \stackIcpx{} when we set the \mmuMod{} instruction checking the first byte of the byte code to deploy.
 	\item[\underline{Justifying the \stackMaxcsx{}:}]
 		and we impose
 		\begin{enumerate}
-			\item \If $\miscOobFlag _{i + \locFirstMiscRowOffset} = 0$ \Then $\stackMaxcsx _{i - 1} = 0$
-			\item \If $\miscOobFlag _{i + \locFirstMiscRowOffset} = 1$ \Then $\stackMaxcsx _{i - 1} = \locOobMaxcsx$
+			\item \If $\miscOobFlag _{i + \locFirstMiscRowOffset} = 0$ \Then $\stackMaxcsx _{i - \locStackRowOffset} = 0$
+			\item \If $\miscOobFlag _{i + \locFirstMiscRowOffset} = 1$ \Then $\stackMaxcsx _{i - \locStackRowOffset} = \locOobMaxcsx$
 		\end{enumerate}
 		where we define the following shorthand
 		\[
@@ -417,11 +390,11 @@ Indeed, \textbf{the \mmuMod{} module expects small parameters}, see chapter~(\re
 		we impose that
 		\begin{enumerate}
 			\item \If $\locGasCostRequired = 0$ \Then $\gasCost_{i} = 0$
-			\item \If $\locGasCostRequired = 1$ \Then $\gasCost_{i} = \stackStaticGas _{i - 1} + \miscMxpGasMxp _{i + \locFirstMiscRowOffset}$
+			\item \If $\locGasCostRequired = 1$ \Then $\gasCost_{i} = \stackStaticGas _{i - \locStackRowOffset} + \locMxpMxpGas$
 		\end{enumerate}
 		where we made use of the following shorthand
 		\[
-			\locGasCostRequired \define \stackOogx _{i - 1} + \scenReturnRaisesNoException _{i}
+			\locGasCostRequired \define \stackOogx _{i - \locStackRowOffset} + \scenReturnRaisesNoException _{i}
 		\]
-		\saNote{} By construction $\locGasCostRequired \equiv \stackOogx _{i - 1} + \scenReturnRaisesNoException _{i}$ is \textbf{binary}.
+		\saNote{} By construction $\locGasCostRequired \equiv \stackOogx _{i - \locStackRowOffset} + \scenReturnRaisesNoException _{i}$ is \textbf{binary}.
 \end{description}

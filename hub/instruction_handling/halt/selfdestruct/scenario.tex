@@ -1,21 +1,43 @@
-\begin{center}
-	\boxed{%
-		\text{The stack constraints presented below assume }
-		\left\{ \begin{array}{lcl}
-			\peekStack               _{i} & \!\!\! = \!\!\! & 1 \\
-			\stackDecHaltFlag        _{i} & \!\!\! = \!\!\! & 1 \\
-			\decFlag             {4} _{i} & \!\!\! = \!\!\! & 1 \\
-			\stackSux_{i} + \stackSox_{i} & \!\!\! = \!\!\! & 0 \\
-		\end{array} \right.}
-\end{center}
-We set the scenario row:
+We set the scenario row and conversely impose that such scenarios may only be triggered
+by the presence of a concrete \inst{SELFDESTRUCT} instruction.
 \begin{description}
-	\item[\underline{Setting the \inst{SELFDESTRUCT} scenario:}]
-		we impose
+	\item[\underline{Imposing a \inst{SELFDESTRUCT} scenario:}]
+		we ask that
 		\[
+			\If
 			\left\{ \begin{array}{lcl}
-				\peekScenario              _{i + 1} & = & 1          \\
-				\scenSelfdestructSum       _{i + 1} & = & 1          \\
+				\peekStack                _{i} & \!\!\! = \!\!\! & 1 \\
+				\stackDecHaltFlag         _{i} & \!\!\! = \!\!\! & 1 \\
+				\locHaltingIsSelfdestruct      & \!\!\! = \!\!\! & 1 \\
+				\stackSux_{i} + \stackSox _{i} & \!\!\! = \!\!\! & 0 \\
+			\end{array} \right.
+			\qquad
+			\Then
+			\left\{ \begin{array}{lcl}
+				\peekScenario        _{i + 1} & = & 1 \\
+				\scenSelfdestructSum _{i + 1} & = & 1 \\
 			\end{array} \right.
 		\]
+	\item[\underline{\dots{} and imposing the converse:}]
+		conversely we may want to impose
+		\[
+			\underbrace{\If 
+			\left\{ \begin{array}{lcl}
+				\peekScenario         _{i} & = & 1 \\
+				\scenSelfdestructSum  _{i} & = & 1 \\
+			\end{array} \right.
+			\qquad
+			\Then
+			\left\{ \begin{array}{lcl}
+				\peekStack                     _{i - 1} & \!\!\! = \!\!\! & 1 \\
+				\stackDecHaltFlag              _{i - 1} & \!\!\! = \!\!\! & 1 \\
+				\locHaltingWasSelfdestruct              & \!\!\! = \!\!\! & 1 \\
+				\stackSux _{i - 1} + \stackSox _{i - 1} & \!\!\! = \!\!\! & 0 \\
+			\end{array} \right.}_{\displaystyle (\sanityCheck)}
+		\]
 \end{description}
+\saNote{}
+The backpropagating constraint is more of a sanity check than anything else
+
+\saNote{}
+Similar remarks apply as in section~(\ref{hub: instruction handling: halt: return: scenario row insertion}).

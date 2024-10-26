@@ -13,19 +13,6 @@
 			returnAtCapacityHi = \col{r@c\_hi},
 			returnAtCapacityLo = \col{r@c\_lo},
 		}
-		% \setMxpInstructionTypeFive {i}{\relof}
-		% \left[ \begin{array}{lcl}
-		% 	\utt{Instruction:}                  & \col{instruction} \\
-		% 	\utt{Call data offset high part:}   & \col{cdo\_hi}     \\
-		% 	\utt{Call data offset low  part:}   & \col{cdo\_lo}     \\
-		% 	\utt{Call data size high part:}     & \col{cds\_hi}     \\
-		% 	\utt{Call data size low  part:}     & \col{cds\_lo}     \\
-		% 	\utt{Return at offset high part:}   & \col{rao\_hi}     \\
-		% 	\utt{Return at offset low  part:}   & \col{rao\_lo}     \\
-		% 	\utt{Return at capacity high part:} & \col{rac\_hi}     \\
-		% 	\utt{Return at capacity low  part:} & \col{rac\_lo}     \\
-		% 	% \utt{:} & \\
-		% \end{array} \right]
 		\define
 		\vspace{2mm} \\
 		\qquad
@@ -47,7 +34,20 @@
 			\miscMxpMxpx                         _{i + \relof} & = & \prediction       \\
 			\miscMxpWords                        _{i + \relof} & = & \prediction       \\
 			\miscMxpGasMxp                       _{i + \relof} & = & \prediction       \\
+			\miscMxpSizeOneNonzeroNoMxpx         _{i + \relof} & = & \prediction       \\
+			\miscMxpSizeTwoNonzeroNoMxpx         _{i + \relof} & = & \prediction       \\
 		\end{array} \right.
 	\end{array}
 \]
-
+\saNote{} \label{hub: misc: mxp: type5: purpose of checking nonzeroness of size 1 and size 2}
+Both
+\miscMxpSizeOneNonzeroNoMxpx{} and
+\miscMxpSizeTwoNonzeroNoMxpx{} predictions
+are meaningful in the context of \inst{CALL}-type instructions.
+They will impact, respectively:
+\begin{itemize}
+	\item what the child   context records as its ``\texttt{call data offset}'';
+	\item what the current context records as its ``\texttt{return at offset}.''
+\end{itemize}
+These predictions are useful in much the same way as with (\ref{hub: misc: mxp: type4: purpose of checking nonzeroness of size 1}).
+They will help prevent recording gigantic (and meaningless) offsets of call-data segments / return-at segments when either segment is \emph{de facto} empty.

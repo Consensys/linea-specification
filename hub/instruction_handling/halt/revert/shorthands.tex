@@ -9,11 +9,23 @@ We introduce some shorthands that will be used within the instruction processing
 	\end{array} \right.
 	\text{ and }
 	\left\{ \begin{array}{lcl}
-		\locCurrentContext       & \define & \cn     _{i}                                              \\
-		\locCallerContext        & \define & \caller _{i}                                              \\
-		\locMxpGas               & \define & \miscMxpGasMxp   _{i + \locRevertMiscRowOffset}           \\
-		\locRao                  & \define & \cnRao           _{i + \locRevertCurrentContextRowOffset} \\
-		\locRac                  & \define & \cnRac           _{i + \locRevertCurrentContextRowOffset} \\
-		\locCurrentContextIsRoot & \define & \cnIsRootContext _{i + \locRevertCurrentContextRowOffset} \\
+		\locCurrentContext             & \define & \cn     _{i}                                                 \\
+		\locCallerContext              & \define & \caller _{i}                                                 \\
+		\locMxpGas                     & \define & \miscMxpGasMxp                _{i + \locRevertMiscRowOffset} \\
+		\locMxpSizeOneNonzeroAndNoMxpx & \define & \miscMxpSizeOneNonzeroNoMxpx  _{i + \locFirstMiscRowOffset}  \\
+		\locRao                        & \define & \cnRao           _{i + \locRevertCurrentContextRowOffset}    \\
+		\locRac                        & \define & \cnRac           _{i + \locRevertCurrentContextRowOffset}    \\
+		\locCurrentContextIsRoot       & \define & \cnIsRootContext _{i + \locRevertCurrentContextRowOffset}    \\
 	\end{array} \right.
 \]
+We further define
+\[
+	\left\{ \begin{array}{lcl}
+		\locTypeSafeReturnDataOffset & \define & \locOffsetLo \cdot \locMxpSizeOneNonzeroAndNoMxpx \\
+		\locTypeSafeReturnDataSize   & \define & \locSizeLo                                        \\
+	\end{array} \right.
+\]
+\saNote{}
+We remind the reader that we have previously encountered the exact same shorthands,
+see section~(\ref{hub: instruction handling: halt: return: type safe offsets and sizes})
+for the underlying explanation.
