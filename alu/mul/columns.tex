@@ -1,27 +1,21 @@
 \begin{enumerate}
 	\item $\mulSTAMP$: multiplier module time stamp; abbreviated to $\mulStamp$;
 	\item $\CT$: counter column; either hovers around $0$ or counts monotonically from $0$ to $\mmediumMO$ then resets to $0$; abbreviated to $\ct$;
-	\item $\OLI$: binary column; equals $1$ \emph{iff} $\iInst = \inst{EXP}$ and the exponent is zero; abbreviated to $\oli$; 
-	\item $\TINYBASE$: binary column; equals one \emph{iff} $\iArgOne \in \{0, 1\}$; abbreviated to $\tinyBase$; 
-	\item $\TINYEXPONENT$: binary column; equals one \emph{iff} $\iArgTwo \in \{0, 1\}$; abbreviated to $\tinyExponent$; 
+	\item $\OLI$: binary column; equals $1$ \emph{iff} $\INST = \inst{EXP}$ and the exponent is zero; abbreviated to $\oli$; 
+	\item $\TINYBASE$: binary column; equals one \emph{iff} $\argOne \in \{0, 1\}$; abbreviated to $\tinyBase$; 
+	\item $\TINYEXPONENT$: binary column; equals one \emph{iff} $\argTwo \in \{0, 1\}$; abbreviated to $\tinyExponent$; 
 	\item $\RESVANISHES$: binary column; equals one \emph{iff} the result of a nontrivial \inst{EXP} instruction is zero; abbreviated to $\resVanishes$
 \end{enumerate}
 \noindent We define a \textbf{counter-cycle} to be $\mmedium$ consecutive rows where $\ct$ goes from $0$ to $\mmediumMO$. The $\ct$ column either hovers around $0$ or performs counter-cycles. It will engage in a counter-cycle \emph{iff} $\oli = 0$ and $\mulStamp \neq 0$. We set $\oli = 1$ whenever the inputs of the instruction are such (section~\ref{subsec (alu/exp): tiny base, tiny exponent, oli and result vanishes binary columns}) that the result is clear without any computation (section~\ref{alu: mul: trivial regime}.)
-% and one could also have a \col{FAST} flag which equals $1$ \emph{iff} $\iInst = \inst{EXP}$, the base $\iArgOne$ is even and the exponent $\iArgTwo$ is $\geq 256$. We presently won't implement these optimizations.
+% and one could also have a \col{FAST} flag which equals $1$ \emph{iff} $\INST = \inst{EXP}$, the base $\argOne$ is even and the exponent $\argTwo$ is $\geq 256$. We presently won't implement these optimizations.
 \begin{enumerate}[resume]
-	\item $\iInst$: imported instruction column;
-	\item $\iArgOneHi$, $\iArgOneLo$:
-	imported high and low parts of an instruction's first argument;
-	\item $\iArgTwoHi$, $\iArgTwoLo$:
-	imported high and low parts of an instruction's second argument;
-	\item $\iResHi$, $\iResLo$:
-	imported high and low parts of an instruction's output;
-\end{enumerate}
-Given the stack pattern associated with $\inst{MUL}$ and $\inst{EXP}$ (which is $\stdSP$) we will impose that
-$\iArgOneHi$, $\iArgOneLo$ be imports of $\sValHi{1}$ and $\sValLo{1}$,
-$\iArgTwoHi$, $\iArgTwoLo$ be imports of $\sValHi{3}$ and $\sValLo{3}$ and
-$\iResHi$, $\iResLo$ be imports of $\sValHi{4}$ and $\sValLo{4}$ respectively.
-\begin{enumerate}[resume]
+	\item $\INST$: instruction column;
+	\item $\argOneHi$, $\argOneLo$:
+	high and low parts of an instruction's first argument;
+	\item $\argTwoHi$, $\argTwoLo$:
+	high and low parts of an instruction's second argument;
+	\item $\resHi$, $\resLo$:
+	high and low parts of an instruction's output;
 	\item $\bits$: binary column containing bits whose interpretation pertains to overflows;
 	\item $\byteCol{A\_k}$, for $k=0,1,2,3$: byte columns;
 	\item $\byteCol{B\_k}$, for $k=0,1,2,3$: byte columns;
@@ -43,7 +37,7 @@ The following columns pertain to the arithmetization of the \inst{EXP} instructi
 We provide more details for the above.
 Exponentiation happens in one or two phases depending on whether the high part of the exponent is zero or nonzero.
 %
-If the high part of the exponent is \emph{zero} then $\EXPBITSRC$ starts off at $1$ (and remains $=1$ throughout.) In this scenario exponentiation immediately starts using (up to $\oneTwoEight$) bits from the low part of the exponent i.e. ``$\EXPBIT\in$ bits of $\iArgTwoLo$'s bit decomposition.'' The process stops as soon as either the low part of the exponent is reconstructed in $\EXPBITACC$ or an intermediate value of the ``square and multiply'' process results in zero.
+If the high part of the exponent is \emph{zero} then $\EXPBITSRC$ starts off at $1$ (and remains $=1$ throughout.) In this scenario exponentiation immediately starts using (up to $\oneTwoEight$) bits from the low part of the exponent i.e. ``$\EXPBIT\in$ bits of $\argTwoLo$'s bit decomposition.'' The process stops as soon as either the low part of the exponent is reconstructed in $\EXPBITACC$ or an intermediate value of the ``square and multiply'' process results in zero.
 %
 If the high part of the exponent is \emph{nonzero} then $\EXPBITSRC$ starts off at $0$ and at some point switches to $1$/. Exponentiation first uses (up to $\oneTwoEight$) bits from the high part of the expnonent and then (precisely $\oneTwoEight$) bits from the low part of the exponent.
 The $\EXPBITSRC$ column indicates which bits are currently in use in an \inst{EXP} instruction. 

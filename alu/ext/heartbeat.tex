@@ -3,33 +3,29 @@ The heartbeat of the modular arithmetic module is simple and familiar. There is 
 	\item $\extStamp_{0} = 0$;
 	\item $\extStamp_{i + 1} \in \{ \extStamp_{i}, 1 + \extStamp_{i} \}$;
 	\item \If $\extStamp_{i} = 0$ \Then
-	\[
-	\left\{
-	\begin{array}{lcl}
-		\iInst_{i} & \!\!\! = \!\!\! & 0 \\
-		\ct_{i} & \!\!\! = \!\!\! & 0 \\
-		\oli_{i} & \!\!\! = \!\!\! & 0
-	\end{array}
-	\right.
-	\]
+		\[
+			\left\{ \begin{array}{lcl}
+				\INST_{i} & \!\!\! = \!\!\! & 0 \\
+				\ct_{i}   & \!\!\! = \!\!\! & 0 \\
+				\oli_{i}  & \!\!\! = \!\!\! & 0 \\
+			\end{array} \right.
+		\]
 	\item \If $\extStamp_{i} \neq \extStamp_{i - 1}$ \Then $\ct_{i} = 0$;
 	\item \If $\extStamp_{i} \neq 0$ \Then
-	\begin{enumerate}
-		\item \If $\oli_{i} = 1$ \Then $\extStamp_{i + 1} = 1 + \extStamp_{i}$
-		\item \If $\oli_{i} = 0$ \Then 
 		\begin{enumerate}
-			\item \If $\ct_{i} \neq \mmediumMO$ \Then
-			\[
-			\left\{
-			\begin{array}{lcl}
-				\oli_{i + 1} & \!\!\! = \!\!\! & 0 \\
-				\ct_{i + 1} & \!\!\! = \!\!\! & 1 + \ct_{i} \\
-			\end{array}
-			\right.
-			\]
-			\item \If $\ct_{i} =    \mmediumMO$ \Then $\extStamp_{i + 1} = 1 + \extStamp_{i}$;
+			\item \If $\oli_{i} = 1$ \Then $\extStamp_{i + 1} = 1 + \extStamp_{i}$
+			\item \If $\oli_{i} = 0$ \Then 
+				\begin{enumerate}
+					\item \If $\ct_{i} \neq \mmediumMO$ \Then
+						\[
+							\left\{ \begin{array}{lcl}
+								\oli_{i + 1} & \!\!\! = \!\!\! & 0           \\
+								\ct_{i + 1}  & \!\!\! = \!\!\! & 1 + \ct_{i} \\
+							\end{array} \right.
+						\]
+					\item \If $\ct_{i} =    \mmediumMO$ \Then $\extStamp_{i + 1} = 1 + \extStamp_{i}$;
+				\end{enumerate}
 		\end{enumerate}
-	\end{enumerate}
-	\item \If $\extStamp_{i} \neq 0$ \Then $\iInst_{i} \in \{\inst{MULMOD}, \inst{MULMOD}\}$\footnote{i.e. $(\iInst_{i} - \inst{ADDMOD}) \cdot (\iInst_{i} - \inst{MULMOD}) = 0$};
+	\item \If $\extStamp_{i} \neq 0$ \Then $\INST_{i} \in \{\inst{MULMOD}, \inst{MULMOD}\}$\footnote{i.e. $(\INST_{i} - \inst{ADDMOD}) \cdot (\INST_{i} - \inst{MULMOD}) = 0$};
 	\item \If \big($\extStamp_{N} \neq 0$ \et $\oli_{N} = 0$\big) \Then $\ct_{N} = \mmediumMO$;
 \end{enumerate}

@@ -3,37 +3,31 @@ We constrain the $\OLI{}$ column. For an \inst{ADDMOD} or \inst{MULMOD} instruct
 \framebox{All constraints in this section are written under the assumption that $\extStamp_{i} \neq 0$.}
 \end{center}
 \begin{enumerate}
-	\item \If $\iInst_{i} = \inst{ADDMOD}$ \Then $\bit{1}_{i} = 0$\footnote{In the implementation one may impose \If $\iInst_{i} \neq \inst{MULMOD}$ \Then $\bit{1}_{i} = 0$ instead.}
-	\item \If $\iArgOneHi_{i} \neq 0$ \Then $\bit{1}_{i} = 0$
-	\item \If \Big($\iArgOneHi_{i} = 0$ \et $\iInst_{i} = \inst{MULMOD}$\Big) \Then
+	\item \If $\INST_{i} = \inst{ADDMOD}$ \Then $\bit{1}_{i} = 0$\footnote{In the implementation one may impose \If $\INST_{i} \neq \inst{MULMOD}$ \Then $\bit{1}_{i} = 0$ instead.}
+	\item \If $\argOneHi_{i} \neq 0$ \Then $\bit{1}_{i} = 0$
+	\item \If \Big($\argOneHi_{i} = 0$ \et $\INST_{i} = \inst{MULMOD}$\Big) \Then
 	\begin{enumerate}
-%		\item \If $\iArgOneLo_{i} \cdot (1 - \iArgOneLo_{i}) \neq 0$ \Then $\bit{1}_{i} = 0$
-%		\item \If $\iArgOneLo_{i} \cdot (1 - \iArgOneLo_{i}) = 0$ 	 \Then $\bit{1}_{i} = 1$
-		\item \If $\iArgOneLo_{i} \neq 0$ \Then $\bit{1}_{i} = 0$
-		\item \If $\iArgOneLo_{i} = 0$ 	 \Then $\bit{1}_{i} = 1$
+		\item \If $\argOneLo_{i} \neq 0$ \Then $\bit{1}_{i} = 0$
+		\item \If $\argOneLo_{i} =    0$ \Then $\bit{1}_{i} = 1$
 	\end{enumerate}
 \end{enumerate}
 similarly, 
 \begin{enumerate}
-	\item \If $\iInst_{i} = \inst{ADDMOD}$ \Then $\bit{2}_{i} = 0$\footnote{In the implementation one may impose \If $\iInst_{i} \neq \inst{MULMOD}$ \Then $\bit{2}_{i} = 0$ instead.}
-	\item \If $\iArgTwoHi_{i} \neq 0$ \Then $\bit{2}_{i} = 0$
-	\item \If \Big($\iArgTwoHi_{i} = 0$ \et $\iInst_{i} = \inst{MULMOD}$\Big) \Then
+	\item \If $\INST_{i} = \inst{ADDMOD}$ \Then $\bit{2}_{i} = 0$\footnote{In the implementation one may impose \If $\INST_{i} \neq \inst{MULMOD}$ \Then $\bit{2}_{i} = 0$ instead.}
+	\item \If $\argTwoHi_{i} \neq 0$ \Then $\bit{2}_{i} = 0$
+	\item \If \Big($\argTwoHi_{i} = 0$ \et $\INST_{i} = \inst{MULMOD}$\Big) \Then
 	\begin{enumerate}
-%		\item \If $\iArgTwoLo_{i} \cdot (1 - \iArgTwoLo_{i}) \neq 0$ \Then $\bit{2}_{i} = 0$
-%		\item \If $\iArgTwoLo_{i} \cdot (1 - \iArgTwoLo_{i}) = 0$ \Then $\bit{2}_{i} = 1$
-		\item \If $\iArgTwoLo_{i} \neq 0$ \Then $\bit{2}_{i} = 0$
-		\item \If $\iArgTwoLo_{i} = 0$ \Then $\bit{2}_{i} = 1$
+		\item \If $\argTwoLo_{i} \neq 0$ \Then $\bit{2}_{i} = 0$
+		\item \If $\argTwoLo_{i} = 0$    \Then $\bit{2}_{i} = 1$
 	\end{enumerate}
 \end{enumerate}
 and 
 \begin{enumerate}
-	\item \If $\iArgTreHi_{i} \neq 0$ \Then $\bit{3}_{i} = 0$
-	\item \If $\iArgTreHi_{i} = 0$ \Then
+	\item \If $\argTreHi_{i} \neq 0$ \Then $\bit{3}_{i} = 0$
+	\item \If $\argTreHi_{i} =    0$ \Then
 	\begin{enumerate}
-		\item \If $\iArgTreLo_{i} \cdot (1 - \iArgTreLo_{i}) \neq 0$ \Then $\bit{3}_{i} = 0$
-		\item \If $\iArgTreLo_{i} \cdot (1 - \iArgTreLo_{i}) = 0$ \Then $\bit{3}_{i} = 1$
-%		\item \If $\iArgTreLo_{i} \neq 0$ \Then $\bit{2}_{i} = 0$
-%		\item \If $\iArgTreLo_{i} = 0$ \Then $\bit{2}_{i} = 1$
+		\item \If $\argTreLo_{i} \cdot (1 - \argTreLo_{i}) \neq 0$ \Then $\bit{3}_{i} = 0$
+		\item \If $\argTreLo_{i} \cdot (1 - \argTreLo_{i}) = 0$ \Then $\bit{3}_{i} = 1$
 	\end{enumerate}
 \end{enumerate}
 We use these binary flags to constrain $\oli$:
@@ -47,16 +41,10 @@ We use these binary flags to constrain $\oli$:
 \end{IEEEeqnarray}
 In other words
 \[
-\left\{
-\begin{array}{lcl}
-	\bit{1} = 1 & \iff & \iArgOne = 0 ~ \et \iInst = \inst{MULMOD} \\
-	\bit{2} = 1 & \iff & \iArgTwo = 0 ~ \et \iInst = \inst{MULMOD} \\
-	\bit{3} = 1 & \iff & \iArgTre \in \{ 0, 1 \} \\
-	\oli = 1 & \iff & \text{one of the previous conditions is satisfied}
-\end{array}
-\right.
+	\left\{ \begin{array}{lcl}
+		\bit{1} = 1 & \iff & \argOne = 0 ~ \et \INST = \inst{MULMOD}            \\
+		\bit{2} = 1 & \iff & \argTwo = 0 ~ \et \INST = \inst{MULMOD}            \\
+		\bit{3} = 1 & \iff & \argTre \in \{ 0, 1 \}                             \\
+		\oli    = 1 & \iff & \text{one of the previous conditions is satisfied} \\
+	\end{array} \right.
 \]
-\iffalse
-Note that in the implementation one may replace
-``$\iInst_{i} = \inst{ADDMOD}$'' with ``$\iInst_{i} \neq \inst{MULMOD}$''.
-\fi

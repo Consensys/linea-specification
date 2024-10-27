@@ -2,7 +2,7 @@
 \framebox{%
 All constraints in this section are written under the assumption that
 $\begin{cases}
-\iInst_{i} = \inst{EXP} \\
+\INST_{i} = \inst{EXP} \\
 % \oli_{i} = 0 \\ % useless given that we also impose \ct_{i} = \mmediumMO
 \oli_{i} = 0 \\
 \resVanishes_{i} = 1 \\
@@ -14,24 +14,24 @@ $\begin{cases}
 	\item \If $\ct_{i} = \mmediumMO$ \Then 
 	\[
 	\begin{cases}
-		\iArgOneHi_{i} = \theta \cdot \col{A\_3} + \col{A\_2} \\
-		\iArgOneLo_{i} = \theta \cdot \col{A\_1} + \col{A\_0} \vspace{2mm} \\
-		\iArgTwoHi_{i} = \theta \cdot \col{B\_3} + \col{B\_2} \\
-		\iArgTwoLo_{i} = \theta \cdot \col{B\_1} + \col{B\_0} \\
+		\argOneHi_{i} = \theta \cdot \col{A\_3} + \col{A\_2} \\
+		\argOneLo_{i} = \theta \cdot \col{A\_1} + \col{A\_0} \vspace{2mm} \\
+		\argTwoHi_{i} = \theta \cdot \col{B\_3} + \col{B\_2} \\
+		\argTwoLo_{i} = \theta \cdot \col{B\_1} + \col{B\_0} \\
 	\end{cases}
 	\]
 	i.e. we enforce
-	$\iArgOne \equiv
+	$\argOne \equiv
 	[\col{A\_3} \,|\, \col{A\_2} \,|\, \col{A\_1} \,|\, \col{A\_0} ]$ and
-	$\iArgTwo \equiv
+	$\argTwo \equiv
 	[\col{B\_3} \,|\, \col{B\_2} \,|\, \col{B\_1} \,|\, \col{B\_0} ]$.
 \end{enumerate}
 
-\paragraph{Remark.} Note that if $\iArgOneLo = 0$ the result of the \inst{EXP} instruction is necessarily zero.
-Indeed $\iArgOneLo = 0$ is equivalent to $2^\oneTwoEight \mid \iArgOne$ i.e. $\nu_{2} \geq \oneTwoEight$. Furthermore $\oli_{i} = 0$ forces $\iArgTwo \geq 2$. The desired bound ($\nu_{2} \cdot \argTwo \geq 256$) is thus necessarily achieved. Thus
+\paragraph{Remark.} Note that if $\argOneLo = 0$ the result of the \inst{EXP} instruction is necessarily zero.
+Indeed $\argOneLo = 0$ is equivalent to $2^\oneTwoEight \mid \argOne$ i.e. $\nu_{2} \geq \oneTwoEight$. Furthermore $\oli_{i} = 0$ forces $\argTwo \geq 2$. The desired bound ($\nu_{2} \cdot \argTwo \geq 256$) is thus necessarily achieved. Thus
 \begin{center}
 \framebox{%
-All constraints below make the further assumption that $\iArgOneLo_{i} \neq 0$.
+All constraints below make the further assumption that $\argOneLo_{i} \neq 0$.
 }
 \end{center}
 
@@ -50,22 +50,22 @@ All constraints below make the further assumption that $\iArgOneLo_{i} \neq 0$.
 \begin{itemize}
 	\item to be constant along the present counter-cycle;
 	\item to be binary along the present counter-cycle;
-	\item to retain the information whether $2^{8\cdot\mmedium} \mid \iArgOne$ or not.
+	\item to retain the information whether $2^{8\cdot\mmedium} \mid \argOne$ or not.
 \end{itemize}
 Indeed, the previous set of target constraints enforces $\argOne \equiv
 [\col{A\_3} \,|\, \col{A\_2} \,|\, \col{A\_1} \,|\, \col{A\_0} ]$.
 Therefore
-$2^{8\cdot\mmedium} \mid \iArgOne
+$2^{8\cdot\mmedium} \mid \argOne
 \iff \col{A\_0} = 0
 \iff \col{BYTE\_C\_0} = 0$.
-More precisely (and given that $\iArgOneLo \neq 0$) we see that
+More precisely (and given that $\argOneLo \neq 0$) we see that
 if $\col{A\_0} = 0$ then $\nu_{2} = 8\cdot\mmedium + \text{(the $2$-adicity of $\col{A\_1}$)}$
 while 
 if $\col{A\_0} \neq 0$ then $\nu_{2} = \text{(the $2$-adicity of $\col{A\_0}$.)}$ This should explain the next set of constraints:
 % Thus $\col{BYTE\_C\_0} = 0$ \emph{iff} $\col{A\_0} = 0$. column to be a constant bit along the present counter-cycle and retain the information whether $\col{A}_{0}$ is zero or not, where we write 
 
 \paragraph{Preparation of a lower bound.}
-The constraints in this paragraph allow us to extract parameters which are later assembled into a lower bound for the $2$-adicity of the base $\iArgOne$.
+The constraints in this paragraph allow us to extract parameters which are later assembled into a lower bound for the $2$-adicity of the base $\argOne$.
 \begin{enumerate}[resume]
 	\item
 	\If $\byteCol{C\_0}_{i} = 1$\footnote{Given the above this is equivalent to $\byteCol{C\_0}_{i} \neq 0$, which one may choose instead for the implementation.} \Then
@@ -119,7 +119,7 @@ $\byteCol{C\_3}$ and
 $\byteCol{H\_3}$
 are used to establish some product $\mod 2^{256}$. Here they are repurposed as binary columns, stores for particular pivot bytes etc \dots{} More precisely:
 \begin{itemize}
-	\item $\byteCol{C\_0}$ is repurposed as a constant bit that distinguishes between the two cases $2^{\mmedium \cdot 8} \mid \iArgOneLo_{i}$ (i.e. $\byteCol{C\_0} = 0$) and $2^{8\cdot\mmedium} \nmid \iArgOneLo_{i}$ (i.e. $\byteCol{C\_0} = 1$);
+	\item $\byteCol{C\_0}$ is repurposed as a constant bit that distinguishes between the two cases $2^{\mmedium \cdot 8} \mid \argOneLo_{i}$ (i.e. $\byteCol{C\_0} = 0$) and $2^{8\cdot\mmedium} \nmid \argOneLo_{i}$ (i.e. $\byteCol{C\_0} = 1$);
 	\item $\byteCol{C\_1}$ is repurposed as a constant column that contains one of the bytes of either
 	$\col{A\_1}$ (if $\byteCol{C\_0} = 0$) or
 	$\col{A\_0}$ (if $\byteCol{C\_0} = 1$)
@@ -132,7 +132,7 @@ are used to establish some product $\mod 2^{256}$. Here they are repurposed as b
 	\item $\byteCol{C\_2}$ is repurposed as a nondecreasing binary column indicating \emph{a} cut-off point beyond which the bits of $\bits$ are zero;
 	\item $\byteCol{H\_2}$ is repurposed as its running total;
 \end{itemize}
-Note that using values found in the final row of the present counter-cycle (i.e. the row with $\ct_{i} = \mmediumMO$) we can construct a lower bound \col{lb} for the $2$-adicity of $\iArgOne$. Indeed
+Note that using values found in the final row of the present counter-cycle (i.e. the row with $\ct_{i} = \mmediumMO$) we can construct a lower bound \col{lb} for the $2$-adicity of $\argOne$. Indeed
 \[
 	\col{lb} := 
 	\begin{cases}
@@ -143,24 +143,24 @@ Note that using values found in the final row of the present counter-cycle (i.e.
 is such a lower bound.
 \iffalse
 \begin{itemize}
-	\item \If $\byteCol{C\_0}_{i} = 1$ \Then $8 \cdot \byteCol{H\_3}_{i} + \byteCol{H\_2}_{i}$ is a lower bound on the $2$-adicity of $\iArgOne$;
-	\item \If $\byteCol{C\_0}_{i} = 0$ \Then $8 \cdot \byteCol{H\_3}_{i} + \byteCol{H\_2}_{i} + \mmedium \cdot 8$ is a lower bound on the $2$-adicity of $\iArgOne$.
+	\item \If $\byteCol{C\_0}_{i} = 1$ \Then $8 \cdot \byteCol{H\_3}_{i} + \byteCol{H\_2}_{i}$ is a lower bound on the $2$-adicity of $\argOne$;
+	\item \If $\byteCol{C\_0}_{i} = 0$ \Then $8 \cdot \byteCol{H\_3}_{i} + \byteCol{H\_2}_{i} + \mmedium \cdot 8$ is a lower bound on the $2$-adicity of $\argOne$.
 \end{itemize}
 \fi
 
-\paragraph{Proving the vanishing of \inst{EXP}.} Now that we have a lower bound (which can be an exact bound if we so choose) we are in position to verify that $\nu_{2} \cdot \iArgTwo \geq 256$ (or more precisely $k \cdot \iArgTwo \geq 256$ for our lower bound $k$.)
+\paragraph{Proving the vanishing of \inst{EXP}.} Now that we have a lower bound (which can be an exact bound if we so choose) we are in position to verify that $\nu_{2} \cdot \argTwo \geq 256$ (or more precisely $k \cdot \argTwo \geq 256$ for our lower bound $k$.)
 Note the following: assuming (as we shortly will) that $\ct_{i} = \mmediumMO$) one has
 \[
-	\iArgTwo \geq 256 \iff \theta \cdot \Big(\col{B\_3} + \col{B\_2} + \col{B\_1}\Big)
+	\argTwo \geq 256 \iff \theta \cdot \Big(\col{B\_3} + \col{B\_2} + \col{B\_1}\Big)
 	+ \col{B\_0}
 	\neq
 	\byteCol{B\_0}_{i}
 \]
 Indeed
 given that
-$\iArgTwo \equiv [\col{B\_3} \,|\, \col{B\_2} \,|\, \col{B\_1} \,|\, \col{B\_0} ]$
+$\argTwo \equiv [\col{B\_3} \,|\, \col{B\_2} \,|\, \col{B\_1} \,|\, \col{B\_0} ]$
 it follows that
-$\iArgTwo \geq 256$ \emph{iff} one of the $\mmedium$-byte integers $\col{B\_3}$, $\col{B\_2}$, $\col{B\_1}$ is $\neq 0$ or they are all $=0$ so that $\iArgTwo = \col{B\_0}$ but (the $\mmedium$-byte integer) $\col{B\_0}$ isn't a byte i.e. (since $\byteCol{B\_0}$ contains its byte decomposition by virtue of section~\ref{subsec (alu/exp): byte decompositions})
+$\argTwo \geq 256$ \emph{iff} one of the $\mmedium$-byte integers $\col{B\_3}$, $\col{B\_2}$, $\col{B\_1}$ is $\neq 0$ or they are all $=0$ so that $\argTwo = \col{B\_0}$ but (the $\mmedium$-byte integer) $\col{B\_0}$ isn't a byte i.e. (since $\byteCol{B\_0}$ contains its byte decomposition by virtue of section~\ref{subsec (alu/exp): byte decompositions})
 $\col{B\_0} \neq \byteCol{B\_0}_{i}$. With this in mind we further impose
 
 \begin{enumerate}[resume]
@@ -214,7 +214,7 @@ $\col{B\_0} \neq \byteCol{B\_0}_{i}$. With this in mind we further impose
 			\end{cases}
 			\]
 			i.e. the lower bound on $2$-adicity that was extracted is nonzero;
-			no further constraints are required since $\iArgTwo = \col{B\_0}$ is automatically $\geq 256$ by virtue of the two preceding hypotheses;
+			no further constraints are required since $\argTwo = \col{B\_0}$ is automatically $\geq 256$ by virtue of the two preceding hypotheses;
 			furthermore the same remark as above applies here too.
 			\item \If $\col{B\_0} = \byteCol{B\_0}_{i}$ \Then
 			\[

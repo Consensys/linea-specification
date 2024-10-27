@@ -1,69 +1,62 @@
 \begin{center}
-\framebox{%
-All constraints in this section are written under the assumption that
-$\begin{cases}
-\iInst_{i} = \inst{EXP} \\
-% \oli_{i} = 0 \\ % useless given that we also impose \ct_{i} = \mmediumMO
-\resVanishes_{i} = 0 \\
-\ct_{i} = \mmediumMO \\
-\end{cases}$}
+	\framebox{%
+		All constraints in this section are written under the assumption that
+		$\begin{cases}
+			\INST_{i} = \inst{EXP} \\
+			\resVanishes_{i} = 0 \\
+			\ct_{i} = \mmediumMO \\
+		\end{cases}$}
 \end{center}
 \begin{description}
 	\item[Target constraint.] The following is \emph{always} true:
-	\[
-	\begin{cases}
-		\iArgOneHi_{i} = \theta \cdot \col{A\_3}_{i} + \col{A\_2}_{i} \\
-		\iArgOneLo_{i} = \theta \cdot \col{A\_1}_{i} + \col{A\_0}_{i} \\
-	\end{cases}
-	\]
+		\[
+			\begin{cases}
+				\argOneHi_{i} = \theta \cdot \col{A\_3}_{i} + \col{A\_2}_{i} \\
+				\argOneLo_{i} = \theta \cdot \col{A\_1}_{i} + \col{A\_0}_{i} \\
+			\end{cases}
+		\]
 	\item[First instruction.] \If $\mulStamp_{i-8} \neq \mulStamp_{i}$ \Then we initialize the $\acc{C\_k}$:
-	\[
-	\begin{cases}
-		\iArgOneHi_{i} = \theta \cdot \col{C\_3}_{i} + \col{C\_2}_{i} \\
-		\iArgOneLo_{i} = \theta \cdot \col{C\_1}_{i} + \col{C\_0}_{i} \\
-	\end{cases}
-	\]
+		\[
+			\begin{cases}
+				\argOneHi_{i} = \theta \cdot \col{C\_3}_{i} + \col{C\_2}_{i} \\
+				\argOneLo_{i} = \theta \cdot \col{C\_1}_{i} + \col{C\_0}_{i} \\
+			\end{cases}
+		\]
 	\item[Square and multiply instructions.] \If $\mulStamp_{i-8} = \mulStamp_{i}$ \Then
-	there are two cases:
-	\begin{enumerate}
-		\item \If $\snm_{i} = 0$ \Then
+		there are two cases:
+		\begin{enumerate}
+			\item \If $\snm_{i} = 0$ \Then
+				\[
+					\setMultiplication
+					\left( \begin{array}{c}
+						\col{C'\_3}, \col{C'\_2}, \col{C'\_1}, \col{C'\_0};             \\
+						\col{C'\_3}, \col{C'\_2}, \col{C'\_1}, \col{C'\_0};             \\
+						\col{C\_3}, \col{C\_2}, \col{C\_1}, \col{C\_0};                 \\
+						\col{H\_3}, \col{H\_2}, \col{H\_1}, \col{H\_0};                 \\
+						\alpha, ~ 2\beta_{1} + \beta_{0}; ~ \eta, ~ 2\mu_{1} + \mu_{0}; \\
+					\end{array} \right)
+				\]
+				i.e. the current step is a squaring step
+			\item \If $\snm_{i} = 1$ \Then
+				\[
+					\setMultiplication
+					\left( \begin{array}{c}
+						\col{C'\_3}, \col{C'\_2}, \col{C'\_1}, \col{C'\_0};             \\
+						\col{A\_3}, \col{A\_2}, \col{A\_1}, \col{A\_0};                 \\
+						\col{C\_3}, \col{C\_2}, \col{C\_1}, \col{C\_0};                 \\
+						\col{H\_3}, \col{H\_2}, \col{H\_1}, \col{H\_0};                 \\
+						\alpha, ~ 2\beta_{1} + \beta_{0}; ~ \eta, ~ 2\mu_{1} + \mu_{0}; \\
+					\end{array} \right)
+				\]
+				i.e. the current step is a ``multiplication by $\argOne$'' step
+		\end{enumerate}
+	\item[Final row.]
+		\If $\mulStamp_{i + 1} \neq \mulStamp_{i}$ \Then
 		\[
-			\setMultiplication
-			\left(
-			\begin{array}{c}
-			\col{C'\_3}, \col{C'\_2}, \col{C'\_1}, \col{C'\_0}; \\
-			\col{C'\_3}, \col{C'\_2}, \col{C'\_1}, \col{C'\_0}; \\
-			\col{C\_3}, \col{C\_2}, \col{C\_1}, \col{C\_0}; \\
-			\col{H\_3}, \col{H\_2}, \col{H\_1}, \col{H\_0}; \\
-			\alpha, 2\beta_{1} + \beta_{0};
-			\eta, 2\mu_{1} + \mu_{0}; \\
-			\end{array}
-			\right)
+			\begin{cases}
+				\resHi_{i} = \theta \cdot \col{C\_3}_{i} + \col{C\_2}_{i} \\
+				\resLo_{i} = \theta \cdot \col{C\_1}_{i} + \col{C\_0}_{i} \\
+			\end{cases}
 		\]
-		i.e. the current step is a squaring step
-		\item \If $\snm_{i} = 1$ \Then
-		\[
-			\setMultiplication
-			\left(
-			\begin{array}{c}
-			\col{C'\_3}, \col{C'\_2}, \col{C'\_1}, \col{C'\_0}; \\
-			\col{A\_3}, \col{A\_2}, \col{A\_1}, \col{A\_0}; \\
-			\col{C\_3}, \col{C\_2}, \col{C\_1}, \col{C\_0}; \\
-			\col{H\_3}, \col{H\_2}, \col{H\_1}, \col{H\_0}; \\
-			\alpha, 2\beta_{1} + \beta_{0};
-			\eta, 2\mu_{1} + \mu_{0}; \\
-			\end{array}
-			\right)
-		\]
-		i.e. the current step is a ``multiplication by $\iArgOne$'' step
-	\end{enumerate}
-	\item[Final row.] % \If \Big($\expBitSrc_{i} = 1$ \et $\snm_{i} = \expBit_{i}$ \et $\expBitAcc_{i} = \iArgTwoLo_{i}$\Big) \Then
-	\If $\mulStamp_{i + 1} \neq \mulStamp_{i}$ \Then
-	\[
-	\begin{cases}
-		\iResHi_{i} = \theta \cdot \col{C\_3}_{i} + \col{C\_2}_{i} \\
-		\iResLo_{i} = \theta \cdot \col{C\_1}_{i} + \col{C\_0}_{i} \\
-	\end{cases}
-	\]
-	Note that we don't have to take extra precautions in case $i$ is the final row index $N$. Given the constraints imposed on the final row the final instruction is \emph{always} a trivial exponentiation.
+		Note that we don't have to take extra precautions in case $i$ is the final row index $N$. Given the constraints imposed on the final row the final instruction is \emph{always} a trivial exponentiation.
 \end{description}
