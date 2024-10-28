@@ -18,7 +18,7 @@ The first set of constraints concerns the first row of the counter-cycle:
 						\col{POWER}_{i}   & = & 256^{8} \\
 					\end{array} \right.
 				\]
-			\item \If $\genByteAcc_{i} \ne 0$ \Then
+			\item \If $\genByteAcc_{i} \neq 0$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
 						\accsize_{i}      & = & 1       \\
@@ -29,7 +29,7 @@ The first set of constraints concerns the first row of the counter-cycle:
 \end{enumerate}
 We next tackle intermediate rows (including the final row) of the counter-cycle:
 \begin{enumerate}[resume]
-	\item \If $\ct_{i} \ne 0$ \Then
+	\item \If $\ct_{i} \neq 0$ \Then
 		\begin{enumerate}
 			\item \If $\genByteAcc_{i} = 0$ \Then
 				\[
@@ -38,7 +38,7 @@ We next tackle intermediate rows (including the final row) of the counter-cycle:
 						\col{POWER}_{i}   & = & 256 \cdot \col{POWER}_{i - 1} \\
 					\end{array} \right.
 				\]
-			\item \If $\genByteAcc_{i} \ne 0$ \Then
+			\item \If $\genByteAcc_{i} \neq 0$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
 						\accsize_{i}      & = & 1 + \accsize_{i - 1} \\
@@ -115,7 +115,7 @@ which gives the bytesize of RLP(nonce) for the three different cases.
 				\]
 				\saNote{} Given that $\index$ is counter-incrementing, was initialized at $0$ when $\ct_{j} = 0$, $j = i - \mediumPO$, set to $0$ at $i - 3$ and to $3$ at the current $i$, this implies that it takes on the values from 0 to 3 on the last 4 rows of the counter-cycle.
 			\item \If $\nonce_{i}=0$ \Then $\limb_{i}= \rlprefixShortInt \cdot 256^{\llargeMO}$
-			\item \If $\nonce_{i} \ne 0$ \Then:
+			\item \If $\nonce_{i} \neq 0$ \Then:
 				\begin{enumerate}
 					\item \If $\TINYNONZERONONCE_{i} = 1$ \Then $\limb_{i}= \nonce_{i} \cdot 256^{\llargeMO}$
 					\item \If $\TINYNONZERONONCE_{i} = 0$ \Then $\limb_{i}= (\rlprefixShortInt + \accsize_{i}) \cdot 256^{\llargeMO} + \nonce_{i} \cdot \col{POWER}_{i}$

@@ -91,35 +91,35 @@ Knowing whether a rollback of all changes resulting from the execution of a part
 \end{enumerate}
 The \CFI{} is an integer uniquely associated, in the \romLexMod{} module, with an \textbf{address}, a \textbf{deployment number} and a \textbf{deployment status}. It uniquely identifies a code fragment in the \romMod{} module. The $\pc\new$ column is included for sheer convenience. The temporal execution of the \textsc{evm} has all required data to justify the next value of the program counter (which may change non trivially with \inst{JUMP} and \inst{JUMPI} instructions and will need to resume correctly when resuming execution after a \inst{CALL}-type or \inst{CREATE}-type instruction.)
 The following binary columns serve as indicators of what data is on display on any non-padding row. Every row either displays (and may modify) data from one of several data stores:
-(\emph{a}) \textbf{context-rows} display \textbf{context data} and are characterized by $\peekContext \equiv 1$
-(\emph{b}) \textbf{account-rows} display \textbf{account data} and are characterized by $\peekAccount \equiv 1$
-(\emph{c}) \textbf{storage-rows} display \textbf{storage data} and are characterized by $\peekStorage \equiv 1$
-(\emph{d}) \textbf{stack rows} display \textbf{stack data} and are characterized by $\peekStack \equiv 1$
-(\emph{e}) \textbf{transaction-rows} display \textbf{transaction data} and are characterized by $\peekTransaction \equiv 1$
-(\emph{f}) \textbf{miscellaneous-rows} log data to be externalized for further processing to other modules; they are characterized by $\peekMisc \equiv 1$
-(\emph{g}) \textbf{scenario-rows} are used to simplify the control flow of complex instructions.
+(\emph{a}) \textbf{account-rows} display \textbf{account data};                                             they are characterized by $\peekAccount     \equiv 1$
+(\emph{b}) \textbf{context-rows} display \textbf{context data};                                             they are characterized by $\peekContext     \equiv 1$
+(\emph{c}) \textbf{miscellaneous-rows} log data to be externalized for further processing to other modules; they are characterized by $\peekMisc        \equiv 1$
+(\emph{d}) \textbf{scenario-rows} are used to simplify the control flow of complex instructions;            they are characterized by $\peekScenario    \equiv 1$
+(\emph{e}) \textbf{stack rows} display \textbf{stack data};                                                 they are characterized by $\peekStack       \equiv 1$
+(\emph{f}) \textbf{storage-rows} display \textbf{storage data};                                             they are characterized by $\peekStorage     \equiv 1$
+(\emph{g}) \textbf{transaction-rows} display \textbf{transaction data};                                     they are characterized by $\peekTransaction \equiv 1$.
 \begin{enumerate}[resume]
-	\item $\PEEKSTACK$:
-		binary column which switches on \emph{if and only if} the current row peeks into stack data; 
-		abbreviated to $\peekStack$;
-	\item $\PEEKCONTEXT$:
-		binary column which switches on \emph{if and only if} the current row peeks into context data; 
-		abbreviated to $\peekContext$;
 	\item $\PEEKACCOUNT$:
 		binary column which switches on \emph{if and only if} the current row peeks into account data (from which we \emph{exclude} storage data); 
 		abbreviated to $\peekAccount$;
-	\item $\PEEKSTORAGE$:
-		binary column which switches on \emph{if and only if} the current row peeks into the (presently executing) account's storage; 
-		abbreviated to $\peekStorage$;
-	\item $\PEEKTRANSACTION$:
-		binary column which switches on \emph{if and only if} the current row peeks into transaction data; 
-		abbreviated to $\peekTransaction$;
+	\item $\PEEKCONTEXT$:
+		binary column which switches on \emph{if and only if} the current row peeks into context data; 
+		abbreviated to $\peekContext$;
 	\item $\PEEKMISC$:
 		binary column which switches on \emph{if and only if} the current row peeks into transaction data; 
 		abbreviated to $\peekMisc$;
 	\item $\PEEKSCENARIO$:
 		binary column which switches on \emph{if and only if} the current row peeks into transaction data; 
 		abbreviated to $\peekScenario$;
+	\item $\PEEKSTACK$:
+		binary column which switches on \emph{if and only if} the current row peeks into stack data; 
+		abbreviated to $\peekStack$;
+	\item $\PEEKSTORAGE$:
+		binary column which switches on \emph{if and only if} the current row peeks into the (presently executing) account's storage; 
+		abbreviated to $\peekStorage$;
+	\item $\PEEKTRANSACTION$:
+		binary column which switches on \emph{if and only if} the current row peeks into transaction data; 
+		abbreviated to $\peekTransaction$;
 \end{enumerate}
 \noindent We list some gas columns:
 \begin{enumerate}[resume]

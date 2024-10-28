@@ -27,7 +27,7 @@ With the shorthands defined in section~(\ref{hub: instruction handling: create: 
 			\end{array} \right]
 		\]
 	\item[\underline{Setting the peeking flags:}]
-		we set \nonStackRows{} once and for all, though we will set it again at later points to clarify:
+		we impose that
 		\[
 			\hspace*{-2.8cm}
 			\nonStackRows_{i - \createFirstStackRowOffset}
@@ -49,7 +49,10 @@ With the shorthands defined in section~(\ref{hub: instruction handling: create: 
 		\]
 \end{description}
 \saNote{}
-We set the value of $\nonStackRows$ on the \textbf{previous row} (i.e. we constrain $\nonStackRows_{i - 1}$) so as to connect back to the stack rows, thus preventing an attacker to set the previous value to \nonStackRows{} to $0$, say. Note that this isn't strictly speaking necessary since every new \hubStamp{} of the execution phase starts with one or two stack rows and the present row is a scenario row.
+We set the value of $\nonStackRows$ on a \textbf{previous row}
+(i.e. we constrain $\nonStackRows_{i - \createFirstStackRowOffset}$)
+so as to connect back to the stack rows, thus preventing an attacker to set the previous value to \nonStackRows{} to $0$, say.
+Note that this isn't strictly speaking necessary since every new \hubStamp{} of the execution phase starts with one or two stack rows and the present row is a scenario row.
 
 Below are the concreate values of \nonStackRows{} depending on the \inst{CREATE}-type instruction scenario: 
 \begin{center}

@@ -68,18 +68,25 @@ Therefore
 \end{lem}
 We subsume these constraints under the moniker
 \[
-	\setAbsoluteValue\Big(
-	\col{A}\high,
-	\col{A}\low;
-	\col{X}\high,
-	\col{X}\low,
-	\col{sgn}
-	\Big)
+	\setAbsoluteValue
+	\left( \begin{array}{c}
+		\col{A}\high, \col{A}\low; \\
+		\col{X}\high, \col{X}\low; \\
+		\col{sgn};                 \\
+	\end{array} \right)
 \]
-\saNote{} There are \emph{implicit assumptions} that aren't part of the constraint itself:
+\saNote{} \label{alu: primitives: absolute values: hypotheses and conclusion}
+There are \emph{implicit assumptions} that aren't part of the constraint itself:
 \begin{enumerate}
 	\item $\colm{X}\high$ and $\colm{X}\low$ are $\llarge$-byte integers;
 	\item $\colm{A}\high$ and $\colm{A}\low$ are $\llarge$-byte integers;
-	\item $\colm{sgn}$ is a bit and represents $\colm{X}$'s sign bit;
+	\item $\colm{sgn}$ is a bit;
+	\item $\colm{sgn}$ indeed represents $\colm{X}$'s sign bit;
 \end{enumerate}
-Everytime the $\setAbsoluteValue$ will be invoked in the sequel the assumption on $\colm{X}\high$ and $\colm{X}\low$ will be met (it's a stack item) and re-verified in a byte decomposition. This byte decomposition is then used to justify the value of $\colm{sgn}$. The above constraint is used to \emph{set} $\colm{A}\high$ and $\colm{A}\low$. The smallness constraint will thus automatically be satisfied.
+Everytime the $\setAbsoluteValue$ will be invoked in the sequel the assumption on $\colm{X}\high$ and $\colm{X}\low$ will be met.
+Indeed $\colm{X}$ (that is: its high and low parts) will arise as stack items.
+Smallness will furthermore be re-verified in a byte decomposition which also serves to justify that
+$\colm{sgn}$ is both a boolean and represents the sign bit of $\colm{X}$.
+The above constraint is then used to \textbf{set / justify} the fact that
+whatever arguments were passed to $\colm{A}\high$ and $\colm{A}\low$ indeed represent the absolute value of $\colm{X}$.
+The smallness of both $\colm{A}\high$ and $\colm{A}\low$ \textbf{follows} from the satisfaction of $\setAbsoluteValue(\cdots)$ and need not be verified independently.

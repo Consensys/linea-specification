@@ -6,7 +6,7 @@ We remind the reader that $\nbAddr$, $\nStorageKeysInAccessList$, $\nStorageKeys
 \newline
 Constraints on the end of the phase:
 \begin{enumerate}
-	\item \If $\phasesize_{i} \ne 0$ \Then $\phasend_{i}=0$
+	\item \If $\phasesize_{i} \neq 0$ \Then $\phasend_{i}=0$
 	\item\label{constraint: end of access set phase} \If ($\phasesize_{i}=0$ \et $\done_{i}=1$) \Then $\phasend_{i}=1$.
 \end{enumerate}
 Constraint on $\outgoingDataSymb$ as $\nbAddr$ and $\nStorageKeysInAccessList$ are initialised at the begining of the phase:
@@ -25,12 +25,12 @@ Constraint on $\outgoingDataSymb$ as $\nbAddr$ and $\nStorageKeysInAccessList$ a
 					\item $\limb_{i}=\rlprefixShortList \cdot 256 ^{\llargeMO}$
 					\item $\limbsize_{i}=1$
 				\end{enumerate}
-			\item \If $\nbAddr_{i} \ne 0$ \Then $\nbstep_{i}=8$
+			\item \If $\nbAddr_{i} \neq 0$ \Then $\nbstep_{i}=8$
 		\end{enumerate} 
 \end{enumerate}
 We first compute the RLP prefix and in the case of an empty list, end the phase:
 \begin{enumerate}[resume]
-	\item \If ($\Depth 1_{i}=0$ \et $\nbAddr_{i} \ne 0$) \Then:
+	\item \If ($\Depth 1_{i}=0$ \et $\nbAddr_{i} \neq 0$) \Then:
 		\begin{enumerate}
 			\item 
 				\[
@@ -127,7 +127,7 @@ Then we compute the RLP prefix of the list of StorageKey in this access tuple:
 					\item $\limb_{i}=\rlprefixShortList \cdot 256^{\llargeMO}$
 					\item $\limbsize_{i}=1$
 				\end{enumerate}
-			\item \If $\nStorageKeysInAccessEntry_{i} \ne 0$ \Then:  
+			\item \If $\nStorageKeysInAccessEntry_{i} \neq 0$ \Then:  
 			\item $\nbstep_{i}=8$
 			\item $\Input1_{i} = 33\cdot\nStorageKeysInAccessEntry_{i} \footnote{As a storage key in 32 bytes long, RLP(StorageKey) is 33 bytes long.}$
 			\item 
@@ -155,11 +155,11 @@ Then, if relevant, we compute the RLP of a StorageKey:
 \begin{enumerate}[resume]
 	\item \If ($\isprefix_{i}=0$ \et $\Depth1_{i}=1$ \et $\Depth2_{i}=1$)\footnote{It is implemented \If $\Depth1_{i} \cdot \Depth2_{i} - \isprefix_{i}=1$ \Then:} \linebreak \Then $\texttt{rlpStorageKeyConstraints}_{i}(\Input1, \Input2, \ct)$
 \end{enumerate}
-Hereafter we give the condition on the step to do after computing the RLP prefix of the list of StorageKey, or the RLP of a StorageKey. It is either compute a RLP(StorageKey) if $\nStorageKeysInAccessEntry_{i} \ne 0$, a RLP(access tuple) if ($\nStorageKeysInAccessEntry_{i} = 0$ and $\nbAddr \ne 0$), ot the end of the phase if $\nbAddr_{i}=\nStorageKeysInAccessList_{i}=0$:
+Hereafter we give the condition on the step to do after computing the RLP prefix of the list of StorageKey, or the RLP of a StorageKey. It is either compute a RLP(StorageKey) if $\nStorageKeysInAccessEntry_{i} \neq 0$, a RLP(access tuple) if ($\nStorageKeysInAccessEntry_{i} = 0$ and $\nbAddr \neq 0$), ot the end of the phase if $\nbAddr_{i}=\nStorageKeysInAccessList_{i}=0$:
 \begin{enumerate}[resume]
 	\item \If ($\Depth2_{i}=1$ \et $\done_{i}=1$) \Then:
 		\begin{enumerate}
-			\item \If $\nStorageKeysInAccessEntry_{i} \ne 0$ \Then:
+			\item \If $\nStorageKeysInAccessEntry_{i} \neq 0$ \Then:
 				\begin{enumerate}
 					\item $\isprefix_{i+1}=0$  
 					\item $\Depth1_{i+1}=1$ 
@@ -168,7 +168,7 @@ Hereafter we give the condition on the step to do after computing the RLP prefix
 			\item \If $\nStorageKeysInAccessEntry_{i}=0$ \Then:
 				\begin{enumerate}
 					\item $\col{ACCESS\_TUPLE\_BYTESIZE}_{i}=0$
-					\item \If $\nbAddr_{i} \ne 0$ \Then:
+					\item \If $\nbAddr_{i} \neq 0$ \Then:
 						\begin{enumerate}
 							\item $\isprefix_{i+1}=1$
 							\item $\Depth1_{i+1}=1$
