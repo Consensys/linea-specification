@@ -44,12 +44,12 @@ The general loop intrication is resumed in the next table.
 	\]
 	\caption{\ob{TODO: possibility to have 7 binary columns (one per sub-phase.)}
 	Optional phases are \colorbox{solarized-green}{highlighted}. The ``log topics'' phase is skipped for \inst{LOG0} instructions. The ``log data'' phase is skipped for logging operations that don't log any data.}
-	\label{fig: phase 4 subphase table}
+	\label{fig: phase 5 subphase table}
 \end{table}
 \begin{description}
 	\item[\underline{The RLP-\textbf{prefix} of $R_\mathbf{l}$:}] ---
 		\begin{enumerate}[resume]
-			\item \If $\phase{4}_{i-1}=0$ \Then we switch to the following subphase
+			\item \If $\phase{5}_{i-1}=0$ \Then we switch to the following subphase
 				\[
 					\left\{ \begin{array}{lcl}
 						\Depth 1_{i}   & = & 0 \\
@@ -80,7 +80,7 @@ The general loop intrication is resumed in the next table.
 										\ct,
 										\nbstep,
 										\done,
-										\phase{4}; \\
+										\phase{5}; \\
 										\accsize,
 										\col{POWER},
 										\col{BIT},
@@ -91,7 +91,7 @@ The general loop intrication is resumed in the next table.
 										\limbsize; \\
 									\end{array} \right)
 								\]
-								\saNote{} In the above $\phase{4}\equiv 1$; in the constraint this indicates that it is the \rlp{} prefix of a \textbf{list} which is computed. \ref{bla}
+								\saNote{} In the above $\phase{5}\equiv 1$; in the constraint this indicates that it is the \rlp{} prefix of a \textbf{list} which is computed. \ref{bla}
 							\item \If $\Done_{i}=1$ \Then we switch to the following subphase
 								\[
 									\left\{ \begin{array}{lcl}
@@ -126,7 +126,7 @@ The general loop intrication is resumed in the next table.
 								\ct,
 								\nbstep,
 								\done,
-								\phase{4}; \\
+								\phase{5}; \\
 								\accsize,
 								\col{POWER},
 								\col{BIT},
@@ -146,7 +146,7 @@ The general loop intrication is resumed in the next table.
 								\isOd_{i + 1}      & = & 0 &          \\
 							\end{array} \right.
 						\]
-						\saNote{} The constraint on $\Depth{1}$ is useless given that this binary column is $\phase{4}$-incrementing.
+						\saNote{} The constraint on $\Depth{1}$ is useless given that this binary column is $\phase{5}$-incrementing.
 				\end{enumerate}
 		\end{enumerate}
 	\item[\underline{RLP of the address $O_\text{a}$:}] We deal with the address in one fell swoop (the high and low parts of the address are provided in $\Input1$ and $\Input2$ respectively, see \ref{}):
@@ -239,9 +239,10 @@ The general loop intrication is resumed in the next table.
 				\begin{enumerate}
 					\item $\nbstep_{i}=3$
 					\item \If $\Done_{i}=1$ \Then:
-					\item $\lc_{i-2}=1$
-					In other words all three rows of the current counter-cycle contribute limbs of data. The contents of that data aresettled below: the first part is the $\rlp{}$ prefix associated with a slice of bytes of length 32, followed by the llarge-leading bytes of the current topic and the next $\llarge$ lower bytes of the topic (as found in the inputcolumns):
-						\begin{enumerate}
+					\begin{enumerate}
+							\item $\lc_{i-2}=1$
+							In other words all three rows of the current counter-cycle contribute limbs of data. The contents of that data aresettled below: the first part is the $\rlp{}$ prefix associated with a slice of bytes of length 32, followed by the llarge-leading bytes of the current topic and the next $\llarge$ lower bytes of the topic (as found in the inputcolumns):
+						
 							\item $\indexlocal_{i} + \indexlocal_{i - 2} = 2 \cdot (\indexlocal_{i-3} + 1)$
 								In other words: the local index jumps by 1 from row $i-3$ to $i-2$ and remains at that value until the end of the current counter-cycle.
 								\saNote{} For a \inst{LOGX} instruction with nonzero $\col{X}$ the \indexlocal{} column will count from $1$ to $\col{X}$ (incrementing by 1 with every new log topic.) See also 
