@@ -2,14 +2,14 @@
 	\boxed{%
 		\text{The pre-processing presented below assumes that }
 		\left\{ \begin{array}{lcl}
-			\isMacro                     _{i}      & = & 1 \\
-			\mmuInstFlagRamToRamSansPadding  _{i}      & = & 1 \\
+			\isMacro                        _{i} & = & 1 \\
+			\mmuInstFlagRamToRamSansPadding _{i} & = & 1 \\
 		\end{array} \right.
 		}
 \end{center}
 We do the pre-processing.
 \begin{description}
-	\item[Number of preprocessing rows:]
+	\item[\underline{Number of preprocessing rows:}]
 		we impose
 		\[
 			\left\{ \begin{array}{lcl}
@@ -17,17 +17,17 @@ We do the pre-processing.
 				\ppTotRZ_{i} & = & 0 \\
 			\end{array} \right.
 		\]
-	\item[Shorthands:] 
+	\item[\underline{Shorthands:}] 
 		we use the following shorthands
 		\[
 			\left\{ \begin{array}{lcl}
-				\locRdo & \define & \macroSrcOffsetLo        _{i} \\
-				\locRds & \define & \macroSize               _{i} \\
-				\locRao & \define & \macroRefOffset          _{i} \\
-				\locRac & \define & \macroRefSize            _{i} \\
+				\locRdo & \define & \macroSrcOffsetLo _{i} \\
+				\locRds & \define & \macroSize        _{i} \\
+				\locRao & \define & \macroRefOffset   _{i} \\
+				\locRac & \define & \macroRefSize     _{i} \\
 			\end{array} \right.
 		\]
-	\def\rowNum{1} \item[Pre-processing row $\bm{n^\circ (i + \rowNum)}$:] 
+	\def\rowNum{1} \item[\underline{Pre-processing row $\bm{n^\circ \rowNum}$:}] 
 		we impose
 		\[
 			\left\{ \begin{array}{l}
@@ -35,11 +35,12 @@ We do the pre-processing.
 				{i}{\rowNum}
 				{\locRdo}
 				{\llarge}
-				\\
+				\vspace{2mm} \\
 				\callToLt
 				{i}{\rowNum}
 				{0}{\locRac}
-				{\locRds} \vspace{2mm} \\
+				{\locRds} 
+				\\
 			\end{array} \right.
 		\]
 		and we define the following shorthands:
@@ -55,7 +56,7 @@ We do the pre-processing.
 				\end{cases}  \\
 			\end{array} \right.
 		\]
-	\def\rowNum{2} \item[Pre-processing row $\bm{n^\circ (i + \rowNum)}$:] 
+	\def\rowNum{2} \item[\underline{Pre-processing row $\bm{n^\circ \rowNum}$:}] 
 		we impose
 		\[
 			\left\{ \begin{array}{l}
@@ -69,21 +70,20 @@ We do the pre-processing.
 				{0}{\locInitSbo}
 				{\locInitTbo}
 				\\
-				% \callToEq   {i + \rowNum}   {0}{\locInitSbo}   {\locInitTbo}                             \\
 			\end{array} \right.
 		\]
 		where we have defined the following shorthands:
 		\[
 			\left\{ \begin{array}{lcl}
-				\locInitTlo         & \define & \ppEucQuot  _{i + \rowNum} \\
-				\locInitTbo         & \define & \ppEucRem   _{i + \rowNum} \\
+				\locInitTlo & \define & \ppEucQuot  _{i + \rowNum} \\
+				\locInitTbo & \define & \ppEucRem   _{i + \rowNum} \\
 			\end{array} \right.
 		\]
 		we also impose
 		\[
-			\locAligned           = \ppWcpRes_{i + \rowNum}
+			\locAligned = \ppWcpRes_{i + \rowNum}
 		\]
-	\def\rowNum{3} \item[Pre-processing row $\bm{n^\circ (i + \rowNum)}$:] 
+	\def\rowNum{3} \item[\underline{Pre-processing row $\bm{n^\circ \rowNum}$:}] 
 		we impose
 		\[
 			\left\{ \begin{array}{l}
@@ -95,8 +95,8 @@ We do the pre-processing.
 				\callToEq
 				{i}{\rowNum}
 				{0}{\ppTotNT_{i}}
-				{1}                                    \\
-				% \callToEq   {i + \rowNum}   {0}{$\ppTotNT_{i}$}   {1}                                    \\
+				{1}
+				\\
 			\end{array} \right.
 		\]
 		and we impose
@@ -115,8 +115,8 @@ We do the pre-processing.
 			\item \If $\locTotntIsOne = 1$ \Then
 				\[
 					\left\{ \begin{array}{lclr}
-						\locFirstLimbByteSize  & \define & \locRealSize \\
-						\locLastLimbByteSize   & =       & \locRealSize \\
+						\locFirstLimbByteSize & \define & \locRealSize \\
+						\locLastLimbByteSize  & =       & \locRealSize \\
 					\end{array} \right.
 				\]
 			\item \If $\locTotntIsOne = 0$ \Then 
@@ -127,7 +127,7 @@ We do the pre-processing.
 					\end{array} \right.
 				\]
 		\end{enumerate}
-	\def\rowNum{4} \item[Pre-processing row $\bm{n^\circ (i + \rowNum)}$:] 
+	\def\rowNum{4} \item[\underline{Pre-processing row $\bm{n^\circ \rowNum}$:}] 
 		we impose
 		\[
 			\left\{ \begin{array}{l}
@@ -169,7 +169,7 @@ We do the pre-processing.
 		\saNote{}
 		We will only use \locLastLimbSingleSource{} in the $\locTotntIsOne = 0$ case, so we could get away without the case analysis.
 		We will similarly only use \locMicroSloIncrement{} in case $\locTotntIsOne = 0$.
-	\def\rowNum{5} \item[Pre-processing row $\bm{n^\circ (i + \rowNum)}$:] 
+	\def\rowNum{5} \item[\underline{Pre-processing row $\bm{n^\circ \rowNum}$:}] 
 		we impose
 		\[
 			\left\{ \begin{array}{l}

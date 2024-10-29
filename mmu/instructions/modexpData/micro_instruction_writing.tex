@@ -2,7 +2,7 @@
 \end{center}
 We impose the following:
 \begin{description}
-	\item[Progression:] \label{mmu: instructions: modexpdata: micro instrution writing: tlo progression}
+	\item[\underline{Progression:}] \label{mmu: instructions: modexpdata: micro instrution writing: tlo progression}
 		we impose generally \If $\isMicro_{i} = 1$ \Then $\stdProgression_{i}\Big[\isMicro, \microTlo \Big]$
 \end{description}
 \saNote{} \label{mmu: modexData: microTLO explanation} Recall that in the present case (\mmuInstFlagModexpData{} instruction) the we have
@@ -13,7 +13,7 @@ see~(\ref{mmu: instructions: modexpdata: initialize: tlo is initially 0}).
 The above therefore enforces that \microTlo{} will count monotonically and without gaps from $0$ to $31$ during the micro-instruction-writing phase.
 And indeed the goal of the present \mmuMod{}-instruction is to copy over up to $512 = 32 \times \llarge$ (potentially left and/or right zero padded) bytes of data i.e. $32$ data limbs.
 \begin{description}
-	\item[Zero padding rows:] 
+	\item[\underline{Zero padding rows:}] 
 		\If $\isZero_{i} = 1$ \Then
 		\[
 			\left\{ \begin{array}{lcl}
@@ -32,7 +32,7 @@ And indeed the goal of the present \mmuMod{}-instruction is to copy over up to $
 				% \microIdTwo       _{i} & = & \nothing or \alreadySet \\
 			\end{array} \right.
 		\]
-	\item[Only nontrivial row:] 
+	\item[\underline{Only nontrivial row:}] 
 		\If $\isOnlyNT_{i}$ \Then
 		\[
 			\left\{ \begin{array}{lcl}
@@ -53,16 +53,16 @@ And indeed the goal of the present \mmuMod{}-instruction is to copy over up to $
 		\]
 		where
 		\begin{description}
-			\item[Defining \locOnlyMicroInst:] ---
+			\item[\underline{Defining \locOnlyMicroInst:}] ---
 				\begin{enumerate}
 					\item \If $\locFirstLimbSingleSource = 0$ \Then \[ \locOnlyMicroInst = \mmioInstRamToLimbTwoSource \]
 					\item \If $\locFirstLimbSingleSource = 1$ \Then \[ \locOnlyMicroInst = \mmioInstRamToLimbOneSource \]
 				\end{enumerate}
 		\end{description}
-	\item[First nontrivial row:] 
+	\item[\underline{First nontrivial row:}] 
 		\If $\isFirstNT_{i} = 1$ \Then
 		\begin{description}
-			\item[Micro-instruction:] 
+			\item[\underline{Micro-instruction:}] 
 				\[
 					\left\{ \begin{array}{lcl}
 						\microInst        _{i} & = & \locFirstMicroInst            \\
@@ -82,13 +82,13 @@ And indeed the goal of the present \mmuMod{}-instruction is to copy over up to $
 				\]
 				where we have made use of the shorthand \locFirstMicroInst{} defined below:
 				\begin{description}
-					\item[Defining \locFirstMicroInst:] ---
+					\item[\underline{Defining \locFirstMicroInst:}] ---
 						\begin{enumerate}
 							\item \If $\locFirstLimbSingleSource = 0$ \Then \[ \locFirstMicroInst = \mmioInstRamToLimbTwoSource \]
 							\item \If $\locFirstLimbSingleSource = 1$ \Then \[ \locFirstMicroInst = \mmioInstRamToLimbOneSource \]
 						\end{enumerate}
 				\end{description}
-			\item[Paying forward of \microSlo{}:]
+			\item[\underline{Paying forward of \microSlo{}:}]
 				we impose that
 				\begin{enumerate}
 					\item \If $\locAligned_{i} = 1$ \Then $\microSlo_{i + 1} = 1 + \microSlo_{i}$
@@ -108,7 +108,7 @@ And indeed the goal of the present \mmuMod{}-instruction is to copy over up to $
 						+ & (1 - \locAligned_{i}) \cdot (1 - \locFirstLimbSingleSource) \\
 					\end{array} \right]
 				\]
-			\item[Paying forward of \microSbo{}:]
+			\item[\underline{Paying forward of \microSbo{}:}]
 				we impose that
 				\begin{enumerate}
 					\item \If $\locAligned_{i} = 1$ \Then $\microSbo_{i + 1} = 0$ \quad(\trash)
@@ -120,13 +120,13 @@ And indeed the goal of the present \mmuMod{}-instruction is to copy over up to $
 				\end{enumerate}
 				\saNote{} We really only need to specify the \microSbo{} update in the non-aligned case.
 				\saNote{} We could have used the shorthand \locMiddleSbo, stored in a $\ppOutputCol{6}$, but that would create a sixth column, only for this (almost never) used instruction. 
-			\item[Paying forward of \microTbo{}:]
+			\item[\underline{Paying forward of \microTbo{}:}]
 				we impose that $\microTbo_{i + 1} = \rZero$
 		\end{description}
-	\item[Middle nontrivial row:] 
+	\item[\underline{Middle nontrivial row:}] 
 		\If $\isMiddleNT_{i} = 1$ \Then
 		\begin{description}
-			\item[Micro-instruction:]
+			\item[\underline{Micro-instruction:}]
 				\[
 					\left\{ \begin{array}{lcl}
 						\microInst        _{i} & = & \locMiddleMicroInst     \\
@@ -146,23 +146,23 @@ And indeed the goal of the present \mmuMod{}-instruction is to copy over up to $
 				\]
 				where
 				\begin{description}
-					\item[Defining \locMiddleMicroInst:] ---
+					\item[\underline{Defining \locMiddleMicroInst:}] ---
 						\begin{enumerate}
 							\item \If $\locAligned = 0$ \Then \( \locMiddleMicroInst = \mmioInstRamToLimbTwoSource    \)
 							\item \If $\locAligned = 1$ \Then \( \locMiddleMicroInst = \mmioInstRamToLimbTransplant \)
 						\end{enumerate}
 				\end{description}
-			\item[Paying forward of \microSlo{}:]
+			\item[\underline{Paying forward of \microSlo{}:}]
 				the next source limb is the next limb in the source: $\microSlo_{i + 1} = 1 + \microSlo_{i}$
-			\item[Paying forward of \microSbo{}:]
+			\item[\underline{Paying forward of \microSbo{}:}]
 				remains unchanged: $\microSbo_{i + 1} = \microSbo_{i}$
-			\item[Paying forward of \microTbo{}:]
+			\item[\underline{Paying forward of \microTbo{}:}]
 				remains unchanged: $\microTbo_{i + 1} = \microTbo_{i}$
 		\end{description}
-	\item[Last nontrivial row:] 
+	\item[\underline{Last nontrivial row:}] 
 		\If $\isLastNT_{i} = 1$ \Then
 		\begin{description}
-			\item[Micro-instruction:]
+			\item[\underline{Micro-instruction:}]
 				we impose
 				\[
 					\left\{ \begin{array}{lcl}
@@ -183,7 +183,7 @@ And indeed the goal of the present \mmuMod{}-instruction is to copy over up to $
 				\]
 				where
 				\begin{description}
-					\item[Defining \locLastMicroInst:] ---
+					\item[\underline{Defining \locLastMicroInst:}] ---
 						\begin{enumerate}
 							\item \If $\locLastLimbSingleSource = 0$ \Then \( \locLastMicroInst = \mmioInstRamToLimbTwoSource \)
 							\item \If $\locLastLimbSingleSource = 1$ \Then \( \locLastMicroInst = \mmioInstRamToLimbOneSource \)
