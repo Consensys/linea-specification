@@ -11,13 +11,7 @@ As per the above this section deals with recognizing and handling unexceptional 
 	\item[\underline{Setting the caller's new return data:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locIsRoot = 1$ \Then we impose
-				\[
-					\readContextData
-					{i}{\locCallerContextRowOffsetMessageCall}
-					{\cn_{i}}
-				\]
-			\item \If $\locIsRoot = 0$ \Then we impose
+			\item we impose that
 				\[
 					\provideReturnData {
 						anchorRow          = i                                     ,
@@ -30,6 +24,8 @@ As per the above this section deals with recognizing and handling unexceptional 
 				\]
 		\end{enumerate}
 \end{description}
-\saNote{}
-There is no \textbf{intrinsic} reason for the \zkEvm{} to read the current execution context data in case the current context is the root.
-We impose this solely in order to prevent stealth updates to another execution context's data.
+\saNote{} \label{hub: instruction handling: halt: return: updating the caller context even as root}
+When the current execution context is the root context this leads us to
+update the context data of the execution context with $\cn \equiv 0$.
+See section~(\ref{hub: consistency: context: constraints: consistency constraints only apply to nontrivial execution contexts})
+for details on this.

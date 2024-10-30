@@ -192,8 +192,11 @@ We deal with setting the contents of the various peeking rows.
 			\end{array} \right.
 		\]
 		\saNote{}
+		\label{hub: initialization phase: transaction call data copy}
 		The $\txCopyTxcd$ flag is set in the \txnDataMod{} module as the conjunction of a transaction requiring \evm{} execution and being provided with nonempty call data,
 		see section~(\ref{txn_data: constraints: comparisons}).
+		The \mmuMod{} instruction serves to transfer the transaction's call data to a fresh new \textsc{ram} segment.
+		Future \inst{CALLDATACOPY} and \inst{CALLDATALOAD} instructions executed in the root context will extract their data from that ``execution context's \textsc{ram}'', which contains a full copy of the transaction's call data.
 
 	\item[\underline{\underline{Context-row n$^°~(\bm{i + \locTxInitContextRowOffset})$:}}]
 		we initialize the next execution context as follows:
@@ -273,6 +276,7 @@ We deal with setting the contents of the various peeking rows.
 				cannot be set at the moment;
 		\end{description}
 	\item[\underline{\underline{Initializing some context variables:}}]
+		\label{hub: initialization phase: common constraints: initializing some context variables}
 		we impose
 		\[
 			\firstRowOfNewContext {i}{\locTxInitTransactionRowOffset + 1}

@@ -60,8 +60,7 @@ The present section deals with handling \inst{REVERT} instructions.
 				\If $\xAhoy_{i} = 0$ \Then we impose
 				\begin{enumerate}
 					\item $\readContextData {i}{\locRevertCurrentContextRowOffset}{\locCurrentContext}$
-					\item \If $\locCurrentContextIsRoot = 1$ \Then $\readContextData {i}{\locRevertParentContextRowOffset}{\locCallerContext}$
-					\item \If $\locCurrentContextIsRoot = 0$ \Then
+					\item we impose that
 						\[
 							\provideReturnData {
 								anchorRow          = i                                ,
@@ -72,7 +71,9 @@ The present section deals with handling \inst{REVERT} instructions.
 								returnDataSize     = \locTypeSafeReturnDataSize       ,
 							}
 						\]
-						In other words: execution provides return data to its caller context provided that it isn't the root context.
+						\saNote{}
+						We refer the reader to the interpertation of the above (and its meaninglessness) in case the current context is the root context of the transaction to section~(\ref{hub: consistency: context: constraints}).
+						The same remark applies as remark~(\ref{hub: instruction handling: halt: return: updating the caller context even as root}).
 				\end{enumerate}
 		\end{enumerate}
 	\item[\underline{Setting \locTriggerMmu{}:}] 
@@ -145,23 +146,6 @@ The present section deals with handling \inst{REVERT} instructions.
 				referenceOffset = \locRao                 ,
 				referenceSize   = \locRac                 ,
 				}
-			% \setMmuInstructionParametersRamToRamSansPadding {i}{\locRevertMiscRowOffset}
-			% \left[ \begin{array}{ll}
-			% 	\utt{Source ID:}            & \locCurrentContext    \\
-			% 	\utt{Target ID:}            & \locCallerContext     \\
-			% 	% \utt{Auxiliary ID:}       & \col{aux\_id}         \\
-			% 	% \utt{Source offset high:} & \col{src\_offset\_hi} \\
-			% 	\utt{Source offset low:}    & \locOffsetLo          \\
-			% 	% \utt{Target offset low:}  & \col{tgt\_offset\_lo} \\
-			% 	\utt{Size:}                 & \locSizeLo            \\
-			% 	\utt{Reference offset:}     & \locRao               \\
-			% 	\utt{Reference size:}       & \locRac               \\
-			% 	% \utt{Success bit:}        & \col{success\_bit}    \\
-			% 	% \utt{Limb one:}           & \col{limb\_1}         \\
-			% 	% \utt{Limb two:}           & \col{limb\_2}         \\
-			% 	% \utt{Exo sum:}            & \col{exo\_sum}        \\
-			% 	% \utt{Phase:}              & \col{phase}           \\
-			% \end{array} \right]
 		\]
 	\item[\underline{Setting the gas cost:}]
 		we impose that

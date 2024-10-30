@@ -1,7 +1,5 @@
 We require that the following constraints hold:
 \begin{description}
-	\item[Nontrivial contexts:]
-		\If $\order{\peekContext}_{i} = 1$ \Then $\order{\cnCn}_{i} \neq 0$ \quad (\trash)
 	\item[Setting $\conContextFirst$ and $\conContextAgain$:]
 		we impose the following
 		\begin{enumerate}
@@ -14,8 +12,8 @@ We require that the following constraints hold:
 				        \item \If $\order{\cnCn}_{i + 1} =    \order{\cnCn}_{i}$ \Then $\conContextAgain_{i + 1} = 1$
 				\end{enumerate}
 		\end{enumerate}
-	\item[Immutability constraints:] 
-		\If $\conContextAgain_{i + 1} = 1$ \Then
+	\item[Immutability constraints:]
+		\If $\conContextAgain_{i + 1} = 1$ \et $\order{\cnCn}_{i + 1} \neq 0$ \Then
 		\[
 			\left\{ \begin{array}{lcl}
 				% \order{\cnCn                   }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCn                   }      _{i} \\
@@ -45,7 +43,7 @@ We require that the following constraints hold:
 			\end{array} \right.
 		\]
 	\item[Immutability constraints for return data:] 
-		\If $\conContextAgain_{i + 1} = 1$ \et $\order{\cnUpdate}_{i + 1} = 0$ \Then
+		\If $\conContextAgain_{i + 1} = 1$ \et $\order{\cnCn}_{i + 1} \neq 0$ \et $\order{\cnUpdate}_{i + 1} = 0$ \Then
 		\[
 			\left\{ \begin{array}{lcl}
 				% \order{\cnCn                   }     _{i + 1} & \!\!\! = \!\!\! & \order{\cnCn                   }      _{i} \\
@@ -75,6 +73,22 @@ We require that the following constraints hold:
 			\end{array} \right.
 		\]
 \end{description}
+\saNote{}
+\label{hub: consistency: context: constraints: consistency constraints only apply to nontrivial execution contexts}
+The above constraints enforce consistency for contexts with \textbf{nonzero context number}.
+Observe that whenever the \zkEvm{} spawns a new execution context it does so with
+$\cn \equiv \hubStamp$\footnote{And
+this may only happen in the \textbf{initialization phase} of a transaction,
+when transfering transaction call data to a designated, fresh new execution context's \textsc{ram};
+see section~(\ref{hub: initialization phase: transaction call data copy}) for details.} or 
+$\cn \equiv 1 + \hubStamp$ where moreover
+$\hubStamp > 0$.
+This implies that any nontrivial execution context has nonzero context number.
+Note also that the root context of any execution context has $\caller \equiv 0$,
+see section~(\ref{hub: initialization phase: common constraints: initializing some context variables}).
+The execution context with context number $0$ is unconstrained for the most part and can be used and abused.
+
 The above enforces that a given execution context always runs the same code (same address, same deployment number and same deployment status), that its caller context remains constant throughout, and that the data indicating whether or not it will revert (and if so whether it is self induced and/or inherited from a parent context reverting) and at what point in time a revert may trigger --- that all this be constants of the execution context.
 
-\saNote{} Since $\peekContext$ is binary we are thus requiring that all rows with $\peekContext \equiv 0$ be listed consecutively followed by all rows with $\peekContext \equiv 1$.
+\saNote{}
+Since $\peekContext$ is binary we are thus requiring that all rows with $\peekContext \equiv 0$ be listed consecutively followed by all rows with $\peekContext \equiv 1$.
