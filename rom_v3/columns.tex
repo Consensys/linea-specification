@@ -1,0 +1,91 @@
+The following column is used for book-keeping of different code fragments within the \romMod{} module.
+\begin{enumerate}
+    \item \CFI{}:
+	code-fragment-constant column;
+	an unique (block)-identifier of a code fragment;
+	abbreviated to \cfi{};
+    \item $\cfiMax$:
+	conflation-wide maximal code fragment index;
+    \item \CS{}:
+	a code-fragment-constant column containing the code size of the bytecode currently being loaded into \romMod{} module;
+	abbreviated to \cs{};
+    \item \CSR{}:
+	a binary column that equals $0$ at the onset of a given bytecode and reaches 1 at the point where $\pc_i=\CS_i$;
+	abbreviated to \csr{};
+    \item \pc{}:
+	program counter (i.e. index of the byte in the current bytecode);
+    \item \index{}:
+	contains the index of the current \limb{};
+	starts counting at $0$;
+    \item \ct{}:
+	a periodic counter;
+	it counts up from $0$ to \ctMax{} in increments of 1 and resets;
+    \item \ctMax{}:
+	a \ct{}-constant colomn, gives the high bound of \ct{};
+    \item \limb{}:
+	contains $\llarge$-byte slices of (right zero padded) bytecode;
+    \item \nBytes{}:
+	number of non-padded bytes of the \limb;
+    \item \nBytesAcc{}:
+	an accumulator for \nBytes{};
+    \item \ACC{}:
+	accumulate the \pbcb{} bytes;
+\end{enumerate}
+The \pbcb{} column gets instruction decoded in the \idMod{} module.
+These are the columns that the \romMod{} extracts from it:
+\begin{enumerate}[resume]
+    \item \PBCB{}:
+	raw byte from the \limb{};
+	the \pbcb{} column lists the bytes from said bytecode one by one as well as some extraneous \texttt{0x00}'s beyond the \CS{} (padding);
+	abbreviated to \pbcb{};
+    \item \IRP{}:
+	instruction decoded binary flag;
+	lights up for every \pbcb{} whose numeric value matches that of a \inst{PUSHX} instructions\footnote{that is, is in the range $[\![\, \texttt{0x60} , ~ \texttt{0x7f} \,]\!]$};
+	abbreviated to \irp{};
+    \item \IRJD{}:
+	instruction decoded binary flag;
+	lights up for every \pbcb{} whose numeric value matches that of the \inst{JUMPDEST} instruction\footnote{that is, \texttt{0x5b}};
+	abbreviated to \irjd{};
+\end{enumerate}
+The following columns relate to the processing of \inst{PUSHX} instructions.
+\begin{enumerate}[resume]
+    \item \PP{}:
+	contains \inst{X} for \inst{PUSHX} instruction and the (\inst{X}) data rows that follow that instruction;
+	abbreviated to \pp{};
+    \item \CP{}:
+	counter which counts from $1$ to \PP{} while processing a \inst{PUSHX} instruction;
+	otherwise its value is $0$;
+    \item \PV\HIGH{} and \PV\LOW{}:
+	high and low part of the value that a push instruction pushes on stack;
+	abbreviated to $\pv\high$ and $\pv\low$ respectively;
+    \item \PVA:
+	``accumulator'' variables used to construct $\PV\HIGH$ and $\PV\LOW$ byte by byte out of ``data carrying bytes'';
+	abbreviated to $\pva$;
+    \item \PFB{}:
+	a binary flag that matters for correctly contructing \PV\HIGH{} and \PV\LOW{};
+	abbreviated to \pfb{};
+\end{enumerate}
+
+The columns below are related to the bytecode itself: the bytes that make it up, how to interpret them (i.e. do they code for instructions or are they data carriers for a \inst{PUSHX} instruction?), how much to pad with \texttt{0x00}'s etc\dots:
+\begin{enumerate}[resume]
+    \item \opc{}:
+	the opcode associated to the \pbcb{};
+	depends on the the context i.e. on whether the byte is shadowed by a \inst{PUSH} instruction (i.e. \( \ipd{}=1 \)) and whether the \CSR{} flag is on (at which point we impose $\pbcb=\opc=\texttt{0x00}$);
+	in all other circumstances \( \opc{} = \PBCB{} \);
+    \item \IP{}:
+	lights up precisely when $\opc \equiv \inst{PUSHX}$ for some $\inst{X} \in \{ 1, 2, \dots, \evmWordSize \}$;
+	abbreviated to \ip{};
+    \item \IPD{}:
+	binary flag;
+	lights up for the $\inst{X}$ rows following a \inst{PUSHX} instruction;
+	selects those bytes from the bytecode that contribute to the \inst{PUSH} instruction's $\PV\HIGH$ or $\PV\LOW$;
+	also sets the \opc{} of said lines to \inst{INVALID};
+	abbreviated to \ipd{};
+    \item \ISVALIDJUMPDESTINATION{}:
+	lights up precisely when $\opc \equiv \inst{JUMPDEST}$;
+	abbreviated to \isValidJumpDestination{};
+\end{enumerate}
+\saNote{}
+The \opc{} and \pbcb{} columns differ in that bytes that are ``obscured'' by a previous \inst{PUSHX} opcode
+will appear unaltered in the \pbcb{} column, but altered to \inst{INVALID} in the \opc{} column, see section~(\ref{rom: opcode: opcode from padded byte code byte}).
+As such the above precisely recognizes valid jump destinations as specified in the \cite{EYP}.

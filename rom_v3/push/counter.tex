@@ -1,0 +1,50 @@
+We connect $(\PP, \cp)$ to $(\IP, \IPD)$:
+\begin{enumerate}
+    \item
+        \If $\IP_{i} + \IPD_{i} = 0$ \Then
+        \[
+            \left\{ \begin{array}{lcl}
+                \PP_{i} & = & 0 \\
+                \cp_{i} & = & 0 \\
+            \end{array} \right.
+        \]
+    \item
+        \label{rom: push: counter: setting nontrivial PUSH_CT_MAX values}
+        \If $\IP  _{i} = 1$ \Then
+        \[
+            \left\{ \begin{array}{lcl}
+                \PP_{i} & = & \opc_{i} - \inst{PUSH1} + 1 \\
+                \cp_{i} & = & 0                           \\
+            \end{array} \right.
+        \]
+    \item
+        \If $\IPD _{i} = 1$ \Then
+        \[
+            \left\{ \begin{array}{lcl}
+                \PP_{i} & = & \PP_{i - 1}      \\
+                \cp_{i} & = & 1 + \cp _{i - 1} \\
+            \end{array} \right.
+        \]
+    \item
+        \label{rom: push: counter: no early resets for IS_PUSH_BYTE}
+        \If $\cp_{i} \neq \PP_{i}$ \Then $\IPD _{i + 1} = 1$
+    \item
+        \label{rom: push: counter: IS_PUSH_BYTE resets when CT reaches MAX}
+        \If $\cp_{i} =    \PP_{i}$ \Then $\IPD _{i + 1} = 0$
+\end{enumerate}
+\saNote{}
+It follows from
+section~(\ref{rom: opcode: is push from decoded}),
+section~(\ref{rom: instruction decoding}) and in particular
+figure~(\ref{rom: instruction decoding: relevant portion of ID module})
+that the value of $\PP$ being set in constraint~(\ref{rom: push: counter: setting nontrivial PUSH_CT_MAX values})
+lies in the integer interval
+$\{ 1, 2, \dots, 31, \evmWordSize \}$.
+The only other value that $\PP$ may take is $0$.
+
+\saNote{}
+The purpose of
+constraint~(\ref{rom: push: counter: no early resets for IS_PUSH_BYTE}) is to prevent $\IPD$ from ``resetting early.''
+On the other hand the purpose of 
+constraint~(\ref{rom: push: counter: IS_PUSH_BYTE resets when CT reaches MAX}) is to force $\IPD$ to ``reset'' at the appropriate time,
+i.e. when $\cp$ catches up with $\PP$.

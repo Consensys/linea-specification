@@ -1,0 +1,15 @@
+
+\begin{enumerate}
+	\item \If $\cfi_{i} = 0$ \Then $\index_{i}= 0$
+	\item \If $\cfi_{i} \neq \cfi_{i-1}$ \Then $\index_{i}= 0$
+	\item \If \Big($\cfi_{i} \neq 0$ \et $\cfi_{i} \neq \cfi_{i-1} + 1$ \et $\ct_{i} = 0$\Big) \Then:
+		\[ \index_{i} = \index_{i-1}+1 \]
+	\item \If $\ct_{i} = \llarge$ \Then $\index_{i} = \index_{i-1}+1$
+	\item \If ($\ct_{i} \ne 0$ \et $\ct_{i} \ne \llarge$) \Then $\index_{i} = \index_{i-1}$
+\end{enumerate}
+\saNote{} The condition ``$\ct_{i} = \llarge$'' is only triggered in the zero-padding of bytecode that happens at the end of every code fragment tracing. This constraint imposes that the index grow by one at the expected row.
+
+\saNote{} The requirement to add two full zero limbs at the end of the code fragment stems from two different reasons:
+(\emph{a}) allowing for simple push value construction
+(\emph{b}) making the lookup $\rlpTxnMod \hookrightarrow \romMod$ work seamlessly.
+The former module indeed appends two padding limbs to the end of initialization code.

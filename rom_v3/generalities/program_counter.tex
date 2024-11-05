@@ -1,0 +1,10 @@
+The program counter \pc{} is local to a code fragment index.
+It starts at $0$ and increases by $1$ with every byte in the code fragment (i.e. padded bytecode).
+This includes the padding bytes, which are all $\texttt{0x\,}\utt{00}$, that follow the actual byte code.
+\begin{enumerate}
+    \item \If $\cfi_{i} = 0$ \Then $\pc_{i} = 0$;
+    \item \If $\cfi_{i + 1} \neq \cfi_{i}$ \Then $\pc_{i + 1} = 0$
+    \item \If \Big($\cfi_{i} \neq 0$ \et $\cfi_{i + 1} \neq 1 + \cfi_{i}$\Big) \Then $\pc_{i + 1} = 1 + \pc_{i}$;
+\end{enumerate}
+\saNote{}
+\pc{} is \emph{de facto} \cfi-incrementing.
