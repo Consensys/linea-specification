@@ -10,11 +10,28 @@ We impose the general constraints following
 	\item \If $\txExec_{i} = 0$ \Then
 		\[
 			\left\{ \begin{array}{lcl}
-				\pc_{i}     & = & 0 \\
-				\pc\new_{i} & = & 0 \\
+				\pc     _{i} & = & 0 \\
+				\pc\new _{i} & = & 0 \\
 			\end{array} \right.
 		\]
-	\item \If $\peekStack_{i} = 1$ \et $\stackDecPushPopFlag_{i} + \stackDecJumpFlag_{i} = 0$ \Then $\pc\new_{i} = 1 + \pc_{i}$
-	\item \If $\peekStack_{i} = 1$ \et $\stackDecPushPopFlag_{i}                         = 1$ \Then $\pc\new_{i} = \cdots$ see section~(\ref{hub: instruction handling: pushPop})
-	\item \If $\peekStack_{i} = 1$ \et $                           \stackDecJumpFlag_{i} = 1$ \Then $\pc\new_{i} = \cdots$ see section~(\ref{hub: instruction handling: jump})
+	\item \label{hub: generalities: program counter: set PC_NEW to 0 in case of a stack exception}
+		\If $\peekStack_{i} = 1$ \et $\stackSux_{i} + \stackSox_{i} = 1$ \Then $\pc\new_{i} = 0$ \quad (\trash)
+	\item \If $\peekStack_{i} = 1$ \et $\stackSux_{i} + \stackSox_{i} = 0$
+		\begin{enumerate}
+			\item \If $\stackDecPushPopFlag_{i} + \stackDecJumpFlag_{i} = 0$ \Then $\pc\new_{i} = 1 + \pc_{i}$
+			\item \If $\stackDecPushPopFlag_{i}                         = 1$ \Then $\pc\new_{i} = \cdots$ see section~(\ref{hub: instruction handling: pushPop})
+			\item \If $                           \stackDecJumpFlag_{i} = 1$ \Then $\pc\new_{i} = \cdots$ see section~(\ref{hub: instruction handling: jump})
+		\end{enumerate}
 \end{enumerate}
+\saNote{}
+Recall that the binary flags
+\stackSux{} and
+\stackSox{}
+are exclusive, so that $\stackSux + \stackSox$ is binary,
+see section~(\ref{hub: generalities: exceptions: binarity and constancy}).
+
+\saNote{}
+Technically it is unncessary to constrain $\pc\new$ in the case of either a \suxSH{} or a \soxSH{}.
+We do it anywas for the sake of completeness.
+But an implementation may very well drop
+constraint~(\ref{hub: generalities: program counter: set PC_NEW to 0 in case of a stack exception}).

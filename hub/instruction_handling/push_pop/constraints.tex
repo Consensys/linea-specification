@@ -1,0 +1,41 @@
+\begin{center}
+	\boxed{%
+		\text{The stack constraints presented below assume }
+		\begin{cases}
+			\peekStack                 _{i} = 1 \\
+			\stackDecPushPopFlag       _{i} = 1 \\
+			\stackSux _{i} + \stackSox _{i} = 0 \\
+		\end{cases}}
+\end{center}
+
+\begin{description}
+	\item[\underline{Setting the stack pattern:}] we impose
+	\begin{enumerate}
+		\item \If $\locIsPop  = 1$ \Then $\oneZeroSP_{i}$
+		\item \If $\locIsPush = 1$ \Then $\zeroOneSP_{i}$
+	\end{enumerate}
+	\item[\underline{Setting $\nonStackRows$:}] we impose $\nonStackRows_{i} = \cmc_{i}$;
+	\item[\underline{Setting the peeking flags:}] we don't need to set any;
+
+	\saNote{} Implicitly of course $\cmc_{i} \cdot \peekContext_{i + 1} = \cmc_{i}$ (\trash);
+	\item[\underline{Setting the gas cost:}] we impose that $\gasCost_{i} = \decStaticGas_{i}$;
+	\item[\underline{Value constraints:}]
+		 \If $\locIsPush = 1$ \Then
+		\[
+			\begin{cases}
+				\locResultHi = \stackPushParamHi_{i} \\
+				\locResultLo = \stackPushParamLo_{i} \\
+			\end{cases}
+		\]
+	\item[\underline{Setting $\pc\new$:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\locIsPop  = 1$ \Then $\pc\new_{i} = 1 + \pc_{i}$
+			\item \If $\locIsPush = 1$ \Then $\pc\new_{i} = 1 + \pc_{i} + (\stackInst_{i} - \inst{PUSH1} + 1)$
+		\end{enumerate}
+\end{description}
+\saNote{}
+We only require setting values in the case of \inst{PUSH}-type instructions.
+
+\saNote{}
+For instructions raising the $\stackDecPushPopFlag$ one has $\cmc \equiv \xAhoy$.
