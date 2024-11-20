@@ -18,16 +18,16 @@ The constraints below enforce the behavior described above.
 \end{enumerate}
 The above is the transition constraint for gas refunds.
 
-Recall that \textbf{along stack-rows} one has
+Recall that \textbf{along stack-rows} (i.e. whenever $\peekStack \equiv 1$) one has
 \[
-		\stackDecStoFlag \cdot \decFlag{1} \equiv 1  \quad \text{precisely for \inst{SSTORE}, see section~(\ref{hub: instruction handling: sto});}
+	\stackDecStoFlag \cdot \decFlag{2} \equiv 1  \iff \stackInst \equiv \inst{SSTORE} \text{, see section~(\ref{hub: instruction handling: sto});}
 \]
 \begin{enumerate}[resume]
 	\item \If $\cnWillRev_{i} = 1$
 		\Then $\refund\new_{i} = \refund_{i}$
-	\item \If $\peekStack_{i} = 1$ \et $\stackDecStoFlag  _{i} \cdot \decFlag{1}_{i} = 0$
+	\item \If $\peekStack_{i} = 1$ \et $\stackDecStoFlag  _{i} \cdot \decFlag{2}_{i} = 0$
 		\Then $\refund\new_{i} = \refund_{i}$
-	\item \If $\cnWillRev_{i} = 0$ \et $\peekStack_{i} = 1$ \If $\stackDecStoFlag_{i} \cdot \decFlag{1}_{i}  = 1$ \Then \dots{} see section~(\ref{hub: instruction handling: sto})
+	\item \If $\cnWillRev_{i} = 0$ \et $\peekStack_{i} = 1$ \If $\stackDecStoFlag_{i} \cdot \decFlag{2}_{i}  = 1$ \Then \dots{} see section~(\ref{hub: instruction handling: sto})
 \end{enumerate}
 The above thus enforces that
 (\emph{a}) execution context that will revert don't contribute to the refunds
