@@ -7,7 +7,7 @@
 
 ## Accessing byte code from Linea state
 
-The byte code of an account **which exists in the Linea state** may be required to be loded if
+The byte code of an account **which exists in the Linea state** may be required to be loaded if
 - the address pointing to the account can be found among account rows of the HUB
 - the underlying account **exists** and has **nonempty bytecode**
 - the byte code is actually accessed either through
@@ -43,4 +43,4 @@ Byte code of an account with address _a_ may either
 
 ## Notes on addressing columns from different modules
 
-To disambiguate column names that may occurr in several modules we use the following notation `module.COLUMN` to talk unambiguously about column `COLUMN` in the module called `module`. We remind the reader that we also have special notation for multiplexing columns whereby (e.g. in the HUB) we may speak of a column belonging to the perspective e.g. account with name e.g. BALANCE and address it as `account/BALANCE`. If this column interacts with columns from other modules we may apply both conventions and speak say of column `hub.stack/STACK_ITEM_VALUE_HI_4` to speak of the column `STACK_ITEM_VALUE_HI_4` belonging to the `stack` perspective of the `hub` module.
+To disambiguate column names that may occur in several modules we use the following notation `module.COLUMN` to talk unambiguously about column `COLUMN` in the module called `module`. We remind the reader that we also have special notation for multiplexing columns whereby (e.g. in the HUB) we may speak of a column belonging to the perspective e.g. account with name e.g. BALANCE and address it as `account/BALANCE`. If this column interacts with columns from other modules we may apply both conventions and speak say of column `hub.stack/STACK_ITEM_VALUE_HI_4` to speak of the column `STACK_ITEM_VALUE_HI_4` belonging to the `stack` perspective of the `hub` module.

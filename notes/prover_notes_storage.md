@@ -13,7 +13,7 @@ Like for account data we use an acronym **scp** for "storage consistency permuta
 3. within (reordered) storage-rows, rows are ordered as follows
   - account addresses are listed in ascending order
   - among (reordered) storage-rows with the same address storage keys are listed in ascending order
-  - amont (reordered) storage-rows with the same address and storage key, rows are listed in "chronological" order
+  - among (reordered) storage-rows with the same address and storage key, rows are listed in "chronological" order
 
 **Note.** We refer the reader to the note on account consistency from the prover POV for the explanation of what constitutes a (reordered) storage-row.
 
@@ -25,7 +25,7 @@ The Arithmetization will provide the following columns
   - `false` on all other (reordered) rows
 - binary columns FIRST_KOC, FINAL_KOC
   - The acronym `KOC` stands for "(storage) key occurrence."
-  - both are false on (reordred) rows that aren't (reordered) storage-rows
+  - both are false on (reordered) rows that aren't (reordered) storage-rows
   - FIRST_AOC lights up on the first (reordered) storage-row featuring some given address and some given storage key
   - FINAL_AOC lights up on the final (reordered) storage-row featuring some given address and some given storage key
   - both may be on the same row if a particular storage slot is only viewed once (e.g. a single (unreverted) SLOAD or a single (unreverted) SSTORE)
@@ -77,4 +77,4 @@ The above can happen with a SELFDESTRUCT (it's the only way.)
 **Account redeployment**
 - if an account originally existed in state and ends up after the batch of transaction with acp_account/DEPLOYMENT_NUMBER_INFTY ≠ 0 then all original values in storage must be discarded, regardless of whether any storage values were required during execution.
 
-The above can happen for instance if an account was SELFDESTRUCT'ed in some transaction T and in a later transction T' (same batch of tx's) redeployed (the original account was created with a CREATE2 so redeployments at the same address are possible.
+The above can happen for instance if an account was SELFDESTRUCT'ed in some transaction T and in a later transaction T' (same batch of tx's) redeployed (the original account was created with a CREATE2 so redeployments at the same address are possible.

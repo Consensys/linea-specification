@@ -1,6 +1,6 @@
 # Account and storage management in the zkevm from the prover POV
 
-The zkevm is able to prove internal consistency for account fields and storage values touched / read in a batch of transactions. In so doing it is able to identify when an account (or a storage key/value pair) is touched for the **first time** and when an account (or a storage value/key pair) is touched for the **last time** in the execution of said batch of transactions. Identifying these special "first" and "final" interactions with Linea state allows us extract the required state data and to update it accordingly. This identification happens in the "permuted domain" where access to the same account or storage key are listed contiguously and in chronological order.
+The zkevm is able to prove internal consistency for account fields and storage values touched / read in a batch of transactions. In so doing it is able to identify when an account (or a storage key/value pair) is touched for the **first time** and when an account (or a storage value/key pair) is touched for the **last time** in the execution of said batch of transactions. Identifying these special "first" and "final" interactions with Linea state allows us extract the required state data and update it accordingly. This identification happens in the "permuted domain" where access to the same account or storage key are listed contiguously and in chronological order.
 
 - [Account and storage management in the zkevm from the prover POV](#account-and-storage-management-in-the-zkevm-from-the-prover-pov)
 - [Account Data](#account-data)
@@ -84,7 +84,7 @@ The rows of interest can be filtered out by means of FIRST_AOC[i] + FINAL_AOC[i]
 - account/EXISTS
 - account/EXISTS_NEW
 
-These are bits that equal 1 if the account **exists**. Recall that the account associated with a particular address $a$ is said to not exist in the state $\sigma$ (and $\sigma[a] = \varnothing$) if
+These are bits that equal 1 if the account **exists**. Recall that the account associated with a particular address $a$ is said not to exist in the state $\sigma$ (and $\sigma[a] = \varnothing$) if
 - it has zero nonce i.e. $\sigma[a]_\text{n} = 0$
 - it has zero balance i.e. $\sigma[a]_\text{b} = 0$
 - it has empty code i.e. $\sigma[a]_\text{c} = \texttt{KECCAK}\big((\\;)\big)$

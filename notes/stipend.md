@@ -15,7 +15,7 @@
 
 The purpose of the present `STI` module is to carry out the computation producing the gas stipend provided to any context spawned through a CALL-type instruction or a CREATE-type instruction.
 
-**Note.** The stipend itself is already claimed (without proof) in the `hub` (or will be, once the update to the `hub` is implemented.) For justficiation the `hub` will lookup the computaiton in the STI module, thereby justify the associated values which the `hub` merely claims. Note furthermore that the present module is stateless.
+**Note.** The stipend itself is already claimed (without proof) in the `hub` (or will be, once the update to the `hub` is implemented.) For justification the `hub` will lookup the computation in the STI module, thereby justify the associated values which the `hub` merely claims. Note furthermore that the present module is stateless.
 
 ## High level specification
 
@@ -31,7 +31,7 @@ The following are columns that will be imported from the HUB. All of them are tr
 - GAS_UPDT: gas amount available to the execution context just prior to dealing with the current CALL-type or CREATE-type instruction
 - GAS_COST: sum of all upfront gas costs associated with the instruction (e.g. static cost, memory expansion cost, hashing cost for CREATE2, account creation cost for CALL-type instruction whose recipient account doesn't exist in the state, warmth cost, value transfer cost ...)
 - GAS_HI, GAS_LO: required only for CALL-type instructions, 256 bit stack argument containing the 'max gas stipend' parameter $\mu{s}\big[0\big]$ of the instruction
-- VALUE_HI, VALUE_LO: required for CALL-type isntructions that take a value parameter (i.e. CALL and CALLCODE)
+- VALUE_HI, VALUE_LO: required for CALL-type instructions that take a value parameter (i.e. CALL and CALLCODE)
 - GAS_STIPEND: the value which ought to be justified
 
 
@@ -69,7 +69,7 @@ This case starts with the same computation of
 
 $$\lambda := L(\textsf{GAS\\_UPDT} - \textsf{GAS\\_COST})$$
 
-Next one must compare compare $\lambda$ and the 256-bit integer $\mu{s}\big[0\big]$. This can be done via a lookup to the WCP module. Using the outcome of that comparison one can impose that
+Next one must compare $\lambda$ and the 256-bit integer $\mu{s}\big[0\big]$. This can be done via a lookup to the WCP module. Using the outcome of that comparison one can impose that
 
 $$\textsf{GAS-STIPEND} == \min \big\lbrace \lambda, \mu_{\textbf{s}} \big[ 0 \big] \big\rbrace + 2300 \cdot \textsf{VALUE-TRANSFER} \cdot \big[ \mu_{\textbf{s}} \big[ 2 \big] \neq 0 \big]$$
 

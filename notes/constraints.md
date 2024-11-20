@@ -33,15 +33,15 @@ Prefer looking ahead from the vantage point of CT_i = 0
 
 And how do we verify a constraint ? (in the prover)
 
-Data you want to constrain is commited to as the evaluations of polynomials over a certain FFT friendly subset of a field. Some coset of a multiplicative subgroup of the units of a field.
+Data you want to constrain is committed to as the evaluations of polynomials over a certain FFT friendly subset of a field. Some coset of a multiplicative subgroup of the units of a field.
 
-We have some fixed size rquirements, e.G. the cosets all have size 2^22. This is realistic for say HUB and RAM.
+We have some fixed size requirements, e.G. the cosets all have size 2^22. This is realistic for say HUB and RAM.
 
 What we prove on chain is the satisfaction of a SNARK circuit (of Plonk type) with fixed sizes that verifies a proof of our type (general huge constraint system.) It's a proof of a proof of a proof of a... (maybe 3 or 4 times). With every recursion step reduce size by a factor of sqrt(n). Vortex.
 
 Not everything is of that circuit size.
 
-When we verify an equatoin of the form
+When we verify an equation of the form
 
 A * B + C - D * E * F * G * H + 1 = 0              (must be true on the coset, call it Dom)
 
@@ -59,7 +59,7 @@ Note: Q has degree 4 * |Dom|
 FFT is needed for 2 things:
 	- going from the evaluations to the coefficients
 	- what we commit to is the polynomial given by its coefficients
-	- to compute quotients effciently.
+	- to compute quotients efficiently.
 		- we first do FFTs on a larger domain of size 4 * |Dom|
 		- we deduce the evaluations of Q on that larger domain
 		- we do inverse FFT using these evaluations to get the coefficients Q so we can commit to it.
