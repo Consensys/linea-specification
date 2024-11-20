@@ -22,7 +22,7 @@ The first step is to compare \locXbs{} to $512$.
 If \locComputeMax{} is set we compute the maximum of \locYbsLo{} and \locXbs{}.
 The use case for this comparison is to compute the maxium $\max\{ \locBbs, \locMbs \}$ as required by the pricing of the \inst{MODEXP} precompile.
 \begin{description}
-	\item[\underline{Rows n°$(i)$ and $n^\circ(i + 1)$:}] we impose
+	\item[\underline{Rows n°$(i)$, $n^\circ(i + 1)$ and $n^\circ(i + 2)$:}] we impose
 		\[
 			\left\{ \begin{array}{l}
 				\oobCallToLt
@@ -43,8 +43,8 @@ The use case for this comparison is to compute the maxium $\max\{ \locBbs, \locM
 		we further impose the following constraints
 		\[
 			\left\{ \begin{array}{lclr}
-				\locComputeMax \cdot (1 - \locComputeMax) & = & 0 & \qquad (\trash) \\
-				\locCompToFiveTwelve                      & = & 1                   \\
+				\locComputeMax \cdot (1 - \locComputeMax) & = & 0      \\
+				\locCompToFiveTwelve                      & = & 1      \\
 			\end{array} \right.
 		\]
 		where we further define the shorthands
@@ -54,6 +54,8 @@ The use case for this comparison is to compute the maxium $\max\{ \locBbs, \locM
 				\locCmp              & \define & \outgoingResLo    _{i + 1} \\
 			\end{array} \right.
 		\]
+		\saNote{} The value \locComputeMax{}, along with the other inputs, is provided to the \hubMod{} module and will be binary in all applications.
+		
 		\saNote{} The constraint $\outgoingResLo_{i} = 1$ enforces that the comparison ``$\locXbs < 512 + 1$'' i.e. ``$\locXbs \leq 512$'' return \texttt{true}.
 	\item[\underline{Justifying \hubMod{} predictions:}] we impose
 		we further impose that
