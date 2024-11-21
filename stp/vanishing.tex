@@ -1,30 +1,29 @@
-The present section presents vanishing constraints for columns that aren't used depeding on the instruction type. We \emph{may} impose that
+The present section presents vanishing constraints for columns that aren't used depending on the instruction type. We \emph{may} impose that
 \begin{description}
 	\item[\underline{\inst{CREATE}-type instructions:}] \If $\isCreate_{i} = 1$ \Then
 		\[
 			\left\{\begin{array}{lclr}
-				\gasHi_{i}        & = & 0 & (\trash) \\
-				\gasLo_{i}        & = & 0 & (\trash) \\
-				\warm_{i}         & = & 0 & (\trash) \\
-				\existence_{i}    & = & 0 & (\trash) \\
+				\gasHi     _{i} & = & 0 & (\trash) \\
+				\gasLo     _{i} & = & 0 & (\trash) \\
 			\end{array}\right.
 		\]
-	\item[\underline{\inst{CALL} instructions:}] \If $\stpCall_{i} = 1$ \Then we impose nothing;
-	\item[\underline{\inst{CALLCODE} instructions:}] \If $\stpCallCode_{i} = 1$ \Then we impose \( \existence_{i} = 1 \)
-	\item[\underline{\inst{DELEGATECALL} instructions:}] \If $\stpDelegateCall_{i} = 1$ \Then
+	\item[\underline{\inst{DELEGATECALL} and \inst{STATICCALL} instructions:}]
+		\If $\stpDelegateCall _{i} + \stpStaticCall _{i} = 1$
+		\Then we impose
 		\[
 			\left\{\begin{array}{lclr}
-				\valHi_{i}        & = & 0 & (\trash) \\
-				\valLo_{i}        & = & 0 & (\trash) \\
-				\existence_{i}    & = & 1 & (\trash) \\
+				\valHi _{i} & = & 0 & (\trash) \\
+				\valLo _{i} & = & 0 & (\trash) \\
 			\end{array}\right.
 		\]
-	\item[\underline{\inst{STATICCALL} instructions:}] \If $\stpStaticCall_{i} = 1$ \Then
-		\[
-			\left\{\begin{array}{lclr}
-				\valHi_{i}        & = & 0 & (\trash) \\
-				\valLo_{i}        & = & 0 & (\trash) \\
-			\end{array}\right.
-		\]
+		\saNote{}
+		Recall that neither \inst{DELEGATECALL} nor \inst{STATICCALL} have a ``\texttt{value}'' argument.
+	\item[\underline{Non \inst{CALL}, \inst{CALL}-type instructions:}]
+		\If $\stpCallCode _{i} + \stpDelegateCall _{i} + \stpStaticCall _{i} = 1$
+		\Then we impose that
+		\[ \existence _{i} = 0 \]
+		\saNote{}
+		We justify the choice to impose $\existence \equiv 0$ for non \inst{CALL}, \inst{CALL}-type instructions in
+		section~(\ref{hub: instruction handling: call: generalities: universal}),
+		specifically in (\ref{hub: instruction handling: call: generalities: universal: account existence for non CALLs}).
 \end{description}
-\ob{TODO: are these restrictions desirable ? These are obviously harmless constraints, they make for slighty smaller lookups if we segregate them by instruction type, and potentially add constraints if we don't.} 
