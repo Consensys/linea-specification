@@ -45,10 +45,29 @@ In the present section we describe the various account operations that are requi
 					{i}{\callFirstCallerAccountRowOffset}
 				\]
 			\item \If $\scenCallBalanceUpdateRequired _{i} = 1$ \Then
+				\begin{enumerate}
+				        \item \If $\locIsCall = 1$ \Then
+						\[
+							\accDecrementBalance
+							{i}{\callFirstCallerAccountRowOffset}{\locValueLo}
+						\]
+					\item \If $\locIsCallcode + \locIsDelegatecall + \locIsStaticcall = 1$ \Then
+						\[
+							\accSameBalance
+							{i}{\callFirstCallerAccountRowOffset}
+						\]
+				\end{enumerate}
+				\saNote{} \label{hub: instruction handling: call: generalities: first account rows: value transfer subtleties}
+				The above may alternatively be implemented without case disjunction as
 				\[
 					\accDecrementBalance
-					{i}{\callFirstCallerAccountRowOffset}{\locValueLo}
+					{i}{\callFirstCallerAccountRowOffset}{\locIsCall \cdot \locValueLo}
 				\]
+				Either way the above reflects that fact that only \inst{CALL} may \emph{actually} transfer value.
+				The \inst{CALL}-type instruction \inst{CALLCODE} also has a ``\locValue'' argument but it doesn't set off a value transfer.
+				This ``\locValue'' becomes the ``call value'' of the child context.
+				It is noteworthy that while no \emph{actual} value transfer takes place,
+				\inst{CALLCODE} may nonetheless incur a value transfer cost.
 		\end{enumerate}
 	\item[\underline{First \calleee{} account-row $n^°(i + \callFirstCalleeAccountRowOffset)$:}] 
 		we impose that
@@ -87,7 +106,27 @@ In the present section we describe the various account operations that are requi
 		we impose that
 		\begin{enumerate}
 			\item \If $\scenCallBalanceUpdateNotRequired _{i} = 1$ \Then $\accSameBalance      {i}{\callFirstCalleeAccountRowOffset}$
-			\item \If $\scenCallBalanceUpdateRequired _{i}    = 1$ \Then $\accIncrementBalance {i}{\callFirstCalleeAccountRowOffset}{\locValueLo}$
+			\item \If $\scenCallBalanceUpdateRequired    _{i} = 1$ \Then
+				\begin{enumerate}
+				        \item \If $\locIsCall = 1$ \Then
+						\[
+							\accIncrementBalance
+							{i}{\callFirstCalleeAccountRowOffset}{\locValueLo}
+						\]
+					\item \If $\locIsCallcode + \locIsDelegatecall + \locIsStaticcall = 1$ \Then
+						\[
+							\accSameBalance
+							{i}{\callFirstCalleeAccountRowOffset}
+						\]
+				\end{enumerate}
+				\saNote{}
+				Echoing
+				note~(\ref{hub: instruction handling: call: generalities: first account rows: value transfer subtleties}),
+				the above may alternatively be implemented without case disjunction as
+				\[
+					\accIncrementBalance
+					{i}{\callFirstCalleeAccountRowOffset}{\locIsCall \cdot \locValueLo}
+				\]
 		\end{enumerate}
 	\item[\underline{Setting the \calleee{} warmth update on account-row $n^°(i + \callFirstCalleeAccountRowOffset)$:}]
 		we impose that
