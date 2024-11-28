@@ -23,7 +23,6 @@ We deal with setting the contents of the various peeking rows.
 						domOffset        = 0,
 					}
 				} \\
-					%\standardDomSubStamps                 {i}{\locTxInitSenderAccountRowOffset}{0}                      } \\
 			\end{array} \right.
 		\]
 		where
@@ -45,9 +44,6 @@ We deal with setting the contents of the various peeking rows.
 				\accAddress    \high _{i + \locTxInitRecipientAccountRowOffset} & = & \txTo  \high  _{i + \locTxInitTransactionRowOffset}              \\
 				\accAddress    \low  _{i + \locTxInitRecipientAccountRowOffset} & = & \txTo  \low   _{i + \locTxInitTransactionRowOffset} \vspace{2mm} \\
 				\multicolumn{3}{l}{\accIncrementBalance  {i}{\locTxInitRecipientAccountRowOffset}{\txValue_{i + \locTxInitTransactionRowOffset}}} \\
-				% \multicolumn{3}{l}{\accSameNonce                  {i}{\locTxInitRecipientAccountRowOffset}} \\
-				% \multicolumn{3}{l}{\accSameCode                   {i}{\locTxInitRecipientAccountRowOffset}} \\
-				% \multicolumn{3}{l}{\accSameDeployment             {i}{\locTxInitRecipientAccountRowOffset}} \\
 				\texttt{Nonce:}      & \multicolumn{2}{l}{\valueToBeSet} \\
 				\texttt{Code:}       & \multicolumn{2}{l}{\valueToBeSet} \\
 				\texttt{Deployment:} & \multicolumn{2}{l}{\valueToBeSet} \\
@@ -62,7 +58,6 @@ We deal with setting the contents of the various peeking rows.
 						domOffset        = 1,
 					}
 				} \\
-					% \standardDomSubStamps              {i}{\locTxInitRecipientAccountRowOffset}{1}} \\
 			\end{array} \right.
 		\]
 		\saNote{} The above explicitly disallows transactions targeting a precompile address.
@@ -225,34 +220,9 @@ We deal with setting the contents of the various peeking rows.
 				returnAtOffset              = 0                                                                    ,
 				returnAtCapacity            = 0                                                                    ,
 				}
-			% \initializeContext{\locTxInitContextRowOffset}_{i}
-			% \left[ \begin{array}{llr}
-			% 	\utt{context number:}                & \cn\new _{i}                                                  \\
-			% 	\utt{call stack depth:}              & \rZero                                                        \\
-			% 	\utt{is root:}                       & \rOne                                                         \\
-			% 	\utt{is static:}                     & \rZero                                                        \\
-			% 	\utt{account address high:}          & \txTo  \high       _{i + \locTxInitTransactionRowOffset}      \\
-			% 	\utt{account address low:}           & \txTo  \low        _{i + \locTxInitTransactionRowOffset}      \\
-			% 	\utt{account deployment number:}     & \accDeploymentNumber \new _{i + \locTxInitRecipientAccountRowOffset} \\
-			% 	\utt{byte code address high:}        & \txTo  \high       _{i + \locTxInitTransactionRowOffset}      \\
-			% 	\utt{byte code address low:}         & \txTo  \low        _{i + \locTxInitTransactionRowOffset}      \\
-			% 	\utt{byte code deployment number:}   & \accDeploymentNumber \new _{i + \locTxInitRecipientAccountRowOffset} \\
-			% 	\utt{byte code deployment status:}   & \accDeploymentStatus \new _{i + \locTxInitRecipientAccountRowOffset} \\
-			% 	\utt{byte code code fragment index:} & \accCfi            _{i + \locTxInitRecipientAccountRowOffset} \\
-			% 	\utt{caller address high:}           & \txFrom  \high     _{i + \locTxInitTransactionRowOffset}      \\
-			% 	\utt{caller address low:}            & \txFrom  \low      _{i + \locTxInitTransactionRowOffset}      \\
-			% 	\utt{call value:}                    & \txValue           _{i + \locTxInitTransactionRowOffset}      \\
-			% 	\utt{call data context number:}      & \locTxInitCallDataContextNumber                               \\
-			% 	\utt{call data offset:}              & 0                                                             \\
-			% 	\utt{call data size:}                & \txCallDataSize    _{i + \locTxInitTransactionRowOffset}      \\
-			% 	\utt{return at offset:}              & 0                                                             \\
-			% 	\utt{return at capacity:}            & 0                                                             \\
-			% 	% \utt{returner context:}            & \col{returnerCn}                                              \\
-			% 	% \utt{return data offset:}          & \col{returnDataOffset}                                        \\
-			% 	% \utt{return data size:}            & \col{returnDataSize}                                          \\
-			% \end{array} \right]
 		\]
 		\saNote{} Recall that $\cn\new _{i} = 1 + \hubStamp _{i}$, see section~(\ref{hub: generalities: context: context numbers}).
+
 	\item[\underline{\underline{Transaction-row n$^°~(\bm{i + \locTxInitTransactionRowOffset})$:}}]
 		we must justify certain predictions made by the \txnDataMod{} module:
 		\begin{description}
