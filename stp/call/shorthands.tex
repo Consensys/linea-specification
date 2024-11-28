@@ -1,44 +1,38 @@
 For greater expressivity we use the following shorthands
 \[
 	\left\{ \begin{array}{lrl}
-		%
-		%
-		%
 		\locTransfersValue & \define &
 		\begin{cases}
 			\If \locCctv = 0: & 0 \\
 			\If \locCctv = 1: & 1 - \resLo_{i + 1} \\
 		\end{cases} \\
-                & \define & \locCctv \cdot (1 - \resLo_{i + 1}) \vspace{2mm} \\
-		%
-		%
-		%
+                & \define &
+		\locCctv \cdot (1 - \resLo_{i + 1})
+		\vspace{2mm} \\
+		%%%%%%%%%%
 		\locZeroValue & \define &
 		\begin{cases}
 			\If \locCctv = 0: & 0 \\
 			\If \locCctv = 1: & \resLo_{i + 1} \\
 		\end{cases} \\
-                & \define & \locCctv \cdot \resLo_{i + 1} \vspace{2mm} \\
-		%
-		%
-		%
+                & \define & \locCctv \cdot \resLo_{i + 1}
+		\vspace{2mm} \\
+		%%%%%%%%%%
 		\locGasAccess & \define &
 		\begin{cases}
-			\If \locWarm = 1: & G_\text{warmaccess} \\
+			\If \locWarm = 1: & G_\text{warmaccess}        \\
 			\If \locWarm = 0: & G_\text{coldaccountaccess} \\
-		\end{cases} \\
-		%
-		%
-		%
-		\locGasTransfer & \define &
+		\end{cases}
+		\vspace{2mm} \\
+		%%%%%%%%%%
+		\locValueTransferGasCost & \define &
 		\begin{cases}
 			\If \locTransfersValue = 1: & G_\text{callvalue} \\
-			\If \locTransfersValue = 0: & 0 \\
+			\If \locTransfersValue = 0: & 0                  \\
 		\end{cases} \\
-                & \define & \locTransfersValue \cdot G_\text{callvalue} \vspace{2mm} \\
-		%
-		%
-		%
+                & \define & \locTransfersValue \cdot G_\text{callvalue}
+		\vspace{2mm} \\
+		%%%%%%%%%%
 		\locGasNewAcc & \define &
 		\begin{cases}
 			\If \stpCall_{i} = 0 ~ \Then & 0 \\
@@ -47,29 +41,26 @@ For greater expressivity we use the following shorthands
 				\If \locExists = 1 \vee   \locTransfersValue = 0 : & 0                   \\
 				\If \locExists = 0 \wedge \locTransfersValue = 1 : & G_\text{newaccount} \\
 			\end{cases}
-		\end{cases}
-                \\
+		\end{cases} \\
                 & \define &
 		G_\text{newaccount} \cdot
 		\left[ \begin{array}{cr}
-			\cdot & \stpCall_{i} \\
-			\cdot & (1 - \locExists) \\
+			\cdot & \stpCall_{i}       \\
+			\cdot & (1 - \locExists)   \\
 			\cdot & \locTransfersValue \\
 		\end{array} \right]
 		\vspace{2mm} \\
-		%
-		%
-		%
-		\locGasXtra        & \define & \locGasAccess + \locGasTransfer + \locGasNewAcc \\
-		\locGasUpfrontCall & \define & \locGasMxp + \locGasXtra \vspace{2mm}           \\
-		\locOneSixtyFourth & \define & \resLo_{i + 3}                                  \\
-		\locGasCompBit     & \define & \resLo_{i + 4}                                  \\
-		\locDiff           & \define & \locGasActl ~ - ~ \locGasUpfrontCall            \\
-		\locLOfGasDiff     & \define & \locGasDiff ~ - ~ \locOneSixtyFourth            \\
+		%%%%%%%%%%
+		\locGasXtra        & \define & \locGasAccess + \locValueTransferGasCost + \locGasNewAcc \\
+		\locGasUpfrontCall & \define & \locGasMxp + \locGasXtra \vspace{2mm}                    \\
+		\locOneSixtyFourth & \define & \resLo_{i + 3}                                           \\
+		\locGasCompBit     & \define & \resLo_{i + 4}                                           \\
+		\locDiff           & \define & \locGasActl ~ - ~ \locGasUpfrontCall                     \\
+		\locLOfGasDiff     & \define & \locGasDiff ~ - ~ \locOneSixtyFourth                     \\
 		\locMin            & \define &
 		\begin{cases}
 			\If \locGasCompBit = 0 : & \locLOfGasDiff \\
-			\If \locGasCompBit = 1 : & \gasLo_{i} \\
+			\If \locGasCompBit = 1 : & \gasLo_{i}     \\
 		\end{cases} \\
 	\end{array} \right.
 \]
@@ -77,6 +68,6 @@ These are only to be used if the row index $i$ is such that
 \[
 	\begin{cases}
 		\stpStamp _{i} \neq \stpStamp_{i - 1} \\
-		\isCall   _{i} =    1 \\
+		\isCall   _{i} =    1                 \\
 	\end{cases}
 \]
