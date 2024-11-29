@@ -1,11 +1,13 @@
 \makeatletter
  
-\define@cmdkey [DOMSUB] {var} {anchorRow}                      {}
-\define@cmdkey [DOMSUB] {var} {relOffset}                      {}
-\define@cmdkey [DOMSUB] {var} {domOffset}                      {}
-\define@cmdkey [DOMSUB] {var} {subOffset}                      {}
-\define@cmdkey [DOMSUB] {var} {revertStamp}                    {}
-\define@cmdkey [DOMSUB] {var} {childRevertStamp}               {}
+\define@cmdkey [DOMSUB] {var} {anchorRow}          {}
+\define@cmdkey [DOMSUB] {var} {relOffset}          {}
+\define@cmdkey [DOMSUB] {var} {domOffset}          {}
+\define@cmdkey [DOMSUB] {var} {subOffset}          {}
+\define@cmdkey [DOMSUB] {var} {revertStamp}        {}
+\define@cmdkey [DOMSUB] {var} {childRevertStamp}   {}
+\define@cmdkey [DOMSUB] {var} {txnEndStamp}        {}
+
 
 
 \presetkeys    [DOMSUB] {var} {
@@ -15,6 +17,7 @@
   childRevertStamp = \missingParameter,
   domOffset        = \missingParameter,
   subOffset        = \missingParameter,
+  txnEndStamp      = \missingParameter,
 }{}
 
 % \cmdDOMSUB@var@anchorRow  
@@ -43,7 +46,7 @@
   \standardDomSubStampsName _{\cmdDOMSUB@var@anchorRow}
   \left[ \begin{array}{ll}
     \utt{Rel. row offset:} & \cmdDOMSUB@var@relOffset \\
-    \utt{Dom offset:} & \cmdDOMSUB@var@domOffset \\
+    \utt{Dom offset:}      & \cmdDOMSUB@var@domOffset \\
   \end{array} \right]
 }
 
@@ -52,10 +55,10 @@
   \setkeys[DOMSUB]{var}{#1}
   \genericUndoingDomSubStampsName _{\cmdDOMSUB@var@anchorRow}
   \left[ \begin{array}{ll}
-    \utt{Rel. row offset:}   & \cmdDOMSUB@var@relOffset   \\
-    \utt{Revert stamp:} & \cmdDOMSUB@var@revertStamp \\
-    \utt{Dom offset:}   & \cmdDOMSUB@var@domOffset   \\
-    \utt{Sub offset:}   & \cmdDOMSUB@var@subOffset   \\
+    \utt{Rel. row offset:} & \cmdDOMSUB@var@relOffset   \\
+    \utt{Revert stamp:}    & \cmdDOMSUB@var@revertStamp \\
+    \utt{Dom offset:}      & \cmdDOMSUB@var@domOffset   \\
+    \utt{Sub offset:}      & \cmdDOMSUB@var@subOffset   \\
   \end{array} \right]
 }
 
@@ -72,8 +75,8 @@
   \setkeys[DOMSUB]{var}{#1}
   \revertDomSubStampsName _{\cmdDOMSUB@var@anchorRow}
   \left[ \begin{array}{ll}
-    \utt{Rel. row offset:}   & \cmdDOMSUB@var@relOffset   \\
-    \utt{Sub offset:}   & \cmdDOMSUB@var@subOffset   \\
+    \utt{Rel. row offset:} & \cmdDOMSUB@var@relOffset \\
+    \utt{Sub offset:}      & \cmdDOMSUB@var@subOffset \\
   \end{array} \right]
 }
 
@@ -83,14 +86,25 @@
 %   subOffset        = ,
 % }
 
+\newcommand{\finalizationDomSubStampsName} {\stampSignifier\texttt{finalizationDomSubStamps}}
+\newcommand{\finalizationDomSubStamps} [1] {
+	\setkeys[DOMSUB]{var}{#1}
+	\finalizationDomSubStampsName _{\cmdDOMSUB@var@anchorRow}
+\left[ \begin{array}{ll}
+    \utt{Rel. row offset:} & \cmdDOMSUB@var@relOffset \\
+    \utt{Txn. end stamp:}  & \cmdDOMSUB@var@txnEndStamp \\
+    \utt{Sub offset:}      & \cmdDOMSUB@var@subOffset \\
+\end{array} \right]
+}
+
 \newcommand{\revertWithChildFailureDomSubStampsName} {\stampSignifier\texttt{revertWithChildFailureDomSubStamps}}
 \newcommand{\revertWithChildFailureDomSubStamps} [1] {
 	\setkeys[DOMSUB]{var}{#1}
 	\revertWithChildFailureDomSubStampsName _{\cmdDOMSUB@var@anchorRow}
 \left[ \begin{array}{ll}
-    \utt{Rel. row offset:}         & \cmdDOMSUB@var@relOffset \\
+    \utt{Rel. row offset:}    & \cmdDOMSUB@var@relOffset        \\
     \utt{Child revert stamp:} & \cmdDOMSUB@var@childRevertStamp \\
-    \utt{Sub offset:}         & \cmdDOMSUB@var@subOffset \\
+    \utt{Sub offset:}         & \cmdDOMSUB@var@subOffset        \\
 \end{array} \right]
 }
 
