@@ -25,7 +25,18 @@ we peek into the recipient account to transfer the transaction value
 		} \\
 	\end{array} \right.
 \]
-We must distinguish between
+\saNote{} \label{hub: initialization phase: why we trim the recipient address}
+The recipient address as contained in the pair
+\[
+	\big( \locTxInitRecipientAddressHi, \locTxInitRecipientAddressLo \big)
+\]
+whether coming from the \texttt{to} field of the transaction
+or being deduced from the \texttt{sender} address and its current \texttt{nonce},
+requires no trimming for the same reason that the sender address requires no trimming.
+Regardless, we trim said recipient address for reasons already expressed in
+note~(\ref{hub: initialization phase: why we trim the sender address}).
+
+\noindent We must distinguish between
 message calls ($\locTxInitIsMessageCall~=~1$) and
 deployments ($\locTxInitIsDeployment~=~1$).
 \begin{description}
@@ -47,9 +58,9 @@ deployments ($\locTxInitIsDeployment~=~1$).
 			\item[\underline{Nonce:}] 
 				we impose
 				\[
-					\left\{ \begin{array}{lclr}
+					\left\{ \begin{array}{lcl}
 						\multicolumn{3}{l}{\accIncrementNonce {i}{\locTxInitRoffAccDoingRecipientValueReception}} \\
-						\accNonce_{i + \locTxInitRoffAccDoingRecipientValueReception} & = & 0 & (\trash) \vspace{2mm} \\
+						\accNonce_{i + \locTxInitRoffAccDoingRecipientValueReception} & = & 0  \\
 					\end{array} \right.
 				\]
 			\item[\underline{Code:}] 
@@ -75,6 +86,7 @@ deployments ($\locTxInitIsDeployment~=~1$).
 				\[
 					\left\{ \begin{array}{lclr}
 						\multicolumn{3}{l}{\accIncrementDeploymentNumber  {i}{\locTxInitRoffAccDoingRecipientValueReception}} \\
+						\accDeploymentNumber      _{i + \locTxInitRoffAccDoingRecipientValueReception} & = & 0     \\
 						\accDeploymentStatus      _{i + \locTxInitRoffAccDoingRecipientValueReception} & = & 0      & (\trash) \\
 						\accDeploymentStatus\new  _{i + \locTxInitRoffAccDoingRecipientValueReception} & = & \rOne \\
 					\end{array} \right.
