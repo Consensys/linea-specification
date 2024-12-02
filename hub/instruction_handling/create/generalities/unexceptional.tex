@@ -60,23 +60,62 @@ We impose the following constraints:
 		\[
 			\left\{ \begin{array}{lcl}
 				% \accRlpAddrFlag               _{i + \createFirstCreatorAccountRowOffset} & = & \rOne              \\
-				\accRlpAddrRecipe             _{i + \createFirstCreatorAccountRowOffset} & = & \locRlpAddrRecipe  \\
-				\accRlpAddrDepAddrHi          _{i + \createFirstCreatorAccountRowOffset} & = & \relevantValue     \\
-				\accRlpAddrDepAddrLo          _{i + \createFirstCreatorAccountRowOffset} & = & \relevantValue     \\
-				\accRlpAddrSaltHi             _{i + \createFirstCreatorAccountRowOffset} & = & \locSaltHi         \\
-				\accRlpAddrSaltLo             _{i + \createFirstCreatorAccountRowOffset} & = & \locSaltLo         \\
-				\accRlpAddrKecHi              _{i + \createFirstCreatorAccountRowOffset} & = & \locInitCodeHashHi \\
-				\accRlpAddrKecLo              _{i + \createFirstCreatorAccountRowOffset} & = & \locInitCodeHashLo \\
+				\accRlpAddrRecipe    _{i + \createFirstCreatorAccountRowOffset} & = & \locRlpAddrRecipe  \\
+				\accRlpAddrDepAddrHi _{i + \createFirstCreatorAccountRowOffset} & = & \relevantValue     \\
+				\accRlpAddrDepAddrLo _{i + \createFirstCreatorAccountRowOffset} & = & \relevantValue     \\
+				\accRlpAddrSaltHi    _{i + \createFirstCreatorAccountRowOffset} & = & \locSaltHi         \\
+				\accRlpAddrSaltLo    _{i + \createFirstCreatorAccountRowOffset} & = & \locSaltLo         \\
+				\accRlpAddrKecHi     _{i + \createFirstCreatorAccountRowOffset} & = & \locInitCodeHashHi \\
+				\accRlpAddrKecLo     _{i + \createFirstCreatorAccountRowOffset} & = & \locInitCodeHashLo \\
 			\end{array} \right.
 		\]
 		where we set
 		\[
-			\locRlpAddrRecipe := 
-			\left[ \begin{array}{lrcl}
-				+ & \locIsCreate         & \!\!\! \cdot \!\!\! & \addressCreationRecipeConstantStd \\
-				+ & \locIsCreateTwo      & \!\!\! \cdot \!\!\! & \addressCreationRecipeConstantTwo \\
-			\end{array} \right]
+			\left\{ \begin{array}{lcl}
+				\locRlpAddrRecipe & \define &
+				\left[ \begin{array}{lrcl}
+					+ & \locIsCreate         & \!\!\! \cdot \!\!\! & \addressCreationRecipeConstantStd \\
+					+ & \locIsCreateTwo      & \!\!\! \cdot \!\!\! & \addressCreationRecipeConstantTwo \\
+				\end{array} \right] \vspace{2mm} \\
+				\locInitCodeHashHi & \define & \locIsCreateTwo \cdot
+				\left[ \begin{array}{rcl}
+					\locTriggerHashInfo       & \cdot & \locHashInfoKeccakHi \\
+					(1 - \locTriggerHashInfo) & \cdot & \emptyKeccakHi       \\
+				\end{array} \right] \vspace{2mm} \\
+				\locInitCodeHashLo & \define & \locIsCreateTwo \cdot 
+				\left[ \begin{array}{rcl}
+					\locTriggerHashInfo       & \cdot & \locHashInfoKeccakLo \\
+					(1 - \locTriggerHashInfo) & \cdot & \emptyKeccakLo       \\
+				\end{array} \right] \\
+			\end{array} \right.
 		\]
+		In other words
+		\begin{enumerate}
+		        \item \If $\locIsCreateTwo = 0$ \Then 
+				\[
+					\left\{ \begin{array}{lclr}
+						\locInitCodeHashHi & \define & 0 & (\trash) \\
+						\locInitCodeHashLo & \define & 0 & (\trash) \\
+					\end{array} \right.
+				\]
+		        \item \If $\locIsCreateTwo = 1$ \Then 
+				\begin{enumerate}
+				        \item \If $\locTriggerHashInfo = 0$
+						\[
+							\left\{ \begin{array}{lclr}
+								\locInitCodeHashHi & \define & \emptyKeccakHi & (\trash) \\
+								\locInitCodeHashLo & \define & \emptyKeccakLo & (\trash) \\
+							\end{array} \right.
+						\]
+				        \item \If $\locTriggerHashInfo = 1$
+						\[
+							\left\{ \begin{array}{lclr}
+								\locInitCodeHashHi & \define & \locHashInfoKeccakHi & (\trash) \\
+								\locInitCodeHashLo & \define & \locHashInfoKeccakLo & (\trash) \\
+							\end{array} \right.
+						\]
+				\end{enumerate}
+		\end{enumerate}
 		\saNote{} We remind the reader that section~(\ref{rlpAddr: create computation constants}) defines two nonzero constants $\addressCreationRecipeConstantStd$ and $\addressCreationRecipeConstantTwo$.
 \end{description}
 \saNote{} The \zkEvm{} thus loads the account whose address corresponds to $I_\text{a}$ in the \cite{EYP}.
