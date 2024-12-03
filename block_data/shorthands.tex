@@ -14,7 +14,7 @@ We shall often use the following shorthands for
 \]
 \noindent We further define the following shorthands
 \[
-	\left\{ \begin{array}{lcl}
+	\begin{array}{lcrlcr}
 		\locFlagSum _{i} & \define &
 		\left[ \begin{array}{cl}
 			+ & \locIsCoinbase   _{i} \\
@@ -24,8 +24,8 @@ We shall often use the following shorthands for
 			+ & \locIsGaslimit   _{i} \\
 			+ & \locIsChainid    _{i} \\
 			+ & \locIsBasefee    _{i} \\
-		\end{array} \right] \vspace{2mm} \\
-		\locWghtSum _{i} & \define &
+		\end{array} \right] , &
+		\quad \locWghtSum _{i} & \define &
 		\left[ \begin{array}{crcl}
 			+ & 1 & \cdot & \locIsCoinbase   _{i} \\
 			+ & 2 & \cdot & \locIsTimestamp  _{i} \\
@@ -34,7 +34,12 @@ We shall often use the following shorthands for
 			+ & 5 & \cdot & \locIsGaslimit   _{i} \\
 			+ & 6 & \cdot & \locIsChainid    _{i} \\
 			+ & 7 & \cdot & \locIsBasefee    _{i} \\
-		\end{array} \right] \vspace{2mm} \\
+		\end{array} \right]
+	\end{array}
+\]
+and
+\[
+	\begin{array}{lcrlcr}
 		\locInstSum _{i} & \define &
 		\left[ \begin{array}{crcl}
 			+ & \inst{COINBASE}   & \cdot & \locIsCoinbase   _{i} \\
@@ -44,17 +49,33 @@ We shall often use the following shorthands for
 			+ & \inst{GASLIMIT}   & \cdot & \locIsGaslimit   _{i} \\
 			+ & \inst{CHAINID}    & \cdot & \locIsChainid    _{i} \\
 			+ & \inst{BASEFEE}    & \cdot & \locIsBasefee    _{i} \\
-		\end{array} \right] \vspace{2mm} \\
-		\locMaxCtSum _{i} & \define &
+		\end{array} \right] , &
+		\quad \locMaxCtSum _{i} & \define &
 		\left[ \begin{array}{crcl}
-			+ & \ctMaxCoinbase   & \cdot & \locIsCoinbase    _{i} \\
-			+ & \ctMaxTimestamp  & \cdot & \locIsTimestamp   _{i} \\
-			+ & \ctMaxNumber     & \cdot & \locIsNumber      _{i} \\
-			+ & \ctMaxDifficulty & \cdot & \locIsDifficulty  _{i} \\
-			+ & \ctMaxGaslimit   & \cdot & \locIsGaslimit    _{i} \\
-			+ & \ctMaxChainid    & \cdot & \locIsChainid     _{i} \\
-			+ & \ctMaxBasefee    & \cdot & \locIsBasefee     _{i} \\
+			+ & (\ctMaxCoinbase   - 1) & \cdot & \locIsCoinbase    _{i} \\
+			+ & (\ctMaxTimestamp  - 1) & \cdot & \locIsTimestamp   _{i} \\
+			+ & (\ctMaxNumber     - 1) & \cdot & \locIsNumber      _{i} \\
+			+ & (\ctMaxDifficulty - 1) & \cdot & \locIsDifficulty  _{i} \\
+			+ & (\ctMaxGaslimit   - 1) & \cdot & \locIsGaslimit    _{i} \\
+			+ & (\ctMaxChainid    - 1) & \cdot & \locIsChainid     _{i} \\
+			+ & (\ctMaxBasefee    - 1) & \cdot & \locIsBasefee     _{i} \\
 		\end{array} \right] \\
+	\end{array}
+\]
+where we set
+\[
+	\left\{ \begin{array}{lcl}
+		\ctMaxCoinbase   & \define & \yellowm{2} \\
+		\ctMaxTimestamp  & \define & \yellowm{3} \\
+		\ctMaxNumber     & \define & \yellowm{1} \\
+		\ctMaxDifficulty & \define & \yellowm{1} \\
+	\end{array} \right.
+	\quad\text{and}\quad
+	\left\{ \begin{array}{lcl}
+		\ctMaxGaslimit  & \define & \yellowm{5}                         \\
+		\ctMaxChainid   & \define & \yellowm{1}                         \\
+		\ctMaxBasefee   & \define & \yellowm{1}                         \\
+		\blockDataWidth & \define & \sum \kappaDots \equiv \yellowm{14} \\
 	\end{array} \right.
 \]
 We further define the following shorthands

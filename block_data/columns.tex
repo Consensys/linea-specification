@@ -24,8 +24,8 @@ We introduce some binary columns linked to the instructions that the present mod
 		\item $\isBasefee$     
 	\end{enumerate} 
 \end{multicols}
-We shall often abbreviate these column names to
-\begin{enumerate}[resume]
+\noindent The following columns contain data which is reflected in the \txnDataMod{} module.
+\begin{enumerate}[resume, start=13]
 	\item $\instruction$:
 		instruction column;
 	\item $\coinbase\high$ and $\coinbase\low$:
@@ -48,10 +48,8 @@ The following columns pertain to transaction and block numbers.
 		\ccc{} containing the number of transactions in this block;
 	\item $\blockDataHi$, $\blockDataLo$:
 		columns containing block data;
-	\item $\auxiliaryDataHi$, $\auxiliaryDataLo$:
-		columns containing auxiliary data, typically for use in a lookup;
-	\item $\wcpFlag$:
+	\item $\argOneHi$, $\argOneLo$, $\argTwoHi$, $\argTwoLo$, $\res$, $\exoInstruction$
+		columns containing arguments for computations performed by foreign modules;
+	\item $\wcpFlag$, $\eucFlag$:
 		binary flags used as selector for lookups;
 \end{enumerate}
-\saNote{}
-The \INST{} column is $0$ during padding then cycles through a selection of ``block data'' specific opcodes e.g. \texttt{0x\,10} (i.e. \inst{COINBASE}), \texttt{0x\,46} (i.e. \inst{CHAINID}) etc\dots{} see section~(\ref{block data: value constraints}).

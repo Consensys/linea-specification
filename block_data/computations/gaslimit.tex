@@ -1,0 +1,85 @@
+\begin{center}
+	\boxed{\text{%
+		The following constraints assume that
+		$\left\{ \begin{array}{lcl}
+			\locIsGaslimit _{i - 1} & = & 0 \\
+			\locIsGaslimit _{i}     & = & 1 \\
+		\end{array} \right.$}}
+\end{center}
+We impose the following:
+\begin{description}
+	\item[\underline{\underline{Setting \inst{GASLIMIT}:}}]
+	\item[\underline{\underline{\inst{GASLIMIT} lower bound:}}]
+		\def\rowOffset{\yellowm{0}}
+		we impose
+		\[
+			\wcpCallToLeq{
+				anchorRow = i                     ,
+				relOffset = \rowOffset            ,
+				argOneHi  = 0                     ,
+				argOneLo  = \texttt{61\_000\_000} ,
+				argTwoHi  = 0                     ,
+				argTwoLo  = \blockGasLimit_{i}    ,
+			}
+		\]
+	\item[\underline{\underline{\inst{GASLIMIT} upper bound:}}]
+		\def\rowOffset{\yellowm{1}}
+		we impose
+		\[
+			\wcpCallToLeq{
+				anchorRow = i                         ,
+				relOffset = \rowOffset                ,
+				argOneHi  = 0                         ,
+				argOneLo  = \blockGasLimit_{i}        ,
+				argTwoHi  = 0                         ,
+				argTwoLo  = \texttt{2\_000\_000\_000} ,
+			}
+		\]
+	\item[\underline{\underline{Maximum departure:}}]
+		\def\rowOffset{\yellowm{2}}
+		\If $\locIsCurrConf _{i} = 1$ \Then
+		we impose
+		\[
+			\eucCall{
+				anchorRow = i                 ,
+				relOffset = \rowOffset        ,
+				argOne    = \previousGasLimit ,
+				argTwo    = 1024              ,
+			}
+		\]
+		where we set
+		\[
+			\left\{ \begin{array}{lcl}
+				\previousGasLimit & \define & \blockGasLimit _{i - \blockDataWidth} \\
+				\maxDeviation     & \define & \res _{i + \rowOffset}                \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		By definition, $\maxDeviation \equiv \left\lfloor \frac\previousGasLimit{1024} \right\rfloor$.
+	\item[\underline{\underline{\inst{GASLIMIT} deviation upper bound:}}]
+		\def\rowOffset{\yellowm{3}}
+		\If $\locIsCurrConf _{i} = 1$ \Then
+		\[
+			\wcpCallToLt{
+				anchorRow = i                  ,
+				relOffset = \rowOffset         ,
+				argOneHi  = 0                  ,
+				argOneLo  = \blockGasLimit_{i} ,
+				argTwoHi  = 0                  ,
+				argTwoLo  = \previousGasLimit  + \maxDeviation ,
+			}
+		\]
+	\item[\underline{\underline{\inst{GASLIMIT} deviation lower bound:}}]
+		\def\rowOffset{\yellowm{4}}
+		\If $\locIsCurrConf _{i} = 1$ \Then
+		\[
+			\wcpCallToGt{
+				anchorRow = i                  ,
+				relOffset = \rowOffset         ,
+				argOneHi  = 0                  ,
+				argOneLo  = \blockGasLimit_{i} ,
+				argTwoHi  = 0                  ,
+				argTwoLo  = \previousGasLimit  - \maxDeviation ,
+			}
+		\]
+\end{description}
