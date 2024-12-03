@@ -2,8 +2,40 @@
 	\boxed{\text{%
         The following constraints assume that
 	$\left\{ \begin{array}{lcl}
-		\locIsChainid _{i - 1} & = & 0 \\
-		\locIsChainid _{i}     & = & 1 \\
+		\isChainid _{i - 1} & = & 0 \\
+		\isChainid _{i}     & = & 1 \\
 	\end{array} \right.$}}
 \end{center}
 
+\begin{description}
+	\item[\underline{\underline{Setting \inst{CHAINID}:}}]
+		we cannot \emph{a priori} constrain \inst{CHAINID};
+
+		\saNote{}
+		Implementations may impose the value returned by the \inst{CHAINID} opcode to some network constant
+		$\lineaChainId$.
+	\item[\underline{\underline{Permanence of \inst{CHAINID}:}}]
+		\If $\locIsCurrConf _{i} = 1$ \Then
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\blockDataHi _{i} & = & \blockDataHi _{i - \blockDataDepth} \\
+				\blockDataLo _{i} & = & \blockDataLo _{i - \blockDataDepth} \\
+			\end{array} \right.
+		\]
+	\item[\underline{\underline{\inst{CHAINID} bound:}}]
+		\def\rowOffset{\yellowm{0}}
+		we impose
+		\[
+			\wcpCallToGeq{
+				anchorRow = i                     ,
+				relOffset = \rowOffset            ,
+				argOneHi  = \blockDataHi _{i}     ,
+				argOneLo  = \blockDataLo _{i}     ,
+				argTwoHi  = 0                     ,
+				argTwoLo  = 0                     ,
+			}
+		\]
+		\saNote{}
+		The above ensures that $\inst{CHAINID} \geq 0$ is well formed (in terms of its high and low parts being $\llarge$-byte integers.)
+\end{description}

@@ -1,9 +1,92 @@
 \begin{center}
 	\boxed{\text{%
-        The following constraints assume that
-	$\left\{ \begin{array}{lcl}
-		\locIsNumber _{i - 1} & = & 0 \\
-		\locIsNumber _{i}     & = & 1 \\
-	\end{array} \right.$}}
+		The following constraints assume that
+		$\left\{ \begin{array}{lcl}
+			\isNumber _{i - 1} & = & 0 \\
+			\isNumber _{i}     & = & 1 \\
+		\end{array} \right.$}}
 \end{center}
-
+\begin{description}
+	\item[\underline{\underline{Comparing :}}]
+		\def\rowOffset{\yellowm{0}}
+		we impose that
+		\[
+			\wcpCallToIszero {
+				anchorRow = i                                         ,
+				relOffset = \rowOffset                                ,
+				argOneHi  = 0                                         ,
+				argOneLo  = \blockNumberOfFirstBlockInConflation _{i} ,
+			}
+		\]
+		and we set
+		\[
+			\locFirstBlockIsGenesisBlock \define \res _{i + \rowOffset}
+		\]
+	\item[\underline{\underline{\inst{NUMBER} upper bound:}}]
+		\def\rowOffset{\yellowm{1}}
+		we impose that
+		\[
+			\wcpCallToLt{
+				anchorRow = i                 ,
+				relOffset = \rowOffset        ,
+				argOneHi  = \blockDataHi _{i} ,
+				argOneLo  = \blockDataLo _{i} ,
+				argTwoHi  = 0                 ,
+				argTwoLo  = 256^\medium       ,
+			}
+		\]
+		\saNote{}
+		The above ensures that \inst{NUMBER} is a $\medium$-byte integer.
+	\item[\underline{\underline{Setting \inst{NUMBER}:}}]
+		\begin{enumerate}
+			\item \If $\locIsPrevConf _{i} = 1$ \Then
+				\begin{enumerate}
+					\item \If $\locFirstBlockIsGenesisBlock = 1$ \Then
+						we impose that
+						\[
+							\left\{ \begin{array}{lcl}
+								\blockDataHi _{i} & = & 0 \\
+								\blockDataLo _{i} & = & 0 \\
+							\end{array} \right.
+						\]
+					\item \If $\locFirstBlockIsGenesisBlock = 0$ \Then
+						we impose that
+						\[
+							\left\{ \begin{array}{lcl}
+								\blockDataHi _{i} & = & 0                                             \\
+								\blockDataLo _{i} & = & \blockNumberOfFirstBlockInConflation _{i} - 1 \\
+							\end{array} \right.
+						\]
+				\end{enumerate}
+			\item \If $\locIsCurrConf _{i} = 1$ \Then
+				we impose that
+				\begin{enumerate}
+					\item \If $\locFirstBlockIsGenesisBlock = 1$ \Then
+						\begin{enumerate}
+							\item \If $\locIsPrevConf _{i - \blockDataDepth} = 1$ \Then
+								\[
+									\left\{ \begin{array}{lcl}
+										\blockDataHi _{i} & = & 0 \\
+										\blockDataLo _{i} & = & 0 \\
+									\end{array} \right.
+								\]
+							\item \If $\locIsCurrConf _{i - \blockDataDepth} = 1$ \Then
+								\[
+									\left\{ \begin{array}{lcl}
+										\blockDataHi _{i} & = & \blockDataHi _{i - \blockDataDepth}     \\
+										\blockDataLo _{i} & = & \blockDataLo _{i - \blockDataDepth} + 1 \\
+									\end{array} \right.
+								\]
+						\end{enumerate}
+						we impose that
+					\item \If $\locFirstBlockIsGenesisBlock = 0$ \Then
+						we impose that
+						\[
+							\left\{ \begin{array}{lcl}
+								\blockDataHi _{i} & = & \blockDataHi _{i - \blockDataDepth}     \\
+								\blockDataLo _{i} & = & \blockDataLo _{i - \blockDataDepth} + 1 \\
+							\end{array} \right.
+						\]
+				\end{enumerate}
+		\end{enumerate}
+\end{description}

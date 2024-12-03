@@ -2,8 +2,30 @@
 	\boxed{\text{%
         The following constraints assume that
 	$\left\{ \begin{array}{lcl}
-		\locIsDifficulty _{i - 1} & = & 0 \\
-		\locIsDifficulty _{i}     & = & 1 \\
+		\isDifficulty _{i - 1} & = & 0 \\
+		\isDifficulty _{i}     & = & 1 \\
 	\end{array} \right.$}}
 \end{center}
+\begin{description}
+	\item[\underline{\underline{Setting \inst{DIFFICULTY}:}}]
+		we cannot \emph{a priori} constrain \inst{DIFFICULTY};
 
+		\saNote{}
+		Implementations may impose the value returned by the \inst{DIFFICULTY} opcode to some network constant,
+		e.g. $\lineaDifficulty= 2$.
+	\item[\underline{\underline{\inst{DIFFICULTY} bound:}}]
+		\def\rowOffset{\yellowm{0}}
+		we impose
+		\[
+			\wcpCallToGeq{
+				anchorRow = i                     ,
+				relOffset = \rowOffset            ,
+				argOneHi  = \blockDataHi _{i}     ,
+				argOneLo  = \blockDataLo _{i}     ,
+				argTwoHi  = 0                     ,
+				argTwoLo  = 0                     ,
+			}
+		\]
+		\saNote{}
+		The above ensures that $\inst{DIFFICULTY} \geq 0$ is well formed (in terms of its high and low parts being $\llarge$-byte integers.)
+\end{description}

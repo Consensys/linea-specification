@@ -2,8 +2,32 @@
 	\boxed{\text{%
         The following constraints assume that
 	$\left\{ \begin{array}{lcl}
-		\locIsCoinbase _{i - 1} & = & 0 \\
-		\locIsCoinbase _{i}     & = & 1 \\
+		\isCoinbase _{i - 1} & = & 0 \\
+		\isCoinbase _{i}     & = & 1 \\
 	\end{array} \right.$}}
 \end{center}
-
+\begin{description}
+	\item[\underline{\underline{Setting \inst{COINBASE}:}}]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\blockDataHi _{i} & = & \coinbase\high _{i} \\
+				\blockDataLo _{i} & = & \coinbase\low  _{i} \\
+			\end{array} \right.
+		\]
+	\item[\underline{\underline{\inst{GASLIMIT} deviation lower bound:}}]
+		\def\rowOffset{\yellowm{0}}
+		\If $\locIsCurrConf _{i} = 1$ \Then
+		\[
+			\wcpCallToLt{
+				anchorRow = i            ,
+				relOffset = \rowOffset   ,
+				argOneHi  = \blockDataHi _{i} ,
+				argOneLo  = \blockDataLo _{i} ,
+				argTwoHi  = 256^\ssmall  ,
+				argTwoLo  = 0            ,
+			}
+		\]
+		\saNote{}
+		The above ensures that \inst{COINBASE} fits in a $\addressSize$-byte integer.
+\end{description}

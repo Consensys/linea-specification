@@ -2,7 +2,36 @@
 	\boxed{\text{%
         The following constraints assume that
 	$\left\{ \begin{array}{lcl}
-		\locIsBasefee _{i - 1} & = & 0 \\
-		\locIsBasefee _{i}     & = & 1 \\
+		\isBasefee _{i - 1} & = & 0 \\
+		\isBasefee _{i}     & = & 1 \\
 	\end{array} \right.$}}
 \end{center}
+
+\begin{description}
+	\item[\underline{\underline{Setting \inst{BASEFEE}:}}]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\blockDataHi _{i} & = & 0              \\
+				\blockDataLo _{i} & = & \basefee  _{i} \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		Implementations may further impose, by means of a constraint, the value returned by the \inst{BASEFEE} opcode to some network constant
+		$\lineaBaseFee{}$.
+	\item[\underline{\underline{\inst{BASEFEE} bound:}}]
+		\def\rowOffset{\yellowm{0}}
+		we impose
+		\[
+			\wcpCallToGeq{
+				anchorRow = i                     ,
+				relOffset = \rowOffset            ,
+				argOneHi  = \blockDataHi _{i}     ,
+				argOneLo  = \blockDataLo _{i}     ,
+				argTwoHi  = 0                     ,
+				argTwoLo  = 0                     ,
+			}
+		\]
+		\saNote{}
+		The above ensures that $\basefee _{i} \geq 0$ is well formed (in terms of its high and low parts being $\llarge$-byte integers.)
+\end{description}
