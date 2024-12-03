@@ -1,16 +1,80 @@
-The heartbeat is standard and simple:
+We start with $\iomf$ which we require to be binary nondecreasing:
 \begin{enumerate}
-	\item $\relBlock_{0} = 0$
+	\item $\iomf$ is binary ~ (\trash)
+	\item \If $\iomf _{i} = 1$ \Then $\iomf _{i + 1} = 1$
+	\item $\iomf _{0} = 0$
+	\item \If $\iomf _{i} = 0$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\ct       _{i} & = & 0 \\
+				\relBlock _{i} & = & 0 \\
+			\end{array} \right.
+		\]
+\end{enumerate}
+We now impose constraints related to the instruction flags.
+\begin{enumerate}[resume]
+	\item we unconditionally impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\iomf        _{i} & = & \locFlagSum  _{i}                         \\
+				\iomf        _{i} & = & \locIsPrevConf _{i} + \locIsCurrConf _{i} \\
+				\maxCt       _{i} & = & \locMaxCtSum _{i}                         \\
+				\instruction _{i} & = & \locInstSum  _{i}                         \\
+			\end{array} \right.
+		\]
+	\item $\locWghtSum$ is counter-constant
+\end{enumerate}
+\saNote{}
+The above imposes flag exclusivity constraints.
+It also implicitly enforces counter-constancy of all involved binary flags and thus of all expressions derived from these flags by linear combination.
+\begin{enumerate}[resume]
+	\item \If $\locPhaseEntry _{i} = 1$ \Then $\ct _{i + 1} = 0$ i.e. we reset the counter when entering a new phase
+	\item \If $\iomf_{i} = 1$ \Then
+		\begin{enumerate}
+			\item \If $\ct _{i} \neq \maxCt _{i}$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\ct _{i + 1}              & = & 1 + \ct _{i} \vspace{2mm} \\
+						\locPhaseEntry _{i}       & = & 0 \quad (\sanityCheck)    \\
+						\locSamePhase _{i}        & = & 1 \quad (\sanityCheck)    \\
+						\locLegalTransitions _{i} & = & 0 \quad (\sanityCheck)    \\
+					\end{array} \right.
+				\]
+			\item \If $\ct _{i} =    \maxCt _{i}$ \Then
+				\[
+					\left\{ \begin{array}{lclr}
+						\locLegalTransitions _{i} & = & 1 \vspace{2mm} \\
+					        \ct _{i + 1}              & = & 0               & (\sanityCheck) \\
+						\locPhaseEntry _{i}       & = & 1               & (\sanityCheck) \\
+						\locSamePhase _{i}        & = & 0               & (\sanityCheck) \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+\end{enumerate}
+We now impose constraints for the transition from $\iomf \equiv 0$ to $\iomf \equiv 1$:
+\begin{enumerate}[resume]
 	\item \If $\relBlock_{i} = 0$ \Then
 		\[
 			\left\{ \begin{array}{lcl}
-				\blockNumberOfFirstBlockInConflation  & \!\!\! = \!\!\! & 0 \\
-				\INST_{i}	       & \!\!\! = \!\!\! & 0 \\
-				\ct_{i}		       & \!\!\! = \!\!\! & 0 \quad (\trash) \\ 
+				\blockNumberOfFirstBlockInConflation _{i} & \!\!\! = \!\!\! & 0                \\
+				\INST_{i}                                 & \!\!\! = \!\!\! & 0                \\
+				\ct_{i}                                   & \!\!\! = \!\!\! & 0 \quad (\trash) \\
 			\end{array} \right.
 		\]
 	\item $\relBlock_{i + 1} \in \{ \relBlock_{i}, 1 + \relBlock_{i} \}$
-	\item \If $\relBlock_{i} \neq \relBlock_{i-1}$ \Then $\ct_{i} = 0$
+	\item $\relBlock _{i + 1} = \relBlock _{i} + \locIsBasefee _{i} \cdot \locIsCoinbase _{i + 1}$
+	\item \If $\iomf _{i} = 0$ \et $\iomf _{i + 1} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\locIsPrevConf _{i + 1} & = & 1 \\
+				\locIsCoinbase _{i + 1} & = & 1 \\
+			\end{array} \right.
+		\]
+	\item \If $\iomf_{i} = 1$ \et $\relBlock _{i + 1} \neq 1 + \relBlock _{i}$ \Then
+		\[ \locPrevCurrWghtSum _{i + 1} = \locPrevCurrWghtSum _{i} \]
+	\item \If $\relBlock _{i + 1} \neq \relBlock _{i}$ \Then $\locIsCurrConf _{i + 1} = 1$
+	\item \If $\locIsCurrConf _{i} = 1$ \Then $\locIsCurrConf _{i + 1} = 1$
+	\item \If $\relBlock_{i} \neq \relBlock_{i - 1}$ \Then $\ct_{i} = 0$
 	\item \If $\relBlock_{i} \neq 0$ \Then
 		\[
 			\left\{ \begin{array}{lcl}

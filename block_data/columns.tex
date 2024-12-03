@@ -1,17 +1,33 @@
 We remind the reader that \ccc{} stands for ``counter-constant column.''
+The first set of columns will be used to define the heartbeat of the \btcMod{} module.
 \begin{enumerate}
+	\item $\iomf$:
+		nondecreasing binary column;
+	\item $\previousConflation$:
+		binary column indicating the rows pertaining to the last block of the previous conflation;
+	\item $\currentConflation$:
+		binary column indicating the rows pertaining to the blocks of the current conflation;
+	\item $\maxCt$:
+		counter-constant column;
 	\item $\ct$:
-		counter column; hovers around zero and then cycles from $0$ to $\maxCtBtcData$;
-	\item \blockNumberOfFirstBlockInConflation{}:
-		``conflation-constant'' column containing the block number\footnote{In the sense of the \evm{}} of the first block of this conflation;
-	\item $\relBlock$:
-		\ccc{} containing the relative block number;
-	\item $\relTxMax$:
-		\ccc{} containing the number of transactions in this block;
-	\item $\INST$:
+		counter column; hovers around zero and then cycles from $0$ to $\maxCt$;
+\end{enumerate}
+We introduce some binary columns linked to the instructions that the present module deals with:
+\begin{multicols}{3}
+	\begin{enumerate}[resume]
+		\item $\isCoinbase$    
+		\item $\isTimestamp$   
+		\item $\isNumber$      
+		\item $\isDifficulty$  
+		\item $\isGaslimit$    
+		\item $\isChainid$     
+		\item $\isBasefee$     
+	\end{enumerate} 
+\end{multicols}
+We shall often abbreviate these column names to
+\begin{enumerate}[resume]
+	\item $\instruction$:
 		instruction column;
-	\item $\blockDataHi$, $\blockDataLo$:
-		columns containing block data;
 	\item $\coinbase\high$ and $\coinbase\low$:
 		\ccc{} containing the
 		coinbase address;
@@ -21,7 +37,19 @@ We remind the reader that \ccc{} stands for ``counter-constant column.''
 	\item \basefee{}:
 		\ccc{} containing the
 		base fee;
-	\item $\byteCol{HI\_k}$, and $\byteCol{LO\_k}$, $k = 0, 1, \dots, \llargeMO$:
+\end{enumerate}
+The following columns pertain to transaction and block numbers.
+\begin{enumerate}[resume]
+	\item \blockNumberOfFirstBlockInConflation{}:
+		``conflation-constant'' column containing the block number\footnote{In the sense of the \evm{}} of the first block of this conflation;
+	\item $\relBlock$:
+		\ccc{} containing the relative block number;
+	\item $\relTxMax$:
+		\ccc{} containing the number of transactions in this block;
+	\item $\blockDataHi$, $\blockDataLo$:
+		columns containing block data;
+	\item $\auxiliaryDataHi$, $\auxiliaryDataLo$:
+		columns containing auxiliary data, typically for use in a lookup;
 	\item $\wcpFlag$:
 		binary flags used as selector for lookups;
 \end{enumerate}
