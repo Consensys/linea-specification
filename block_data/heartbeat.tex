@@ -1,89 +1,67 @@
 We start with $\iomf$ which we require to be binary nondecreasing:
 \begin{enumerate}
 	\item $\iomf$ is binary ~ (\trash)
-	\item \If $\iomf _{i} = 1$ \Then $\iomf _{i + 1} = 1$
 	\item $\iomf _{0} = 0$
+\end{enumerate}
+We now impose constraints related to the instruction flags \col{is\_XX}, \ct{} and \maxCt{}.
+\begin{enumerate}[resume]
 	\item \If $\iomf _{i} = 0$ \Then
 		\[
-			\left\{ \begin{array}{lcl}
-				\ct       _{i} & = & 0 \\
-				\relBlock _{i} & = & 0 \\
+			\left\{ \begin{array}{lclr}
+				\ct _{i}     & = & 0 \\
+				\ct _{i + 1} & = & 0  & (\sanityCheck) \\
 			\end{array} \right.
 		\]
+	\item \If $\iomf _{i} = 0$ \et $\iomf _{i + 1} = 1$ \Then $\locIsCoinbase _{i + 1} = 1$
+	\item \If $\locPhaseEntry _{i} = 1$ \Then $\ct _{i + 1} = 0$
 \end{enumerate}
-We now impose constraints related to the instruction flags.
 \begin{enumerate}[resume]
-	\item we unconditionally impose
-		\[
-			\left\{ \begin{array}{lcl}
-				\iomf        _{i} & = & \locFlagSum  _{i}                         \\
-				\iomf        _{i} & = & \locIsPrevConf _{i} + \locIsCurrConf _{i} \\
-				\maxCt       _{i} & = & \locMaxCtSum _{i}                         \\
-				\instruction _{i} & = & \locInstSum  _{i}                         \\
-			\end{array} \right.
-		\]
-	\item $\locWghtSum$ is counter-constant
-\end{enumerate}
-\saNote{}
-The above imposes flag exclusivity constraints.
-It also implicitly enforces counter-constancy of all involved binary flags and thus of all expressions derived from these flags by linear combination.
-\begin{enumerate}[resume]
-	\item \If $\locPhaseEntry _{i} = 1$ \Then $\ct _{i + 1} = 0$ i.e. we reset the counter when entering a new phase
 	\item \If $\iomf_{i} = 1$ \Then
 		\begin{enumerate}
-			\item \If $\ct _{i} \neq \maxCt _{i}$ \Then
-				\[
-					\left\{ \begin{array}{lcl}
-						\ct _{i + 1}              & = & 1 + \ct _{i} \vspace{2mm} \\
-						\locPhaseEntry _{i}       & = & 0 \quad (\sanityCheck)    \\
-						\locSamePhase _{i}        & = & 1 \quad (\sanityCheck)    \\
-						\locLegalTransitions _{i} & = & 0 \quad (\sanityCheck)    \\
-					\end{array} \right.
-				\]
-			\item \If $\ct _{i} =    \maxCt _{i}$ \Then
-				\[
-					\left\{ \begin{array}{lclr}
-						\locLegalTransitions _{i} & = & 1 \vspace{2mm} \\
-					        \ct _{i + 1}              & = & 0               & (\sanityCheck) \\
-						\locPhaseEntry _{i}       & = & 1               & (\sanityCheck) \\
-						\locSamePhase _{i}        & = & 0               & (\sanityCheck) \\
-					\end{array} \right.
-				\]
+			\item \If $\ct _{i} \neq \maxCt _{i}$ \Then $\ct _{i + 1} = 1 + \ct _{i}$\footnote{
+					\saNote{}
+					This has the following implicit consequences
+					\[
+						\left\{ \begin{array}{lclr}
+							\locPhaseEntry       _{i} & = & 0 & (\sanityCheck) \\
+							\locSamePhase        _{i} & = & 1 & (\sanityCheck) \\
+							\locLegalTransitions _{i} & = & 0 & (\sanityCheck) \\
+						\end{array} \right.
+					\]}
+				\item \If $\ct _{i} =    \maxCt _{i}$ \Then $\locLegalTransitions _{i} = 1$\footnote{
+						\saNote{}
+						This has the following implicit consequences
+						\[
+							\left\{ \begin{array}{lclr}
+								\ct            _{i + 1} & = & 0 & (\sanityCheck) \\
+								\locPhaseEntry _{i}     & = & 1 & (\sanityCheck) \\
+								\locSamePhase  _{i}     & = & 0 & (\sanityCheck) \\
+							\end{array} \right.
+						\]}
 		\end{enumerate}
 \end{enumerate}
-We now impose constraints for the transition from $\iomf \equiv 0$ to $\iomf \equiv 1$:
+We now impose constraints on $\relBlock$.
 \begin{enumerate}[resume]
-	\item \If $\relBlock_{i} = 0$ \Then
-		\[
-			\left\{ \begin{array}{lcl}
-				\blockNumberOfFirstBlockInConflation _{i} & \!\!\! = \!\!\! & 0                \\
-				\INST_{i}                                 & \!\!\! = \!\!\! & 0                \\
-				\ct_{i}                                   & \!\!\! = \!\!\! & 0 \quad (\trash) \\
-			\end{array} \right.
-		\]
-	\item $\relBlock_{i + 1} \in \{ \relBlock_{i}, 1 + \relBlock_{i} \}$
+	\item $\relBlock _{0} = 0$
+	\item $\relBlock_{i + 1} \in \{ \relBlock_{i}, 1 + \relBlock_{i} \}$ \quad (\sanityCheck)
 	\item $\relBlock _{i + 1} = \relBlock _{i} + \locIsBasefee _{i} \cdot \locIsCoinbase _{i + 1}$
-	\item \If $\iomf _{i} = 0$ \et $\iomf _{i + 1} = 1$ \Then
-		\[
-			\left\{ \begin{array}{lcl}
-				\locIsPrevConf _{i + 1} & = & 1 \\
-				\locIsCoinbase _{i + 1} & = & 1 \\
-			\end{array} \right.
-		\]
-	\item \If $\iomf_{i} = 1$ \et $\relBlock _{i + 1} \neq 1 + \relBlock _{i}$ \Then
-		\[ \locPrevCurrWghtSum _{i + 1} = \locPrevCurrWghtSum _{i} \]
-	\item \If $\relBlock _{i + 1} \neq \relBlock _{i}$ \Then $\locIsCurrConf _{i + 1} = 1$
-	\item \If $\locIsCurrConf _{i} = 1$ \Then $\locIsCurrConf _{i + 1} = 1$
-	\item \If $\relBlock_{i} \neq \relBlock_{i - 1}$ \Then $\ct_{i} = 0$
-	\item \If $\relBlock_{i} \neq 0$ \Then
-		\[
-			\left\{ \begin{array}{lcl}
-				\blockNumberOfFirstBlockInConflation_{i+1}                                  & = & \blockNumberOfFirstBlockInConflation_{i}                \\
-				\If \ct_{i} \neq \maxCtBtcData ~ \Then \ct_{i + 1}       & = & 1 + \ct_{i}                          \\
-				\If \ct_{i} =    \maxCtBtcData ~ \Then \relBlock_{i + 1} & = & 1 + \relBlock_{i}	\vspace{2mm} \\
-			\end{array} \right.
-		\]
-	\item $\ct_{N} = \maxCtBtcData$
 \end{enumerate}
-\saNote{}
-We impose the ``finalization'' constraint unconditionally as the \zkEvm{} cannot process empty conflations.
+The following constraints pin down $\locIsPrevConf$ and $\locIsCurrConf$.
+\begin{enumerate}[resume]
+	\item \If $\locIsCurrConf _{i} = 1$ \Then $\locIsCurrConf _{i + 1} = 1$
+	\item \If $\iomf _{i} = 0$ \et $\iomf _{i + 1} = 1$ \Then $\locIsPrevConf _{i + 1} = 1$
+	\item \If $\iomf _{i} = 1$ \et $\relBlock _{i + 1} = \relBlock _{i}$%
+		\footnote{In the implementation: ``\If $\iomf_{i} = 1$ \et $\relBlock _{i + 1} \neq 1 + \relBlock _{i}$ \Then $\dots$''}
+		\Then
+		\[ \locPrevCurrWghtSum _{i + 1} = \locPrevCurrWghtSum _{i} \]
+	\item \If $\relBlock _{i + 1} = 1 + \relBlock _{i}$%
+		\footnote{In the implementation: ``\If $\relBlock _{i + 1} \neq \relBlock _{i}$ \Then $\dots$''}
+		\Then $\locIsCurrConf _{i + 1} = 1$
+\end{enumerate}
+We end on ``finalization'' constraints.
+The \zkEvm{} expects to process blocks, as such we impose these constraints unconditionally.
+\begin{enumerate}[resume]
+	\item $\locIsCurrConf _{N} = 1$
+	\item $\locIsBasefee  _{N} = 1$
+	\item $\ct _{N} = \maxCt _{N}$
+\end{enumerate}
