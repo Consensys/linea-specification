@@ -191,6 +191,15 @@ We will use the following shorthands:
 		\locNextIsOrig & \!\!\! \define \!\!\! & \stoNextValueIsOrig_{i + \locFirstStoRowOffset} \\
 		\locNextIsCurr & \!\!\! \define \!\!\! & \stoNextValueIsCurr_{i + \locFirstStoRowOffset} \\
 	\end{array} \right.
+	\quad\text{and}\quad
+	\left\{ \begin{array}{lcl}
+		\locOrigNotZero & \!\!\! \define \!\!\! & 1 - \locOrigIsZero \\
+		\locCurrNotZero & \!\!\! \define \!\!\! & 1 - \locCurrIsZero \\
+		\locNextNotZero & \!\!\! \define \!\!\! & 1 - \locNextIsZero \\
+		\locCurrNotOrig & \!\!\! \define \!\!\! & 1 - \locCurrIsOrig \\
+		\locNextNotOrig & \!\!\! \define \!\!\! & 1 - \locNextIsOrig \\
+		\locNextNotCurr & \!\!\! \define \!\!\! & 1 - \locNextIsCurr \\
+	\end{array} \right.
 \]
 \begin{description} 
 	\item[\underline{Setting the gas cost:}]
@@ -221,31 +230,89 @@ We will use the following shorthands:
 				\]
 		\end{description}
 	\item[\underline{Setting the refund:}]
-		recall that among instructions raising the $\stackDecStoFlag$ only the \inst{SSTORE} instruction may grand refunds.
-		Futhermore refunds may only be granted in non reverting contexts.
+		recall that among instructions raising the $\stackDecStoFlag$ only the \inst{SSTORE} instruction ($\locIsSstore \equiv 1$) may grand refunds.
+		Futhermore refunds may only be granted in non reverting contexts ($\cnWillRev \equiv 0$.)
 		See section~(\ref{hub: generalities: refunds: refunds}) for more details.
 
-		\If \Big($\cnWillRev_{i} = 0$ \et $\locIsSstore = 1$\Big) \Then we thus impose that
-		\begin{enumerate}
-			\item \If $\locNextIsCurr = 1$ \Then $\refund\new_{i} = \refund_{i}$
-			\item \If $\locNextIsCurr = 0$ \Then
-				\begin{enumerate}
-					\item \If $\locCurrIsOrig = 0$ \Then
-						\[
-							\refund\new_{i} = \refund_{i} 
-							+
-							\left[ \begin{array}{crcccl}
-								+ & (1 - \locOrigIsZero) & \cdot & (\locNextIsZero - \locCurrIsZero) & \cdot & R_\text{sclear}                                 \\
-								+ & \locNextIsOrig       & \cdot & \locOrigIsZero                    & \cdot & \big(G_\text{sset} - G_\text{warmaccess}\big)   \\
-								+ & \locNextIsOrig       & \cdot & (1 -\locOrigIsZero)               & \cdot & \big(G_\text{sreset} - G_\text{warmaccess}\big) \\
-							\end{array} \right]
-						\]
-						\item \If $\locCurrIsOrig = 1$ \Then
-							\begin{enumerate}
-								\item \If $\locNextIsZero = 0$ \Then $\refund\new_{i} = \refund_{i}$
-								\item \If $\locNextIsZero = 1$ \Then $\refund\new_{i} = \refund_{i} + R_\text{sclear}$
-							\end{enumerate}
-				\end{enumerate}
-		\end{enumerate}
-\end{description}
+		We therefore unconditionally impose
+		\[
+			\refund\new _{i} = \refund_{i} + (1 - \cnWillRev_{i}) \cdot \locIsSstore \cdot
+			\left[ \begin{array}{cr}
+				+ & \locCleanClear \\
+				+ & \locDirtyClear \\
+				+ & \locDirtyReset \\
+			\end{array} \right]
+		\]
+		where $\locCleanClear$, $\locDirtyClear$, $\locDirtyReset$ are shorthands which we define below.
+		
+		\saNote{}
+		In the explanations provided below we use notations from the \cite{EYP} whereby
+		$v_0$ stands for the value originally in storage,
+		$v$ for the value currently in storage,
+		$v'$ for the value we are attempting to store:
+		\begin{description}
+			\item[\underline{Defining \locCleanClear{}:}]
+				we set
+				\[
+					\locCleanClear \define
+					\left[ \begin{array}{cr}
+						\cdot & \locNextNotCurr \\
+						\cdot & \locCurrIsOrig       \\
+						\cdot & \locNextIsZero       \\
+					\end{array} \right]
+					\cdot R_\text{sclear}
+				\]
+				which corresponds to
+				\begin{itemize}
+					\item $R_\text{sclear}$ whenever $[v \neq v'] \wedge [v = v_{0}] \wedge [v' = 0]$
+					\item and $0$ otherwise
+				\end{itemize}
+			\item[\underline{Defining \locDirtyClear{}:}]
+				we set
+				\[
+					\locDirtyClear \define
+					\left[ \begin{array}{cr}
+						\cdot & \locNextNotCurr \\
+						\cdot & \locCurrNotOrig \\
+					\end{array} \right]
+					\cdot
+					\locOrigNotZero
+					\cdot 
+					\left[ \begin{array}{cr}
+						- & \locCurrIsZero \\
+						+ & \locNextIsZero \\
+					\end{array} \right]
+					\cdot R_\text{sclear}
+				\]
+				which corresponds to
+				\begin{itemize}
+					\item $- R_\text{sclear}$ whenever $[v \neq v'] \wedge [v_{0} \neq v]$ and $[v_{0} \neq 0] \wedge [v  = 0]$,
+					\item $+ R_\text{sclear}$ whenever $[v \neq v'] \wedge [v_{0} \neq v]$ and $[v_{0} \neq 0] \wedge [v' = 0]$,
+					\item and $0$ otherwise.
+				\end{itemize}
+			\item[\underline{Defining \locDirtyReset{}:}]
+				we set
+				\[
+					\locDirtyReset \define
+					\left[ \begin{array}{cr}
+						\cdot & \locNextNotCurr \\
+						\cdot & \locCurrNotOrig \\
+					\end{array} \right]
+					\cdot
+					\locNextIsOrig
+					\cdot 
+					\left[ \begin{array}{crcl}
+						+ & \locOrigIsZero  & \cdot & \big(G_\text{sset}   - G_\text{warmaccess}\big) \\
+						+ & \locOrigNotZero & \cdot & \big(G_\text{sreset} - G_\text{warmaccess}\big) \\
+					\end{array} \right]
+					\cdot R_\text{sclear}
+				\]
+				which corresponds to
+				\begin{itemize}
+					\item $G_\text{sset}   - G_\text{warmaccess}$ whenever $[v \neq v'] \wedge [v_{0} \neq v]$ and $[v_{0} = v'] \wedge [v_{0} =    0]$,
+					\item $G_\text{sreset} - G_\text{warmaccess}$ whenever $[v \neq v'] \wedge [v_{0} \neq v]$ and $[v_{0} = v'] \wedge [v_{0} \neq 0]$,
+					\item and $0$ otherwise.
+				\end{itemize}
+		\end{description}
+	\end{description}
 
