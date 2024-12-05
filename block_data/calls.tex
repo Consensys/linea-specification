@@ -1,0 +1,106 @@
+We define several simple constraint systems to simplify the writing of constraints.
+\[
+	\left\{ \begin{array}{lcl}
+		\wcpCallToLt {
+			anchorRow = i           ,
+			relOffset = \relof      ,
+			argOneHi  = \col{a\_hi} ,
+			argOneLo  = \col{a\_lo} ,
+			argTwoHi  = \col{b\_hi} ,
+			argTwoLo  = \col{b\_lo} ,
+		} & \define &
+		\left\{ \begin{array}{lcl}
+			\wcpFlag        _{i + \relof} & = & \rOne       \\
+			\exoInstruction _{i + \relof} & = & \inst{LT}   \\
+			\argOneHi       _{i + \relof} & = & \col{a\_hi} \\
+			\argOneLo       _{i + \relof} & = & \col{a\_lo} \\
+			\argTwoHi       _{i + \relof} & = & \col{b\_hi} \\
+			\argTwoLo       _{i + \relof} & = & \col{b\_lo} \\
+			\res            _{i + \relof} & = & 1           \\
+		\end{array} \right. \vspace{2mm} \\
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\wcpCallToGt  {
+			anchorRow = i           ,
+			relOffset = \relof      ,
+			argOneHi  = \col{a\_hi} ,
+			argOneLo  = \col{a\_lo} ,
+			argTwoHi  = \col{b\_hi} ,
+			argTwoLo  = \col{b\_lo} ,
+		} & \define &
+		\left\{ \begin{array}{lcl}
+			\wcpFlag        _{i + \relof} & = & \rOne       \\
+			\exoInstruction _{i + \relof} & = & \inst{GT}   \\
+			\argOneHi       _{i + \relof} & = & \col{a\_hi} \\
+			\argOneLo       _{i + \relof} & = & \col{a\_lo} \\
+			\argTwoHi       _{i + \relof} & = & \col{b\_hi} \\
+			\argTwoLo       _{i + \relof} & = & \col{b\_lo} \\
+			\res            _{i + \relof} & = & 1           \\
+		\end{array} \right. \vspace{2mm} \\
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\wcpCallToLeq {
+			anchorRow = i           ,
+			relOffset = \relof      ,
+			argOneHi  = \col{a\_hi} ,
+			argOneLo  = \col{a\_lo} ,
+			argTwoHi  = \col{b\_hi} ,
+			argTwoLo  = \col{b\_lo} ,
+		} & \define &
+		\left\{ \begin{array}{lcl}
+			\wcpFlag        _{i + \relof} & = & \rOne       \\
+			\exoInstruction _{i + \relof} & = & \inst{LEQ}  \\
+			\argOneHi       _{i + \relof} & = & \col{a\_hi} \\
+			\argOneLo       _{i + \relof} & = & \col{a\_lo} \\
+			\argTwoHi       _{i + \relof} & = & \col{b\_hi} \\
+			\argTwoLo       _{i + \relof} & = & \col{b\_lo} \\
+			\res            _{i + \relof} & = & 1           \\
+		\end{array} \right. \vspace{2mm} \\
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\wcpCallToGeq {
+			anchorRow = i           ,
+			relOffset = \relof      ,
+			argOneHi  = \col{a\_hi} ,
+			argOneLo  = \col{a\_lo} ,
+			argTwoHi  = \col{b\_hi} ,
+			argTwoLo  = \col{b\_lo} ,
+		} & \define &
+		\left\{ \begin{array}{lcl}
+			\wcpFlag        _{i + \relof} & = & \rOne       \\
+			\exoInstruction _{i + \relof} & = & \inst{GEQ}  \\
+			\argOneHi       _{i + \relof} & = & \col{a\_hi} \\
+			\argOneLo       _{i + \relof} & = & \col{a\_lo} \\
+			\argTwoHi       _{i + \relof} & = & \col{b\_hi} \\
+			\argTwoLo       _{i + \relof} & = & \col{b\_lo} \\
+			\res            _{i + \relof} & = & 1           \\
+		\end{array} \right. \vspace{2mm} \\
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\wcpCallToIszero  {
+			anchorRow = i           ,
+			relOffset = \relof      ,
+			argOneHi  = \col{a\_hi} ,
+			argOneLo  = \col{a\_lo} ,
+		} & \define &
+		\left\{ \begin{array}{lcl}
+			\wcpFlag        _{i + \relof} & = & \rOne          \\
+			\exoInstruction _{i + \relof} & = & \inst{ISZERO}  \\
+			\argOneHi       _{i + \relof} & = & \col{a\_hi}    \\
+			\argOneLo       _{i + \relof} & = & \col{a\_lo}    \\
+			\argTwoHi       _{i + \relof} & = & 0              \\
+			\argTwoLo       _{i + \relof} & = & 0              \\
+			\res            _{i + \relof} & = & \relevantValue \\
+		\end{array} \right. \vspace{2mm} \\
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\eucCall {
+			anchorRow = i       ,
+			relOffset = \relof  ,
+			argOne    = \col{a} ,
+			argTwo    = \col{b} ,
+		} & \define &
+		\left\{ \begin{array}{lcl}
+			\eucFlag  _{i + \relof} & = & \rOne   \\
+			\argOneLo _{i + \relof} & = & \col{a} \\
+			\argTwoLo _{i + \relof} & = & \col{b} \\
+		\end{array} \right. \\
+	\end{array} \right.
+\]
+\saNote{}
+The result of all comparisons is required to be \texttt{true} except for \inst{ISZERO}.

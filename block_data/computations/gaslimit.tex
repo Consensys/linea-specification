@@ -1,0 +1,100 @@
+\begin{center}
+	\boxed{\text{%
+		The following constraints assume that
+		$\left\{ \begin{array}{lcl}
+			\isGaslimit _{i - 1} & = & 0 \\
+			\isGaslimit _{i}     & = & 1 \\
+		\end{array} \right.$}}
+\end{center}
+We impose the following:
+\begin{description}
+	\item[\underline{\underline{Setting \inst{GASLIMIT}:}}]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\blockDataHi _{i} & = & 0                   \\
+				\blockDataLo _{i} & = & \blockGasLimit _{i} \\
+			\end{array} \right.
+		\]
+	\item[\underline{\underline{\inst{GASLIMIT} lower bound:}}]
+		\def\rowOffset{\yellowm{0}}
+		we impose
+		\[
+			\wcpCallToGeq{
+				anchorRow = i                     ,
+				relOffset = \rowOffset            ,
+				argOneHi  = \blockDataHi _{i}     ,
+				argOneLo  = \blockDataLo _{i}     ,
+				argTwoHi  = 0                     ,
+				argTwoLo  = \texttt{61\_000\_000} ,
+			}
+		\]
+		\saNote{}
+		The above ensures that $\blockGasLimit_{i} \geq \texttt{61\_000\_000}$.
+	\item[\underline{\underline{\inst{GASLIMIT} upper bound:}}]
+		\def\rowOffset{\yellowm{1}}
+		we impose
+		\[
+			\wcpCallToLeq{
+				anchorRow = i                         ,
+				relOffset = \rowOffset                ,
+				argOneHi  = \blockDataHi _{i}         ,
+				argOneLo  = \blockDataLo _{i}         ,
+				argTwoHi  = 0                         ,
+				argTwoLo  = \texttt{2\_000\_000\_000} ,
+			}
+		\]
+		\saNote{}
+		The above ensures that $\blockGasLimit_{i} \leq \texttt{2\_000\_000\_000}$.
+	\item[\underline{\underline{Maximum deviation:}}]
+		\def\rowOffset{\yellowm{2}}
+		\If $\locIsCurrConf _{i} = 1$ \Then
+		we impose
+		\[
+			\eucCall{
+				anchorRow = i                 ,
+				relOffset = \rowOffset        ,
+				argOne    = \previousGasLimit ,
+				argTwo    = 1024              ,
+			}
+		\]
+		where we set
+		\[
+			\left\{ \begin{array}{lcl}
+				\previousGasLimit & \define & \blockGasLimit _{i - \blockDataDepth} \\
+				\maxDeviation     & \define & \res _{i + \rowOffset}                \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		By definition, $\maxDeviation \equiv \left\lfloor \frac\previousGasLimit{1024} \right\rfloor$.
+	\item[\underline{\underline{\inst{GASLIMIT} deviation upper bound:}}]
+		\def\rowOffset{\yellowm{3}}
+		\If $\locIsCurrConf _{i} = 1$ \Then
+		\[
+			\wcpCallToLt{
+				anchorRow = i                  ,
+				relOffset = \rowOffset         ,
+				argOneHi  = \blockDataHi _{i}  ,
+				argOneLo  = \blockDataLo _{i}  ,
+				argTwoHi  = 0                  ,
+				argTwoLo  = \previousGasLimit  + \maxDeviation ,
+			}
+		\]
+		\saNote{}
+		The above ensures that $\blockGasLimit_{i} < \previousGasLimit  + \maxDeviation$.
+	\item[\underline{\underline{\inst{GASLIMIT} deviation lower bound:}}]
+		\def\rowOffset{\yellowm{4}}
+		\If $\locIsCurrConf _{i} = 1$ \Then
+		\[
+			\wcpCallToGt{
+				anchorRow = i                  ,
+				relOffset = \rowOffset         ,
+				argOneHi  = \blockDataHi _{i}  ,
+				argOneLo  = \blockDataLo _{i}  ,
+				argTwoHi  = 0                  ,
+				argTwoLo  = \previousGasLimit  - \maxDeviation ,
+			}
+		\]
+		\saNote{}
+		The above ensures that $\blockGasLimit_{i} > \previousGasLimit  - \maxDeviation$.
+\end{description}
