@@ -1,0 +1,20 @@
+We define the following shorthands.
+These only make sense provided that $\txInit _{i - 1} = 0$ and $\txInit _{i} = 1$, which will be the standing assumption starting with the next section.
+We draw the attention to the reader to
+(\ref{hub: initialization phase: the first rows are misc and transaction rows})
+which justifies us using various row offsets and associating them with a transaction row / a miscellaneous row.
+\[
+	\left\{ \begin{array}{lcl}
+		\locTransactionWillRevert  & \define &     \miscChildSelfReverts _{i + \locTxInitRoffMisc}               \\
+		\locTransactionWontRevert  & \define & 1 - \miscChildSelfReverts _{i + \locTxInitRoffMisc}               \\
+		\locTransactionRevertStamp & \define &     \miscChildRevertStamp _{i + \locTxInitRoffMisc} \vspace{2mm}  \\
+		\locTxInitSenderAddressHi    & \define & \txFrom  \high  _{i + \locTxInitRoffTxn}                                        \\
+		\locTxInitSenderAddressLo    & \define & \txFrom  \low   _{i + \locTxInitRoffTxn}                                        \\
+		\locTxInitRecipientAddressHi & \define & \txTo    \high  _{i + \locTxInitRoffTxn}                                        \\
+		\locTxInitRecipientAddressLo & \define & \txTo    \low   _{i + \locTxInitRoffTxn}          \vspace{2mm}                  \\
+		\locTxInitIsDeployment       & \define & \txIsDeployment _{i + \locTxInitRoffTxn}                                        \\
+		\locTxInitIsMessageCall      & \define & 1 - \txIsDeployment _{i + \locTxInitRoffTxn}                                    \\
+		\locTxInitGasCost            & \define & \txGasPrice _{i + \locTxInitRoffTxn} \cdot \txGasLimit _{i + \locTxInitRoffTxn} \\
+		\locTxInitValue              & \define & \txValue    _{i + \locTxInitRoffTxn}                                            \\
+	\end{array} \right.
+\]
