@@ -108,7 +108,7 @@ There must be the following:
 
 
 For COUNTER there are two options:
-- either have a very specific behaviour, e.g. COUNTER: 0, 1, 2, 3 or 0, 1, 2 or just 0, 1 depending on CALL transfering value, CALL not transfering value or CREATE
+- either have a very specific behaviour, e.g. COUNTER: 0, 1, 2, 3 or 0, 1, 2 or just 0, 1 depending on CALL transferring value, CALL not transferring value or CREATE
 - either have generic behaviour: COUNTER: 0, 1, 2, 3 _always_ <--- likely the best option
 
 Have some "counter-constancy" constraints on columns imported from the HUB:
