@@ -108,7 +108,7 @@ There must be the following:
 
 
 For COUNTER there are two options:
-- either have a very specific behaviour, e.g. COUNTER: 0, 1, 2, 3 or 0, 1, 2 or just 0, 1 depending on CALL transfering value, CALL not transfering value or CREATE
+- either have a very specific behaviour, e.g. COUNTER: 0, 1, 2, 3 or 0, 1, 2 or just 0, 1 depending on CALL transferring value, CALL not transferring value or CREATE
 - either have generic behaviour: COUNTER: 0, 1, 2, 3 _always_ <--- likely the best option
 
 Have some "counter-constancy" constraints on columns imported from the HUB:
@@ -139,7 +139,7 @@ We can have some columns that contain the contents of things to look-up else whe
 The idea would be that one has
 - WCP_SELECTOR * EXT_SELECTOR = 0
 - If STAMP = 0 Then WCP_SELECTOR + MOD_SELECTOR = 0 (i.e. both are zero)
-- If WCP_SELECTOR = 1 Then LOOKUP_INST $\in$ { LT, ISZERO } (i.E. we can only request LT and ISZERO instuctions)
+- If WCP_SELECTOR = 1 Then LOOKUP_INST $\in$ { LT, ISZERO } (i.E. we can only request LT and ISZERO instructions)
 - If MOD_SELECTOR = 1 Then LOOKUP_INST = DIV (i.e. we can only request the DIV from MOD)
 
 ### CREATE workflow
