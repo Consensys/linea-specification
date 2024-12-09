@@ -1,0 +1,26 @@
+\If $\locTransactionWillRevert = 1$ \Then we impose that
+\[
+	\left\{ \begin{array}{lcll}
+		\multicolumn{4}{l}{\accSameAddr             {i}{\locTxInitRoffAccUndoingSenderValueTransfer}{\locTxInitRoffAccDoingSenderValueTransfer}} \\
+		\multicolumn{4}{l}{\accUndoBalanceUpdate    {i}{\locTxInitRoffAccUndoingSenderValueTransfer}{\locTxInitRoffAccDoingSenderValueTransfer}} \\
+		\multicolumn{4}{l}{\accSameNonce            {i}{\locTxInitRoffAccUndoingSenderValueTransfer}} \\
+		\multicolumn{4}{l}{\accSameCode             {i}{\locTxInitRoffAccUndoingSenderValueTransfer}} \\
+		\multicolumn{4}{l}{\accSameWarmth           {i}{\locTxInitRoffAccUndoingSenderValueTransfer}} \\
+		\multicolumn{4}{l}{\accSameDeploymentNumber {i}{\locTxInitRoffAccUndoingSenderValueTransfer}} \\
+		\multicolumn{4}{l}{\accSameDeploymentStatus {i}{\locTxInitRoffAccUndoingSenderValueTransfer}} \\
+		%%%%
+		\multicolumn{4}{l}{\accSameMarkedForSelfdestructFlag {i}{\locTxInitRoffAccUndoingSenderValueTransfer}} \\
+		\accRomLexFlag   _{i + \locTxInitRoffAccUndoingSenderValueTransfer} & = & 0 & (\trash) \\
+		\accTrmFlag      _{i + \locTxInitRoffAccUndoingSenderValueTransfer} & = & 0 & (\trash) \\
+		\accRlpAddrFlag  _{i + \locTxInitRoffAccUndoingSenderValueTransfer} & = & 0 & (\trash) \vspace{2mm} \\
+		\multicolumn{4}{l}{
+			\revertWithChildFailureDomSubStamps {
+				anchorRow        = i                                           ,
+				relOffset        = \locTxInitRoffAccUndoingSenderValueTransfer ,
+				subOffset        = 3                                           ,
+				childRevertStamp = \locTransactionRevertStamp                  ,
+			}
+		} \\
+	\end{array} \right.
+\]
+
