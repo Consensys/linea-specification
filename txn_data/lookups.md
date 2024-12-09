@@ -266,7 +266,7 @@ Simple bilateral lookup to prove the prewarming of all [addresses, storage key] 
 The TX_RLP and TX_DATA modules must be augmented slightly:
 - TX_DATA:
   - we need redundancy to reduce the number of lookups
-  - we need a REQURIES_EVM_EXECUTION binary column (which is justified in the hub)
+  - we need a REQUIRES_EVM_EXECUTION binary column (which is justified in the hub)
   - we should do the gas price computations (for Type 2 transactions) here
 - TX_RLP:
   - we require a transaction-constant binary column REQUIRES_EVM_EXECUTION which is justified in TX_DATA
