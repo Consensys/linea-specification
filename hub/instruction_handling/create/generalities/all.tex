@@ -115,33 +115,42 @@ The present section deals with generalities pertaining to \inst{CREATE}-type ins
 		we impose \If $\miscOobFlag_{i + \createMiscRowOffset} = 1$ \Then
 		\[
 			\setOobInstructionCreate {
-				anchorRow      = i,
-				relOffset      = \createMiscRowOffset,
-				valueHi        = \locValueHi,
-				valueLo        = \locValueLo,
-				balance        = \locCreatorBalance,
-				nonce          = \locCreateeNonce,
-				hasCode        = \locCreateeHasCode,
-				callStackDepth = \locCsd,
-				creatorNonce   = \locCreatorNonce,
+				anchorRow      = i                    ,
+				relOffset      = \createMiscRowOffset ,
+				valueHi        = \locValueHi          ,
+				valueLo        = \locValueLo          ,
+				balance        = \locCreatorBalance   ,
+				nonce          = \locCreateeNonce     ,
+				hasCode        = \locCreateeHasCode   ,
+				callStackDepth = \locCsd              ,
+				creatorNonce   = \locCreatorNonce     ,
 			}
 		\]
 		where we define the following shorthands:
 		\[
+			\left\{ \begin{array}{lclcl}
+				\locCreateeNonce   & = & \scenCreateLoadCreatee _{i} & \cdot & \accNonce    _{i + \createFirstCreateeAccountRowOffset} \\
+				\locCreateeHasCode & = & \scenCreateLoadCreatee _{i} & \cdot & \accHasCode  _{i + \createFirstCreateeAccountRowOffset} \\
+			\end{array} \right.
+		\]
+		in other words
+		\[
 			\left\{ \begin{array}{lclc}
-				\If \locTriggerRlpAddr = 0 ~ \Then
+				\If \scenCreateLoadCreatee _{i} = 0 ~ \Then
 				\left\{ \begin{array}{lclc}
 					\locCreateeNonce   & = & 0 \\
 					\locCreateeHasCode & = & 0 \\
 				\end{array} \right. \\
-				\If \locTriggerRlpAddr = 1 ~ \Then
+				\If \scenCreateLoadCreatee _{i} = 1 ~ \Then
 				\left\{ \begin{array}{lclc}
 					\locCreateeNonce   & = & \accNonce    _{i + \createFirstCreateeAccountRowOffset} \\
 					\locCreateeHasCode & = & \accHasCode  _{i + \createFirstCreateeAccountRowOffset} \\
 				\end{array} \right. \\
 			\end{array} \right.
 		\]
-		\saNote{} We explain the conditional definitions of \locCreateeNonce{} and \locCreateeHasCode{} by the fact that the \zkEvm{} is granted access to the account of the deployment address \emph{iff} it computes that address.
+		\saNote{}
+		We explain the conditional definitions of \locCreateeNonce{} and \locCreateeHasCode{} by the fact that
+		the \zkEvm{} is granted access to the account of the createe \emph{iff} $\scenCreateLoadCreatee \equiv 1$.
 	\item[\underline{Setting the \inst{CREATE}-scenario:}]
 		we impose the following
 		\begin{enumerate}
