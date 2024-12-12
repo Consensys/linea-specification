@@ -1,0 +1,32 @@
+\makeatletter
+% DEFINING KEYS
+
+\define@cmdkey [EUC] {var} {anchorRow} {} % "i" in the spec, ALWAYS use this name
+\define@cmdkey [EUC] {var} {relOffset} {} % relative offset, ALWAYS use this name
+\define@cmdkey [EUC] {var} {argOne}  {}
+\define@cmdkey [EUC] {var} {argTwo}  {}
+\define@cmdkey [EUC] {var} {result}  {}
+% the above defines macros à la "\cmdWCP@var@anchorRow"
+
+% DEFAULT VALUES
+\presetkeys [EUC] {var} {
+	anchorRow = \missingParameter,
+	relOffset = \missingParameter,
+	argOne    = \missingParameter,
+	argTwo    = \missingParameter,
+	result    = \missingParameter,
+}{}
+
+% "call to LEQ" macro
+\newcommand{\eucCallName} {\texttt{eucCall}}
+\newcommand{\eucCall} [1] {
+	\setkeys[EUC]{var}{#1}
+	\eucCallName _{\cmdEUC@var@anchorRow}
+	\left[ \begin{array}{ll}
+			\utt{Rel. row offset:} & \cmdEUC@var@relOffset \\
+			\utt{First argument:}  & \cmdEUC@var@argOne    \\
+			\utt{Second argument:} & \cmdEUC@var@argTwo    \\
+		\end{array} \right]
+}
+
+\makeatother
