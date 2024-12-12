@@ -79,15 +79,20 @@ The specialized constraints are as follows:
 				We may nonetheless include some ``sanity check'' constraints labeled by (\sanityCheck) to make the intent explicit:
 				\[
 					\left\{ \begin{array}{lcll}
-						\accDeploymentNumber   _{i + \locCopyCurrentAccountRow} & = & \cnCodeDepNum       _{i + \locCopyCurrentContextRow} & (\sanityCheck)              \\
-						\accDeploymentStatus   _{i + \locCopyCurrentAccountRow} & = & \cnCodeDepStatus    _{i + \locCopyCurrentContextRow} & (\sanityCheck)              \\
-						\accCfi                _{i + \locCopyCurrentAccountRow} & = & \cnCodeCfi          _{i + \locCopyCurrentContextRow} & (\sanityCheck)              \\
-						\accCfi                _{i + \locCopyCurrentAccountRow} & = & \cfi_{i}                                             & (\sanityCheck) \vspace{2mm} \\
-						\accRomLexFlag         _{i + \locCopyCurrentAccountRow} & = & \rOne                                                & (\sanityCheck) ~ (\trash)   \\
+						\accDeploymentNumber          _{i + \locCopyCurrentAccountRow} & = & \cnCodeDepNum       _{i + \locCopyCurrentContextRow} & (\sanityCheck)              \\
+						\accDeploymentStatus          _{i + \locCopyCurrentAccountRow} & = & \cnCodeDepStatus    _{i + \locCopyCurrentContextRow} & (\sanityCheck)              \\
+						\accCfi                       _{i + \locCopyCurrentAccountRow} & = & \cnCodeCfi          _{i + \locCopyCurrentContextRow} & (\sanityCheck)              \\
+						\accCfi                       _{i + \locCopyCurrentAccountRow} & = & \cfi_{i}                                             & (\sanityCheck) \vspace{2mm} \\
+						\multicolumn{3}{l}{\accRetrieveCodeFragmentIndex  {i} {\locCopyCurrentAccountRow}}                                        & (\sanityCheck)              \\
 					\end{array} \right.
 				\]
 				These constraints confront \textbf{account data} with \textbf{context data}.
 				One constraint confronts \textbf{account data} with \textbf{shared data}.
 				Note furthermore that turning on the \accRomLexFlag{} also leads to a confrontation between \textbf{account data} and \romMod{} module data.
+
+				\saNote{}
+				If one wants to implement these ``sanity check'' constraints,
+				in particular that involving $\accCfi$, on \textbf{must} force $\accCfi$ to be the right one one.
+				For this it is \textbf{necessary} that one turn on the relevant $\accRomLexFlag$ via $\accRetrieveCodeFragmentIndex  {i} {\locCopyCurrentAccountRow}$.
 		\end{description}
 \end{description}
