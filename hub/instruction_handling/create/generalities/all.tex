@@ -6,7 +6,7 @@
 			\scenCreateSum    _{i}                & = & 1 \\
 		\end{array} \right.}
 \end{center}
-The present section deals with generalities pertaining to \inst{CREATE}-type instructions. These constraints hold regardless of anything else. 
+The present section deals with generalities pertaining to \inst{CREATE}-type instructions. These constraints hold regardless of anything else.
 \begin{description}
 	\item[\underline{Setting the stack pattern:}]
 		we impose $\createSP_{i - \createFirstStackRowOffset}\big[ \locIsCreateTwo \big]$;
@@ -47,7 +47,7 @@ The present section deals with generalities pertaining to \inst{CREATE}-type ins
 		\[
 			\locStaticx = \locIsStatic
 		\]
-	\item[\underline{Setting the module flags of miscellaneous-row $n^°(i + \createMiscRowOffset)$::}] 
+	\item[\underline{Setting the module flags of miscellaneous-row $n^°(i + \createMiscRowOffset)$::}]
 		every processing path for \inst{CREATE}-type instructions contains a single \textbf{miscellaneous-row}
 		\[
 			\weightedMiscFlagSum
@@ -115,33 +115,42 @@ The present section deals with generalities pertaining to \inst{CREATE}-type ins
 		we impose \If $\miscOobFlag_{i + \createMiscRowOffset} = 1$ \Then
 		\[
 			\setOobInstructionCreate {
-				anchorRow      = i,
-				relOffset      = \createMiscRowOffset,
-				valueHi        = \locValueHi,
-				valueLo        = \locValueLo,
-				balance        = \locCreatorBalance,
-				nonce          = \locCreateeNonce,
-				hasCode        = \locCreateeHasCode,
-				callStackDepth = \locCsd,
-				creatorNonce   = \locCreatorNonce,
+				anchorRow      = i                    ,
+				relOffset      = \createMiscRowOffset ,
+				valueHi        = \locValueHi          ,
+				valueLo        = \locValueLo          ,
+				balance        = \locCreatorBalance   ,
+				nonce          = \locCreateeNonce     ,
+				hasCode        = \locCreateeHasCode   ,
+				callStackDepth = \locCsd              ,
+				creatorNonce   = \locCreatorNonce     ,
 			}
 		\]
 		where we define the following shorthands:
 		\[
+			\left\{ \begin{array}{lclcl}
+				\locCreateeNonce   & = & \scenCreateLoadCreatee _{i} & \cdot & \accNonce    _{i + \createFirstCreateeAccountRowOffset} \\
+				\locCreateeHasCode & = & \scenCreateLoadCreatee _{i} & \cdot & \accHasCode  _{i + \createFirstCreateeAccountRowOffset} \\
+			\end{array} \right.
+		\]
+		in other words
+		\[
 			\left\{ \begin{array}{lclc}
-				\If \locTriggerRlpAddr = 0 ~ \Then 
+				\If \scenCreateLoadCreatee _{i} = 0 ~ \Then
 				\left\{ \begin{array}{lclc}
 					\locCreateeNonce   & = & 0 \\
 					\locCreateeHasCode & = & 0 \\
 				\end{array} \right. \\
-				\If \locTriggerRlpAddr = 1 ~ \Then 
+				\If \scenCreateLoadCreatee _{i} = 1 ~ \Then
 				\left\{ \begin{array}{lclc}
 					\locCreateeNonce   & = & \accNonce    _{i + \createFirstCreateeAccountRowOffset} \\
 					\locCreateeHasCode & = & \accHasCode  _{i + \createFirstCreateeAccountRowOffset} \\
 				\end{array} \right. \\
 			\end{array} \right.
 		\]
-		\saNote{} We explain the conditional definitions of \locCreateeNonce{} and \locCreateeHasCode{} by the fact that the \zkEvm{} is granted access to the account of the deployment address \emph{iff} it computes that address.
+		\saNote{}
+		We explain the conditional definitions of \locCreateeNonce{} and \locCreateeHasCode{} by the fact that
+		the \zkEvm{} is granted access to the account of the createe \emph{iff} $\scenCreateLoadCreatee \equiv 1$.
 	\item[\underline{Setting the \inst{CREATE}-scenario:}]
 		we impose the following
 		\begin{enumerate}
@@ -199,7 +208,7 @@ The present section deals with generalities pertaining to \inst{CREATE}-type ins
 		\]
 		where we have used the following (as of yet undefined) shorthands \locTgtId{}, \locAuxId{} and \locExoSum{} which we define as follows:
 		\begin{enumerate}
-			\item \If $\locHashInitCode = 1$ \Then 
+			\item \If $\locHashInitCode = 1$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
 						\locTgtId  & \define & \nothing          \\
@@ -207,7 +216,7 @@ The present section deals with generalities pertaining to \inst{CREATE}-type ins
 						\locExoSum & \define & \exoWeightKec     \\
 					\end{array} \right.
 				\]
-			\item \If $\locHashInitCodeAndSendToRom = 1$ \Then 
+			\item \If $\locHashInitCodeAndSendToRom = 1$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
 						\locTgtId  & \define & \locDepCfi                    \\
@@ -215,7 +224,7 @@ The present section deals with generalities pertaining to \inst{CREATE}-type ins
 						\locExoSum & \define & \exoWeightRom + \exoWeightKec \\
 					\end{array} \right.
 				\]
-			\item \If $\locSendInitCodeToRom = 1$ \Then 
+			\item \If $\locSendInitCodeToRom = 1$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
 						\locTgtId  & \define & \locDepCfi    \\
@@ -234,24 +243,41 @@ The present section deals with generalities pertaining to \inst{CREATE}-type ins
 				\If \scenCreateExecutionNonEmptyInitCode     _{i} = 1  & \Then & \nextContextIsNew      _{i} \\
 			\end{array} \right.
 		\]
+\end{description}
+Let us define the following shorthands:
+\[
+	\left\{ \begin{array}{lcl}
+		\locCreateUpfrontGasCost & \define & G_\text{create} + \locMxpGas              \\
+		\locCreateFullGasCost    & \define & \locCreateUpfrontGasCost + \locStpGasPoop \\
+	\end{array} \right.
+\]
+\begin{description}
 	\item[\underline{Setting the \gasCost{}:}]
 		we impose
 		\begin{enumerate}
 			\item \If $\locStaticx + \locMxpx = 1$              \Then $\gasCost _{i} = 0$
-			\item \If $\locOogx + \scenCreateUnexceptional = 1$ \Then $\gasCost _{i} = G_\text{create} + \locMxpGas$
+			\item \If $\locOogx + \scenCreateUnexceptional = 1$ \Then $\gasCost _{i} = \locCreateUpfrontGasCost$
 		\end{enumerate}
 	\item[\underline{Setting the \gasNext{}:}]
 		we impose
-		\begin{enumerate}
-			\item \If $\scenCreateException                 _{i} = 1$ \Then $\gasNext_{i} = 0$ (\trash)
-			\item \If $\scenCreateNoContextChange           _{i} = 1$ \Then $\gasNext_{i} = \gasActual_{i} - \gasCost_{i}$
-			\item \If $\scenCreateExecutionNonEmptyInitCode _{i} = 1$ \Then
-				\[
-					\gasNext_{i} = \gasActual_{i} - 
-					\left[ \begin{array}{cl}
-						+ & \gasCost_{i} \\
-						+ & \locStpGasPoop  \\
-					\end{array} \right]
-				\]
-		\end{enumerate}
+		\[
+			\hspace*{-0.5cm}
+			\left\{ \begin{array}{lcl}
+				\If \scenCreateException                 _{i} = 1 & \Then & \gasNext _{i} = 0 ~ (\trash)                               \\
+				\If \scenCreateAbort                     _{i} = 1 & \Then & \gasNext _{i} = \gasActual _{i} - \locCreateUpfrontGasCost \\
+				\If \scenCreateFCond                     _{i} = 1 & \Then & \gasNext _{i} = \gasActual _{i} - \locCreateFullGasCost    \\
+				\If \scenCreateExecutionEmptyInitCode    _{i} = 1 & \Then & \gasNext _{i} = \gasActual _{i} - \locCreateUpfrontGasCost \\
+				\If \scenCreateExecutionNonEmptyInitCode _{i} = 1 & \Then & \gasNext _{i} = \gasActual _{i} - \locCreateFullGasCost    \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		We provide some details.
+		Exceptional \inst{CREATE}-type instructions, like any exceptional instruction, fully consume the currently available gas.
+		Aborted \inst{CREATE}-type instructions only pay for the \locCreateUpfrontGasCost{} (and there is no child context.)
+		\inst{CREATE}-type instructions that raise the \textbf{Failure Condition $\bm{F}$} pay the \locCreateFullGasCost{}, including the ``\texttt{(63/64)-ths}'' to the child context, and don't get any of it back.
+		\inst{CREATE}-type instructions that lead to execution pay for \locCreateFullGasCost{}.
+		However, if the provided initialization code is \emph{empty}, then the execution context doesn't change and gets the entire ``\texttt{(63/64)-ths}'' back immediately.
+		The effective gas cost is therefore the \locCreateUpfrontGasCost{}.
+		If the provided initialization code is \emph{nonempty} then the execution context pays the \locCreateFullGasCost{}.
+		It \emph{may} get some of it back later down the line.
 \end{description}
