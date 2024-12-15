@@ -98,12 +98,13 @@
 						% \accTrmFlag      _{i + 1} & = & \rOne                    \\
 						% \accTrmRawAddrHi _{i + 1} & = & \stackItemValHi {1} _{i} \\
 						% \accAddressLo    _{i + 1} & = & \stackItemValLo {1} _{i} \\
-						\multicolumn{3}{l}{\accSameBalance                    {i}{\locRoffAccFamForeignAccountDoingRow}} \\
-						\multicolumn{3}{l}{\accSameNonce                      {i}{\locRoffAccFamForeignAccountDoingRow}} \\
-						\multicolumn{3}{l}{\accSameCode                       {i}{\locRoffAccFamForeignAccountDoingRow}} \\
-						\multicolumn{3}{l}{\accSameDeployment                 {i}{\locRoffAccFamForeignAccountDoingRow}} \\
-						\multicolumn{3}{l}{\accTurnOnWarmth                   {i}{\locRoffAccFamForeignAccountDoingRow}} \\
-						\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag  {i}{\locRoffAccFamForeignAccountDoingRow}} \\
+						\multicolumn{3}{l}{\accSameBalance                    {i}{\locRoffAccFamForeignAccountDoingRow}}   \\
+						\multicolumn{3}{l}{\accSameNonce                      {i}{\locRoffAccFamForeignAccountDoingRow}}   \\
+						\multicolumn{3}{l}{\accSameCode                       {i}{\locRoffAccFamForeignAccountDoingRow}}   \\
+						\multicolumn{3}{l}{\accSameDeployment                 {i}{\locRoffAccFamForeignAccountDoingRow}}   \\
+						% \multicolumn{3}{l}{\accTurnOnWarmth                   {i}{\locRoffAccFamForeignAccountDoingRow}} \\
+						\multicolumn{3}{l}{\texttt{Warmth:} ~ \valueToBeSet}                                               \\
+						\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag  {i}{\locRoffAccFamForeignAccountDoingRow}}   \\
 						\multicolumn{3}{l}{
 							\standardDomSubStamps {
 								anchorRow        = i                                    ,
@@ -112,6 +113,12 @@
 							}} \\
 					\end{array} \right.
 				\]
+				where the required warmth update depends on whether the instruction is exceptional or not:
+				\begin{enumerate}
+					\item \If $\xAhoy _{i} = 1$ \Then $\accSameWarmth   {i}{\locRoffAccFamForeignAccountDoingRow}$
+					\item \If $\xAhoy _{i} = 0$ \Then $\accTurnOnWarmth {i}{\locRoffAccFamForeignAccountDoingRow}$
+				\end{enumerate}
+				We continue as follows:
 				\begin{enumerate}
 					\item \If $\cnWillRev_{i} = 0$ \Then we don't need to impose anything else;
 					\item \If $\cnWillRev_{i} = 1$ \Then
