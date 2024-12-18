@@ -6,26 +6,34 @@
 		\isCoinbase _{i}     & = & 1 \\
 	\end{array} \right.$}}
 \end{center}
+We use the following shorthand
+\[
+	\left\{ \begin{array}{lcl}
+		\currCoinbaseHi & \define & \currDataHi \\
+		\currCoinbaseLo & \define & \currDataLo \\
+	\end{array} \right.
+\]
+And we impose the following constraints
 \begin{description}
-	\item[\underline{\underline{Setting \inst{COINBASE}:}}]
+	\item[\underline{\underline{Horizontalization of \inst{COINBASE}:}}]
 		we impose
 		\[
 			\left\{ \begin{array}{lcl}
-				\currDataHi & = & \coinbase\high _{i} \\
-				\currDataLo & = & \coinbase\low  _{i} \\
+				\currCoinbaseHi & = & \coinbase\high _{i} \\
+				\currCoinbaseLo & = & \coinbase\low  _{i} \\
 			\end{array} \right.
 		\]
-	\item[\underline{\underline{\inst{GASLIMIT} deviation lower bound:}}]
+	\item[\underline{\underline{\inst{COINBASE} upper bound:}}]
 		\def\rowOffset{\yellowm{0}}
 		we impose
 		\[
 			\wcpCallToLt{
-				anchorRow = i           ,
-				relOffset = \rowOffset  ,
-				argOneHi  = \currDataHi ,
-				argOneLo  = \currDataLo ,
-				argTwoHi  = 256^\ssmall ,
-				argTwoLo  = 0           ,
+				anchorRow = i               ,
+				relOffset = \rowOffset      ,
+				argOneHi  = \currCoinbaseHi ,
+				argOneLo  = \currCoinbaseLo ,
+				argTwoHi  = 256^\ssmall     ,
+				argTwoLo  = 0               ,
 			}
 		\]
 		\saNote{}

@@ -6,6 +6,19 @@
 			\isTimestamp _{i}     & = & 1 \\
 		\end{array} \right.$}}
 \end{center}
+We use the following shorthand
+\[
+	\left\{ \begin{array}{lcl}
+		\currTimeStampHi & \define & \currDataHi \\
+		\currTimeStampLo & \define & \currDataLo \\
+	\end{array} \right.
+	\quad
+	\left\{ \begin{array}{lcl}
+		\prevTimeStampHi & \define & \prevDataHi \\
+		\prevTimeStampLo & \define & \prevDataLo \\
+	\end{array} \right.
+\]
+And we impose the following constraints
 \begin{description}
 	\item[\underline{\underline{Setting \inst{TIMESTAMP}:}}]
 		we cannot \emph{a priori} constrain \inst{TIMESTAMP};
@@ -14,12 +27,12 @@
 		we impose that
 		\[
 			\wcpCallToLt{
-				anchorRow = i           ,
-				relOffset = \rowOffset  ,
-				argOneHi  = \currDataHi ,
-				argOneLo  = \currDataLo ,
-				argTwoHi  = 0           ,
-				argTwoLo  = 256^\medium ,
+				anchorRow = i                ,
+				relOffset = \rowOffset       ,
+				argOneHi  = \currTimeStampHi ,
+				argOneLo  = \currTimeStampLo ,
+				argTwoHi  = 0                ,
+				argTwoLo  = 256^\medium      ,
 			}
 		\]
 		\saNote{}
@@ -30,12 +43,12 @@
 		we impose that
 		\[
 			\wcpCallToGt{
-				anchorRow = i           ,
-				relOffset = \rowOffset  ,
-				argOneHi  = \currDataHi ,
-				argOneLo  = \currDataLo ,
-				argTwoHi  = \prevDataHi ,
-				argTwoLo  = \prevDataLo ,
+				anchorRow = i                ,
+				relOffset = \rowOffset       ,
+				argOneHi  = \currTimeStampHi ,
+				argOneLo  = \currTimeStampLo ,
+				argTwoHi  = \prevTimeStampHi ,
+				argTwoLo  = \prevTimeStampLo ,
 			}
 		\]
 		\saNote{}

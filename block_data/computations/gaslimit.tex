@@ -6,7 +6,19 @@
 			\isGaslimit _{i}     & = & 1 \\
 		\end{array} \right.$}}
 \end{center}
-We introduce the following constants
+We use the following shorthand
+\[
+	\left\{ \begin{array}{lcl}
+		\currGasLimitHi & \define & \currDataHi \\
+		\currGasLimitLo & \define & \currDataLo \\
+	\end{array} \right.
+	\quad
+	\left\{ \begin{array}{lcl}
+		\prevGasLimitHi & \define & \prevDataHi \\
+		\prevGasLimitLo & \define & \prevDataLo \\
+	\end{array} \right.
+\]
+We further introduce the following constants
 \[
 	\left\{ \begin{array}{lcr}
 		\ethereumMinBlockGasLimit & \define & \ethereumMinBlockGasLimitValue \\
@@ -16,12 +28,12 @@ We introduce the following constants
 \]
 We impose the following:
 \begin{description}
-	\item[\underline{\underline{Setting \inst{GASLIMIT}:}}]
+	\item[\underline{\underline{Horizontalization of \inst{GASLIMIT}:}}]
 		we impose
 		\[
 			\left\{ \begin{array}{lcl}
-				\currDataHi & = & 0                   \\
-				\currDataLo & = & \blockGasLimit _{i} \\
+				\currGasLimitHi & = & 0                   \\
+				\currGasLimitLo & = & \blockGasLimit _{i} \\
 			\end{array} \right.
 		\]
 	\item[\underline{\underline{\inst{GASLIMIT} lower bound:}}]
@@ -31,8 +43,8 @@ We impose the following:
 			\wcpCallToGeq{
 				anchorRow = i                      ,
 				relOffset = \rowOffset             ,
-				argOneHi  = \currDataHi            ,
-				argOneLo  = \currDataLo            ,
+				argOneHi  = \currGasLimitHi            ,
+				argOneLo  = \currGasLimitLo            ,
 				argTwoHi  = 0                      ,
 				argTwoLo  = \lineaMinBlockGasLimit ,
 			}
@@ -50,8 +62,8 @@ We impose the following:
 			\wcpCallToLeq{
 				anchorRow = i                      ,
 				relOffset = \rowOffset             ,
-				argOneHi  = \currDataHi            ,
-				argOneLo  = \currDataLo            ,
+				argOneHi  = \currGasLimitHi            ,
+				argOneLo  = \currGasLimitLo            ,
 				argTwoHi  = 0                      ,
 				argTwoLo  = \lineaMaxBlockGasLimit ,
 			}
@@ -87,8 +99,8 @@ We impose the following:
 			\wcpCallToLt{
 				anchorRow = i           ,
 				relOffset = \rowOffset  ,
-				argOneHi  = \currDataHi ,
-				argOneLo  = \currDataLo ,
+				argOneHi  = \currGasLimitHi ,
+				argOneLo  = \currGasLimitLo ,
 				argTwoHi  = 0           ,
 				argTwoLo  = \previousGasLimit  + \maxDeviation ,
 			}
@@ -102,8 +114,8 @@ We impose the following:
 			\wcpCallToGt{
 				anchorRow = i           ,
 				relOffset = \rowOffset  ,
-				argOneHi  = \currDataHi ,
-				argOneLo  = \currDataLo ,
+				argOneHi  = \currGasLimitHi ,
+				argOneLo  = \currGasLimitLo ,
 				argTwoHi  = 0           ,
 				argTwoLo  = \previousGasLimit  - \maxDeviation ,
 			}
