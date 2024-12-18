@@ -15,12 +15,12 @@
 		Implementations may impose the value returned by the \inst{CHAINID} opcode to some network constant
 		$\lineaChainId$.
 	\item[\underline{\underline{Permanence of \inst{CHAINID}:}}]
-		\If $\locIsCurrConf _{i} = 1$ \Then
+		\If $\locIsntFirstBlock = 1$ \Then
 		we impose
 		\[
 			\left\{ \begin{array}{lcl}
-				\blockDataHi _{i} & = & \blockDataHi _{i - \blockDataDepth} \\
-				\blockDataLo _{i} & = & \blockDataLo _{i - \blockDataDepth} \\
+				\currDataHi & = & \prevDataHi \\
+				\currDataLo & = & \prevDataLo \\
 			\end{array} \right.
 		\]
 	\item[\underline{\underline{\inst{CHAINID} bound:}}]
@@ -28,12 +28,12 @@
 		we impose
 		\[
 			\wcpCallToGeq{
-				anchorRow = i                     ,
-				relOffset = \rowOffset            ,
-				argOneHi  = \blockDataHi _{i}     ,
-				argOneLo  = \blockDataLo _{i}     ,
-				argTwoHi  = 0                     ,
-				argTwoLo  = 0                     ,
+				anchorRow = i           ,
+				relOffset = \rowOffset  ,
+				argOneHi  = \currDataHi ,
+				argOneLo  = \currDataLo ,
+				argTwoHi  = 0           ,
+				argTwoLo  = 0           ,
 			}
 		\]
 		\saNote{}

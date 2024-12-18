@@ -1,8 +1,6 @@
 We shall often use the following shorthands for
 \[
 	\left\{ \begin{array}{lcl}
-		\previousConflation & \longleftrightarrow & \locIsPrevConf   \\
-		\currentConflation  & \longleftrightarrow & \locIsCurrConf   \\
 		\isCoinbase         & \longleftrightarrow & \locIsCoinbase   \\
 		\isTimestamp        & \longleftrightarrow & \locIsTimestamp  \\
 		\isNumber           & \longleftrightarrow & \locIsNumber     \\
@@ -115,9 +113,15 @@ and
 		+ & \locIsBasefee    _{i} & \cdot & \locIsCoinbase   _{i + 1} \\
 	\end{array} \right]
 \]
-Finally, we define
+We also introduce the following shorthands for improved expressivity
 \[
-	\locPrevCurrWghtSum _{i}
-	\define
-	\locIsCurrConf _{i} + 2 \cdot \locIsPrevConf _{i}
+	\left\{ \begin{array}{lc l}
+		\locIsFirstBlock   & \define & 1 - \iomf    _{i - \blockDataDepth} \\
+		\locIsntFirstBlock & \define & \iomf        _{i - \blockDataDepth} \\
+		\currDataHi        & \define & \blockDataHi _{i}                   \\
+		\currDataLo        & \define & \blockDataLo _{i}                   \\
+		\prevDataHi        & \define & \blockDataHi _{i - \blockDataDepth} \\
+		\prevDataLo        & \define & \blockDataLo _{i - \blockDataDepth} \\
+	\end{array} \right.
 \]
+The interpretation being that $\locIsntFirstBlock \equiv 1$ \emph{if and only if} the current block isn't the first in the conflation of blocks.

@@ -24,16 +24,16 @@
 		\]
 	\item[\underline{\underline{\inst{NUMBER} upper bound:}}]
 		\def\rowOffset{\yellowm{1}}
-		\If $\locIsPrevConf _{i} = 1$ \Then
+		\If $\locIsFirstBlock = 1$ \Then
 		we impose that
 		\[
 			\wcpCallToLt{
-				anchorRow = i                 ,
-				relOffset = \rowOffset        ,
-				argOneHi  = \blockDataHi _{i} ,
-				argOneLo  = \blockDataLo _{i} ,
-				argTwoHi  = 0                 ,
-				argTwoLo  = 256^\medium       ,
+				anchorRow = i           ,
+				relOffset = \rowOffset  ,
+				argOneHi  = \currDataHi ,
+				argOneLo  = \currDataLo ,
+				argTwoHi  = 0           ,
+				argTwoLo  = 256^\medium ,
 			}
 		\]
 		\saNote{}
@@ -42,54 +42,26 @@
 		since we include ``the final block of the preceding conflation'' for reference,
 		special care has to be taken when setting \inst{NUMBER} if the present conflation of blocks contains the genesis block.
 		\begin{enumerate}
-			\item \If $\locIsPrevConf _{i} = 1$ \Then
+			\item
+				\If $\locIsFirstBlock = 1$ \Then
 				\begin{enumerate}
-					\item \If $\locFirstBlockIsGenesisBlock = 1$ \Then
-						we impose that
+					\item
+						we unconditionally impose that
 						\[
 							\left\{ \begin{array}{lcl}
-								\blockDataHi _{i} & = & 0 \\
-								\blockDataLo _{i} & = & 0 \\
-							\end{array} \right.
-						\]
-					\item \If $\locFirstBlockIsGenesisBlock = 0$ \Then
-						we impose that
-						\[
-							\left\{ \begin{array}{lcl}
-								\blockDataHi _{i} & = & 0                                             \\
-								\blockDataLo _{i} & = & \blockNumberOfFirstBlockInConflation _{i} - 1 \\
+								\currDataHi & = & 0                                         \\
+								\currDataLo & = & \blockNumberOfFirstBlockInConflation _{i} \\
 							\end{array} \right.
 						\]
 				\end{enumerate}
-			\item \If $\locIsCurrConf _{i} = 1$ \Then
+			\item
+				\If $\locIsntFirstBlock = 1$ \Then
 				we impose that
-				\begin{enumerate}
-					\item \If $\locFirstBlockIsGenesisBlock = 1$ \Then
-						\begin{enumerate}
-							\item \If $\locIsPrevConf _{i - \blockDataDepth} = 1$ \Then
-								\[
-									\left\{ \begin{array}{lcl}
-										\blockDataHi _{i} & = & 0 \\
-										\blockDataLo _{i} & = & 0 \\
-									\end{array} \right.
-								\]
-							\item \If $\locIsCurrConf _{i - \blockDataDepth} = 1$ \Then
-								\[
-									\left\{ \begin{array}{lcl}
-										\blockDataHi _{i} & = & \blockDataHi _{i - \blockDataDepth}     \\
-										\blockDataLo _{i} & = & \blockDataLo _{i - \blockDataDepth} + 1 \\
-									\end{array} \right.
-								\]
-						\end{enumerate}
-						we impose that
-					\item \If $\locFirstBlockIsGenesisBlock = 0$ \Then
-						we impose that
-						\[
-							\left\{ \begin{array}{lcl}
-								\blockDataHi _{i} & = & \blockDataHi _{i - \blockDataDepth}     \\
-								\blockDataLo _{i} & = & \blockDataLo _{i - \blockDataDepth} + 1 \\
-							\end{array} \right.
-						\]
-				\end{enumerate}
+				\[
+					\left\{ \begin{array}{lcl}
+						\currDataHi & = & \prevDataHi     \\
+						\currDataLo & = & \prevDataLo + 1 \\
+					\end{array} \right.
+				\]
 		\end{enumerate}
 \end{description}

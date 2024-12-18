@@ -14,28 +14,28 @@
 		we impose that
 		\[
 			\wcpCallToLt{
-				anchorRow = i                 ,
-				relOffset = \rowOffset        ,
-				argOneHi  = \blockDataHi _{i} ,
-				argOneLo  = \blockDataLo _{i} ,
-				argTwoHi  = 0                 ,
-				argTwoLo  = 256^\medium       ,
+				anchorRow = i           ,
+				relOffset = \rowOffset  ,
+				argOneHi  = \currDataHi ,
+				argOneLo  = \currDataLo ,
+				argTwoHi  = 0           ,
+				argTwoLo  = 256^\medium ,
 			}
 		\]
 		\saNote{}
 		The above ensures that \inst{TIMESTAMP} is a $\medium$-byte integer.
 	\item[\underline{\underline{\inst{TIMESTAMP} is incrementing:}}]
 		\def\rowOffset{\yellowm{1}}
-		\If $\locIsCurrConf _{i} = 1$ \Then
+		\If $\locIsntFirstBlock = 1$ \Then
 		we impose that
 		\[
 			\wcpCallToGt{
-				anchorRow = i            ,
-				relOffset = \rowOffset   ,
-				argOneHi  = \blockDataHi _{i} ,
-				argOneLo  = \blockDataLo _{i} ,
-				argTwoHi  = \blockDataHi _{i - \blockDataDepth}  ,
-				argTwoLo  = \blockDataLo _{i - \blockDataDepth}  ,
+				anchorRow = i           ,
+				relOffset = \rowOffset  ,
+				argOneHi  = \currDataHi ,
+				argOneLo  = \currDataLo ,
+				argTwoHi  = \prevDataHi ,
+				argTwoLo  = \prevDataLo ,
 			}
 		\]
 		\saNote{}

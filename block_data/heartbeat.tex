@@ -2,6 +2,7 @@ We start with $\iomf$ which we require to be binary nondecreasing:
 \begin{enumerate}
 	\item $\iomf$ is binary ~ (\trash)
 	\item $\iomf _{0} = 0$
+	\item \If $\iomf _{i} = 1$ \Then $\iomf _{i + 1} = 1$
 \end{enumerate}
 We now impose constraints related to the instruction flags \col{is\_XX}, \ct{} and \maxCt{}.
 \begin{enumerate}[resume]
@@ -12,7 +13,7 @@ We now impose constraints related to the instruction flags \col{is\_XX}, \ct{} a
 				\ct _{i + 1} & = & 0  & (\sanityCheck) \\
 			\end{array} \right.
 		\]
-	\item \If $\iomf _{i} = 0$ \et $\iomf _{i + 1} = 1$ \Then $\locIsCoinbase _{i + 1} = 1$
+	\item \If $\iomf _{i} \neq \iomf _{i + 1}$\footnote{i.e. \If $\iomf _{i} = 0$ \et $\iomf _{i + 1} = 1$} \Then $\locIsCoinbase _{i + 1} = 1$
 	\item \If $\locPhaseEntry _{i} = 1$ \Then $\ct _{i + 1} = 0$
 \end{enumerate}
 \begin{enumerate}[resume]
@@ -44,24 +45,11 @@ We now impose constraints on $\relBlock$.
 \begin{enumerate}[resume]
 	\item $\relBlock _{0} = 0$
 	\item $\relBlock_{i + 1} \in \{ \relBlock_{i}, 1 + \relBlock_{i} \}$ \quad (\sanityCheck)
-	\item $\relBlock _{i + 1} = \relBlock _{i} + \locIsBasefee _{i} \cdot \locIsCoinbase _{i + 1}$
-\end{enumerate}
-The following constraints pin down $\locIsPrevConf$ and $\locIsCurrConf$.
-\begin{enumerate}[resume]
-	\item \If $\locIsCurrConf _{i} = 1$ \Then $\locIsCurrConf _{i + 1} = 1$
-	\item \If $\iomf _{i} = 0$ \et $\iomf _{i + 1} = 1$ \Then $\locIsPrevConf _{i + 1} = 1$
-	\item \If $\iomf _{i} = 1$ \et $\relBlock _{i + 1} = \relBlock _{i}$%
-		\footnote{In the implementation: ``\If $\iomf_{i} = 1$ \et $\relBlock _{i + 1} \neq 1 + \relBlock _{i}$ \Then $\dots$''}
-		\Then
-		\[ \locPrevCurrWghtSum _{i + 1} = \locPrevCurrWghtSum _{i} \]
-	\item \If $\relBlock _{i + 1} = 1 + \relBlock _{i}$%
-		\footnote{In the implementation: ``\If $\relBlock _{i + 1} \neq \relBlock _{i}$ \Then $\dots$''}
-		\Then $\locIsCurrConf _{i + 1} = 1$
+	\item $\relBlock _{i + 1} = \relBlock _{i} + (1 - \locIsCoinbase _{i}) \cdot \locIsCoinbase _{i + 1}$
 \end{enumerate}
 We end on ``finalization'' constraints.
 The \zkEvm{} expects to process blocks, as such we impose these constraints unconditionally.
 \begin{enumerate}[resume]
-	\item $\locIsCurrConf _{N} = 1$
 	\item $\locIsBasefee  _{N} = 1$
 	\item $\ct _{N} = \maxCt _{N}$
 \end{enumerate}
