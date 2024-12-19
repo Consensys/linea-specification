@@ -1,17 +1,29 @@
 We remind the reader that \ccc{} stands for ``counter-constant column.''
+The first set of columns will be used to define the heartbeat of the \btcMod{} module.
 \begin{enumerate}
+	\item $\iomf$:
+		nondecreasing binary column;
+	\item $\maxCt$:
+		counter-constant column;
 	\item $\ct$:
-		counter column; hovers around zero and then cycles from $0$ to $\maxCtBtcData$;
-	\item \blockNumberOfFirstBlockInConflation{}:
-		``conflation-constant'' column containing the block number\footnote{In the sense of the \evm{}} of the first block of this conflation;
-	\item $\relBlock$:
-		\ccc{} containing the relative block number;
-	\item $\relTxMax$:
-		\ccc{} containing the number of transactions in this block;
-	\item $\INST$:
+		counter column; hovers around zero and then cycles from $0$ to $\maxCt$;
+\end{enumerate}
+We introduce some binary columns linked to the instructions that the present module deals with:
+\begin{multicols}{3}
+	\begin{enumerate}[resume]
+		\item $\isCoinbase$    
+		\item $\isTimestamp$   
+		\item $\isNumber$      
+		\item $\isDifficulty$  
+		\item $\isGaslimit$    
+		\item $\isChainid$     
+		\item $\isBasefee$     
+	\end{enumerate} 
+\end{multicols}
+\noindent The following columns contain data which is reflected in the \txnDataMod{} module.
+\begin{enumerate}[resume, start=13]
+	\item $\instruction$:
 		instruction column;
-	\item $\blockDataHi$, $\blockDataLo$:
-		columns containing block data;
 	\item $\coinbase\high$ and $\coinbase\low$:
 		\ccc{} containing the
 		coinbase address;
@@ -21,9 +33,22 @@ We remind the reader that \ccc{} stands for ``counter-constant column.''
 	\item \basefee{}:
 		\ccc{} containing the
 		base fee;
-	\item $\byteCol{HI\_k}$, and $\byteCol{LO\_k}$, $k = 0, 1, \dots, \llargeMO$:
-	\item $\wcpFlag$:
+\end{enumerate}
+The following columns pertain to transaction and block numbers.
+\begin{enumerate}[resume]
+	\item \blockNumberOfFirstBlockInConflation{}:
+		``conflation-constant'' column containing the block number\footnote{In the sense of the \evm{}} of the first block of this conflation;
+	\item $\relBlock$:
+		\ccc{} containing the relative block number;
+	\item $\relTxMax$:
+		\ccc{} containing the number of transactions in this block;
+	\item $\blockDataHi$, $\blockDataLo$:
+		columns containing block data;
+\end{enumerate}
+The following columns are used in lookups from the \btcMod{} module into the \wcpMod{} and \eucMod{} modules.
+\begin{enumerate}[resume]
+	\item $\argOneHi$, $\argOneLo$, $\argTwoHi$, $\argTwoLo$, $\res$, $\exoInstruction$
+		columns containing arguments for computations performed by foreign modules;
+	\item $\wcpFlag$, $\eucFlag$:
 		binary flags used as selector for lookups;
 \end{enumerate}
-\saNote{}
-The \INST{} column is $0$ during padding then cycles through a selection of ``block data'' specific opcodes e.g. \texttt{0x\,10} (i.e. \inst{COINBASE}), \texttt{0x\,46} (i.e. \inst{CHAINID}) etc\dots{} see section~(\ref{block data: value constraints}).
