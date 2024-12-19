@@ -21,9 +21,10 @@ We use the following shorthand
 We further introduce the following constants
 \[
 	\left\{ \begin{array}{lcr}
-		\ethereumMinBlockGasLimit & \define & \ethereumMinBlockGasLimitValue \\
-		\lineaMinBlockGasLimit    & \define & \lineaMinBlockGasLimitValue    \\
-		\lineaMaxBlockGasLimit    & \define & \lineaMaxBlockGasLimitValue    \\
+		\ethereumMinBlockGasLimit         & \define & \ethereumMinBlockGasLimitValue         \\
+		\lineaMinBlockGasLimit            & \define & \lineaMinBlockGasLimitValue            \\
+		\lineaMaxBlockGasLimit            & \define & \lineaMaxBlockGasLimitValue            \\
+		\ethereumGasLimitAdjustmentFactor & \define & \ethereumGasLimitAdjustmentFactorValue \\
 	\end{array} \right.
 \]
 We impose the following:
@@ -77,10 +78,10 @@ We impose the following:
 		we impose
 		\[
 			\eucCall{
-				anchorRow = i                 ,
-				relOffset = \rowOffset        ,
-				argOne    = \previousGasLimit ,
-				argTwo    = 1024              ,
+				anchorRow = i                                 ,
+				relOffset = \rowOffset                        ,
+				argOne    = \previousGasLimit                 ,
+				argTwo    = \ethereumGasLimitAdjustmentFactor ,
 			}
 		\]
 		where we set
@@ -91,7 +92,7 @@ We impose the following:
 			\end{array} \right.
 		\]
 		\saNote{}
-		By definition, $\maxDeviation \equiv \left\lfloor \frac\previousGasLimit{1024} \right\rfloor$.
+		By definition, $\maxDeviation \equiv \left\lfloor \frac\previousGasLimit{\ethereumGasLimitAdjustmentFactorValue} \right\rfloor$.
 	\item[\underline{\underline{\inst{GASLIMIT} deviation upper bound:}}]
 		\def\rowOffset{\yellowm{3}}
 		\If $\locIsntFirstBlock = 1$ \Then
