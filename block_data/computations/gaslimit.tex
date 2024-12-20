@@ -1,0 +1,126 @@
+\begin{center}
+	\boxed{\text{%
+		The following constraints assume that
+		$\left\{ \begin{array}{lcl}
+			\isGaslimit _{i - 1} & = & 0 \\
+			\isGaslimit _{i}     & = & 1 \\
+		\end{array} \right.$}}
+\end{center}
+We use the following shorthand
+\[
+	\left\{ \begin{array}{lcl}
+		\currGasLimitHi & \define & \currDataHi \\
+		\currGasLimitLo & \define & \currDataLo \\
+	\end{array} \right.
+	\quad
+	\left\{ \begin{array}{lcl}
+		\prevGasLimitHi & \define & \prevDataHi \\
+		\prevGasLimitLo & \define & \prevDataLo \\
+	\end{array} \right.
+\]
+We further introduce the following constants
+\[
+	\left\{ \begin{array}{lcr}
+		\ethereumMinBlockGasLimit         & \define & \ethereumMinBlockGasLimitValue         \\
+		\lineaMinBlockGasLimit            & \define & \lineaMinBlockGasLimitValue            \\
+		\lineaMaxBlockGasLimit            & \define & \lineaMaxBlockGasLimitValue            \\
+		\ethereumGasLimitAdjustmentFactor & \define & \ethereumGasLimitAdjustmentFactorValue \\
+	\end{array} \right.
+\]
+We impose the following:
+\begin{description}
+	\item[\underline{\underline{Horizontalization of \inst{GASLIMIT}:}}]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\currGasLimitHi & = & 0                   \\
+				\currGasLimitLo & = & \blockGasLimit _{i} \\
+			\end{array} \right.
+		\]
+	\item[\underline{\underline{\inst{GASLIMIT} lower bound:}}]
+		\def\rowOffset{\yellowm{0}}
+		we impose
+		\[
+			\wcpCallToGeq{
+				anchorRow = i                      ,
+				relOffset = \rowOffset             ,
+				argOneHi  = \currGasLimitHi            ,
+				argOneLo  = \currGasLimitLo            ,
+				argTwoHi  = 0                      ,
+				argTwoLo  = \lineaMinBlockGasLimit ,
+			}
+		\]
+		
+
+		\saNote{}
+		The above ensures that $\blockGasLimit_{i} \geq \lineaMinBlockGasLimit$.
+		This minimal block gas limits differs from \textsc{Ethereum}'s minimal block gas limit, \ethereumMinBlockGasLimit.
+		Implementations may use an arbitrary block gas limit, though preferably $\geq \ethereumMinBlockGasLimit$.
+	\item[\underline{\underline{\inst{GASLIMIT} upper bound:}}]
+		\def\rowOffset{\yellowm{1}}
+		we impose
+		\[
+			\wcpCallToLeq{
+				anchorRow = i                      ,
+				relOffset = \rowOffset             ,
+				argOneHi  = \currGasLimitHi            ,
+				argOneLo  = \currGasLimitLo            ,
+				argTwoHi  = 0                      ,
+				argTwoLo  = \lineaMaxBlockGasLimit ,
+			}
+		\]
+		\saNote{}
+		The above ensures that $\blockGasLimit_{i} \leq \lineaMaxBlockGasLimit$.
+		There is no corresponding upper limit on the block gas limit in \textsc{Ethereum}.
+	\item[\underline{\underline{Maximum deviation:}}]
+		\def\rowOffset{\yellowm{2}}
+		\If $\locIsntFirstBlock = 1$ \Then
+		we impose
+		\[
+			\eucCall{
+				anchorRow = i                                 ,
+				relOffset = \rowOffset                        ,
+				argOne    = \previousGasLimit                 ,
+				argTwo    = \ethereumGasLimitAdjustmentFactor ,
+			}
+		\]
+		where we set
+		\[
+			\left\{ \begin{array}{lcl}
+				\previousGasLimit & \define & \blockGasLimit _{i - \blockDataDepth} \\
+				\maxDeviation     & \define & \res _{i + \rowOffset}                \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		By definition, $\maxDeviation \equiv \left\lfloor \frac\previousGasLimit{\ethereumGasLimitAdjustmentFactorValue} \right\rfloor$.
+	\item[\underline{\underline{\inst{GASLIMIT} deviation upper bound:}}]
+		\def\rowOffset{\yellowm{3}}
+		\If $\locIsntFirstBlock = 1$ \Then
+		\[
+			\wcpCallToLt{
+				anchorRow = i           ,
+				relOffset = \rowOffset  ,
+				argOneHi  = \currGasLimitHi ,
+				argOneLo  = \currGasLimitLo ,
+				argTwoHi  = 0           ,
+				argTwoLo  = \previousGasLimit  + \maxDeviation ,
+			}
+		\]
+		\saNote{}
+		The above ensures that $\blockGasLimit_{i} < \previousGasLimit  + \maxDeviation$.
+	\item[\underline{\underline{\inst{GASLIMIT} deviation lower bound:}}]
+		\def\rowOffset{\yellowm{4}}
+		\If $\locIsntFirstBlock = 1$ \Then
+		\[
+			\wcpCallToGt{
+				anchorRow = i           ,
+				relOffset = \rowOffset  ,
+				argOneHi  = \currGasLimitHi ,
+				argOneLo  = \currGasLimitLo ,
+				argTwoHi  = 0           ,
+				argTwoLo  = \previousGasLimit  - \maxDeviation ,
+			}
+		\]
+		\saNote{}
+		The above ensures that $\blockGasLimit_{i} > \previousGasLimit  - \maxDeviation$.
+\end{description}
