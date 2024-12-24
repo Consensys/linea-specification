@@ -1,0 +1,44 @@
+\begin{center}
+	\boxed{\text{%
+        The following constraints assume that
+	$\left\{ \begin{array}{lcl}
+		\isBasefee _{i - 1} & = & 0 \\
+		\isBasefee _{i}     & = & 1 \\
+	\end{array} \right.$}}
+\end{center}
+We use the following shorthand
+\[
+	\left\{ \begin{array}{lc l}
+		\currBaseFeeHi & \define & \currDataHi \\
+		\currBaseFeeLo & \define & \currDataLo \\
+	\end{array} \right.
+\]
+We impose the following constraints
+\begin{description}
+	\item[\underline{\underline{Horizontalization of \inst{BASEFEE}:}}]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\currBaseFeeHi & = & 0             \\
+				\currBaseFeeLo & = & \basefee _{i} \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		Implementations may further impose, by means of a constraint, the value returned by the \inst{BASEFEE} opcode to some network constant
+		$\lineaBaseFee{}$.
+	\item[\underline{\underline{\inst{BASEFEE} bound:}}]
+		\def\rowOffset{\yellowm{0}}
+		we impose
+		\[
+			\wcpCallToGeq{
+				anchorRow = i              ,
+				relOffset = \rowOffset     ,
+				argOneHi  = \currBaseFeeHi ,
+				argOneLo  = \currBaseFeeLo ,
+				argTwoHi  = 0              ,
+				argTwoLo  = 0              ,
+			}
+		\]
+		\saNote{}
+		The above ensures that $\basefee _{i} \geq 0$ is well formed (in terms of its high and low parts being $\llarge$-byte integers.)
+\end{description}
