@@ -1,15 +1,25 @@
 The re-ordering arguments involving dominant and subordinate stamps (i.e. $\domStamp$ and $\subStamp$) rely on some constants which we define here:
 \begin{itemize}
-	\item $\hubTau              = 8$
-	\item $\hubLambda           = 8$
-	\item $\revertEpsilon       = 6$
-	\item $\selfdestructEpsilon = 7$
+	\item $\hubTau              =  8$
+	\item $\hubLambda           = 16$
+	\item $\revertEpsilon       =  8$
+	\item $\finalizationEpsilon =  9$
+	\item $\selfdestructEpsilon = 10$
 \end{itemize}
-Two criteria have to be considered in setting these constants:
+Two criteria have to be considered in setting these constants.
+Let us define \col{max} as the maximum ``$\domStamp$''-offset encountered in constraints
+that is
+$\col{max} = \max \big\{ \, \col{d} \, \big \}$
+where the maximum is taken over all \col{d} which appear in a constraint of the form $\domStamp \equiv \hubLambda \cdot \col{h} + \col{d}$.
+The constants above have to satisfy
 \begin{enumerate}
-	\item for any ``dom''-offset \col{d} used in a constraint to set $\domStamp \equiv \hubLambda \cdot \col{h} + \col{d}$ (where $\col{h} \equiv \hubStamp$) it should hold that $0 \leq \col{d} < \revertEpsilon$
-	\item $0 \leq \revertEpsilon < \selfdestructEpsilon < \hubLambda$
+	\item $0 \leq \col{max} < \revertEpsilon$
+	\item $0 \leq \finalizationEpsilon < \selfdestructEpsilon < \hubLambda$
 \end{enumerate}
+The constants proposed above satisfy the stronger condition
+\[
+	0 \leq \col{max} < \revertEpsilon < \finalizationEpsilon < \selfdestructEpsilon < \hubLambda
+\]
 Indeed reverting should happen before gas refunds and before enacting any \inst{SELFDESTRUCT}'s and ``\texttt{doing}''-actions ``taken in the moment'' should not interfere with ``\texttt{undoing}''-actions scheduled for post roll back.
 \begin{itemize}
 	\item $\emptyKeccakHi = \texttt{0xc5d2460186f7233c927e7db2dcc703c0}$

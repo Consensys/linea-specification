@@ -23,9 +23,9 @@ We define the following shorthand:
 \]
 \begin{enumerate}[resume] \label{hub:heartbeat: tx phase sum constraints}
 	\item \If $\absTxNum_{i} = 0$ \Then $\locTransactionPhaseSum_{i} = 0$;
-	\item\label{hub: heartbeat: tx phase flag exclusivity}
+	\item \label{hub: heartbeat: tx phase flag exclusivity}
 		\If $\absTxNum_{i} \neq 0$ \Then $\locTransactionPhaseSum_{i} = 1$;
-	\item\label{hub: heartbeat: acceptable tx phases at first row of new transaction}
+	\item \label{hub: heartbeat: acceptable tx phases at first row of new transaction}
 		\If $\absTxNum_{i} \neq \absTxNum_{i - 1}$ \Then $\locAcceptableTransactionPhaseFlagsAtFirstRowOfNewTransaction$;
 \end{enumerate}
 The above says that on padding rows all processing flags are off while on non-padding rows \emph{precisely} one of the processing flags flags is set. Furthermore when a new transaction starts processing it either
@@ -56,14 +56,14 @@ We now deal with the cyclical nature of the process.
 \begin{enumerate}[resume]
 	\item \If $\txWarm_{i} = 1$ \Then $\txWarm_{i + 1} + \txInit_{i + 1} = 1$
 	\item
-		\label{hub: heartbeat: initialization phase finishes on a transaction row}
+		\label{hub: heartbeat: initialization phase finishes on a context row}
 		\If $\txInit_{i} = 1$ \Then
-	\[
-	\begin{cases}
-		\If \peekTransaction_{i} = 0 ~ \Then \txInit_{i + 1} = 1 \\
-		\If \peekTransaction_{i} = 1 ~ \Then \txExec_{i + 1} = 1 \\
-	\end{cases}
-	\]
+		\[
+			\begin{cases}
+				\If \peekContext _{i} = 0 ~ \Then \txInit _{i + 1} = 1 \\
+				\If \peekContext _{i} = 1 ~ \Then \txExec _{i + 1} = 1 \\
+			\end{cases}
+		\]
 	\item \If $\txExec_{i} = 1$ \Then $\txExec_{i + 1} + \txFinl_{i + 1} = 1$
 	\item
 		\label{hub: heartbeat: finalization phase finishes on a transaction row}
