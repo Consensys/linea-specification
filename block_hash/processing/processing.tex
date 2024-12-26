@@ -1,0 +1,102 @@
+\[
+    \boxed{\text{All constraints in this subsection assume } \isMacro _{i} = 1 }
+\]
+To this end we define the following shorthands:
+\[
+	\left\{ \begin{array}{lcl}
+		\locPrevBlockHashArgHi & \define & \isMacro _{i  - \blockhashDepthValue} \cdot \blockNumber \high _{i  - \blockhashDepthValue}              \\
+		\locPrevBlockHashArgLo & \define & \isMacro _{i  - \blockhashDepthValue} \cdot \blockNumber \low  _{i  - \blockhashDepthValue} \vspace{2mm} \\
+		\locCurrBlockHashArgHi & \define & \blockNumber \high _{i}                                                                                  \\
+		\locCurrBlockHashArgLo & \define & \blockNumber \low  _{i}                                                                                  \\
+	\end{array} \right.
+\]
+We impose the following constraints
+\begin{description}
+	\def\nRows{\yellowm{1}}\item[\underline{Processing row $n^\circ(i + \nRows)$:}] 
+		we impose that
+		\[
+			\wcpCallToLeq {
+				anchorRow = i                      ,
+				relOffset = \nRows                 ,
+				argOneHi  = \locPrevBlockHashArgHi ,
+				argOneLo  = \locPrevBlockHashArgLo ,
+				argTwoHi  = \locCurrBlockHashArgHi ,
+				argTwoLo  = \locCurrBlockHashArgLo ,
+			}
+		\]
+		we further impose that
+		\[
+			\resultMustBeTrue {
+				anchorRow = i,
+				relOffset = \nRows,
+			}
+		\]
+		\saNote{}
+		The above enforces that $\locPrevBlockHashArg \leq \locCurrBlockHashArg$
+	\def\nRows{\yellowm{2}}\item[\underline{Processing row $n^\circ(i + \nRows)$:}] 
+		we impose that
+		\[
+			\wcpCallToEq {
+				anchorRow = i                      ,
+				relOffset = \nRows                 ,
+				argOneHi  = \locPrevBlockHashArgHi ,
+				argOneLo  = \locPrevBlockHashArgLo ,
+				argTwoHi  = \locCurrBlockHashArgHi ,
+				argTwoLo  = \locCurrBlockHashArgLo ,
+			}
+		\]
+		and we define the following shorthand
+		\[
+			\locSameBlockHashArgument \define \res _{i + \nRows}
+		\]
+	\def\nRows{\yellowm{3}}\item[\underline{Processing row $n^\circ(i + \nRows)$:}] 
+		we impose that
+		\[
+			\wcpCallToLeq {
+				anchorRow = i                      ,
+				relOffset = \nRows                 ,
+				argOneHi  = 0                      ,
+				argOneLo  = \redm{256}             ,
+				argTwoHi  = 0                      ,
+				argTwoLo  = \absBlock _{i}         ,
+			}
+		\]
+		and we define the following shorthand
+		\[
+			\locMinimalReachable \define \res _{i + \nRows} \cdot \Big( \absBlock _{i} - \redm{256} \Big)
+		\]
+		\saNote{}
+		In other words $\locMinimalReachable \equiv \big[ \absBlock _{i} - \redm{256} \big]^+$
+	\def\nRows{\yellowm{4}}\item[\underline{Processing row $n^\circ(i + \nRows)$:}] 
+		we impose that
+		\[
+			\wcpCallToLt {
+				anchorRow = i                      ,
+				relOffset = \nRows                 ,
+				argOneHi  = \locCurrBlockHashArgHi ,
+				argOneLo  = \locCurrBlockHashArgLo ,
+				argTwoHi  = 0                      ,
+				argTwoLo  = \absBlock _{i}         ,
+			}
+		\]
+		and we define the following shorthand
+		\[
+			\locUpperBoundOk \define \res _{i + \nRows}
+		\]
+	\def\nRows{\yellowm{5}}\item[\underline{Processing row $n^\circ(i + \nRows)$:}] 
+		we impose that
+		\[
+			\wcpCallToLeq {
+				anchorRow = i                      ,
+				relOffset = \nRows                 ,
+				argOneHi  = 0                      ,
+				argOneLo  = \locMinimalReachable   ,
+				argTwoHi  = \locCurrBlockHashArgHi ,
+				argTwoLo  = \locCurrBlockHashArgLo ,
+			}
+		\]
+		and we define the following shorthand
+		\[
+			\locLowerBoundOk \define \res _{i + \nRows}
+		\]
+\end{description}
