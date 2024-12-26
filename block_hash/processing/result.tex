@@ -1,0 +1,28 @@
+\[
+	\boxed{\text{All constraints in this subsection assume } \isMacro _{i} = 1 }
+\]
+The present constraints set the \inst{BLOCKHASH} result in terms of the pre-processing of the previous section.
+\begin{enumerate}
+	\item we unconditionally impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\resHi _{i} & = & \locArgumentInBounds \cdot \blockHash\high _{i} \\
+				\resLo _{i} & = & \locArgumentInBounds \cdot \blockHash\low  _{i} \\
+			\end{array} \right.
+		\]
+		where we set
+		\[
+			\locArgumentInBounds \define 
+			\locLowerBoundOk
+			\cdot
+			\locUpperBoundOk
+		\]
+	\item \If $\locSameBlockHashArgument _{i} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\blockHash\high _{i} & = & \locArgumentInBounds \cdot \blockHash\high _{i - \blockhashDepthValue} \\
+				\blockHash\low  _{i} & = & \locArgumentInBounds \cdot \blockHash\low  _{i - \blockhashDepthValue} \\
+			\end{array} \right.
+		\]
+\end{enumerate}
+where
