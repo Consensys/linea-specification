@@ -1,16 +1,7 @@
 \[
     \boxed{\text{All constraints in this subsection assume } \isMacro _{i} = 1 }
 \]
-To this end we define the following shorthands:
-\[
-	\left\{ \begin{array}{lcl}
-		\locPrevBlockHashArgHi & \define & \isMacro _{i  - \blockhashDepthValue} \cdot \blockHashArgument \high _{i  - \blockhashDepthValue}              \\
-		\locPrevBlockHashArgLo & \define & \isMacro _{i  - \blockhashDepthValue} \cdot \blockHashArgument \low  _{i  - \blockhashDepthValue} \vspace{2mm} \\
-		\locCurrBlockHashArgHi & \define & \blockHashArgument \high _{i}                                                                                  \\
-		\locCurrBlockHashArgLo & \define & \blockHashArgument \low  _{i}                                                                                  \\
-	\end{array} \right.
-\]
-We impose the following constraints
+To this end We impose the following constraints
 \begin{description}
 	\def\nRows{\yellowm{1}}\item[\underline{Processing row $n^\circ(i + \nRows)$:}] 
 		we impose that
@@ -32,7 +23,11 @@ We impose the following constraints
 			}
 		\]
 		\saNote{}
-		The above enforces that $\locPrevBlockHashArg \leq \locCurrBlockHashArg$
+		The above enforces that $\locPrevBlockHashArg \leq \locCurrBlockHashArg$.
+		This is a \textbf{crucial feature} of the present module.
+		It enforces that (unexcepional) invocations of the \inst{BLOCKHASH} opcode be listed in
+		\textbf{ascending order of their arguments}.
+		This order may clash with the temporal order of execution.
 	\def\nRows{\yellowm{2}}\item[\underline{Processing row $n^\circ(i + \nRows)$:}] 
 		we impose that
 		\[

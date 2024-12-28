@@ -1,9 +1,16 @@
-We introduce relevant processing instructions.
-Their purpose is to carry out the following comparisons:
+The purpose of the processing phase is to carry out the following comparisons:
 \begin{itemize}
         \item $\locPrevBlockHashArg \leq \locCurrBlockHashArg$, expecting the result to be true
         \item $\locPrevBlockHashArg =    \locCurrBlockHashArg$
 	\item $\redm{256}           \leq \absBlock$
 	\item $\locCurrBlockHashArg <    \absBlock$
-	\item $\locCurrBlockHashArg \geq 0 \vee \big[ \absBlock - \redm{256} \big]$ 
+	\item $\locCurrBlockHashArg \geq \big[ \absBlock - \redm{256} \big]^+$ 
 \end{itemize}
+Given the results of these comparisons the \blockHashMod{} module determines the value to write in the
+$\blockHashResult\high$ and $\blockHashResult\low$ columns.
+
+\saNote{}
+We remind the reader that we set, for integer $x$,
+\[
+	x^+  \define 0 \vee x\define \max \big\{ 0, x \big\}
+\]
