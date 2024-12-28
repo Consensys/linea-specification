@@ -1,0 +1,47 @@
+The heartbeat is standard and simple. We start with constraints pertaining to $\iomf$:
+\begin{enumerate}
+	\item we unconditionally impose $\iomf _{i} = \locFlagSum _{i}$
+	\item $\iomf_{0} = 0$
+	\item \If $\iomf_{i} = 0$ \Then:
+		\begin{enumerate}
+			\item $\ct _{i    } = 0$
+			\item $\ct _{i + 1} = 0$
+			\item \label{block hash: non padding starts on macro instruction} $\isPreprocessing _{i + 1} = 0$
+		\end{enumerate}
+		one may further impose
+		\begin{multicols}{2}
+			\begin{enumerate}
+				\item $\blockHashArgument \high _{i} = 0$ ~ (\trash)
+				\item $\blockHashValue    \high _{i} = 0$ ~ (\trash)
+				\item $\blockHashResult   \high _{i} = 0$ ~ (\trash)
+				\item $\blockHashArgument \low  _{i} = 0$ ~ (\trash)
+				\item $\blockHashValue    \low  _{i} = 0$ ~ (\trash)
+				\item $\blockHashResult   \low  _{i} = 0$ ~ (\trash)
+			\end{enumerate}
+		\end{multicols}
+	\item \If $\iomf_{i} = 1$ \Then $\iomf _{i + 1} = 1$
+\end{enumerate}
+\saNote{}
+Constraint~(\ref{block hash: non padding starts on macro instruction}) enforces that the first time
+the \iomf{} flag turns on, so does $\isMacro$.
+
+\noindent We now deal with the counter columns:
+\begin{enumerate}[resume]
+	\item we unconditionally impose $\maxCt _{i} = \locMaxCtSum _{i}$
+	\item \If $\iomf _{i} \neq 0$ \Then
+		\begin{enumerate}
+			\item \If $\ct _{i} \neq \maxCt _{i}$ \Then $\ct _{i + 1} = 1 + \ct _{i}$
+			\item \If $\ct _{i} =    \maxCt _{i}$ \Then $\locTransitionBit _{i} = 1$
+		\end{enumerate}
+	\item \If $\locTransitionBit _{i} = 1$ \Then $\ct _{i + 1} = 0$
+\end{enumerate}
+We further impose finalization constraints
+\begin{enumerate}[resume]
+	\item \If $\iomf _{N} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\isPreprocessing _{N} & = & 1           \\
+				\ct              _{N} & = & \maxCt _{N} \\
+			\end{array} \right.
+		\]
+\end{enumerate}

@@ -1,0 +1,64 @@
+We define several simple constraint systems to simplify the writing of constraints.
+\[
+	\left\{ \begin{array}{lcl}
+		\wcpCallToLt {
+			anchorRow = i           ,
+			relOffset = \relof      ,
+			argOneHi  = \col{a\_hi} ,
+			argOneLo  = \col{a\_lo} ,
+			argTwoHi  = \col{b\_hi} ,
+			argTwoLo  = \col{b\_lo} ,
+		} & \define &
+		\left\{ \begin{array}{lcl}
+			\instruction _{i + \relof} & = & \inst{LT}      \\
+			\argOneHi    _{i + \relof} & = & \col{a\_hi}    \\
+			\argOneLo    _{i + \relof} & = & \col{a\_lo}    \\
+			\argTwoHi    _{i + \relof} & = & \col{b\_hi}    \\
+			\argTwoLo    _{i + \relof} & = & \col{b\_lo}    \\
+			\res         _{i + \relof} & = & \relevantValue \\
+		\end{array} \right. \vspace{2mm} \\
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\wcpCallToLeq {
+			anchorRow = i           ,
+			relOffset = \relof      ,
+			argOneHi  = \col{a\_hi} ,
+			argOneLo  = \col{a\_lo} ,
+			argTwoHi  = \col{b\_hi} ,
+			argTwoLo  = \col{b\_lo} ,
+		} & \define &
+		\left\{ \begin{array}{lcl}
+			\instruction _{i + \relof} & = & \inst{LEQ}     \\
+			\argOneHi    _{i + \relof} & = & \col{a\_hi}    \\
+			\argOneLo    _{i + \relof} & = & \col{a\_lo}    \\
+			\argTwoHi    _{i + \relof} & = & \col{b\_hi}    \\
+			\argTwoLo    _{i + \relof} & = & \col{b\_lo}    \\
+			\res         _{i + \relof} & = & \relevantValue \\
+		\end{array} \right. \vspace{2mm} \\
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\wcpCallToEq  {
+			anchorRow = i           ,
+			relOffset = \relof      ,
+			argOneHi  = \col{a\_hi} ,
+			argOneLo  = \col{a\_lo} ,
+			argTwoHi  = \col{b\_hi} ,
+			argTwoLo  = \col{b\_lo} ,
+		} & \define &
+		\left\{ \begin{array}{lcl}
+			\instruction _{i + \relof} & = & \inst{EQ}      \\
+			\argOneHi    _{i + \relof} & = & \col{a\_hi}    \\
+			\argOneLo    _{i + \relof} & = & \col{a\_lo}    \\
+			\argTwoHi    _{i + \relof} & = & \col{b\_hi}    \\
+			\argTwoLo    _{i + \relof} & = & \col{b\_lo}    \\
+			\res         _{i + \relof} & = & \relevantValue \\
+		\end{array} \right. \vspace{2mm} \\
+		\multicolumn{3}{l}{
+			\resultMustBeTrue {
+				anchorRow = i      ,
+				relOffset = \relof ,
+			} \define \res _{i + \relof} = \redm{1}
+		} \\
+	\end{array} \right.
+\]
+\saNote{}
+The result of all comparisons is required to be \texttt{true} except for \inst{ISZERO}.
+
