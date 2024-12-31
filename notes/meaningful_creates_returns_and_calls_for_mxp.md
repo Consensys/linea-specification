@@ -13,7 +13,7 @@
 		- choose a random small offset called INITCODEOFFSET
 		- take that slice of bytes INIT, chop it up into 32B chunks
 		- PUSH32 a chunk, and MSTORE it starting INITCODEOFFSET
-		- every new chunk is again PUSH32'd, MSTORE'd at the the previous offset + 32
+		- every new chunk is again PUSH32'd, MSTORE'd at the previous offset + 32
 		- when the code has been stored in memory in its entirety we invoke appendOpcodeCall() with the following instruction:
 			- OpCode  = CREATE (or CREATE2 but add some random 32B salt to it) 
 			- offset1 = INITCODEOFFSET
