@@ -1,0 +1,35 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NF Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\usepackage{../../pkg/draculatheme}
+
+\begin{document}
+\begin{verbatim}
+
+|-------+-------+----+--------+-----+-----+-----------+-----------+-----------+-----------+-------------+-----------------+------+----------+----------+------|
+| MACRO | MICRO | CT | CT_MAX | ABS | REL | BH_ARG_HI | BH_ARG_LO | BH_RES_HI | BH_RES_LO |   ARG_1_HI  |     ARG_1_LO    | INST | ARG_2_HI | ARG_2_LO |  RES |
+|:-----:+:-----:+:--:+:------:+:---:+:---:+:---------:+:---------:+:---------:+:---------:+:-----------:+:---------------:+:----:+:--------:+:--------:+:----:|
+|   1   |       |  0 |    0   | abs | rel |    n_hi   |    n_lo   |    r_hi   |    r_lo   |             |                 |      |          |          |      |
+|-------+-------+----+--------+-----+-----+-----------+-----------+-----------+-----------+-------------+-----------------+------+----------+----------+------|
+|       |   1   |  0 |    4   |     |     |           |           |           |           | <prev> n_hi |   <prev> n_lo   |  LEQ |   n_hi   |   n_lo   | true |
+|       |   1   |  1 |    4   |     |     |           |           |           |           | <prev> n_hi |   <prev> n_lo   |  EQ  |   n_hi   |   n_lo   |      |
+|       |   1   |  2 |    4   |     |     |           |           |           |           |             |       256       |  LEQ |          |    abs   |      |
+|       |   1   |  3 |    4   |     |     |           |           |           |           |     n_hi    |       n_lo      |  LEQ |          |    abs   |      |
+|       |   1   |  4 |    4   |     |     |           |           |           |           |             | (abs - 256) ∨ 0 |  LEQ |   n_hi   |   n_lo   |      |
+|-------+-------+----+--------+-----+-----+-----------+-----------+-----------+-----------+-------------+-----------------+------+----------+----------+------|
+
+NOTE. In the above we have abbreviated BLOCKHASH to BH.
+\end{verbatim}
+\end{document}
