@@ -126,31 +126,55 @@
 \newcol{\csEcmul}                       {CS\_ECMUL}{CIRCUIT\_SELECTOR\_ECMUL}
 \newcol{\csEcpairing}                   {CS\_ECPAIRING}{CIRCUIT\_SELECTOR\_ECPAIRING}
 \newcol{\csGTwo}                        {CS\_G2\_MEMBERSHIP}{CIRCUIT\_SELECTOR\_G2\_MEMBERSHIP}
-\newcol{\trivialPairing}             {TRIVIAL\_PAIRING}{OVERALL\_TRIVIAL\_PAIRING}
+\newcol{\trivialPairing}                {TRIVIAL\_PAIRING}{OVERALL\_TRIVIAL\_PAIRING}
 
 % System of constraints
-\define@cmdkey [ECDATA] {var} {anchorRow} {}
-\define@cmdkey [ECDATA] {var} {relOffset} {}
-\define@cmdkey [ECDATA] {var} {argOneHi}  {}
-\define@cmdkey [ECDATA] {var} {argOneLo}  {}
-\define@cmdkey [ECDATA] {var} {argTwoHi}  {}
-\define@cmdkey [ECDATA] {var} {argTwoLo}  {}
-\define@cmdkey [ECDATA] {var} {argThreeHi}{}
-\define@cmdkey [ECDATA] {var} {argThreeLo}{}
-\define@cmdkey [ECDATA] {var} {argFourHi} {}
-\define@cmdkey [ECDATA] {var} {argFourLo} {}
+\define@cmdkey [ECDATA] {var} {anchorRow}        {}
+\define@cmdkey [ECDATA] {var} {relOffset}        {}
+\define@cmdkey [ECDATA] {var} {xHi}              {}
+\define@cmdkey [ECDATA] {var} {xLo}              {}
+\define@cmdkey [ECDATA] {var} {yHi}              {}
+\define@cmdkey [ECDATA] {var} {yLo}              {}
+\define@cmdkey [ECDATA] {var} {xSquareHi}        {}
+\define@cmdkey [ECDATA] {var} {xSquareLo}        {}
+\define@cmdkey [ECDATA] {var} {ySquareHi}        {}
+\define@cmdkey [ECDATA] {var} {ySquareLo}        {}
+\define@cmdkey [ECDATA] {var} {xCubeHi}          {}
+\define@cmdkey [ECDATA] {var} {xCubeLo}          {}
+\define@cmdkey [ECDATA] {var} {xCubePlusThreeHi} {}
+\define@cmdkey [ECDATA] {var} {xCubePlusThreeLo} {}
+\define@cmdkey [ECDATA] {var} {xImHi}            {}
+\define@cmdkey [ECDATA] {var} {xImLo}            {}
+\define@cmdkey [ECDATA] {var} {xReHi}            {}
+\define@cmdkey [ECDATA] {var} {xReLo}            {}
+\define@cmdkey [ECDATA] {var} {yImHi}            {}
+\define@cmdkey [ECDATA] {var} {yImLo}            {}
+\define@cmdkey [ECDATA] {var} {yReHi}            {}
+\define@cmdkey [ECDATA] {var} {yReLo}            {}
 
 \presetkeys [ECDATA] {var} {
-	anchorRow = \missingParameter,
-	relOffset = \missingParameter,
-	argOneHi  = \missingParameter,
-	argOneLo  = \missingParameter,
-	argTwoHi  = \missingParameter,
-	argTwoLo  = \missingParameter,
-    argThreeHi= \missingParameter,
-    argThreeLo= \missingParameter,
-    argFourHi = \missingParameter,
-    argFourLo = \missingParameter,
+	anchorRow = \missingParameter       ,
+	relOffset = \missingParameter       ,
+    xHi = \missingParameter             ,
+    xLo = \missingParameter             ,
+    yHi = \missingParameter             ,
+    yLo = \missingParameter             ,
+    xSquareHi = \missingParameter       ,
+    xSquareLo = \missingParameter       ,
+    ySquareHi = \missingParameter       ,
+    ySquareLo = \missingParameter       ,
+    xCubeHi = \missingParameter         ,
+    xCubeLo = \missingParameter         ,
+    xCubePlusThreeHi = \missingParameter,
+    xCubePlusThreeLo = \missingParameter,
+    xImHi = \missingParameter           ,
+    xImLo = \missingParameter           ,
+    xReHi = \missingParameter           ,
+    xReLo = \missingParameter           ,
+    yImHi = \missingParameter           ,
+    yImLo = \missingParameter           ,
+    yReHi = \missingParameter           ,
+    yReLo = \missingParameter
 }{}
 
 
@@ -172,15 +196,15 @@
     \setkeys[ECDATA]{var}{#1}
     \callCOneMembershipWCP_{\cmdECDATA@var@anchorRow}
     \left[ \begin{array}{ll}
-            \utt{Rel. row offset:} & \cmdECDATA@var@relOffset    \\
-            \utt{x coord. hi:}     & \cmdECDATA@var@argOneHi     \\
-            \utt{x coord. lo:}     & \cmdECDATA@var@argOneLo     \\
-            \utt{y coord. hi:}     & \cmdECDATA@var@argTwoHi     \\
-            \utt{y coord. lo:}     & \cmdECDATA@var@argTwoLo     \\
-            \utt{LHS of (E) hi:}   & \cmdECDATA@var@argThreeHi   \\
-            \utt{LHS of (E) lo:}   & \cmdECDATA@var@argThreeLo   \\
-            \utt{RHS of (E) hi:}   & \cmdECDATA@var@argFourHi    \\
-            \utt{RHS of (E) lo:}   & \cmdECDATA@var@argFourLo    \\
+            \utt{Rel. row offset:} & \cmdECDATA@var@relOffset           \\
+            \utt{x coord. hi:}     & \cmdECDATA@var@xHi                 \\
+            \utt{x coord. lo:}     & \cmdECDATA@var@xLo                 \\
+            \utt{y coord. hi:}     & \cmdECDATA@var@yHi                 \\
+            \utt{y coord. lo:}     & \cmdECDATA@var@yLo                 \\
+            \utt{LHS of (E) hi:}   & \cmdECDATA@var@ySquareHi           \\
+            \utt{LHS of (E) lo:}   & \cmdECDATA@var@ySquareLo           \\
+            \utt{RHS of (E) hi:}   & \cmdECDATA@var@xCubePlusThreeHi    \\
+            \utt{RHS of (E) lo:}   & \cmdECDATA@var@xCubePlusThreeLo    \\
             \utt{Where (E) is:}    & y^2 = x^3 + 3 
         \end{array} \right]}
 
@@ -191,15 +215,14 @@
     \callCOneMembershipEXT_{\cmdECDATA@var@anchorRow}
     \left[ \begin{array}{ll}
             \utt{Rel. row offset:}                & \cmdECDATA@var@relOffset    \\
-            \utt{x coord. hi:}                    & \cmdECDATA@var@argOneHi     \\
-            \utt{x coord. lo:}                    & \cmdECDATA@var@argOneLo     \\
-            \utt{y coord. hi:}                    & \cmdECDATA@var@argTwoHi     \\
-            \utt{y coord. lo:}                    & \cmdECDATA@var@argTwoLo     \\
-            \utt{square of x coord. hi:}          & \cmdECDATA@var@argThreeHi   \\
-            \utt{square of x coord. lo:}          & \cmdECDATA@var@argThreeLo   \\
-            \utt{cube of x coord. hi:}            & \cmdECDATA@var@argFourHi    \\
-            \utt{cube x coord. lo:}               & \cmdECDATA@var@argFourLo    \\
-            \utt{Where (E) is:}                   & y^2 = x^3 + 3 
+            \utt{x coord. hi:}                    & \cmdECDATA@var@xHi          \\
+            \utt{x coord. lo:}                    & \cmdECDATA@var@xLo          \\
+            \utt{y coord. hi:}                    & \cmdECDATA@var@yHi          \\
+            \utt{y coord. lo:}                    & \cmdECDATA@var@yLo          \\
+            \utt{square of x coord. hi:}          & \cmdECDATA@var@xSquareHi    \\
+            \utt{square of x coord. lo:}          & \cmdECDATA@var@xSquareLo    \\
+            \utt{cube of x coord. hi:}            & \cmdECDATA@var@xCubeHi      \\
+            \utt{cube of x coord. lo:}            & \cmdECDATA@var@xCubeLo      \\
         \end{array} \right]}
 
 \newcommand{\callWellFormedCoordinates}             {\texttt{callToWellFormedCoordinates}}
@@ -209,14 +232,14 @@
     \callWellFormedCoordinates_{\cmdECDATA@var@anchorRow}
     \left[ \begin{array}{ll}
             \utt{Rel. row offset:}         & \cmdECDATA@var@relOffset    \\
-            \utt{x coord. imaginary hi:}   & \cmdECDATA@var@argOneHi     \\
-            \utt{x coord. imaginary lo:}   & \cmdECDATA@var@argOneLo     \\
-            \utt{x coord. real hi:}        & \cmdECDATA@var@argTwoHi     \\
-            \utt{x coord. real lo:}        & \cmdECDATA@var@argTwoLo     \\
-            \utt{y coord. imaginary hi:}   & \cmdECDATA@var@argThreeHi   \\
-            \utt{y coord. imaginary lo:}   & \cmdECDATA@var@argThreeLo   \\
-            \utt{y coord. real hi:}        & \cmdECDATA@var@argFourHi    \\
-            \utt{y coord. real lo:}        & \cmdECDATA@var@argFourLo    \\
+            \utt{x coord. imaginary hi:}   & \cmdECDATA@var@xImHi        \\
+            \utt{x coord. imaginary lo:}   & \cmdECDATA@var@xImLo        \\
+            \utt{x coord. real hi:}        & \cmdECDATA@var@xReHi        \\
+            \utt{x coord. real lo:}        & \cmdECDATA@var@xReLo        \\
+            \utt{y coord. imaginary hi:}   & \cmdECDATA@var@yImHi        \\
+            \utt{y coord. imaginary lo:}   & \cmdECDATA@var@yImLo        \\
+            \utt{y coord. real hi:}        & \cmdECDATA@var@yReHi        \\
+            \utt{y coord. real lo:}        & \cmdECDATA@var@yReLo        \\
         \end{array} \right]}
 
 % base 10 : 21888242871839275222246405745257275088696311157297823662689037894645226208583
