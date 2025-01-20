@@ -29,6 +29,7 @@ mmio:         view-mmio
 modexp:       view-modexp_data
 mmu:          view-mmu
 mxp:          view-mxp
+mxp_v3:       view-mxp_v3
 oob:          view-oob
 prc:   	      view-prc
 rlp_addr:     view-rlp_addr
