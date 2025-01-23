@@ -6,7 +6,7 @@ Constraints are mathematical equations and a constraint system is a collection o
 
 The constraints specified here are implemented in the [linea-constraints](https://github.com/Consensys/linea-constraints) repo.
 
-It serves developers by making the Linea tech stack open source under 
+It serves developers by making the Linea tech stack open-source under 
 the [Apache 2.0 license](LICENSE).
 
 ## What is Linea?
