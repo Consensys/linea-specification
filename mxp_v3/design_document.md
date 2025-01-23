@@ -59,17 +59,8 @@ EXPANSION (single row if COMPUTATION_REQUIRED = false)
         - SIZE ≠ 0
     - the EXPANSION phase has 2 modes of functioning
 
-MACRO ==> PREPROCESSING ==> EXPANSION
-    - in an instruction dependent way, and on the final row of the pre-processing, we decide whether or not we require 
-    - there are two possibilities for the PREPROCESSING: note that pre-processing is trivial for MSIZE
-        - depends purely on the instruction (we don't optimize for ROOB/NOOP/...)
-        - we will have a simple rule to set CT_MAX in this phase purely dependent on INST
-        - MEMORY_EXPANSION_COMPUTATION_REQUIRED
-    - there are two possibilities for the EXPANSION: trivial (MSIZE, or EXPANSION_REQUIRED ≡ false)
-        - we update the number of active WORDS in memory (or keep it the same)
-        - we update the MEMORY_EXPANSION_COST for everything up until this point (or keep it the same)
-
-
+In all cases we want:
+MACRO (1 row) ==> INSTRUCTION_DECODER (1 row) ==> SCENARIO (1 row) ==> COMPUTATION (1 + CT_MAX rows)
 
 | INST           |  WORD_PRICING | BYTE_PRICING | SINGLE_MAX_OFFSET | DOUBLE_MAX_OFFSET |
 |----------------|:-------------:|:------------:|:-----------------:|:-----------------:|
@@ -114,11 +105,13 @@ ID ← duplicate the INST value and instruction decode the ID columns (1 row)
     - decoder/G_BYTE
 
 MACRO (1 row)
+    - macro/MXP_STAMP
+    - macro/CONTEXT_NUMBER
     - macro/INST
     - macro/OFFSET_1/2_HI/LO
     - macro/SIZE_1/2_HI/LO
     - macro/DEPLOYING
-    - macro/RES
+    - macro/RES <- where we will write the ouput of MSIZE
     - macro/MXPX
     - macro/GAS_MXP
     - macro/MAY_TRIGGER_NONTRIVIAL_MMU_OPERATION
@@ -126,6 +119,12 @@ MACRO (1 row)
     - macro/S2NZNOMXPX
 
 SCENARIO  (1 row) (to distinguish between the 6 possible scenarios)
+    - scenario/TRIVIAL_OPERATION
+        - for all variable size OPCODES in case their SIZE arguement(s) are (both) zero
+    - scenario/OUT_OF_BOUNDS_OPERATION
+        - the following two computations will take place in all cases, if one of them returns `true` then we trigger scenario/OUT_OF_BOUNDS_OPERATION, otherwise we trigger the other stuff
+            - one of the SIZE's is nonzero and the corresponding OFFSET is huge
+            - one of the SIZE's is huge
     - scenario/MSIZE
          - MSIZE
     - scenario/FIXED_SIZE_INSTRUCTIONS
@@ -138,10 +137,13 @@ SCENARIO  (1 row) (to distinguish between the 6 possible scenarios)
         - MCOPY
     - scenario/BYTE_PRICING_AND_DOUBLE_MAX_OFFSET
         - CALL-type
-    - scenario/WORDS
-    - scenario/WORDS_NEW
-    - scenario/C_MEM
-    - scenario/C_MEM_NEW
+    - we further use the scenario row to store data; also the consistency arguments will apply to this
+        - scenario/CONTEXT_NUMBER
+        - scenario/MXP_STAMP
+        - scenario/WORDS
+        - scenario/WORDS_NEW
+        - scenario/C_MEM
+        - scenario/C_MEM_NEW
 
 COMPUTATION (depending on the previous flags, including the expansion computation which we perform first)
     - computation/WCP_FLAG
@@ -149,6 +151,22 @@ COMPUTATION (depending on the previous flags, including the expansion computatio
     - computation/ARG_1/2_HI/LO
     - computation/RES_HI/LO
     - computation/EXO_INST
+
+The actual computations that will take place:
+- perform the zeroness checks for SIZE's
+    - this will justify the value of scenario/TRIVIAL_OPERATION
+- perform the out of bounds checks
+    - smallness checks for SIZE's
+    - smallness checks for OFFSET's
+    - this will justify the value of
+        - scenario/OUT_OF_BOUNDS_OPERATION
+        - macro/MXPX
+- determination of MAX_OFFSET (2 cases: SINGLE/DOUBLE) (will always happen, but different number of rows depending on case)
+- S[1/2]NZOP ... (will always happen, but different number of rows depending on case)
+- quadratic cost
+    - we will want some parametrized (row offset + values that enter the computation)
+- linear cost (2 cases: BYTE_PRICING / WORD_PRICING)
+    - we will want some parametrized constraint system for both (row offset + values that enter the computation)
 
 CT
 CT_MAX (shared columns)

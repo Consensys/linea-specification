@@ -65,6 +65,7 @@ rmmio:         recompile-mmio
 rmodexp:       recompile-modexp_data
 rmmu:          recompile-mmu
 rmxp:          recompile-mxp
+rmxp_v3:       recompile-mxp_v3
 roob:          recompile-oob
 rprc:          recompile-prc
 rrlp_addr:     recompile-rlp_addr
