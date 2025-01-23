@@ -38,37 +38,55 @@ $\mxpStamp _{i + 1} \in \{ \mxpStamp _{i}, 1 + \mxpStamp _{i} \}$ at all times.
 	\item \If $\isMxpInstructionDecoder _{i} + \isMxpMacro _{i} + \isMxpScenario _{i} = 1$ \Then $\maxCt_{i} = 0$
 	\item \If $\isMxpScenario _{i} = 1$ \Then $\maxCt_{i + 1} = \locCtMaxSum _{i + 1}$
 	\item we unconditionally impose
-	      \[
-		      \left[ \begin{array}{lrcl}
-				      + & \isMxpInstructionDecoder_{i}   & \!\!\! \cdot \!\!\! & (\isMxpScenario_{i + 1}           + \isMxpComputation_{i + 1})        \\
-				      + & \isMxpMacro_{i}                & \!\!\! \cdot \!\!\! & (\isMxpComputation_{i + 1}        + \isMxpInstructionDecoder_{i + 1}) \\
-					  + & \isMxpScenario_{i}             & \!\!\! \cdot \!\!\! & (\isMxpInstructionDecoder_{i + 1} + \isMxpMacro_{i + 1})              \\
-					  + & \isMxpComputation_{i}          & \!\!\! \cdot \!\!\! & (\isMxpMacro_{i + 1}              + \isMxpScenario_{i + 1})           \\
-			      \end{array} \right]
-		      = 0
-	      \]
-	      to define the disallowed perspective transitions.
-	\item \If \Big($\mxpStamp_{i} \neq 0$ \et $\ct_{i} = \maxCt_{i}$\Big) \Then we also impose that
 		\[
 			\left[ \begin{array}{lrcl}
-				+ & \isMxpInstructionDecoder_{i}   & \!\!\! \cdot \!\!\! & \isMxpMacro              _{i + 1} \\
-				+ & \isMxpMacro_{i}                & \!\!\! \cdot \!\!\! & \isMxpScenario           _{i + 1} \\
-				+ & \isMxpScenario_{i}             & \!\!\! \cdot \!\!\! & \isMxpComputation        _{i + 1} \\
-				+ & \isMxpComputation_{i}          & \!\!\! \cdot \!\!\! & \isMxpInstructionDecoder _{i + 1} \\
+				+ & \isMxpInstructionDecoder_{i}   & \!\!\! \cdot \!\!\! & (\isMxpScenario_{i + 1}           + \isMxpComputation_{i + 1})        \\
+				+ & \isMxpMacro_{i}                & \!\!\! \cdot \!\!\! & (\isMxpComputation_{i + 1}        + \isMxpInstructionDecoder_{i + 1}) \\
+				+ & \isMxpScenario_{i}             & \!\!\! \cdot \!\!\! & (\isMxpInstructionDecoder_{i + 1} + \isMxpMacro_{i + 1})              \\
+				+ & \isMxpComputation_{i}          & \!\!\! \cdot \!\!\! & (\isMxpMacro_{i + 1}              + \isMxpScenario_{i + 1})           \\
 			\end{array} \right]
-			= 1.
+			= 0
 		\]
-	    to define the allowed perspective transitions.
-		\item we specify how the counter evolves:
-			\begin{enumerate}
-				\item \If $\ct_{i} \neq \maxCt_{i}$ \Then $\ct_{i + 1} = 1 + \ct_{i}$
-				\item \If $\ct_{i} =    \maxCt_{i}$ \Then $\ct_{i + 1} = 0$
-			\end{enumerate}
-		\item \If $\mxpStamp_{N} \neq 0$ \Then we impose finalization constraints
-			\[
-				\left\{ \begin{array}{lcl}
-					\isMxpComputation_{N} & = & 1           \\
-					\ct              _{N} & = & \maxCt _{N} \\
-				\end{array} \right.
-			\]
+		to define the disallowed perspective transitions.
+	\item \If $\mxpStamp_{i} \neq 0$ \Then
+		\begin{enumerate}
+			\item \If $\ct_{i} \neq \maxCt_{i}$ \Then we impose that
+				\[
+					\left[ \begin{array}{lrcl}
+						+ & \isMxpInstructionDecoder _{i} & \!\!\! \cdot \!\!\! & \isMxpInstructionDecoder _{i + 1} \\
+						+ & \isMxpMacro              _{i} & \!\!\! \cdot \!\!\! & \isMxpMacro              _{i + 1} \\
+						+ & \isMxpScenario           _{i} & \!\!\! \cdot \!\!\! & \isMxpScenario           _{i + 1} \\
+						+ & \isMxpComputation        _{i} & \!\!\! \cdot \!\!\! & \isMxpComputation        _{i + 1} \\
+					\end{array} \right]
+					= 1
+					\quad (\sanityCheck)
+				\]
+				\saNote{}
+				The above follows from counter-constancy of $\locWeightSum$ as well as the constraints governing the
+				changes in $\ct$.
+			\item \If $\ct_{i} = \maxCt_{i}$ \Then we impose that
+				\[
+					\left[ \begin{array}{lrcl}
+						+ & \isMxpInstructionDecoder_{i}   & \!\!\! \cdot \!\!\! & \isMxpMacro              _{i + 1} \\
+						+ & \isMxpMacro_{i}                & \!\!\! \cdot \!\!\! & \isMxpScenario           _{i + 1} \\
+						+ & \isMxpScenario_{i}             & \!\!\! \cdot \!\!\! & \isMxpComputation        _{i + 1} \\
+						+ & \isMxpComputation_{i}          & \!\!\! \cdot \!\!\! & \isMxpInstructionDecoder _{i + 1} \\
+					\end{array} \right]
+					= 1
+				\]
+		\end{enumerate}
+		\saNote{}
+		The above codifies the legal perspective transitions.
+	\item we specify how the counter evolves:
+		\begin{enumerate}
+			\item \If $\ct_{i} \neq \maxCt_{i}$ \Then $\ct_{i + 1} = 1 + \ct_{i}$
+			\item \If $\ct_{i} =    \maxCt_{i}$ \Then $\ct_{i + 1} = 0$
+		\end{enumerate}
+	\item \If $\mxpStamp_{N} \neq 0$ \Then we impose finalization constraints
+		\[
+			\left\{ \begin{array}{lcl}
+				\isMxpComputation_{N} & = & 1           \\
+				\ct              _{N} & = & \maxCt _{N} \\
+			\end{array} \right.
+		\]
 \end{enumerate}
