@@ -147,8 +147,10 @@ COMPUTATION (depending on the previous flags, including the expansion computatio
     - computation/WCP_FLAG
     - computation/MOD_FLAG
     - computation/ARG_1/2_HI/LO
-    - computation/RES_HI/LO
+    - computation/RES  
     - computation/EXO_INST
+
+A single column for restul is enough as in the case of calls to EUC we only need the floor of a division. See section 1.4 of the old version of MXP.
 
 The actual computations that will take place:
 - perform the zeroness checks for SIZE's
