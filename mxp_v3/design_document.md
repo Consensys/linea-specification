@@ -91,11 +91,13 @@ In terms of lookups, we require:
     - DIV    computations (by 512 into MOD, potentially into EUC)
     - lookup into the instruction decoder
 
-ID ← duplicate the INST value and instruction decode the ID columns (1 row)
+ID ← duplicate the INST value and instruction decode the ID columns (1 row, 14 columns)
     - decoder/INST
     - decoder/IS_WORD_PRICING
     - decoder/IS_BYTE_PRICING
     - decoder/IS_MSIZE
+    - decoder/IS_FIXED_SIZE_32  // have to be added; their purpose is simply to enforce the SIZE_1 values for these instructions (though the HUB will already do this)
+    - decoder/IS_FIXED_SIZE_1   // have to be added; their purpose is simply to enforce the SIZE_1 values for these instructions (though the HUB will already do this)
     - decoder/IS_RETURN
     - decoder/IS_REVERT (?)
     - decoder/IS_CALL
@@ -104,7 +106,7 @@ ID ← duplicate the INST value and instruction decode the ID columns (1 row)
     - decoder/G_WORD
     - decoder/G_BYTE
 
-MACRO (1 row)
+MACRO (1 row, 16 columns)
     - macro/INST
     - macro/OFFSET_1/2_HI/LO
     - macro/SIZE_1/2_HI/LO
