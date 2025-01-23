@@ -1,0 +1,65 @@
+We impose binary constraints on the following columns:
+\begin{multicols}{4}
+\begin{enumerate}
+	\item $\isMxpInstructionDecoderColumn$
+	\item $\isMxpMacroColumn             $
+	\item $\isMxpScenarioColumn          $
+	\item $\isMxpComputationColumn       $
+\end{enumerate}
+\end{multicols}
+\noindent We further introduce the following shorthand:
+\[
+	\locPerspectiveSum
+	\define
+	\left[ \begin{array}{cl}
+		+ & \isMxpInstructionDecoderColumn \\
+		+ & \isMxpMacroColumn              \\
+		+ & \isMxpScenarioColumn           \\
+		+ & \isMxpComputationColumn        \\
+	\end{array} \right]
+\]
+and impose that
+\begin{enumerate}
+        \item $\locPerspectiveSum$ is binary
+	\item $\locPerspectiveSum _{0} = 0$
+	\item \If $\locPerspectiveSum _{i} = 1$ \Then $\locPerspectiveSum _{i + 1} = 1$
+\end{enumerate}
+\saNote{}
+The above imposes that the perspective columns are (binary) exclusive,
+and that this expression is monotonous and starts at $0$.
+
+We also impose the following binary constraints
+\begin{enumerate}
+	\item \If $\isMxpScenarioColumn_{i} = 1$ \Then the following values must satisfy binary constraints
+		\begin{enumerate}
+			\item $\mxpScenarioTrivialOperation              _{i}$
+			\item $\mxpScenarioMemoryExpansionException      _{i}$
+			\item $\mxpScenarioMsize                         _{i}$
+			\item $\mxpScenarioFixedSizeInstructions         _{i}$
+			\item $\mxpScenarioSingleMaxOffsetAndWordPricing _{i}$
+			\item $\mxpScenarioSingleMaxOffsetAndBytePricing _{i}$
+			\item $\mxpScenarioDoubleMaxOffsetAndWordPricing _{i}$
+			\item $\mxpScenarioDoubleMaxOffsetAndBytePricing _{i}$
+		\end{enumerate}
+\end{enumerate}
+We further introduce the following shorthand
+\[
+	\locScenarioSum _{i}
+	\define
+	\left[ \begin{array}{cl}
+		+ & \mxpScenarioTrivialOperation              _{i} \\
+		+ & \mxpScenarioMemoryExpansionException      _{i} \\
+		+ & \mxpScenarioMsize                         _{i} \\
+		+ & \mxpScenarioFixedSizeInstructions         _{i} \\
+		+ & \mxpScenarioSingleMaxOffsetAndWordPricing _{i} \\
+		+ & \mxpScenarioSingleMaxOffsetAndBytePricing _{i} \\
+		+ & \mxpScenarioDoubleMaxOffsetAndWordPricing _{i} \\
+		+ & \mxpScenarioDoubleMaxOffsetAndBytePricing _{i} \\
+	\end{array} \right]
+\]
+and impose that
+\begin{enumerate}
+	\item \If $\isMxpScenarioColumn_{i} = 1$ \Then $\locScenarioSum _{i} = 1$
+\end{enumerate}
+\saNote{}
+The above imposes that on every scenario-row, precisely one scenario is active.

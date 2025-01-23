@@ -105,8 +105,6 @@ ID ← duplicate the INST value and instruction decode the ID columns (1 row)
     - decoder/G_BYTE
 
 MACRO (1 row)
-    - macro/MXP_STAMP
-    - macro/CONTEXT_NUMBER
     - macro/INST
     - macro/OFFSET_1/2_HI/LO
     - macro/SIZE_1/2_HI/LO
@@ -121,8 +119,8 @@ MACRO (1 row)
 SCENARIO  (1 row) (to distinguish between the 6 possible scenarios)
     - scenario/TRIVIAL_OPERATION
         - for all variable size OPCODES in case their SIZE arguement(s) are (both) zero
-    - scenario/OUT_OF_BOUNDS_OPERATION
-        - the following two computations will take place in all cases, if one of them returns `true` then we trigger scenario/OUT_OF_BOUNDS_OPERATION, otherwise we trigger the other stuff
+    - scenario/MEMORY_EXPANSION_EXCEPTION
+        - the following two computations will take place in all cases, if one of them returns `true` then we trigger scenario/MEMORY_EXPANSION_EXCEPTION, otherwise we trigger the other stuff
             - one of the SIZE's is nonzero and the corresponding OFFSET is huge
             - one of the SIZE's is huge
     - scenario/MSIZE
@@ -138,8 +136,6 @@ SCENARIO  (1 row) (to distinguish between the 6 possible scenarios)
     - scenario/BYTE_PRICING_AND_DOUBLE_MAX_OFFSET
         - CALL-type
     - we further use the scenario row to store data; also the consistency arguments will apply to this
-        - scenario/CONTEXT_NUMBER
-        - scenario/MXP_STAMP
         - scenario/WORDS
         - scenario/WORDS_NEW
         - scenario/C_MEM
@@ -159,7 +155,7 @@ The actual computations that will take place:
     - smallness checks for SIZE's
     - smallness checks for OFFSET's
     - this will justify the value of
-        - scenario/OUT_OF_BOUNDS_OPERATION
+        - scenario/MEMORY_EXPANSION_EXCEPTION
         - macro/MXPX
 - determination of MAX_OFFSET (2 cases: SINGLE/DOUBLE) (will always happen, but different number of rows depending on case)
 - S[1/2]NZOP ... (will always happen, but different number of rows depending on case)
@@ -170,5 +166,8 @@ The actual computations that will take place:
 
 CT
 CT_MAX (shared columns)
+CONTEXT_NUMBER
+MXP_STAMP
 
-
+TODOs:
+- update the lookup from the HUB into the MXP module
