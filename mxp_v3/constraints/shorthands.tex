@@ -1,14 +1,42 @@
 We introduce the following notational shorthands.
 \[
 	\left\{ \begin{array}{lcl}
-		\locCtMaxSum _{i} & \define &
-		% \left[ \begin{array}{crcl}
-		% 	+ & 0                 & \cdot & \isMxpInstructionDecoder _{i} \\
-		% 	+ & 0                 & \cdot & \isMxpMacro              _{i} \\
-		% 	+ & 0                 & \cdot & \isMxpScenario           _{i} \\
-		% 	+ & \locScenarioCtMax & \cdot & \isMxpComputation        _{i} \\
-		% \end{array} \right] \vspace{2mm} \\
-		% \locScenarioCtMax _{i} & \define &
+		\locPerspectiveSum _{i}
+		& \define &
+		\left[ \begin{array}{cl}
+			+ & \isMxpInstructionDecoder _{i} \\
+			+ & \isMxpMacro              _{i} \\
+			+ & \isMxpScenario           _{i} \\
+			+ & \isMxpComputation        _{i} \\
+		\end{array} \right] \vspace{2mm} \\
+		\locWeightSum _{i}
+		& \define &
+		\left[ \begin{array}{crcl}
+			+ & 1 & \cdot & \isMxpInstructionDecoder _{i} \\
+			+ & 2 & \cdot & \isMxpMacro              _{i} \\
+			+ & 3 & \cdot & \isMxpScenario           _{i} \\
+			+ & 4 & \cdot & \isMxpComputation        _{i} \\
+		\end{array} \right]
+	\end{array} \right.
+\]
+We further introduce the following shorthand
+\[
+	\locScenarioSum _{i}
+	\define
+	\left[ \begin{array}{cl}
+		+ & \mxpScenarioTrivialOperation              _{i} \\
+		+ & \mxpScenarioMemoryExpansionException      _{i} \\
+		+ & \mxpScenarioMsize                         _{i} \\
+		+ & \mxpScenarioFixedSizeInstructions         _{i} \\
+		+ & \mxpScenarioSingleMaxOffsetAndWordPricing _{i} \\
+		+ & \mxpScenarioSingleMaxOffsetAndBytePricing _{i} \\
+		+ & \mxpScenarioDoubleMaxOffsetAndWordPricing _{i} \\
+		+ & \mxpScenarioDoubleMaxOffsetAndBytePricing _{i} \\
+	\end{array} \right]
+\]
+We further introduce the following shorthand:
+\[
+		\locCtMaxSum _{i} \define
 		\left[ \begin{array}{crcl}
 			+ & \locCtMaxTrivialOperation              & \cdot & \mxpScenarioTrivialOperation              _{i} \\
 			+ & \locCtMaxMemoryExpansionException      & \cdot & \mxpScenarioMemoryExpansionException      _{i} \\
@@ -19,5 +47,4 @@ We introduce the following notational shorthands.
 			+ & \locCtMaxDoubleMaxOffsetAndWordPricing & \cdot & \mxpScenarioDoubleMaxOffsetAndWordPricing _{i} \\
 			+ & \locCtMaxDoubleMaxOffsetAndBytePricing & \cdot & \mxpScenarioDoubleMaxOffsetAndBytePricing _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-	\end{array} \right.
 \]
