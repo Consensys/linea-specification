@@ -1,0 +1,40 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NF Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\usepackage{../../pkg/draculatheme}
+
+
+\begin{document}
+\begin{verbatim}
+
+|-----------+-------+---------------------+-------+--------+-----------+-----------+----------+----------+---------------+-------+-----------------------|
+| Row index | SCNRI | scenario/nontrivial | COMPN | INST   | ARG_1_HI  | ARG_1_LO  | ARG_2_HI | ARG_2_LO | RES_A         | RES_B | Notes                 |
+|-----------+-------+---------------------+-------+--------+-----------+-----------+----------+----------+---------------+-------+-----------------------|
+| i         | true  | true                |       |        |           |           |          |          |               |       |                       |
+|-----------+-------+---------------------+-------+--------+-----------+-----------+----------+----------+---------------+-------+-----------------------|
+| i + 1     |       |                     | true  | ISZERO | size_1_hi | size_1_lo |          |          | size_1_iszero | ∅     | at least one of the   |
+| i + 2     |       |                     | true  | ISZERO | size_2_hi | size_2_lo |          |          | size_2_iszero | ∅     | sizes must be nonzero |
+|-----------+-------+---------------------+-------+--------+-----------+-----------+----------+----------+---------------+-------+-----------------------|
+
+And we will impose something à la
+
+nontrivialRegimeHolds_{i} \equiv 
+
+  scenario/nontrivial ≡ size_1_iszero + size_2_iszero - size_1_iszero ∙ size_2_iszero
+  scenario/nontrivial ≡ 1
+
+\end{verbatim}
+\end{document}
+

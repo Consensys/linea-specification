@@ -1,0 +1,56 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+\usepackage{../../pkg/draculatheme}
+\usepackage{fontspec}
+
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NF Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+
+\begin{document}
+\begin{verbatim}
+
+We will impose generally that (given a scenario row i)
+
+	scenario/MSIZE[i] = decoder/IS_MSIZE[i]
+
+Furthermore, if scenario/MSIZE[i] ≡ 1 Then we impose
+- CT_MAX[i + 1] = 0
+- computation/WCP_FLAG[i + 1] + computation/EUC_FLAG[i + 1] ≡ 0
+
+
+|-----------+-------+----------------+-------+------+----------+----------+----------+----------+-------+-------+-------------------------|
+| Row index | SCNRI | scenario/MSIZE | COMPN | INST | ARG_1_HI | ARG_1_LO | ARG_2_HI | ARG_2_LO | RES_A | RES_B | Notes                   |
+|-----------+-------+----------------+-------+------+----------+----------+----------+----------+-------+-------+-------------------------|
+| i         | true  | true           |       |      |          |          |          |          |       |       |                         |
+|-----------+-------+----------------+-------+------+----------+----------+----------+----------+-------+-------+-------------------------|
+| i + 1     |       |                | true  | ∅    |          |          |          |          |       |       | no computation required |
+|-----------+-------+----------------+-------+------+----------+----------+----------+----------+-------+-------+-------------------------|
+
+where 
+
+  scenario/nontrivial_no_mxpx ≡ the sum of all nontrivial, unexceptional scenario flags
+
+We impose that
+
+We will want to impose:
+- on the macro-row:
+	- macro/MXPX       ≡ false
+	- macro/S1NZNOMXPX ≡ false (sanity checks, useless per se)
+	- macro/S2NZNOMXPX ≡ false (sanity checks, useless per se)
+	- macro/RES[i - 1] = scenario/WORDS[i]
+- on the scenario-row:
+	- WORDS_NEW = WORDS
+	- C_MEM_NEW = C_MEM
+
+\end{verbatim}
+\end{document}
+
