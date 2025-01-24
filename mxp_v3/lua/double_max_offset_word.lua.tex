@@ -17,6 +17,48 @@
 
 \begin{document}
 \begin{verbatim}
+
+max_offset   ≡ max(max_offset_1, max_offset_2)   // the ``true'' max offset in all cases
+max_size_1   ≡ offset_1 + size_1
+max_size_2   ≡ offset_2 + size_2
+max_offset_1 ≡ offset_1 + size_1 - 1
+max_offset_2 ≡ offset_2 + size_2 - 1
+
+compute quadratic cost (once for all)
+linear cost (requires division by 32 in the case of word)
+
+|-----------+-------+---------------------------------+-------+---------------+----------------+------+----------+------------+----------+------------+------+------------------|
+| Row index | SCNRI | scenario/SINGLE_MAX_OFFSET_WORD | COMPN | WCP_FLAG      | EUC_FLAG       | INST | ARG_1_HI | ARG_1_LO   | ARG_2_HI | ARG_2_LO   | RES  | Notes            |
+|-----------+-------+---------------------------------+-------+---------------+----------------+------+----------+------------+----------+------------+------+------------------|
+| i         | true  | true                            |       |               |                |      |          |            |          |            |      |                  |
+|-----------+-------+---------------------------------+-------+---------------+----------------+------+----------+------------+----------+------------+------+------------------|
+| ⋮         | ⋮     | ⋮                               | ⋮     | ⋮             | ⋮              | ⋮    | ⋮        | ⋮          | ⋮        | ⋮          | ⋮    | ⋮                |
+|-----------+-------+---------------------------------+-------+---------------+----------------+------+----------+------------+----------+------------+------+------------------|
+| i + 10    |       |                                 | true  | comp_required |                | LT   | 0        | max_size_1 | 0        | max_size_2 | comp | we compare sizes |
+| i + 11    |       |                                 | true  |               | size_2_nonzero |      |          | size_2     |          | 32         | ceil |                  |
+
+we have to constrain
+- for max_offset:
+  - if computation/WCP_FLAG[i + 10] = 0 then
+    - if size_1_nonzero = 1 then max_offset = max_offset_1
+    - if size_2_nonzero = 1 then max_offset = max_offset_2
+  - if computation/WCP_FLAG[i + 10] = 1 then
+    - if comp = 0 then max_offset = max_offset_1
+    - if comp = 1 then max_offset = max_offset_2
+- we have to compute the number of words
+
+where we use the shorthand
+
+  size_1 ≡ SIZE_1_LO[i - 2] (or whatever is the right offset)
+  size_2 ≡ SIZE_2_LO[i - 2] (or whatever is the right offset)
+  size_1_nonzero ≡ 1 - size_1_iszero
+  size_2_nonzero ≡ 1 - size_2_iszero
+  comp_required  ≡ size_1_nonzero * size_2_nonzero
+
+With this we can compute the LIN_COST part of the opcode cost.
+
+
+
 \end{verbatim}
 \end{document}
 
