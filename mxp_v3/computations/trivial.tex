@@ -1,20 +1,12 @@
 \[
 	\boxed{\text{All constraints in this subsection assume that }
 	\left\{ \begin{array}{lcl}
-		\isMxpScenario          _{i} & = & 1 \\
-	        \locMxpScenarioNonMsize _{i} & = & 1 \\
+		\isMxpScenario                  _{i} & = & 1 \\
+	        \mxpScenarioTrivialOperation _{i} & = & 1 \\
 	\end{array} \right. }
 \]
-
 \noindent
 The present section describes the computation for the $\mxpScenarioTrivialOperation$ case.
-We use the following shorthands:
-\[
-	\left\{ \begin{array}{lclr}
-		\locSizeOneHi           & \define & \mxpMacroSizeOneHi _{i - \locMacroToScenarioRowOffset} \\
-		\locSizeOneLo           & \define & \mxpMacroSizeOneLo _{i - \locMacroToScenarioRowOffset} \\
-	\end{array} \right.
-\]
 We impose the following constraints for the \textbf{macro-instruction-row}:
 \begin{enumerate}
 	\item $\mxpMacroSOneNzNoMxpx _{i - \locMacroToScenarioRowOffset} = 0$ \quad (\sanityCheck)
@@ -28,44 +20,12 @@ We impose the following constraints for the \textbf{scenario-row}:
 \end{enumerate}
 We further impose:
 \begin{description}
-	\def\nRows{\yellowm{1}}\item[\underline{Row $n^\circ(i + \nRows)$:}] 
-	we impose that
-		\[
-			\wcpCallToEq {
-				anchorRow = i                      ,
-				relOffset = \nRows                 ,
-				argOneHi  = \locSizeOneHi          ,
-				argOneLo  = \locSizeOneLo          ,
-				argTwoHi  = 0                      ,
-				argTwoLo  = 0                      ,
-			}
-		\]
-		and we define the following shorthand
-		\[
-			\locSizeOneIsZero \define \mxpMacroRes_{i+\nRows}
-		\]
-	\def\nRows{\yellowm{2}}\item[\underline{Row $n^\circ(i + \nRows)$:}] 
-	we impose that
-	\[
-		\wcpCallToEq {
-			anchorRow = i                      ,
-			relOffset = \nRows                 ,
-			argOneHi  = \locSizeTwoHi          ,
-			argOneLo  = \locSizeTwoLo          ,
-			argTwoHi  = 0                      ,
-			argTwoLo  = 0                      ,
-		}
-	\]
-	and we define the following shorthand
-	\[
-		\locSizeTwoIsZero \define \mxpMacroRes_{i+\nRows}
-	\]
 	\item[\underline{Justifying \hubMod{} predictions:}] 
 		we impose
-		\[
-			\left\{ \begin{array}{lcl}
-				\locSizeOneIsZero      & = & 1 \\
-				\locSizeTwoIsZero      & = & 1 \\
-			\end{array} \right.
-		\]
+		% \[
+		% 	\left\{ \begin{array}{lcl}
+		% 		\locSizeOneIsZeroNonMxpx & = & 1 \\
+		% 		\locSizeTwoIsZeroNonMxpx & = & 1 \\
+		% 	\end{array} \right.
+		% \]
 \end{description}

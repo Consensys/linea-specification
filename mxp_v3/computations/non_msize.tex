@@ -3,7 +3,7 @@
 	\boxed{\text{All constraints in this subsection assume that }
 	\left\{ \begin{array}{lcl}
 		\isMxpScenario          _{i} & = & 1 \\
-	        \locMxpScenarioNonMsize _{i} & = & 1 \\
+		\locMxpScenarioNonMsize _{i} & = & 1 \\
 	\end{array} \right.}
 \]
 We use the following shorthands:
@@ -22,57 +22,40 @@ We use the following shorthands:
 		\locSizeTwoLo   & \define & \mxpMacroSizeTwoLo   _{i - \locMacroToScenarioRowOffset} \\
 	\end{array} \right.
 \]
-We impose the following constraints for the \textbf{macro-instruction-row}:
-\begin{enumerate}
-	\item $\mxpMacroSOneNzNoMxpx _{i - \locMacroToScenarioRowOffset} = 0$ \quad (\sanityCheck)
-	\item $\mxpMacroSTwoNzNoMxpx _{i - \locMacroToScenarioRowOffset} = 0$ \quad (\sanityCheck)
-	\item $\mxpMacroRes          _{i - \locMacroToScenarioRowOffset} = \mxpScenarioWords_{i}$
-\end{enumerate}
-We impose the following constraints for the \textbf{scenario-row}:
-\begin{enumerate}
-	\item $\mxpScenarioWordsNew _{i} = \mxpScenarioWords _{i}$
-	\item $\mxpScenarioCmemNew  _{i} = \mxpScenarioCmem  _{i}$
-\end{enumerate}
-We further impose:
+We impose:
 \begin{description}
-	\def\nRows{\yellowm{1}}\item[\underline{Row $n^\circ(i + \nRows)$:}] 
-	we impose that
+	\def\nRows{\yellowm{1}}\item[\underline{Testing for zero-ness of first size argument:}] 
+		we impose that
 		\[
-			\wcpCallToEq {
+			\wcpCallToIszero {
 				anchorRow = i                      ,
 				relOffset = \nRows                 ,
 				argOneHi  = \locSizeOneHi          ,
 				argOneLo  = \locSizeOneLo          ,
-				argTwoHi  = 0                      ,
-				argTwoLo  = 0                      ,
 			}
 		\]
 		and we define the following shorthand
 		\[
-			\locSizeOneIsZero \define \mxpMacroRes_{i+\nRows}
+			\left\{ \begin{array}{lcl}
+				\locSizeOneIsZero    & \define & \mxpMacroRes_{i+\nRows} \\
+				\locSizeOneIsNonZero & \define & 1 - \locSizeOneIsZero   \\
+			\end{array} \right.
 		\]
-	\def\nRows{\yellowm{2}}\item[\underline{Row $n^\circ(i + \nRows)$:}] 
-	we impose that
-	\[
-		\wcpCallToEq {
-			anchorRow = i                      ,
-			relOffset = \nRows                 ,
-			argOneHi  = \locSizeTwoHi          ,
-			argOneLo  = \locSizeTwoLo          ,
-			argTwoHi  = 0                      ,
-			argTwoLo  = 0                      ,
-		}
-	\]
-	and we define the following shorthand
-	\[
-		\locSizeTwoIsZero \define \mxpMacroRes_{i+\nRows}
-	\]
-	\item[\underline{Justifying \hubMod{} predictions:}] 
-		we impose
+	\def\nRows{\yellowm{2}}\item[\underline{Testing for zero-ness of second size argument:}] 
+		we impose that
+		\[
+			\wcpCallToIszero {
+				anchorRow = i                      ,
+				relOffset = \nRows                 ,
+				argOneHi  = \locSizeTwoHi          ,
+				argOneLo  = \locSizeTwoLo          ,
+			}
+		\]
+		and we define the following shorthand
 		\[
 			\left\{ \begin{array}{lcl}
-				\locSizeOneIsZero      & = & 1 \\
-				\locSizeTwoIsZero      & = & 1 \\
+				\locSizeTwoIsZero    & \define & \mxpMacroRes_{i+\nRows} \\
+				\locSizeTwoIsNonZero & \define & 1 - \locSizeOneIsZero   \\
 			\end{array} \right.
 		\]
 \end{description}
