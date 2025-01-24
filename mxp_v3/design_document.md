@@ -99,7 +99,6 @@ ID ← duplicate the INST value and instruction decode the ID columns (1 row, 14
     - decoder/IS_FIXED_SIZE_32  // have to be added; their purpose is simply to enforce the SIZE_1 values for these instructions (though the HUB will already do this)
     - decoder/IS_FIXED_SIZE_1   // have to be added; their purpose is simply to enforce the SIZE_1 values for these instructions (though the HUB will already do this)
     - decoder/IS_RETURN
-    - decoder/IS_REVERT (?)
     - decoder/IS_CALL
     - decoder/SINGLE_MAX_OFFSET_COMPUTATION_REQUIRED
     - decoder/DOUBLE_MAX_OFFSET_COMPUTATION_REQUIRED
