@@ -12,13 +12,29 @@ The present section finishes the ``reverting/undoing'' of \textbf{callee} accoun
 	\scenCallSmcFailureWillRevert
 \]
 case. What remains to be done is to undo the warmth update induced by the underlying \inst{CALL}-instruction.
+This requires some care, however, as we must distinguish between \textbf{self calls} and \textbf{foreign address calls}.
+The reason for this (very late) distinction is that in case of a \textbf{self call}, the last row that will have been acted upon in the permuted realm,
+see section~(\ref{hub: consistencies: account}),
+is the \textbf{third} account row.
+For \textbf{foreign address calls} the final account row of the recipient that will have been actued upon in the permuted realm is
+is the \textbf{fourth} account row.
+
+We therefore start by introducing the $\locCallAddressCollision$ shorthand:
+\begin{enumerate}
+	\item \If $\locCalleeAddressHi \neq \locCurrentAddressHi$ \Then $\locCallAddressCollision = 0$
+	\item \If $\locCalleeAddressLo \neq \locCurrentAddressLo$ \Then $\locCallAddressCollision = 0$
+	\item \If $\locCalleeAddressHi =    \locCurrentAddressHi$ \et $\locCalleeAddressLo \neq \locCurrentAddressLo$ \Then
+		\[
+			\locCallAddressCollision = 1
+		\]
+\end{enumerate}
 \begin{description}
 	\item[\underline{Account-row $n^°(i + \callThirdCalleeAccountRowOffset)$:}] 
 		we impose that
 		\[
 			\left\{ \begin{array}{lcl}
 				\multicolumn{3}{l}{\accSameAddr             {i}{\callThirdCalleeAccountRowOffset}{\callSecondCalleeAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accSameBalance          {i}{\callThirdCalleeAccountRowOffset}} \\
+				% \multicolumn{3}{l}{\accSameBalance          {i}{\callThirdCalleeAccountRowOffset}} \\
 				\multicolumn{3}{l}{\accSameNonce            {i}{\callThirdCalleeAccountRowOffset}} \\
 				\multicolumn{3}{l}{\accSameCode             {i}{\callThirdCalleeAccountRowOffset}} \\
 				\multicolumn{3}{l}{\accUndoWarmthUpdate     {i}{\callThirdCalleeAccountRowOffset}{\callFirstCalleeAccountRowOffset}} \\
@@ -38,4 +54,10 @@ case. What remains to be done is to undo the warmth update induced by the underl
 					} \\
 			\end{array} \right.
 		\]
+	\item[\underline{}]
+		we impose that
+		\begin{enumerate}
+		        \item \If $\locCallAddressCollision = 0$ \Then $\accSameBalance {i}{\callThirdCalleeAccountRowOffset}$
+		        \item \If $\locCallAddressCollision = 1$ \Then ... wait
+		\end{enumerate}
 \end{description}
