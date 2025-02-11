@@ -5,8 +5,8 @@ Alex:
 - mostly done with soundness
 - relies on some sort of extraction
 - need to reason about arbitrary traces
-- took some time (Danfy: boogie, ...)
-- Question: is this wrt some finie state machine for separating instructions ?
+- took some time (Dafny: boogie, ...)
+- Question: is this wrt some finite state machine for separating instructions ?
 - use Dafny for arbitrary rows in the future, and SMT solver for individual instructions
 - work with the desugared instructions (Wizard IOP level)
 - Question: expand on this
@@ -60,7 +60,7 @@ Dave: automation
 parsing Corset constraints
 learning Corset semantics
 - what happens when you fall off the edge of the matrix in the constraints?
-- Also thinking how to translate into Dafny (bool, loob etc how to convert them into Dafny types)
+- Also thinking how to translate into Dafny (bool, loop etc how to convert them into Dafny types)
 
 WRT to using Wizard
 - Franklin: you can use the -e (-ee, -eee, etc ...) to display different levels of expansions of the constraints
