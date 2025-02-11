@@ -1,6 +1,6 @@
 ## CN_NEW purpose
 
-CN_NEW: represents the context number of the context wherein the next instruction of the will be executed. Wether the execution context changes or remains the same ... depends on the CONTEXT_MAY_CHANGE flag i.e. CMC.
+CN_NEW: represents the context number of the context wherein the next instruction of the will be executed. Whether the execution context changes or remains the same ... depends on the CONTEXT_MAY_CHANGE flag i.e. CMC.
 
 Recall that
 Recall that
@@ -29,7 +29,7 @@ The idea is simple
 
 ### Back to CALLER
 
-Under any of the following scenarios one shoud have CN_NEW == CALLER_CN:
+Under any of the following scenarios one should have CN_NEW == CALLER_CN:
   - [ ] if `InstructionFamily.HALTING`
   - [ ] if `InstructionFamily.INVALID` Then CN_NEW == CALLER_CN
   - [ ] if $\textsf{XAHOY}_{i} = 1$ Then CN_NEW == CALLER_CN
@@ -44,7 +44,7 @@ Under any of the following scenarios one shoud have CN_NEW == CN:
   - [ ] no exception, no abort but empty init code
 - [ ] CALL's
   - [ ] no exception but abort
-  - [ ] no exceptoin, no abort but call to precompile
+  - [ ] no exception, no abort but call to precompile
 
 ### Entering new context
 
