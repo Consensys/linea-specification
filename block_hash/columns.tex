@@ -1,24 +1,45 @@
+The following set of columns are used to define the heartbeat of the present module.
 \begin{enumerate}
-	\item \iomf:
-		monotonous bit column that lights up for non-padding rows;
-	\item $\blockNumber\high$ and $\blockNumber\low$: 
-		high and low parts of \inst{BLOCKHASH} opcode argument;
-	\item $\resHi$ and $\resLo$:
-		high and low parts of \inst{BLOCKHASH} opcode result;
+	\item $\iomf$:
+		binary column indicating non padding rows;
+	\item $\isMacro$:
+		binary column indicating a request to the \blockHashMod{} module;
+	\item $\isPreprocessing$:
+		binary column indicating processing rows of the \blockHashMod{} module;
+	\item \ct:
+		counter column;
+	\item \ctMax:
+		maximum counter value;
+\end{enumerate}
+\saNote{}
+There is no real purpose to the $\iomf$ column.
+We do it so as to remain in line with other, similar, modules.
+
+\noindent The following columns pertain to the ``macro-instruction'' data:
+\begin{enumerate}[resume]
 	\item \relBlock{}: 
 		relative block number in a given conflation, starts at $1$;
 	\item \absBlock{}:
 		absolute block number;
-	\item \lowerBoundCheck{}:
-		bit column that lights up if \blockNumber{} is big enough; 
-	\item \upperBoundCheck{}:
-		bit column that lights up if \blockNumber{} is small enough;
-	\item \inRange{}:
-		bit column that lights up if the input is in the range
-		$[\![ \, \inst{NUMBER} - \blockHashInstMaxHistory, \inst{NUMBER} - 1 \, ]\!]$
-		%\item \blockShift{}: 
-		%is between $1$ and $256$ for well-formed argument of the $\inst{BLOCKHASH}$ opcode;
-	\item $\blockHash\high$ and $\blockHash\low$: 
-		high and low part of the block hash of the block;
-	\item $\byteCol{HI\_k}$, and $\byteCol{LO\_k}$, $k = 0, 1, \dots, \llargeMO$:
+	\item $\blockHashValue\high$ and $\blockHashValue\low$: 
+		high and low part of the block hash of some block;
+	\item $\blockHashArgument\high$ and $\blockHashArgument\low$: 
+		high and low parts of \inst{BLOCKHASH} opcode argument;
+	\item $\blockHashResult\high$ and $\blockHashResult\low$:
+		high and low parts of \inst{BLOCKHASH} opcode result;
+\end{enumerate}
+\saNote{}
+The interpretation of $\blockHashArgument\high$ and $\blockHashArgument\low$ is that they represent
+(the high and low parts of) $\bm{\mu}_\textbf{s}\big[0\big]$
+while $\blockHashResult\high$ and $\blockHashResult\low$ ought to represent
+(the high and low parts of) $\bm{\mu}_\textbf{s}'\big[0\big]$.
+
+\noindent The following columns pertain to the ``instruction-processing'' data:
+\begin{enumerate}[resume]
+	\item $\instruction$:
+		exogenous instruction column;
+	\item $\argOneHi$, $\argOneLo$, $\argTwoHi$, $\argTwoLo$:
+		exogenous argument columns;
+	\item $\res$:
+		exogenous result column;
 \end{enumerate}

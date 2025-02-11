@@ -1,0 +1,127 @@
+We shall often use the following shorthands for
+\[
+	\left\{ \begin{array}{lcl}
+		\isCoinbase         & \longleftrightarrow & \locIsCoinbase   \\
+		\isTimestamp        & \longleftrightarrow & \locIsTimestamp  \\
+		\isNumber           & \longleftrightarrow & \locIsNumber     \\
+		\isDifficulty       & \longleftrightarrow & \locIsDifficulty \\
+		\isGaslimit         & \longleftrightarrow & \locIsGaslimit   \\
+		\isChainid          & \longleftrightarrow & \locIsChainid    \\
+		\isBasefee          & \longleftrightarrow & \locIsBasefee    \\
+	\end{array} \right.
+\]
+\noindent We further define the following shorthands
+\[
+	\begin{array}{lcrlcr}
+		\locFlagSum _{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \locIsCoinbase   _{i} \\
+			+ & \locIsTimestamp  _{i} \\
+			+ & \locIsNumber     _{i} \\
+			+ & \locIsDifficulty _{i} \\
+			+ & \locIsGaslimit   _{i} \\
+			+ & \locIsChainid    _{i} \\
+			+ & \locIsBasefee    _{i} \\
+		\end{array} \right] , &
+		\quad \locWghtSum _{i} & \define &
+		\left[ \begin{array}{crcl}
+			+ & 1 & \cdot & \locIsCoinbase   _{i} \\
+			+ & 2 & \cdot & \locIsTimestamp  _{i} \\
+			+ & 3 & \cdot & \locIsNumber     _{i} \\
+			+ & 4 & \cdot & \locIsDifficulty _{i} \\
+			+ & 5 & \cdot & \locIsGaslimit   _{i} \\
+			+ & 6 & \cdot & \locIsChainid    _{i} \\
+			+ & 7 & \cdot & \locIsBasefee    _{i} \\
+		\end{array} \right]
+	\end{array}
+\]
+and
+\[
+	\begin{array}{lcrlcr}
+		\locInstSum _{i} & \define &
+		\left[ \begin{array}{crcl}
+			+ & \inst{COINBASE}   & \cdot & \locIsCoinbase   _{i} \\
+			+ & \inst{TIMESTAMP}  & \cdot & \locIsTimestamp  _{i} \\
+			+ & \inst{NUMBER}     & \cdot & \locIsNumber     _{i} \\
+			+ & \inst{DIFFICULTY} & \cdot & \locIsDifficulty _{i} \\
+			+ & \inst{GASLIMIT}   & \cdot & \locIsGaslimit   _{i} \\
+			+ & \inst{CHAINID}    & \cdot & \locIsChainid    _{i} \\
+			+ & \inst{BASEFEE}    & \cdot & \locIsBasefee    _{i} \\
+		\end{array} \right] , &
+		\quad \locMaxCtSum _{i} & \define &
+		\left[ \begin{array}{crcl}
+			+ & (\ctMaxCoinbase   - 1) & \cdot & \locIsCoinbase    _{i} \\
+			+ & (\ctMaxTimestamp  - 1) & \cdot & \locIsTimestamp   _{i} \\
+			+ & (\ctMaxNumber     - 1) & \cdot & \locIsNumber      _{i} \\
+			+ & (\ctMaxDifficulty - 1) & \cdot & \locIsDifficulty  _{i} \\
+			+ & (\ctMaxGaslimit   - 1) & \cdot & \locIsGaslimit    _{i} \\
+			+ & (\ctMaxChainid    - 1) & \cdot & \locIsChainid     _{i} \\
+			+ & (\ctMaxBasefee    - 1) & \cdot & \locIsBasefee     _{i} \\
+		\end{array} \right] \\
+	\end{array}
+\]
+where we set
+\[
+	\left\{ \begin{array}{lcl}
+		\ctMaxCoinbase   & \define & \yellowm{1} \\
+		\ctMaxTimestamp  & \define & \yellowm{2} \\
+		\ctMaxNumber     & \define & \yellowm{2} \\
+		\ctMaxDifficulty & \define & \yellowm{1} \\
+	\end{array} \right.
+	\quad\text{and}\quad
+	\left\{ \begin{array}{lcl}
+		\ctMaxGaslimit  & \define & \yellowm{5}                         \\
+		\ctMaxChainid   & \define & \yellowm{1}                         \\
+		\ctMaxBasefee   & \define & \yellowm{1}                         \\
+		\blockDataDepth & \define & \sum \kappaDots \equiv \yellowm{13} \\
+	\end{array} \right.
+\]
+We further define the following shorthands
+\[
+	\locPhaseEntry _{i} \define
+	\left[ \begin{array}{clcl}
+		+ & (1 - \locIsCoinbase   _{i}) & \cdot & \locIsCoinbase   _{i + 1} \\
+		+ & (1 - \locIsTimestamp  _{i}) & \cdot & \locIsTimestamp  _{i + 1} \\
+		+ & (1 - \locIsNumber     _{i}) & \cdot & \locIsNumber     _{i + 1} \\
+		+ & (1 - \locIsDifficulty _{i}) & \cdot & \locIsDifficulty _{i + 1} \\
+		+ & (1 - \locIsGaslimit   _{i}) & \cdot & \locIsGaslimit   _{i + 1} \\
+		+ & (1 - \locIsChainid    _{i}) & \cdot & \locIsChainid    _{i + 1} \\
+		+ & (1 - \locIsBasefee    _{i}) & \cdot & \locIsBasefee    _{i + 1} \\
+	\end{array} \right]
+	\quad\text{and}\quad
+	\locSamePhase _{i} \define
+	\left[ \begin{array}{clcl}
+		+ & \locIsCoinbase   _{i} & \cdot & \locIsCoinbase   _{i + 1} \\
+		+ & \locIsTimestamp  _{i} & \cdot & \locIsTimestamp  _{i + 1} \\
+		+ & \locIsNumber     _{i} & \cdot & \locIsNumber     _{i + 1} \\
+		+ & \locIsDifficulty _{i} & \cdot & \locIsDifficulty _{i + 1} \\
+		+ & \locIsGaslimit   _{i} & \cdot & \locIsGaslimit   _{i + 1} \\
+		+ & \locIsChainid    _{i} & \cdot & \locIsChainid    _{i + 1} \\
+		+ & \locIsBasefee    _{i} & \cdot & \locIsBasefee    _{i + 1} \\
+	\end{array} \right]
+\]
+and
+\[
+	\locLegalTransitions _{i} \define
+	\left[ \begin{array}{clcl}
+		+ & \locIsCoinbase   _{i} & \cdot & \locIsTimestamp  _{i + 1} \\
+		+ & \locIsTimestamp  _{i} & \cdot & \locIsNumber     _{i + 1} \\
+		+ & \locIsNumber     _{i} & \cdot & \locIsDifficulty _{i + 1} \\
+		+ & \locIsDifficulty _{i} & \cdot & \locIsGaslimit   _{i + 1} \\
+		+ & \locIsGaslimit   _{i} & \cdot & \locIsChainid    _{i + 1} \\
+		+ & \locIsChainid    _{i} & \cdot & \locIsBasefee    _{i + 1} \\
+		+ & \locIsBasefee    _{i} & \cdot & \locIsCoinbase   _{i + 1} \\
+	\end{array} \right]
+\]
+We also introduce the following shorthands for improved expressivity
+\[
+	\left\{ \begin{array}{lc l}
+		\locIsFirstBlock   & \define & 1 - \iomf    _{i - \blockDataDepth} \\
+		\locIsntFirstBlock & \define & \iomf        _{i - \blockDataDepth} \\
+		\currDataHi        & \define & \blockDataHi _{i}                   \\
+		\currDataLo        & \define & \blockDataLo _{i}                   \\
+		\prevDataHi        & \define & \blockDataHi _{i - \blockDataDepth} \\
+		\prevDataLo        & \define & \blockDataLo _{i - \blockDataDepth} \\
+	\end{array} \right.
+\]
+The interpretation being that $\locIsntFirstBlock \equiv 1$ \emph{if and only if} the current block isn't the first in the conflation of blocks.

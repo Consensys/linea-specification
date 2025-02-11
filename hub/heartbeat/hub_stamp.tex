@@ -60,18 +60,22 @@ The associated jump in $\hubStamp$ is enforced in the constraint below.
 			\If
 			\left[ \begin{array}{cccc}
 				+ & \ts_{i} \\
-				+ & \ti_{i} \\
 				+ & \tf_{i} \\
 			\end{array} \right]
 			\neq 0
 			~ \Then \hubStamp_{i + 1} = \hubStamp_{i} + \peekTransaction_{i}.
+		\]
+	\item
+		\[
+			\If \ti_{i} \neq 0
+			~ \Then \hubStamp_{i + 1} = \hubStamp_{i} + \peekContext _{i}.
 		\]
 \end{enumerate}
 \saNote{}
 The above enforces that $\hubStamp$ remains constant throughout the processing of any transaction which requires no \textsc{evm}-execution as well as during the initialization and finalization phases of transactions that require \evm{} execution. The \hubStamp{} furthermore will jump by one (on any one of those phases) whenever the current row peeks into the transaction.
 We remind the reader that for these three phases (\txSkip, \txInit{} and \txFinl{}) the $\peekTransaction{}$ flag already played a special role in the previous section, see constraints
 (\ref{hub: heartbeat: skipping phase finishes on a transaction row}),
-(\ref{hub: heartbeat: initialization phase finishes on a transaction row}) and
+(\ref{hub: heartbeat: initialization phase finishes on a context row}) and
 (\ref{hub: heartbeat: finalization phase finishes on a transaction row}).
 This column also served a special purpose with respect to the \absTxNum, see constraint (\ref{hub: heartbeat: abs tx num increments}).
 
