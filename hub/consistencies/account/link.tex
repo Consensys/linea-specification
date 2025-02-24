@@ -4,21 +4,34 @@ We impose the following consistency constraint:
 		\If $\accAgainInConflation_{i} = 1$
 		\Then we impose that
 		\[
-			\left\{ \begin{array}{lcl}
-				\order{\accNonce            }_{i} & = & \order{\accNonce               \new }_{i - 1}              \\
-				\order{\accBalance          }_{i} & = & \order{\accBalance             \new }_{i - 1}              \\
-				\order{\accCodesize         }_{i} & = & \order{\accCodesize            \new }_{i - 1}              \\
-				\order{\accCodehashHi       }_{i} & = & \order{\accCodehashHi          \new }_{i - 1}              \\
-				\order{\accCodehashLo       }_{i} & = & \order{\accCodehashLo          \new }_{i - 1}              \\
-				\order{\accDeploymentNumber }_{i} & = & \order{\accDeploymentNumber    \new }_{i - 1}              \\
-				\order{\accDeploymentStatus }_{i} & = & \order{\accDeploymentStatus    \new }_{i - 1} \vspace{2mm} \\
+			\left\{ \begin{array}{lclr}
+				\order{\accNonce            } _{i} & = & \order{\accNonce            \new } _{i - 1}              \\
+				\order{\accBalance          } _{i} & = & \order{\accBalance          \new } _{i - 1}              \\
+				\order{\accCodesize         } _{i} & = & \order{\accCodesize         \new } _{i - 1}              \\
+				\order{\accCodehashHi       } _{i} & = & \order{\accCodehashHi       \new } _{i - 1}              \\
+				\order{\accCodehashLo       } _{i} & = & \order{\accCodehashLo       \new } _{i - 1}              \\
+				\order{\accDeploymentNumber } _{i} & = & \order{\accDeploymentNumber \new } _{i - 1}              \\
+				\order{\accDeploymentStatus } _{i} & = & \order{\accDeploymentStatus \new } _{i - 1} \vspace{2mm} \\
+				\order{\accExists           } _{i} & = & \order{\accExists           \new } _{i - 1}               & (\trash) \\
 			\end{array} \right.
 		\]
+		\saNote{}
+		There really is no need to enforce linking constraints between $\order{\accExists}$ and $\order{\accExists \new}$
+		which is why we label that constraints with $(\trash)$.
+		Indeed, both $\accExists$ and $\accExists \new$ are completely defined in terms of various account columns.
+		Their row-permuted counterparts are therefore also completely defined by (the row-permuted counterparts of) these same account columns,
+		which are already subject to linking constraints.
+
 		We further impose
 		\[
-			\order{\accTrmIsPrecompile}_{i} = \order{\accTrmIsPrecompile}_{i - 1}
+			\left\{ \begin{array}{lclr}
+				\order{\accTrmIsPrecompile}_{i}   & = & \order{\accTrmIsPrecompile} _{i - 1} \\
+			\end{array} \right.
 		\]
-		\saNote{} This last constraint is less of a ``linking'' constraint an more of an ``address-constancy'' condition for \accTrmIsPrecompile{}.
+		\saNote{}
+		The constraint pertaining to $\accTrmIsPrecompile$ is less ``linking-constraint''
+		than they are ``address-constancy'' constraints.
+
 	\item[\underline{At the block level:}]
 		\If $\accAgainInBlock_{i} = 1$
 		\Then we impose that
