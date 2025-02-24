@@ -51,9 +51,9 @@ We furthermore use the \oobMod{} for the pricing of certain precompiles and the 
 		performs the comparison
 		\[
 			\left\{ \begin{array}{llcrcl}
-				\text{for }\inst{ECRECOVER}   : & \locCalleeGas \leq g_\text{r} & := & 3000 \\
-				\text{for }\inst{ECADD}       : & \locCalleeGas \leq g_\text{r} & := &  150 \\
-				\text{for }\inst{ECMUL}       : & \locCalleeGas \leq g_\text{r} & := & 6000 \\
+				\text{for }\inst{ECRECOVER}   : & \locCalleeGas \leq g_\text{r} & := & \locGasCostEcrecover \\
+				\text{for }\inst{ECADD}       : & \locCalleeGas \leq g_\text{r} & := & \locGasCostEcadd     \\
+				\text{for }\inst{ECMUL}       : & \locCalleeGas \leq g_\text{r} & := & \locGasCostEcmul     \\
 			\end{array} \right.
 		\]
 	\item[\underline{\inst{SHA2-256}, \inst{RIPEMD-160} and \inst{IDENTITY} pricing:}]
@@ -62,14 +62,19 @@ We furthermore use the \oobMod{} for the pricing of certain precompiles and the 
 		and respectively perform the comparisons
 		\[
 			\left\{ \begin{array}{llcrcr}
-				\text{for }\inst{SHA2-256}   : & \locCalleeGas \leq g_\text{r} & := & 60  & + & 12  \cdot \locCeil  \\
-				\text{for }\inst{RIPEMD-160} : & \locCalleeGas \leq g_\text{r} & := & 600 & + & 120 \cdot \locCeil  \\
-				\text{for }\inst{IDENTITY}   : & \locCalleeGas \leq g_\text{r} & := & 15  & + & 3   \cdot \locCeil  \\
+				\text{for }\inst{SHA2-256}   : & \locCalleeGas \leq g_\text{r} & := & \locGasCostShaTwo   & + & \locGasCostShaTwoWord   \cdot \locCeil  \\
+				\text{for }\inst{RIPEMD-160} : & \locCalleeGas \leq g_\text{r} & := & \locGasCostRipemd   & + & \locGasCostRipemdWord   \cdot \locCeil  \\
+				\text{for }\inst{IDENTITY}   : & \locCalleeGas \leq g_\text{r} & := & \locGasCostIdentity & + & \locGasCostIdentityWord \cdot \locCeil  \\
 			\end{array} \right.
 		\]
 	\item[\underline{\inst{ECPAIRING} pricing:}]
-		verifies that $\| I_\textbf{d} \| \equiv 0 \mod 192$ and performs the comparison 
-		\[ \locCalleeGas \leq g_\text{r} := 34000 \cdot \frac{\| I_\textbf{d} \|}{192} + 45000 \]
+		verifies that $\| I_\textbf{d} \| \equiv 0 \mod \locPairingSize$ and performs the comparison 
+		\[
+			\locCalleeGas \leq
+			g_\text{r} :=
+			\locGasCostPairingBase +
+			\locGasCostPairingPair \cdot \frac{\| I_\textbf{d} \|}{\locPairingSize}
+		\]
 \end{description}
 
 \saNote{}

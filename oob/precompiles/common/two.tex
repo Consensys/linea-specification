@@ -39,15 +39,21 @@ The sum ``$\locCds + 31$'' may therefore be safely computed as above.
 		where
 		\[
 			\locPrecompileCost \define
-			\Big[ 5 + \locCeil \Big]
-			\cdot
-			\left[ \begin{array}{crcl}
-				+ & 12  & \cdot & \oobInstIsShaTwo   _{i} \\
-				+ & 120 & \cdot & \oobInstIsRipemd   _{i} \\
-				+ & 3   & \cdot & \oobInstIsIdentity _{i} \\
+			\left[ \begin{array}{crcr}
+				+ & \locShaTwoCost   & \cdot & \oobInstIsShaTwo   _{i} \\
+				+ & \locRipemdCost   & \cdot & \oobInstIsRipemd   _{i} \\
+				+ & \locIdentityCost & \cdot & \oobInstIsIdentity _{i} \\
 			\end{array} \right]
 		\]
-		we further introduce the following shorthand
+		and we further introduce the following shorthands
+		\[
+			\left\{ \begin{array}{lcrcr}
+				\locShaTwoCost   & \define & \locGasCostShaTwo   & + & \locGasCostShaTwoWord   \cdot \locCeil \\
+				\locRipemdCost   & \define & \locGasCostRipemd   & + & \locGasCostRipemdWord   \cdot \locCeil \\
+				\locIdentityCost & \define & \locGasCostIdentity & + & \locGasCostIdentityWord \cdot \locCeil \\
+			\end{array} \right.
+		\]
+		and we further define
 		\[
 			\locInsufficientGas \define \outgoingResLo_{i + 3}
 		\]

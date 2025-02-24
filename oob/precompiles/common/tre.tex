@@ -12,7 +12,7 @@ Besides verifying whether the precompile was provided with sufficient gas we mus
 			\oobCallToMod
 			{i}{2}
 			{0}{\locCds}
-			{0}{192}
+			{0}{\locPairingSize}
 		\]
 		and we define the following shorthand
 		\[
@@ -42,7 +42,11 @@ Besides verifying whether the precompile was provided with sufficient gas we mus
 				\]
 				where we use the following shorthand
 				\[
-					\locPrecompileCost \define \Big[ 45000 + 34000 \cdot \big( \locCds / 192 \big) \Big]
+					\locPrecompileCost \define
+					\Big[
+						\locGasCostPairingBase +
+						\locGasCostPairingPair \cdot \big( \locCds / \locPairingSize \big)
+					\Big]
 				\]
 				we further introduce the following shorthand
 				\[
@@ -50,7 +54,10 @@ Besides verifying whether the precompile was provided with sufficient gas we mus
 				\]
 				It follows that $\locCalleeGas < \locPrecompileCost \iff \locInsufficientGas = 1$.
 		\end{enumerate}
-	\saNote{} The shorthand \locPrecompileCost{} was defined using a division by 192. Whenever this shorthand is used in the constraints, we can replace the division by 192 with a multiplication by the same number through same basic algebra. This is the approach taken in the implementation to avoid division.
+	\saNote{} The shorthand \locPrecompileCost{} was defined using a \emph{division} by $\locPairingSize$.
+		Whenever this shorthand is used in the constraints, we can replace the division by $\locPairingSize$ with a multiplication by the same number through some basic algebra:
+		$x = y / \locPairingSize \iff \locPairingSize \cdot x = y$.
+		This is the approach taken in the implementation.
 	\item[\underline{Justifying the remaining \hubMod{} predictions:}]
 		we impose that
 		\[
@@ -64,4 +71,4 @@ Besides verifying whether the precompile was provided with sufficient gas we mus
 			\item \If $\locHubSuccess = 1$ \Then $\locReturnGas = \locCalleeGas - \locPrecompileCost$
 		\end{enumerate}
 \end{description}
-\saNote{} In other words $\locHubSuccess \equiv 1 \iff$ \Big($\cds \equiv 0 \mod 192$ \et{} $\locCalleeGas \geq \locPrecompileCost$\Big).
+\saNote{} In other words $\locHubSuccess \equiv 1 \iff$ \Big($\cds \equiv 0 \mod \locPairingSize$ \et{} $\locCalleeGas \geq \locPrecompileCost$\Big).
