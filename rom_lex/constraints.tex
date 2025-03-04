@@ -1,6 +1,6 @@
 We impose strict lexicographic constraints:
 \begin{enumerate}
-	\item \If $\cfi_{i} \neq 0$ \Then
+	\item \If $\cfi_{i-1} \neq 0$ \Then
 	\[
 		\strictLexConstraint\big[ +, +, +, - \big]
 		\left(
@@ -12,3 +12,6 @@ We impose strict lexicographic constraints:
 		\right)_{i}
 	\]
 \end{enumerate}
+
+\saNote{} Imposing the strict lexicographic order only if $\cfi_{i-1} \neq 0$ means we don't constrain the lexicographic order on the first non-padding rows. 
+This is done on purpose, as the first non-padding rows could be the address $0x00$ with deployment number and status at 0. Having so would break the strict lexicographic order constrain. 
