@@ -1,8 +1,77 @@
 \includepdf[fitpaper=true,pages={1}]{lua/nontrivial_non_mxpx.pdf}
 
+\[
+	\boxed{\text{All constraints in this subsection assume that }
+	\left\{ \begin{array}{lcl}
+		\isMxpScenario   _{i}                 & = & 1 \\
+	    \locMxpScenarioNonTrivialNonMxpx _{i} & = & 1 \\
+	\end{array} \right. }
+\]
+\noindent
+The present section describes the computation for the $\locMxpScenarioNonTrivialNonMxpx$ case.
+
+We impose the following constraints for the \textbf{macro-instruction-row}:
+\begin{enumerate}
+    \item $\mxpMacroMxpx         _{i - \locMacroToScenarioRowOffset} = 0$
+	\item $\mxpMacroSOneNzNoMxpx _{i - \locMacroToScenarioRowOffset} = 1 - \locSizeOneIsZero$ 
+	\item $\mxpMacroSTwoNzNoMxpx _{i - \locMacroToScenarioRowOffset} = 1 - \locSizeTwoIsZero$ 
+\end{enumerate}
+
+We introduce the following shorthand
+\[
+	\locMxpScenarioNonTrivialNonMxpx _{i}
+	\define
+	\left[ \begin{array}{cl}
+		+ & \mxpScenarioSingleMaxOffsetAndWordPricing _{i} \\
+		+ & \mxpScenarioSingleMaxOffsetAndBytePricing _{i} \\
+		+ & \mxpScenarioDoubleMaxOffsetAndWordPricing _{i} \\
+		+ & \mxpScenarioDoubleMaxOffsetAndBytePricing _{i} \\
+	\end{array} \right]
+\]
+
+We impose:
 \begin{description}
-	\item[\underline{Justifying \hubMod{} predictions:}] 
-		we impose
+	\def\nRows{\yellowm{7}}\item[\underline{Computing the floor of the division of \locMaxOffset{} by 32:}] 
+		we impose that
+		\[
+			\eucCall {
+				anchorRow = i                      ,
+				relOffset = \nRows                 ,
+				argOne    = \locMaxOffset          ,
+				argTwo    = 32                     ,
+			}
+		\]
+		and we define the following shorthand
+		\[
+			\left\{ \begin{array}{lcl}
+				\locFloor    & \define & \mxpMacroRes_{i+\nRows} \\
+                \locA        & \define & \locFloor + 1           \\
+			\end{array} \right.
+		\]
+
+    \def\nRows{\yellowm{8}}\item[\underline{Computing ...:}] 
+		we impose that
+		\[
+			\eucCall {
+				anchorRow = i                      ,
+				relOffset = \nRows                 ,
+				argOne    = \locA \cdot \locA      ,
+				argTwo    = 512                    ,
+			}
+		\]
+		and we define the following shorthand
+		% \[
+		% 	\left\{ \begin{array}{lcl}
+		% 		\locFloor    & \define & \mxpMacroRes_{i+\nRows} \\
+        %         \locA        & \define & \locFloor + 1           \\
+		% 	\end{array} \right.
+		% \]
+\end{description}
+
+We further impose:
+\begin{description}
+	\item[\underline{Justifying \hubMod{} predictions:}]
+        we impose 
 		\[
 			\left\{ \begin{array}{lcl}
 				\locMxpxExpressionOne & = & 0 \\
