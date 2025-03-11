@@ -1,11 +1,15 @@
 This section presents some of the basic constraints pertaining to the context number columns $\cn$ and $\cn\new$.
 \begin{enumerate}
 	\item $\cn$ and $\cn\new$ are hub-stamp-constant
-	\item \If $\txInit_{i} = 1$ \Then
-		\begin{enumerate}
-			\item $\cn     _{i} = 0$
-			\item $\cn\new _{i} = 1 + \hubStamp_{i}$
-		\end{enumerate}
+	\item \If $\cn _{i} =    0$ \Then $\txExec_{i} = 0$
+	\item \If $\cn _{i} \neq 0$ \Then $\txExec_{i} = 1$
+\end{enumerate}
+\saNote{} \label{hub: generalities: context: vanishing of context number outside of the execution phase}
+The fact that $\CN$ is compelled to vanish \emph{precisely} when outside of the execution phase (i.e. whenever $\txExec \equiv 0$)
+guarantees that the consistency argument from section~(\ref{hub: consistencies: execution environment: permutation}),
+only take into account execution-rows (and not for instance pre-warming, initialization or skipping rows.)
+\begin{enumerate}[resume]
+	\item \If $\txInit_{i} = 1$ \Then $\cn\new _{i} = 1 + \hubStamp_{i}$
 	\item \If $\txExec_{i} = 1$ \Then 
 		\begin{enumerate}
 			\item\label{next context number}
@@ -28,6 +32,7 @@ This section presents some of the basic constraints pertaining to the context nu
 	\item \If $\xAhoy_{i} = 1$ \Then $\cn\new_{i} = \caller_{i}$
 	\item \If \big($\peekStack_{i} = 1$ \et $\haltFlag_{i} = 1$\big) \Then $\cn\new_{i} = \caller_{i}$
 \end{enumerate}
+
 \saNote{} \label{hub: generalities: context: consequences of CMC and XAHOY}
 Constraint~(\ref{hub: generalities: context: whenever the context may change the final row is a context row}) and
 constraint~(\ref{hub: generalities: context: exceptions lead to providing empty return data})
