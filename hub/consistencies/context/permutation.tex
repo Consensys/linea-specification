@@ -40,9 +40,12 @@ Being that these context-rows are produced at the same time stamp (i.e. same $\h
 What the above ensures is that any context data update happens ``after'' the read.
 
 \saNote{}
-It is also of note that the extra context-row which arises from an exception (and which squashes the parent context's return data
-always pertains to an execution context which is distinct from the where byte code is currently under execution, see
-section~(\ref{hub: generalities: context: context numbers}),
+It is also of note that the extra context-row which arises from an exception (and which squashes the parent context's return data),
+see
+section~(\ref{hub: generalities: context: context numbers})
 constraint~(\ref{hub: generalities: context: exceptions lead to providing empty return data}), and
-section~(\ref{hub: context rows: specialized constraints}),
-definition~(\ref{hub: context rows: specialized constraints: execution provides empty return data constraint}).
+section~(\ref{hub: context rows: specialized constraints})
+definition~(\ref{hub: context rows: specialized constraints: execution provides empty return data constraint}),
+always pertains to an execution context \emph{distinct} from the current one.
+Specifically the final context row of an exceptional opcode execution pertains to the caller context ($\caller$) while any other context-row
+loaded by \emph{exceptional} instruction processing pertains necessarily to the current execution context ($\cn$).
