@@ -1,2 +1,37 @@
 \includepdf[fitpaper=true,pages={1}]{lua/single_max_offset_word.pdf}
 
+\[
+	\boxed{\text{All constraints in this subsection assume that }
+	\left\{ \begin{array}{lcl}
+		\isMxpScenario   _{i}                          & = & 1 \\
+	    \mxpScenarioSingleMaxOffsetAndWordPricing _{i} & = & 1 \\
+	\end{array} \right. }
+\]
+\noindent
+The present section describes the computation for the $\mxpScenarioSingleMaxOffsetAndWordPricing$ case.
+
+We impose the following constraints:
+\begin{enumerate}
+    \item $\locMaxOffset = \locOffsetOneLo + (\locSizeOneLo - 1)$
+    \item $\mxpComputationEucFlag = \locSizeOneIsNonZero$
+\end{enumerate}
+
+We impose:
+\begin{description}
+	\def\nRows{\yellowm{10}}\item[\underline{Computing the floor of the division of \locSizeOne{} by 32:}] 
+		we impose that
+		\[
+			\eucCall {
+				anchorRow = i                      ,
+				relOffset = \nRows                 ,
+				argOne    = \locSizeOneLo          ,
+				argTwo    = 32                     ,
+			}
+		\]
+		and we define the following shorthand
+		\[
+			\left\{ \begin{array}{lcl}
+				\locCeil     & \define & \mxpMacroRes_{i+\nRows} \\
+			\end{array} \right.
+		\]
+\end{description}
