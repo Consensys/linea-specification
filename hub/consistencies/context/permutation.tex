@@ -3,9 +3,46 @@ We consider a row permutation $\col{X}\rightsquigarrow\order{\col{X}}$ with the 
 	\Big(
 	\order{\peekContext},
 	\order{\cnCn},
-	\order{\hubStamp}
+	\order{\hubStamp},
+	\order{\cnUpdate}
 	\Big)
 \]
-(\emph{a}) padding-rows precede all non-padding rows
-(\emph{b}) all \textbf{(reordered) context rows}\footnote{by extension rows where $\order{\peekContext} \equiv 1$} are contiguous
-(\emph{c}) along the (reordered) context rows the remaining columns are $(+, +)$-lexicographically ordered.
+(\emph{a}) padding-rows precede all non-padding-rows
+(\emph{b}) all \textbf{(reordered) context-rows}\footnote{by extension rows where $\order{\peekContext} \equiv 1$} are contiguous
+(\emph{c}) along the (reordered) context-rows the remaining columns are $(+, +, +)$-lexicographically ordered.
+
+\saNote{}
+The above ensures that, in the permuted realm,
+(\emph{a}) all context-rows pertaining to the same execution context are contiguous,
+(\emph{b}) that the rows pertaining to the same execution context-rows are sorted by ascending time stamp,
+(\emph{c}) that whenever multiple context-rows pertaining to the same execution context and having the same time stamp are present,
+context data is first read ($\cnUpdate \equiv 0$) before it is updated ($\cnUpdate \equiv 1$.)
+
+\saNote{}
+It is of note that several instructions may produced two context-rows of the same execution context and at the same time stamp.
+This is the case for instance for
+\begin{enumerate}
+	\item
+		aborted \inst{CALL}-type instructions require two context-rows,
+		one for reading the current execuction context data,
+		a second one for squashing the current return data;
+	\item
+		\inst{CREATE(2)} instructions which raise the \textbf{failure condition $\bm{F}$}
+		also require two context-rows for precisely the same reasons
+		(reading the current context data followed by squashing it);
+        \item
+		precompile calls, where the \inst{CALL}-instruction requires reading the current context%
+		\footnote{if only to check whether it is static or not}
+		and a second context-row of the same context is required to update its return data with the
+		output of the precompile call, all happening at the same $\hubStamp$;
+\end{enumerate}
+Being that these context-rows are produced at the same time stamp (i.e. same $\hubStamp$) there is a need to disambiguate them.
+What the above ensures is that any context data update happens ``after'' the read.
+
+\saNote{}
+It is also of note that the extra context-row which arises from an exception (and which squashes the parent context's return data
+always pertains to an execution context which is distinct from the where byte code is currently under execution, see
+section~(\ref{hub: generalities: context: context numbers}),
+constraint~(\ref{hub: generalities: context: exceptions lead to providing empty return data}), and
+section~(\ref{hub: context rows: specialized constraints}),
+definition~(\ref{hub: context rows: specialized constraints: execution provides empty return data constraint}).
