@@ -1,2 +1,80 @@
 \includepdf[fitpaper=true,pages={1}]{lua/double_max_offset_word.pdf}
 
+\[
+	\boxed{\text{All constraints in this subsection assume that }
+	\left\{ \begin{array}{lcl}
+		\isMxpScenario   _{i}                          & = & 1 \\
+	    \mxpScenarioDoubleMaxOffsetAndWordPricing _{i} & = & 1 \\
+	\end{array} \right. }
+\]
+\noindent
+The present section describes the computation for the $\mxpScenarioDoubleMaxOffsetAndWordPricing$ case.
+
+We impose the following constraints:
+\begin{enumerate}
+    \item \If $\mxpComputationWcpFlag_{i+10} = 1$ \Then
+    \begin{enumerate}
+        \item \If $\locSizeOneIsNonZero = 1$ \Then $\locMaxOffset = \locMaxOffsetOne$
+        \item \If $\locSizeTwoIsNonZero = 1$ \Then $\locMaxOffset = \locMaxOffsetTwo$
+        \item \If $\locCompRequired = 0$ \Then $\locMaxOffset = \locMaxOffsetOne$
+        \item \If $\locCompRequired = 1$ \Then $\locMaxOffset = \locMaxOffsetTwo$ 
+    \end{enumerate}
+\end{enumerate}
+
+We introduce the following shorthand
+\[
+    \left\{ \begin{array}{lcl}
+        \locCompRequired & \define & \locSizeOneIsNonZero \cdot \locSizeTwoIsNonZero \\
+        \locMaxSizeOne   & \define & \locOffsetOneLo + \locSizeOneLo                 \\
+        \locMaxSizeTwo   & \define & \locOffsetTwoLo + \locSizeTwoLo                 \\
+        \locMaxOffsetOne & \define & \locOffsetOneLo + \locSizeOneLo - 1             \\
+        \locMaxOffsetTwo & \define & \locOffsetTwoLo + \locSizeTwoLo - 1             \\
+    \end{array} \right.
+\]
+
+We impose:
+\begin{description}
+    \def\nRows{\yellowm{10}}\item[\underline{Comparing \locMaxSizeOne{} and \locMaxSizeTwo:}] 
+    we impose that
+    
+    \begin{enumerate}
+    \item \If $\locCompRequired = 1$ \Then
+    we impose that
+        \[
+            \wcpCallToLt{
+                anchorRow = i               ,
+                relOffset = \nRows          ,
+                argOneHi  = 0               ,
+                argOneLo  = \locMaxSizeOne  ,
+                argTwoHi  = 0               ,
+                argTwoLo  = \locMaxSizeTwo  ,
+            } 
+        \]
+    \end{enumerate}
+    and we define the following shorthand
+    \[
+        \left\{ \begin{array}{lcl}
+            \locComp     & \define & \mxpMacroRes_{i+\nRows} \\
+        \end{array} \right.
+    \]
+    \def\nRows{\yellowm{11}}\item[\underline{Computing the ceil of the division of \locSizeTwoLo{} by 32:}] 
+		we impose that
+        
+        \begin{enumerate}
+        \item \If $\locSizeTwoIsNonZero = 1$ \Then
+            \[
+                \eucCall {
+                    anchorRow = i                      ,
+                    relOffset = \nRows                 ,
+                    argOne    = \locSizeTwoLo          ,
+                    argTwo    = 32                     ,
+                }
+            \]
+        \end{enumerate}
+		and we define the following shorthand
+		\[
+			\left\{ \begin{array}{lcl}
+				\locCeil     & \define & \mxpMacroRes_{i+\nRows} \\
+			\end{array} \right.
+		\]
+\end{description}
