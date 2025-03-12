@@ -1,6 +1,8 @@
 \begin{enumerate}
-	\item $\trmStamp$:
-		stamp column; starts at $0$ and grows by 1 with every served request; like many other stamp columns its main purpose is to separate the different requests to that module;
+	\item $\iomf$:
+		monotonous bit column that lights up for non-padding rows;
+	\item $\done$:
+		bit column that lights up precisely at the last row of all counter-loop;
 	\item $\rawAddrHi$ and $\rawAddrLo$:
 		\godGiven{}
 		\ccc{}; contains the high and low part of some stack value which ought to be interpreted as an address;
@@ -9,7 +11,7 @@
 		\ccc{}; contains the trimmed version of the high part of the address argument;
 	\item $\isPrecompile$:
 		\godGiven{}
-		\ccbc{}; equals $1$ \emph{if and only if} the trimmed address is in the range $\{1, 2,\dots, 9\}$;
+		\ccbc{}; equals $1$ \emph{if and only if} the trimmed address is in the range $\{1, 2,\dots, \maxPrecompileAddress\}$;
 	\item $\ct$:
 		counter column: counts continuously from $0$ to $\llargeMO$ and resets;
 	\item $\byteCol{HI}$ and $\acc{HI}$:
@@ -20,6 +22,6 @@
 		accumulator column; accumulates some of the bytes from $\byteCol{HI}$;
 	\item $\plateauBit$:
 		binary column that implements a \textbf{binary plateau constraint} in that it switches from $0$ to $1$ when $\ct_{i} = 12$;
-	\item $\bit{1}$:
-		binary column; used in establishing that a (trimmed) address is that of a precompile.
+	\item $\wcpFlag$:
+		binary flags used as selectors for lookups;
 \end{enumerate}
