@@ -1,0 +1,20 @@
+\begin{figure}[!h]
+	\centering
+	\begin{tikzpicture}[node distance={3.5cm}, standard/.style={rectangle, thick, draw, rounded corners = 3pt, inner sep = 6pt, outer sep = 4pt}] 
+		\node[standard, color = draculacomment    ]   (padding)                               {padding}; 
+		\node[standard, color = draculagreen      ]     (decoder)      [below right of=padding] {$\isMxpInstructionDecoder$}; 
+		\node[standard, color = draculayellow     ]    (macro)        [right of=decoder]       {$\isMxpMacro$}; 
+		\node[standard, color = draculaorange     ]    (scenario)     [below of=macro]         {$\isMxpScenario$}; 
+		\node[standard, color = draculared        ]      (computation)  [left of=scenario]       {$\isMxpComputation$};
+		\node[standard, color = draculacomment    ]   (halt)         [below of=computation]   {halt};
+		\draw[-latex] (padding)     -- (decoder)     ;
+		\draw[-latex] (decoder)     -- (macro)       ;
+		\draw[-latex] (macro)       -- (scenario)    ;
+		\draw[-latex] (scenario)    -- (computation) ;
+		\draw[-latex] (computation) -- (halt)        ;
+		\draw[-latex] (computation) -- (decoder)     ;
+		\draw (computation) edge [-latex, out=205,in=155,looseness=5] node [left] {$\maxCt$} (computation);
+	\end{tikzpicture}
+	\caption{The above represents the legal perspetive transitions for the \mxpMod{} module.}
+	\label{mxp: constraints: heartbeat: perspective transition graph}
+\end{figure}
