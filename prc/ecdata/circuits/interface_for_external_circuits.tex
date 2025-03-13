@@ -7,25 +7,41 @@ The present section imposes the behaviour of the various circuit selectors.
     \item[Circuit selector for the \inst{ECMUL} circuit:]
         $\csEcmul_{i} = \internalChecksPassed_{i} \cdot \locIsEcmul_{i}$
     \item[Circuit selector for the \inst{ECPAIRING} circuit:]
-        \[
-            \begin{array}{lcl}
-                \csEcpairing_{i} & \equiv &
-                \left[ \begin{array}{clcr}
-                    \wedge & \locIsEcpairing_{i}         & \equiv & \texttt{true}  \\
-                    \wedge & \internalChecksPassed_{i}   & \equiv & \texttt{true}  \\
-                    \wedge & \notOnGTwoAccMax_{i}        & \equiv & \texttt{false} \\
-                    \wedge & \acceptablePairOfPoints_{i} & \equiv & \texttt{true}  \\
-                \end{array} \right] \vspace{2mm} \\
-                & \equiv & 
-                \left[ \begin{array}{clcr}
-                    \cdot & \locIsEcpairing_{i}         \\
-                    \cdot & \internalChecksPassed_{i}   \\
-                    \cdot & (1 - \notOnGTwoAccMax_{i})  \\
-                    \cdot & \acceptablePairOfPoints_{i} \\
-                \end{array} \right] \vspace{2mm} \\
-                & =      & \acceptablePairOfPoints_{i} \\
-            \end{array}
-        \]
+    we impose the following constraints:
+        \begin {enumerate}
+            \item \If $\isEcpairingData_{i} = 1$ \Then
+                \[
+                    \begin{array}{lcl}
+                        \csEcpairing_{i} & \equiv &
+                        \left[ \begin{array}{clcr}
+                            \wedge & \locIsEcpairing_{i}         & \equiv & \texttt{true}  \\
+                            \wedge & \internalChecksPassed_{i}   & \equiv & \texttt{true}  \\
+                            \wedge & \notOnGTwoAccMax_{i}        & \equiv & \texttt{false} \\
+                            \wedge & \acceptablePairOfPoints_{i} & \equiv & \texttt{true}  \\
+                        \end{array} \right] \vspace{2mm} \\
+                        & \equiv & 
+                        \left[ \begin{array}{clcr}
+                            \cdot & \locIsEcpairing_{i}         \\
+                            \cdot & \internalChecksPassed_{i}   \\
+                            \cdot & (1 - \notOnGTwoAccMax_{i})  \\
+                            \cdot & \acceptablePairOfPoints_{i} \\
+                        \end{array} \right] \vspace{2mm} \\
+                        & =      & \acceptablePairOfPoints_{i} \\
+                    \end{array}
+                \]
+            \item \If $\isEcpairingResult_{i} = 1$ \Then
+                \[
+                    \begin{array}{lcl}
+                        \csEcpairing_{i} & = & \ecdataSuccessBit_{i} \cdot (1 - \trivialPairing_{i})
+                    \end{array}
+                \]
+            \item \If $\locIsEcpairing_{i} = 0$ \Then
+                \[
+                    \begin{array}{lcl}
+                        \csEcpairing_{i} & = & 0
+                    \end{array}
+                \]
+        \end{enumerate}
     \item[Circuit selector for the \inst{G2\_MEMBERSHIP\_TEST} circuit:]
         \[
             \begin{array}{lcl}
