@@ -33,7 +33,7 @@ Prefer looking ahead from the vantage point of CT_i = 0
 
 And how do we verify a constraint ? (in the prover)
 
-Data you want to constrain is commited to as the evaluations of polynomials over a certain FFT friendly subset of a field. Some coset of a multiplicative subgroup of the units of a field.
+Data you want to constrain is committed to as the evaluations of polynomials over a certain FFT friendly subset of a field. Some coset of a multiplicative subgroup of the units of a field.
 
 We have some fixed size rquirements, e.G. the cosets all have size 2^22. This is realistic for say HUB and RAM.
 
