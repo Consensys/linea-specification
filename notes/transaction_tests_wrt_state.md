@@ -13,6 +13,6 @@ Assert at the very beginning
 	- message call and to address has empty byte code (i.e. pure transfer)
 	- deployment transaction whose initialization code is empty
 
-Test that these are as advertized is happening in the hub module.
+Test that these are as advertised is happening in the hub module.
 
 Test for type 0, 1, 2 tx's.
