@@ -1,0 +1,37 @@
+The present section constrains the $\isPrecompile$ column.
+\begin{enumerate}
+	\item $\isPrecompile$ and $\bit{1}$ are binary;
+	\item \If $\ct_{i} = \llargeMO$ \Then
+	\begin{enumerate}
+		\item \If $\trmAddrHi_{i} + \big(\rawAddrLo_{i} - \byteCol{LO}_{i}\big) \neq 0$ \Then $\isPrecompile_{i} = 0$
+		\item \If $\trmAddrHi_{i} + \big(\rawAddrLo_{i} - \byteCol{LO}_{i}\big) = 0$ \Then 
+		\begin{enumerate}
+			\item \If $\byteCol{LO}_{i} = 0$ \Then $\isPrecompile_{i} = 0$
+			\item\label{trm: justifying isPrecompile through a comparion} \If $\byteCol{LO}_{i} \neq 0$ \Then
+			\[
+				\underbrace{\Big( 9 - \byteCol{LO}_{i} \Big)
+				\cdot
+				\Big( 2 \cdot \isPrecompile_{i} - 1 \Big)
+				+
+				\Big( \isPrecompile_{i} - 1 \Big)}_{\displaystyle (\star) }
+				=
+				\sum_{k = 0}^7
+				2^k \cdot \bit{1}_{i - k}
+			\]
+		\end{enumerate}
+	\end{enumerate}
+\end{enumerate}
+In other words if the (trimmed) address is anything but a byte in the least significant position we set $\isPrecompile{} = 0$. If the (trimmed) address is a single byte but is $=0$ we set $\isPrecompile{} = 0$ again. In the remaining case (the trimmed address is both a single byte and nonzero) the implementer must set the \isPrecompile{} bit manually. This bit is to be $=1$ \emph{if and only if} the (trimmed) address is in the range $\{1, 2,\dots, 9\}$. The \zkEvm{} verifies this claim in the equation \ref{trm: justifying isPrecompile through a comparion} which performs a comparison with $9$. The purpose of the \bit{1}'s column is to contain the bit decomposition of the adjusted, nonnegative difference $(\star)$. The above achieves the desired result that $\isPrecompile = 1 \iff \trmAddrHi = 0$ and $\rawAddrLo_{i} \in \{1, 2, \dots, 9 \}$.
+
+\saNote{} Given that $\ct_{i} = \llargeMO$, the quantity ``$\col{Q} := \trmAddrHi_{i} + \big(\rawAddrLo_{i} - \byteCol{LO}_{i}\big)$'' is known to be the sum of two ``small nonnegative integers'': $\trmAddrHi_{i}$ is constructed to be a $4$ byte integer and $\rawAddrLo_{i}$ has been verified to be a $\llarge$ integer by means of a byte decomposition, the last byte therein being $\byteCol{LO}_{i}$. Thus both terms in the sum are $\geq$ and ``small''. It therefore makes sense to use the distinction
+\[
+	\col{Q} \neq 0
+	\text{ vs. }
+	\col{Q} = 0
+\]
+in lieu of the following conditions respectively:
+\[
+	\Big[\big[\trmAddrHi \neq 0\big] ~ \Or \big[\rawAddrLo \geq 256\big]\Big]
+	\text{ vs. }
+	\Big[\big[\trmAddrHi = 0\big] \et \big[\rawAddrLo\text{ is a single byte}\big]\Big].
+\]
