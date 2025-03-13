@@ -42,7 +42,7 @@ and their interactions.
 **TO addresses:**
 - Non precompile
 	- has code
-	- doens't have code
+	- doesn't have code
 	- TO has been deployed several times with same or different code within the block
 - Precompile (Emile's PRECOMPILE_INFO module)
 	- correct gas costs
