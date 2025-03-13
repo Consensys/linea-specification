@@ -1,0 +1,62 @@
+\[
+	\boxed{\text{All constraints in this subsection assume that }
+	\left\{ \begin{array}{lcl}
+		\isMxpScenario          _{i} & = & 1 \\
+		\locMxpScenarioNonMsize _{i} & = & 1 \\
+	\end{array} \right.}
+\]
+We use the following shorthands:
+\[
+	\left\{ \begin{array}{lclr}
+		\locOffsetOneHi & \define & \mxpMacroOffsetOneHi _{i - \locMacroToScenarioRowOffset} \\
+		\locOffsetOneLo & \define & \mxpMacroOffsetOneLo _{i - \locMacroToScenarioRowOffset} \\
+		\locSizeOneHi   & \define & \mxpMacroSizeOneHi   _{i - \locMacroToScenarioRowOffset} \\
+		\locSizeOneLo   & \define & \mxpMacroSizeOneLo   _{i - \locMacroToScenarioRowOffset} \\
+	\end{array} \right.
+	\quad\text{and}\quad
+	\left\{ \begin{array}{lcl}
+		\locOffsetTwoHi & \define & \mxpMacroOffsetTwoHi _{i - \locMacroToScenarioRowOffset} \\
+		\locOffsetTwoLo & \define & \mxpMacroOffsetTwoLo _{i - \locMacroToScenarioRowOffset} \\
+		\locSizeTwoHi   & \define & \mxpMacroSizeTwoHi   _{i - \locMacroToScenarioRowOffset} \\
+		\locSizeTwoLo   & \define & \mxpMacroSizeTwoLo   _{i - \locMacroToScenarioRowOffset} \\
+	\end{array} \right.
+\]
+We impose:
+\begin{description}
+	\def\nRows{\yellowm{1}}\item[\underline{Testing for zero-ness of first size argument:}] 
+		we impose that
+		\[
+			\wcpCallToIszero {
+				anchorRow = i                      ,
+				relOffset = \nRows                 ,
+				argOneHi  = \locSizeOneHi          ,
+				argOneLo  = \locSizeOneLo          ,
+			}
+		\]
+		and we define the following shorthand
+		\[
+			\left\{ \begin{array}{lcl}
+				\locSizeOneIsZero    & \define & \mxpMacroRes_{i+\nRows} \\
+				\locSizeOneIsNonZero & \define & 1 - \locSizeOneIsZero   \\
+			\end{array} \right.
+		\]
+	\def\nRows{\yellowm{2}}\item[\underline{Testing for zero-ness of second size argument:}] 
+		we impose that
+		\[
+			\wcpCallToIszero {
+				anchorRow = i                      ,
+				relOffset = \nRows                 ,
+				argOneHi  = \locSizeTwoHi          ,
+				argOneLo  = \locSizeTwoLo          ,
+			}
+		\]
+		and we define the following shorthand
+		\[
+			\left\{ \begin{array}{lcl}
+				\locSizeTwoIsZero    & \define & \mxpMacroRes_{i+\nRows} \\
+				\locSizeTwoIsNonZero & \define & 1 - \locSizeOneIsZero   \\
+			\end{array} \right.
+		\]
+\end{description}
+
+\includepdf[fitpaper=true,pages={1}]{lua/non_msize.pdf}
