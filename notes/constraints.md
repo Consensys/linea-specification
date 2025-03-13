@@ -59,7 +59,7 @@ Note: Q has degree 4 * |Dom|
 FFT is needed for 2 things:
 	- going from the evaluations to the coefficients
 	- what we commit to is the polynomial given by its coefficients
-	- to compute quotients effciently.
+	- to compute quotients efficiently.
 		- we first do FFTs on a larger domain of size 4 * |Dom|
 		- we deduce the evaluations of Q on that larger domain
 		- we do inverse FFT using these evaluations to get the coefficients Q so we can commit to it.
