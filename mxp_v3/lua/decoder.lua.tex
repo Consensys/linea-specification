@@ -34,37 +34,39 @@
 The table below represents the portion of the instruction decoder module relevant to the MXP module.
 
 
-|-------------------------+---------+----------------+---------------+----------+--------+---------+--------------+--------------+---------------+---------------+----------------------------------+---------------|
-| Inst                    | IsMsize | IsFixedSize_32 | IsFixedSize_1 | IsReturn | IsCall | IsMcopy | SingleOffset | DoubleOffset | IsWordPricing | IsBytePricing | GWord                            | GByte         |
-|-------------------------+:-------:+:--------------:+:-------------:+:--------:+:------:+:-------:+:------------:+:------------:+:-------------:+:-------------:+:---------------------------------+:--------------|
-| MSIZE                   |    1    |                |               |          |        |         |              |              |               |      (1)      |                                  |               |
-|-------------------------+---------+----------------+---------------+----------+--------+---------+--------------+--------------+---------------+---------------+----------------------------------+---------------|
-| MLOAD                   |         |        1       |               |          |        |         |       1      |              |               |      (1)      |                                  |               |
-| MSTORE                  |         |        1       |               |          |        |         |       1      |              |               |      (1)      |                                  |               |
-| MSTORE8                 |         |                |       1       |          |        |         |       1      |              |               |      (1)      |                                  |               |
-|-------------------------+---------+----------------+---------------+----------+--------+---------+--------------+--------------+---------------+---------------+----------------------------------+---------------|
-| REVERT                  |         |                |               |          |        |         |       1      |              |               |       1       |                                  |               |
-| RETURN (mess. call)     |         |                |               |     1    |        |         |       1      |              |               |       1       |                                  |               |
-| RETURN (deployment)     |         |                |               |     1    |        |         |       1      |              |               |       1       |                                  | G_codedeposit |
-| LOG-type                |         |                |               |          |        |         |       1      |              |               |       1       |                                  | G_logdata     |
-| SHA3                    |         |                |               |          |        |         |       1      |              |       1       |               | G_keccak256word                  |               |
-| COPY-type               |         |                |               |          |        |         |       1      |              |       1       |               | G_copy                           |               |
-| CREATE (since EIP-3860) |         |                |               |          |    1   |         |       1      |              |       1       |               | G_initcodeword                   |               |
-| CREATE2                 |         |                |               |          |    1   |         |       1      |              |       1       |               | G_initcodeword + G_keccak256word |               |
-| MCOPY                   |         |                |               |          |        |    1    |              |       1      |       1       |               | G_copy                           |               |
-| CALL-type               |         |                |               |          |    1   |         |              |       1      |               |      (1)      |                                  |               |
-|-------------------------+---------+----------------+---------------+----------+--------+---------+--------------+--------------+---------------+---------------+----------------------------------+---------------|
+|-------------------------+----------+---------+----------------+---------------+----------+--------+---------+--------------+--------------+---------------+---------------+----------------------------------+---------------|
+| Inst                    | MXP_FLAG | IsMsize | IsFixedSize_32 | IsFixedSize_1 | IsReturn | IsCall | IsMcopy | SingleOffset | DoubleOffset | IsWordPricing | IsBytePricing | GWord                            | GByte         |
+|-------------------------+:--------:+:-------:+:--------------:+:-------------:+:--------:+:------:+:-------:+:------------:+:------------:+:-------------:+:-------------:+:---------------------------------+:--------------|
+| MSIZE                   |     1    |    1    |                |               |          |        |         |              |              |               |      (1)      |                                  |               |
+|-------------------------+----------+---------+----------------+---------------+----------+--------+---------+--------------+--------------+---------------+---------------+----------------------------------+---------------|
+| MLOAD                   |     1    |         |        1       |               |          |        |         |       1      |              |               |      (1)      |                                  |               |
+| MSTORE                  |     1    |         |        1       |               |          |        |         |       1      |              |               |      (1)      |                                  |               |
+| MSTORE8                 |     1    |         |                |       1       |          |        |         |       1      |              |               |      (1)      |                                  |               |
+|-------------------------+----------+---------+----------------+---------------+----------+--------+---------+--------------+--------------+---------------+---------------+----------------------------------+---------------|
+| REVERT                  |     1    |         |                |               |          |        |         |       1      |              |               |       1       |                                  |               |
+| RETURN (mess. call)     |     1    |         |                |               |     1    |        |         |       1      |              |               |       1       |                                  |               |
+| RETURN (deployment)     |     1    |         |                |               |     1    |        |         |       1      |              |               |       1       |                                  | G_codedeposit |
+| LOG-type                |     1    |         |                |               |          |        |         |       1      |              |               |       1       |                                  | G_logdata     |
+| SHA3                    |     1    |         |                |               |          |        |         |       1      |              |       1       |               | G_keccak256word                  |               |
+| COPY-type               |     1    |         |                |               |          |        |         |       1      |              |       1       |               | G_copy                           |               |
+| CREATE (since EIP-3860) |     1    |         |                |               |          |    1   |         |       1      |              |       1       |               | G_initcodeword                   |               |
+| CREATE2                 |     1    |         |                |               |          |    1   |         |       1      |              |       1       |               | G_initcodeword + G_keccak256word |               |
+| MCOPY                   |     1    |         |                |               |          |        |    1    |              |       1      |       1       |               | G_copy                           |               |
+| CALL-type               |     1    |         |                |               |          |    1   |         |              |       1      |               |      (1)      |                                  |               |
+|-------------------------+----------+---------+----------------+---------------+----------+--------+---------+--------------+--------------+---------------+---------------+----------------------------------+---------------|
 
-Note. As per usual, empty cells are to be interpreted as containing zero.
+NOTE. As per usual, empty cells are to be interpreted as containing zero.
 Also cells labeled with '(1)' contain 1. Inspection reveals that the relevant opCodes don't have a linear cost.
 This is done out of sheer convenience so that EVERY instruction is either 'IsWordPricing' or 'IsBytePricing'.
 
-Note. The COPY-type instructions are CALLDATACOPY, RETURNDATACOPY, CODECOPY and EXTCODECOPY.
+NOTE. The COPY-type instructions are CALLDATACOPY, RETURNDATACOPY, CODECOPY and EXTCODECOPY.
 Also note that the COPY instruction family DOES NOT include the MCOPY instruction (EIP-5656.)
 
-Note. The CALL-type instructions are CALL, CALLCODE, DELEGATECALL and STATICCALL.
+NOTE. The CALL-type instructions are CALL, CALLCODE, DELEGATECALL and STATICCALL.
 
-Note. The LOGX instructions are LOG0, LOG1, ..., LOG4.
+NOTE. The LOGX instructions are LOG0, LOG1, ..., LOG4.
+
+NOTE. All other opcodes in the Instruction Decoder Module have MXP_FLAG ≡ 0.
 
 \end{verbatim}
 \end{document}
