@@ -10,7 +10,7 @@ Wrote prototype for stripped down module (0-3 for simplification)
 	- check whether certain predicates are inductive
 	- E.g. a state F4 which is defined by either STAMP = 0 or nonzero and CT = 0, 1, 2, 3.
 	- this state is inductive (once you are in there, you should remain there
-	- you have predicates fro"Forward rechability" and "Backward reachability"
+	- you have predicates for "Forward rechability" and "Backward reachability"
 	- and you prove that when you are a fwd and bwd reachable state you satisfy the spec
 - this approach tries to deal with both the scaffolding and the functional correctness
 	- prove specification based on summaries (B3, F4 predicates)
