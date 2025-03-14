@@ -37,7 +37,7 @@ This approach lends itself to
 
 This vs other approach:
 in reachability we extract summary to do actual proof
-in the other approach we need more (constraint satisfaction or so up ot this point)
+in the other approach we need more (constraint satisfaction or so up to this point)
 
 NEXT STEPS:
 - write ADD (real module) proof in this style
