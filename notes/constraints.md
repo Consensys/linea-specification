@@ -35,7 +35,7 @@ And how do we verify a constraint ? (in the prover)
 
 Data you want to constrain is commited to as the evaluations of polynomials over a certain FFT friendly subset of a field. Some coset of a multiplicative subgroup of the units of a field.
 
-We have some fixed size rquirements, e.G. the cosets all have size 2^22. This is realistic for say HUB and RAM.
+We have some fixed size requirements, e.g., the cosets all have size 2^22. This is realistic for say HUB and RAM.
 
 What we prove on chain is the satisfaction of a SNARK circuit (of Plonk type) with fixed sizes that verifies a proof of our type (general huge constraint system.) It's a proof of a proof of a proof of a... (maybe 3 or 4 times). With every recursion step reduce size by a factor of sqrt(n). Vortex.
 
