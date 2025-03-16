@@ -91,15 +91,15 @@ The first constraint enforces flag exclusivity on the $\stoOperation$ columns, s
 This could alternatively have been enforced at the temporal level.
 
 \saNote{} \label{hub: consistencies: storage: constraints: state manager columns}
-The present arithmetization doesn't have any use for
+The present arithmetization has no concrete use for
 $\order{\stoPrewarmingOperation}$,
 $\order{\stoSloadOperation}$,
 $\order{\stoSstoreOperation}$ and
 $\order{\stoExceptionalOperation}$.
-The \textbf{state-manager} however requires the information contained therein.
-Indeed, one of its purposes is to justify storage values that exist in the state for \inst{SLOAD} and \inst{SSTORE} instructions.
-Yet some cases don't require the value \emph{per se} (e.g. exceptional \inst{SLOAD} instructions.)
-Furthermore the pre-warming phase (for access-list transactions) allows storage access to \emph{any} storage key,
+The \textbf{state-manager}, however, requires the information contained therein.
+Indeed, one of its purposes is to justify storage values for \inst{SLOAD} and \inst{SSTORE} instructions.
+Some cases, however, don't require the value \emph{per se} (e.g. exceptional \inst{SLOAD} instructions.)
+Furthermore, the pre-warming phase (for access-list transactions) allows storage access to \emph{any} storage key,
 including storage keys of accounts that don't exist at transaction start,
 of accounts that may not support storage (e.g. precompiles or \textsc{eoa}'s in the \textsc{London} \evm{}),
 or of accounts that may pop into existence during transaction processing (e.g. via deployments or transfers.)
