@@ -47,4 +47,19 @@ The desired interpretation is straightforward:
 		\stoNextValueIsCurr & \!\!\! = \!\!\! & 1 & \iff & \stoCurrValue & \!\!\! = \!\!\! & \stoNextValue \\
 	\end{array} \right.
 \]
-See section~\ref{hub: storage-rows: gas cost binary columns}.
+See section~\ref{hub: storage rows: gas cost binary columns}.
+\begin{enumerate}[resume]
+	\item
+		$\stoSloadOperation$,
+		$\stoSstoreOperation$:
+		binary columns used to record the nature of the operation which have given rise to the current storage-row \emph{if applicable};
+\end{enumerate}
+\saNote{} \label{hub: storage rows: metadata for the state manager}
+The \zkEvm{} may produce storage-rows in the following contexts \emph{only}:
+(\emph{a}) when pre-warming a storage key during the pre-warming phase of an access-list transaction, see section~(\ref{hub: prewarming phase}),
+(\emph{b}) when processing an \inst{SLOAD} instruction or
+(\emph{c}) when processing an \inst{SSTORE} instruction, see section~(\ref{hub: instruction handling: storage: constraints}) for both.
+For \textbf{state-manager} related reasons it is useful to retain the nature of the operation which spawned a given storage-row.
+This explains the inclusion of both $\stoSloadOperation$ and $\stoSstoreOperation$.
+It is furthermore of interest (for the \textbf{state-manager}) to remember if said operation was exceptional (as in: raised an \evm{} exception) or not.
+We will come back to that point in more detail in section~(\ref{hub: consistencies: storage}).
