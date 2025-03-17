@@ -55,39 +55,47 @@ Ax_hi, Ax_mi, Ax_lo
 - Point at infinity
 
 ## Checks performed by external circuits
-- $\mathbb{G}_1$ and $\mathbb{G}_1$ subgrpup mermbership
-- $\mathbb{G}_2$ and $\mathbb{G}_2$ subgrpup mermbership
+
+Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_2$ subgroup.
+
+- $\mathbb{C}_1$ and $\mathbb{G}_1$ mermbership
+- $\mathbb{C}_2$ and $\mathbb{G}_2$ mermbership
 
 ## Checks overview
 
-- BLS12_G1ADD,  $P \times Q$ (256 bytes) $\rightarrow R$ (128 bytes)
+- BLS12_G1ADD,  $\mathbb{C_1} \times \mathbb{C_1}$ (256 bytes) $\rightarrow \mathbb{C_1}$ (128 bytes)
     * coordinate encoding
     * input length
     * points at infinity
-    * $\mathbb{G}_1$ mermbership         
-- BLS12_G1MSM, $(P \times N)^k$ ($160 \cdot k$ bytes) $\rightarrow R$ (128 bytes) with $k > 0$
+    * $\mathbb{C}_1$ mermbership         
+- BLS12_G1MSM, $(\mathbb{G_1} \times \mathbb{N})^k$ ($160 \cdot k$ bytes) $\rightarrow \mathbb{G_1}$ (128 bytes) with $k > 0$
     * coordinate encoding
     * input length
     * point at infinity
-    * $\mathbb{G}_1$ and $\mathbb{G}_1$ subgrpup mermbership        
-- BLS12_G2ADD $P \times Q$ (512 bytes) $\rightarrow R$ (256 bytes)
+    * $\mathbb{C}_1$ and $\mathbb{G}_1$ mermbership        
+- BLS12_G2ADD $\mathbb{C_2} \times \mathbb{C_2}$ (512 bytes) $\rightarrow \mathbb{C_2}$ (256 bytes)
     * coordinate encoding
     * input length
     * points at infinity
-    * $\mathbb{G}_2$ mermbership              
-- BLS12_G2MSM $(P \times N)^k$ ($288 \cdot k$ bytes) $\rightarrow R$ (256 bytes) with $k > 0$         
+    * $\mathbb{C}_2$ mermbership              
+- BLS12_G2MSM $(\mathbb{G_2} \times \mathbb{N})^k$ ($288 \cdot k$ bytes) $\rightarrow \mathbb{G_2}$ (256 bytes) with $k > 0$         
     * coordinate encoding
     * input length
     * point at infinity
-    * $\mathbb{G}_2$ and $\mathbb{G}_2$ subgrpup mermbership 
-- BLS12_PAIRING_CHECK $(A \times B)^k$ ($384 \cdot k$ bytes) $\rightarrow \{0,1\}$ (right padded to 32 bytes) with $k > 0$    
+    * $\mathbb{C}_2$ and $\mathbb{G}_2$ mermbership 
+- BLS12_PAIRING_CHECK $(\mathbb{G_1} \times \mathbb{G_2})^k$ ($384 \cdot k$ bytes) $\rightarrow \{0,1\}$ (right padded to 32 bytes) with $k > 0$    
     * coordinate encoding
     * input length
     * point at infinity
-    * $\mathbb{G}_1$ and $\mathbb{G}_1$ subgrpup mermbership   
-    * $\mathbb{G}_2$ and $\mathbb{G}_2$ subgrpup mermbership 
-- BLS12_MAP_FP_TO_G1  
-- BLS12_MAP_FP2_TO_G2 
+    * $\mathbb{C}_1$ and $\mathbb{G}_1$ mermbership   
+    * $\mathbb{C}_2$ and $\mathbb{G}_2$ mermbership 
+- BLS12_MAP_FP_TO_G1 $\mathbb{F}_p$ (64 bytes) $\rightarrow \mathbb{G_1}$ (128 bytes)
+    * coordinate encoding
+    * input length
+- BLS12_MAP_FP2_TO_G2 $\mathbb{F}_{p^2}$ (128 bytes) $\rightarrow \mathbb{G_2}$ (256 bytes)
+    * coordinate encoding
+    * input length 
 
-Note that addition operations do not require subgroup membership checks. In case the operations are execute on point not in the respective subgroups, also the result will not be in the subgroup.
-A user who wants addition and subgroup membership check can use MSM(P,Q,1,1)=P+Q since MSM precompile does subgroup check.
+Note that addition operations do not require subgroup membership checks. 
+In case the operations are executed on points not in the subgroup, also the result will not be in the subgroup.
+A user who wants addition and subgroup membership check can use $MSM((P,1),(Q,1))=P \times 1 + Q \times 1 = P + Q$ since MSM precompile does subgroup membership check.
