@@ -39,20 +39,23 @@ Linea abstracts away the complexity of this technical architecture to allow deve
 
 ## How to contribute
 
-Contributions of any kind are welcome!
+Contributions are welcome!
 
-1. [Create an issue](https://github.com/Consensys/linea-spec/issues).
-> If the proposed update is non-trivial, also tag us for discussion.
-2. Submit the update as a pull request from your [fork of this repo](https://github.com/Consensys/linea-spec/fork), and tag us for review. 
+### Guidelines for Non-Code and other Trivial Contributions
+Please keep in mind that we do not accept non-code contributions like fixing comments, typos or some other trivial fixes. Although we appreciate the extra help, managing lots of these small contributions is unfeasible, and puts extra pressure in our continuous delivery systems (running all tests, etc). Feel free to open an issue pointing to any of those errors, and we will batch them into a single change.
+
+1. [Create an issue](https://github.com/Consensys/linea-specification/issues).
+> If the proposed update requires input, also tag us for discussion.
+2. Submit the update as a pull request from your [fork of this repo](https://github.com/Consensys/linea-specification/fork), and tag us for review. 
 > Include the issue number in the pull request description and (optionally) in the branch name.
 
-Consider starting with a ["good first issue"](https://github.com/ConsenSys/linea-spec/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
+Consider starting with a ["good first issue"](https://github.com/ConsenSys/linea-specification/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 
 Before contributing, ensure you're familiar with:
 
 - Our [Linea contribution guide](https://github.com/Consensys/linea-monorepo/blob/main/docs/contribute.md)
 - Our [Linea code of conduct](https://github.com/Consensys/linea-monorepo/blob/main/docs/code-of-conduct.md)
-- The [Besu contribution guide](https://github.com/Consensys/linea-monorepo/blob/main/https://wiki.hyperledger.org/display/BESU/Coding+Conventions), for Besu:Linea related contributions
+- The [Besu contribution guide](https://wiki.hyperledger.org/display/BESU/Coding+Conventions), for Besu:Linea related contributions
 - Our [Security policy](https://github.com/Consensys/linea-monorepo/blob/main/docs/security.md)
 
 ### Useful links
