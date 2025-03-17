@@ -20,17 +20,50 @@ We list the columns that must be row-permuted according to the previously descri
 		\item $\order{\stoWarmth}$
 		\item $\order{\stoWarmth\new}$
 		\item $\order{\stoDeploymentNumber}$
-		\item $\order{\stoDeploymentNumberFirstInBlock}$
-		\item $\order{\stoDeploymentNumberFinalInBlock}$
-		\item[\vspace{\fill}]
-		\item[\vspace{\fill}]
 		\item[\vspace{\fill}]
 		\item[\vspace{\fill}]
 	\end{enumerate}
 \end{multicols}
-\noindent We further define the following shorthand
+We also introduce the following columns, which, \emph{despite notations}, don't have corresponding ``temporal'' columns
+\begin{enumerate}
+	\item $\order{\stoDeploymentNumberFirstInBlock}$
+	\item $\order{\stoDeploymentNumberFinalInBlock}$
+	\item $\order{\stoExistenceFirstInBlock}$
+	\item $\order{\stoExistenceFinalInBlock}$
+\end{enumerate}
+\saNote{}
+We similarly introduced columns in the permuted realm for account consistency that didn't have ``temporal'' counterparts,
+see section~(\ref{hub: consistencies: account: permuted columns without temporal counterparts}).
+They are used similarly by the \textbf{state manager} and will be read off the eponymous columns on the account consistency side,
+see section~(\ref{hub: lookups: hub into hub}).
+
+We further define the following shorthand
 \[
 	\locStoFullAddress_{i}
 	\define
 	256^\llarge \cdot \order{\stoAddressHi}_{i} + \order{\stoAddressLo}_{i}
 \]
+\noindent We introduce some more columns.
+Similar remarks to those of section~(\ref{hub: consistencies: account: first again final}) apply to these following columns.
+\begin{multicols}{3}
+	\begin{enumerate}
+		\item $\stoFirstInConflation$
+		\item $\stoAgainInConflation$
+		\item $\stoFinalInConflation$
+		\item $\stoFirstInBlock$
+		\item $\stoAgainInBlock$
+		\item $\stoFinalInBlock$
+		\item $\stoFirstInTransaction$
+		\item $\stoAgainInTransaction$
+		\item $\stoFinalInTransaction$
+	\end{enumerate}
+\end{multicols}
+We also \emph{introduce} the following columns:
+\begin{multicols}{2}
+	\begin{enumerate}
+		\item $\order{\stoDeploymentNumberFirstInBlock}$
+		\item $\order{\stoDeploymentNumberFinalInBlock}$
+	\end{enumerate}
+\end{multicols}
+\noindent \textbf{Storage-rows} may not conain sufficient information to set either of these columns.
+They will be set implicitly by the lookup from section~(\ref{hub: lookups: hub into hub}).
