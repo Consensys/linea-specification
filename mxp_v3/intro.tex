@@ -1,26 +1,43 @@
-The \textbf{memory expansion module} serves several different purposes:
-(\emph{a})
-it tracks and updates, when appropriate, ``the active number of words in memory (counting continuously from position $0$)'' i.e. $\bm{\mu}_\text{i}$ in the Ethereum Yellow Paper \ob{TODO: add reference to the spec})
+The purpose of the \textbf{memory expansion module} is
+(\emph{a}) to detect \mxpxSH{}'s
+(\emph{b}) to compute the \textbf{memory expansion cost} of memory expanding opcodes, including any linear cost in the number of bytes or words that may apply,
+(\emph{c}) to provide the return value of the \inst{MSIZE} opcode.
+
+It achieves this by maintaining an \textbf{internal state} which associates to a given
+execution context and \mxpMod{} module time stamp,
+identified respectively by their context number $\cn$ and $\mxpStamp$,
+a snapshot
 \[
-	\memSize\rightsquigarrow\memSize\new
+	\texttt{[\,execution context, time stamp\,]}
+	~ \rightsquigarrow ~
+	\left\{ \begin{array}{l}
+		\mxpWords \\
+		\mxpCmem  \\
+	\end{array} \right.
 \]
-(\emph{b})
-it tracks and updates, when appropriate, the associated memory cost i.e. $C_\text{mem}(\bm{\mu}_\text{i})$ in the Ethereum Yellow Paper \ob{TODO: add reference to the spec},
+comprised of
+$\mxpWords$, the ``active number of words in memory (counting continuously from position $0$)'', and of
+$\mxpCmem$,  the accrued memory expansion cost.
+In the \cite{EYP} these correspond respectively to $\bm{\mu}_\text{i}$ and $C_\text{mem}(\bm{\mu}_\text{i})$.
+
+Updates to the state are of the form
 \[
-	\expCost\rightsquigarrow\expCost\new
+	\left\{ \begin{array}{lcl}
+		\mxpWords & \rightsquigarrow & \mxpWordsNew \\
+		\mxpCmem  & \rightsquigarrow & \mxpCmemNew  \\
+	\end{array} \right.
+	\iff
+	\left\{ \begin{array}{lcl}
+		\bm{\mu}_\text{i}               & \rightsquigarrow & \bm{\mu}_\text{i}'               \\
+		C_\text{mem}(\bm{\mu}_\text{i}) & \rightsquigarrow & C_\text{mem}(\bm{\mu}_\text{i}') \\
+	\end{array} \right.
 \]
-(\emph{c})
-it justifies the $\mxpX$ ($\mxpx$ for short) i.e. it recognizes grossly out of bounds memory operations
-(\emph{d})
-it computes, when necessary, the quadratic memory expansion cost
-(\mxpQuadGas) associated with certain memory expanding instructions as well as any ``linear costs'' that the instruction may incur
-(\mxpLinGas).
+Again, notations are that of the \cite{EYP}.
 
-\saNote{} We remind the reader that what we have dubbed \mxpxSH{} is a \emph{sub-exception} of the \oogxSH{}. It corresponds to a case where the quadratic cost of memory expansion is large enough as to produce an \oogxSH{} regardless of other extra costs that may stack on top of it. See
-
-\saNote{} These ``linear costs'' are either proportional to the number of bytes in a certain (input) memory range or to the minimum number of \text{evm} words needed to contain a certain (input) memory range.
-
-The idea behind the binary $\mxpx$ flag is simple: the hub module uses it to recognize scenarios when an out of gas exception is bound to happen; what we call ``\mxpxSH{}'' can be thought of as a refinement/subcase of the \oogxSH{} in the sense that the former is a sufficient condition to trigger the latter.
+We remind the reader that what we have dubbed \mxpxSH{} is a \emph{sub-exception} of the \oogxSH{}.
+It corresponds to a case where the quadratic cost of memory expansion is large enough as to produce an \oogxSH{} regardless of other extra costs that may stack on top of it.
+The idea behind (the associated binary flag) $\mxpx$ is simple.
+The \hubMod{} module uses it to predict the presence of a \mxpxSH{}, the \mxpMod{} module validates said prediction.
 
 
 
@@ -48,35 +65,4 @@ The memory expansion cost for a byte offset $\offset\geq 256^{\ssmall}$ is, sett
 When a (potentially) memory expanding instruction has its largest offset(s) ``within bounds'' and isn't a \textsf{noop}, the memory expansion module sets the \emph{two} last touched offsets as $\lastOffset{1} = \offset_1 + (\size_1 - 1)$ and $\lastOffset{2} = \offset_2 + (\size_2 - 1)$. If the memory expansion type $\iMemExpType$ requires only one offset the second one is instead set to $0$; if a size parameter is zero then the associated $\lastOffset{k}$ is also set to $0$. With all these parameters in place the first task of the present module is to determine the maximum of the two:
 \[
 	\maxOffset = \max\Big\{\lastOffset{1}, \lastOffset{2}\Big\}
-\]
-It then compares $\maxOffset$ to $\memSize$. If $\maxOffset \leq \memSize$ its work is essentially done as no memory expansion is triggered. Otherwise, if $\maxOffset > \memSize$ it computes $\lceil \maxOffset / 32 \rceil$ which it does by establishing the following variation on the euclidean division
-\begin{equation}
-\label{eq: euclidean division by 32}
-\tag{$\clubsuit$}
-\maxOffset + 1 = 32 \cdot \mathtt{q} - \mathtt{r}
-\end{equation}
-with $\mathtt{r}\in\{0,1,\dots31\}$. In the arithmetization, $\mathtt{q} = \acc{A}$. The next step is to compute the quadratic part of the memory expansion cost which requires determining the euclidean division of $\mathtt{q}^2$ by $512$:
-\begin{equation}
-\label{eq: euclidean division by 512}
-\tag{$\spadesuit$}
-	\left\{
-	\begin{array}{rcll}
-	\mathtt{q}^2 & = & 512 \cdot \mathtt{q'} + \mathtt{r'}, & 0\leq \mathtt{r'} < 512, \\
-	\mathtt{r'}	& = & 256\cdot\epsilon + \mathtt{b}, & \epsilon \in\{0,1\},~ 0 \leq \mathtt{b} < 256, \\
-	\end{array}
-	\right.
-\end{equation}
-In the arithmetization $\mathtt{q'} = \acc{6}$.
-
-Given the smallness bounds on $\maxOffset < 2\cdot 256^{\ssmall} = 2^{32+1}$, we see that
-\begin{enumerate}
-	\item $\mathtt{q}$ can be of the order of magnitude of $\approx 2^{27}$ and defines a $\ssmall$-byte integer
-	\item $\mathtt{q'}$ can be of the order of magnitude of $\approx 2^{45}$ and defines a $(\ssmall + 2)$-byte integer
-\end{enumerate}
-The memory expansion cost is therefore, with $G_\textrm{mem} = 3$:
-\[
-	C_\textrm{mem} =
-	G_\textrm{memory}\cdot \mathtt{q}
-	+
-	\mathtt{q'}
 \]
