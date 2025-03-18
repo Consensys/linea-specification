@@ -109,6 +109,8 @@ Beyond creating an new BLS module, the following existing modules will be affect
 - TRM:  for updated `IS_PRECOMPILE` flag
 - MMIO: for lookup to new BLS module
 
+@TODO: expand on this.
+
 ## Comparisons
 
 All comparisons will require two interactions with WCP (48 byte data):
@@ -121,11 +123,38 @@ wcpGeneralizedCallToLT(A_hh, A_hl, A_lh, A_ll, B_hh, B_hl, B_lh, B_ll)
 
 wcpCallToLT(A_hh, A_hl, B_hh, B_hl)
 
-or 
+∨
 
-wcpCallToEQ(A_hh, A_hl, B_hh, B_hl)
-
+(wcpCallToEQ(A_hh, A_hl, B_hh, B_hl) ∧ wcpCallToLT(A_lh, A_ll, B_lh, B_ll))
 
 ```
 
+## External circuit interface
 
+- C1_MEMBERSHIP
+- G1_MEMBERSHIP
+- C2_MEMBERSHIP
+- G2_MEMBERSHIP
+- PAIRING
+
+### Failure case
+
+- BLS12_G1ADD: send to C1_MEMBERSHIP or G1_MEMBERSHIP circuits the first point predicted not to be in the group or subgroup, so as to prove non-membership.            
+- BLS12_G1MSM: send to C1_MEMBERSHIP or G1_MEMBERSHIP circuits the first point predicted not to be in the group or subgroup, so as to prove non-membership.            
+- BLS12_G2ADD: send to C2_MEMBERSHIP or G2_MEMBERSHIP circuits the first point predicted not to be in the group or subgroup, so as to prove non-membership.           
+- BLS12_G2MSM: send to C2_MEMBERSHIP or G2_MEMBERSHIP circuits the first point predicted not to be in the group or subgroup, so as to prove non-membership.            
+- BLS12_PAIRING_CHECK: send to C1_MEMBERSHIP or G1_MEMBERSHIP or C2_MEMBERSHIP or G2_MEMBERSHIP circuits the first point predicted not to be in the group or subgroup, so as to prove non-membership.            
+
+### Success case
+
+- BLS12_G1ADD: send to C1_MEMBERSHIP and G1_MEMBERSHIP circuits all points so as to prove membership.
+- BLS12_G1MSM: send to C1_MEMBERSHIP and G1_MEMBERSHIP circuits all points so as to prove membership.
+- BLS12_G2ADD: send to C2_MEMBERSHIP and G2_MEMBERSHIP circuits all points so as to prove membership.
+- BLS12_G2MSM: send to C2_MEMBERSHIP and G2_MEMBERSHIP circuits all points so as to prove membership.
+- BLS12_PAIRING_CHECK: 
+    * If all points are trivial (small and large point are at infinity) do nothing.
+    * If small point is trivial, then send large point to C2_MEMBERSHIP and G2_MEMBERSHIP circuits.
+    * If large point is trivial, then send small point to C1_MEMBERSHIP and G1_MEMBERSHIP circuits.
+    * If neither small nor large points are trivial, send the pair to the PAIRING circuit. 
+
+@TODO: do we actually need that PAIRING circuit?
