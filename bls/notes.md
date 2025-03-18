@@ -31,7 +31,7 @@ Curve Fp2 equation: Y^2 = X^3 + B*(v+1) where v is the square root of nr2
 ## Points
 
 ```
-Each coordinate is 48 bytes.
+Each coordinate is represented using 64 bytes, where the first 16 bytes are supposed to be 0s and the remaining 48 bytes represent the actual value:
 
 small point (point supposed to be on G1):
 
@@ -41,11 +41,11 @@ large point (point supposed to be on G2):
 
 (BxIm, BxRe, ByIm, ByRe)
 
-Thus, each requires 3 half ewords:
+Thus, each requires 4 half ewords:
 
 e.g.,
 
-Ax_hi, Ax_mi, Ax_lo
+Ax_hh, Ax_hl, Ax_lh, Ax_ll
 
 ```
 
@@ -99,3 +99,33 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
 Note that addition operations do not require subgroup membership checks. 
 In case the operations are executed on points not in the subgroup, also the result will not be in the subgroup.
 A user who wants addition and subgroup membership check can use $MSM((P,1),(Q,1))=P \times 1 + Q \times 1 = P + Q$ since MSM precompile does subgroup membership check.
+
+## Modules
+
+Beyond creating an new BLS module, the following existing modules will be affected:
+
+- HUB:  precompile processing
+- OOB:  for detecting `FAILURE_KNOWN_TO_HUB`
+- TRM:  for updated `IS_PRECOMPILE` flag
+- MMIO: for lookup to new BLS module
+
+## Comparisons
+
+All comparisons will require two interactions with WCP (48 byte data):
+
+```
+
+wcpGeneralizedCallToLT(A_hh, A_hl, A_lh, A_ll, B_hh, B_hl, B_lh, B_ll)
+
+<=>
+
+wcpCallToLT(A_hh, A_hl, B_hh, B_hl)
+
+or 
+
+wcpCallToEQ(A_hh, A_hl, B_hh, B_hl)
+
+
+```
+
+
