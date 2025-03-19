@@ -42,37 +42,25 @@
 | i + 4     |       |                              | true  | true     |          | LT     | size_2_hi   | size_2_lo   | 0        | LMMS     | size_2_is_small   | ∅     | of the MXPX conditions            |
 | i + 5     |       |                              | true  | true     |          | LT     | offset_1_hi | offset_1_lo | 0        | LMMS     | offset_1_is_small | ∅     | is fulfilled, see below           |
 | i + 6     |       |                              | true  | true     |          | LT     | offset_2_hi | offset_2_lo | 0        | LMMS     | offset_2_is_small | ∅     |                                   |
+|-----------+-------+------------------------------+-------+----------+----------+--------+-------------+-------------+----------+----------+-------------------+-------+-----------------------------------|
+| i + 7     |       |                              | true  | 1        |          | LT     | 0           | max_1       | 0        | max_2    | use_params_2      |       |
+| i + 8     |       |                              | true  |          | true     |        |             | max_offset  |          | 32       | floor             |       | we compute floor(max_offset / 32) | this computation is      |
+| i + 9     |       |                              | true  |          | true     |        |             | a * a       |          | 512      | quadratic         |       | .   a ≡ floor + 1                 | common to all nontrivial |
+| i + 10    |       |                              | true  |          |          | LT     | 0           | words       | 0        | a        | update            |       | .   words ≡ WORDS[i]              | and non MXPX cases       |
 |-----------+-------+------------------------------+-------+----------+----------+--------+-------------+-------------+----------+----------+-------------------+-------+-----------------------------------+--------------------------|
-| i + 7     |       |                              | true  |          | true     |        |             | max_offset  |          | 32       | floor             |       | we compute floor(max_offset / 32) | this computation is      |
-| i + 8     |       |                              | true  |          | true     |        |             | a * a       |          | 512      | quadratic         |       | .   a ≡ floor + 1                 | common to all nontrivial |
-| i + 9     |       |                              | true  |          |          | LT     | 0           | words       | 0        | a        | update            |       | .   words ≡ WORDS[i]              | and non MXPX cases       |
-|-----------+-------+------------------------------+-------+----------+----------+--------+-------------+-------------+----------+----------+-------------------+-------+-----------------------------------+--------------------------|
 
-where 
+We define
 
-  scenario/nontrivial_no_mxpx ≡ the sum of all nontrivial, unexceptional scenario flags
+    max_1        ≡ offset_1 + size_1                 // is ≥ 0 !
+    max_2        ≡ offset_2 + size_2                 // is ≥ 0 !
+    use_params_2 ≡   [max_1 < max_2]
+    use_params_1 ≡ ¬ [max_1 < max_2]
 
-We impose that
-
-- nontrivialRegimeHolds_{i} (as a consequence of scenario/nontrivial_{i} ≡ 1)
-- mxpxExpression ≡ mxpxExpression_1 ∨ mxpxExpression_2 = false where
-
-	mxpxExpression_1 ≡ [¬ size_1_is_small] ∨ [size_1_is_nonzero ∧ [¬ offset_1_is_small]]
-	mxpxExpression_2 ≡ [¬ size_2_is_small] ∨ [size_2_is_nonzero ∧ [¬ offset_2_is_small]]
-
-We will want to impose:
-- on the macro-row:
-	- macro/MXPX ≡ false
-	- S1NZNOMXPX = 1 - size_1_iszero
-	- S2NZNOMXPX = 1 - size_2_iszero
-- on the scenario-row:
-
-where we use the following shorthand:
-
-    nontrivial_non_mxpx ≡ + scenario/SINGLE_MAX_OFFSET_AND_WORD_PRICING
-                          + scenario/SINGLE_MAX_OFFSET_AND_BYTE_PRICING
-                          + scenario/DOUBLE_MAX_OFFSET_AND_WORD_PRICING
-                          + scenario/DOUBLE_MAX_OFFSET_AND_BYTE_PRICING
+    max_offset_1 ≡ offset_1 + size_1 - 1             // one could be == -1 ...
+    max_offset_2 ≡ offset_2 + size_2 - 1             // one could be == -1 ...
+    max_offset   ≡ | If use_params_1 Then max_offset_1
+                   | If use_params_2 Then max_offset_2
+                 ≡ max(max_offset_1, max_offset_2)   // the ``true'' max offset in all cases
 
 \end{verbatim}
 \end{document}

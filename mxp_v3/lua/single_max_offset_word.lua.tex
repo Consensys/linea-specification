@@ -41,9 +41,8 @@
                                                  \__|                                             \______/
 
 
-max_offset = max(max_offset_1, max_offset_2)   // the ``true'' max offset in all cases
-max_offset_1 = offset_1 + size_1 - 1
-max_offset_2 = offset_2 + size_2 - 1
+max_offset   = max_offset_1                // the ``true'' max offset in all cases
+max_offset_1 = offset_1 + size_1 - 1       // ≥ 0
 
 compute quadratic cost (once for all)
 linear cost (requires division by 32 in the case of word)
@@ -56,7 +55,8 @@ linear cost (requires division by 32 in the case of word)
 | ⋮         | ⋮     | ⋮                               | ⋮     | ⋮        | ⋮              | ⋮    | ⋮        | ⋮        | ⋮        | ⋮        | ⋮    | ⋮     |
 |-----------+-------+---------------------------------+-------+----------+----------------+------+----------+----------+----------+----------+------+-------|
 | i + 10    |       |                                 | true  |          | size_1_nonzero |      |          | size_1   |          | 32       | ceil |       |
-     
+|-----------+-------+---------------------------------+-------+----------+----------------+------+----------+----------+----------+----------+------+-------|
+
 
 we have to constrain
 - max_offset = offset_1_lo + (size_1_lo - 1)

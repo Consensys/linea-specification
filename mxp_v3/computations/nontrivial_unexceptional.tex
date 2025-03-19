@@ -1,56 +1,121 @@
 \[
 	\boxed{\text{All constraints in this subsection assume that }
 	\left\{ \begin{array}{lcl}
-		\isMxpScenario                           _{i} & = & 1 \\
+		\isMxpScenario                      _{i} & = & 1 \\
 		\locMxpScenarioPotentialStateChange _{i} & = & 1 \\
 	\end{array} \right. }
 \]
 \noindent
 The present section describes the computation for the $\locMxpScenarioPotentialStateChange$ case.
-
-We impose the following constraints for the \textbf{macro-instruction-row}:
-\begin{enumerate}
-	\item $\mxpMacroSOneNzNoMxpx _{i - \locMacroToScenarioRowOffset} = 1 - \locSizeOneIsZero$ 
-	\item $\mxpMacroSTwoNzNoMxpx _{i - \locMacroToScenarioRowOffset} = 1 - \locSizeTwoIsZero$ 
-\end{enumerate}
 We impose the following
 \begin{description}
 	\item[\underline{\underline{Justifying the scenario:}}]
+		we define the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locSingleOffsetOpcode & \define & \mxpDecoderSingleMaxOffset _{i - \locScenarioToDecoderRowOffset} \\
+				\locDoubleOffsetOpcode & \define & \mxpDecoderDoubleMaxOffset _{i - \locScenarioToDecoderRowOffset} \\
+				\locWordPricingOpcode  & \define & \mxpDecoderIsWordPricing   _{i - \locScenarioToDecoderRowOffset} \\
+				\locBytePricingOpcode  & \define & \mxpDecoderIsBytePricing   _{i - \locScenarioToDecoderRowOffset} \\
+			\end{array} \right.
+		\]
 		we can now finish justifying the scenario
 		\[
 			\left\{ \begin{array}{lcl}
-				\mxpScenarioSingleMaxOffsetAndWordPricing _{i} & = & \left[\begin{array}{cl} \cdot & \mxpDecoderSingleMaxOffset _{i - \locScenarioToDecoderRowOffset} \\ \cdot & \mxpDecoderIsWordPricing _{i - \locScenarioToDecoderRowOffset} \end{array} \right] \vspace{2mm} \\
-				\mxpScenarioSingleMaxOffsetAndBytePricing _{i} & = & \left[\begin{array}{cl} \cdot & \mxpDecoderSingleMaxOffset _{i - \locScenarioToDecoderRowOffset} \\ \cdot & \mxpDecoderIsBytePricing _{i - \locScenarioToDecoderRowOffset} \end{array} \right] \vspace{2mm} \\
-				\mxpScenarioDoubleMaxOffsetAndWordPricing _{i} & = & \left[\begin{array}{cl} \cdot & \mxpDecoderDoubleMaxOffset _{i - \locScenarioToDecoderRowOffset} \\ \cdot & \mxpDecoderIsWordPricing _{i - \locScenarioToDecoderRowOffset} \end{array} \right] \vspace{2mm} \\
-				\mxpScenarioDoubleMaxOffsetAndBytePricing _{i} & = & \left[\begin{array}{cl} \cdot & \mxpDecoderDoubleMaxOffset _{i - \locScenarioToDecoderRowOffset} \\ \cdot & \mxpDecoderIsBytePricing _{i - \locScenarioToDecoderRowOffset} \end{array} \right] \\
+				\mxpScenarioSingleMaxOffsetAndWordPricing _{i} & = & \left[\begin{array}{cl} \cdot & \locSingleOffsetOpcode \\ \cdot & \locWordPricingOpcode \end{array} \right] \vspace{2mm} \\
+				\mxpScenarioSingleMaxOffsetAndBytePricing _{i} & = & \left[\begin{array}{cl} \cdot & \locSingleOffsetOpcode \\ \cdot & \locBytePricingOpcode \end{array} \right] \vspace{2mm} \\
+				\mxpScenarioDoubleMaxOffsetAndWordPricing _{i} & = & \left[\begin{array}{cl} \cdot & \locDoubleOffsetOpcode \\ \cdot & \locWordPricingOpcode \end{array} \right] \vspace{2mm} \\
+				\mxpScenarioDoubleMaxOffsetAndBytePricing _{i} & = & \left[\begin{array}{cl} \cdot & \locDoubleOffsetOpcode \\ \cdot & \locBytePricingOpcode \end{array} \right] \\
 			\end{array} \right.
 		\]
-	\def\nRows{\yellowm{7}}\item[\underline{Computing the floor of the division of \locMaxOffset{} by $\evmWordSize$:}] 
+\end{description}
+\saNote{}
+We may alternatively encode the above in a single degree one constraint as follows:
+\[
+	\begin{array}{l}
+		\left[ \begin{array}{lcl}
+			(1 + 4) & \cdot & \mxpScenarioSingleMaxOffsetAndWordPricing _{i} \\
+			(1 + 8) & \cdot & \mxpScenarioSingleMaxOffsetAndBytePricing _{i} \\
+			(2 + 4) & \cdot & \mxpScenarioDoubleMaxOffsetAndWordPricing _{i} \\
+			(2 + 8) & \cdot & \mxpScenarioDoubleMaxOffsetAndBytePricing _{i} \\
+		\end{array} \right] \vspace{2mm} \\
+		\qquad\qquad =
+		\left[ \begin{array}{lcl}
+			1 & \cdot & \locSingleOffsetOpcode \\
+			2 & \cdot & \locDoubleOffsetOpcode \\
+			4 & \cdot & \locWordPricingOpcode  \\
+			8 & \cdot & \locBytePricingOpcode  \\
+		\end{array} \right] \\
+	\end{array}
+\]
+This works due to flag exclusivity properties in the present \mxpMod{} module and in the \idMod{} module.
+\begin{description}
+	\def\nRows{\yellowm{7}}\item[\underline{\underline{Comparing max offsets:}}] 
+		we introduce the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				% \locCompRequired & \define & \locSizeOneIsNonZero \cdot \locSizeTwoIsNonZero \\
+				\locMaxOne       & \define & \locOffsetOneLo + \locSizeOneLo                 \\
+				\locMaxTwo       & \define & \locOffsetTwoLo + \locSizeTwoLo                 \\
+				\locMaxOffsetOne & \define & \locMaxOne - 1                                  \\
+				\locMaxOffsetTwo & \define & \locMaxTwo - 1                                  \\
+			\end{array} \right.
+		\]
+		we impose that
+		\[
+			\wcpCallToLt{
+				anchorRow = i                                       ,
+				relOffset = \nRows                                  ,
+				argOneHi  = 0                                       ,
+				argOneLo  = \locDoubleOffsetOpcode \cdot \locMaxOne ,
+				argTwoHi  = 0                                       ,
+				argTwoLo  = \locDoubleOffsetOpcode \cdot \locMaxTwo ,
+			} 
+		\]
+		and we define the following shorthand
+		\[
+			\left\{ \begin{array}{lcl}
+				\locUseParameterSetTwo & \define & \mxpMacroRes_{i + \nRows}  \\
+				\locUseParameterSetOne & \define & 1 - \locUseParameterSetTwo \\
+			\end{array} \right.
+		\]
+		and we finally set
+		\[
+			\left\{ \begin{array}{lcl}
+				\locMaxOffset    & \define &
+				\left[ \begin{array}{clcl}
+					+ & \locUseParameterSetOne & \cdot & \locMaxOffsetOne \\
+					+ & \locUseParameterSetTwo & \cdot & \locMaxOffsetTwo \\
+				\end{array} \right] \vspace{2mm} \\
+				\locMaxOffsetOne & \define & \locMaxOne - 1 \\
+				\locMaxOffsetTwo & \define & \locMaxTwo - 1 \\
+			\end{array} \right.
+		\]
+	\def\nRows{\yellowm{8}}\item[\underline{\underline{Computing the floor of the division of \locMaxOffset{} by $\evmWordSize$:}}] 
 		we impose that
 		\[
 			\eucCall {
-				anchorRow = i                      ,
-				relOffset = \nRows                 ,
-				argOne    = \locMaxOffset          ,
-				argTwo    = \evmWordSize           ,
+				anchorRow = i             ,
+				relOffset = \nRows        ,
+				argOne    = \locMaxOffset ,
+				argTwo    = \evmWordSize  ,
 			}
 		\]
 		and we define the following shorthand
 		\[
 			\left\{ \begin{array}{lcl}
-				\locFloor    & \define & \mxpMacroRes_{i+\nRows} \\
-				\locA        & \define & \locFloor + 1           \\
+				\locFloor & \define & \mxpComputationResA _{i+\nRows} \\
+				\locEypA  & \define & \locFloor + 1                   \\
 			\end{array} \right.
 		\]
-
-	\def\nRows{\yellowm{8}}\item[\underline{Computing the floor of the division of $\locA \cdot \locA$ and 512:}] 
+	\def\nRows{\yellowm{9}}\item[\underline{\underline{Computing the floor of the division of $\locEypA \cdot \locEypA$ and 512:}}] 
 		we impose that
 		\[
 			\eucCall {
-				anchorRow = i                      ,
-				relOffset = \nRows                 ,
-				argOne    = \locA \cdot \locA      ,
-				argTwo    = 512                    ,
+				anchorRow = i                       ,
+				relOffset = \nRows                  ,
+				argOne    = \locEypA \cdot \locEypA ,
+				argTwo    = 512                     ,
 			}
 		\]
 		and we define the following shorthand
@@ -59,7 +124,7 @@ We impose the following
 				\locQuadratic    & \define & \mxpMacroRes_{i+\nRows} \\
 			\end{array} \right.
 		\]
-	\def\nRows{\yellowm{9}}\item[\underline{Comparing \locWords{} and \locA{}:}] 
+	\def\nRows{\yellowm{10}}\item[\underline{\underline{Comparing \locWords{} and \locEypA{}:}}] 
 		we impose that
 		\[
 			\wcpCallToLt{
@@ -68,13 +133,13 @@ We impose the following
 				argOneHi  = 0         ,
 				argOneLo  = \locWords ,
 				argTwoHi  = 0         ,
-				argTwoLo  = \locA     ,
+				argTwoLo  = \locEypA  ,
 			} 
 		\]
 		and we define the following shorthand
 		\[
 			\left\{ \begin{array}{lcl}
-				\locUpdate   & \define & \mxpMacroRes_{i+\nRows} \\
+				\locUpdate   & \define & \mxpMacroRes_{i + \nRows} \\
 				\locWords    & \define & \mxpScenarioWords_{i}   \\
 			\end{array} \right.
 		\]
@@ -82,7 +147,7 @@ We impose the following
 
 We further impose:
 \begin{description}
-	\item[\underline{Justifying \hubMod{} predictions:}]
+	\item[\underline{\underline{Justifying \hubMod{} predictions:}}]
 		we impose
 		\[
 			\left\{ \begin{array}{lcl}

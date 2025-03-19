@@ -23,8 +23,8 @@ We introduce the following shorthand
 \[
     \left\{ \begin{array}{lcl}
         \locCompRequired & \define & \locSizeOneIsNonZero \cdot \locSizeTwoIsNonZero \\
-        \locMaxSizeOne   & \define & \locOffsetOneLo + \locSizeOneLo                 \\
-        \locMaxSizeTwo   & \define & \locOffsetTwoLo + \locSizeTwoLo                 \\
+        \locMaxOne       & \define & \locOffsetOneLo + \locSizeOneLo                 \\
+        \locMaxTwo       & \define & \locOffsetTwoLo + \locSizeTwoLo                 \\
         \locMaxOffsetOne & \define & \locOffsetOneLo + \locSizeOneLo - 1             \\
         \locMaxOffsetTwo & \define & \locOffsetTwoLo + \locSizeTwoLo - 1             \\
     \end{array} \right.
@@ -32,7 +32,7 @@ We introduce the following shorthand
 
 We impose:
 \begin{description}
-    \def\nRows{\yellowm{10}}\item[\underline{Comparing \locMaxSizeOne{} and \locMaxSizeTwo:}] 
+    \def\nRows{\yellowm{10}}\item[\underline{Comparing \locMaxOne{} and \locMaxTwo:}] 
     we impose that
     
     \begin{enumerate}
@@ -40,22 +40,22 @@ We impose:
     we impose that
         \[
             \wcpCallToLt{
-                anchorRow = i               ,
-                relOffset = \nRows          ,
-                argOneHi  = 0               ,
-                argOneLo  = \locMaxSizeOne  ,
-                argTwoHi  = 0               ,
-                argTwoLo  = \locMaxSizeTwo  ,
+                anchorRow = i          ,
+                relOffset = \nRows     ,
+                argOneHi  = 0          ,
+                argOneLo  = \locMaxOne ,
+                argTwoHi  = 0          ,
+                argTwoLo  = \locMaxTwo ,
             } 
         \]
     \end{enumerate}
     and we define the following shorthand
     \[
         \left\{ \begin{array}{lcl}
-            \locComp     & \define & \mxpMacroRes_{i+\nRows} \\
+            \locComp     & \define & \mxpMacroRes_{i + \nRows} \\
         \end{array} \right.
     \]
-    \def\nRows{\yellowm{11}}\item[\underline{Computing the ceil of the division of \locSizeTwoLo{} by 32:}] 
+    \def\nRows{\yellowm{11}}\item[\underline{Computing the ceil of the division of \locSizeTwoLo{} by $\evmWordSize$:}] 
 		we impose that
         
         \begin{enumerate}
