@@ -1,18 +1,60 @@
+The following columns contain instruction data as provided by the \hubMod{} module.
 \begin{enumerate}
-	\item $\mxpMacroInst$
-	\item $\mxpMacroOffsetOneHi$
-	\item $\mxpMacroOffsetOneLo$
-	\item $\mxpMacroOffsetTwoHi$
-	\item $\mxpMacroOffsetTwoLo$
-	\item $\mxpMacroSizeOneHi$
-	\item $\mxpMacroSizeOneLo$
-	\item $\mxpMacroSizeTwoHi$
-	\item $\mxpMacroSizeTwoLo$
-	\item $\mxpMacroDeploying$
-	\item $\mxpMacroRes$
-	\item $\mxpMacroMxpx$
-	\item $\mxpMacroGasMxp$
-	\item $\mxpMacroMayTriggerNontrivialMmuOperation$
-	\item $\mxpMacroSOneNzNoMxpx$
-	\item $\mxpMacroSTwoNzNoMxpx$
+	\item
+		$\mxpMacroInst$:
+		instruction column;
+		contains a memory expanding opcode or \inst{MSIZE};
+	\item
+		$\mxpMacroDeploying$:
+		binary column;
+		set to true if and only if the underlying instruction is a \inst{RETURN} in a deployment context;
+\end{enumerate}
+The following columns contain \textbf{offset} and \textbf{size} parameters (if applicable.)
+Opcodes triggering the present module may require 0 (\inst{MSIZE} only), 1 or 2 pairs of offset/size parameters,
+see section~(\ref{mxp: instruction decoder}).
+\begin{multicols}{2}
+	\begin{enumerate}[resume]
+		\item
+			$\mxpMacroOffsetOneHi$
+		\item
+			$\mxpMacroOffsetOneLo$
+		\item
+			$\mxpMacroSizeOneHi$
+		\item
+			$\mxpMacroSizeOneLo$
+		\item
+			$\mxpMacroOffsetTwoHi$
+		\item
+			$\mxpMacroOffsetTwoLo$
+		\item
+			$\mxpMacroSizeTwoHi$
+		\item
+			$\mxpMacroSizeTwoLo$
+	\end{enumerate}
+\end{multicols}
+The following columns contain \hubMod{} module \textbf{predictions}.
+These must be justified in the present module.
+\begin{enumerate}[resume] \setcounter{enumi}{10}
+	\item
+		$\mxpMacroRes$:
+		may contain the output of the \inst{MSIZE} opcode;
+	\item
+		$\mxpMacroMxpx$:
+		binary column;
+		indicates whether an \mxpxSH{} was predicted by the \hubMod{} module;
+	\item
+		$\mxpMacroGasMxp$:
+		contains the memory expansion gas (plus any applicable linear cost incurred by the opcode);
+	\item
+		$\mxpMacroMayTriggerNontrivialMmuOperation$:
+		boolean column;
+		indicates whether the instruction may trigger a \textsc{ram} operation;
+	\item
+		$\mxpMacroSOneNzNoMxpx$:
+		boolean column;
+		lights up precisely if the first size parameter of the instruction is nonzero and the opcode doesn't raise a \mxpxSH{}
+	\item
+		$\mxpMacroSTwoNzNoMxpx$:
+		boolean column;
+		lights up precisely if the second size parameter of the instruction is nonzero and the opcode doesn't raise a \mxpxSH{}
 \end{enumerate}
