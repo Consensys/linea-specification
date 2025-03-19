@@ -1,30 +1,10 @@
 We define various shorthands for the scenario perspective.
 \[
 	\left\{ \begin{array}{lcl}
-		\locMxpScenarioNonTrivialNonMxpx _{i} & \define &
-		\left[ \begin{array}{cl}
-			+ & \mxpScenarioSingleMaxOffsetAndWordPricing _{i} \\
-			+ & \mxpScenarioSingleMaxOffsetAndBytePricing _{i} \\
-			+ & \mxpScenarioDoubleMaxOffsetAndWordPricing _{i} \\
-			+ & \mxpScenarioDoubleMaxOffsetAndBytePricing _{i} \\
-		\end{array} \right]
-		\vspace{2mm} \\
-		\locMxpScenarioNonTrivialOperation _{i} & \define &
-		\left[ \begin{array}{cl}
-			+ & \locMxpScenarioNonTrivialNonMxpx _{i} \\
-			+ & \mxpScenarioMxpx                 _{i} \\
-		\end{array} \right]
-		\vspace{2mm} \\
-		\locMxpScenarioNonMsize _{i} & \define &
-		\left[ \begin{array}{cl}
-			+ & \locMxpScenarioNonTrivialOperation _{i} \\
-			+ & \mxpScenarioTrivialOperation       _{i} \\
-		\end{array} \right]
-		\vspace{2mm} \\
 		\locScenarioSum _{i} & \define &
 		\left[ \begin{array}{cl}
-			+ & \locMxpScenarioNonMsize _{i} \\
-			+ & \mxpScenarioMsize       _{i} \\
+			+ & \locMxpScenarioNoStateChange        _{i} \\
+			+ & \locMxpScenarioPotentialStateChange _{i} \\
 		\end{array} \right]
 		\vspace{2mm} \\
 		\locMxpScenarioNoStateChange _{i} & \define &
@@ -33,5 +13,26 @@ We define various shorthands for the scenario perspective.
 			+ & \mxpScenarioTrivialOperation       _{i} \\
 			+ & \mxpScenarioMxpx                   _{i} \\
 		\end{array} \right]
+		\vspace{2mm} \\
+		\locMxpScenarioPotentialStateChange _{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \mxpScenarioSingleMaxOffsetAndWordPricing _{i} \\
+			+ & \mxpScenarioSingleMaxOffsetAndBytePricing _{i} \\
+			+ & \mxpScenarioDoubleMaxOffsetAndWordPricing _{i} \\
+			+ & \mxpScenarioDoubleMaxOffsetAndBytePricing _{i} \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\locMxpScenarioNotMsizeNorTrivial _{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \locMxpScenarioPotentialStateChange _{i} \\
+			+ & \mxpScenarioMxpx                    _{i} \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\locMxpScenarioNotMsize _{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \locMxpScenarioNotMsizeNorTrivial _{i} \\
+			+ & \mxpScenarioTrivialOperation      _{i} \\
+		\end{array} \right]
+		\\
 	\end{array} \right.
 \]
