@@ -1,12 +1,12 @@
 \[
 	\boxed{\text{All constraints in this subsection assume that }
 	\left\{ \begin{array}{lcl}
-		\isMxpScenario                      _{i} & = & 1 \\
-		\locMxpScenarioPotentialStateChange _{i} & = & 1 \\
+		\isMxpScenario             _{i} & = & 1 \\
+		\locMxpScenarioStateUpdate _{i} & = & 1 \\
 	\end{array} \right. }
 \]
 \noindent
-The present section describes the computation for the $\locMxpScenarioPotentialStateChange$ case.
+The present section describes the computation for the $\locMxpScenarioStateUpdate$ case.
 We impose the following
 \begin{description}
 	\item[\underline{\underline{Justifying the scenario:}}]
@@ -75,8 +75,8 @@ This works due to flag exclusivity properties in the present \mxpMod{} module an
 		and we define the following shorthand
 		\[
 			\left\{ \begin{array}{lcl}
-				\locUseParameterSetTwo & \define & \mxpMacroRes_{i + \nRows}  \\
-				\locUseParameterSetOne & \define & 1 - \locUseParameterSetTwo \\
+				\locUseParameterSetTwo & \define & \mxpComputationResA _{i + \nRows} \\
+				\locUseParameterSetOne & \define & 1 - \locUseParameterSetTwo        \\
 			\end{array} \right.
 		\]
 		and we finally set
@@ -120,9 +120,7 @@ This works due to flag exclusivity properties in the present \mxpMod{} module an
 		\]
 		and we define the following shorthand
 		\[
-			\left\{ \begin{array}{lcl}
-				\locQuadratic    & \define & \mxpMacroRes_{i+\nRows} \\
-			\end{array} \right.
+			\locQuadraticPart \define \mxpComputationResA _{i + \nRows}
 		\]
 	\def\nRows{\yellowm{10}}\item[\underline{\underline{Comparing \locWords{} and \locEypA{}:}}] 
 		we impose that
@@ -139,10 +137,24 @@ This works due to flag exclusivity properties in the present \mxpMod{} module an
 		and we define the following shorthand
 		\[
 			\left\{ \begin{array}{lcl}
-				\locUpdate   & \define & \mxpMacroRes_{i + \nRows} \\
-				\locWords    & \define & \mxpScenarioWords_{i}   \\
+				\locUpdateState & \define & \mxpComputationResA _{i + \nRows} \\
+				\locWords       & \define & \mxpScenarioWords   _{i}          \\
 			\end{array} \right.
 		\]
+	\item[\underline{\underline{Updating the state:}}] 
+		we impose that
+		\begin{description}
+			\item[\underline{Updating $\mxpScenarioWords$:}] ---
+				\begin{enumerate}
+					\item \If $\locUpdateState = 1$ \Then $\mxpScenarioWordsNew _{i} = \locEypA$
+				        \item \If $\locUpdateState = 0$ \Then $\mxpScenarioWordsNew _{i} = \mxpScenarioWords _{i}$
+				\end{enumerate}
+			\item[\underline{Updating $\mxpScenarioCmem$:}] ---
+				\begin{enumerate}
+					\item \If $\locUpdateState = 1$ \Then $\mxpScenarioCmemNew _{i} = G_\text{memory} \cdot \locEypA + \locQuadraticPart$
+					\item \If $\locUpdateState = 0$ \Then $\mxpScenarioCmemNew _{i} = \mxpScenarioCmem _{i}$
+				\end{enumerate}
+		\end{description}
 \end{description}
 
 We further impose:
