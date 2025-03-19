@@ -2,21 +2,21 @@
 	\boxed{\text{All constraints in this subsection assume that }
 	\left\{ \begin{array}{lcl}
 		\isMxpScenario                     _{i} & = & 1 \\
-	    \locMxpScenarioNonTrivialOperation _{i} & = & 1 \\
+		\locMxpScenarioNonTrivialOperation _{i} & = & 1 \\
 	\end{array} \right. }
 \]
 \noindent
 The present section describes the computation for the $\locMxpScenarioNonTrivialOperation$ case.
+We need the following constant:
+\[
+	\LMMS \define 256^4 
+\]
 \begin{description}
-	% TODO: find a better spot for this constant
 	\item Let: 
-    \[
-		\LMMS = 256^4 
-	\]
-	\def\nRows{\yellowm{3}}\item[\underline{Testing for small-ness of first size argument:}] 
+	\def\nRows{\yellowm{3}}\item[\underline{\underline{Testing for small-ness of first size argument:}}] 
 		we impose that
 		\[
-            \wcpCallToLt{
+			\wcpCallToLt{
 				anchorRow = i               ,
 				relOffset = \nRows          ,
 				argOneHi  = \locSizeOneHi   ,
@@ -28,14 +28,14 @@ The present section describes the computation for the $\locMxpScenarioNonTrivial
 		and we define the following shorthand
 		\[
 			\left\{ \begin{array}{lcl}
-				\locSizeOneIsSmall    & \define & \mxpMacroRes_{i+\nRows} \\
-				\locSizeOneIsNotSmall & \define & 1 - \locSizeOneIsSmall  \\
+				\locSizeOneIsSmall    & \define & \mxpComputationResA _{i + \nRows} \\
+				\locSizeOneIsLarge    & \define & 1 - \locSizeOneIsSmall            \\
 			\end{array} \right.
 		\]
-        \def\nRows{\yellowm{4}}\item[\underline{Testing for small-ness of second size argument:}] 
+	\def\nRows{\yellowm{4}}\item[\underline{\underline{Testing for small-ness of second size argument:}}] 
 		we impose that
 		\[
-            \wcpCallToLt{
+			\wcpCallToLt{
 				anchorRow = i               ,
 				relOffset = \nRows          ,
 				argOneHi  = \locSizeTwoHi   ,
@@ -47,15 +47,15 @@ The present section describes the computation for the $\locMxpScenarioNonTrivial
 		and we define the following shorthand
 		\[
 			\left\{ \begin{array}{lcl}
-				\locSizeTwoIsSmall    & \define & \mxpMacroRes_{i+\nRows} \\
-				\locSizeTwoIsNotSmall & \define & 1 - \locSizeTwoIsSmall  \\
+				\locSizeTwoIsSmall    & \define & \mxpComputationResA _{i + \nRows} \\
+				\locSizeTwoIsLarge    & \define & 1 - \locSizeTwoIsSmall            \\
 			\end{array} \right.
 		\]
 
-        \def\nRows{\yellowm{5}}\item[\underline{Testing for small-ness of first offset argument:}] 
+	\def\nRows{\yellowm{5}}\item[\underline{\underline{Testing for small-ness of first offset argument:}}] 
 		we impose that
 		\[
-            \wcpCallToLt{
+			\wcpCallToLt{
 				anchorRow = i               ,
 				relOffset = \nRows          ,
 				argOneHi  = \locOffsetOneHi ,
@@ -67,14 +67,14 @@ The present section describes the computation for the $\locMxpScenarioNonTrivial
 		and we define the following shorthand
 		\[
 			\left\{ \begin{array}{lcl}
-				\locOffsetOneIsSmall    & \define & \mxpMacroRes_{i+\nRows} \\
-				\locOffsetOneIsNotSmall & \define & 1 - \locOffsetOneIsSmall\\
+				\locOffsetOneIsSmall    & \define & \mxpComputationResA _{i + \nRows} \\
+				\locOffsetOneIsLarge    & \define & 1 - \locOffsetOneIsSmall          \\
 			\end{array} \right.
 		\]
-        \def\nRows{\yellowm{6}}\item[\underline{Testing for small-ness of second offset argument:}] 
+	\def\nRows{\yellowm{6}}\item[\underline{\underline{Testing for small-ness of second offset argument:}}] 
 		we impose that
 		\[
-            \wcpCallToLt{
+			\wcpCallToLt{
 				anchorRow = i               ,
 				relOffset = \nRows          ,
 				argOneHi  = \locOffsetTwoHi ,
@@ -86,16 +86,38 @@ The present section describes the computation for the $\locMxpScenarioNonTrivial
 		and we define the following shorthand
 		\[
 			\left\{ \begin{array}{lcl}
-				\locOffsetTwoIsSmall    & \define & \mxpMacroRes_{i+\nRows} \\
-				\locOffsetTwoIsNotSmall & \define & 1 - \locOffsetTwoIsSmall\\
+				\locOffsetTwoIsSmall    & \define & \mxpComputationResA _{i + \nRows} \\
+				\locOffsetTwoIsLarge    & \define & 1 - \locOffsetTwoIsSmall          \\
 			\end{array} \right.
 		\]
-           
-    
-\end{description}
-
-\begin{description}
-	\item[\underline{Justifying \hubMod{} predictions:}] 
+	\item[\underline{\underline{Further justifying the scenario:}}]
+		\label{mxp: computation: non trivial: justifying the mxpx scenario}
+		we define the following shorthand:
+		\[
+			\left\{ \begin{array}{lcl}
+				\locMxpComputationMxpxExpressionOne & \define & 
+				\left[ \begin{array}{cl}
+					+ & \locSizeOneIsLarge                              \\
+					+ & \locSizeOneIsNonZero \cdot \locOffsetOneIsLarge \\
+				\end{array} \right] \vspace{2mm} \\
+				\locMxpComputationMxpxExpressionTwo & \define & 
+				\left[ \begin{array}{cl}
+					+ & \locSizeTwoIsLarge                              \\
+					+ & \locSizeTwoIsNonZero \cdot \locOffsetTwoIsLarge \\
+				\end{array} \right] \vspace{2mm} \\
+				\locMxpComputationMxpxExpression & \define & 
+				\left[ \begin{array}{cr}
+					+ & \locMxpComputationMxpxExpressionOne \\
+					+ & \locMxpComputationMxpxExpressionTwo \\
+				\end{array} \right] \\
+			\end{array} \right.
+		\]
+		and impose that
+		\begin{enumerate}
+			\item \If $\locMxpComputationMxpxExpression =    0$ \Then $\mxpScenarioMxpx _{i} = 0$
+			\item \If $\locMxpComputationMxpxExpression \neq 0$ \Then $\mxpScenarioMxpx _{i} = 1$
+		\end{enumerate}
+	\item[\underline{\underline{Justifying \hubMod{} predictions:}}] 
 		we impose
 		\[
 			\locSizeOneIsZero + \locSizeTwoIsZero - \locSizeOneIsZero \cdot \locSizeTwoIsZero = 1
