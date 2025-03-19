@@ -1,35 +1,12 @@
 \[
 	\boxed{\text{All constraints in this subsection assume that }
 	\left\{ \begin{array}{lcl}
-		\isMxpScenario   _{i}                          & = & 1 \\
-	    \mxpScenarioDoubleMaxOffsetAndWordPricing _{i} & = & 1 \\
+            \isMxpScenario                     _{i} & = & 1 \\
+            \mxpScenarioStateUpdateWordPricing _{i} & = & 1 \\
 	\end{array} \right. }
 \]
 \noindent
 The present section describes the computation for the $\mxpScenarioDoubleMaxOffsetAndWordPricing$ case.
-
-We impose the following constraints:
-\begin{enumerate}
-    \item \If $\mxpComputationWcpFlag_{i+10} = 1$ \Then
-    \begin{enumerate}
-        \item \If $\locSizeOneIsNonZero = 1$ \Then $\locMaxOffset = \locMaxOffsetOne$
-        \item \If $\locSizeTwoIsNonZero = 1$ \Then $\locMaxOffset = \locMaxOffsetTwo$
-        \item \If $\locCompRequired = 0$ \Then $\locMaxOffset = \locMaxOffsetOne$
-        \item \If $\locCompRequired = 1$ \Then $\locMaxOffset = \locMaxOffsetTwo$ 
-    \end{enumerate}
-\end{enumerate}
-
-We introduce the following shorthand
-\[
-    \left\{ \begin{array}{lcl}
-        \locCompRequired & \define & \locSizeOneIsNonZero \cdot \locSizeTwoIsNonZero \\
-        \locMaxOne       & \define & \locOffsetOneLo + \locSizeOneLo                 \\
-        \locMaxTwo       & \define & \locOffsetTwoLo + \locSizeTwoLo                 \\
-        \locMaxOffsetOne & \define & \locOffsetOneLo + \locSizeOneLo - 1             \\
-        \locMaxOffsetTwo & \define & \locOffsetTwoLo + \locSizeTwoLo - 1             \\
-    \end{array} \right.
-\]
-
 We impose:
 \begin{description}
     \def\nRows{\yellowm{10}}\item[\underline{Comparing \locMaxOne{} and \locMaxTwo:}] 

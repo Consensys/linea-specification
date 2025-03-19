@@ -13,8 +13,8 @@ We impose the following
 		we define the following shorthands
 		\[
 			\left\{ \begin{array}{lcl}
-				\locSingleOffsetOpcode & \define & \mxpDecoderSingleMaxOffset _{i - \locScenarioToDecoderRowOffset} \\
-				\locDoubleOffsetOpcode & \define & \mxpDecoderDoubleMaxOffset _{i - \locScenarioToDecoderRowOffset} \\
+				% \locSingleOffsetOpcode & \define & \mxpDecoderSingleMaxOffset _{i - \locScenarioToDecoderRowOffset} \\
+				% \locDoubleOffsetOpcode & \define & \mxpDecoderDoubleMaxOffset _{i - \locScenarioToDecoderRowOffset} \\
 				\locWordPricingOpcode  & \define & \mxpDecoderIsWordPricing   _{i - \locScenarioToDecoderRowOffset} \\
 				\locBytePricingOpcode  & \define & \mxpDecoderIsBytePricing   _{i - \locScenarioToDecoderRowOffset} \\
 			\end{array} \right.
@@ -22,10 +22,12 @@ We impose the following
 		we can now finish justifying the scenario
 		\[
 			\left\{ \begin{array}{lcl}
-				\mxpScenarioSingleMaxOffsetAndWordPricing _{i} & = & \left[\begin{array}{cl} \cdot & \locSingleOffsetOpcode \\ \cdot & \locWordPricingOpcode \end{array} \right] \vspace{2mm} \\
-				\mxpScenarioSingleMaxOffsetAndBytePricing _{i} & = & \left[\begin{array}{cl} \cdot & \locSingleOffsetOpcode \\ \cdot & \locBytePricingOpcode \end{array} \right] \vspace{2mm} \\
-				\mxpScenarioDoubleMaxOffsetAndWordPricing _{i} & = & \left[\begin{array}{cl} \cdot & \locDoubleOffsetOpcode \\ \cdot & \locWordPricingOpcode \end{array} \right] \vspace{2mm} \\
-				\mxpScenarioDoubleMaxOffsetAndBytePricing _{i} & = & \left[\begin{array}{cl} \cdot & \locDoubleOffsetOpcode \\ \cdot & \locBytePricingOpcode \end{array} \right] \\
+				\mxpScenarioStateUpdateWordPricing _{i} & = & \locWordPricingOpcode \vspace{2mm} \\
+				\mxpScenarioStateUpdateBytePricing _{i} & = & \locBytePricingOpcode              \\
+				% \mxpScenarioSingleMaxOffsetAndWordPricing _{i} & = & \left[\begin{array}{cl} \cdot & \locSingleOffsetOpcode \\ \cdot & \locWordPricingOpcode \end{array} \right] \vspace{2mm} \\
+				% \mxpScenarioSingleMaxOffsetAndBytePricing _{i} & = & \left[\begin{array}{cl} \cdot & \locSingleOffsetOpcode \\ \cdot & \locBytePricingOpcode \end{array} \right] \vspace{2mm} \\
+				% \mxpScenarioDoubleMaxOffsetAndWordPricing _{i} & = & \left[\begin{array}{cl} \cdot & \locDoubleOffsetOpcode \\ \cdot & \locWordPricingOpcode \end{array} \right] \vspace{2mm} \\
+				% \mxpScenarioDoubleMaxOffsetAndBytePricing _{i} & = & \left[\begin{array}{cl} \cdot & \locDoubleOffsetOpcode \\ \cdot & \locBytePricingOpcode \end{array} \right] \\
 			\end{array} \right.
 		\]
 \end{description}
@@ -34,17 +36,21 @@ We may alternatively encode the above in a single degree one constraint as follo
 \[
 	\begin{array}{l}
 		\left[ \begin{array}{lcl}
-			(1 + 4) & \cdot & \mxpScenarioSingleMaxOffsetAndWordPricing _{i} \\
-			(1 + 8) & \cdot & \mxpScenarioSingleMaxOffsetAndBytePricing _{i} \\
-			(2 + 4) & \cdot & \mxpScenarioDoubleMaxOffsetAndWordPricing _{i} \\
-			(2 + 8) & \cdot & \mxpScenarioDoubleMaxOffsetAndBytePricing _{i} \\
+			+ ~ 1 & \!\!\!\cdot\!\!\! & \mxpScenarioStateUpdateBytePricing _{i} \\
+			+ ~ 2 & \!\!\!\cdot\!\!\! & \mxpScenarioStateUpdateWordPricing _{i} \\
+			% (1 + 4) & \cdot & \mxpScenarioSingleMaxOffsetAndWordPricing _{i} \\
+			% (1 + 8) & \cdot & \mxpScenarioSingleMaxOffsetAndBytePricing _{i} \\
+			% (2 + 4) & \cdot & \mxpScenarioDoubleMaxOffsetAndWordPricing _{i} \\
+			% (2 + 8) & \cdot & \mxpScenarioDoubleMaxOffsetAndBytePricing _{i} \\
 		\end{array} \right] \vspace{2mm} \\
 		\qquad\qquad =
 		\left[ \begin{array}{lcl}
-			1 & \cdot & \locSingleOffsetOpcode \\
-			2 & \cdot & \locDoubleOffsetOpcode \\
-			4 & \cdot & \locWordPricingOpcode  \\
-			8 & \cdot & \locBytePricingOpcode  \\
+			+ ~ 1 & \!\!\!\cdot\!\!\! & \locWordPricingOpcode  \\
+			+ ~ 2 & \!\!\!\cdot\!\!\! & \locBytePricingOpcode  \\
+			% 1 & \cdot & \locSingleOffsetOpcode \\
+			% 2 & \cdot & \locDoubleOffsetOpcode \\
+			% 4 & \cdot & \locWordPricingOpcode  \\
+			% 8 & \cdot & \locBytePricingOpcode  \\
 		\end{array} \right] \\
 	\end{array}
 \]
@@ -120,8 +126,20 @@ This works due to flag exclusivity properties in the present \mxpMod{} module an
 		\]
 		and we define the following shorthand
 		\[
-			\locQuadraticPart \define \mxpComputationResA _{i + \nRows}
+			\left\{ \begin{array}{lcl}
+				\locCmemQuadPart & \define & \mxpComputationResA _{i + \nRows} \\
+				\locCmemLinrPart & \define & G_\text{memory} \cdot \locEypA    \\
+			\end{array} \right.
 		\]
+		\saNote{}
+		The above correspond to
+		\[
+			\left\{ \begin{array}{lcl}
+				\locCmemQuadPart & \leftrightsquigarrow & \displaystyle \left\lfloor \frac{a^2}{512} \right\rfloor \\
+				\locCmemLinrPart & \leftrightsquigarrow & G_\text{memory} \cdot a                                  \\
+			\end{array} \right.
+		\]
+		where $a$ corresponds to $\locEypA$.
 	\def\nRows{\yellowm{10}}\item[\underline{\underline{Comparing \locWords{} and \locEypA{}:}}] 
 		we impose that
 		\[
@@ -144,16 +162,32 @@ This works due to flag exclusivity properties in the present \mxpMod{} module an
 	\item[\underline{\underline{Updating the state:}}] 
 		we impose that
 		\begin{description}
-			\item[\underline{Updating $\mxpScenarioWords$:}] ---
-				\begin{enumerate}
-					\item \If $\locUpdateState = 1$ \Then $\mxpScenarioWordsNew _{i} = \locEypA$
-				        \item \If $\locUpdateState = 0$ \Then $\mxpScenarioWordsNew _{i} = \mxpScenarioWords _{i}$
-				\end{enumerate}
-			\item[\underline{Updating $\mxpScenarioCmem$:}] ---
-				\begin{enumerate}
-					\item \If $\locUpdateState = 1$ \Then $\mxpScenarioCmemNew _{i} = G_\text{memory} \cdot \locEypA + \locQuadraticPart$
-					\item \If $\locUpdateState = 0$ \Then $\mxpScenarioCmemNew _{i} = \mxpScenarioCmem _{i}$
-				\end{enumerate}
+			\item[\underline{No state update:}]
+				\If $\locUpdateState = 0$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\mxpScenarioWordsNew _{i} & = & \mxpScenarioWords _{i} \\
+						\mxpScenarioCmemNew  _{i} & = & \mxpScenarioCmem  _{i} \\
+					\end{array} \right.
+				\]
+			\item[\underline{State update:}]
+				\If $\locUpdateState = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\mxpScenarioWordsNew _{i} & = & \locEypA                            \\
+						\mxpScenarioCmemNew  _{i} & = & \locCmemLinrPart + \locCmemQuadPart \\
+					\end{array} \right.
+				\]
+			% \item[\underline{Updating $\mxpScenarioWords$:}] ---
+			% 	\begin{enumerate}
+			% 		\item \If $\locUpdateState = 1$ \Then $\mxpScenarioWordsNew _{i} = \locEypA$
+			% 	        \item \If $\locUpdateState = 0$ \Then $\mxpScenarioWordsNew _{i} = \mxpScenarioWords _{i}$
+			% 	\end{enumerate}
+			% \item[\underline{Updating $\mxpScenarioCmem$:}] ---
+			% 	\begin{enumerate}
+			% 		\item \If $\locUpdateState = 1$ \Then $\mxpScenarioCmemNew _{i} = \locCmemLinrPart + \locCmemQuadPart$
+			% 		\item \If $\locUpdateState = 0$ \Then $\mxpScenarioCmemNew _{i} = \mxpScenarioCmem _{i}$
+			% 	\end{enumerate}
 		\end{description}
 \end{description}
 
