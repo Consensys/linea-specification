@@ -43,22 +43,24 @@
 | i + 6     |       |               | true  | LT     | offset_2_hi | offset_2_lo | 0        | MXPX_THRESHOLD | offset_2_is_small | ∅     |                               |
 |-----------+-------+---------------+-------+--------+-------------+-------------+----------+----------------+-------------------+-------+-------------------------------|
 
-We impose that
+We require
 
-- nontrivialRegimeHolds_{i} (as a consequence of scenario/nontrivial_{i} ≡ 1)
-- mxpxExpression ≡ mxpxExpression_1 ∨ mxpxExpression_2 = true where
+	¬size_1_iszero  ∨  ¬size_2_iszero
 
-	mxpxExpression_1 ≡ [¬ size_1_is_small] ∨ [size_1_is_nonzero ∧ [¬ offset_1_is_small]]
-	mxpxExpression_2 ≡ [¬ size_2_is_small] ∨ [size_2_is_nonzero ∧ [¬ offset_2_is_small]]
+We further require that
 
-We will want to impose:
-- on the macro-row:
-	- macro/MXPX ≡ true
-	- S1NZNOMXPX = false
-	- S2NZNOMXPX = false
-- on the scenario-row:
-	- ... nothing: the current isntruction will lead to an exceptional halting
+	mxpx  ≡  true
+
+where
+
+	mxpx               ≡  mxpx_expression_1  ∨  mxpx_expression_2
+	mxpx_expression_1  ≡  size_1_is_large  ∨  [ size_1_is_nonzero ∧ offset_1_is_large]
+	mxpx_expression_2  ≡  size_2_is_large  ∨  [ size_2_is_nonzero ∧ offset_2_is_large]
+
+	size_1_is_large    ≡  ¬size_1_is_small
+	size_2_is_large    ≡  ¬size_2_is_small
+	size_1_is_nonzero  ≡  ¬size_1_is_zero
+	size_2_is_nonzero  ≡  ¬size_2_is_zero
 
 \end{verbatim}
 \end{document}
-
