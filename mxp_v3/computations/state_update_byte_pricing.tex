@@ -5,6 +5,32 @@
 		\locMxpScenarioStateUpdate _{i} & = & 1 \\
 	\end{array} \right. }
 \]
-Same as $\mxpScenarioDoubleMaxOffsetAndWordPricing$ without the final division by 32.
+We impose:
+\begin{description}
+    \item[\underline{\underline{Computing the gas cost per byte:}}]
+        we define the following shorthand:
+        \begin{enumerate}
+            \item \If $\mxpDecoderIsReturn _{i - \locScenarioToDecoderRowOffset} = 0$ \Then $\locBytePrice = \mxpDecoderGByte   _{i - \locScenarioToDecoderRowOffset}$
+            \item \If $\mxpDecoderIsReturn _{i - \locScenarioToDecoderRowOffset} = 1$ \Then $\locBytePrice = \mxpMacroDeploying _{i - \locScenarioToMacroRowOffset} \cdot \mxpDecoderGByte _{i - \locScenarioToDecoderRowOffset}$
+        \end{enumerate}
+    \item[\underline{\underline{Computing the word-linear gas cost:}}]
+        we define that
+        \[
+            \left\{ \begin{array}{lcl}
+                \locNumberOfBytes & \define & \mxpMacroSizeOneLo _{i - \locScenarioToMacroRowOffset} \\
+                \locExtraByteCost & \define & \locNumberOfBytes \cdot \locBytePrice                  \\
+            \end{array} \right.
+        \]
+    \item[\underline{\underline{Justifying the memory expansion gas:}}]
+        we impose
+        \[
+            \mxpMacroGasMxp _{i - \locScenarioToMacroRowOffset}
+            =
+            \left[ \begin{array}{cr}
+                + & \mxpScenarioCmemNew _{i} - \mxpScenarioCmem _{i} \\
+                + & \locExtraByteCost                                \\
+            \end{array} \right]
+        \]
+\end{description}
 
 \includepdf[fitpaper=true,pages={1}]{lua/double_max_offset_byte.pdf}
