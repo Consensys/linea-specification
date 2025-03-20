@@ -187,24 +187,26 @@ Note that in practice $B$ will likely always be $p$
 
 ### Failure case (assuming ICP = 1)
 
-- BLS12_G1ADD: send to C1_MEMBERSHIP circuit the first point predicted not to be in the group, so as to prove non-membership.            
-- BLS12_G1MSM: send to C1_MEMBERSHIP or G1_MEMBERSHIP circuits the first point predicted not to be in the group or subgroup, so as to prove non-membership.            
-- BLS12_G2ADD: send to C2_MEMBERSHIP circuit the first point predicted not to be in the group, so as to prove non-membership.           
-- BLS12_G2MSM: send to C2_MEMBERSHIP or G2_MEMBERSHIP circuits the first point predicted not to be in the group or subgroup, so as to prove non-membership.            
-- BLS12_PAIRING_CHECK: send to C1_MEMBERSHIP or G1_MEMBERSHIP or C2_MEMBERSHIP or G2_MEMBERSHIP circuits the first point predicted not to be in the group or subgroup, so as to prove non-membership. As it is likely simpler to prove non-membership to C1,2 it has priority over the G1,2.      
+- BLS12_G1ADD: send to C1_MEMBERSHIP circuit the first point predicted not to be in C1, so as to prove non-membership.            
+- BLS12_G1MSM: if a point is predicted not to be in C1, then send it to C1_MEMBERSHIP circuit, so as to prove non-membership.
+If a point is predicted to not be in G1, then send it directly to G1_MEMBERSHIP circuit, so as to prove non-membership.
+- BLS12_G2ADD: send to C2_MEMBERSHIP circuit the first point predicted not to be in C2, so as to prove non-membership.           
+- BLS12_G2MSM: if a point is predicted not to be in C2, then send it to C2_MEMBERSHIP circuit, so as to prove non-membership.
+if a point is predicted to not be in the G2, then send it directly to G2_MEMBERSHIP circuit, so as to prove non-membership.
+- BLS12_PAIRING_CHECK: send to G1_MEMBERSHIP or G2_MEMBERSHIP circuits the first point predicted not to be in the C1,2 or G1,2, so as to prove non-membership.     
 - BLS12_MAP_FP_TO_G1: no circuit needed.
 - BLS12_MAP_FP2_TO_G2: no circuit needed.
 
 ### Success case (assuming ICP = 1 and NOT_ON_G1_MAX = NOT_ON_G2_MAX = 0)
 
-- BLS12_G1ADD: send to C1_MEMBERSHIP circuits all points so as to prove membership, then send them to G1_ADD circuit
-- BLS12_G1MSM: send to C1_MEMBERSHIP and G1_MEMBERSHIP circuits all points so as to prove membership, then send them to G1_MSM circuit.
-- BLS12_G2ADD: send to C2_MEMBERSHIP circuits all points so as to prove membership, then send them to G2_ADD circuit.
-- BLS12_G2MSM: send to C2_MEMBERSHIP and G2_MEMBERSHIP circuits all points so as to prove membership, then send them to G2_MSM circuit.
+- BLS12_G1ADD: send to C1_MEMBERSHIP circuits all points so as to prove membership to C1, then send them to G1_ADD circuit
+- BLS12_G1MSM: send to G1_MEMBERSHIP circuits all points so as to prove membership to C1 and G1, then send them to G1_MSM circuit.
+- BLS12_G2ADD: send to C2_MEMBERSHIP circuits all points so as to prove membership to C2, then send them to G2_ADD circuit.
+- BLS12_G2MSM: send to G2_MEMBERSHIP circuits all points so as to prove membership to C2 and G2, then send them to G2_MSM circuit.
 - BLS12_PAIRING_CHECK: 
     * If all points are trivial (small and large point are at infinity) do nothing.
-    * If small point is trivial, then send large point to C2_MEMBERSHIP and G2_MEMBERSHIP circuits.
-    * If large point is trivial, then send small point to C1_MEMBERSHIP and G1_MEMBERSHIP circuits.
+    * If small point is trivial, then send large point to G2_MEMBERSHIP circuit to prove membership to C2 and G2.
+    * If large point is trivial, then send small point to G1_MEMBERSHIP circuit to prove membership to C1 and G1.
     * If neither small nor large points are trivial, send the pair to the PAIRING circuit. 
 - BLS12_MAP_FP_TO_G1: send field element to MAP_FP_TO_G1 circuit.
 - BLS12_MAP_FP2_TO_G2: send field element to MAP_FP2_TO_G2 circuit.
