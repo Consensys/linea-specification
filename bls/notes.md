@@ -58,9 +58,10 @@ Ax_3, Ax_2, Ax_1, Ax_0
     * Recognize which precompile we are dealing with.
 - OOB:
     * Input length check, i.e., the call data size is equal or multiple of an expected number. 
+    * Gas check, i.e., enough gas is provided.
 - BLS:
     * Coordinate encoding check, specifically whether a small point coordinate belongs to $\mathbb{F}_p$ or a large point coordinate belongs to $\mathbb{F}_{p^2}$ ($< p$ for every coordinate).
-    * Point at infinity check
+    * Point at infinity check.
     * By potentially interacting with external circuits, justifying the success bit of the operation.
 
 ## Operations performed by external circuits
@@ -75,35 +76,49 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
 
 - BLS12_G1ADD,  $\mathbb{C_1} \times \mathbb{C_1}$ (256 bytes) $\rightarrow \mathbb{C_1}$ (128 bytes)
     * input length
+    * Gas check
+    ---
     * coordinate encoding
     * points at infinity
     * $\mathbb{C}_1$ mermbership         
 - BLS12_G1MSM, $(\mathbb{G_1} \times \mathbb{N})^k$ ($160 \cdot k$ bytes) $\rightarrow \mathbb{G_1}$ (128 bytes) with $k > 0$
     * input length
+    * Gas check
+    ---
     * coordinate encoding
     * point at infinity
     * $\mathbb{C}_1$ and $\mathbb{G}_1$ mermbership        
 - BLS12_G2ADD $\mathbb{C_2} \times \mathbb{C_2}$ (512 bytes) $\rightarrow \mathbb{C_2}$ (256 bytes)ù
     * input length
+    * Gas check
+    ---
     * coordinate encoding
     * points at infinity
     * $\mathbb{C}_2$ mermbership              
 - BLS12_G2MSM $(\mathbb{G_2} \times \mathbb{N})^k$ ($288 \cdot k$ bytes) $\rightarrow \mathbb{G_2}$ (256 bytes) with $k > 0$     
-    * input length    
+    * input length
+    * Gas check
+    ---    
     * coordinate encoding
     * point at infinity
     * $\mathbb{C}_2$ and $\mathbb{G}_2$ mermbership 
 - BLS12_PAIRING_CHECK $(\mathbb{G_1} \times \mathbb{G_2})^k$ ($384 \cdot k$ bytes) $\rightarrow \{0,1\}$ (right padded to 32 bytes) with $k > 0$    
     * input length
+    * Gas check
+    ---
     * coordinate encoding
     * point at infinity
     * $\mathbb{C}_1$ and $\mathbb{G}_1$ mermbership   
     * $\mathbb{C}_2$ and $\mathbb{G}_2$ mermbership 
 - BLS12_MAP_FP_TO_G1 $\mathbb{F}_p$ (64 bytes) $\rightarrow \mathbb{G_1}$ (128 bytes)
     * input length
+    * Gas check
+    ---
     * coordinate encoding
 - BLS12_MAP_FP2_TO_G2 $\mathbb{F}_{p^2}$ (128 bytes) $\rightarrow \mathbb{G_2}$ (256 bytes)
-    * input length 
+    * input length
+    * Gas check
+    ---
     * coordinate encoding
 
 Note that addition operations do not require subgroup membership checks. 
@@ -112,20 +127,20 @@ A user who wants addition and subgroup membership check can use $MSM((P,1),(Q,1)
 
 ## Modules
 
-Beyond creating an new BLS module, the following existing modules will be affected:
+Beyond creating an new BLS module (and BLS_REFTABLE), the following existing modules will be affected:
 
 - HUB:  precompile processing.
-- OOB:  for detecting `FAILURE_KNOWN_TO_HUB`, specifically checking if the call data size is acceptable (e.g., similarly multiple of 192 for ecpairing), if enough gas is provided etc. If input is 0 also, the HUB needs to know it and we do not trigger RAM and BLS at all. @TODO: find exact conditions to check before potentially triggering BLS.
-- TRM: for updating the range check that justifies the `IS_PRECOMPILE` flag, that is identifying which precompile we are dealing with.
+- OOB:  for detecting `FAILURE_KNOWN_TO_HUB`, specifically checking if the call data size is acceptable (e.g., similarly to multiple of 192 for ECDATA ecpairing), if enough gas is provided etc. If input is 0 also, the HUB needs to know it and we do not trigger RAM and BLS at all. @TODO: find exact conditions to check before potentially triggering BLS.
+- TRM:  for updating the range check that justifies the `IS_PRECOMPILE` flag, that is identifying which precompile we are dealing with.
 - MMIO: for lookup to new BLS module.
 
 HUB  - is it a precomopile?           -> TRM
-HUB  - input length (cds) valid? gas? -> OOB?
+HUB  - input length (cds) valid? gas? -> OOB? <- Focus on this (cds, gas, discount @TODO: create REFTABLE which is a new module)
 If it makes sense:
-HUB  -                                -> MMU
+HUB  -                                -> MMU  
 MMU  -                                -> MMIO
 If it makes sense:
-MMIO -                               -> BLS
+MMIO -                                -> BLS
 
 MMIO to BLS lookup:
 - ID
@@ -134,23 +149,27 @@ MMIO to BLS lookup:
 - INDEX_MAX / SIZE
 - SUCCESS_BIT
 
+@TODO: look at ECDATA as a reference.
+
 ## Comparisons
 
 All comparisons will require two interactions with WCP (48 byte data):
 
 ```
 
-wcpGeneralizedCallToLT(A_hh, A_hl, A_lh, A_ll, B_hh, B_hl, B_lh, B_ll)
+wcpGeneralizedCallToLT(A_3, A_2, A_1, A_0, B_3, B_2, B_1, B_0)
 
 <=>
 
-wcpCallToLT(A_hh, A_hl, B_hh, B_hl)
+wcpCallToLT(A_3, A_2, B_3, B_2)
 
 ∨
 
-(wcpCallToEQ(A_hh, A_hl, B_hh, B_hl) ∧ wcpCallToLT(A_lh, A_ll, B_lh, B_ll))
+(wcpCallToEQ(A_3, A_2, B_3, B_2) ∧ wcpCallToLT(A_1, A_0, B_1, B_0))
 
 ```
+
+Note that in practice $B$ will likely always be $p$
 
 ## External circuit interface
 
@@ -159,25 +178,33 @@ wcpCallToLT(A_hh, A_hl, B_hh, B_hl)
 - C2_MEMBERSHIP
 - G2_MEMBERSHIP
 - PAIRING
+- G1_ADD
+- G2_ADD
+- G1_MSM
+- G2_MSM
+- MAP_FP_TO_G1
+- MAP_FP2_TO_G2
 
-### Failure case
+### Failure case (assuming ICP = 1)
 
-- BLS12_G1ADD: send to C1_MEMBERSHIP or G1_MEMBERSHIP circuits the first point predicted not to be in the group or subgroup, so as to prove non-membership.            
+- BLS12_G1ADD: send to C1_MEMBERSHIP circuit the first point predicted not to be in the group, so as to prove non-membership.            
 - BLS12_G1MSM: send to C1_MEMBERSHIP or G1_MEMBERSHIP circuits the first point predicted not to be in the group or subgroup, so as to prove non-membership.            
-- BLS12_G2ADD: send to C2_MEMBERSHIP or G2_MEMBERSHIP circuits the first point predicted not to be in the group or subgroup, so as to prove non-membership.           
+- BLS12_G2ADD: send to C2_MEMBERSHIP circuit the first point predicted not to be in the group, so as to prove non-membership.           
 - BLS12_G2MSM: send to C2_MEMBERSHIP or G2_MEMBERSHIP circuits the first point predicted not to be in the group or subgroup, so as to prove non-membership.            
-- BLS12_PAIRING_CHECK: send to C1_MEMBERSHIP or G1_MEMBERSHIP or C2_MEMBERSHIP or G2_MEMBERSHIP circuits the first point predicted not to be in the group or subgroup, so as to prove non-membership.            
+- BLS12_PAIRING_CHECK: send to C1_MEMBERSHIP or G1_MEMBERSHIP or C2_MEMBERSHIP or G2_MEMBERSHIP circuits the first point predicted not to be in the group or subgroup, so as to prove non-membership. As it is likely simpler to prove non-membership to C1,2 it has priority over the G1,2.      
+- BLS12_MAP_FP_TO_G1: no circuit needed.
+- BLS12_MAP_FP2_TO_G2: no circuit needed.
 
-### Success case
+### Success case (assuming ICP = 1 and NOT_ON_G1_MAX = NOT_ON_G2_MAX = 0)
 
-- BLS12_G1ADD: send to C1_MEMBERSHIP and G1_MEMBERSHIP circuits all points so as to prove membership.
-- BLS12_G1MSM: send to C1_MEMBERSHIP and G1_MEMBERSHIP circuits all points so as to prove membership.
-- BLS12_G2ADD: send to C2_MEMBERSHIP and G2_MEMBERSHIP circuits all points so as to prove membership.
-- BLS12_G2MSM: send to C2_MEMBERSHIP and G2_MEMBERSHIP circuits all points so as to prove membership.
+- BLS12_G1ADD: send to C1_MEMBERSHIP circuits all points so as to prove membership, then send them to G1_ADD circuit
+- BLS12_G1MSM: send to C1_MEMBERSHIP and G1_MEMBERSHIP circuits all points so as to prove membership, then send them to G1_MSM circuit.
+- BLS12_G2ADD: send to C2_MEMBERSHIP circuits all points so as to prove membership, then send them to G2_ADD circuit.
+- BLS12_G2MSM: send to C2_MEMBERSHIP and G2_MEMBERSHIP circuits all points so as to prove membership, then send them to G2_MSM circuit.
 - BLS12_PAIRING_CHECK: 
     * If all points are trivial (small and large point are at infinity) do nothing.
     * If small point is trivial, then send large point to C2_MEMBERSHIP and G2_MEMBERSHIP circuits.
     * If large point is trivial, then send small point to C1_MEMBERSHIP and G1_MEMBERSHIP circuits.
     * If neither small nor large points are trivial, send the pair to the PAIRING circuit. 
-
-@TODO: do we actually need that PAIRING circuit?
+- BLS12_MAP_FP_TO_G1: send field element to MAP_FP_TO_G1 circuit.
+- BLS12_MAP_FP2_TO_G2: send field element to MAP_FP2_TO_G2 circuit.
