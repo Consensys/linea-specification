@@ -1,28 +1,22 @@
 The heartbeat of the address trimming module is very simple: the \ct{} column counts from $0$ to $\ctMax$ unless $\iomf$ is zero, in which case it hovers at $0$.
 \begin{enumerate}
-	\item $\iomf_{0} = 0$
-	\item $\iomf_{i + 1} \in \{ \iomf_{i}, 1 + \iomf_{i} \}$
-	\item \If $\iomf_{i} = 0$ \Then
-	\[
-	\left\{	\begin{array}{lcl}
-		\done_{i}		& \!\!\! = \!\!\! & 0 \\
-		\ct_{i+1}		& \!\!\! = \!\!\! & 0 \\
-	\end{array} \right.
-	\]
-	
-	\item \If $\iomf_{i} \neq 0$ \Then
+	\item $\trmStamp_{0} = 0$
+	\item $\trmStamp_{i + 1} \in \{ \trmStamp_{i}, 1 + \trmStamp_{i} \}$
+	\item \If $\trmStamp_{i} = 0$ \Then $\ct_{i+1} =  0 $
+	\item $\first_{i} = \trmStamp_{i} - \trmStamp_{i-1}$
+	\item \If $\trmStamp_{i} \neq 0$ \Then
 		\begin{enumerate}
 		\item \If $\ct_{i} \neq \ctMax$ \Then
 			\begin{enumerate}
-			    \item $\done_{i} = 0$
+			    \item $\trmStamp_{i+1} = \trmStamp_{i}$
 			    \item $\ct_{i + 1} = 1 + \ct_{i}$
 			\end{enumerate}
 
 		\item \If $\ct_{i} = \ctMax$ \Then
 			\begin{enumerate}
-			    \item $\done_{i} = 1$
+			    \item $\trmStamp_{i+1} = 1 + \trmStamp_{i}$
 			    \item $\ct_{i + 1} = 0$
 			\end{enumerate}
 	\end{enumerate}
-	\item \If $\iomf_{N} = 1$ \Then $\ct_{i} = \ctMax$
+	\item \If $\trmStamp_{N} \neq 0$ \Then $\ct_{i} = \ctMax$
 \end{enumerate}

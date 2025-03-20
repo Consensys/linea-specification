@@ -1,5 +1,5 @@
 \[
-    \boxed{\text{All constraints in this subsection assume } \done_{i} = 1 }
+    \boxed{\text{All constraints in this subsection assume } \first_{i} = 1 }
 \]
 To this end We impose the following constraints
 \begin{description}
@@ -7,18 +7,18 @@ To this end We impose the following constraints
 		we impose that
 		\[
 			\wcpCallToLeq {
-				anchorRow = i - \anchorRow         ,
+				anchorRow = i                      ,
 				relOffset = \nRows                 ,
 				argOneHi  = \trmAddrHi             ,
 				argOneLo  = \rawAddrLo             ,
-				argTwoHi  = (1 << 4) - 1           ,
+				argTwoHi  = (256 << 4) - 1         ,
 				argTwoLo  = 0                      ,
 			}
 		\]
 		we further impose that
 		\[
 			\resultMustBeTrue {
-				anchorRow = i - \anchorRow      ,
+				anchorRow = i                   ,
 				relOffset = \nRows              ,
 			}
 		\]
@@ -29,18 +29,18 @@ To this end We impose the following constraints
 		we impose that
 		\[
 			\wcpCallToLeq {
-				anchorRow = i - \anchorRow         ,
+				anchorRow = i                      ,
 				relOffset = \nRows                 ,
 				argOneHi  = 0                      ,
 				argOneLo  = \trmLeadHi             ,
 				argTwoHi  = 0                      ,
-				argTwoLo  = (1 << 12) - 1          ,
+				argTwoLo  = (256 << 12) - 1        ,
 			}
 		\]
 		we further impose that
 		\[
 			\resultMustBeTrue {
-				anchorRow = i - \anchorRow      ,
+				anchorRow = i                   ,
 				relOffset = \nRows              ,
 			}
 		\]
@@ -52,10 +52,10 @@ To this end We impose the following constraints
 	\def\nRows{\rowOffsetNonZeroAddr}\item[\underline{Processing row $n^\circ(\nRows)$:}] 
 		we impose that
 		\[
-			\wcpCallToIsZero {
-				anchorRow = i - \anchorRow         ,
+			\wcpCallToIszero {
+				anchorRow = i                      ,
 				relOffset = \nRows                 ,
-				argOneHi  = \trmLeadHi             ,
+				argOneHi  = \trmAddrHi             ,
 				argOneLo  = \rawAddrLo             ,
 				argTwoHi  = 0                      ,
 				argTwoLo  = 0                      ,
@@ -67,9 +67,9 @@ To this end We impose the following constraints
 		we impose that
 		\[
 			\wcpCallToLt {
-				anchorRow = i - \anchorRow         ,
+				anchorRow = i                      ,
 				relOffset = \nRows                 ,
-				argOneHi  = \trmLeadHi             ,
+				argOneHi  = \trmAddrHi             ,
 				argOneLo  = \rawAddrLo             ,
 				argTwoHi  = 0                      ,
 				argTwoLo  = \maxPrecompileAddress  ,
