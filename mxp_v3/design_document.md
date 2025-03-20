@@ -1,16 +1,16 @@
 # MXP module redesign
 
-let LMMS = 256^4 (linea max memory size)
+let MXPX_THRESHOLD = 256^4 - 1 (linea max memory size)
 
 | INST             | LCIB | LCIW | CN ⟦ π ⟧ | OFFSET_1 ⟦ π ⟧ | OFFSET_2  ⟦ π ⟧ | SIZE_1  ⟦ π ⟧ | SIZE_2  ⟦ π ⟧ | DEPLOYING ⟦ π ⟧ | RES ⟦ π ⟧ | MXPX ⟦ π ⟧ | GAS_MXP ⟦ π ⟧ | WORDS   | WORDS_NEW   | C_MEM   | C_MEM_NEW   | LIN_COST   | QUAD_COST   | MAX_OFFSET  | EXPANSION_REQUIRED |
 | ---------------- | --   | --   | ----     | ----------     | ----------      | --------      | --------      | -----------     | -----     | ------     | ---------     | ------- | ----------- | ------- | ----------- | ---------- | ----------- | ----------- | -----------        |
 | MSIZE            |      |      |          | ∅              | ∅               | ∅             | ∅             |                 |           | ∅          | ∅             |         |             |         |             | ∅          | ∅           | ∅           | ∅                  |
 | ---------------- | --   | --   | ----     | ----------     | ----------      | --------      | --------      | -----------     | -----     | ------     | ---------     | ------- | ----------- | ------- | ----------- | ---------- | ----------- | ----------- | -----------        |
-| MLOAD            |      |      |          |                | ∅               | 32            | ∅             |                 | ∅         |            |               |         |             |         |             | ∅          |             |             |                    |                                                    |
-|                  |      |      |          |                |                 |               |               |                 |           |            |               |         |             |         |             |            |             |             |                    | - callWcpLT on SIZE_1 and LMMS                     |
-|                  |      |      |          |                |                 |               |               |                 |           |            |               |         |             |         |             |            |             |             |                    | .   ⇒ small_offset                                 |
-|                  |      |      |          |                |                 |               |               |                 |           |            |               |         |             |         |             |            |             |             |                    | - if SIZE_1 < LMMS then compute memory expansion   |
-| ---------------- | ---  | ---  | ----     | ----------     | ----------      | --------      | --------      | -----------     | -----     | ------     | ---------     | ------- | ----------- | ------- | ----------- | ---------- | ----------- | ----------- | -----------        | -------------------------------------------------- |
+| MLOAD            |      |      |          |                | ∅               | 32            | ∅             |                 | ∅         |            |               |         |             |         |             | ∅          |             |             |                    |                                                            |
+|                  |      |      |          |                |                 |               |               |                 |           |            |               |         |             |         |             |            |             |             |                    | - callWcpLT on SIZE_1 and MXPX_THRESHOLD                   |
+|                  |      |      |          |                |                 |               |               |                 |           |            |               |         |             |         |             |            |             |             |                    | .   ⇒ small_offset                                         |
+|                  |      |      |          |                |                 |               |               |                 |           |            |               |         |             |         |             |            |             |             |                    | - if SIZE_1 < MXPX_THRESHOLD then compute memory expansion |
+| ---------------- | ---  | ---  | ----     | ----------     | ----------      | --------      | --------      | -----------     | -----     | ------     | ---------     | ------- | ----------- | ------- | ----------- | ---------- | ----------- | ----------- | -----------        | --------------------------------------------------         |
 | MSTORE           |      |      |          |                | ∅               | 32            | ∅             |                 | ∅         |            |               |         |             |         |             | ∅          |             |             |                    |
 | ---------------- | ---  | ---  | ----     | ----------     | ----------      | --------      | --------      | -----------     | -----     | ------     | ---------     | ------- | ----------- | ------- | ----------- | ---------- | ----------- | ----------- | -----------        |
 | MSTORE8          |      |      |          |                | ∅               | 1             | ∅             |                 | ∅         |            |               |         |             |         |             | ∅          |             |             |                    |
@@ -86,7 +86,7 @@ MACRO (1 row) ==> INSTRUCTION_DECODER (1 row) ==> SCENARIO (1 row) ==> COMPUTATI
 In terms of lookups, we require:
     - ISZERO checks (into WCP)
     - LT     checks (into WCP) between anything
-    - LT     checks (into WCP) against LMMS
+    - LT     checks (into WCP) against MXPX_THRESHOLD
     - DIV    computations (by 32  into MOD, potentially into EUC)
     - DIV    computations (by 512 into MOD, potentially into EUC)
     - lookup into the instruction decoder
