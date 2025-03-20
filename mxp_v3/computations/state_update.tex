@@ -13,8 +13,6 @@ We impose the following
 		we define the following shorthands
 		\[
 			\left\{ \begin{array}{lcl}
-				% \locSingleOffsetOpcode & \define & \mxpDecoderSingleMaxOffset _{i - \locScenarioToDecoderRowOffset} \\
-				% \locDoubleOffsetOpcode & \define & \mxpDecoderDoubleMaxOffset _{i - \locScenarioToDecoderRowOffset} \\
 				\locWordPricingOpcode  & \define & \mxpDecoderIsWordPricing   _{i - \locScenarioToDecoderRowOffset} \\
 				\locBytePricingOpcode  & \define & \mxpDecoderIsBytePricing   _{i - \locScenarioToDecoderRowOffset} \\
 			\end{array} \right.
@@ -24,10 +22,6 @@ We impose the following
 			\left\{ \begin{array}{lcl}
 				\mxpScenarioStateUpdateWordPricing _{i} & = & \locWordPricingOpcode \vspace{2mm} \\
 				\mxpScenarioStateUpdateBytePricing _{i} & = & \locBytePricingOpcode              \\
-				% \mxpScenarioSingleMaxOffsetAndWordPricing _{i} & = & \left[\begin{array}{cl} \cdot & \locSingleOffsetOpcode \\ \cdot & \locWordPricingOpcode \end{array} \right] \vspace{2mm} \\
-				% \mxpScenarioSingleMaxOffsetAndBytePricing _{i} & = & \left[\begin{array}{cl} \cdot & \locSingleOffsetOpcode \\ \cdot & \locBytePricingOpcode \end{array} \right] \vspace{2mm} \\
-				% \mxpScenarioDoubleMaxOffsetAndWordPricing _{i} & = & \left[\begin{array}{cl} \cdot & \locDoubleOffsetOpcode \\ \cdot & \locWordPricingOpcode \end{array} \right] \vspace{2mm} \\
-				% \mxpScenarioDoubleMaxOffsetAndBytePricing _{i} & = & \left[\begin{array}{cl} \cdot & \locDoubleOffsetOpcode \\ \cdot & \locBytePricingOpcode \end{array} \right] \\
 			\end{array} \right.
 		\]
 \end{description}
@@ -38,19 +32,11 @@ We may alternatively encode the above in a single degree one constraint as follo
 		\left[ \begin{array}{lcl}
 			+ ~ 1 & \!\!\!\cdot\!\!\! & \mxpScenarioStateUpdateBytePricing _{i} \\
 			+ ~ 2 & \!\!\!\cdot\!\!\! & \mxpScenarioStateUpdateWordPricing _{i} \\
-			% (1 + 4) & \cdot & \mxpScenarioSingleMaxOffsetAndWordPricing _{i} \\
-			% (1 + 8) & \cdot & \mxpScenarioSingleMaxOffsetAndBytePricing _{i} \\
-			% (2 + 4) & \cdot & \mxpScenarioDoubleMaxOffsetAndWordPricing _{i} \\
-			% (2 + 8) & \cdot & \mxpScenarioDoubleMaxOffsetAndBytePricing _{i} \\
 		\end{array} \right] \vspace{2mm} \\
 		\qquad\qquad =
 		\left[ \begin{array}{lcl}
 			+ ~ 1 & \!\!\!\cdot\!\!\! & \locWordPricingOpcode  \\
 			+ ~ 2 & \!\!\!\cdot\!\!\! & \locBytePricingOpcode  \\
-			% 1 & \cdot & \locSingleOffsetOpcode \\
-			% 2 & \cdot & \locDoubleOffsetOpcode \\
-			% 4 & \cdot & \locWordPricingOpcode  \\
-			% 8 & \cdot & \locBytePricingOpcode  \\
 		\end{array} \right] \\
 	\end{array}
 \]
@@ -60,7 +46,6 @@ This works due to flag exclusivity properties in the present \mxpMod{} module an
 		we introduce the following shorthands
 		\[
 			\left\{ \begin{array}{lcl}
-				% \locCompRequired & \define & \locSizeOneIsNonZero \cdot \locSizeTwoIsNonZero \\
 				\locMaxOne       & \define & \locOffsetOneLo + \locSizeOneLo                 \\
 				\locMaxTwo       & \define & \locOffsetTwoLo + \locSizeTwoLo                 \\
 			\end{array} \right.
@@ -176,16 +161,6 @@ This works due to flag exclusivity properties in the present \mxpMod{} module an
 						\mxpScenarioCmemNew  _{i} & = & \locCmemLinrPart + \locCmemQuadPart \\
 					\end{array} \right.
 				\]
-			% \item[\underline{Updating $\mxpScenarioWords$:}] ---
-			% 	\begin{enumerate}
-			% 		\item \If $\locUpdateState = 1$ \Then $\mxpScenarioWordsNew _{i} = \locEypA$
-			% 	        \item \If $\locUpdateState = 0$ \Then $\mxpScenarioWordsNew _{i} = \mxpScenarioWords _{i}$
-			% 	\end{enumerate}
-			% \item[\underline{Updating $\mxpScenarioCmem$:}] ---
-			% 	\begin{enumerate}
-			% 		\item \If $\locUpdateState = 1$ \Then $\mxpScenarioCmemNew _{i} = \locCmemLinrPart + \locCmemQuadPart$
-			% 		\item \If $\locUpdateState = 0$ \Then $\mxpScenarioCmemNew _{i} = \mxpScenarioCmem _{i}$
-			% 	\end{enumerate}
 		\end{description}
 \end{description}
 
