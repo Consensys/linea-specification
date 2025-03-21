@@ -1,0 +1,79 @@
+\[
+    \boxed{\text{All constraints in this subsection assume } \first_{i} = 1 }
+\]
+To this end We impose the following constraints
+\begin{description}
+	\def\nRows{\rowOffsetAddress}\item[\underline{Processing row $n^\circ(\nRows)$:}] 
+		we impose that
+		\[
+			\wcpCallToLt {
+				anchorRow = i                      ,
+				relOffset = \nRows                 ,
+				argOneHi  = \trmAddrHi             ,
+				argOneLo  = \rawAddrLo             ,
+				argTwoHi  = (256 << 5)             ,
+				argTwoLo  = 0                      ,
+			}
+		\]
+		we further impose that
+		\[
+			\resultMustBeTrue {
+				anchorRow = i                   ,
+				relOffset = \nRows              ,
+			}
+		\]
+		\saNote{}
+		The above enforces that the address is written on up to 20 bytes.
+		
+	\def\nRows{\rowOffsetAddressTrm}\item[\underline{Processing row $n^\circ(\nRows)$:}] 
+		we impose that
+		\[
+			\wcpCallToLeq {
+				anchorRow = i                      ,
+				relOffset = \nRows                 ,
+				argOneHi  = 0                      ,
+				argOneLo  = \trmLeadHi             ,
+				argTwoHi  = 0                      ,
+				argTwoLo  = (256 << 12) - 1        ,
+			}
+		\]
+		we further impose that
+		\[
+			\resultMustBeTrue {
+				anchorRow = i                   ,
+				relOffset = \nRows              ,
+			}
+		\]
+		\saNote{}
+		The above enforces that $\trmLeadHi$, the trimmed leading bytes of the $\rawAddrHi$ is written on up to 12 bytes.
+
+
+
+	\def\nRows{\rowOffsetNonZeroAddr}\item[\underline{Processing row $n^\circ(\nRows)$:}] 
+		we impose that
+		\[
+			\wcpCallToIszero {
+				anchorRow = i                      ,
+				relOffset = \nRows                 ,
+				argOneHi  = \trmAddrHi             ,
+				argOneLo  = \rawAddrLo             ,
+				argTwoHi  = 0                      ,
+				argTwoLo  = 0                      ,
+			}
+		\]
+		
+
+	\def\nRows{\rowOffsetPrcAddr}\item[\underline{Processing row $n^\circ(\nRows)$:}] 
+		we impose that
+		\[
+			\wcpCallToLeq {
+				anchorRow = i                      ,
+				relOffset = \nRows                 ,
+				argOneHi  = \trmAddrHi             ,
+				argOneLo  = \rawAddrLo             ,
+				argTwoHi  = 0                      ,
+				argTwoLo  = \maxPrecompileAddress  ,
+			}
+		\]
+	
+\end{description}
