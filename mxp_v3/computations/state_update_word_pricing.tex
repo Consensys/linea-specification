@@ -13,17 +13,33 @@ We impose:
         we impose that
         \[
             \eucCall {
-                anchorRow = i                                                      ,
-                relOffset = \nRows                                                 ,
-                argOne    = \mxpMacroSizeOneLo _{i - \locScenarioToMacroRowOffset} ,
-                argTwo    = \evmWordSize                                           ,
+                anchorRow = i             ,
+                relOffset = \nRows        ,
+                argOne    = \locSizeOneLo ,
+                argTwo    = \evmWordSize  ,
             }
         \]
+        and we define the following shorthand
+        \[
+            % \left\{ \begin{array}{lcl}
+            %     \col{size\_1}     & \define & \mxpMacroSizeOneLo  _{i - \locScenarioToMacroRowOffset} \\
+            %     \locNumberOfWords & \define & \mxpComputationResB _{i + \nRows}                      \\
+            % \end{array} \right.
+            \locNumberOfWords \define \mxpComputationResB _{i + \nRows}
+        \]
+        \saNote{}
+        The computation above produces
+        \[
+            \left\lceil
+            \frac{\locSizeOneLo}{\evmWordSize}
+            \right\rceil
+        \]
+        Every instruction that requires ``word pricing'' uses a single size parameter (including \inst{MCOPY} which requires two offsets.)
+        This explains why we use $\mxpMacroSizeOneLo$.
     \item[\underline{\underline{Computing the word-linear gas cost:}}]
         we impose that
         \[
             \left\{ \begin{array}{lcl}
-                \locNumberOfWords & \define & \mxpComputationResB _{i + \nRows}                                      \\
                 \locWordPrice     & \define & \mxpDecoderGWord    _{i - \locScenarioToDecoderRowOffset} \vspace{2mm} \\
                 \locExtraWordCost & \define & \locNumberOfWords \cdot \locWordPrice                                  \\
             \end{array} \right.
