@@ -76,38 +76,53 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
 
 - BLS12_G1ADD,  $\mathbb{C_1} \times \mathbb{C_1}$ (256 bytes) $\rightarrow \mathbb{C_1}$ (128 bytes)
     - OOB:
-        - input length: 256 bytes
-        - gas check: 375 gas
+        - input length: 
+            ```
+            PRC_G1ADD_SIZE = 256
+            ```
+        - gas check:    
+            ```
+            GAS_CONST_G1_ADD = 375 
+            ```
     - BLS
         - coordinate encoding
         - points at infinity
         - $\mathbb{C}_1$ mermbership         
 - BLS12_G1MSM, $(\mathbb{G_1} \times \mathbb{N})^k$ ($160 \cdot k$ bytes) $\rightarrow \mathbb{G_1}$ (128 bytes) with $k > 0$
      - OOB:
-        - input length: $160 \cdot k$ bytes
+        - input length: 
+            ```
+            PRC_G1MSM_SIZE = 160
+            PRC_G1MSM_SIZE * k
+            ```
         - gas check:
             ```
-            multiplication_cost = 12000
-            multiplier = 1000
-            max_discount = 519
-            LEN_PER_PAIR = 160
-            k = floor(len(input) / LEN_PER_PAIR);
+            PRC_G1MSM_MULTIPLICATION_COST = 12000
+            PRC_G1MSM_MULTIPLIER = 1000
+            PRC_G1MSM_MAX_DISCOUNT = 519
+            k = floor(len(input) / PRC_G1MSM_SIZE);
             if k == 0 {
                 gas_cost = 0
             }
-            discount(k) = see reftable if 1 <= k <= 128
-            discount(k) = max_discount if k > 128
-            gas_cost = k * multiplication_cost * discount(k) // multiplier;
+            PRC_G1MSM_DISCOUNT(k) = see BLS_REFTABLE if 1 <= k <= 128
+            PRC_G1MSM_DISCOUNT(k) = PRC_G1MSM_MAX_DISCOUNT if k > 128
+            gas_cost = k * PRC_G1MSM_MULTIPLICATION_COST * PRC_G1MSM_DISCOUNT(k) // PRC_G1MSM_MULTIPLIER;
             where // is integer division
             ```
     - BLS
         - coordinate encoding
         - point at infinity
         - $\mathbb{C}_1$ and $\mathbb{G}_1$ mermbership        
-- BLS12_G2ADD $\mathbb{C_2} \times \mathbb{C_2}$ (512 bytes) $\rightarrow \mathbb{C_2}$ (256 bytes)ù
+- BLS12_G2ADD $\mathbb{C_2} \times \mathbb{C_2}$ (512 bytes) $\rightarrow \mathbb{C_2}$ (256 bytes)
     - OOB:
-        - input length: 512 bytes
-        - gas check: 600 gas
+        - input length: 
+            ```
+            PRC_G2ADD_SIZE = 512
+            ```
+        - gas check:
+            ```
+            GAS_CONST_G2_ADD = 600
+            ```
     - BLS
         - coordinate encoding
         - points at infinity
@@ -115,19 +130,22 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
 - BLS12_G2MSM $(\mathbb{G_2} \times \mathbb{N})^k$ ($288 \cdot k$ bytes) $\rightarrow \mathbb{G_2}$ (256 bytes) with $k > 0$     
     - OOB:
         - input length: $288 \cdot k$ bytes
+            ```
+            PRC_G2MSM_SIZE = 288
+            PRC_G2MSM_SIZE * k
+            ```
         - gas check:
             ```
-            multiplication_cost = 22500
-            multiplier = 1000
-            max_discount = 524
-            LEN_PER_PAIR = 288
-            k = floor(len(input) / LEN_PER_PAIR);
+            PRC_G2MSM_MULTIPLICATION_COST = 22500
+            PRC_G2MSM_MULTIPLIER = 1000
+            PRC_G2MSM_MAX_DISCOUNT = 524
+            k = floor(len(input) / PRC_G2MSM_SIZE);
             if k == 0 {
                 gas_cost = 0
             }
-            discount(k) = see reftable if 1 <= k <= 128
-            discount(k) = max_discount if k > 128
-            gas_cost = k * multiplication_cost * discount(k) // multiplier;
+            PRC_G2MSM_DISCOUNT(k) = see BLS_REFTABLE if 1 <= k <= 128
+            PRC_G2MSM_DISCOUNT(k) = PRC_G2MSM_MAX_DISCOUNT if k > 128
+            gas_cost = k * PRC_G2MSM_MULTIPLICATION_COST * PRC_G2MSM_DISCOUNT(k) // PRC_G2MSM_MULTIPLIER;
             where // is integer division
             ```
     - BLS
@@ -139,9 +157,11 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
         - input length: $384 \cdot k$ bytes
         - gas check:
             ```
-            LEN_PER_PAIR = 384
-            k = floor(len(input) / LEN_PER_PAIR);
-            gas_cost = 32600*k + 37700;
+            PRC_BLS12_PAIRING_SIZE = 384
+            k = floor(len(input) / PRC_BLS12_PAIRING_SIZE);
+            GAS_CONST_BLS12_PAIRING = 37700
+            GAS_CONST_BLS12_PAIRING_PAIR = 32600
+            gas_cost = GAS_CONST_BLS12_PAIRING_PAIR*k + GAS_CONST_BLS12_PAIRING;
             ```
     - BLS
         - coordinate encoding
@@ -150,8 +170,14 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
         - $\mathbb{C}_2$ and $\mathbb{G}_2$ mermbership 
 - BLS12_MAP_FP_TO_G1 $\mathbb{F}_p$ (64 bytes) $\rightarrow \mathbb{G_1}$ (128 bytes)
     - OOB:
-        - input length: 64 bytes
-        - gas check: 5500 gas
+        - input length:
+            ```
+            PRC_MAP_FP_TO_G1_SIZE = 64
+            ```
+        - gas check:
+            ```
+            GAS_CONST_MAP_FP_TO_G1 = 5500
+            ```
     - BLS
         - coordinate encoding
 - BLS12_MAP_FP2_TO_G2 $\mathbb{F}_{p^2}$ (128 bytes) $\rightarrow \mathbb{G_2}$ (256 bytes)
@@ -170,17 +196,21 @@ A user who wants addition and subgroup membership check can use $MSM((P,1),(Q,1)
 Beyond creating an new BLS module (and BLS_REFTABLE), the following existing modules will be affected:
 
 - HUB:  precompile processing.
-- OOB:  for detecting `FAILURE_KNOWN_TO_HUB`, specifically checking if the call data size is acceptable (e.g., similarly to multiple of 192 for ECDATA ecpairing), if enough gas is provided etc. If input is 0 also, the HUB needs to know it and we do not trigger RAM and BLS at all. @TODO: find exact conditions to check before potentially triggering BLS.
+- OOB:  for detecting `FAILURE_KNOWN_TO_HUB`, specifically checking if the call data size is acceptable and if enough gas is provided. If input is 0 also, the HUB needs to know it and we do not trigger RAM and BLS at all.
 - TRM:  for updating the range check that justifies the `IS_PRECOMPILE` flag, that is identifying which precompile we are dealing with.
 - MMIO: for lookup to new BLS module.
 
+```
 HUB  - is it a precomopile?           -> TRM
-HUB  - input length (cds) valid? gas? -> OOB? <- Focus on this (cds, gas, discount @TODO: create REFTABLE which is a new module)
+HUB  - cds is valid? gas is enough?   -> OOB
+If necessary?
+OOB  - discount for MSM?              -> BLS_REFTABLE
 If it makes sense:
 HUB  -                                -> MMU  
 MMU  -                                -> MMIO
 If it makes sense:
 MMIO -                                -> BLS
+```
 
 MMIO to BLS lookup:
 - ID
@@ -233,22 +263,22 @@ Based on the predictions related to a point being in C1 or G1, the following cas
 
 | ON_C1 | ON_G1 | Send to       |
 |-------|-------|---------------|
-|     0 |     0 | C1_MEMBERSHIP | (assuming proving C1 non-membership is cheaper than G1 non-membership)
+|     0 |     0 | C1_MEMBERSHIP | 
 |     0 |     1 | C1_MEMBERSHIP |
 |     1 |     0 | G1_MEMBERSHIP |
 
-so as to prove non-membership.
+so as to prove non-membership. Note that in the first case we prove C1 non-membership as it is cheaper than G1 non-membership, and that is enough to justify failure.
 - BLS12_G2ADD: send to C2_MEMBERSHIP circuit the first point predicted not to be in C2, so as to prove non-membership.           
 - BLS12_G2MSM:
 Based on the predictions related to a point being in C2 or G2, the following cases are possible:
 
 | ON_C2 | ON_G2 | Send to       |
 |-------|-------|---------------|
-|     0 |     0 | C2_MEMBERSHIP | (assuming proving C2 non-membership is cheaper than G2 non-membership)
+|     0 |     0 | C2_MEMBERSHIP | 
 |     0 |     1 | C2_MEMBERSHIP |
 |     1 |     0 | G2_MEMBERSHIP |
 
-so as to prove non-membership.
+so as to prove non-membership. Note that in the first case we prove C2 non-membership as it is cheaper than G2 non-membership, and that is enough to justify failure.
 - BLS12_MAP_FP_TO_G1: no circuit needed.
 - BLS12_MAP_FP2_TO_G2: no circuit needed.
 
