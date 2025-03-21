@@ -55,14 +55,14 @@ Ax_3, Ax_2, Ax_1, Ax_0
 ## Operations performed by the arithmetization
 
 - TRM:
-    * Recognize which precompile we are dealing with.
+    - Recognize which precompile we are dealing with.
 - OOB:
-    * Input length check, i.e., the call data size is equal or multiple of an expected number. 
-    * Gas check, i.e., enough gas is provided.
+    - Input length check, i.e., the call data size is equal or multiple of an expected number. 
+    - Gas check, i.e., enough gas is provided.
 - BLS:
-    * Coordinate encoding check, specifically whether a small point coordinate belongs to $\mathbb{F}_p$ or a large point coordinate belongs to $\mathbb{F}_{p^2}$ ($< p$ for every coordinate).
-    * Point at infinity check.
-    * By potentially interacting with external circuits, justifying the success bit of the operation.
+    - Coordinate encoding check, specifically whether a small point coordinate belongs to $\mathbb{F}_p$ or a large point coordinate belongs to $\mathbb{F}_{p^2}$ ($< p$ for every coordinate).
+    - Point at infinity check.
+    - By potentially interacting with external circuits, justifying the success bit of the operation.
 
 ## Operations performed by external circuits
 
@@ -75,51 +75,91 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
 ## Checks overview
 
 - BLS12_G1ADD,  $\mathbb{C_1} \times \mathbb{C_1}$ (256 bytes) $\rightarrow \mathbb{C_1}$ (128 bytes)
-    * input length
-    * Gas check
-    ---
-    * coordinate encoding
-    * points at infinity
-    * $\mathbb{C}_1$ mermbership         
+    - OOB:
+        - input length: 256 bytes
+        - gas check: 375 gas
+    - BLS
+        - coordinate encoding
+        - points at infinity
+        - $\mathbb{C}_1$ mermbership         
 - BLS12_G1MSM, $(\mathbb{G_1} \times \mathbb{N})^k$ ($160 \cdot k$ bytes) $\rightarrow \mathbb{G_1}$ (128 bytes) with $k > 0$
-    * input length
-    * Gas check
-    ---
-    * coordinate encoding
-    * point at infinity
-    * $\mathbb{C}_1$ and $\mathbb{G}_1$ mermbership        
+     - OOB:
+        - input length: $160 \cdot k$ bytes
+        - gas check:
+            ```
+            multiplication_cost = 12000
+            multiplier = 1000
+            max_discount = 519
+            LEN_PER_PAIR = 160
+            k = floor(len(input) / LEN_PER_PAIR);
+            if k == 0 {
+                gas_cost = 0
+            }
+            discount(k) = see reftable if 1 <= k <= 128
+            discount(k) = max_discount if k > 128
+            gas_cost = k * multiplication_cost * discount(k) // multiplier;
+            where // is integer division
+            ```
+    - BLS
+        - coordinate encoding
+        - point at infinity
+        - $\mathbb{C}_1$ and $\mathbb{G}_1$ mermbership        
 - BLS12_G2ADD $\mathbb{C_2} \times \mathbb{C_2}$ (512 bytes) $\rightarrow \mathbb{C_2}$ (256 bytes)ù
-    * input length
-    * Gas check
-    ---
-    * coordinate encoding
-    * points at infinity
-    * $\mathbb{C}_2$ mermbership              
+    - OOB:
+        - input length: 512 bytes
+        - gas check: 600 gas
+    - BLS
+        - coordinate encoding
+        - points at infinity
+        - $\mathbb{C}_2$ mermbership              
 - BLS12_G2MSM $(\mathbb{G_2} \times \mathbb{N})^k$ ($288 \cdot k$ bytes) $\rightarrow \mathbb{G_2}$ (256 bytes) with $k > 0$     
-    * input length
-    * Gas check
-    ---    
-    * coordinate encoding
-    * point at infinity
-    * $\mathbb{C}_2$ and $\mathbb{G}_2$ mermbership 
+    - OOB:
+        - input length: $288 \cdot k$ bytes
+        - gas check:
+            ```
+            multiplication_cost = 22500
+            multiplier = 1000
+            max_discount = 524
+            LEN_PER_PAIR = 288
+            k = floor(len(input) / LEN_PER_PAIR);
+            if k == 0 {
+                gas_cost = 0
+            }
+            discount(k) = see reftable if 1 <= k <= 128
+            discount(k) = max_discount if k > 128
+            gas_cost = k * multiplication_cost * discount(k) // multiplier;
+            where // is integer division
+            ```
+    - BLS
+        - coordinate encoding
+        - point at infinity
+        - $\mathbb{C}_2$ and $\mathbb{G}_2$ mermbership 
 - BLS12_PAIRING_CHECK $(\mathbb{G_1} \times \mathbb{G_2})^k$ ($384 \cdot k$ bytes) $\rightarrow \{0,1\}$ (right padded to 32 bytes) with $k > 0$    
-    * input length
-    * Gas check
-    ---
-    * coordinate encoding
-    * point at infinity
-    * $\mathbb{C}_1$ and $\mathbb{G}_1$ mermbership   
-    * $\mathbb{C}_2$ and $\mathbb{G}_2$ mermbership 
+    - OOB:
+        - input length: $384 \cdot k$ bytes
+        - gas check:
+            ```
+            LEN_PER_PAIR = 384
+            k = floor(len(input) / LEN_PER_PAIR);
+            gas_cost = 32600*k + 37700;
+            ```
+    - BLS
+        - coordinate encoding
+        - point at infinity
+        - $\mathbb{C}_1$ and $\mathbb{G}_1$ mermbership   
+        - $\mathbb{C}_2$ and $\mathbb{G}_2$ mermbership 
 - BLS12_MAP_FP_TO_G1 $\mathbb{F}_p$ (64 bytes) $\rightarrow \mathbb{G_1}$ (128 bytes)
-    * input length
-    * Gas check
-    ---
-    * coordinate encoding
+    - OOB:
+        - input length: 64 bytes
+        - gas check: 5500 gas
+    - BLS
+        - coordinate encoding
 - BLS12_MAP_FP2_TO_G2 $\mathbb{F}_{p^2}$ (128 bytes) $\rightarrow \mathbb{G_2}$ (256 bytes)
-    * input length
-    * Gas check
-    ---
-    * coordinate encoding
+    - OOB:
+        - input length: 128 bytes
+        - gas check: 23800 gas
+    - BLS
+        - coordinate encoding
 
 Note that addition operations do not require subgroup membership checks. 
 In case the operations are executed on points not in the subgroup, also the result will not be in the subgroup.
@@ -188,12 +228,27 @@ Note that in practice $B$ will likely always be $p$
 ### Failure case (assuming ICP = 1)
 
 - BLS12_G1ADD: send to C1_MEMBERSHIP circuit the first point predicted not to be in C1, so as to prove non-membership.            
-- BLS12_G1MSM: if a point is predicted not to be in C1, then send it to C1_MEMBERSHIP circuit, so as to prove non-membership.
-If a point is predicted to not be in G1, then send it directly to G1_MEMBERSHIP circuit, so as to prove non-membership.
+- BLS12_G1MSM: 
+Based on the predictions related to a point being in C1 or G1, the following cases are possible:
+
+| ON_C1 | ON_G1 | Send to       |
+|-------|-------|---------------|
+|     0 |     0 | C1_MEMBERSHIP | (assuming proving C1 non-membership is cheaper than G1 non-membership)
+|     0 |     1 | C1_MEMBERSHIP |
+|     1 |     0 | G1_MEMBERSHIP |
+
+so as to prove non-membership.
 - BLS12_G2ADD: send to C2_MEMBERSHIP circuit the first point predicted not to be in C2, so as to prove non-membership.           
-- BLS12_G2MSM: if a point is predicted not to be in C2, then send it to C2_MEMBERSHIP circuit, so as to prove non-membership.
-if a point is predicted to not be in the G2, then send it directly to G2_MEMBERSHIP circuit, so as to prove non-membership.
-- BLS12_PAIRING_CHECK: send to G1_MEMBERSHIP or G2_MEMBERSHIP circuits the first point predicted not to be in the C1,2 or G1,2, so as to prove non-membership.     
+- BLS12_G2MSM:
+Based on the predictions related to a point being in C2 or G2, the following cases are possible:
+
+| ON_C2 | ON_G2 | Send to       |
+|-------|-------|---------------|
+|     0 |     0 | C2_MEMBERSHIP | (assuming proving C2 non-membership is cheaper than G2 non-membership)
+|     0 |     1 | C2_MEMBERSHIP |
+|     1 |     0 | G2_MEMBERSHIP |
+
+so as to prove non-membership.
 - BLS12_MAP_FP_TO_G1: no circuit needed.
 - BLS12_MAP_FP2_TO_G2: no circuit needed.
 
@@ -204,9 +259,9 @@ if a point is predicted to not be in the G2, then send it directly to G2_MEMBERS
 - BLS12_G2ADD: send to C2_MEMBERSHIP circuits all points so as to prove membership to C2, then send them to G2_ADD circuit.
 - BLS12_G2MSM: send to G2_MEMBERSHIP circuits all points so as to prove membership to C2 and G2, then send them to G2_MSM circuit.
 - BLS12_PAIRING_CHECK: 
-    * If all points are trivial (small and large point are at infinity) do nothing.
-    * If small point is trivial, then send large point to G2_MEMBERSHIP circuit to prove membership to C2 and G2.
-    * If large point is trivial, then send small point to G1_MEMBERSHIP circuit to prove membership to C1 and G1.
-    * If neither small nor large points are trivial, send the pair to the PAIRING circuit. 
+    - If all points are trivial (small and large point are at infinity) do nothing.
+    - If small point is trivial, then send large point to G2_MEMBERSHIP circuit to prove membership to C2 and G2.
+    - If large point is trivial, then send small point to G1_MEMBERSHIP circuit to prove membership to C1 and G1.
+    - If neither small nor large points are trivial, send the pair to the PAIRING circuit. 
 - BLS12_MAP_FP_TO_G1: send field element to MAP_FP_TO_G1 circuit.
 - BLS12_MAP_FP2_TO_G2: send field element to MAP_FP2_TO_G2 circuit.
