@@ -1,0 +1,67 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NF Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\usepackage{../../pkg/draculatheme}
+
+\begin{document}
+\begin{verbatim}
+
+            ██\                ██\                                               ██\            ██\
+            ██ |               ██ |                                              ██ |           ██ |
+ ███████\ ██████\    ██████\ ██████\    ██████\        ██\   ██\  ██████\   ███████ | ██████\ ██████\    ██████\
+██  _____|\_██  _|   \____██\\_██  _|  ██  __██\       ██ |  ██ |██  __██\ ██  __██ | \____██\\_██  _|  ██  __██\
+\██████\    ██ |     ███████ | ██ |    ████████ |      ██ |  ██ |██ /  ██ |██ /  ██ | ███████ | ██ |    ████████ |
+ \____██\   ██ |██\ ██  __██ | ██ |██\ ██   ____|      ██ |  ██ |██ |  ██ |██ |  ██ |██  __██ | ██ |██\ ██   ____|
+███████  |  \████  |\███████ | \████  |\███████\       \██████  |███████  |\███████ |\███████ | \████  |\███████\
+\_______/    \____/  \_______|  \____/  \_______|██████\\______/ ██  ____/  \_______| \_______|  \____/  \_______|
+                                                 \______|        ██ |
+                                                                 ██ |
+                                                                 \__|
+
+
+|-----------+-------+------------------------------+-------+----------+----------+--------+-------------+-------------+----------+----------------+-------------------+-------+-----------------------------------|
+| Row index | SCNRI | scenario/nontrivial_non_mxpx | COMPN | WCP_FLAG | EUC_FLAG | INST   | ARG_1_HI    | ARG_1_LO    | ARG_2_HI | ARG_2_LO       | RES_A             | RES_B | Notes                             |
+|-----------+-------+------------------------------+-------+----------+----------+--------+-------------+-------------+----------+----------------+-------------------+-------+-----------------------------------|
+| i         | true  | true                         |       |          |          |        |             |             |          |                |                   |       |                                   |
+|-----------+-------+------------------------------+-------+----------+----------+--------+-------------+-------------+----------+----------------+-------------------+-------+-----------------------------------|
+| i + 1     |       |                              | true  | true     |          | ISZERO | size_1_hi   | size_1_lo   |          |                | size_1_iszero     | ∅     | at least one of the               |
+| i + 2     |       |                              | true  | true     |          | ISZERO | size_2_hi   | size_2_lo   |          |                | size_2_iszero     | ∅     | sizes must be nonzero             |
+|-----------+-------+------------------------------+-------+----------+----------+--------+-------------+-------------+----------+----------------+-------------------+-------+-----------------------------------|
+| i + 3     |       |                              | true  | true     |          | LT     | size_1_hi   | size_1_lo   | 0        | MXPX_THRESHOLD | size_1_is_small   | ∅     | we require that neither           |
+| i + 4     |       |                              | true  | true     |          | LT     | size_2_hi   | size_2_lo   | 0        | MXPX_THRESHOLD | size_2_is_small   | ∅     | of the MXPX conditions            |
+| i + 5     |       |                              | true  | true     |          | LT     | offset_1_hi | offset_1_lo | 0        | MXPX_THRESHOLD | offset_1_is_small | ∅     | is fulfilled, see below           |
+| i + 6     |       |                              | true  | true     |          | LT     | offset_2_hi | offset_2_lo | 0        | MXPX_THRESHOLD | offset_2_is_small | ∅     |                                   |
+|-----------+-------+------------------------------+-------+----------+----------+--------+-------------+-------------+----------+----------------+-------------------+-------+-----------------------------------+--------------------------|
+| i + 7     |       |                              | true  | true     |          | LT     | 0           | max_1       | 0        | max_2          | use_params_2      |       |                                   |                          |
+| i + 8     |       |                              | true  |          | true     |        |             | max_offset  |          | 32             | floor             |       | we compute floor(max_offset / 32) | this computation is      |
+| i + 9     |       |                              | true  |          | true     |        |             | a * a       |          | 512            | quadratic         |       | .   a ≡ floor + 1                 | common to all nontrivial |
+| i + 10    |       |                              | true  |          |          | LT     | 0           | words       | 0        | a              | update            |       | .   words ≡ WORDS[i]              | and non MXPX cases       |
+|-----------+-------+------------------------------+-------+----------+----------+--------+-------------+-------------+----------+----------------+-------------------+-------+-----------------------------------+--------------------------|
+
+We define
+
+    max_1        ≡ offset_1 + size_1                 // is ≥ 0 !
+    max_2        ≡ offset_2 + size_2                 // is ≥ 0 !
+    use_params_2 ≡   [max_1 < max_2]
+    use_params_1 ≡ ¬ [max_1 < max_2]
+
+    max_offset_1 ≡ offset_1 + size_1 - 1             // one could be == -1 ...
+    max_offset_2 ≡ offset_2 + size_2 - 1             // one could be == -1 ...
+    max_offset   ≡ | If use_params_1 Then max_offset_1
+                   | If use_params_2 Then max_offset_2
+                 ≡ max(max_offset_1, max_offset_2)   // the ``true'' max offset in all cases
+
+\end{verbatim}
+\end{document}

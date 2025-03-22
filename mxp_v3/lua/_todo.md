@@ -1,0 +1,3 @@
+- update all the columns
+    - computation/RES_A and computation/RES_B being replaced by computation/RES ... though maybe not, leaving the logic to the EUC module and importing both the ceiling and the floor will make the presentation more transaparent.
+    - scenario/FIXED_SIZE disappears
