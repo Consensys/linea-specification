@@ -92,8 +92,8 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
      - OOB:
         - input length: 
             ```
-            cds == 0?
-            k LEQ 128?
+            k > 0 (cds != 0)
+            k <= 128 or k > 128 (to determine PRC_G1MSM_DISCOUNT(k))
             PRC_G1MSM_SIZE = 160
             PRC_G1MSM_SIZE * k
             ```
@@ -134,8 +134,8 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
     - OOB:
         - input length: $288 \cdot k$ bytes
             ```
-            cds == 0?
-            k LEQ 128?
+            k > 0 (cds != 0)
+            k <= 128 or k > 128 (to determine PRC_G2MSM_DISCOUNT(k))
             PRC_G2MSM_SIZE = 288
             PRC_G2MSM_SIZE * k
             ```
@@ -161,7 +161,7 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
     - OOB:
         - input length: 
             ```
-            cds == 0?
+            k > 0 (cds != 0)
             PRC_BLS12_PAIRING_SIZE = 384
             PRC_BLS12_PAIRING_SIZE * k
             ```
@@ -220,12 +220,17 @@ Beyond creating an new BLS module (and BLS_REFTABLE), the following existing mod
 
 ```
 HUB  - is it a precomopile?           -> TRM
+
 HUB  - cds is valid? gas is enough?   -> OOB
-If necessary?
+
+If necessary:
 OOB  - discount for MSM?              -> BLS_REFTABLE
+
 If it makes sense:
 HUB  -                                -> MMU  
+
 MMU  -                                -> MMIO
+
 If it makes sense:
 MMIO -                                -> BLS
 ```
@@ -300,22 +305,27 @@ so as to prove non-membership. Note that in the first case we prove C2 non-membe
 - BLS12_MAP_FP_TO_G1: no circuit needed.
 - BLS12_MAP_FP2_TO_G2: no circuit needed.
 
-@TODO: clarify if there is some restriction over the circuits for mapping
-
 ### Success case (assuming ICP = 1 and NOT_ON_C1_MAX = NOT_ON_C2_MAX = NOT_ON_G1_MAX = NOT_ON_G2_MAX = 0 and SUCCESS_BIT = 1)
 
-- BLS12_G1ADD: send to C1_MEMBERSHIP circuits all points so as to prove membership to C1, then send them to G1_ADD circuit
-- BLS12_G1MSM: send to G1_MEMBERSHIP circuits all points so as to prove membership to C1 and G1, then send them to G1_MSM circuit.
-- BLS12_G2ADD: send to C2_MEMBERSHIP circuits all points so as to prove membership to C2, then send them to G2_ADD circuit.
-- BLS12_G2MSM: send to G2_MEMBERSHIP circuits all points so as to prove membership to C2 and G2, then send them to G2_MSM circuit.
+- BLS12_G1ADD: send points to G1_ADD circuit (C1 membership is included).
+- BLS12_G1MSM: send points to G1_MSM circuit (C1 and G1 memberships are included). 
+- BLS12_G2ADD: send points to G2_ADD circuit (C2 membership is included).
+- BLS12_G2MSM: send points to G2_MSM circuit (C2 and G2 memberships are included). 
 - BLS12_PAIRING_CHECK: 
-    - If all points are trivial (small and large point are at infinity) do nothing.
-    - If small point is trivial, then send large point to G2_MEMBERSHIP circuit to prove membership to C2 and G2.
-    - If large point is trivial, then send small point to G1_MEMBERSHIP circuit to prove membership to C1 and G1.
-    - If neither small nor large points are trivial, send the pair to the PAIRING circuit. 
+    - If all pair of points are trivial (small and large point are at infinity) do nothing.
+    For every pair of point:
+        - If small point is at infinity, then send large point to G2_MEMBERSHIP circuit to prove membership to C2 and G2.
+        - If large point is at infinity, then send small point to G1_MEMBERSHIP circuit to prove membership to C1 and G1.
+        - If pair of point is non-trivial (neither the small point nor the large are at infinity) , send the pair to the PAIRING circuit. 
 - BLS12_MAP_FP_TO_G1: send field element to MAP_FP_TO_G1 circuit.
 - BLS12_MAP_FP2_TO_G2: send field element to MAP_FP2_TO_G2 circuit.
 
-@TODO: clarify if the circuit for G1_ADD already does the check? Similarly, for the others?
+## Properties of circuits
 
-@TODO: write a clear section with all the things we can assume based on the functioning of the circuits (e.g., checks performed before the actual operation by the same circuit).
+- Proving C1 and C2 membership or non-membership is cheaper than proving G1 and G2 membership or non-membership, respectively.
+- G1_ADD circuit includes C1 membership check.
+- G1_MSM circuit includes C1 and G1 membership check.
+- G2_ADD circuit includes C2 membership check.
+- G2_MSM circuit includes C2 and G2 membership check.
+- PAIRING circuit accepts only non-trivial pair of points.
+- Points at infinity be detected on the arithmetization side and never be sent to a circuit.
