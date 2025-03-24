@@ -92,6 +92,8 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
      - OOB:
         - input length: 
             ```
+            cds == 0?
+            k LEQ 128?
             PRC_G1MSM_SIZE = 160
             PRC_G1MSM_SIZE * k
             ```
@@ -109,7 +111,7 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
             gas_cost = k * PRC_G1MSM_MULTIPLICATION_COST * PRC_G1MSM_DISCOUNT(k) // PRC_G1MSM_MULTIPLIER;
             where // is integer division
             ```
-            We use floor division to get the number of pairs. If the length of the input is not divisible by `PRC_G1MSM_SIZE` we still produce some result, but later on the precompile will return an error. Also, the case when $k = 0$ is safe: `CALL` or `STATICCALL` cost is non-zero, and the case with formal zero gas cost is already used in BLAKE2F precompile (@TODO: clarify this). In any case, the main precompile routine must produce an error on such an input because it violated encoding rules. This holds also for BLS12_G2MSM.
+            We use floor division to get the number of pairs. If the length of the input is not divisible by `PRC_G1MSM_SIZE` we still produce some result, but later on the precompile will return an error. Also, the case when $k = 0$ will make hub_success = 0 (see OOB). In any case, the main precompile routine must produce an error on such an input because it violated encoding rules. This holds also for BLS12_G2MSM.
     - BLS
         - coordinate encoding
         - point at infinity
@@ -132,6 +134,8 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
     - OOB:
         - input length: $288 \cdot k$ bytes
             ```
+            cds == 0?
+            k LEQ 128?
             PRC_G2MSM_SIZE = 288
             PRC_G2MSM_SIZE * k
             ```
@@ -155,7 +159,12 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
         - $\mathbb{C}_2$ and $\mathbb{G}_2$ mermbership 
 - BLS12_PAIRING_CHECK $(\mathbb{G_1} \times \mathbb{G_2})^k$ ($384 \cdot k$ bytes) $\rightarrow \{0,1\}$ (right padded to 32 bytes) with $k > 0$    
     - OOB:
-        - input length: $384 \cdot k$ bytes
+        - input length: 
+            ```
+            cds == 0?
+            PRC_BLS12_PAIRING_SIZE = 384
+            PRC_BLS12_PAIRING_SIZE * k
+            ```
         - gas check:
             ```
             PRC_BLS12_PAIRING_SIZE = 384
@@ -165,6 +174,7 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
             gas_cost = GAS_CONST_BLS12_PAIRING_PAIR*k + GAS_CONST_BLS12_PAIRING;
             ```
             We use floor division to get the number of pairs. If the length of the input is not divisible by `PRC_BLS12_PAIRING_SIZE` we still produce some result, but later on the precompile will return an error (the precompile routine must produce an error on such an input because it violated encoding rules).
+            We want both the input length and gas check being performed in the same OOB operation. Moreover, we want to follow the same approach of OOB_INST_ECPAIRING in case cds is not a multiple of 384 bytes, that is the return_gas = 0 (all of it is consumed).
     - BLS
         - coordinate encoding
         - point at infinity
@@ -290,7 +300,9 @@ so as to prove non-membership. Note that in the first case we prove C2 non-membe
 - BLS12_MAP_FP_TO_G1: no circuit needed.
 - BLS12_MAP_FP2_TO_G2: no circuit needed.
 
-### Success case (assuming ICP = 1 and NOT_ON_G1_MAX = NOT_ON_G2_MAX = 0)
+@TODO: clarify if there is some restriction over the circuits for mapping
+
+### Success case (assuming ICP = 1 and NOT_ON_C1_MAX = NOT_ON_C2_MAX = NOT_ON_G1_MAX = NOT_ON_G2_MAX = 0 and SUCCESS_BIT = 1)
 
 - BLS12_G1ADD: send to C1_MEMBERSHIP circuits all points so as to prove membership to C1, then send them to G1_ADD circuit
 - BLS12_G1MSM: send to G1_MEMBERSHIP circuits all points so as to prove membership to C1 and G1, then send them to G1_MSM circuit.
@@ -303,3 +315,7 @@ so as to prove non-membership. Note that in the first case we prove C2 non-membe
     - If neither small nor large points are trivial, send the pair to the PAIRING circuit. 
 - BLS12_MAP_FP_TO_G1: send field element to MAP_FP_TO_G1 circuit.
 - BLS12_MAP_FP2_TO_G2: send field element to MAP_FP2_TO_G2 circuit.
+
+@TODO: clarify if the circuit for G1_ADD already does the check? Similarly, for the others?
+
+@TODO: write a clear section with all the things we can assume based on the functioning of the circuits (e.g., checks performed before the actual operation by the same circuit).
