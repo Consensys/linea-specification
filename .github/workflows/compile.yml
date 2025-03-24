@@ -2,6 +2,7 @@ name: Build & Upload the Specification
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   archive-build-spec:
@@ -25,7 +26,7 @@ jobs:
       - name: Compile Specification
         run: make ospec
       - name: Upload the Specification
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: specification.pdf
           path: spec/_all_spec.pdf
