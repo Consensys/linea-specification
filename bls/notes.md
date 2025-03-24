@@ -109,6 +109,7 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
             gas_cost = k * PRC_G1MSM_MULTIPLICATION_COST * PRC_G1MSM_DISCOUNT(k) // PRC_G1MSM_MULTIPLIER;
             where // is integer division
             ```
+            We use floor division to get the number of pairs. If the length of the input is not divisible by `PRC_G1MSM_SIZE` we still produce some result, but later on the precompile will return an error. Also, the case when $k = 0$ is safe: `CALL` or `STATICCALL` cost is non-zero, and the case with formal zero gas cost is already used in BLAKE2F precompile (@TODO: clarify this). In any case, the main precompile routine must produce an error on such an input because it violated encoding rules. This holds also for BLS12_G2MSM.
     - BLS
         - coordinate encoding
         - point at infinity
@@ -163,6 +164,7 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
             GAS_CONST_BLS12_PAIRING_PAIR = 32600
             gas_cost = GAS_CONST_BLS12_PAIRING_PAIR*k + GAS_CONST_BLS12_PAIRING;
             ```
+            We use floor division to get the number of pairs. If the length of the input is not divisible by `PRC_BLS12_PAIRING_SIZE` we still produce some result, but later on the precompile will return an error (the precompile routine must produce an error on such an input because it violated encoding rules).
     - BLS
         - coordinate encoding
         - point at infinity
