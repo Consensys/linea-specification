@@ -102,10 +102,14 @@ To this end We impose the following constraints
 			\end{array} \right.
 		\]
 
-	\def\nRows{\rowOffsetPrcAddr}\item[\underline{\underline{Processing row $n^\circ(\nRows)$:}} \underline{Justifying the $\isPrecompile$ flag:}]
+	\def\nRows{\rowOffsetPrcAddr}\item[\underline{Justifying the $\isPrecompile$ flag:}]
 		we impose that
 		\[
-			\isPrecompile_{i} = \locAddressIsNonzero \cdot \locAddressIsAtMostMaxPrecompileAddress
+			\isPrecompile_{i} =
+			\left[ \begin{array}{cl}
+				\cdot & \locAddressIsNonzero                    \\
+				\cdot & \locAddressIsAtMostMaxPrecompileAddress \\
+			\end{array} \right]
 		\]
 		\saNote{}
 		The above enforces the expected behaviour that $\isPrecompile \equiv 1$ \emph{iff} the trimmed address is in the range $\{1, 2, \dots, \maxPrecompileAddressName \}$.
