@@ -182,8 +182,14 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
         - coordinate encoding
 - BLS12_MAP_FP2_TO_G2 $\mathbb{F}_{p^2}$ (128 bytes) $\rightarrow \mathbb{G_2}$ (256 bytes)
     - OOB:
-        - input length: 128 bytes
-        - gas check: 23800 gas
+        - input length:
+            ```
+            PRC_MAP_FP2_TO_G2_SIZE = 128
+            ```
+        - gas check: 
+            ```
+            GAS_CONST_MAP_FP2_TO_G2 = 23800
+            ```
     - BLS
         - coordinate encoding
 
