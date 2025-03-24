@@ -3,24 +3,32 @@
 		byte column containing an opcode;
 	\item $\mxpDecoderIsMsize$:
 		binary column;
-	\item $\mxpDecoderIsFixedSizeThirtyTwo$:
-		binary column;
-	\item $\mxpDecoderIsFixedSizeOne$:
-		binary column;
+		lights up precisely for the \inst{MSIZE} instruction;
 	\item $\mxpDecoderIsReturn$:
 		binary column;
-	\item $\mxpDecoderIsCall$:
-		binary column;
+		lights up precisely for the \inst{RETURN} instruction;
 	\item $\mxpDecoderIsMcopy$:
 		binary column;
+		lights up precisely for the \inst{MCOPY} instruction;
+	\item $\mxpDecoderIsFixedSizeThirtyTwo$:
+		binary column;
+		lights up precisely for \inst{MLOAD} and \inst{MSTORE};
+	\item $\mxpDecoderIsFixedSizeOne$:
+		binary column;
+		lights up precisely for \inst{MSTORE8};
 	\item $\mxpDecoderIsSingleMaxOffset$:
 		binary column;
+		lights up precisely for instructions producing a single ``max offset'' in memory;
 	\item $\mxpDecoderIsDoubleMaxOffset$:
 		binary column;
+		lights up precisely for instructions producing two ``max offsets'' in memory;
+		these are the \inst{CALL}-type instructions and \inst{MCOPY};
 	\item $\mxpDecoderIsWordPricing$:
 		binary column;
+		lights up precisely for the instructions which feature a linear-in-words extra cost on top of the memory expansion cost proper;
 	\item $\mxpDecoderIsBytePricing$:
 		binary column;
+		lights up precisely for the instructions which feature a linear-in-bytes extra cost on top of the memory expansion cost proper;
 	\item $\mxpDecoderGWord$:
 		contains a ``cost per \evm{} word'' applicable to the instruction;
 	\item $\mxpDecoderGByte$:
