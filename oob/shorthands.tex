@@ -35,7 +35,17 @@ We use the following shorthands
 			+ & \oobInstIsModexpLead        _{i}  \\
 			+ & \oobInstIsModexpPricing     _{i}  \\
 			+ & \oobInstIsModexpExtract     _{i}  \\
-		\end{array} \right]
+		\end{array} \right] \vspace{2mm} \\
+		\locPrcFlagSumBls_{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \oobInstIsBlsGOneAdd       _{i}  \\
+			+ & \oobInstIsBlsGOneMsm       _{i}  \\
+			+ & \oobInstIsBlsGTwoAdd       _{i}  \\
+			+ & \oobInstIsBlsGTwoMsm       _{i}  \\
+			+ & \oobInstIsBlsPairingCheck  _{i}  \\
+			+ & \oobInstIsBlsMapFpToGOne   _{i}  \\
+			+ & \oobInstIsBlsMapFpTwoToGTwo_{i}  \\
+		\end{array} \right]		
 	\end{array} \right.
 \]
 we also set
@@ -46,6 +56,7 @@ we also set
 			+ & \locPrcFlagSumCommon_{i} \\
 			+ & \locPrcFlagSumBlake_{i}  \\
 			+ & \locPrcFlagSumModexp_{i} \\
+			+ & \locPrcFlagSumBls_{i}    \\
 		\end{array} \right] \vspace{2mm} \\
 		\flagSum_{i}       & \define & 
 		\left[ \begin{array}{cl}
@@ -59,38 +70,48 @@ and
 	\left\{ \begin{array}{lcl}
 		\weightedFlagSumInst_{i} & \define &
 		\left[ \begin{array}{crcl}
-			+ & \oobInstJump       & \cdot & \oobInstIsJump        _{i} \\
-			+ & \oobInstJumpI      & \cdot & \oobInstIsJumpI       _{i} \\
-			+ & \oobInstRdc        & \cdot & \oobInstIsRdc         _{i} \\
-			+ & \oobInstCdl        & \cdot & \oobInstIsCdl         _{i} \\
-			+ & \oobInstXcall      & \cdot & \oobInstIsXcall       _{i} \\
-			+ & \oobInstCall       & \cdot & \oobInstIsCall        _{i} \\
-			+ & \oobInstCreate     & \cdot & \oobInstIsCreate      _{i} \\
-			+ & \oobInstSstore     & \cdot & \oobInstIsSstore      _{i} \\
-			+ & \oobInstDeployment & \cdot & \oobInstIsDeployment  _{i} \\
+			+ & \oobInstJump       & \cdot & \oobInstIsJump                  _{i} \\
+			+ & \oobInstJumpI      & \cdot & \oobInstIsJumpI                 _{i} \\
+			+ & \oobInstRdc        & \cdot & \oobInstIsRdc                   _{i} \\
+			+ & \oobInstCdl        & \cdot & \oobInstIsCdl                   _{i} \\
+			+ & \oobInstXcall      & \cdot & \oobInstIsXcall                 _{i} \\
+			+ & \oobInstCall       & \cdot & \oobInstIsCall                  _{i} \\
+			+ & \oobInstCreate     & \cdot & \oobInstIsCreate                _{i} \\
+			+ & \oobInstSstore     & \cdot & \oobInstIsSstore                _{i} \\
+			+ & \oobInstDeployment & \cdot & \oobInstIsDeployment            _{i} \\
 		\end{array} \right] \vspace{2mm} \\
 		\weightedPrcFlagSumCommon_{i} & \define &
 		\left[ \begin{array}{crcl}
-			+ & \oobInstEcrecover     & \cdot & \oobInstIsEcrecover_{i}           \\
-			+ & \oobInstShaTwo        & \cdot & \oobInstIsShaTwo_{i}              \\
-			+ & \oobInstRipemd        & \cdot & \oobInstIsRipemd_{i}              \\
-			+ & \oobInstIdentity      & \cdot & \oobInstIsIdentity_{i}            \\
-			+ & \oobInstEcadd         & \cdot & \oobInstIsEcadd_{i}               \\
-			+ & \oobInstEcmul         & \cdot & \oobInstIsEcmul_{i}               \\
-			+ & \oobInstEcpairing     & \cdot & \oobInstIsEcpairing_{i}           \\
+			+ & \oobInstEcrecover     & \cdot & \oobInstIsEcrecover          _{i} \\
+			+ & \oobInstShaTwo        & \cdot & \oobInstIsShaTwo             _{i} \\
+			+ & \oobInstRipemd        & \cdot & \oobInstIsRipemd             _{i} \\
+			+ & \oobInstIdentity      & \cdot & \oobInstIsIdentity           _{i} \\
+			+ & \oobInstEcadd         & \cdot & \oobInstIsEcadd              _{i} \\
+			+ & \oobInstEcmul         & \cdot & \oobInstIsEcmul              _{i} \\
+			+ & \oobInstEcpairing     & \cdot & \oobInstIsEcpairing          _{i} \\
 		\end{array} \right] \vspace{2mm} \\
 		\weightedPrcFlagSumBlake_{i} & \define &
 		\left[ \begin{array}{crcl}
-			+ & \oobInstBlakeCds      & \cdot & \oobInstIsBlakeCds    _{i}            \\
-			+ & \oobInstBlakeParams   & \cdot & \oobInstIsBlakeParams _{i}            \\
+			+ & \oobInstBlakeCds      & \cdot & \oobInstIsBlakeCds           _{i} \\
+			+ & \oobInstBlakeParams   & \cdot & \oobInstIsBlakeParams        _{i} \\
 		\end{array} \right] \vspace{2mm} \\
 		\weightedPrcFlagSumModexp_{i} & \define &
 		\left[ \begin{array}{crcl}
-			+ & \oobInstModexpCds      & \cdot & \oobInstIsModexpCds           _{i}  \\
-			+ & \oobInstModexpXbs      & \cdot & \oobInstIsModexpXbs           _{i}  \\
-			+ & \oobInstModexpLead     & \cdot & \oobInstIsModexpLead          _{i}  \\
-			+ & \oobInstModexpPricing  & \cdot & \oobInstIsModexpPricing       _{i}  \\
-			+ & \oobInstModexpExtract  & \cdot & \oobInstIsModexpExtract       _{i}  \\
+			+ & \oobInstModexpCds      & \cdot & \oobInstIsModexpCds         _{i}  \\
+			+ & \oobInstModexpXbs      & \cdot & \oobInstIsModexpXbs         _{i}  \\
+			+ & \oobInstModexpLead     & \cdot & \oobInstIsModexpLead        _{i}  \\
+			+ & \oobInstModexpPricing  & \cdot & \oobInstIsModexpPricing     _{i}  \\
+			+ & \oobInstModexpExtract  & \cdot & \oobInstIsModexpExtract     _{i}  \\
+		\end{array} \right] \vspace{2mm} \\
+		\weightedPrcFlagSumBls_{i} & \define &
+		\left[ \begin{array}{crcl}
+			+ & \oobInstBlsGOneAdd         & \cdot & \oobInstIsBlsGOneAdd         _{i}  \\
+			+ & \oobInstBlsGOneMsm         & \cdot & \oobInstIsBlsGOneMsm         _{i}  \\
+			+ & \oobInstBlsGTwoAdd         & \cdot & \oobInstIsBlsGTwoAdd         _{i}  \\
+			+ & \oobInstBlsGTwoMsm         & \cdot & \oobInstIsBlsGTwoMsm         _{i}  \\
+			+ & \oobInstBlsPairingCheck    & \cdot & \oobInstIsBlsPairingCheck    _{i}  \\
+			+ & \oobInstBlsMapFpToGOne     & \cdot & \oobInstIsBlsMapFpToGOne     _{i}  \\
+			+ & \oobInstBlsMapFpTwoToGTwo  & \cdot & \oobInstIsBlsMapFpTwoToGTwo  _{i}  \\
 		\end{array} \right]
 	\end{array} \right.
 \]
@@ -102,6 +123,7 @@ and
 			+ & \weightedPrcFlagSumCommon_{i} \\
 			+ & \weightedPrcFlagSumBlake_{i}  \\
 			+ & \weightedPrcFlagSumModexp_{i} \\
+			+ & \weightedPrcFlagSumBls_{i}    \\
 		\end{array} \right] \vspace{2mm} \\
 		\weightedFlagSum_{i}       & \define & 
 		\left[ \begin{array}{cl}
@@ -139,11 +161,18 @@ where
 and
 \[
 	\left\{ \begin{array}{lclcr}
-		\oobInstModexpCds      & \define &   \oxModexpCds       \\
-		\oobInstModexpXbs      & \define &   \oxModexpXbs       \\
-		\oobInstModexpLead     & \define &   \oxModexpLead      \\
-		\oobInstModexpPricing  & \define &   \oxModexpPricing   \\
-		\oobInstModexpExtract  & \define &   \oxModexpExtract   \\
+		\oobInstModexpCds         & \define &   \oxModexpCds         \\
+		\oobInstModexpXbs         & \define &   \oxModexpXbs         \\
+		\oobInstModexpLead        & \define &   \oxModexpLead        \\
+		\oobInstModexpPricing     & \define &   \oxModexpPricing     \\
+		\oobInstModexpExtract     & \define &   \oxModexpExtract     \\
+		\oobInstBlsGOneAdd        & \define &   \oxBlsGOneAdd        \\
+		\oobInstBlsGOneMsm        & \define &   \oxBlsGOneMsm        \\
+		\oobInstBlsGTwoAdd        & \define &   \oxBlsGTwoAdd        \\
+		\oobInstBlsGTwoMsm        & \define &   \oxBlsGTwoMsm        \\
+		\oobInstBlsPairingCheck   & \define &   \oxBlsPairingCheck   \\
+		\oobInstBlsMapFpToGOne    & \define &   \oxBlsMapFpToGOne    \\
+		\oobInstBlsMapFpTwoToGTwo & \define &   \oxBlsMapFpTwoToGTwo \\
 	\end{array} \right.
 \]
 \saNote{} In the above we use the notation $\oxXcall$, $\oxCall$,  $\oxCreate$, $\oxEcrecover$, \dots, $\oxBlakeParams$ as \textbf{placeholders} for some actual, fixed values.
@@ -186,6 +215,16 @@ We further set
 			+ & \oobCtMaxModexpLead         & \cdot & \oobInstIsModexpLead         _{i}   \\
 			+ & \oobCtMaxModexpPricing      & \cdot & \oobInstIsModexpPricing      _{i}   \\
 			+ & \oobCtMaxModexpExtract      & \cdot & \oobInstIsModexpExtract      _{i}   \\
+		\end{array} \right] \vspace{2mm} \\
+		\maxCtFlagSumPrcBls_{i} & \define &
+		\left[ \begin{array}{crcl}
+			+ & \oobCtMaxBlsGOneAdd        & \cdot & \oobInstIsBlsGOneAdd        _{i}   \\
+			+ & \oobCtMaxBlsGOneMsm        & \cdot & \oobInstIsBlsGOneMsm        _{i}   \\
+			+ & \oobCtMaxBlsGTwoAdd        & \cdot & \oobInstIsBlsGTwoAdd        _{i}   \\
+			+ & \oobCtMaxBlsGTwoMsm        & \cdot & \oobInstIsBlsGTwoMsm        _{i}   \\
+			+ & \oobCtMaxBlsPairingCheck   & \cdot & \oobInstIsBlsPairingCheck   _{i}   \\
+			+ & \oobCtMaxBlsMapFpToGOne    & \cdot & \oobInstIsBlsMapFpToGOne    _{i}   \\
+			+ & \oobCtMaxBlsMapFpTwoToGTwo & \cdot & \oobInstIsBlsMapFpTwoToGTwo _{i}   \\
 		\end{array} \right]
 	\end{array} \right.
 \]
@@ -197,6 +236,7 @@ and
 			+ & \maxCtFlagSumPrcCommon_{i} \\
 			+ & \maxCtFlagSumPrcBlake_{i}  \\
 			+ & \maxCtFlagSumPrcModexp_{i} \\
+			+ & \maxCtFlagSumPrcBls_{i}    \\
 		\end{array} \right] \vspace{2mm} \\
 		\maxCtFlagSum_{i}       & \define & 
 		\left[ \begin{array}{cl}
@@ -240,9 +280,18 @@ where
         \oobCtMaxModexpLead     & \define & 3 \\
         \oobCtMaxModexpPricing  & \define & 5 \\
         \oobCtMaxModexpExtract  & \define & 3 \\
-    \end{array} \right.
+    \end{array} \right. \\
+	\left\{ \begin{array}{lcl}
+		\oobCtMaxBlsGOneAdd        & \define &  2 \\
+		\oobCtMaxBlsGOneMsm        & \define &  3 \\
+		\oobCtMaxBlsGTwoAdd        & \define &  2 \\
+		\oobCtMaxBlsGTwoMsm        & \define &  3 \\
+		\oobCtMaxBlsPairingCheck   & \define &  3 \\
+		\oobCtMaxBlsMapFpToGOne    & \define &  2 \\
+		\oobCtMaxBlsMapFpTwoToGTwo & \define &  2 \\ % double check
+	\end{array} \right.
 \end{array}
-\]
+\] 
 
 We consider the following shorthands:
 \[
