@@ -1,3 +1,53 @@
 \[
 	\boxed{\text{All constraints in this subsection further assume } \oobInstIsBlsMapFpToGOne = 1}
 \]
+
+We use the shorthands defined below:
+\[
+	\left\{ \begin{array}{lclr}
+		\locCalleeGas    & \define & \oobDataCol {1} _{i} \\
+		\locCds          & \define & \oobDataCol {2} _{i} \\
+		%                & \define & \oobDataCol {3} _{i} \\
+		\locHubSuccess   & \define & \oobDataCol {4} _{i}  & \prediction \\
+		%                & \define & \oobDataCol {5} _{i} \\
+		%                & \define & \oobDataCol {6} _{i} \\
+		%                & \define & \oobDataCol {7} _{i} \\
+		%                & \define & \oobDataCol {8} _{i}  & \prediction \\
+	\end{array} \right.
+\]
+\saNote{} The decorator `` $\prediction{}$ '' stands for ``\hubMod{} prediction.''
+
+We impose the following constraints:
+\begin{description}
+	\item[\underline{Rows n°$(i)$ and n°$(i + 1)$:}]
+		we impose the following:
+		\[
+			\left\{ \begin{array}{l}
+				\oobCallToEq
+				{i}{0}
+				{0}{\locCds}
+				{0}{64}
+				\vspace{2mm} \\
+                \oobCallToLt
+                {i}{0}
+                {0}{\locCalleeGas}
+                {0}{5500} % TODO: use constant
+				\\
+			\end{array} \right.
+		\]
+		we then set the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locValidCds      & \define & \outgoingResLo  _{i    } \\
+				\locSufficientGas & \define & \outgoingResLo  _{i + 1} \\
+			\end{array} \right.
+		\]
+		It follows that $\locValidCds = 1 \iff \locCds = 5500$.
+	\item[\underline{Justifying \hubMod{} predictions:}]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\locHubSuccess   & = & ... \\
+			\end{array} \right.
+		\]
+\end{description}
