@@ -1,9 +1,12 @@
 \item[\underline{\underline{Row n$°(i + \transactionFloorCostRowOffset)$: gas limit must cover the transaction floor cost:}}]
 	we introduce the following shorthand plus constraint
 	\[
-		\left\{ \begin{array}{l}
-			\locTransactionFloorCost \define \argOneLo _{i + \transactionFloorCostRowOffset} \vspace{2mm} \\
-			\standardTokenCost \cdot \locTransactionFloorCost = \floorTokenCost \cdot \locDataCost        \\
+		\left\{ \begin{array}{lcl}
+			\multicolumn{3}{l}{\standardTokenCost \cdot \locTransactionFloorCost = \floorTokenCost \cdot \locDataCost } \vspace{2mm} \\
+			\standardTokenCost         & \define & \redm{ 4}                                       \\
+			\floorTokenCost            & \define & \redm{10}                                       \\
+			\locTransactionFloorCost   & \define & \argOneLo _{i + \transactionFloorCostRowOffset} \\
+			\locRefundFromTransactionFloorCost & \define & \locGasLimit - \locTransactionFloorCost         \\
 		\end{array} \right.
 	\]
 	and we impose
@@ -32,8 +35,8 @@
 			\locDataCost               & \define & \floorTokenCost    \cdot \weightedTokenCount \vspace{2mm} \\
 			\weightedTokenCount & \define & \multicolumn{1}{l}{\displaystyle \sum_{i \in T_\textbf{i}, T_\textbf{d}} ~
 			\begin{cases}
-				G_\text{txdatazero}    & \text{if } i =    0 \\
-				G_\text{txdatanonzero} & \text{otherwise}    \\
+				~ 1 & \text{if } i =    0 \\
+				~ 4 & \text{otherwise}    \\
 			\end{cases}}
 		\end{array} \right.
 	\]
