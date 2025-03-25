@@ -19,24 +19,13 @@ We use the shorthands defined below:
 
 We impose the following constraints:
 \begin{description}
-	\item[\underline{Row n°$(i)$:}]
-		we impose that
-		\[
-			\oobCallToIszero
-			{i}{0}
-			{0}{\locCds}
-		\]
-		and we define the following shorthand
-		\[
-			\locCdsIsZero \define \outgoingResLo_{i}
-		\]
 	\item[\underline{Row n°$(i + 1)$:}]
 		we impose that
 		\[
 			\oobCallToMod
 			{i}{1}
 			{0}{\locCds}
-			{0}{160}
+			{0}{...}
 		\]
 		and we define the following shorthand
 		\[
@@ -51,13 +40,13 @@ We impose the following constraints:
 		\]
 		and we define the following shorthand
 		\[
-			\locGOneMsmSizeIsMultiple \define \outgoingResLo_{i + 2}
+			\locMsmSizeIsMultiple \define \outgoingResLo_{i + 2}
 		\]
 	\item[\underline{Row n°$(i + 3)$:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locGOneMsmSizeIsMultiple = 0$ \Then we impose $\oobNoCall{i}{3}$.
-			\item \If $\locGOneMsmSizeIsMultiple = 1$ \Then we impose that
+			\item \If $\locMsmSizeIsMultiple = 0$ \Then we impose $\oobNoCall{i}{3}$.
+			\item \If $\locMsmSizeIsMultiple = 1$ \Then we impose that
 				\[
 					\oobCallToDiv
 					{i}{3}
@@ -72,24 +61,24 @@ We impose the following constraints:
 	\item[\underline{Row n°$(i + 4)$:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locGOneMsmSizeIsMultiple = 0$ \Then we impose $\oobNoCall{i}{3}$.
-			\item \If $\locGOneMsmSizeIsMultiple = 1$ \Then we impose that
+			\item \If $\locMsmSizeIsMultiple = 0$ \Then we impose $\oobNoCall{i}{3}$.
+			\item \If $\locMsmSizeIsMultiple = 1$ \Then we impose that
 				\[
-					\oobCallToLt
+					\oobCallToGt
 					{i}{4}
 					{0}{\locNumberOfInputs}
-					{0}{128 + 1}
+					{0}{128}
 				\]
 				and we define the following shorthand
 				\[
-					\locNumberOfMsmInputsLeqThreshold \define \outgoingResLo_{i + 4}
+					\locNumberOfMsmInputsLeqThreshold \define 1 - \outgoingResLo_{i + 4}
 				\]
 		\end{enumerate}
 	\item[\underline{Row n°$(i + 5)$:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locGOneMsmSizeIsMultiple = 0$ \Then we impose $\oobNoCall{i}{5}$.
-			\item \If $\locGOneMsmSizeIsMultiple = 1$ \Then we impose that
+			\item \If $\locMsmSizeIsMultiple = 0$ \Then we impose $\oobNoCall{i}{5}$.
+			\item \If $\locMsmSizeIsMultiple = 1$ \Then we impose that
 				\[
 					\oobCallToLt
 					{i}{5}
@@ -110,7 +99,7 @@ We impose the following constraints:
 		we impose that
 		\[
 			\locHubSuccess =
-			\locGOneMsmSizeIsMultiple \cdot
+			\locMsmSizeIsMultiple \cdot
 			(1 - \locInsufficientGas)
 		\]
 		we further impose that

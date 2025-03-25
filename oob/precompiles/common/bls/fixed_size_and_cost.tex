@@ -1,5 +1,11 @@
 \[
-	\boxed{\text{All constraints in this subsection further assume } \oobInstIsBlsGOneAdd = 1}
+\boxed{
+	\text{All constraints in this subsection further assume} 
+	\begin{array}{lcl}
+		\oobInstIsBlsGOneAdd     & + & \oobInstIsBlsGTwoAdd \\
+		\oobInstIsBlsMapFpToGOne & + & \oobInstIsBlsMapFpTwoToGTwo = 1 \\
+	\end{array}
+}
 \]
 
 We use the shorthands defined below:
@@ -19,30 +25,30 @@ We use the shorthands defined below:
 
 We impose the following constraints:
 \begin{description}
-	\item[\underline{Rows n°$(i)$ and n°$(i + 1)$:}]
+	\item[\underline{Rows n°$(i+2)$ and n°$(i + 3)$:}]
 		we impose the following:
 		\[
 			\left\{ \begin{array}{l}
 				\oobCallToEq
-				{i}{0}
+				{i}{2}
 				{0}{\locCds}
-				{0}{256}
+				{0}{...}
 				\vspace{2mm} \\
                 \oobCallToLt
-                {i}{1}
+                {i}{3}
                 {0}{\locCalleeGas}
-                {0}{375} 
+                {0}{...} 
 				\\
 			\end{array} \right.
 		\]
 		we then set the following shorthands
 		\[
 			\left\{ \begin{array}{lcl}
-				\locValidCds      & \define & \outgoingResLo  _{i    }     \\
-				\locSufficientGas & \define & 1 - \outgoingResLo  _{i + 1} \\
+				\locValidCds      & \define & \outgoingResLo  _{i + 2}     \\
+				\locSufficientGas & \define & 1 - \outgoingResLo  _{i + 3} \\
 			\end{array} \right.
 		\]
-		It follows that $\locValidCds = 1 \iff \locCds = 256$.
+		It follows that $\locValidCds = 1 \iff \locCds = ...$.
 	\item[\underline{Justifying \hubMod{} predictions:}]
 		we impose
 		\[
