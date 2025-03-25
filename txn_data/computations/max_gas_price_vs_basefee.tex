@@ -1,0 +1,30 @@
+\item[\underline{\underline{Row n$°(i + \maxFeeVsBaseFeeRowOffset)$: Comparing the maximum gas price and \txBasefee{}:}}]
+	we impose that
+	\[
+		\left\{ \begin{array}{l}
+			\smallCallToLeq
+			{i}{\maxFeeVsBaseFeeRowOffset}
+			{\txBasefee}
+			{\locMaximalGasPrice}
+			\vspace{2mm}
+			\\
+			\resultMustBeTrue {
+				anchorRow = i                         ,
+				relOffset = \maxFeeVsBaseFeeRowOffset ,
+			}
+			\\
+		\end{array} \right.
+	\]
+	where we set
+	\[
+		\locMaximalGasPrice \define
+		\left[ \begin{array}{clcl}
+			+ \!\!\! & \txIsLegacy    _{i} & \cdot & \locGasPrice \\
+			+ \!\!\! & \txIsAccessSet _{i} & \cdot & \locGasPrice \\
+			+ \!\!\! & \txIsTypeTwo   _{i} & \cdot & \locMaxFee   \\
+		\end{array} \right]
+	\]
+	\saNote{}
+	In other words we require that
+	$\txBasefee \leq \locMaximalGasPrice$.
+
