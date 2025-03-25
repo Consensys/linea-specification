@@ -180,8 +180,63 @@ and
 		\oobInstBlsMapFpTwoToGTwo & \define &   \oxBlsMapFpTwoToGTwo \\
 	\end{array} \right.
 \]
+and
+
 \saNote{} In the above we use the notation $\oxXcall$, $\oxCall$,  $\oxCreate$, $\oxEcrecover$, \dots, $\oxBlakeParams$ as \textbf{placeholders} for some actual, fixed values.
 The only requirement for these constants must satisfy is that all constants defined above be \textbf{nonzero} and \textbf{pairwise distinct}.
+
+We further set
+\[
+	\left\{ \begin{array}{lcl}
+		\locFixedCds_{i} & \define &
+		\left[ \begin{array}{crcl}
+			+ & \prcBlsGOneAddSize         & \cdot & \oobInstIsBlsGOneAdd         _{i}  \\
+			+ & \prcBlsGTwoAddSize         & \cdot & \oobInstIsBlsGTwoAdd         _{i}  \\
+			+ & \prcBlsMapFpToGOneSize     & \cdot & \oobInstIsBlsMapFpToGOne     _{i}  \\
+			+ & \prcBlsMapFpTwoToGTwoSize  & \cdot & \oobInstIsBlsMapFpTwoToGTwo  _{i}  \\
+		\end{array} \right] \vspace{2mm} \\
+		\locFixedGasCost_{i} & \define &
+		\left[ \begin{array}{crcl}
+			+ & \gasConstBlsGOneAdd         & \cdot & \oobInstIsBlsGOneAdd         _{i}  \\
+			+ & \gasConstBlsGTwoAdd         & \cdot & \oobInstIsBlsGTwoAdd         _{i}  \\
+			+ & \gasConstBlsMapFpToGOne     & \cdot & \oobInstIsBlsMapFpToGOne     _{i}  \\
+			+ & \gasConstBlsMapFpTwoToGTwo  & \cdot & \oobInstIsBlsMapFpTwoToGTwo  _{i}  \\
+		\end{array} \right]
+	\end{array} \right.
+\]
+where
+\[
+\begin{array}{ll}
+	\left\{ \begin{array}{lcl}
+		\prcBlsGOneAddSize         & \define & 256 \\
+		\prcBlsGTwoAddSize         & \define & 512 \\
+		\prcBlsMapFpToGOneSize     & \define & 64  \\
+		\prcBlsMapFpTwoToGTwoSize  & \define & 128 \\
+	\end{array} \right. 
+	&
+	\left\{ \begin{array}{lcl}
+		\gasConstBlsGOneAdd         & \define & 375   \\
+		\gasConstBlsGTwoAdd         & \define & 600   \\
+		\gasConstBlsMapFpToGOne     & \define & 5500  \\
+		\gasConstBlsMapFpTwoToGTwo  & \define & 23800 \\
+	\end{array} \right. \\
+\end{array}
+\]
+We further define
+\[
+\begin{array}{ll}
+	\left\{ \begin{array}{lcl}
+		\prcBlsGOneMsmSize         & \define & 160 \\
+		\prcBlsGTwoMsmSize         & \define & 288 \\
+		\prcBlsPairingCheckSize    & \define & 384 \\
+	\end{array} \right. 
+	&
+	\left\{ \begin{array}{lcl}
+		\gasConstBlsPairingCheck     & \define & 37700 \\
+		\gasConstBlsPairingCheckPair & \define & 32600 \\
+	\end{array} \right. \\
+\end{array}
+\]
 
 We further set
 \[

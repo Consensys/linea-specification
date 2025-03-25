@@ -78,11 +78,11 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
     - OOB:
         - input length: 
             ```
-            PRC_G1ADD_SIZE = 256
+            PRC_BLS12_G1ADD_SIZE = 256
             ```
         - gas check:    
             ```
-            GAS_CONST_G1_ADD = 375 
+            GAS_CONST_BLS12_G1_ADD = 375 
             ```
     - BLS
         - coordinate encoding
@@ -93,25 +93,25 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
         - input length: 
             ```
             k > 0 (cds != 0)
-            k <= 128 or k > 128 (to determine PRC_G1MSM_DISCOUNT(k))
-            PRC_G1MSM_SIZE = 160
-            PRC_G1MSM_SIZE * k
+            k <= 128 or k > 128 (to determine PRC_BLS12_G1MSM_DISCOUNT(k))
+            PRC_BLS12_G1MSM_SIZE = 160
+            PRC_BLS12_G1MSM_SIZE * k
             ```
         - gas check:
             ```
-            PRC_G1MSM_MULTIPLICATION_COST = 12000
-            PRC_G1MSM_MULTIPLIER = 1000
-            PRC_G1MSM_MAX_DISCOUNT = 519
-            k = floor(len(input) / PRC_G1MSM_SIZE);
+            PRC_BLS12_G1MSM_MULTIPLICATION_COST = 12000
+            PRC_BLS12_G1MSM_MULTIPLIER = 1000
+            PRC_BLS12_G1MSM_MAX_DISCOUNT = 519
+            k = floor(len(input) / PRC_BLS12_G1MSM_SIZE);
             if k == 0 {
                 gas_cost = 0
             }
-            PRC_G1MSM_DISCOUNT(k) = see BLS_REFTABLE if 1 <= k <= 128
-            PRC_G1MSM_DISCOUNT(k) = PRC_G1MSM_MAX_DISCOUNT if k > 128
-            gas_cost = k * PRC_G1MSM_MULTIPLICATION_COST * PRC_G1MSM_DISCOUNT(k) // PRC_G1MSM_MULTIPLIER;
+            PRC_BLS12_G1MSM_DISCOUNT(k) = see BLS_REFTABLE if 1 <= k <= 128
+            PRC_BLS12_G1MSM_DISCOUNT(k) = PRC_BLS12_G1MSM_MAX_DISCOUNT if k > 128
+            gas_cost = k * PRC_BLS12_G1MSM_MULTIPLICATION_COST * PRC_BLS12_G1MSM_DISCOUNT(k) // PRC_BLS12_G1MSM_MULTIPLIER;
             where // is integer division
             ```
-            We use floor division to get the number of pairs. If the length of the input is not divisible by `PRC_G1MSM_SIZE` we still produce some result, but later on the precompile will return an error. Also, the case when $k = 0$ will make hub_success = 0 (see OOB). In any case, the main precompile routine must produce an error on such an input because it violated encoding rules. This holds also for BLS12_G2MSM.
+            We use floor division to get the number of pairs. If the length of the input is not divisible by `PRC_BLS12_G1MSM_SIZE` we still produce some result, but later on the precompile will return an error. Also, the case when $k = 0$ will make hub_success = 0 (see OOB). In any case, the main precompile routine must produce an error on such an input because it violated encoding rules. This holds also for BLS12_G2MSM.
     - BLS
         - coordinate encoding
         - point at infinity
@@ -120,11 +120,11 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
     - OOB:
         - input length: 
             ```
-            PRC_G2ADD_SIZE = 512
+            PRC_BLS12_G2ADD_SIZE = 512
             ```
         - gas check:
             ```
-            GAS_CONST_G2_ADD = 600
+            GAS_CONST_BLS12_G2_ADD = 600
             ```
     - BLS
         - coordinate encoding
@@ -135,22 +135,22 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
         - input length: $288 \cdot k$ bytes
             ```
             k > 0 (cds != 0)
-            k <= 128 or k > 128 (to determine PRC_G2MSM_DISCOUNT(k))
-            PRC_G2MSM_SIZE = 288
-            PRC_G2MSM_SIZE * k
+            k <= 128 or k > 128 (to determine PRC_BLS12_G2MSM_DISCOUNT(k))
+            PRC_BLS12_G2MSM_SIZE = 288
+            PRC_BLS12_G2MSM_SIZE * k
             ```
         - gas check:
             ```
-            PRC_G2MSM_MULTIPLICATION_COST = 22500
-            PRC_G2MSM_MULTIPLIER = 1000
-            PRC_G2MSM_MAX_DISCOUNT = 524
-            k = floor(len(input) / PRC_G2MSM_SIZE);
+            PRC_BLS12_G2MSM_MULTIPLICATION_COST = 22500
+            PRC_BLS12_G2MSM_MULTIPLIER = 1000
+            PRC_BLS12_G2MSM_MAX_DISCOUNT = 524
+            k = floor(len(input) / PRC_BLS12_G2MSM_SIZE);
             if k == 0 {
                 gas_cost = 0
             }
-            PRC_G2MSM_DISCOUNT(k) = see BLS_REFTABLE if 1 <= k <= 128
-            PRC_G2MSM_DISCOUNT(k) = PRC_G2MSM_MAX_DISCOUNT if k > 128
-            gas_cost = k * PRC_G2MSM_MULTIPLICATION_COST * PRC_G2MSM_DISCOUNT(k) // PRC_G2MSM_MULTIPLIER;
+            PRC_BLS12_G2MSM_DISCOUNT(k) = see BLS_REFTABLE if 1 <= k <= 128
+            PRC_BLS12_G2MSM_DISCOUNT(k) = PRC_BLS12_G2MSM_MAX_DISCOUNT if k > 128
+            gas_cost = k * PRC_BLS12_G2MSM_MULTIPLICATION_COST * PRC_BLS12_G2MSM_DISCOUNT(k) // PRC_BLS12_G2MSM_MULTIPLIER;
             where // is integer division
             ```
     - BLS
@@ -162,18 +162,18 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
         - input length: 
             ```
             k > 0 (cds != 0)
-            PRC_BLS12_PAIRING_SIZE = 384
-            PRC_BLS12_PAIRING_SIZE * k
+            PRC_BLS12_BLS12_PAIRING_CHECK_SIZE = 384
+            PRC_BLS12_BLS12_PAIRING_CHECK_SIZE * k
             ```
         - gas check:
             ```
-            PRC_BLS12_PAIRING_SIZE = 384
-            k = floor(len(input) / PRC_BLS12_PAIRING_SIZE);
+            PRC_BLS12_BLS12_PAIRING_CHECK_SIZE = 384
+            k = floor(len(input) / PRC_BLS12_BLS12_PAIRING_CHECK_SIZE);
             GAS_CONST_BLS12_PAIRING = 37700
-            GAS_CONST_BLS12_PAIRING_PAIR = 32600
-            gas_cost = GAS_CONST_BLS12_PAIRING_PAIR*k + GAS_CONST_BLS12_PAIRING;
+            GAS_CONST_BLS12_PAIRING_CHECK_PAIR = 32600
+            gas_cost = GAS_CONST_BLS12_PAIRING_CHECK_PAIR*k + GAS_CONST_BLS12_PAIRING_CHECK;
             ```
-            We use floor division to get the number of pairs. If the length of the input is not divisible by `PRC_BLS12_PAIRING_SIZE` we still produce some result, but later on the precompile will return an error (the precompile routine must produce an error on such an input because it violated encoding rules).
+            We use floor division to get the number of pairs. If the length of the input is not divisible by `PRC_BLS12_BLS12_PAIRING_CHECK_SIZE` we still produce some result, but later on the precompile will return an error (the precompile routine must produce an error on such an input because it violated encoding rules).
             We want both the input length and gas check being performed in the same OOB operation. Moreover, we want to follow the same approach of OOB_INST_ECPAIRING in case cds is not a multiple of 384 bytes, that is the return_gas = 0 (all of it is consumed).
     - BLS
         - coordinate encoding
@@ -184,11 +184,11 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
     - OOB:
         - input length:
             ```
-            PRC_MAP_FP_TO_G1_SIZE = 64
+            PRC_BLS12_MAP_FP_TO_G1_SIZE = 64
             ```
         - gas check:
             ```
-            GAS_CONST_MAP_FP_TO_G1 = 5500
+            GAS_CONST_BLS12_MAP_FP_TO_G1 = 5500
             ```
     - BLS
         - coordinate encoding
@@ -196,11 +196,11 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
     - OOB:
         - input length:
             ```
-            PRC_MAP_FP2_TO_G2_SIZE = 128
+            PRC_BLS_MAP_FP2_TO_G2_SIZE = 128
             ```
         - gas check: 
             ```
-            GAS_CONST_MAP_FP2_TO_G2 = 23800
+            GAS_CONST_BLS_MAP_FP2_TO_G2 = 23800
             ```
     - BLS
         - coordinate encoding
