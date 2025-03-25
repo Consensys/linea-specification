@@ -29,17 +29,17 @@ We impose the following constraints:
 				{0}{256}
 				\vspace{2mm} \\
                 \oobCallToLt
-                {i}{0}
+                {i}{1}
                 {0}{\locCalleeGas}
-                {0}{375} % TODO: use constant
+                {0}{375} 
 				\\
 			\end{array} \right.
 		\]
 		we then set the following shorthands
 		\[
 			\left\{ \begin{array}{lcl}
-				\locValidCds      & \define & \outgoingResLo  _{i    } \\
-				\locSufficientGas & \define & \outgoingResLo  _{i + 1} \\
+				\locValidCds      & \define & \outgoingResLo  _{i    }     \\
+				\locSufficientGas & \define & 1 - \outgoingResLo  _{i + 1} \\
 			\end{array} \right.
 		\]
 		It follows that $\locValidCds = 1 \iff \locCds = 256$.
@@ -47,7 +47,7 @@ We impose the following constraints:
 		we impose
 		\[
 			\left\{ \begin{array}{lcl}
-				\locHubSuccess   & = & ... \\
+				\locHubSuccess   & = & \locValidCds \cdot \locSufficientGas \\
 			\end{array} \right.
 		\]
 \end{description}

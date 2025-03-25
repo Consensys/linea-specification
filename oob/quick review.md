@@ -1,0 +1,7 @@
+- Split constants for BLS rather than mixing them with MODEXP etc...
+- Move BLS precompiles under common precompiles
+- merge fixed size and fixed cost computation (ADD, MAPS)
+- merge MSM 
+- pairing is alone
+- skip the division to extract k
+- BLS_REFTABLE_FLAG ...
