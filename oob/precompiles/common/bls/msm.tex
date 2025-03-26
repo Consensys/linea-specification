@@ -1,5 +1,5 @@
 \[
-	\boxed{\text{All constraints in this subsection further assume } \oobInstIsBlsGOneMsm = 1}
+	\boxed{\text{All constraints in this subsection further assume } \oobInstIsBlsGOneMsm + \oobInstIsBlsGTwoMsm  = 1}
 \]
 
 We use the shorthands defined below:
@@ -25,7 +25,7 @@ We impose the following constraints:
 			\oobCallToMod
 			{i}{2}
 			{0}{\locCds}
-			{0}{\locMsmSize}
+			{0}{\locMsmSize_{i}}
 		\]
 		and we define the following shorthand
 		\[
@@ -42,7 +42,7 @@ We impose the following constraints:
 		\[
 			\left\{ \begin{array}{lcl}
 				\locMsmSizeIsMultiple & \define & \outgoingResLo_{i + 3} \\
-				\locNumberOfInputs    & \define & \locCds / \locMsmSize  \\
+				\locNumberOfInputs    & \define & \locCds / \locMsmSize_{i}  \\
 			\end{array} \right.
 		\]
 		\saNote{} The shorthand \locNumberOfInputs{} was defined using a division by \locMsmSize Whenever this shorthand is used in the constraints, we can replace the division by \locMsmSize with a multiplication by the same number through same basic algebra. This is the approach taken in the implementation to avoid division.
@@ -65,6 +65,30 @@ We impose the following constraints:
 	\item[\underline{Row n°$(i + 5)$:}]
 		we impose that
 		\begin{enumerate}
+			\item \If $\locMsmSizeIsMultiple = 0$ \Then we impose $\oobNoCall{i}{4}$.
+			\item \If $\locMsmSizeIsMultiple = 1$ \Then we impose that
+				\begin{enumerate}
+					\item \If $\locNumberOfMsmInputsLeqThreshold = 1$ \Then we impose that
+						\[
+							\oobCallToBlsRefTable
+							{i}{5}
+							{\weightedPrcFlagSumBls_{i}}{\locNumberOfInputs}
+						\]
+						and we define the following shorthand
+						\[
+							\locDiscount \define \outgoingResLo_{i + 5}
+						\]
+				    \item \If $\locNumberOfMsmInputsLeqThreshold = 0$ \Then we impose $\oobNoCall{i}{5}$
+						and we define the following shorthand
+						\[
+							\locDiscount \define \locMaxDiscount_{i}
+						\]
+				\end{enumerate}
+				
+		\end{enumerate}
+	\item[\underline{Row n°$(i + 5)$:}]
+		we impose that
+		\begin{enumerate}
 			\item \If $\locMsmSizeIsMultiple = 0$ \Then we impose $\oobNoCall{i}{5}$.
 			\item \If $\locMsmSizeIsMultiple = 1$ \Then we impose that
 				\[
@@ -75,7 +99,7 @@ We impose the following constraints:
 				\]
 				where we use the following shorthand
 				\[
-					\locPrecompileCost \define ... % We need lookup to BLS_REFTABLE to determine discount
+					\locPrecompileCost \define \locNumberOfInputs \cdot \locMsmMultiplicationCost_{i} \cdot \locDiscount / \prcBlsMultiplicationMultiplier;
 				\]
 				we further introduce the following shorthand
 				\[
