@@ -36,7 +36,7 @@ We impose the following constraints:
 			\oobCallToMod
 			{i}{1}
 			{0}{\locCds}
-			{0}{384}
+			{0}{\prcBlsPairingCheckSize}
 		\]
 		and we define the following shorthand
 		\[
@@ -66,7 +66,7 @@ We impose the following constraints:
 				\]
 				where we use the following shorthand
 				\[
-					\locPrecompileCost \define \Big[ 37700 + 32600 \cdot \big( \locCds / 384 \big) \Big]
+					\locPrecompileCost \define \Big[ \gasConstBlsPairingCheck + \gasConstBlsPairingCheckPair \cdot \big( \locCds / \prcBlsPairingCheckSize \big) \Big]
 				\]
 				we further introduce the following shorthand
 				\[
@@ -74,7 +74,7 @@ We impose the following constraints:
 				\]
 				It follows that $\locCalleeGas < \locPrecompileCost \iff \locInsufficientGas = 1$.
 		\end{enumerate}
-	\saNote{} The shorthand \locPrecompileCost{} was defined using a division by 384. Whenever this shorthand is used in the constraints, we can replace the division by 192 with a multiplication by the same number through same basic algebra. This is the approach taken in the implementation to avoid division.
+	\saNote{} The shorthand \locPrecompileCost{} was defined using a division by \prcBlsPairingCheckSize{}. Whenever this shorthand is used in the constraints, we can replace the division by \prcBlsPairingCheckSize{} with a multiplication by the same number through same basic algebra. This is the approach taken in the implementation to avoid division.
 	\item[\underline{Justifying the remaining \hubMod{} predictions:}]
 		we impose that
 		\[
