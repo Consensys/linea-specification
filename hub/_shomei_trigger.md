@@ -20,7 +20,7 @@
 | TX_EXEC  | any          | SUX/SOX      | ∅                 |                       |                       |
 |----------|--------------|--------------|-------------------|-----------------------|-----------------------|---------------------------------------------|
 |          | SELFBALANCE  | OOGX         | ∅                 |                       | ∅                     | irrelevant: the underlying                  |
-|          |              | XAHOY ≡ 0    |                   |                       | ✓ (trash)             | account has already been loaded             |
+|          |              | XAHOY ≡ 0    | ✓                 |                       | ✓ (trash)             | account has already been loaded             |
 |----------|--------------|--------------|-------------------|-----------------------|-----------------------|---------------------------------------------|
 |          | BALANCE      | OOGX         | ✓                 |                       | ✗                     | only the warmth matters to price this       |
 |          | EXTCODESIZE  |              |                   |                       |                       | opcode                                      |
@@ -49,18 +49,24 @@
 |          |              |              |                   |                       |                       |                                             |
 |          |              | XAHOY ≡ 0    | ✓                 |                       | ✓ (trash)             |                                             |
 |----------|--------------|--------------|-------------------|-----------------------|-----------------------|---------------------------------------------|
-|          | CALL         | STATICX      |                   |                       |                       | ∅                                           |
+|          | CALL         | STATICX      | ∅                 |                       | ∅                     | ∅                                           |
 |          | CALLCODE     | (CALL only)  |                   |                       |                       |                                             |
 |          | DELEGATECALL |              |                   |                       |                       |                                             |
-|          | STATICCALL   | MXPX         |                   |                       |                       | ∅                                           |
+|          | STATICCALL   | MXPX         | ∅                 |                       | ✓                     | this is an issue ... we may have to add     |
+|          |              |              |                   |                       |                       | an account-row to handle this case well.    |
 |          |              |              |                   |                       |                       |                                             |
-|          |              | OOGX         |                   |                       |                       | requires the target account                 |
 |          |              |              |                   |                       |                       |                                             |
-|          |              | abortCSD     |                   |                       |                       | same                                        |
+|          |              | OOGX         | ✓                 |                       | ✓                     | requires the target account                 |
+|          |              |              |                   |                       |                       | this is true even for CALL-type opcodes     |
+|          |              |              |                   |                       |                       | that don't transfer value and therefore     |
+|          |              |              |                   |                       |                       | don't care about target account existence   |
+|          |              |              |                   |                       |                       | ... thank God !                             |
 |          |              |              |                   |                       |                       |                                             |
-|          |              | abortBAL     |                   |                       |                       | same                                        |
+|          |              | abortCSD     | ✓                 |                       | ✓                     | same                                        |
 |          |              |              |                   |                       |                       |                                             |
-|          |              | XAHOY ≡ 0    |                   |                       |                       | same                                        |
+|          |              | abortBAL     | ✓                 |                       | ✓                     | same                                        |
+|          |              |              |                   |                       |                       |                                             |
+|          |              | XAHOY ≡ 0    | ✓                 |                       | ✓                     | same                                        |
 |----------|--------------|--------------|-------------------|-----------------------|-----------------------|---------------------------------------------|
 |          | CREATE       | STATICX      |                   |                       |                       | ∅                                           |
 |          | CREATE2      |              |                   |                       |                       |                                             |
@@ -78,16 +84,16 @@
 |          |              |              |                   |                       |                       |                                             |
 |          |              | XAHOY ≡ 0    |                   |                       |                       | same                                        |
 |----------|--------------|--------------|-------------------|-----------------------|-----------------------|---------------------------------------------|
-|          | SELFDESTRUCT | STATICX      |                   |                       |                       | ∅                                           |
+|          | SELFDESTRUCT | STATICX      | ∅                 |                       |                       | ∅                                           |
 |          |              |              |                   |                       |                       |                                             |
-|          |              | OOGX         |                   |                       |                       | requires the "heir" account                 |
+|          |              | OOGX         | ✓                 |                       | ✓                     | requires the "heir" account                 |
+|          |              |              |                   |                       |                       | even if zero balance transfer               |
 |          |              |              |                   |                       |                       |                                             |
-|          |              | XAHOY ≡ 0    |                   |                       |                       | same                                        |
+|          |              | XAHOY ≡ 0    | ✓                 |                       | ✓                     | same                                        |
 |----------|--------------|--------------|-------------------|-----------------------|-----------------------|---------------------------------------------|
 |          | STOP         |              |                   |                       |                       | If deployment then leads to an (empty)      |
 |          |              |              |                   |                       |                       | deployment. The account must already        |
-|          |              |              |                   |                       |                       | have been loaded.                           |
-|          |              | XAHOY ≡ 0    | ✓ (if dep)        |                       | ✓ (trash)             | same                                        |
+|          |              | XAHOY ≡ 0    | ✓ (if dep)        |                       | ✓ (trash)             | have been loaded.                           |
 |----------|--------------|--------------|-------------------|-----------------------|-----------------------|---------------------------------------------|
 |          | REVERT       | MXPX         | ∅                 |                       | ∅                     |                                             |
 |          |              |              |                   |                       |                       |                                             |
@@ -109,19 +115,15 @@
 |          |              | XAHOY ≡ 0    | ✓                 |                       | ✓ (trash)             | Deployment                                  |
 |          |              | (deployment) |                   |                       |                       |                                             |
 |----------|--------------|--------------|-------------------|-----------------------|-----------------------|---------------------------------------------|
-|          | SLOAD        | OOGX         |                   |                       |                       | ∅                                           |
+|          | SLOAD        | OOGX         | ✓                 | ✓                     | ✗                     |                                             |
 |          |              |              |                   |                       |                       |                                             |
-|          |              |              |                   |                       |                       |                                             |
-|          |              | XAHOY ≡ 0    |                   |                       |                       | requires (current) account and storage slot |
-|          |              |              |                   |                       |                       |                                             |
+|          |              | XAHOY ≡ 0    | ✓                 | ✓                     | ✓                     | same                                        |
 |----------|--------------|--------------|-------------------|-----------------------|-----------------------|---------------------------------------------|
-|          | SSTORE       | STATICX      | ∅                 |                       | ∅                     | ∅                                           |
+|          | SSTORE       | STATICX      | ∅                 | ∅                     | ∅                     | ∅                                           |
 |          |              |              |                   |                       |                       |                                             |
-|          |              | SSTOREX      | ∅                 |                       | ∅                     | @François' PR                               |
+|          |              | SSTOREX      | ∅                 | ∅                     | ∅                     | ⇐ since @François' PR                       |
 |          |              |              |                   |                       |                       |                                             |
-|          |              | OOGX         | ✓                 |                       |                       | requires (current) account and storage slot |
-|          |              |              |                   | ✓                     |                       |                                             |
+|          |              | OOGX         | ✓                 | ✓                     | ✓                     | requires (current) account and storage slot |
 |          |              |              |                   |                       |                       |                                             |
-|          |              | XAHOY ≡ 0    | ✓                 |                       |                       | same                                        |
-|          |              |              |                   | ✓                     |                       |                                             |
+|          |              | XAHOY ≡ 0    | ✓                 | ✓                     | ✓                     | same                                        |
 |----------|--------------|--------------|-------------------|-----------------------|-----------------------|---------------------------------------------|
