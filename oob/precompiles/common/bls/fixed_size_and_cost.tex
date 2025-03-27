@@ -1,27 +1,17 @@
 \[
 \boxed{
 	\text{All constraints in this subsection further assume} 
-	\begin{array}{lcl}
-		\oobInstIsBlsGOneAdd     & + & \oobInstIsBlsGTwoAdd \\
-		\oobInstIsBlsMapFpToGOne & + & \oobInstIsBlsMapFpTwoToGTwo = 1 \\
-	\end{array}
+	\left[ \begin{array}{cr}
+		+ &  \oobInstIsBlsGOneAdd_{i}         \\
+		+ &  \oobInstIsBlsGTwoAdd_{i}         \\
+		+ &  \oobInstIsBlsMapFpToGOne_{i}     \\
+		+ &  \oobInstIsBlsMapFpTwoToGTwo_{i}  \\
+	\end{array} \right]
+	= 1
 }
 \]
 
-We use the shorthands defined below:
-\[
-	\left\{ \begin{array}{lclr}
-		\locCalleeGas    & \define & \oobDataCol {1} _{i} \\
-		\locCds          & \define & \oobDataCol {2} _{i} \\
-		%                & \define & \oobDataCol {3} _{i} \\
-		\locHubSuccess   & \define & \oobDataCol {4} _{i}  & \prediction \\
-		%                & \define & \oobDataCol {5} _{i} \\
-		%                & \define & \oobDataCol {6} _{i} \\
-		%                & \define & \oobDataCol {7} _{i} \\
-		%                & \define & \oobDataCol {8} _{i}  & \prediction \\
-	\end{array} \right.
-\]
-\saNote{} The decorator `` $\prediction{}$ '' stands for ``\hubMod{} prediction.''
+
 
 We impose the following constraints:
 \begin{description}
@@ -56,4 +46,9 @@ We impose the following constraints:
 				\locHubSuccess   & = & \locValidCds \cdot \locSufficientGas \\
 			\end{array} \right.
 		\]
+		we further impose that
+		\begin{enumerate}
+			\item \If $\locHubSuccess = 0$ \Then $\locReturnGas = 0$
+			\item \If $\locHubSuccess = 1$ \Then $\locReturnGas = \locCalleeGas - \locPrecompileCost$
+		\end{enumerate}
 \end{description}
