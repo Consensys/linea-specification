@@ -10,10 +10,10 @@
     transient/ADDRESS_LO
     transient/STORAGE_KEY_HI
     transient/STORAGE_KEY_LO
-    transient/VALUE_HI
-    transient/VALUE_LO
-    transient/VALUE_HI_NEW
-    transient/VALUE_LO_NEW
+    transient/VALUE_CURR_HI
+    transient/VALUE_CURR_LO
+    transient/VALUE_NEXT_HI
+    transient/VALUE_NEXT_LO
     ```
 - macros
     ```rust
@@ -64,19 +64,19 @@
 ```rust
 (
     // order imposing columns
-    + transient/PEEK_AT_TRANSIENT,
-    + transient/ABSOLUTE_TRANSACTION_NUMBER,
+    + PEEK_AT_TRANSIENT,
+    + ABSOLUTE_TRANSACTION_NUMBER,
     + transient/ADDRESS_HI,
     + transient/ADDRESS_LO,
     + transient/STORAGE_KEY_HI,
     + transient/STORAGE_KEY_LO,
-    + transient/DOM_STAMP,
-    - transient/SUB_STAMP,
+    + DOM_STAMP,
+    - SUB_STAMP,
     // along for the ride
-    transient/VALUE_HI,
-    transient/VALUE_LO,
-    transient/VALUE_HI_NEW,
-    transient/VALUE_LO_NEW,
+    transient/VALUE_CURR_HI,
+    transient/VALUE_CURR_LO,
+    transient/VALUE_NEXT_HI,
+    transient/VALUE_NEXT_LO,
 )
 ```
 - extraneous columns
