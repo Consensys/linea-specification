@@ -45,7 +45,7 @@ We impose the following constraints:
 				\locNumberOfInputs    & \define & \locCds / \locMsmSize_{i}  \\
 			\end{array} \right.
 		\]
-		\saNote{} The shorthand \locNumberOfInputs{} was defined using a division by \locMsmSize Whenever this shorthand is used in the constraints, we can replace the division by \locMsmSize with a multiplication by the same number through same basic algebra. This is the approach taken in the implementation to avoid division.
+		\saNote{} The shorthand \locNumberOfInputs{} was defined using a division by \locMsmSize{}. Whenever this shorthand is used in the constraints, we can replace the division by \locMsmSize{} with a multiplication by the same number through same basic algebra. This is the approach taken in the implementation to avoid division.
 	\item[\underline{Row n°$(i + 4)$:}]
 		we impose that
 		\begin{enumerate}
@@ -99,7 +99,7 @@ We impose the following constraints:
 				\]
 				where we use the following shorthand
 				\[
-					\locPrecompileCost \define \locNumberOfInputs \cdot \locMsmMultiplicationCost_{i} \cdot \locDiscount / \prcBlsMultiplicationMultiplier;
+					\locPrecompileCost \define \locNumberOfInputs \cdot \locMsmMultiplicationCost_{i} \cdot \frac{\locDiscount}{\prcBlsMultiplicationMultiplier}
 				\]
 				we further introduce the following shorthand
 				\[
@@ -107,6 +107,7 @@ We impose the following constraints:
 				\]
 				It follows that $\locCalleeGas < \locPrecompileCost \iff \locInsufficientGas = 1$.
 		\end{enumerate}
+		\saNote{} The shorthand \locPrecompileCost{} was defined using a division by \prcBlsMultiplicationMultiplier{}. Whenever this shorthand is used in the constraints, we can replace the division by \prcBlsMultiplicationMultiplier{} with a multiplication by the same number through same basic algebra. This is the approach taken in the implementation to avoid division.
 	\item[\underline{Justifying the remaining \hubMod{} predictions:}]
 		we impose that
 		\[
