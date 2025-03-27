@@ -84,7 +84,7 @@
 |          |              |              |                   |                       |                       |                                             |
 |          |              | XAHOY ≡ 0    |                   |                       |                       | same                                        |
 |----------|--------------|--------------|-------------------|-----------------------|-----------------------|---------------------------------------------|
-|          | SELFDESTRUCT | STATICX      | ∅                 |                       |                       | ∅                                           |
+|          | SELFDESTRUCT | STATICX      | ∅                 |                       | ∅                     | ⇐ with @Olivier's Besu PR ?                 |
 |          |              |              |                   |                       |                       |                                             |
 |          |              | OOGX         | ✓                 |                       | ✓                     | requires the "heir" account                 |
 |          |              |              |                   |                       |                       | even if zero balance transfer               |
@@ -121,7 +121,7 @@
 |----------|--------------|--------------|-------------------|-----------------------|-----------------------|---------------------------------------------|
 |          | SSTORE       | STATICX      | ∅                 | ∅                     | ∅                     | ∅                                           |
 |          |              |              |                   |                       |                       |                                             |
-|          |              | SSTOREX      | ∅                 | ∅                     | ∅                     | ⇐ since @François' PR                       |
+|          |              | SSTOREX      | ∅                 | ∅                     | ∅                     | ⇐ since @François' Besu PR                  |
 |          |              |              |                   |                       |                       |                                             |
 |          |              | OOGX         | ✓                 | ✓                     | ✓                     | requires (current) account and storage slot |
 |          |              |              |                   |                       |                       |                                             |
