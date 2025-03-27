@@ -1,25 +1,24 @@
 \begin{enumerate}
-	\item $\trmStamp$:
-		stamp column; starts at $0$ and grows by 1 with every served request; like many other stamp columns its main purpose is to separate the different requests to that module;
-	\item $\rawAddrHi$ and $\rawAddrLo$:
+	\item $\iomf$:
+	monotonous bit column that lights up for non-padding rows;
+	\item $\first$:
+		bit column that lights up precisely at the first row of all counter-loop;
+	\item
 		\godGiven{}
+		$\rawAddrHi$ and $\rawAddrLo$:
 		\ccc{}; contains the high and low part of some stack value which ought to be interpreted as an address;
-	\item $\trmAddrHi$:
+	\item
+		\markAsJustifiedHere{}
 		\godGiven{}
+		$\trmAddrHi$:
 		\ccc{}; contains the trimmed version of the high part of the address argument;
-	\item $\isPrecompile$:
+	\item
+		\markAsJustifiedHere{}
 		\godGiven{}
-		\ccbc{}; equals $1$ \emph{if and only if} the trimmed address is in the range $\{1, 2,\dots, 9\}$;
+		$\isPrecompile$:
+		\ccbc{}; equals $1$ \emph{if and only if} the trimmed address is in the range $\{1, 2,\dots, \maxPrecompileAddress\}$;
 	\item $\ct$:
-		counter column: counts continuously from $0$ to $\llargeMO$ and resets;
-	\item $\byteCol{HI}$ and $\acc{HI}$:
-		byte column and associated accumulator column;
-	\item $\byteCol{LO}$ and $\acc{LO}$:
-		byte column and associated accumulator column;
-	\item $\acc{T}$:
-		accumulator column; accumulates some of the bytes from $\byteCol{HI}$;
-	\item $\plateauBit$:
-		binary column that implements a \textbf{binary plateau constraint} in that it switches from $0$ to $1$ when $\ct_{i} = 12$;
-	\item $\bit{1}$:
-		binary column; used in establishing that a (trimmed) address is that of a precompile.
+		counter column: counts continuously from $0$ to $\locCtMaxTrmName$ ($= \locCtMaxTrm$) and resets;
+	\item $\argOneHi$, $\argOneLo$, $\argTwoHi$, $\argTwoLo$, $\res$, $\INST$:
+		arguments for calls to the \wcpMod{} module;
 \end{enumerate}
