@@ -2,22 +2,24 @@
 
 ## Transient perspective and columns
 
-- PEEK_AT_TRANSIENT ≡ TRN
-    - it can only be on during TX_EXEC
+- `PEEK_AT_TRANSIENT ≡ TRN`
+    - it can only be on during `TX_EXEC`
 - transient columns
     ```rust
     transient/ADDRESS_HI
     transient/ADDRESS_LO
+    transient/STORAGE_KEY_HI
+    transient/STORAGE_KEY_LO
     transient/VALUE_HI
     transient/VALUE_LO
     transient/VALUE_HI_NEW
     transient/VALUE_LO_NEW
-    transient/STORAGE_KEY_HI
-    transient/STORAGE_KEY_LO
     ```
 - macros
-    - sameTransientStorageValue[ relof ]
-    - undoTransientStorageValueUpdate[ relof_undo, relof_done ]
+    ```rust
+    sameTransientStorageValue[ relof ]
+    undoTransientStorageValueUpdate[ relof_undo, relof_do ]
+    ```
 
 ## Instruction handling
 
@@ -50,20 +52,27 @@
             CONTEXT
             TRANSIENT // doing
             ```
+    - starting with `STATICX` we check whether the context is static
+    - as soon as unexceptional we also retrieve the `context/ACCOUNT_ADDRESS`
+    - just as with `SLOAD` we don't print anything on the stack unless the instruction is unexceptional
+    - contrary to `SSTORE` / `SLOAD` we don't have to read storage to price it, in particular we don't need to retrieve transient storage data and play with warmth
+    - if `CN_WILL_REVERT` we require two rows for `TSTORE`
 
 ## Consistency arguments
 
 - permutation according to
 ```rust
 (
-    ↑ transient/PEEK_AT_TRANSIENT,
-    ↑ transient/ABSOLUTE_TRANSACTION_NUMBER,
-    ↑ transient/ADDRESS_HI,
-    ↑ transient/ADDRESS_LO,
-    ↑ transient/STORAGE_KEY_HI,
-    ↑ transient/STORAGE_KEY_LO,
-    ↑ transient/DOM_STAMP,
-    ↓ transient/SUB_STAMP,
+    // order imposing columns
+    + transient/PEEK_AT_TRANSIENT,
+    + transient/ABSOLUTE_TRANSACTION_NUMBER,
+    + transient/ADDRESS_HI,
+    + transient/ADDRESS_LO,
+    + transient/STORAGE_KEY_HI,
+    + transient/STORAGE_KEY_LO,
+    + transient/DOM_STAMP,
+    - transient/SUB_STAMP,
+    // along for the ride
     transient/VALUE_HI,
     transient/VALUE_LO,
     transient/VALUE_HI_NEW,
