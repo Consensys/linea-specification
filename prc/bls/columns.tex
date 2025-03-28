@@ -49,7 +49,46 @@ We further define:
         byte column; used to justify that \blsId{} increments;
 \end{enumerate}
 
-      
+The following batch of columns is relevant in the context of \inst{BLS12\_PAIRING\_CHECK}.
+In what follows we refer to data supposedly containing a $C_1$ point as \textbf{small points} and to data supposedly containing a $C_2$ point as \textbf{large points}.
+\begin{enumerate}[resume]
+      \item \ct:
+            for each pair of points, counts from 0 to \ctMaxSmallPoint{} and from 0 to \ctMaxLargePoint{} % (see definitions in \ref{ec data: setting ct, ct_max, is_large, is_small}) 
+            along the coordinate of the small and large point respectively;
+      \item \maxCt:
+            the maximum value $\ct$ should count to;
+      \item \isSmallPoint:
+            binary column, which lights up when the point is small;
+      \item \isLargePoint:
+            binary column, which lights up when the point is large;
+      % \item \notOnGTwo{} \blsPrediction{}:
+      %       binary column, which lights up on the 8 lines of a point that is not on $G_2$ (the second point, in the context of pairings). If 2 (or more) points are not on $G_2$, it only lights up for the first one. An external circuit must then justify that this point is indeed not on $G_2$;
+      % \item \notOnGTwoAcc:
+      %       binary column which lignts up when $\notOnGTwo$ equals $1$;
+      % \item \notOnGTwoAccMax:
+      %       binary column which lights up if there is a point that is not on $G_2$ (equals to the final value of \notOnGTwoAcc);
+      \item \isInfinity:
+            binary column;
+            constant along the 8 or 16 rows occupied by a (supposed) curve point;
+            lights up precisely when all coordinates of said point vanish;
+      \item \both{\trivialPairing}: binary column; the last data row of each pairing indicates if we are in a trivial case, in the sense that all small points are points at infinity and all large points are points at infinity;
+      % \item \both{\membershipTestRequired}:
+      %       constant along the 8 rows containing a supposed $G_2$ point and zero along $C_1$ points. It lights up when the large point is predicted to be not on $G_2$ or when the small point is the point at infinity;
+      % \item \both{\acceptablePairOfPoints}:
+      %       constant along the 12 rows of a pair of points. It lights up when the small point is on the curve, the large point is predicted to be on the $G_2$ subgroup and neither of the points is the point at infinity;
+      \item \notOnCOne{} \blsPrediction{}:       
+      \item \notOnCOneAcc    
+      \item \notOnCOneAccMax 
+      \item \notOnGOne{ }\blsPrediction{}:       
+      \item \notOnGOneAcc    
+      \item \notOnGOneAccMax 
+      \item \notOnCTwo{} \blsPrediction{}:       
+      \item \notOnCTwoAcc    
+      \item \notOnCTwoAccMax
+      \item \notOnGTwo{} \blsPrediction{}:
+      \item \notOnGTwoAcc
+      \item \notOnGTwoAccMax 
+\end{enumerate}
      
     
    

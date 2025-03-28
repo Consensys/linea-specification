@@ -305,7 +305,7 @@ so as to prove non-membership. Note that in the first case we prove C2 non-membe
 - BLS12_MAP_FP_TO_G1: no circuit needed.
 - BLS12_MAP_FP2_TO_G2: no circuit needed.
 
-### Success case (assuming ICP = 1 and NOT_ON_C1_MAX = NOT_ON_C2_MAX = NOT_ON_G1_MAX = NOT_ON_G2_MAX = 0 and SUCCESS_BIT = 1)
+### Success case (assuming ICP = 1 and NOT_ON_C1_ACC_MAX = NOT_ON_C2_ACC_MAX = NOT_ON_G1_ACC_MAX = NOT_ON_G2_ACC_MAX = 0 and SUCCESS_BIT = 1)
 
 - BLS12_G1ADD: send points to G1_ADD circuit (C1 membership is included).
 - BLS12_G1MSM: send points to G1_MSM circuit (C1 and G1 memberships are included). 
