@@ -42,6 +42,7 @@
 | ⟦OOB_INST_identity⟧       |            |            |               |                           |                               |                            |                            |                            |            |
 | ⟦OOB_INST_ecadd⟧          |            |            |               |                           |                               |                            |                            |                            |            |
 | ⟦OOB_INST_ecmul⟧          |            |            |               |                           |                               |                            |                            |                            |            |
+| ⟦OOB_INST_bls12_*⟧        |            |            |               |                           |                               |                            |                            |                            |            |
 |                           | ✓ trusted  | ✓ trusted  | ✓ trusted     | ⟦ π ⟧                     | ⟦ π ⟧                         | ⟦ π ⟧                      | ⟦ π ⟧                      | ⟦ π ⟧                      |            |
 |---------------------------+------------+------------+---------------+---------------------------+-------------------------------+----------------------------+----------------------------+----------------------------+------------|
 | ⟦OOB_INST_ecpairing⟧      | callee_gas | cds        | r@c           | hub_success ≡             | return_gas ≡                  | extract_call_data ≡        | empty_call_data ≡          | r@c_nonzero ≡              |            |
@@ -96,9 +97,10 @@
 Comments: 
 - callee_gas, cds and r@c always occupy the same columns (when present);
 - return_gas, r@c_nonzero and hub_success/ram_success always occupy the same columns (when present);
+- ⟦OOB_INST_bls12_*⟧ is a placeholder for all BLS12-* precompiles;
 - the data layout for
         * ⟦OOB_ecrecover⟧        * ⟦OOB_sha2-256⟧         * ⟦OOB_ecpairing⟧
-        * ⟦OOB_ecadd⟧            * ⟦OOB_ripemd-160⟧                  
+        * ⟦OOB_ecadd⟧            * ⟦OOB_ripemd-160⟧       * ⟦OOB_INST_bls12_*⟧              
         * ⟦OOB_ecmul⟧            * ⟦OOB_identity⟧
   is precisely the same;
 - the ``⟦ π ⟧'' label applies to HUB-module PREDICTIONS which the OOB module is tasked with justifying;

@@ -1,0 +1,76 @@
+\[
+	\boxed{\text{All constraints in this subsection further assume }  \oobInstIsBlsPairingCheck = 1}
+\]
+
+We impose the following constraints:
+\begin{description}
+	\item[\underline{Row n°$(i + 2)$:}]
+		we impose that
+		\[
+			\oobCallToIszero
+			{i}{2}
+			{0}{\locCds}
+		\]
+		and we define the following shorthand
+		\[
+			\locCdsIsZero \define \outgoingResLo_{i + 2}
+		\]
+	\item[\underline{Row n°$(i + 3)$:}]
+		we impose that
+		\[
+			\oobCallToMod
+			{i}{3}
+			{0}{\locCds}
+			{0}{\prcBlsPairingCheckSize}
+		\]
+		and we define the following shorthand
+		\[
+			\locRemainder \define \outgoingResLo_{i + 3}
+		\]
+	\item[\underline{Row n°$(i + 4)$:}]
+		we impose that
+		\[
+			\oobCallToIszero
+			{i}{4}
+			{0}{\locRemainder}
+		\]
+		and we define the following shorthand
+		\[
+			\locBlsPairingSizeIsMultiple \define \outgoingResLo_{i + 4}
+		\]
+	\item[\underline{Row n°$(i + 5)$:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\locBlsPairingSizeIsMultiple = 0$ \Then we impose $\oobNoCall{i}{3}$.
+			\item \If $\locBlsPairingSizeIsMultiple = 1$ \Then we impose that
+				\[
+					\oobCallToLt
+					{i}{5}
+					{0}{\locCalleeGas}
+					{0}{\locPrecompileCost}
+				\]
+				where we use the following shorthand
+				\begin{align*}
+					\locPrecompileCost \define \Big[ \gasConstBlsPairingCheck + \\
+					\gasConstBlsPairingCheckPair \cdot \big( \frac{\locCds}{\prcBlsPairingCheckSize} \big) \Big]
+				\end{align*}
+				we further introduce the following shorthand
+				\[
+					\locInsufficientGas \define \outgoingResLo_{i + 5}
+				\]
+				It follows that $\locCalleeGas < \locPrecompileCost \iff \locInsufficientGas = 1$.
+		\end{enumerate}
+	\saNote{} The shorthand \locPrecompileCost{} was defined using a division by \prcBlsPairingCheckSize{}. Whenever this shorthand is used in the constraints, we can replace the division by \prcBlsPairingCheckSize{} with a multiplication by the same number through same basic algebra. This is the approach taken in the implementation to avoid division.
+	\item[\underline{Justifying the remaining \hubMod{} predictions:}]
+		we impose that
+		\[
+			\locHubSuccess =
+			\locBlsPairingSizeIsMultiple \cdot
+			(1 - \locInsufficientGas)
+		\]
+		we further impose that
+		\begin{enumerate}
+			\item \If $\locHubSuccess = 0$ \Then $\locReturnGas = 0$
+			\item \If $\locHubSuccess = 1$ \Then $\locReturnGas = \locCalleeGas - \locPrecompileCost$
+		\end{enumerate}
+\end{description}

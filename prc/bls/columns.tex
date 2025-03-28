@@ -1,0 +1,99 @@
+The first set of columns arrives to the present module from the \mmioMod{} module:
+\begin{enumerate}
+      \item \blsStamp{}: %\markAsExtractedFromMmio{}:
+            module stamp; has simple $0/1$ increments;
+      \item \blsId{}: %\markAsExtractedFromMmio{}:
+            unique identifier of a precompile \inst{CALL} triggering the present module;
+            contains a context number derived from the \hubStamp{};
+      \item \blsIndex{}: %\markAsExtractedFromMmio{}:
+            data limb index;
+      \item \blsLimb{}: %\markAsExtractedFromMmio{}:
+            data limb; either input or output;
+      \item \blsTotalSize{}: %\markAsExtractedFromMmio{}:
+            total size of input or output; Especially relevant for \inst{BLS12\_G1MSM}, \inst{BLS12\_G2MSM} and \inst{BLS12\_PAIRING\_CHECK} which have variable size inputs;
+      \item \blsPhase{}: %\markAsExtractedFromMmio{}:
+            phase identifying which precompile is being called and whether the data represents inputs or outputs;
+      \item \indexMax{}: %\markAsExtractedFromMmio{}:
+            maximum value of \blsIndex{} for a given phase;
+      \item \blsSuccessBit{} \hubMmuMmioBlsPrediction{} \markAsPartiallyJustifiedHere{}:
+            success bit of the operation;
+\end{enumerate}
+
+The following columns partake in the ``instruction decoding'' of the above:
+\begin{multicols}{2}
+      \begin{enumerate}
+        \item \isBlsGOneAddData             
+        \item \isBlsGOneAddResult           
+        \item \isBlsGTwoAddData             
+        \item \isBlsGTwoAddResult           
+        \item \isBlsGOneMsmData             
+        \item \isBlsGOneMsmResult           
+        \item \isBlsMapFpToGOneData         
+        \item \isBlsMapFpToGOneResult       
+        \item \isBlsMapFpToGTwoData         
+        \item \isBlsMapFpTwoToGTwoResult           
+      \end{enumerate}
+\end{multicols}
+
+We further define: 
+
+\begin{enumerate}[resume]
+  \item \totalInputs:
+        In the context of \inst{BLS12\_G1MSM}, \inst{BLS12\_G2MSM} and \inst{BLS12\_PAIRING\_CHECK}, equals to the number of inputs passed to the precompile;
+  \item \accInputs: In the context of \inst{BLS12\_G1MSM}, \inst{BLS12\_G2MSM} and \inst{BLS12\_PAIRING\_CHECK}, counts the inputs starting from 1. It is equal to 0 otherwise.
+  \item \both{\internalChecksPassed}:
+        binary column, constant for a given \blsId, which lights up when all the internal checks passed.
+  \item \hurdle:
+        binary columns used to compute the value of \internalChecksPassed{}. This is likely not necessary as we can compute \internalChecksPassed{} directly; 
+  \item $\byteCol{$\Delta$}$:
+        byte column; used to justify that \blsId{} increments;
+\end{enumerate}
+
+The following batch of columns is relevant in the context of \inst{BLS12\_PAIRING\_CHECK}.
+In what follows we refer to data supposedly containing a $C_1$ point as \textbf{small points} and to data supposedly containing a $C_2$ point as \textbf{large points}.
+\begin{enumerate}[resume]
+      \item \ct:
+            for each pair of points, counts from 0 to \ctMaxSmallPoint{} and from 0 to \ctMaxLargePoint{} % (see definitions in \ref{ec data: setting ct, ct_max, is_large, is_small}) 
+            along the coordinate of the small and large point respectively;
+      \item \maxCt:
+            the maximum value $\ct$ should count to;
+      \item \isSmallPoint:
+            binary column, which lights up when the point is small;
+      \item \isLargePoint:
+            binary column, which lights up when the point is large;
+      % \item \notOnGTwo{} \blsPrediction{}:
+      %       binary column, which lights up on the 8 lines of a point that is not on $G_2$ (the second point, in the context of pairings). If 2 (or more) points are not on $G_2$, it only lights up for the first one. An external circuit must then justify that this point is indeed not on $G_2$;
+      % \item \notOnGTwoAcc:
+      %       binary column which lignts up when $\notOnGTwo$ equals $1$;
+      % \item \notOnGTwoAccMax:
+      %       binary column which lights up if there is a point that is not on $G_2$ (equals to the final value of \notOnGTwoAcc);
+      \item \isInfinity:
+            binary column;
+            constant along the 8 or 16 rows occupied by a (supposed) curve point;
+            lights up precisely when all coordinates of said point vanish;
+      \item \both{\trivialPairing}: binary column; the last data row of each pairing indicates if we are in a trivial case, in the sense that all small points are points at infinity and all large points are points at infinity;
+      % \item \both{\membershipTestRequired}:
+      %       constant along the 8 rows containing a supposed $G_2$ point and zero along $C_1$ points. It lights up when the large point is predicted to be not on $G_2$ or when the small point is the point at infinity;
+      % \item \both{\acceptablePairOfPoints}:
+      %       constant along the 12 rows of a pair of points. It lights up when the small point is on the curve, the large point is predicted to be on the $G_2$ subgroup and neither of the points is the point at infinity;
+      \item \notOnCOne{} \blsPrediction{}:       
+      \item \notOnCOneAcc    
+      \item \notOnCOneAccMax 
+      \item \notOnGOne{ }\blsPrediction{}:       
+      \item \notOnGOneAcc    
+      \item \notOnGOneAccMax 
+      \item \notOnCTwo{} \blsPrediction{}:       
+      \item \notOnCTwoAcc    
+      \item \notOnCTwoAccMax
+      \item \notOnGTwo{} \blsPrediction{}:
+      \item \notOnGTwoAcc
+      \item \notOnGTwoAccMax 
+\end{enumerate}
+     
+    
+   
+   
+     
+     
+      
+     
