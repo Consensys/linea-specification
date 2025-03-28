@@ -99,7 +99,7 @@
 					\end{array} \right.
 				\]
 				\saNote{}
-				In other words: \inst{TLOAD} instructions that lead to the production of \textbf{transient-storage-rows}, as witnessed by
+				In other words: unexceptional \inst{TLOAD} instructions
 				(\emph{a}) don't modify the value in transient storage and
 				(\emph{b}) write the transient storage value to the stack.
 			\item[\underline{The \inst{TSTORE} case:}]
@@ -110,7 +110,9 @@
 						\transNextValueLo _{i + \locTransientDoingRow} & \!\!\! = \!\!\! & \locTransientValueToStoreLo \\
 					\end{array} \right.
 				\]
-			\item[\underline{The inverse, undoing operation:}]
+				\saNote{}
+				In other words: unexceptional \inst{TSTORE} instructions update the value in transient storage with the stack value.
+			\item[\underline{Inverse, undoing operation:}]
 				\If $\locIsTstore = 1$  \et $\xAhoy_{i} = 0$ \et $\cnWillRev_{i} = 1$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
@@ -133,7 +135,21 @@
 						} \\
 					\end{array} \right.
 				\]
+				\saNote{}
+				Among transient storage opcodes (\inst{TSTORE} and \inst{TLOAD})
+				only \inst{TSTORE} induces undoing operations upon rollback ($\cnWillRev \equiv 1$.)
+				However, both storage opcodes (\inst{SSTORE} and \inst{SLOAD})
+				may induce undoing operations, see
+				section~(\ref{hub: instruction handling: storage: constraints}).
+				The reason for this is that \evm{} storage keys can be warm/cold and (storage key) warmth,
+				as tracked in $A_\textbf{K}$ in the accrued state $A$,
+				is rollback sensitive.
+				Transient storage keys, on the other hand, don't have a warmth attribute in the accrued state.
+				The only updates that need reverting are value updates, and only \inst{TSTORE} may induce such changes.
 		\end{description}
 	\item[\underline{Setting the gas cost:}]
-		\If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \Then $\gasCost_{i} = G_{\text{warmaccess}}$
+		\If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \Then $\gasCost_{i} = \stackStaticGas _{i}$
+
+		\saNote{}
+		Both transient opcodes have a static gas cost of $\stackStaticGas \equiv G_{\text{warmaccess}}$.
 \end{description}
