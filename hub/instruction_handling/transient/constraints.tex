@@ -23,9 +23,10 @@
 		while \inst{TSTORE} may raise stack exceptions, \staticxSH{} or \oogxSH{}.
 	\item[\underline{Setting $\nonStackRows$ and peeking flags:}]
 		\label{hub: instruction handling: storage: non stack rows and peeking flags}
-		storage operations can provoke exceptions in multiple ways and are rollback sensitive;
-		they thus have some inherent complexity;
-		we impose the following:
+		transient storage operations can provoke exceptions in multiple ways and are rollback sensitive;
+		the \zkEvm{} checks exceptions in the following order (assuming no stack exception):
+		\staticxSH{} (\inst{TSTORE} only),
+		\oogxSH{}.
 		\begin{enumerate}
 			\item \If $\stackOogx _{i} + \stackStaticx _{i} = 1$ \Then $\nonStackRows_{i} = 2$ and furthermore
 				\[
@@ -48,8 +49,10 @@
 				\]
 		\end{enumerate}
 	\item[\underline{The first context-row:}]
-		we \textbf{unconditionally} impose that $\readContextData {i}{\locFirstCon}{\cn_{i}}$
-
+		we \textbf{unconditionally} impose
+		\[
+			\readContextData {i}{\locFirstCon}{\cn_{i}}
+		\]
 		\saNote{}
 		There is really no reason to load the current execution context in case of an \oogxSH{}.
 		We do it regardless to simplify constraints.
@@ -59,69 +62,78 @@
 
 		\saNote{}
 		Recall that (among instructions raising the $\stackDecTransFlag$ flag) only \inst{TSTORE} may raise a \staticxSH{}.
+
+		\saNote{}
+		The above ensures that the \staticxSH{} has absolute priority over \oogxSH{}.
 	\item[\underline{Setting transient storage slot parameters:}]
-		\If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \Then\footnote{Observe that $\stackOogx_{i} + (1 - \xAhoy_{i})$ is binary since by construction $\stackOogx_{i} \cdot (1 - \xAhoy_{i}) = 0$}
+		\If $\xAhoy_{i} = 0$ \Then
 		\[
 			\left\{ \begin{array}{lclr}
-				\peekContext          _{i + \locFirstCon} + \peekStorage_{i + \locFirstStoRowOffset} & = & 2                                            & (\trash) \\
-				\stoAddressHi         _{i + \locFirstStoRowOffset}                                   & = & \cnAccountAddress\high  _{i + \locFirstCon} \\
-				\stoAddressLo         _{i + \locFirstStoRowOffset}                                   & = & \cnAccountAddress\low   _{i + \locFirstCon} \\
-				\stoDeploymentNumber  _{i + \locFirstStoRowOffset}                                   & = & \cnAccDepNum            _{i + \locFirstCon} \\
-				\stoKeyHi             _{i + \locFirstStoRowOffset}                                   & = & \locStorageKeyHi                \\
-				\stoKeyLo             _{i + \locFirstStoRowOffset}                                   & = & \locStorageKeyLo                \\
-				\multicolumn{3}{l}{\stoTurnOnWarmth      {i}{\locFirstStoRowOffset}     } \\
+				\transAddressHi         _{i + \locTransientDoingRow} & = & \cnAccountAddress\high  _{i + \locTransientCurrContextRow } \\
+				\transAddressLo         _{i + \locTransientDoingRow} & = & \cnAccountAddress\low   _{i + \locTransientCurrContextRow } \\
+				\transKeyHi             _{i + \locTransientDoingRow} & = & \locStorageKeyHi                                            \\
+				\transKeyLo             _{i + \locTransientDoingRow} & = & \locStorageKeyLo                                            \\
 				\multicolumn{3}{l}{
 					\standardDomSubStamps {
-						anchorRow        = i,
-						relOffset        = \locFirstStoRowOffset,
-						domOffset        = 0,
-					}
-				} \\
+						anchorRow = i                     ,
+						relOffset = \locTransientDoingRow ,
+						domOffset = 0                     ,
+					}}
+					\\
 			\end{array} \right.
 		\]
 	\item[\underline{Defining storage value operations:}]
 		we impose that
 		\begin{description}
-			\item[\underline{The \inst{SLOAD} case:}]
-				\If $\locIsTload = 1$ \Then
-				\begin{enumerate}
-					\item \If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \Then $\storageReading{i}{\locFirstStoRowOffset}$
-					\item \If $(1 - \xAhoy_{i}) = 1$ \Then
-						\[
-							\left\{ \begin{array}{lcl}
-								\locLoadedValueHi & \!\!\! = \!\!\! & \stoCurrValueHi_{i + \locFirstStoRowOffset} \\
-								\locLoadedValueLo & \!\!\! = \!\!\! & \stoCurrValueLo_{i + \locFirstStoRowOffset} \\
-							\end{array} \right.
-						\]
-				\end{enumerate}
-				\saNote{}
-				In other words: \inst{SLOAD} instructions that lead to the production of \textbf{storage-rows}, as witnessed by
-				$\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$, see (\ref{hub: instruction handling: storage: non stack rows and peeking flags}),
-				(\emph{a}) don't modify the value in storage and
-				(\emph{b}) if unexceptional, as witnessed by $(1 - \xAhoy_{i}) = 1$, write the value in storage to the stack.
-			\item[\underline{The \inst{SSTORE} case:}]
-				\If $\locIsSstore = 1$ \Then
-				\begin{enumerate}
-					\item \If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \Then
-						\[
-							\left\{ \begin{array}{lcl}
-								\transNextValueHi _{i + \locFirstStoRowOffset} & \!\!\! = \!\!\! & \locTransientValueToStoreHi \\
-								\transNextValueLo _{i + \locFirstStoRowOffset} & \!\!\! = \!\!\! & \locTransientValueToStoreLo \\
-							\end{array} \right.
-						\]
-				\end{enumerate}
-			\item[\underline{The inverse, undoing operation:}]
-				\If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \et $\cnWillRev_{i} = 1$ \Then
+			\item[\underline{The \inst{TLOAD} case:}]
+				\If $\locIsTload = 1$ \et $\xAhoy_{i} = 0$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
-						\stoSameStorageSlot          {i}{\locSecondStoRowOffset}{\locFirstStoRowOffset} \\
-						\stoUndoWarmthAndValueUpdate {i}{\locSecondStoRowOffset}{\locFirstStoRowOffset} \\
+						\left\{ \begin{array}{lcl}
+							\locTransientValueToLoadHi & \!\!\! = \!\!\! & \transCurrValueHi_{i + \locTransientDoingRow} \\
+							\locTransientValueToLoadLo & \!\!\! = \!\!\! & \transCurrValueLo_{i + \locTransientDoingRow} \\
+						\end{array} \right.
+						\vspace{2mm} \\
+						\transientStorageReading {
+							anchorRow = i                     ,
+							relOffset = \locTransientDoingRow ,
+						}
+						\\
+					\end{array} \right.
+				\]
+				\saNote{}
+				In other words: \inst{TLOAD} instructions that lead to the production of \textbf{transient-storage-rows}, as witnessed by
+				(\emph{a}) don't modify the value in transient storage and
+				(\emph{b}) write the transient storage value to the stack.
+			\item[\underline{The \inst{TSTORE} case:}]
+				\If $\locIsTstore = 1$  \et $\xAhoy_{i} = 0$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\transNextValueHi _{i + \locTransientDoingRow} & \!\!\! = \!\!\! & \locTransientValueToStoreHi \\
+						\transNextValueLo _{i + \locTransientDoingRow} & \!\!\! = \!\!\! & \locTransientValueToStoreLo \\
+					\end{array} \right.
+				\]
+			\item[\underline{The inverse, undoing operation:}]
+				\If $\locIsTstore = 1$  \et $\xAhoy_{i} = 0$ \et $\cnWillRev_{i} = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\transientStorageSameSlot {
+							anchorRow     = i                       ,
+							undoingOffset = \locTransientUndoingRow ,
+							doingOffset   = \locTransientDoingRow   ,
+						}
+						\vspace{2mm} \\
+						\transientStorageUndoingUpdate {
+							anchorRow     = i                       ,
+							undoingOffset = \locTransientUndoingRow ,
+							doingOffset   = \locTransientDoingRow   ,
+						}
+						\vspace{2mm} \\
 						\revertDomSubStamps {
 							anchorRow        = i,
-							relOffset        = \locSecondStoRowOffset,
+							relOffset        = \locTransientUndoingRow,
 							subOffset        = 0,
 						} \\
-						% {i}{\locSecondStoRowOffset}{0} \\
 					\end{array} \right.
 				\]
 		\end{description}
