@@ -1,25 +1,33 @@
-The \textbf{address trimming module} is a tiny module whose purpose is twofold:
+The \textbf{address trimming module} is a tiny module whose purpose is manyfold:
 (\emph{a})
 reduce 32 byte strings modulo $2^{160}$
 (\emph{b})
 identify addresses of precompiles.
+%(\emph{c})
+%proving the smallness of addresses on behalf of \rlpTxnMod{}. TODO reenable with RLP_TXN update
 Recall that some opcodes take an address stack argument which may require trimming to be interpreted as an address.
 Furthermore when computing a deployment address associated with an invokation of a \inst{CREATE}-type instruction the \rlpAddrMod{} module is called, too, to trim down the raw \texttt{KECCAK} hash.
 Also every new address appearing in the \hubMod{} module is automatically trimmed upon first encounter.
 Note that carrying out the first of these tasks boils down to trimming off the leading bytes off of the high part of the imported address. The following opcodes may trigger it:
 \begin{multicols}{4}
-\begin{enumerate}
-	\item \inst{BALANCE}
-	\item \inst{EXTCODESIZE}
-	\item \inst{EXTCODECOPY}
-	\item \inst{EXTCODEHASH}
-	\item \inst{CALL}
-	\item \inst{CALLCODE}
-	\item \inst{STATICCALL}
-	\item \inst{DELEGATECALL}
-	\item \inst{SELFDESTRUCT}
-	\item[\vspace{\fill}]
-\end{enumerate}
+	\begin{enumerate}
+		\item \inst{BALANCE}
+		\item[\vspace{\fill}]
+		\item[\vspace{\fill}]
+		\item[\vspace{\fill}]
+		\item \inst{EXTCODESIZE}
+		\item \inst{EXTCODECOPY}
+		\item \inst{EXTCODEHASH}
+		\item[\vspace{\fill}]
+		\item \inst{CALL}
+		\item \inst{CALLCODE}
+		\item \inst{STATICCALL}
+		\item \inst{DELEGATECALL}
+		\item \inst{SELFDESTRUCT}
+		\item[\vspace{\fill}]
+		\item[\vspace{\fill}]
+		\item[\vspace{\fill}]
+	\end{enumerate}
 \end{multicols}
 These are precisely the instructions which raise the $\trmFlag$ in the \hubMod{}.
 
