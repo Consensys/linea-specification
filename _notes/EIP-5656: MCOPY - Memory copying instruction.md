@@ -3,6 +3,7 @@
 ## HUB module
 
 - new `(3,0)-stack-pattern`
+- new MXP instruction macro for the HUB's misc/ perspective
 - new instruction family ? YES, for simplicity. Alternatively we could expand the `KEC` family.
 - processing (assuming no `SUX`)
     - unconditionally impose `PEEK_AT_MISC[i + 1] ≡ 1` and fill the `MXP_INST`

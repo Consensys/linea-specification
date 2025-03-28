@@ -13,6 +13,7 @@ full_names = {
 	"gas": "gas",
 	"hub": "hub",
 	"kec": "kec",
+	"mcopy": "mcopy",
 	"log": "log Info",
 	"mmu": "mmu",
 	"mmio": "mmio",
