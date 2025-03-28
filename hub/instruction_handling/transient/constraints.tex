@@ -1,0 +1,130 @@
+\begin{center}
+	\boxed{%
+		\text{The stack constraints presented below assume }
+		\begin{cases}
+			\peekStack_{i} = 1 \\
+			\stackDecTransFlag_{i} = 1 \\
+			\stackSux_{i} + \stackSox_{i} = 0 \\
+		\end{cases}}
+\end{center}
+
+\begin{description}
+	\item[\underline{Setting the stack pattern:}]
+		we impose $\loadStoreSP\big[ \locIsTstore \big]_{i}$
+	\item[\underline{Valid exceptions:}]
+		the constraints below don't need to be imposed in the implementation:
+		\begin{enumerate}
+			\item \If $\locIsTload  = 1$ \Then $\xAhoy_{i} = \stackOogx_{i}$ \quad (\trash)
+			\item \If $\locIsTstore = 1$ \Then $\xAhoy_{i} = \stackStaticx_{i} + \stackOogx_{i}$ \quad (\trash)
+		\end{enumerate}
+		\saNote{}
+		Given section~(\ref{hub: generalities: exceptions: automatic vanishing})
+		\inst{TLOAD} may only raise stack exceptions or \oogxSH{}
+		while \inst{TSTORE} may raise stack exceptions, \staticxSH{} or \oogxSH{}.
+	\item[\underline{Setting $\nonStackRows$ and peeking flags:}]
+		\label{hub: instruction handling: storage: non stack rows and peeking flags}
+		storage operations can provoke exceptions in multiple ways and are rollback sensitive;
+		they thus have some inherent complexity;
+		we impose the following:
+		\begin{enumerate}
+			\item \If $\stackOogx _{i} + \stackStaticx _{i} = 1$ \Then $\nonStackRows_{i} = 2$ and furthermore
+				\[
+					\left[ \begin{array}{cr}
+						+ & \peekContext _{i + \locTransientCurrContextRow        } \\
+						+ & \peekContext _{i + \locTransientPrntContextRowStaticx } \\
+					\end{array} \right]
+					=
+					\nonStackRows _{i}
+				\]
+			\item \If $\xAhoy_{i} = 0$ \Then $\nonStackRows_{i} = 2 + \locIsTstore \cdot \cnWillRev_{i}$ and furthermore
+				\[
+					\left[ \begin{array}{crcl}
+						+ &                                    &                   & \peekContext   _{i + \locTransientCurrContextRow } \\
+						+ &                                    &                   & \peekTransient _{i + \locTransientDoingRow       } \\
+						+ & \locIsTstore \cdot \cnWillRev _{i} & \!\!\!\cdot\!\!\! & \peekTransient _{i + \locTransientUndoingRow     } \\
+					\end{array} \right]
+					=
+					\nonStackRows _{i}
+				\]
+		\end{enumerate}
+	\item[\underline{The first context-row:}]
+		we \textbf{unconditionally} impose that $\readContextData {i}{\locFirstCon}{\cn_{i}}$
+
+		\saNote{}
+		There is really no reason to load the current execution context in case of an \oogxSH{}.
+		We do it regardless to simplify constraints.
+	\item[\underline{Setting \stackStaticx{} flag:}]
+		we impose that
+		$\stackStaticx_{i} = \locIsTstore \cdot \cnStatic_{i + \locTransientCurrContextRow}$;
+
+		\saNote{}
+		Recall that (among instructions raising the $\stackDecTransFlag$ flag) only \inst{TSTORE} may raise a \staticxSH{}.
+	\item[\underline{Setting transient storage slot parameters:}]
+		\If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \Then\footnote{Observe that $\stackOogx_{i} + (1 - \xAhoy_{i})$ is binary since by construction $\stackOogx_{i} \cdot (1 - \xAhoy_{i}) = 0$}
+		\[
+			\left\{ \begin{array}{lclr}
+				\peekContext          _{i + \locFirstCon} + \peekStorage_{i + \locFirstStoRowOffset} & = & 2                                            & (\trash) \\
+				\stoAddressHi         _{i + \locFirstStoRowOffset}                                   & = & \cnAccountAddress\high  _{i + \locFirstCon} \\
+				\stoAddressLo         _{i + \locFirstStoRowOffset}                                   & = & \cnAccountAddress\low   _{i + \locFirstCon} \\
+				\stoDeploymentNumber  _{i + \locFirstStoRowOffset}                                   & = & \cnAccDepNum            _{i + \locFirstCon} \\
+				\stoKeyHi             _{i + \locFirstStoRowOffset}                                   & = & \locStorageKeyHi                \\
+				\stoKeyLo             _{i + \locFirstStoRowOffset}                                   & = & \locStorageKeyLo                \\
+				\multicolumn{3}{l}{\stoTurnOnWarmth      {i}{\locFirstStoRowOffset}     } \\
+				\multicolumn{3}{l}{
+					\standardDomSubStamps {
+						anchorRow        = i,
+						relOffset        = \locFirstStoRowOffset,
+						domOffset        = 0,
+					}
+				} \\
+			\end{array} \right.
+		\]
+	\item[\underline{Defining storage value operations:}]
+		we impose that
+		\begin{description}
+			\item[\underline{The \inst{SLOAD} case:}]
+				\If $\locIsTload = 1$ \Then
+				\begin{enumerate}
+					\item \If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \Then $\storageReading{i}{\locFirstStoRowOffset}$
+					\item \If $(1 - \xAhoy_{i}) = 1$ \Then
+						\[
+							\left\{ \begin{array}{lcl}
+								\locLoadedValueHi & \!\!\! = \!\!\! & \stoCurrValueHi_{i + \locFirstStoRowOffset} \\
+								\locLoadedValueLo & \!\!\! = \!\!\! & \stoCurrValueLo_{i + \locFirstStoRowOffset} \\
+							\end{array} \right.
+						\]
+				\end{enumerate}
+				\saNote{}
+				In other words: \inst{SLOAD} instructions that lead to the production of \textbf{storage-rows}, as witnessed by
+				$\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$, see (\ref{hub: instruction handling: storage: non stack rows and peeking flags}),
+				(\emph{a}) don't modify the value in storage and
+				(\emph{b}) if unexceptional, as witnessed by $(1 - \xAhoy_{i}) = 1$, write the value in storage to the stack.
+			\item[\underline{The \inst{SSTORE} case:}]
+				\If $\locIsSstore = 1$ \Then
+				\begin{enumerate}
+					\item \If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \Then
+						\[
+							\left\{ \begin{array}{lcl}
+								\transNextValueHi _{i + \locFirstStoRowOffset} & \!\!\! = \!\!\! & \locTransientValueToStoreHi \\
+								\transNextValueLo _{i + \locFirstStoRowOffset} & \!\!\! = \!\!\! & \locTransientValueToStoreLo \\
+							\end{array} \right.
+						\]
+				\end{enumerate}
+			\item[\underline{The inverse, undoing operation:}]
+				\If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \et $\cnWillRev_{i} = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\stoSameStorageSlot          {i}{\locSecondStoRowOffset}{\locFirstStoRowOffset} \\
+						\stoUndoWarmthAndValueUpdate {i}{\locSecondStoRowOffset}{\locFirstStoRowOffset} \\
+						\revertDomSubStamps {
+							anchorRow        = i,
+							relOffset        = \locSecondStoRowOffset,
+							subOffset        = 0,
+						} \\
+						% {i}{\locSecondStoRowOffset}{0} \\
+					\end{array} \right.
+				\]
+		\end{description}
+	\item[\underline{Setting the gas cost:}]
+		\If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \Then $\gasCost_{i} = G_{\text{warmaccess}}$
+\end{description}
