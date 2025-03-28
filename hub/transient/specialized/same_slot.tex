@@ -1,0 +1,20 @@
+The constraint below forces two consecutive rows to peek into the same storage slot:
+\[
+	\left\{ \begin{array}{l}
+		\transientStorageSameSlot {
+			anchorRow     = i      ,
+			undoingOffset = \reluo ,
+			doingOffset   = \reldo ,
+		}
+		\vspace{2mm} \\
+		\qquad\qquad
+		\iff
+		\left\{ \begin{array}{lcl}
+			\transAddressHi _{i + \reluo} & \!\!\! = \!\!\! & \transAddressHi _{i + \reldo}              \\
+			\transAddressLo _{i + \reluo} & \!\!\! = \!\!\! & \transAddressLo _{i + \reldo} \vspace{2mm} \\
+			\transKeyHi     _{i + \reluo} & \!\!\! = \!\!\! & \transKeyHi     _{i + \reldo}              \\
+			\transKeyLo     _{i + \reluo} & \!\!\! = \!\!\! & \transKeyLo     _{i + \reldo}              \\
+		\end{array} \right.
+	\end{array} \right.
+\]
+
