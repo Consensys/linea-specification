@@ -1,0 +1,26 @@
+The following collections of constraints undo transient storage values:
+\[
+	\left\{ \begin{array}{l}
+		\transientStorageUndoingUpdate {
+			anchorRow     = i      ,
+			undoingOffset = \reluo ,
+			doingOffset   = \reldo ,
+		}
+		\vspace{2mm} \\
+		\qquad\qquad
+		\iff
+		\left\{	\begin{array}{lclr}
+			\transCurrValueHi _{i + \reluo} & \!\!\! = \!\!\! & \transNextValueHi _{i + \reldo}              \\
+			\transCurrValueLo _{i + \reluo} & \!\!\! = \!\!\! & \transNextValueLo _{i + \reldo} \vspace{2mm} \\
+			\transNextValueHi _{i + \reluo} & \!\!\! = \!\!\! & \transCurrValueHi _{i + \reldo}              \\
+			\transNextValueLo _{i + \reluo} & \!\!\! = \!\!\! & \transCurrValueLo _{i + \reldo}              \\
+		\end{array} \right.
+		\\
+	\end{array} \right.
+\]
+\saNote{}
+This constraint should only be applied when $\peekTransient _{i + \reluo} = \peekTransient _{i + \reldo} = 1$.
+There are no scenarios where changes made to transient storage must be undone where the changes in question are further apart than on the previous row.
+
+\saNote{}
+In all applications the two affected transient storage rows will be two consecutive in the trace, i.e. of the form $\reldo = \relof$ and $\reluo = \relof + 1$ for some $\relof$.
