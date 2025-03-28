@@ -2,10 +2,10 @@ The present describes a contraint system that writes the \rlp{}-ization of an ad
 
 We shall assume the following: we are provided with columns
 \begin{itemize}
-    \item $\col{input_1}$ and $\col{input_2}$: two 16 bytes columns;
+    \item $\col{input1}$ and $\col{input2}$: two 16 bytes columns;
     \item $\col{ct}$: a counter;
-    \item $\col{ct_max}$: a column which specifies the size of the ct-loop;\\
-    \item $\col{trm_flag}$: a flag column;
+    \item $\col{ctMax}$: a column which specifies the size of the ct-loop;\\
+    \item $\col{trmFlag}$: a flag column;
     \item $\col{limb}$: a column where the output is written;
     \item $\col{lc}$: a bit column, is 1 when something is written in the $\col{limb}$, else 0;
     \item $\col{nBytes}$: number of meaningfull bytes of the $\col{limb}$;
@@ -16,11 +16,11 @@ We shall assume the following: we are provided with columns
     \rlpAddress_{i}
     \left(
 	\begin{array}{r}
-    \col{input_1},
-    \col{input_2},
+    \col{input1},
+    \col{input2},
     \col{ct},
-    \col{ct_max}; \\
-    \col{trm_flag},
+    \col{ctMax}; \\
+    \col{trmFlag},
     \col{limb},
     \col{lc},
     \col{nBytes}; \\
@@ -29,11 +29,11 @@ We shall assume the following: we are provided with columns
 \]
 
 \begin{enumerate}
-    \item $\col{ct_max}_{i} = 1$
-    \item $\col{trm_flag}_{i} = 1$
+    \item $\col{ctMax}_{i} = 1$
+    \item $\col{trmFlag}_{i} = 1$
     \item $\col{lc}_{i} = 1$
-    \item $\col{limb}_{i}=\rlprefixAddress \cdot (256 ^{\llargeMO}) + \col{input_1}_{i} \cdot (256 ^{11})$
+    \item $\col{limb}_{i}=\rlprefixAddress \cdot (256 ^{\llargeMO}) + \col{input1}_{i} \cdot (256 ^{11})$
     \item $\col{nBytes}_{i} = 5$
-    \item $\col{limb}_{i+1}=\col{input_2}_{i}$
+    \item $\col{limb}_{i+1}=\col{input2}_{i}$
     \item $\col{nBytes}_{i+1} = \llarge $
 \end{enumerate}
