@@ -1,14 +1,16 @@
-The present describes a contraint system that writes the \rlp{}-ization of a storage key.
+The present describes a contraint system that writes the \rlp{}-ization of a (up to) 32-bytes integer.
 
 We shall assume the following: we are provided with columns
 \begin{itemize}
     \item $\col{input 1}$ and $\col{input 2}$: two 16 bytes columns;
     \item $\col{ct}$: a counter;
     \item $\col{ctMax}$: a column which specifies the size of the ct-loop;
-    \item $\col{wcpFlag}$: a flag column;
-    \item $\col{wcpArg2hi}$, $\col{wcpArg2lo}$: argument columns for the \wcpMod{} module;
-    \item $\col{wcpRes}$: result column for the \wcpMod{} module;
+    \item $\col{rlpUtilFlag}$: a flag column;
     \item $\col{inst}$: a column containing the instruction;
+    \item $\col{resNoRlpPrefix}$: binary result column;
+    \item $\col{resBigInt}$: binary result column;
+    \item $\col{resValueRlpPrefix}$: result column;
+    \item $\col{resNBytes}$: result column;
     \item $\col{limb}$: a column where the output is written;
     \item $\col{lc}$: a bit column, is 1 when something is written in the $\col{limb}$, else 0;
     \item $\col{nBytes}$: number of meaningfull bytes of the $\col{limb}$;
@@ -23,11 +25,12 @@ We shall assume the following: we are provided with columns
     \col{input2},
     \col{ct},
     \col{ctMax}; \\
-    \col{wcpFlag},
+    \col{rlpUtilFlag},
     \col{inst},
-    \col{wcpArg2hi},
-    \col{wcpArg2lo},
-    \col{wcpRes}; \\
+    \col{resNoRlpPrefix},
+    \col{resBigInt},
+    \col{resValueRlpPrefix},
+    \col{resNBytes}; \\
     \col{limb},
     \col{lc},
     \col{nBytes}; \\
@@ -36,17 +39,19 @@ We shall assume the following: we are provided with columns
 \]
 
 \begin{enumerate}
+    \item $\col{rlpUtilFlag}_{i} = 1$
+    \item $\col{inst}_{i} = \inst{INTEGER}$
     \item $\col{ctMax}_{i} = 2$
-    \item $\col{wcpFlag}_{i} = 1$
-    \item $\col{inst}_{i} = \inst{LEQ}$
-    \item $\col{wcpArg2hi}_{i} = (256 ^{\llarge} -1) $
-    \item $\col{wcpArg2lo}_{i} = (256 ^{\llarge} -1) $
-    \item $\col{wcpRes}_{i} = 1$
-    \item $\col{lc}_{i} = 1$
-    \item $\col{limb}_{i}=\rlprefixStorage \cdot (256 ^{\llargeMO})$
-    \item $\col{nBytes}_{i} = 1$
+
+    \item $\col{lc}_{i} = \col{resNoRlpPrefix}_{i}$
+    \item $\col{limb}_{i} = \col{resValueRlpPrefix}_{i} \cdot (256 ^{\llargeMO})$
+    \item $\col{nBytes}_{i} = 1 \cdot \col{resNoRlpPrefix}_{i}$
+
+    \item $\col{lc}_{i+1} = \col{resBigInt}_{i}$
     \item $\col{limb}_{i+1}=\col{input1}_{i}$
-    \item $\col{nBytes}_{i+1} = \llarge $
+    \item $\col{nBytes}_{i+1} = \col{resBigInt}_{i} \cdot \col{resNBytes}_{i}$
+
+    \item $\col{lc}_{i+2} = 1$
     \item $\col{limb}_{i+2}=\col{input2}_{i}$
     \item $\col{nBytes}_{i+2} = \llarge $
 \end{enumerate}
