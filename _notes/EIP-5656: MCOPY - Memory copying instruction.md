@@ -12,22 +12,22 @@
     trigger_MXP ≡ 1
     trigger_MMU ≡ (1 - XAHOY) ∙ S1NZNOMXPX
     ```
-    - `MXPX  ≡ 1` and `OOGX  ≡ 1`
+    - both for `MXPX  ≡ 1` and `OOGX  ≡ 1`
     ```rust
-    STACK
+    STACK // already accounted for
     MISC
     (CON) // automatic
     ```
     - `XAHOY ≡ 0` ∧ `trigger_MMU ≡ 0`
     ```rust
-    STACK
+    STACK // already accounted for
     MISC
     ```
     - `XAHOY ≡ 0` ∧ `trigger_MMU ≡ 1`
     ```rust
-    STACK
+    STACK // already accounted for
     MISC
-    MISC // only if trigger_MMU
+    MISC
     ```
 
 ## MXP module
