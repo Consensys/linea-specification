@@ -147,16 +147,16 @@ We are now in a position to specify the peeking flags.
 The \zkEvm{} carries out the \inst{MCOPY} instruction in two steps,
 similarly to how it deals with the \inst{IDENTITY} precompile,
 see section~(\ref{hub: instruction handling: call: precompiles: identity}).
-The first step is to carry out a full copy of the specified source memory span into a new,
-hitherto untouched, memory span with fresh (and as of yet unclaimed) identifier $1 + \hubStamp_{i}$.
-The second step is to copy the contents over from that new memory span back to the target memory span.
+The first step is to carry out a full copy of the specified (\emph{nonempty}) source memory span into a new,
+hitherto untouched, memory span with fresh (and as of yet, unclaimed) identifier $1 + \hubStamp_{i}$.
+The second step is to copy the contents over from that new memory span to the target memory span.
 In the above the source memory span starts at offset $\locSrcOffsetLo$ an occupies $\locSizeLo$ many bytes, and
 the target memory span starts at offset $\locTgtOffsetLo$ an (also) occupies $\locSizeLo$ many bytes.
 Both have identifier $\cn _{i}$.
 
-This approach avoids annoyances related to
+This approach avoids difficulties related to
 (\emph{a}) overlapping source and target memory spans
-(\emph{b}) relative position of the source and target memory spans (source on the left of target and \emph{vice versa}.)
+(\emph{b}) relative position of the source and target spans (source on the left of target and \emph{vice versa}.)
 \begin{description}
 	\item[\underline{Miscellaneous-row $n^°(i + \locMcopyFrstMiscOffset)$: \mmuMod{} data:}]
 		\If $\locTriggerMmu = 1$ \Then
