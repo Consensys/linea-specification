@@ -1,0 +1,116 @@
+\[
+    \boxed{\text{All constraints in this subsection assume } \first_{i} = 1 }
+\]
+To this end We impose the following constraints
+\begin{description}
+	\def\nRows{\rowOffsetAddress}\item[\underline{\underline{Processing row $n^\circ(\nRows)$:}} \underline{The trimmed address is 20 bytes long:}]
+		we impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\wcpCallToLt  {
+					anchorRow = i                      ,
+					relOffset = \nRows                 ,
+					argOneHi  = \trmAddrHi _{i}        ,
+					argOneLo  = \rawAddrLo _{i}        ,
+					argTwoHi  = 256 ^ {4}              ,
+					argTwoLo  = 0                      ,
+				} \vspace{2mm} \\
+				\resultMustBeTrue {
+					anchorRow = i                   ,
+					relOffset = \nRows              ,
+				}
+			\end{array} \right.
+		\]
+		\saNote{}
+		The above enforces that the address, as represented by the hi/lo pair $(\trmAddrHi, \rawAddrLo)$, is a 20 byte integer.
+		In doing so it implicitly proves that $\trmAddrHi _{i}$ is a 4 byte integer.
+
+	\def\nRows{\rowOffsetAddressTrm}\item[\underline{\underline{Processing row $n^\circ(\nRows)$:}} \underline{The trimmed part is 12 bytes long:}]
+		we impose that
+		\[
+			\left\{ \begin{array}{l}
+				\wcpCallToLeq {
+					anchorRow = i                      ,
+					relOffset = \nRows                 ,
+					argOneHi  = 0                      ,
+					argOneLo  = \trmLeadHi             ,
+					argTwoHi  = 0                      ,
+					argTwoLo  = 256 ^ {12} - 1         ,
+				} \vspace{2mm} \\
+				\resultMustBeTrue {
+					anchorRow = i                   ,
+					relOffset = \nRows              ,
+				}
+			\end{array} \right.
+		\]
+		where
+		\[
+			\trmLeadHi \define \argOneLo _{i + \nRows}
+		\]
+		simply points to the value in cell $\argOneLo _{i + \nRows}$.
+		The above thus asserts that whatever value occupies that cell is a 12 byte integer.
+
+	\item[\underline{Address decomposition constraint:}]
+		we impose that
+		\[
+			\rawAddrHi_{i} = 256^{4} \cdot \trmLeadHi + \trmAddrHi_{i}
+		\]
+		\saNote{}
+		We previously established that the cell pointed to by $\trmLeadHi$ contains a 12 byte integer,
+		while $\trmAddrHi$, contains a 4 byte integer.
+		The above thus exhibits $\trmAddrHi$ as the residue modulo $256^{4}$ of $\rawAddrHi$.
+		More precisely, $(\trmAddrHi, \rawAddrLo)$ represents the hi/lo decomposition of the reduction $\mod 2^{160}$
+		of the $\evmWordSize$-byte integer whose hi/lo decomposition is given by $(\rawAddrHi, \rawAddrLo)$.
+
+	\def\nRows{\rowOffsetNonZeroAddr}\item[\underline{\underline{Processing row $n^\circ(\nRows)$:}} \underline{Detecting the zero address:}]
+		we impose that
+		\[
+			\wcpCallToIszero {
+				anchorRow = i                      ,
+				relOffset = \nRows                 ,
+				argOneHi  = \trmAddrHi             ,
+				argOneLo  = \rawAddrLo             ,
+				argTwoHi  = 0                      ,
+				argTwoLo  = 0                      ,
+			}
+		\]
+		and we derive the following shorthand
+		\[
+			\left\{ \begin{array}{lcl}
+				\locAddressIsZero    & \define & \res_{i + \rowOffsetNonZeroAddr} \\
+				\locAddressIsNonzero & \define & 1       - \locAddressIsZero      \\
+			\end{array} \right.
+		\]
+
+	\def\nRows{\rowOffsetPrcAddr}\item[\underline{\underline{Processing row $n^\circ(\nRows)$:}} \underline{Comparing address to $\maxPrecompileAddressName$:}]
+		we impose that
+		\[
+			\wcpCallToLeq {
+				anchorRow = i                         ,
+				relOffset = \nRows                    ,
+				argOneHi  = \trmAddrHi                ,
+				argOneLo  = \rawAddrLo                ,
+				argTwoHi  = 0                         ,
+				argTwoLo  = \maxPrecompileAddressName ,
+			}
+		\]
+		where we define (and have used) the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\maxPrecompileAddressName               & \define & \maxPrecompileAddress \\
+				\locAddressIsAtMostMaxPrecompileAddress & \define & \res _{i + \nRows}    \\
+			\end{array} \right.
+		\]
+
+	\def\nRows{\rowOffsetPrcAddr}\item[\underline{Justifying the $\isPrecompile$ flag:}]
+		we impose that
+		\[
+			\isPrecompile_{i} =
+			\left[ \begin{array}{cl}
+				\cdot & \locAddressIsNonzero                    \\
+				\cdot & \locAddressIsAtMostMaxPrecompileAddress \\
+			\end{array} \right]
+		\]
+		\saNote{}
+		The above enforces the expected behaviour that $\isPrecompile \equiv 1$ \emph{iff} the trimmed address is in the range $\{1, 2, \dots, \maxPrecompileAddressName \}$.
+\end{description}
