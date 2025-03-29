@@ -1,0 +1,53 @@
+
+\[
+	\begin{array}{l}
+			\setMxpInstructionMcopy {
+				anchorRow      = i                     ,
+				relOffset      = \relof                ,
+				targetOffsetHi = \col{tgt\_offset\_hi} ,
+				targetOffsetLo = \col{tgt\_offset\_lo} ,
+				sourceOffsetHi = \col{src\_offset\_hi} ,
+				sourceOffsetLo = \col{src\_offset\_lo} ,
+				sizeHi         = \col{size\_hi}        ,
+				sizeLo         = \col{size\_lo}        ,
+			}
+		\vspace{2mm} \\
+		\qquad
+		\qquad
+		\define
+		\left\{ \begin{array}{lclr}
+			\miscMxpInst                         _{i + \relof} & = & \inst{MSIZE}          \\
+			\miscMxpCodeDeployment               _{i + \relof} & = & \nothing              \\
+			\miscMxpOffsetOneHi                  _{i + \relof} & = & \col{tgt\_offset\_hi} \\
+			\miscMxpOffsetOneLo                  _{i + \relof} & = & \col{tgt\_offset\_lo} \\
+			\miscMxpSizeOneHi                    _{i + \relof} & = & \col{size\_hi}        \\
+			\miscMxpSizeOneLo                    _{i + \relof} & = & \col{size\_lo}        \\
+			\miscMxpOffsetTwoHi                  _{i + \relof} & = & \col{src\_offset\_hi} \\
+			\miscMxpOffsetTwoLo                  _{i + \relof} & = & \col{src\_offset\_lo} \\
+			\miscMxpSizeTwoHi                    _{i + \relof} & = & \col{size\_hi}        \\
+			\miscMxpSizeTwoLo                    _{i + \relof} & = & \col{size\_lo}        \\
+			\miscMxpTypeFourInstMayTriggerMmu    _{i + \relof} & = & \nothing              \\
+			\miscMxpMxpx                         _{i + \relof} & = & \prediction           \\
+			\miscMxpWords                        _{i + \relof} & = & \nothing              \\
+			\miscMxpGasMxp                       _{i + \relof} & = & \prediction           \\
+			\miscMxpSizeOneNonzeroNoMxpx         _{i + \relof} & = & \prediction           \\
+			\miscMxpSizeTwoNonzeroNoMxpx         _{i + \relof} & = & \prediction           \\
+		\end{array} \right.
+	\end{array}
+\]
+\saNote{}
+The $\miscMxpInst$ is set in stone.
+
+\saNote{}
+\label{hub: misc: mxp: mcopy: duplication of the size parameter}
+$\col{size\_hi}$ and
+$\col{size\_lo}$
+are used \emph{twice}.
+This is done on purpose.
+
+\saNote{}
+\label{hub: misc: mxp: mcopy: s1nznomxpx and s2nznomxpx are the same}
+The $\setMxpInstructionMcopyName$ instruction produces both
+\miscMxpSizeOneNonzeroNoMxpx{} and
+\miscMxpSizeTwoNonzeroNoMxpx{} predictions.
+Inspection of the \mxpMod{} module spec reveals that these two predictions coincide.
