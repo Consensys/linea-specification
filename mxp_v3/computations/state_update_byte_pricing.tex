@@ -1,0 +1,38 @@
+\[
+	\boxed{\text{All constraints in this subsection assume that }
+	\left\{ \begin{array}{lcl}
+		\isMxpScenario                     _{i} & = & 1 \\
+                \mxpScenarioStateUpdateBytePricing _{i} & = & 1 \\
+	\end{array} \right. }
+\]
+We impose:
+\begin{description}
+    \item[\underline{\underline{Computing the gas cost per byte:}}]
+        we define the following shorthand:
+        \begin{enumerate}
+            \item \If $\mxpDecoderIsReturn _{i - \locScenarioToDecoderRowOffset} = 0$ \Then $\locBytePrice = \mxpDecoderGByte   _{i - \locScenarioToDecoderRowOffset}$
+            \item \If $\mxpDecoderIsReturn _{i - \locScenarioToDecoderRowOffset} = 1$ \Then $\locBytePrice = \mxpMacroDeploying _{i - \locScenarioToMacroRowOffset} \cdot \mxpDecoderGByte _{i - \locScenarioToDecoderRowOffset}$
+        \end{enumerate}
+        \saNote{}
+        The linear cost of \inst{RETURN} only applies if that \inst{RETURN} instruction occurs in a deployment context and may lead to deploying byte code.
+    \item[\underline{\underline{Computing the word-linear gas cost:}}]
+        we define that
+        \[
+            \left\{ \begin{array}{lcl}
+                \locNumberOfBytes & \define & \locSizeOneLo \\
+                \locExtraByteCost & \define & \locNumberOfBytes \cdot \locBytePrice                  \\
+            \end{array} \right.
+        \]
+    \item[\underline{\underline{Justifying the memory expansion gas:}}]
+        we impose
+        \[
+            \mxpMacroGasMxp _{i - \locScenarioToMacroRowOffset}
+            =
+            \left[ \begin{array}{cr}
+                + & \mxpScenarioCmemNew _{i} - \mxpScenarioCmem _{i} \\
+                + & \locExtraByteCost                                \\
+            \end{array} \right]
+        \]
+\end{description}
+
+\includepdf[fitpaper=true,pages={1}]{lua/state_update_byte_pricing.pdf}

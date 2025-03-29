@@ -1,0 +1,82 @@
+The following columns contain instruction data as provided by the \hubMod{} module.
+\begin{enumerate}
+	\item
+		\godGiven{}
+		$\mxpMacroInst$:
+		instruction column;
+		contains a memory expanding opcode or \inst{MSIZE};
+	\item
+		\godGiven{}
+		$\mxpMacroDeploying$:
+		binary column;
+		set to true if and only if the underlying instruction is a \inst{RETURN} in a deployment context;
+\end{enumerate}
+The following columns contain \textbf{offset} and \textbf{size} parameters (if applicable.)
+Opcodes triggering the present module may require 0 (\inst{MSIZE} only), 1 or 2 pairs of offset/size parameters,
+see section~(\ref{mxp: instruction decoder}).
+\begin{multicols}{2}
+	\begin{enumerate}[resume]
+		\item
+			\godGiven{}
+			$\mxpMacroOffsetOneHi$
+		\item
+			\godGiven{}
+			$\mxpMacroOffsetOneLo$
+		\item
+			\godGiven{}
+			$\mxpMacroSizeOneHi$
+		\item
+			\godGiven{}
+			$\mxpMacroSizeOneLo$
+		\item
+			\godGiven{}
+			$\mxpMacroOffsetTwoHi$
+		\item
+			\godGiven{}
+			$\mxpMacroOffsetTwoLo$
+		\item
+			\godGiven{}
+			$\mxpMacroSizeTwoHi$
+		\item
+			\godGiven{}
+			$\mxpMacroSizeTwoLo$
+	\end{enumerate}
+\end{multicols}
+The following columns contain \hubMod{} module \textbf{predictions}.
+These must be justified in the present module.
+\begin{enumerate}[resume] \setcounter{enumi}{10}
+	\item
+		\godGiven{}
+		\markAsJustifiedHere{}
+		$\mxpMacroRes$:
+		may contain the output of the \inst{MSIZE} opcode;
+	\item
+		\godGiven{}
+		\markAsJustifiedHere{}
+		$\mxpMacroMxpx$:
+		binary column;
+		indicates whether an \mxpxSH{} was predicted by the \hubMod{} module;
+	\item
+		\godGiven{}
+		\markAsJustifiedHere{}
+		$\mxpMacroGasMxp$:
+		contains the memory expansion gas (plus any applicable linear cost incurred by the opcode);
+	\item
+		\godGiven{}
+		\markAsJustifiedHere{}
+		$\mxpMacroMayTriggerNontrivialMmuOperation$:
+		boolean column;
+		indicates whether the instruction may trigger a \textsc{ram} operation;
+	\item
+		\godGiven{}
+		\markAsJustifiedHere{}
+		$\mxpMacroSOneNzNoMxpx$:
+		boolean column;
+		lights up precisely if the first size parameter of the instruction is nonzero and the opcode doesn't raise a \mxpxSH{}
+	\item
+		\godGiven{}
+		\markAsJustifiedHere{}
+		$\mxpMacroSTwoNzNoMxpx$:
+		boolean column;
+		lights up precisely if the second size parameter of the instruction is nonzero and the opcode doesn't raise a \mxpxSH{}
+\end{enumerate}
