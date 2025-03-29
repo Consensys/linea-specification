@@ -18,14 +18,9 @@ With the present instruction we begin by specifying a single miscellaneous-row w
 \begin{description}
 	\item[\underline{The first row must be a miscellaneous-row:}]
 		we unconditionally impose that $\peekMisc _{i + \locMcopyFrstMiscOffset} = 1$;
-	\item[\underline{Defining the \mxpMod{}-module trigger:}]
-		we unconditionally call the \mxpMod{} module:
-		\[
-			\left\{ \begin{array}{lcl}
-				\miscMxpFlag _{i + \locMcopyFrstMiscOffset} & =       & \locTriggerMxp \\
-				\locTriggerMxp                              & \define & 1              \\
-			\end{array} \right.
-		\]
+	\item[\underline{Calling the \mxpMod{}-module:}]
+		we unconditionally call the \mxpMod{} module
+		$\miscMxpFlag _{i + \locMcopyFrstMiscOffset} = 1$;
 	\item[\underline{Defining the \mxpMod{}-instruction:}]
 		we impose
 		\[
@@ -40,23 +35,51 @@ With the present instruction we begin by specifying a single miscellaneous-row w
 				sizeLo         = \locSizeLo              ,
 			}
 		\]
+	\item[\underline{Defining module triggers:}]
+		the module triggers will be used to
+		unconditionally call the \mxpMod{} module
+		and call the \mmuMod{} module \emph{iff}
+		the underlying \inst{MCOPY} instruction is unexceptional and its size parameter is nonzero.
+		\[
+			\left\{ \begin{array}{lcl}
+				\locTriggerMxp & \define & 1                                                        \\
+				\locTriggerMmu & \define & (1 - \xAhoy _{i}) \cdot \locMcopyMxpSizeOneNonZeroNoMxpx \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		In other words, $\locTriggerMmu \equiv \texttt{true}$ \emph{iff} 
 \end{description}
-With $\locTriggerMmu$ defined we are in a position to specify the peeking flags.
+We are now in a position to specify the peeking flags.
 \begin{description}
 	\item[\underline{Setting $\nonStackRows$ and peeking flags:}]
-		we impose $\nonStackRows_{i} =  1 + \cmc_{i}$.
+		we impose that
+		\begin{enumerate}
+			\item \If $\xAhoy _{i} = 1$ \Then $\nonStackRows_{i} = 2$.
+			\item \If $\xAhoy _{i} = 0$ \Then $\nonStackRows_{i} = 1 + \locTriggerMmu$.
+		\end{enumerate}
 	\item[\underline{Setting the peeking flags:}]
-		one miscellaneous row is sufficient to deal with \inst{SHA3} instructions:
+		we impose that
+		\begin{enumerate}
+			\item \If $\xAhoy _{i} = 1$ \Then $\nonStackRows_{i} = 2$.
+				\[
+					\left[ \begin{array}{r}
+						+ \peekMisc     _{i + \locMcopyFrstMiscOffset}           \\
+						+ \peekContext  _{i + \locMcopyExceptionalContextOffset} \\
+					\end{array} \right]
+					= \nonStackRows_{i}
+				\]
+			\item \If $\xAhoy _{i} = 0$ \Then $\nonStackRows_{i} = 1 + \locTriggerMmu$.
+				\[
+					\left[ \begin{array}{cr}
+						+ & \peekMisc                       _{i + \locMcopyFrstMiscOffset} \\
+						+ & \locTriggerMmu \cdot \peekMisc  _{i + \locMcopyScndMiscOffset} \\
+					\end{array} \right]
+					= \nonStackRows_{i}
+				\]
+		\end{enumerate}
+	\item[\underline{Miscellaneous-row $n^°(i + \locMcopyFrstMiscOffset)$: flags:}] we impose
 		\[
-			\left[ \begin{array}{r}
-				+ \peekMisc                    _{i + \locMcopyFrstMiscOffset} \\
-				+ \cmc_{i} \cdot \peekContext  _{i + \conRowOffset}           \\
-			\end{array} \right]
-			= \nonStackRows_{i}
-		\]
-	\item[\underline{Miscellaneous-row $n^°(i + \miscRowOffset)$: flags:}] we impose
-		\[
-			\weightedMiscFlagSum {i}{\miscRowOffset}
+			\weightedMiscFlagSum {i}{\locMcopyFrstMiscOffset}
 			=
 			\left[ \begin{array}{llcl}
 				+ & \miscMmuWeight & \!\!\!\cdot\!\!\! & \locCallMmu \\
@@ -66,11 +89,29 @@ With $\locTriggerMmu$ defined we are in a position to specify the peeking flags.
 		in other words
 		\[
 			\left\{ \begin{array}{lclr}
-				\miscExpFlag          _{i + \miscRowOffset} & = & \gZero      & (\trash) \\
-				\miscMmuFlag          _{i + \miscRowOffset} & = & \locCallMmu & (\trash) \\
-				\miscMxpFlag          _{i + \miscRowOffset} & = & \one        & (\trash) \\
-				\miscOobFlag          _{i + \miscRowOffset} & = & \gZero      & (\trash) \\
-				\miscStpFlag          _{i + \miscRowOffset} & = & \gZero      & (\trash) \\
+				\miscExpFlag  _{i + \locMcopyFrstMiscOffset} & = & \gZero      & (\trash) \\
+				\miscMmuFlag  _{i + \locMcopyFrstMiscOffset} & = & \locCallMmu & (\trash) \\
+				\miscMxpFlag  _{i + \locMcopyFrstMiscOffset} & = & \one        & (\trash) \\
+				\miscOobFlag  _{i + \locMcopyFrstMiscOffset} & = & \gZero      & (\trash) \\
+				\miscStpFlag  _{i + \locMcopyFrstMiscOffset} & = & \gZero      & (\trash) \\
+			\end{array} \right.
+		\]
+		\saNote{} The binary flag \locCallMmu{} will be defined below.
+	\item[\underline{Miscellaneous-row $n^°(i + \locMcopyScndMiscOffset)$: flags:}]
+		\If $\locTriggerMmu = 1$ \Then we impose
+		\[
+			\weightedMiscFlagSum {i}{\locMcopyScndMiscOffset}
+			=
+			\miscMmuWeight
+		\]
+		in other words
+		\[
+			\left\{ \begin{array}{lclr}
+				\miscExpFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\trash) \\
+				\miscMmuFlag  _{i + \locMcopyScndMiscOffset} & = & \one    & (\trash) \\
+				\miscMxpFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\trash) \\
+				\miscOobFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\trash) \\
+				\miscStpFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\trash) \\
 			\end{array} \right.
 		\]
 		\saNote{} The binary flag \locCallMmu{} will be defined below.
@@ -123,7 +164,7 @@ With $\locTriggerMmu$ defined we are in a position to specify the peeking flags.
 				% limbTwo         = \col{limb\_2}         ,
 				exoSum            = \exoWeightKec         ,
 				phase             = \nothing              ,
-				}
+			}
 			% \setMmuInstructionParametersRamToExoWithPadding {i}{\miscRowOffset}
 			% \left[ \begin{array}{ll}
 			% 	\utt{Source ID:}            & \cn_{i}               \\
