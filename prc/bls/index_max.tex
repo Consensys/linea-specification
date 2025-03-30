@@ -1,0 +1,46 @@
+% We define the following module constants
+% \[
+% 	\left\{ \begin{array}{lcl}
+% 		\indexMaxEcrecoverData    & \!\!\! \define \!\!\! & \redm{7}  \\
+% 		\indexMaxEcaddData        & \!\!\! \define \!\!\! & \redm{7}  \\
+% 		\indexMaxEcmulData        & \!\!\! \define \!\!\! & \redm{5}  \\
+% 		\indexMaxEcPairingDataMin & \!\!\! \define \!\!\! & \redm{11} \\
+% 		\indexMaxEcrecoverResult  & \!\!\! \define \!\!\! & \redm{1}  \\
+% 		\indexMaxEcaddResult      & \!\!\! \define \!\!\! & \redm{3}  \\
+% 		\indexMaxEcmulResult      & \!\!\! \define \!\!\! & \redm{3}  \\
+% 		\indexMaxEcpairingResult  & \!\!\! \define \!\!\! & \redm{1}  \\
+% 	\end{array} \right.
+% \]
+% and define the following shorthand
+% \[
+% 	\locIndexMaxSum _{i} \define
+% 	\left[ \begin{array}{crcl}
+% 			+ & \indexMaxEcrecoverData   & \!\!\!\cdot\!\!\! & \isEcrecoverData     _{i}              \\
+% 			+ & \indexMaxEcaddData       & \!\!\!\cdot\!\!\! & \isEcaddData         _{i}              \\
+% 			+ & \indexMaxEcmulData       & \!\!\!\cdot\!\!\! & \isEcmulData         _{i} \vspace{2mm} \\
+% 			% + & \indexMaxEcpairingData   & \!\!\!\cdot\!\!\! & \isEcpairingData     _{i} \vspace{1mm} \\
+% 			+ & \indexMaxEcrecoverResult & \!\!\!\cdot\!\!\! & \isEcrecoverResult   _{i}              \\
+% 			+ & \indexMaxEcaddResult     & \!\!\!\cdot\!\!\! & \isEcaddResult       _{i}              \\
+% 			+ & \indexMaxEcmulResult     & \!\!\!\cdot\!\!\! & \isEcmulResult       _{i}              \\
+% 			+ & \indexMaxEcpairingResult & \!\!\!\cdot\!\!\! & \isEcpairingResult   _{i}              \\
+% 		\end{array} \right]
+% \]
+% We then impose the following constraint
+% \[
+% 	\llarge \cdot \indexMax_{i}
+% 	=
+% 	\left[ \begin{array}{crcl}
+% 			+ & \llarge              & \!\!\!\cdot\!\!\! & \locIndexMaxSum_{i}                        \\
+% 			+ & \isEcpairingData_{i} & \!\!\!\cdot\!\!\! & \Big[ \ecdataTotalSize_{i} - \llarge \Big] \\
+% 		\end{array} \right]
+% \]
+% The above constraint can be rewritten as
+% \[
+% 	\indexMax_{i}
+% 	=
+% 	\left[ \begin{array}{crcl}
+% 			+ &                      &                   & \locIndexMaxSum_{i}                                                      \\
+% 			+ & \isEcpairingData_{i} & \!\!\!\cdot\!\!\! & \Big[ (\indexMaxEcPairingDataMin + 1) \cdot \totalPairings_{i} - 1 \Big] \\
+% 		\end{array} \right]
+% \]
+% \saNote{} The (input) data size of a call to the \inst{ECPAIRING} precompile, given that it makes its way into the present module, is always a \textbf{nonzero multiple of 192}. Contrary to other precompile calls dealt with by the present module its size (and hence the associated \indexMax{} value) isn't a fixed constant.
