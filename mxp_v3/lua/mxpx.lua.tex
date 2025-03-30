@@ -1,0 +1,66 @@
+
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NL Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\usepackage{../../pkg/draculatheme}
+
+\begin{document}
+\begin{verbatim}
+
+██\      ██\ ██\   ██\ ███████\  ██\   ██\
+███\    ███ |██ |  ██ |██  __██\ ██ |  ██ |
+████\  ████ |\██\ ██  |██ |  ██ |\██\ ██  |
+██\██\██ ██ | \████  / ███████  | \████  /
+██ \███  ██ | ██  ██<  ██  ____/  ██  ██<
+██ |\█  /██ |██  /\██\ ██ |      ██  /\██\
+██ | \_/ ██ |██ /  ██ |██ |      ██ /  ██ |
+\__|     \__|\__|  \__|\__|      \__|  \__|
+
+
+|-----------+-------+---------------+-------+--------+-------------+-------------+----------+----------------+-------------------+-------+-------------------------------|
+| Row index | SCNRI | scenario/MXPX | COMPN | INST   | ARG_1_HI    | ARG_1_LO    | ARG_2_HI | ARG_2_LO       | RES_A             | RES_B | Notes                         |
+|-----------+-------+---------------+-------+--------+-------------+-------------+----------+----------------+-------------------+-------+-------------------------------|
+| i         | true  | true          |       |        |             |             |          |                |                   |       |                               |
+|-----------+-------+---------------+-------+--------+-------------+-------------+----------+----------------+-------------------+-------+-------------------------------|
+| i + 1     |       |               | true  | ISZERO | size_1_hi   | size_1_lo   |          |                | size_1_iszero     | ∅     | at least one of the           |
+| i + 2     |       |               | true  | ISZERO | size_2_hi   | size_2_lo   |          |                | size_2_iszero     | ∅     | sizes must be nonzero         |
+|-----------+-------+---------------+-------+--------+-------------+-------------+----------+----------------+-------------------+-------+-------------------------------|
+| i + 3     |       |               | true  | LT     | size_1_hi   | size_1_lo   | 0        | MXPX_THRESHOLD | size_1_is_small   | ∅     | we require that one (or both) |
+| i + 4     |       |               | true  | LT     | size_2_hi   | size_2_lo   | 0        | MXPX_THRESHOLD | size_2_is_small   | ∅     | of the MXPX conditions        |
+| i + 5     |       |               | true  | LT     | offset_1_hi | offset_1_lo | 0        | MXPX_THRESHOLD | offset_1_is_small | ∅     | is fulfilled, see below       |
+| i + 6     |       |               | true  | LT     | offset_2_hi | offset_2_lo | 0        | MXPX_THRESHOLD | offset_2_is_small | ∅     |                               |
+|-----------+-------+---------------+-------+--------+-------------+-------------+----------+----------------+-------------------+-------+-------------------------------|
+
+We require
+
+	¬size_1_iszero  ∨  ¬size_2_iszero
+
+We further require that
+
+	mxpx  ≡  true
+
+where
+
+	mxpx               ≡  mxpx_expression_1  ∨  mxpx_expression_2
+	mxpx_expression_1  ≡  size_1_is_large  ∨  [ size_1_is_nonzero ∧ offset_1_is_large]
+	mxpx_expression_2  ≡  size_2_is_large  ∨  [ size_2_is_nonzero ∧ offset_2_is_large]
+
+	size_1_is_large    ≡  ¬size_1_is_small
+	size_2_is_large    ≡  ¬size_2_is_small
+	size_1_is_nonzero  ≡  ¬size_1_is_zero
+	size_2_is_nonzero  ≡  ¬size_2_is_zero
+
+\end{verbatim}
+\end{document}
