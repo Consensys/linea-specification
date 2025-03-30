@@ -53,6 +53,7 @@ full_names = {
 	"blkMdx": "blk Mdx",
 	# flags
 	"txn": "txn",
+	"trans": "trans Storage",
 	"stackRam": "stack Ram",
 	"machineState": "machine State",
 	"pushPop": "push Pop",

@@ -1,0 +1,48 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NL Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\usepackage{../../pkg/draculatheme}
+
+
+\begin{document}
+\begin{verbatim}
+
+████████\ ███████\  ██████\ ██\    ██\ ██████\  ██████\  ██\
+\__██  __|██  __██\ \_██  _|██ |   ██ |\_██  _|██  __██\ ██ |
+   ██ |   ██ |  ██ |  ██ |  ██ |   ██ |  ██ |  ██ /  ██ |██ |
+   ██ |   ███████  |  ██ |  \██\  ██  |  ██ |  ████████ |██ |
+   ██ |   ██  __██<   ██ |   \██\██  /   ██ |  ██  __██ |██ |
+   ██ |   ██ |  ██ |  ██ |    \███  /    ██ |  ██ |  ██ |██ |
+   ██ |   ██ |  ██ |██████\    \█  /   ██████\ ██ |  ██ |████████\
+   \__|   \__|  \__|\______|    \_/    \______|\__|  \__|\________|
+
+
+|-----------+-------+------------------+-------+--------+-----------+-----------+----------+----------+---------------+---------------------|
+| Row index | SCNRI | scenario/TRIVIAL | COMPN | INST   | ARG_1_HI  | ARG_1_LO  | ARG_2_HI | ARG_2_LO | RES           | Notes               |
+|-----------+-------+------------------+-------+--------+-----------+-----------+----------+----------+---------------+---------------------|
+| i         | true  | true             |       |        |           |           |          |          |               |                     |
+|-----------+-------+------------------+-------+--------+-----------+-----------+----------+----------+---------------+---------------------|
+| i + 1     |       |                  | true  | ISZERO | size_1_hi | size_1_lo |          |          | size_1_iszero | size_1 must be zero |
+| i + 2     |       |                  | true  | ISZERO | size_2_hi | size_2_lo |          |          | size_2_iszero | size_2 must be zero |
+|-----------+-------+------------------+-------+--------+-----------+-----------+----------+----------+---------------+---------------------|
+
+We require
+
+  size_1_iszero ≡ true
+  size_2_iszero ≡ true
+
+\end{verbatim}
+\end{document}
+
