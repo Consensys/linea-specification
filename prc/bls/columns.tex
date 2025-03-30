@@ -49,18 +49,22 @@ We further define:
         byte column; used to justify that \blsId{} increments;
 \end{enumerate}
 
-The following batch of columns is relevant in the context of \inst{BLS12\_PAIRING\_CHECK}.
-In what follows we refer to data supposedly containing a $C_1$ point as \textbf{small points} and to data supposedly containing a $C_2$ point as \textbf{large points}.
+The following batch of columns is relevant in the context of \inst{BLS12\_G1MSM}, \inst{BLS12\_G2MSM} and \inst{BLS12\_PAIRING\_CHECK}, which have variable size inputs.
+In the case of \inst{BLS12\_PAIRING\_CHECK}, we refer to data supposedly containing a $C_1$ point as \textbf{small points} and to data supposedly containing a $C_2$ point as \textbf{large points}.
 \begin{enumerate}[resume]
       \item \ct:
-            for each pair of points, counts from 0 to \ctMaxSmallPoint{} and from 0 to \ctMaxLargePoint{} % (see definitions in \ref{ec data: setting ct, ct_max, is_large, is_small}) 
-            along the coordinate of the small and large point respectively;
+            for each pair of inputs:
+            \begin{itemize}
+                  \item for \inst{BLS12\_PAIRING\_CHECK}, counts from 0 to \ctMaxSmallPoint{} and from 0 to \ctMaxLargePoint{} along the coordinate of the small and large point respectively;
+                  \item for \inst{BLS12\_G1MSM}, counts from 0 to \ctMaxSmallPoint{} and from 0 to \ctMaxScalar{} along the coordinate of the small point and the scalar respectively;
+                  \item for \inst{BLS12\_G2MSM}, counts from 0 to \ctMaxLargePoint{} and from 0 to \ctMaxScalar{} along the coordinate of the large point and the scalar respectively;
+            \end{itemize}
       \item \maxCt:
             the maximum value $\ct$ should count to;
-      \item \isSmallPoint:
-            binary column, which lights up when the point is small;
-      \item \isLargePoint:
-            binary column, which lights up when the point is large;
+      \item \isFirstInput:
+            binary column, which lights up when the input is the first;
+      \item \isSecondInput:
+            binary column, which lights up when the input is the second;
       \item \isInfinity:
             binary column;
             constant along the 8 or 16 rows occupied by a (supposed) curve point;

@@ -88,7 +88,7 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
         - coordinate encoding
         - points at infinity
         - $\mathbb{C}_1$ mermbership         
-- BLS12_G1MSM, $(\mathbb{G_1} \times \mathbb{N})^k$ ($160 \cdot k$ bytes) $\rightarrow \mathbb{G_1}$ (128 bytes) with $k > 0$
+- BLS12_G1MSM, $(\mathbb{G_1} \times \mathbb{N})^k$ ($160 (128 + 32) \cdot k$ bytes) $\rightarrow \mathbb{G_1}$ (128 bytes) with $k > 0$
      - OOB:
         - input length: 
             ```
@@ -130,7 +130,7 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
         - coordinate encoding
         - points at infinity
         - $\mathbb{C}_2$ mermbership              
-- BLS12_G2MSM $(\mathbb{G_2} \times \mathbb{N})^k$ ($288 \cdot k$ bytes) $\rightarrow \mathbb{G_2}$ (256 bytes) with $k > 0$     
+- BLS12_G2MSM $(\mathbb{G_2} \times \mathbb{N})^k$ ($288 (256 + 32) \cdot k$ bytes) $\rightarrow \mathbb{G_2}$ (256 bytes) with $k > 0$     
     - OOB:
         - input length: $288 \cdot k$ bytes
             ```
