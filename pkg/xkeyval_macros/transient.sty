@@ -1,0 +1,63 @@
+\makeatletter
+% DEFINING KEYS
+
+\define@cmdkey [TRANSIENT] {var} {anchorRow}      {} % "i" in the spec, ALWAYS use this name
+\define@cmdkey [TRANSIENT] {var} {relOffset}      {} % relative offset, ALWAYS use this name
+\define@cmdkey [TRANSIENT] {var} {doingOffset}    {}
+\define@cmdkey [TRANSIENT] {var} {undoingOffset}  {}
+
+\presetkeys [TRANSIENT] {var} {
+	anchorRow     = \missingParameter,
+	relOffset     = \missingParameter,
+	doingOffset   = \missingParameter,
+	undoingOffset = \missingParameter,
+}{}
+
+\newcommand{\transientStorageReadingName} {\transientSignifier\texttt{transientStorageReading}}
+\newcommand{\transientStorageReading} [1] {
+	\setkeys[TRANSIENT]{var}{#1}
+	\transientStorageReadingName _{\cmdTRANSIENT@var@anchorRow}
+	\big[ \cmdTRANSIENT@var@relOffset \big]
+}
+\iffalse
+\transientStorageReadingName {
+	anchorRow = i      ,
+	relOffset = \reldo ,
+}
+\fi
+
+\newcommand{\transientStorageSameSlotName} {\transientSignifier\texttt{transientStorageSameSlot}}
+\newcommand{\transientStorageSameSlot} [1] {
+	\setkeys[TRANSIENT]{var}{#1}
+	\transientStorageSameSlotName _{\cmdTRANSIENT@var@anchorRow}
+	\left[ \begin{array}{ll}
+		\utt{Current   row offset:} & \cmdTRANSIENT@var@undoingOffset \\
+		\utt{Reference row offset:} & \cmdTRANSIENT@var@doingOffset   \\
+	\end{array} \right]
+}
+\iffalse
+\transientStorageSameSlot {
+	anchorRow     = i      ,
+	undoingOffset = \reluo ,
+	doingOffset   = \reldo ,
+}
+\fi
+
+\newcommand{\transientStorageUndoingUpdateName} {\transientSignifier\texttt{transientStorageUndoingUpdate}}
+\newcommand{\transientStorageUndoingUpdate} [1] {
+	\setkeys[TRANSIENT]{var}{#1}
+	\transientStorageUndoingUpdateName _{\cmdTRANSIENT@var@anchorRow}
+	\left[ \begin{array}{ll}
+		\utt{Undoing row offset:} & \cmdTRANSIENT@var@undoingOffset \\
+		\utt{Doing   row offset:} & \cmdTRANSIENT@var@doingOffset   \\
+	\end{array} \right]
+}
+\iffalse
+\transientStorageUndoingUpdate {
+	anchorRow     = i      ,
+	undoingOffset = \reluo ,
+	doingOffset   = \reldo ,
+}
+\fi
+
+\makeatother
