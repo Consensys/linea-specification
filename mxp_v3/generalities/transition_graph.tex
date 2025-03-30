@@ -1,0 +1,24 @@
+\begin{figure}[!h]
+	\centering
+	\begin{tikzpicture}[node distance={3.5cm}, standard/.style={rectangle, thick, draw, rounded corners = 3pt, inner sep = 6pt, outer sep = 4pt}] 
+		\node[          color = draculacomment    ]   (padding)                               {\Large{padding}};
+		\node[standard, color = draculagreen      ]   (decoder)      [below right of=padding] {$\isMxpInstructionDecoder$};
+		\node[standard, color =        yellow!70  ]   (macro)        [right of=decoder]       {$\isMxpMacro$};
+		\node[standard, color =        orange!70  ]   (scenario)     [below of=macro]         {$\isMxpScenario$};
+		\node[standard, color = draculared        ]   (computation)  [left of=scenario]       {$\isMxpComputation$};
+		\node[          color = draculacomment    ]   (halt)         [below of=computation]   {\Large{halt}};
+		\draw[-latex] (padding)     -- (decoder)     ;
+		\draw[-latex] (decoder)     -- (macro)       ;
+		\draw[-latex] (macro)       -- (scenario)    ;
+		\draw[-latex] (scenario)    -- (computation) ;
+		\draw[-latex] (computation) -- (halt)        ;
+		\draw[-latex] (computation) -- (decoder)     ;
+		\draw (computation) edge [-latex, out=205,in=155,looseness=5] node [left] {$\maxCt$} (computation);
+	\end{tikzpicture}
+	\caption{%
+		The above represents the legal perspective transitions for the \mxpMod{} module.
+		Every perspective except for $\isMxpComputation$ occupies a single row in the above cycle.
+		The number of $\isMxpComputation$ rows is $1 + \maxCt$.
+		}
+	\label{mxp: generalities: heartbeat: perspective transition graph}
+\end{figure}
