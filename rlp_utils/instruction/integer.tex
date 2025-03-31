@@ -1,25 +1,27 @@
 \[
     \boxed{\text{All constraints in this subsection assume } \first_{i} = 1 \et \INST_{i} = \inst{INTEGER} }
 \]
-
+$\argOne$ and $\argTwo$ represent high and low parts of an integer to rpl-ize.
 \begin{description}
 \def\nRows{\rowOffsetHighZero}\item[\underline{\underline{Processing row $n^\circ(\nRows)$:}} \underline{Detecting null high part:}]
         we impose that
         \[
-            \wcpCallToIszero {
+            \wcpCallToGt {
                 anchorRow = i                      ,
                 relOffset = \nRows                 ,
                 argOneHi  = \argOne                ,
                 argOneLo  = 0                      ,
+                argTwoHi  = 0                      ,
+                argTwoLo  = 0                      ,
             }
         \]
         and we derive the following shorthand
         \[
             \left\{ \begin{array}{lcl}
-                \locHighpartNull    & \define & \res_{i + \nRows} \\
+                \locBigInt    & \define & \res_{i + \nRows} \\
             \end{array} \right.
-        \]
-        \}$.
+        \].
+
 
 \def\nRows{\rowOffsetSmallInt}\item[\underline{\underline{Processing row $n^\circ(\nRows)$:}} \underline{Detecting small integer:}]
         we impose that
@@ -27,7 +29,7 @@
             \wcpCallToLeq {
                 anchorRow = i                      ,
                 relOffset = \nRows                 ,
-                argOneHi  = \argOne                ,
+                argOneHi  = 0                      ,
                 argOneLo  = \argTwo                ,
                 argTwoHi  = 0                      ,
                 argTwoLo  = \oneTwoEight           ,
@@ -36,8 +38,21 @@
         and we derive the following shorthand
         \[
             \left\{ \begin{array}{lcl}
-                \locSmallInt    & \define & \res_{i + \nRows} \\
+                \locSmallInt   & \define & (1 - \locBigInt) \cdot \res_{i + \nRows} \\
+                \locTotalSize  & \define & \locBigInt \cdot (\llarge + (\wcpCtMax_{i + \rowOffsetHighZero} + 1) + (1 - \locBigInt) \cdot (\wcpCtMax_{i + \nRows} + 1) \\
+                \locNBytes     & \define & \locBigInt \cdot (\wcpCtMax_{i + \rowOffsetHighZero} + 1) + (1 - \locBigInt) \cdot (\wcpCtMax_{i + \nRows} +1)\\
             \end{array} \right.
-        \]
-        \}$.
+        \].
 \end{description}
+
+Finalization constraint:
+
+We impose
+ \[
+            \left\{ \begin{array}{lcl}
+                \res{1}_{i}    & \define & \locSmallInt \\
+                \res{2}_{i}    & \define & \locBigInt \\
+                \res{3}_{i}    & \define & \rlprefixShortInt + \locTotalSize\\
+                \res{4}_{i}    & \define & \locNBytes \\
+            \end{array} \right.
+        \].
