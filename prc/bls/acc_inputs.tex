@@ -1,17 +1,33 @@
-% We further constrain the $\accPairings$ column as follows:
-% \begin{enumerate}
-%     \item \accPairings{} is counter-constant \quad (\trash)
-%     \item \If $\isEcpairingData_{i} = 0$ \Then
-%         \[
-%             \left\{ \begin{array}{lcl}
-%                 \accPairings_{i}     & = & 0                        \\
-%                 \accPairings_{i + 1} & = & \isEcpairingData_{i + 1} \\
-%             \end{array} \right.
-%         \]
-%     \item \If $\isEcpairingData_{i} = 1$ \Then
-%         \[
-%             \accPairings_{i+1}
-%             =
-%             \isEcpairingData_{i+1} \cdot (\accPairings_{i} + \locTransitionFromLargeToSmall_{i})
-%         \]
-% \end{enumerate}
+We further constrain the $\accInputs$ column as follows:
+\begin{enumerate}
+    \item \accInputs{} is counter-constant \quad (\trash)
+
+    \item \If $\isBlsGOneMsmData_{i} = 0$ \et~ $\isBlsGTwoMsmData_{i} = 0$ \et~ $\isBlsPairingCheckData_{i} = 0$ ~\Then
+        \[
+            \left\{ \begin{array}{lcl}
+                \accInputs_{i}     & = & 0                        \\
+                \accInputs_{i + 1} & = & \isEcpairingData_{i + 1} \\
+            \end{array} \right.
+        \]
+    
+    \item \If $\isBlsGOneMsmData_{i} = 1$ \Then
+        \[
+            \accInputs_{i+1}
+            =
+            \isBlsGOneMsmData_{i+1} \cdot (\accInputs_{i} + \locTransitionFromSecondToFirst_{i})
+        \]
+
+    \item \If $\isBlsGTwoMsmData_{i} = 1$ \Then
+        \[
+            \accInputs_{i+1}
+            =
+            \isBlsGTwoMsmData_{i+1} \cdot (\accInputs_{i} + \locTransitionFromSecondToFirst_{i})
+        \]
+
+    \item \If $\isBlsPairingCheckData_{i} = 1$ \Then
+        \[
+            \accInputs_{i+1}
+            =
+            \isBlsPairingCheckData_{i+1} \cdot (\accInputs_{i} + \locTransitionFromSecondToFirst_{i})
+        \]
+\end{enumerate}

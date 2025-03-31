@@ -1,38 +1,43 @@
-% The present section provides constraints for
-% \isSmallPoint{}, \isLargePoint{},
-% \maxCt{} and \ct{}.
-% The constraints for these columns are tightly intertwined.
-% We start by defining the following module constants
-% \[
-%     \left\{ \begin{array}{lcl}
-%         \ctMaxSmallPoint & \!\!\! \define \!\!\! & \redm{3} \\
-%         \ctMaxLargePoint & \!\!\! \define \!\!\! & \redm{7} \\
-%     \end{array} \right.
-% \]
-% Then, impose the following constraints
-% \begin{enumerate}
-%     \item $\isSmallPoint$ and $\isLargePoint$ are binary \quad (\trash)
-%     \item $\isEcpairingData_{i} = \isSmallPoint_{i} + \isLargePoint_{i}$
-% \end{enumerate}
-% \saNote{}
-% \isEcpairingData{} being binary implicitly enforces that
-% $\isSmallPoint$ and $\isLargePoint$ are \textbf{exclusive binary flags}.
-% \begin{enumerate}[resume]
-%     \item we unconditionally impose that
-%         \[
-%             \begin{array}{l}
-%                 \maxCt _{i} =
-%                 \left[ \begin{array}{clcl}
-%                     + & \ctMaxSmallPoint & \cdot & \isSmallPoint_{i} \\
-%                     + & \ctMaxLargePoint & \cdot & \isLargePoint_{i} \\
-%                 \end{array} \right] \\
-%             \end{array}
-%         \]
-%     \item $\maxCt$ is counter-constant \quad (\trash)
-%     \item $\isSmallPoint$ and $\isLargePoint$ are counter-constant \quad (\trash)
-% \end{enumerate}
-% \saNote{} Counter-constancy of \maxCt{} and binaryness of $\isSmallPoint$ and $\isLargePoint$ implicitly imposes counter-constancy of $\isSmallPoint$ and $\isLargePoint$,
-% whence the (\trash) symbol.
+The present section provides constraints for
+\isFirstInput{}, \isSecondInput{},
+\maxCt{} and \ct{}.
+The constraints for these columns are tightly intertwined.
+We start by defining the following module constants
+\[
+    \left\{ \begin{array}{lcl}
+        \locCtMaxFirstInput_{i} & \!\!\! \define \!\!\! & \redm{...} \cdot \isBlsGOneMsmData_{i} + \redm{...} \cdot \isBlsGTwoMsmData_{i} + \redm{...} \cdot \isBlsPairingCheckData_{i} \\
+        \locCtMaxSecondInput_{i} & \!\!\! \define \!\!\! & \redm{...} \cdot \isBlsGOneMsmData_{i} + \redm{...} \cdot \isBlsGTwoMsmData_{i} + \redm{...} \cdot \isBlsPairingCheckData_{i} \\
+    \end{array} \right.
+\]
+
+Then, impose the following constraints
+\begin{enumerate}
+    \item $\isFirstInput$ and $\isSecondInput$ are binary \quad (\trash)
+    \item $\isBlsGOneMsmData_{i} + \isBlsGTwoMsmData_{i} + \isBlsPairingCheckData_{i} = \isFirstInput_{i} + \isSecondInput_{i}$
+\end{enumerate}
+
+\saNote{}
+\isBlsGOneMsmData{}, \isBlsGTwoMsmData{} and \isBlsPairingCheckData{} being binary implicitly enforces that
+$\isFirstInput$ and $\isSecondInput$ are \textbf{exclusive binary flags}.
+
+
+\begin{enumerate}[resume]
+    \item we unconditionally impose that
+        \[
+            \begin{array}{l}
+                \maxCt _{i} =
+                \left[ \begin{array}{clcl}
+                    + & \locCtMaxFirstInput_{i} & \cdot & \isFirstInput_{i} \\
+                    + & \locCtMaxSecondInput_{i}& \cdot & \isSecondInput_{i} \\
+                \end{array} \right] \\
+            \end{array}
+        \]
+    \item $\maxCt$ is counter-constant \quad (\trash)
+    \item $\isFirstInput$ and $\isSecondInput$ are counter-constant \quad (\trash)
+\end{enumerate}
+\saNote{} Counter-constancy of \maxCt{} and binaryness of $\isFirstInput$ and $\isSecondInput$ implicitly imposes counter-constancy of $\isFirstInput$ and $\isSecondInput$,
+whence the (\trash) symbol.
+
 
 % We now move on to the \textbf{transitions} of $\isSmallPoint$ and $\isLargePoint$.
 % The first constraint below imposes that small points appear before large points,
