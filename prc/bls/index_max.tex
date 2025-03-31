@@ -1,46 +1,61 @@
-% We define the following module constants
-% \[
-% 	\left\{ \begin{array}{lcl}
-% 		\indexMaxEcrecoverData    & \!\!\! \define \!\!\! & \redm{7}  \\
-% 		\indexMaxEcaddData        & \!\!\! \define \!\!\! & \redm{7}  \\
-% 		\indexMaxEcmulData        & \!\!\! \define \!\!\! & \redm{5}  \\
-% 		\indexMaxEcPairingDataMin & \!\!\! \define \!\!\! & \redm{11} \\
-% 		\indexMaxEcrecoverResult  & \!\!\! \define \!\!\! & \redm{1}  \\
-% 		\indexMaxEcaddResult      & \!\!\! \define \!\!\! & \redm{3}  \\
-% 		\indexMaxEcmulResult      & \!\!\! \define \!\!\! & \redm{3}  \\
-% 		\indexMaxEcpairingResult  & \!\!\! \define \!\!\! & \redm{1}  \\
-% 	\end{array} \right.
-% \]
-% and define the following shorthand
-% \[
-% 	\locIndexMaxSum _{i} \define
-% 	\left[ \begin{array}{crcl}
-% 			+ & \indexMaxEcrecoverData   & \!\!\!\cdot\!\!\! & \isEcrecoverData     _{i}              \\
-% 			+ & \indexMaxEcaddData       & \!\!\!\cdot\!\!\! & \isEcaddData         _{i}              \\
-% 			+ & \indexMaxEcmulData       & \!\!\!\cdot\!\!\! & \isEcmulData         _{i} \vspace{2mm} \\
-% 			% + & \indexMaxEcpairingData   & \!\!\!\cdot\!\!\! & \isEcpairingData     _{i} \vspace{1mm} \\
-% 			+ & \indexMaxEcrecoverResult & \!\!\!\cdot\!\!\! & \isEcrecoverResult   _{i}              \\
-% 			+ & \indexMaxEcaddResult     & \!\!\!\cdot\!\!\! & \isEcaddResult       _{i}              \\
-% 			+ & \indexMaxEcmulResult     & \!\!\!\cdot\!\!\! & \isEcmulResult       _{i}              \\
-% 			+ & \indexMaxEcpairingResult & \!\!\!\cdot\!\!\! & \isEcpairingResult   _{i}              \\
-% 		\end{array} \right]
-% \]
-% We then impose the following constraint
-% \[
-% 	\llarge \cdot \indexMax_{i}
-% 	=
-% 	\left[ \begin{array}{crcl}
-% 			+ & \llarge              & \!\!\!\cdot\!\!\! & \locIndexMaxSum_{i}                        \\
-% 			+ & \isEcpairingData_{i} & \!\!\!\cdot\!\!\! & \Big[ \ecdataTotalSize_{i} - \llarge \Big] \\
-% 		\end{array} \right]
-% \]
-% The above constraint can be rewritten as
-% \[
-% 	\indexMax_{i}
-% 	=
-% 	\left[ \begin{array}{crcl}
-% 			+ &                      &                   & \locIndexMaxSum_{i}                                                      \\
-% 			+ & \isEcpairingData_{i} & \!\!\!\cdot\!\!\! & \Big[ (\indexMaxEcPairingDataMin + 1) \cdot \totalPairings_{i} - 1 \Big] \\
-% 		\end{array} \right]
-% \]
-% \saNote{} The (input) data size of a call to the \inst{ECPAIRING} precompile, given that it makes its way into the present module, is always a \textbf{nonzero multiple of 192}. Contrary to other precompile calls dealt with by the present module its size (and hence the associated \indexMax{} value) isn't a fixed constant.
+We define the following module constants
+
+\[
+	\left\{ \begin{array}{lcl}
+        \indexMaxBlsGOneAddData             & \!\!\! \define \!\!\! & \redm{...}  \\            
+        \indexMaxBlsGOneAddResult           & \!\!\! \define \!\!\! & \redm{...}  \\ 
+        \indexMaxBlsGOneMsmDataMin          & \!\!\! \define \!\!\! & \redm{...}  \\ 
+        \indexMaxBlsGOneMsmResult           & \!\!\! \define \!\!\! & \redm{...}  \\ 
+        \indexMaxBlsGTwoAddData             & \!\!\! \define \!\!\! & \redm{...}  \\
+        \indexMaxBlsGTwoAddResult           & \!\!\! \define \!\!\! & \redm{...}  \\ 
+        \indexMaxBlsGTwoMsmDataMin          & \!\!\! \define \!\!\! & \redm{...}  \\ 
+        \indexMaxBlsGTwoMsmResult           & \!\!\! \define \!\!\! & \redm{...}  \\ 
+        \indexMaxBlsPairingCheckDataMin     & \!\!\! \define \!\!\! & \redm{...}  \\ 
+        \indexMaxBlsPairingCheckResult      & \!\!\! \define \!\!\! & \redm{...}  \\ 
+        \indexMaxBlsMapFpToGOneData         & \!\!\! \define \!\!\! & \redm{...}  \\ 
+        \indexMaxBlsMapFpToGOneResult       & \!\!\! \define \!\!\! & \redm{...}  \\ 
+        \indexMaxBlsMapFpTwoToGTwoData      & \!\!\! \define \!\!\! & \redm{...}  \\ 
+        \indexMaxBlsMapFpTwoToGTwoResult    & \!\!\! \define \!\!\! & \redm{...}  \\      
+	\end{array} \right.
+\]
+and define the following shorthand
+\[
+	\locIndexMaxSum _{i} \define
+	\left[ \begin{array}{crcl}
+            + & \indexMaxBlsGOneAddData        & \!\!\!\cdot\!\!\! & \isBlsGOneAddData       _{i}         \\
+            + & \indexMaxBlsGTwoAddData        & \!\!\!\cdot\!\!\! & \isBlsGTwoAddData       _{i}         \\
+            + & \indexMaxBlsMapFpToGOneData    & \!\!\!\cdot\!\!\! & \isBlsMapFpToGOneData _{i}           \\
+            + & \indexMaxBlsMapFpTwoToGTwoData & \!\!\!\cdot\!\!\! & \isBlsMapFpTwoToGTwoData _{i}        \\
+
+            + & \indexMaxBlsGOneAddResult        & \!\!\!\cdot\!\!\! & \isBlsGOneAddResult      _{i}      \\
+            + & \indexMaxBlsGOneMsmResult        & \!\!\!\cdot\!\!\! & \isBlsGOneMsmResult      _{i}      \\
+            + & \indexMaxBlsGTwoAddResult        & \!\!\!\cdot\!\!\! & \isBlsGTwoAddResult      _{i}      \\
+            + & \indexMaxBlsGTwoMsmResult        & \!\!\!\cdot\!\!\! & \isBlsGTwoMsmResult      _{i}      \\
+            + & \indexMaxBlsPairingCheckResult   & \!\!\!\cdot\!\!\! & \isBlsPairingCheckResult _{i}      \\
+            + & \indexMaxBlsMapFpToGOneResult    & \!\!\!\cdot\!\!\! & \isBlsMapFpToGOneResult  _{i}      \\
+            + & \indexMaxBlsMapFpTwoToGTwoResult & \!\!\!\cdot\!\!\! & \isBlsMapFpTwoToGTwoResult _{i}    \\
+		\end{array} \right]
+\]
+We then impose the following constraint
+\[
+	\llarge \cdot \indexMax_{i}
+	=
+	\left[ \begin{array}{crcl}
+			+ & \llarge                    & \!\!\!\cdot\!\!\! & \locIndexMaxSum_{i}                        \\
+            + & \isBlsGOneMsmData_{i}      & \!\!\!\cdot\!\!\! & \Big[ \ecdataTotalSize_{i} - \llarge \Big] \\
+            + & \isBlsGTwoMsmData_{i}      & \!\!\!\cdot\!\!\! & \Big[ \ecdataTotalSize_{i} - \llarge \Big] \\
+			+ & \isBlsPairingCheckData_{i} & \!\!\!\cdot\!\!\! & \Big[ \ecdataTotalSize_{i} - \llarge \Big] \\
+		\end{array} \right]
+\]
+The above constraint can be rewritten as
+\[
+	\indexMax_{i}
+	=
+	\left[ \begin{array}{crcl}
+			+ &                              &                   & \locIndexMaxSum_{i}                                                          \\
+            + & \isBlsGOneMsmData_       {i} & \!\!\!\cdot\!\!\! & \Big[ (\indexMaxBlsGOneMsmDataMin + 1) \cdot \totalInputs_{i} - 1 \Big]      \\
+            + & \isBlsGTwoMsmData_       {i} & \!\!\!\cdot\!\!\! & \Big[ (\indexMaxBlsGTwoMsmDataMin + 1) \cdot \totalInputs_{i} - 1 \Big]      \\
+			+ & \isBlsPairingCheckData_ {i}  & \!\!\!\cdot\!\!\! & \Big[ (\indexMaxBlsPairingCheckDataMin + 1) \cdot \totalInputs_{i} - 1 \Big] \\
+		\end{array} \right]
+\]
+\saNote{} The (input) data size of a call to \inst{BLS12\_G1MSM}, \inst{BLS12\_G2MSM} and \inst{BLS12\_PAIRING\_CHECK} precompile, given that it makes its way into the present module, are always a \textbf{nonzero multiple of 160, 288 and 384} respectively. Contrary to other precompile calls dealt with by the present module its size (and hence the associated \indexMax{} value) isn't a fixed constant.
