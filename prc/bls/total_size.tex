@@ -1,21 +1,27 @@
-% The $\ecdataTotalSize$ varies depending on the precompile, if data or results are considered and whether the call is successful (if it fails, $\ecdataTotalSize = 0$). In the case of $\inst{ECPAIRING}$, the total size is influenced by the number of pairings.
+The $\blsTotalSize$ varies depending on the precompile, if data or results are considered and whether the call is successful (if it fails, $\blsTotalSize = 0$). In the case of \inst{BLS12\_G1MSM}, \inst{BLS12\_G2MSM} and \inst{BLS12\_PAIRING\_CHECK}, the total size is influenced by the number of inputs.
 
-% We define the following module constants
-% \[
-%     \left\{ \begin{array}{lcl}
-%         \totalSizeEcrecoverData    & \!\!\! \define \!\!\! & \redm{128} \\
-%         \totalSizeEcaddData        & \!\!\! \define \!\!\! & \redm{128} \\
-%         \totalSizeEcmulData        & \!\!\! \define \!\!\! & \redm{96}  \\
-%         \totalSizeEcpairingDataMin & \!\!\! \define \!\!\! & \redm{192} \\
-%         \totalSizeEcrecoverResult  & \!\!\! \define \!\!\! & \redm{32}  \\
-%         \totalSizeEcaddResult      & \!\!\! \define \!\!\! & \redm{64}  \\
-%         \totalSizeEcmulResult      & \!\!\! \define \!\!\! & \redm{64}  \\
-%         \totalSizeEcpairingResult  & \!\!\! \define \!\!\! & \redm{32}  \\
-%     \end{array} \right.
-% \]
+We define the following module constants
+\[
+    \left\{ \begin{array}{lcl}
+        \totalSizeBlsGOneAddData             & \!\!\! \define \!\!\! & \redm{...} \\         
+        \totalSizeBlsGOneAddResult           & \!\!\! \define \!\!\! & \redm{...} \\
+        \totalSizeBlsGOneMsmDataMin          & \!\!\! \define \!\!\! & \redm{...} \\
+        \totalSizeBlsGOneMsmResult           & \!\!\! \define \!\!\! & \redm{...} \\
+        \totalSizeBlsGTwoAddData             & \!\!\! \define \!\!\! & \redm{...} \\
+        \totalSizeBlsGTwoAddResult           & \!\!\! \define \!\!\! & \redm{...} \\
+        \totalSizeBlsGTwoMsmDataMin          & \!\!\! \define \!\!\! & \redm{...} \\
+        \totalSizeBlsGTwoMsmResult           & \!\!\! \define \!\!\! & \redm{...} \\
+        \totalSizeBlsPairingCheckDataMin     & \!\!\! \define \!\!\! & \redm{...} \\
+        \totalSizeBlsPairingCheckResult      & \!\!\! \define \!\!\! & \redm{...} \\
+        \totalSizeBlsMapFpToGOneData         & \!\!\! \define \!\!\! & \redm{...} \\
+        \totalSizeBlsMapFpToGOneResult       & \!\!\! \define \!\!\! & \redm{...} \\
+        \totalSizeBlsMapFpTwoToGTwoData      & \!\!\! \define \!\!\! & \redm{...} \\
+        \totalSizeBlsMapFpTwoToGTwoResult    & \!\!\! \define \!\!\! & \redm{...} \\
+    \end{array} \right.
+\]
 % Thus we impose the following constraints:
 % \[
-%     \ecdataTotalSize _{i}
+%     \blsTotalSize _{i}
 %     =
 %     \left[ \begin{array}{crcccl}
 %         + & \isEcrecoverData   _{i} & \cdot & \totalSizeEcrecoverData    \\
@@ -31,20 +37,20 @@
 
 % \saNote{} The above translates to the following:
 % \begin{enumerate}
-%     \item \If $\isEcrecoverData$   \Then $\ecdataTotalSize = \totalSizeEcrecoverData$
-%     \item \If $\isEcaddData$       \Then $\ecdataTotalSize = \totalSizeEcaddData$
-%     \item \If $\isEcmulData$       \Then $\ecdataTotalSize = \totalSizeEcmulData$
-%     \item \If $\isEcpairingData$   \Then $\ecdataTotalSize = \totalSizeEcpairingDataMin \cdot \totalPairings$    % we provide it ... it's a little strange
-%     \item \If $\isEcrecoverResult$ \Then $\ecdataTotalSize = \totalSizeEcrecoverResult \cdot \ecdataSuccessBit$
-%     \item \If $\isEcaddResult$     \Then $\ecdataTotalSize = \totalSizeEcaddResult     \cdot \ecdataSuccessBit$
-%     \item \If $\isEcmulResult$     \Then $\ecdataTotalSize = \totalSizeEcmulResult     \cdot \ecdataSuccessBit$
-%     \item \If $\isEcpairingResult$ \Then $\ecdataTotalSize = \totalSizeEcpairingResult \cdot \ecdataSuccessBit$
+%     \item \If $\isEcrecoverData$   \Then $\blsTotalSize = \totalSizeEcrecoverData$
+%     \item \If $\isEcaddData$       \Then $\blsTotalSize = \totalSizeEcaddData$
+%     \item \If $\isEcmulData$       \Then $\blsTotalSize = \totalSizeEcmulData$
+%     \item \If $\isEcpairingData$   \Then $\blsTotalSize = \totalSizeEcpairingDataMin \cdot \totalPairings$    % we provide it ... it's a little strange
+%     \item \If $\isEcrecoverResult$ \Then $\blsTotalSize = \totalSizeEcrecoverResult \cdot \ecdataSuccessBit$
+%     \item \If $\isEcaddResult$     \Then $\blsTotalSize = \totalSizeEcaddResult     \cdot \ecdataSuccessBit$
+%     \item \If $\isEcmulResult$     \Then $\blsTotalSize = \totalSizeEcmulResult     \cdot \ecdataSuccessBit$
+%     \item \If $\isEcpairingResult$ \Then $\blsTotalSize = \totalSizeEcpairingResult \cdot \ecdataSuccessBit$
 % \end{enumerate}
 
 % \saNote{} We use the name $\totalSizeEcpairingDataMin$ for homogeneity reasons, but it is important to note that:
 % \begin{itemize}
 %     \item
-%         the $\ecdataTotalSize$ of a call to the \inst{ECPAIRING} precompile \textbf{must} be a multiple of $\totalSizeEcpairingDataMin$;
+%         the $\blsTotalSize$ of a call to the \inst{ECPAIRING} precompile \textbf{must} be a multiple of $\totalSizeEcpairingDataMin$;
 %         this check is done in the \oobMod{} module, see
 %         section~(\ref{oob: precompiles: common precompiles: three row precompiles}); 
 %     \item
