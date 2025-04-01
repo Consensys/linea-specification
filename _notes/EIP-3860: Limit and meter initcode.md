@@ -4,10 +4,10 @@ Impacted modules
 - [ ] TXN_DATA
     - [ ] verify that a transaction's `INIT_CODE_SIZE` is `≤ 49152 ≡ 2 * MAX_CODE_SIZE`
     - [ ] extra ceiling computation for deployments + affects tx cost
-- [ ] OOB
-    - [ ] comparison of `init_code_size` to `2 * MAX_CODE_SIZE`
-    - [ ] justifies `MAXCSX` prediction
-    - [ ] [OOB_INST_XCREATE]
+- [x] OOB
+    - [x] comparison of `init_code_size` to `2 * MAX_CODE_SIZE`
+    - [x] justifies `MAXCSX` prediction
+    - [x] [OOB_INST_XCREATE] / OOB_INST_XCREATE_FLAG / CT_MAX_XCREATE
 - [ ] MXP (no spec change)
     - [ ] modify G_WORD constants
         - CREATE:  0               →                   G_initcodeword
