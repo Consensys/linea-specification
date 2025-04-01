@@ -3,7 +3,7 @@ The present section describes the data layout for the \inst{XCREATE} case. As su
 	\boxed{\text{All constraints in this subsection further assume } \oobInstIsXcreate _{i} = 1}
 \]
 We remind the reader that purpose of the \oobInstXcreate{} instruction is to detect when a \inst{CREATE(2)}'s
-initialization code size exceeds $\locMaxInitCodeSize \define 2 \cdot \locMaxCodeSize = \locMaxInitCodeSizeValue$.
+initialization code size exceeds $\maxInitCodeSize \define 2 \cdot \maxCodeSize = \maxInitCodeSizeValue$.
 These are liable to trigger a \staticxSH{}.
 
 We introduce the following shorthands:
@@ -26,7 +26,7 @@ We impose the following constraints:
 		\[
 			\oobCallToLt
 			{i}{0}
-			{0}{\locMaxInitCodeSize}
+			{0}{\maxInitCodeSize}
 			{\locInitCodeSizeHi}{\locInitCodeSizeLo}
 		\]
 		and we define the following associated shorthand
@@ -34,7 +34,7 @@ We impose the following constraints:
 			\locExceedsMaxInitCodeSize \define \outgoingResLo _{i}
 		\]
 		\saNote{}
-		It follows that $\locExceedsMaxInitCodeSize = 1 \iff \locMaxInitCodeSizeValue < \col{init\_code\_size}$.
+		It follows that $\locExceedsMaxInitCodeSize = 1 \iff \maxInitCodeSizeValue < \col{init\_code\_size}$.
 	\item[\underline{Justifying the \hubMod's prediction:}]
 		we impose
 		\[
