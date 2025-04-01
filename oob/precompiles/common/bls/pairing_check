@@ -4,38 +4,37 @@
 
 We impose the following constraints:
 \begin{description}
-	% TODO: shift back index by 1
-	\item[\underline{Row n°$(i + 3)$:}]
+	\item[\underline{Row n°$(i + 2)$:}]
 		we impose that
 		\[
 			\oobCallToMod
-			{i}{3}
+			{i}{2}
 			{0}{\locCds}
 			{0}{\prcBlsPairingCheckSize}
 		\]
 		and we define the following shorthand
 		\[
-			\locRemainder \define \outgoingResLo_{i + 3}
+			\locRemainder \define \outgoingResLo_{i + 2}
 		\]
-	\item[\underline{Row n°$(i + 4)$:}]
+	\item[\underline{Row n°$(i + 3)$:}]
 		we impose that
 		\[
 			\oobCallToIszero
-			{i}{4}
+			{i}{3}
 			{0}{\locRemainder}
 		\]
 		and we define the following shorthand
 		\[
-			\locBlsPairingSizeIsMultiple \define \outgoingResLo_{i + 4}
+			\locBlsPairingSizeIsMultiple \define \outgoingResLo_{i + 3}
 		\]
-	\item[\underline{Row n°$(i + 5)$:}]
+	\item[\underline{Row n°$(i + 4)$:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locBlsPairingSizeIsMultiple = 0$ \Then we impose $\oobNoCall{i}{3}$.
+			\item \If $\locBlsPairingSizeIsMultiple = 0$ \Then we impose $\oobNoCall{i}{4}$.
 			\item \If $\locBlsPairingSizeIsMultiple = 1$ \Then we impose that
 				\[
 					\oobCallToLt
-					{i}{5}
+					{i}{4}
 					{0}{\locCalleeGas}
 					{0}{\locPrecompileCost}
 				\]
@@ -46,7 +45,7 @@ We impose the following constraints:
 				\end{align*}
 				we further introduce the following shorthand
 				\[
-					\locInsufficientGas \define \outgoingResLo_{i + 5}
+					\locInsufficientGas \define \outgoingResLo_{i + 4}
 				\]
 				It follows that $\locCalleeGas < \locPrecompileCost \iff \locInsufficientGas = 1$.
 		\end{enumerate}
@@ -54,10 +53,12 @@ We impose the following constraints:
 	\item[\underline{Justifying the remaining \hubMod{} predictions:}]
 		we impose that
 		\[
-			\locHubSuccess =
-			(1 - \locCdsIsZero) \cdot
-			\locBlsPairingSizeIsMultiple \cdot
-			(1 - \locInsufficientGas)
+			\locHubSuccess \define
+			\left[  \begin{array}{cl}
+				\cdot & (1 - \locCdsIsZero)          \\
+				\cdot & \locBlsPairingSizeIsMultiple \\
+				\cdot & (1 - \locInsufficientGas)    \\
+			\end{array} \right]
 		\]
 		we further impose that
 		\begin{enumerate}

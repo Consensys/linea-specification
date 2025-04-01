@@ -22,29 +22,32 @@ We impose the following constraints:
 				\oobCallToEq
 				{i}{2}
 				{0}{\locCds}
-				{0}{\locFixedCds_{i}}
+				{0}{\locFixedCds}
 				\vspace{2mm} \\
                 \oobCallToLt
                 {i}{3}
                 {0}{\locCalleeGas}
-                {0}{\locFixedGasCost_{i}} 
+                {0}{\locPrecompileCost} 
 				\\
 			\end{array} \right.
 		\]
 		we then set the following shorthands
 		\[
 			\left\{ \begin{array}{lcl}
-				\locValidCds      & \define & \outgoingResLo  _{i + 2}     \\
-				\locSufficientGas & \define & 1 - \outgoingResLo  _{i + 3} \\
+				\locPrecompileCost & \define & \locFixedGasCost             \\
+				\locValidCds       & \define & \outgoingResLo  _{i + 2}     \\
+				\locSufficientGas  & \define & 1 - \outgoingResLo  _{i + 3} \\
 			\end{array} \right.
 		\]
-		It follows that $\locValidCds = 1 \iff \locCds = \locFixedCds_{i}$.
+		It follows that $\locValidCds = 1 \iff \locCds = \locFixedCds$.
 	\item[\underline{Justifying \hubMod{} predictions:}]
 		we impose
 		\[
-			\left\{ \begin{array}{lcl}
-				\locHubSuccess   & = & \locValidCds \cdot \locSufficientGas \\
-			\end{array} \right.
+			\locHubSuccess \define
+			\left[  \begin{array}{cl}
+				\cdot & \locValidCds                 \\
+				\cdot & \locSufficientGas            \\
+			\end{array} \right]
 		\]
 		we further impose that
 		\begin{enumerate}

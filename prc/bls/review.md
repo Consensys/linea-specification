@@ -1,13 +1,6 @@
 # OOB
 
-- Binary constraints rendering
-- call to bls ref table: rename "precompile" and "number"
-- Add bls precompiles to list of commons
-- Add shorthand for bls_fixed_size
-- Remove i from bls shorthands fixed_cds, ..., msm_multiplication_cost
-- fixed size fixed cost define precompile cost as equal to fixed gas cost...
-- Shift back indexes of bls pairing
-- Formatting for bls pairing (use array like in the case of flag_sum_inst...)
+- Add shorthand for bls_fixed_size (it seems we would need that only in one spot, is it actually useful?)
 
 # BLS
 - Trivial case BLS pairing is different wrt ECDATA pairing
