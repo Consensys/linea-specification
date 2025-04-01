@@ -58,7 +58,7 @@ We impose the following constraints:
 	\item[\underline{Row n°$(i + 5)$:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locMsmSizeIsMultiple = 0$ \Then we impose $\oobNoCall{i}{4}$.
+			\item \If $\locMsmSizeIsMultiple = 0$ \Then we impose $\oobNoCall{i}{5}$.
 			\item \If $\locMsmSizeIsMultiple = 1$ \Then we impose that
 				\begin{enumerate}
 					\item \If $\locNumberOfMsmInputsLeqThreshold = 1$ \Then we impose that
@@ -79,14 +79,14 @@ We impose the following constraints:
 				\end{enumerate}
 				
 		\end{enumerate}
-	\item[\underline{Row n°$(i + 5)$:}]
+	\item[\underline{Row n°$(i + 6)$:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locMsmSizeIsMultiple = 0$ \Then we impose $\oobNoCall{i}{5}$.
+			\item \If $\locMsmSizeIsMultiple = 0$ \Then we impose $\oobNoCall{i}{6}$.
 			\item \If $\locMsmSizeIsMultiple = 1$ \Then we impose that
 				\[
 					\oobCallToLt
-					{i}{5}
+					{i}{6}
 					{0}{\locCalleeGas}
 					{0}{\locPrecompileCost}
 				\]
@@ -96,7 +96,7 @@ We impose the following constraints:
 				\]
 				we further introduce the following shorthand
 				\[
-					\locInsufficientGas \define \outgoingResLo_{i + 5}
+					\locInsufficientGas \define \outgoingResLo_{i + 6}
 				\]
 				It follows that $\locCalleeGas < \locPrecompileCost \iff \locInsufficientGas = 1$.
 		\end{enumerate}
@@ -105,6 +105,7 @@ We impose the following constraints:
 		we impose that
 		\[
 			\locHubSuccess =
+			(1 - \locCdsIsZero) \cdot
 			\locMsmSizeIsMultiple \cdot
 			(1 - \locInsufficientGas)
 		\]
