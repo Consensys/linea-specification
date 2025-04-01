@@ -15,8 +15,8 @@ We introduce the following shorthands:
 		%                              & \define & \oobDataCol{4} _{i} \\
 		%                              & \define & \oobDataCol{5} _{i} \\
 		%                              & \define & \oobDataCol{6} _{i} \\
-		\locMaxInitCodeSizeException   & \define & \oobDataCol{7} _{i}  & \prediction \\
-		\locNoMaxInitCodeSizeException & \define & \oobDataCol{8} _{i}  & \prediction \\
+		% \locMaxInitCodeSizeException   & \define & \oobDataCol{7} _{i}  & \prediction \\
+		% \locNoMaxInitCodeSizeException & \define & \oobDataCol{8} _{i}  & \prediction \\
 		%                              & \define & \oobDataCol{9} _{i} \\
 	\end{array} \right.
 \]
@@ -24,23 +24,28 @@ We impose the following constraints:
 \begin{description}
 	\item[\underline{Row n°$(i)$:}] we impose the following:
 		\[
-			\oobCallToLt
-			{i}{0}
-			{0}{\maxInitCodeSize}
-			{\locInitCodeSizeHi}{\locInitCodeSizeLo}
+			\left\{ \begin{array}{l}
+				\oobCallToLt
+				{i}{0}
+				{0}{\maxInitCodeSize}
+				{\locInitCodeSizeHi}{\locInitCodeSizeLo}
+				\vspace{2mm} \\
+				\locExceedsMaxInitCodeSize = 1
+			\end{array} \right.
 		\]
-		and we define the following associated shorthand
+		where we define the following associated shorthand
 		\[
 			\locExceedsMaxInitCodeSize \define \outgoingResLo _{i}
 		\]
 		\saNote{}
 		It follows that $\locExceedsMaxInitCodeSize = 1 \iff \maxInitCodeSizeValue < \col{init\_code\_size}$.
-	\item[\underline{Justifying the \hubMod's prediction:}]
-		we impose
-		\[
-			\left\{ \begin{array}{lcl}
-				\locMaxInitCodeSizeException   & = & \locExceedsMaxInitCodeSize     \\
-				\locNoMaxInitCodeSizeException & = & 1 - \locExceedsMaxInitCodeSize \\
-			\end{array} \right.
-		\]
+		The final constraint therefore enforces that the init code size exceed $\maxInitCodeSizeValue$.
+	% \item[\underline{Justifying the \hubMod's prediction:}]
+	% 	we impose
+	% 	\[
+	% 		\left\{ \begin{array}{lcl}
+	% 			\locMaxInitCodeSizeException   & = & \locExceedsMaxInitCodeSize     \\
+	% 			\locNoMaxInitCodeSizeException & = & 1 - \locExceedsMaxInitCodeSize \\
+	% 		\end{array} \right.
+	% 	\]
 \end{description}
