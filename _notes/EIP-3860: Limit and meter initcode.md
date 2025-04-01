@@ -5,9 +5,13 @@ Impacted modules
     - [x] verify that a transaction's `INIT_CODE_SIZE` is `≤ 49152 ≡ 2 * MAX_CODE_SIZE`
     - [x] extra ceiling computation for deployments + affects tx cost
 - [x] OOB
-    - [x] comparison of `init_code_size` to `2 * MAX_CODE_SIZE`
-    - [x] justifies `MAXCSX` prediction
     - [x] [OOB_INST_XCREATE] / OOB_INST_XCREATE_FLAG / CT_MAX_XCREATE
+        - [x] comparison of `init_code_size` to `2 * MAX_CODE_SIZE`
+        - [x] imposes that `init_code_size > 2 * MAX_CODE_SIZE` i.e. that `MAXCSX` is active
+    - [x] [OOB_INST_CREATE]
+        - [x] extra `OOB_DATA_10` column
+        - [x] extra `init_code_size ≡ init_code_size_lo` parameter
+        - [x] imposes that `init_code_size ≤ 2 * MAX_CODE_SIZE` i.e. that `MAXCSX` is active
 - [ ] MXP (no spec change)
     - [ ] modify G_WORD constants
         - CREATE:  0               →                   G_initcodeword
