@@ -5,15 +5,31 @@ The constraints for these columns are tightly intertwined.
 We start by defining the following module constants
 \[
     \left\{ \begin{array}{lcl}
-        \locCtMaxFirstInput_{i} & \!\!\! \define \!\!\! & \redm{...} \cdot \isBlsGOneMsmData_{i} + \redm{...} \cdot \isBlsGTwoMsmData_{i} + \redm{...} \cdot \isBlsPairingCheckData_{i} \\
-        \locCtMaxSecondInput_{i} & \!\!\! \define \!\!\! & \redm{...} \cdot \isBlsGOneMsmData_{i} + \redm{...} \cdot \isBlsGTwoMsmData_{i} + \redm{...} \cdot \isBlsPairingCheckData_{i} \\
+        \locIsVariableSizeData_{i} & \define &  
+		\left[ \begin{array}{cl}
+            + & \isBlsGOneMsmData_{i}      \\
+			+ & \isBlsGTwoMsmData_{i}      \\
+			+ & \isBlsPairingCheckData_{i} \\
+		\end{array} \right] \vspace{2mm} \\
+        \locCtMaxFirstInput_{i} & \define &  
+		\left[ \begin{array}{cl}
+            + & \redm{...} \cdot \isBlsGOneMsmData_{i}      \\
+			+ & \redm{...} \cdot \isBlsGTwoMsmData_{i}      \\
+			+ & \redm{...} \cdot \isBlsPairingCheckData_{i} \\
+		\end{array} \right] \vspace{2mm} \\
+        \locCtMaxSecondInput_{i} & \define &  
+		\left[ \begin{array}{cl}
+            + & \redm{...} \cdot \isBlsGOneMsmData_{i}      \\
+			+ & \redm{...} \cdot \isBlsGTwoMsmData_{i}      \\
+			+ & \redm{...} \cdot \isBlsPairingCheckData_{i} \\
+		\end{array} \right] \vspace{2mm} \\
     \end{array} \right.
 \]
 
 Then, impose the following constraints
 \begin{enumerate}
     \item $\isFirstInput$ and $\isSecondInput$ are binary \quad (\trash)
-    \item $\isBlsGOneMsmData_{i} + \isBlsGTwoMsmData_{i} + \isBlsPairingCheckData_{i} = \isFirstInput_{i} + \isSecondInput_{i}$
+    \item $\locIsVariableSizeData_{i} = \isFirstInput_{i} + \isSecondInput_{i}$
 \end{enumerate}
 
 \saNote{}

@@ -2,32 +2,18 @@ We further constrain the $\accInputs$ column as follows:
 \begin{enumerate}
     \item \accInputs{} is counter-constant \quad (\trash)
 
-    \item \If $\isBlsGOneMsmData_{i} + \isBlsGTwoMsmData_{i} + \isBlsPairingCheckData_{i} = 0$ ~\Then
+    \item \If $\locIsVariableSizeData_{i} = 0$ ~\Then
         \[
             \left\{ \begin{array}{lcl}
-                \accInputs_{i}     & = & 0                        \\
-                \accInputs_{i + 1} & = & \isBlsGOneMsmData_{i + 1} + \isBlsGTwoMsmData_{i + 1} + \isBlsPairingCheckData_{i + 1} \\
+                \accInputs_{i}     & = & 0                            \\
+                \accInputs_{i + 1} & = & \locIsVariableSizeData_{i+1} \\
             \end{array} \right.
         \]
     
-    \item \If $\isBlsGOneMsmData_{i} = 1$ \Then
+    \item \If $\locIsVariableSizeData_{i} = 1$ \Then
         \[
             \accInputs_{i+1}
             =
-            \isBlsGOneMsmData_{i+1} \cdot (\accInputs_{i} + \locTransitionFromSecondToFirst_{i})
-        \]
-
-    \item \If $\isBlsGTwoMsmData_{i} = 1$ \Then
-        \[
-            \accInputs_{i+1}
-            =
-            \isBlsGTwoMsmData_{i+1} \cdot (\accInputs_{i} + \locTransitionFromSecondToFirst_{i})
-        \]
-
-    \item \If $\isBlsPairingCheckData_{i} = 1$ \Then
-        \[
-            \accInputs_{i+1}
-            =
-            \isBlsPairingCheckData_{i+1} \cdot (\accInputs_{i} + \locTransitionFromSecondToFirst_{i})
+            \locIsVariableSizeData_{i+1} \cdot (\accInputs_{i} + \locTransitionFromSecondToFirst_{i})
         \]
 \end{enumerate}
