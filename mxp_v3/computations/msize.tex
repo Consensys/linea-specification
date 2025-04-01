@@ -1,0 +1,37 @@
+\[
+	\boxed{\text{All constraints in this subsection assume that }
+	\left\{ \begin{array}{lcl}
+		\isMxpScenario    _{i} & = & 1 \\
+		\mxpScenarioMsize _{i} & = & 1 \\
+	\end{array} \right.}
+\]
+We impose the following constraints for the \textbf{macro-instruction-row}:
+\begin{enumerate}
+	\item $\mxpMacroRes          _{i - \locScenarioToMacroRowOffset} = \mxpScenarioWords _{i}$
+	\item $\mxpMacroMxpx         _{i - \locScenarioToMacroRowOffset} = 0$ \quad (\sanityCheck)
+\end{enumerate}
+We impose the following constraints for the \textbf{scenario-row}:
+\begin{description}
+	\item[\underline{\underline{State update:}}]
+		the lack of a state update is already imposed in
+		section~(\ref{mxp: computation: generalities}).
+\end{description}
+We further constrain the following $\locCtMaxMsize$ computation-rows as follows:
+\def\rowNum{\yellowm{1}}
+\begin{description}
+	\item[\underline{\underline{First computation row:}}] we impose
+		\begin{enumerate}
+			\item $\mxpComputationWcpFlag _{i + \rowNum} = 0$ ~ (\trash)
+			\item $\mxpComputationEucFlag _{i + \rowNum} = 0$ ~ (\trash)
+		\end{enumerate}
+\end{description}
+In other words: no computation takes place on said computation-row.
+
+\saNote{}
+We may achieve the final constraint by imposing 
+\[
+	\mxpComputationWcpFlag _{i + \rowNum} +
+	\mxpComputationEucFlag _{i + \rowNum} = 0
+\]
+
+\includepdf[fitpaper=true,pages={1}]{lua/msize.pdf}
