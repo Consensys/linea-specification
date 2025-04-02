@@ -11,28 +11,58 @@
 \begin{description}
 	\item[\underline{Setting the stack pattern:}] we impose
 	\begin{enumerate}
-		\item \If $\locIsPop  = 1$ \Then $\oneZeroSP_{i}$
-		\item \If $\locIsPush = 1$ \Then $\zeroOneSP_{i}$
+		\item \If $\locIsPop      = 1$ \Then $\oneZeroSP_{i}$
+		\item \If $\locIsPush     = 1$ \Then $\zeroOneSP_{i}$
+		\item \If $\locIsPushZero = 1$ \Then $\zeroOneSP_{i}$
 	\end{enumerate}
-	\item[\underline{Setting $\nonStackRows$:}] we impose $\nonStackRows_{i} = \cmc_{i}$;
-	\item[\underline{Setting the peeking flags:}] we don't need to set any;
+		\saNote{}
+		The $\locIsPush$ and $\locIsPushZero$ cases
+		can be merged into one by replacing the condition with
+		``\If $\locIsPush + \locIsPushZero = 1$ \Then \dots''.
+	\item[\underline{Setting $\nonStackRows$:}]
+		we impose $\nonStackRows_{i} = \cmc_{i}$;
+	\item[\underline{Setting the peeking flags:}]
+		we don't need to set any;
 
-	\saNote{} Implicitly of course $\cmc_{i} \cdot \peekContext_{i + 1} = \cmc_{i}$ (\trash);
-	\item[\underline{Setting the gas cost:}] we impose that $\gasCost_{i} = \decStaticGas_{i}$;
+		\saNote{}
+		Implicitly of course $\cmc_{i} \cdot \peekContext_{i + 1} = \cmc_{i}$ (\trash);
+	\item[\underline{Setting the gas cost:}]
+		we impose that $\gasCost_{i} = \decStaticGas_{i}$;
 	\item[\underline{Value constraints:}]
-		 \If $\locIsPush = 1$ \Then
-		\[
-			\begin{cases}
-				\locResultHi = \stackPushParamHi_{i} \\
-				\locResultLo = \stackPushParamLo_{i} \\
-			\end{cases}
-		\]
+		we impose the following:
+		\begin{description}
+			\item[\underline{The ``\inst{PUSHX}, $\inst{X} > 0$'' case:}] 
+				\If $\locIsPush = 1$ \Then
+				\[
+					\begin{cases}
+						\locResultHi = \stackPushParamHi_{i} \\
+						\locResultLo = \stackPushParamLo_{i} \\
+					\end{cases}
+				\]
+			\item[\underline{The ``\inst{PUSH0}'' case:}] 
+				\If $\locIsPushZero = 1$ \Then
+				\[
+					\begin{cases}
+						\locResultHi = 0 \\
+						\locResultLo = 0 \\
+					\end{cases}
+				\]
+		\end{description}
 	\item[\underline{Setting $\pc\new$:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locIsPop  = 1$ \Then $\pc\new_{i} = 1 + \pc_{i}$
-			\item \If $\locIsPush = 1$ \Then $\pc\new_{i} = 1 + \pc_{i} + (\stackInst_{i} - \inst{PUSH1} + 1)$
+			\item \If $\locIsPop      = 1$ \Then $\pc\new_{i} = 1 + \pc_{i}$
+			\item \If $\locIsPush     = 1$ \Then $\pc\new_{i} = 1 + \pc_{i} + (\stackInst_{i} - \inst{PUSH1} + 1)$
+			\item \If $\locIsPushZero = 1$ \Then $\pc\new_{i} = 1 + \pc_{i}$
 		\end{enumerate}
+		\saNote{}
+		The $\locIsPush$ and $\locIsPushZero$ cases
+		can, again, be combined.
+		Indeed, given that
+		$\inst{PUSH0} \equiv \texttt{0x\,5f}$ and
+		$\inst{PUSH1} \equiv \texttt{0x\,60}$,
+		the ``\inst{PUSH0} case'' has
+		$\stackInst - \inst{PUSH1} + 1 \equiv \inst{PUSH0} - \inst{PUSH1} + 1 \equiv 0$.
 \end{description}
 \saNote{}
 We only require setting values in the case of \inst{PUSH}-type instructions.
