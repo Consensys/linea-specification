@@ -3,7 +3,7 @@ The present section describes the data layout for the \inst{RETURN} case. As suc
 	\boxed{\text{All constraints in this subsection further assume } \oobInstIsDeployment_{i} = 1 }
 \]
 We remind the reader that the objective of the \oobMod{} module in this particular case is:
-\green{(\emph{a})} to perform the comparison \( \col{size} \leq 24576 \).
+\green{(\emph{a})} to perform the comparison \( \col{size} \leq \maxCodeSize \define \maxCodeSizeValue \).
 
 
 \noindent We use the following shorthands for the values in the \oobDataCol{k} columns:
@@ -26,14 +26,14 @@ We impose the following constraints:
 		\[
 			\oobCallToLt
 			{i}{0}
-			{0}{24576}
+			{0}{\maxCodeSize}
 			{\locCodeSizeHi}{\locCodeSizeLo}
 		\]
 		and we define the following associated shorthand
 		\[
 			\locExceedsMaxCodeSize \define \outgoingResLo _{i}
 		\]
-		It follows that $\locExceedsMaxCodeSize = 1 \iff 24576 < \locCodeSize$.
+		It follows that $\locExceedsMaxCodeSize = 1 \iff \maxCodeSizeValue < \locCodeSize$.
 	\item[\underline{Justifying \hubMod{} predictions:}] we impose
 		\[
 			\locMaxCodeSizeException = \locExceedsMaxCodeSize

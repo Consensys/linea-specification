@@ -1,5 +1,24 @@
-We trigger the \oobMod{} whenever no exception occurs; as such
+We trigger the \oobMod{} whenever either \maxcsxSH{} or no exception occurs; as such
 \[
-	\locTriggerOob \define \scenCreateUnexceptional _{i}
+	\left\{ \begin{array}{lcl}
+		\locTriggerOob  & \define & \left[ \begin{array}{cr}
+			+ & \locTriggerOobX \\
+			+ & \locTriggerOobU \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\locTriggerOobX & \define & \locMaxcsx                                     \\
+		\locTriggerOobU & \define & \scenCreateUnexceptional _{i}                  \\
+	\end{array} \right.
 \]
-\saNote{} Recall that the the \oobMod{} module detects aborting conditions and failure conditions for \inst{CREATE}-type instructions. 
+\saNote{}
+There are two different reasons for triggering the \oobMod{} module.
+We therefore introduce two distinct and exclusive \oobMod{} triggers,
+\locTriggerOobX{} and
+\locTriggerOobU{}.
+The \locTriggerOobX{} trigger is used to launch \oobInstXcreate{} instructions.
+This instruction only goes through on the \oobMod{} module side if the underlying \inst{CREATE}-type instruction raises the \maxcsxSH{},
+see section~(\ref{oob: populating: opcodes: xcreate})
+The \locTriggerOobU{} trigger, on the other hand, is used to launch \oobInstCreate{} instructions.
+This \oobMod{} module instruction detects aborting conditions and failure conditions for unexceptional \inst{CREATE}-type instructions,
+and furthermore enforces the absence of \maxcsxSH{},
+see section~(\ref{oob: populating: opcodes: create}).
