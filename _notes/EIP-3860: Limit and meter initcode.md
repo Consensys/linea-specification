@@ -16,11 +16,10 @@ Impacted modules
     - [ ] modify G_WORD constants
         - CREATE:  0               →                   G_initcodeword
         - CREATE2: G_keccak256word → G_keccak256word + G_initcodeword
-- [ ] HUB
-    - [ ] acceptable exceptions of CREATE instruction family
-        - will we require a new MISC row ? purely for the OOB instruction ?
-    - [x] only RETURN and CREATE(2) may trigger `MAXCSX`
-    - [ ] interface with MXP
+- [x] HUB
+    - [x] extra 10th misc/OOB_DATA column
+    - [x] now both RETURN and CREATE(2) may trigger `MAXCSX`
+    - [x] interface with OOB
 
 Here's how to deal with the new `OOB_INST_XCREATE` instruction least disruptively:
 - we will require that `OOB_INST_XCREATE` be called upon ⇔ stack/MAXCSX = 1
