@@ -1,8 +1,13 @@
 \[
-	\begin{array}{|l||c||c|c|c|}
+	\begin{array}{|l||c||c|c|c|c|}
 		\hline
-		\INST           & \tli  & \stackDecPushPopFlag & \decFlag{1} & \decFlag{2} \\ \hline\hline
-		\inst{POP}      & \zero & \oneCell             & \oneCell    & \zero       \\ \hline
-		\inst{PUSH1-32} & \zero & \oneCell             & \zero       & \oneCell    \\ \hline
+		\INST           & \tli  & \stackDecPushPopFlag & \decFlag{1} & \decFlag{2} & \decFlag{3} \\ \hline\hline
+		\inst{POP}      & \zero & \oneCell             & \oneCell    & \zero       & \zero       \\ \hline
+		\inst{PUSH1-32} & \zero & \oneCell             & \zero       & \oneCell    & \zero       \\ \hline
+		\inst{PUSH0}    & \zero & \oneCell             & \zero       & \zero       & \oneCell    \\ \hline
 	\end{array}
 \]
+\saNote{}
+We separate the \inst{PUSH0} from the other \inst{PUSHX}, $\inst{X} \in \{ \inst{1}, \inst{2}, \dots, \inst{32} \}$, instructions.
+This stems from the fact that they are treated differently in the \romMod{} module:
+the \romMod{} module does not construct a ``push value'' for the \inst{PUSH0} instruction, and \inst{PUSH0} does not raise the \pushFlag{}.
