@@ -344,6 +344,7 @@ Here we focus on the differences with respect to ecdata and the relations among 
 
 Assuming SUCCESS_BIT = 1, we have:
 
+- To distinguish in case we are we need 2 columns, TRIVIAL_ALL_INFTY and TRIVIAL_WITH_MEMBERSHIP_CHECK, and a shorthand, non_trivial.
 At the first row of BLS_PAIRING_CHECK we assume both triviality cases are true, thus:
 - IS_BLS_PAIRING_CHECK_DATA_{i-1} = 0 && IS_BLS_PAIRING_CHECK_DATA_i = 1 => TRIVIAL_ALL_INFTY = 1, TRIVIAL_WITH_MEMBERSHIP_CHECK = 1
 
