@@ -312,8 +312,11 @@ so as to prove non-membership. Note that in the first case we prove C2 non-membe
 - BLS12_G2ADD: send points to G2_ADD circuit (C2 membership is included).
 - BLS12_G2MSM: send points to G2_MSM circuit (C2 and G2 memberships are included). 
 - BLS12_PAIRING_CHECK: 
-    - If all pair of points are trivial (small and large point are at infinity) do nothing.
-    For every pair of point:
+    - TRIVIAL_ALL_INFTY case: If all small and large point are at infinity, do nothing.
+    - TRIVIAL_WITH_MEMBERSHIP_CHECK case: If for every pair of points, one is at infinity and the other is not, then:
+        - If small point is at infinity, then send large point to G2_MEMBERSHIP circuit to prove membership to C2 and G2.
+        - If large point is at infinity, then send small point to G1_MEMBERSHIP circuit to prove membership to C1 and G1.
+    - non_trivial case: If there is at least one pair points that are not at infinity, then:
         - If small point is at infinity, then send large point to G2_MEMBERSHIP circuit to prove membership to C2 and G2.
         - If large point is at infinity, then send small point to G1_MEMBERSHIP circuit to prove membership to C1 and G1.
         - If pair of point is non-trivial (neither the small point nor the large are at infinity) , send the pair to the PAIRING circuit. 
@@ -329,3 +332,31 @@ so as to prove non-membership. Note that in the first case we prove C2 non-membe
 - G2_MSM circuit includes C2 and G2 membership check.
 - PAIRING circuit accepts only non-trivial pair of points.
 - Points at infinity be detected on the arithmetization side and never be sent to a circuit.
+
+## Details about TRIVIAL_ALL_INFTY, TRIVIAL_WITH_MEMBERSHIP_CHECK and non_trivial 
+
+- TRIVIAL_ALL_INFTY, TRIVIAL_WITH_MEMBERSHIP_CHECK are counter-constant binary
+- is_bls_pairing_check = 0 => TRIVIAL_ALL_INFTY = 0, TRIVIAL_WITH_MEMBERSHIP_CHECK = 0
+- SUCCESS_BIT = 0 => TRIVIAL_ALL_INFTY = 0, TRIVIAL_WITH_MEMBERSHIP_CHECK = 0
+- ... similar constraints to TRIVIAL_PAIRING in the ecdata case ...
+
+Here we focus on the differences with respect to ecdata and the relations among the columns used to determine the triviality cases:
+
+Assuming SUCCESS_BIT = 1, we have:
+
+At the first row of BLS_PAIRING_CHECK we assume both triviality cases are true, thus:
+- IS_BLS_PAIRING_CHECK_DATA_{i-1} = 0 && IS_BLS_PAIRING_CHECK_DATA_i = 1 => TRIVIAL_ALL_INFTY = 1, TRIVIAL_WITH_MEMBERSHIP_CHECK = 1
+
+As soon as we find a pair in which at least one point is not at infinity:
+- TRIAL_ALL_INFTY = 0
+
+As soon as we find a pair in which both points are not at infinity:
+- TRIAL_WITH_MEMBERSHIP_CHECK = 0
+
+Note that the first pair in which at least one point is not at infinity may also be the first pair in which both points are not at infinity.
+
+non_trivial may be a shorthand that is true when both triviliaty cases are false (under the SUCCESS_BIT = 1 assumption):
+
+- non_trivial = (1 - TRIVIAL_ALL_INFTY) * (1 - TRIVIAL_WITH_MEMBERSHIP_CHECK)
+
+In order to determine in which case we are, we need to look at the last row of BLS_PAIRING_CHECK data.
