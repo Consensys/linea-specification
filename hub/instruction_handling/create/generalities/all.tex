@@ -111,8 +111,20 @@ The present section deals with generalities pertaining to \inst{CREATE}-type ins
 			\item \If $\miscStpFlag_{i + \createMiscRowOffset} = 0$ \Then $\locOogx = 0$ \quad (\trash)
 			\item \If $\miscStpFlag_{i + \createMiscRowOffset} = 1$ \Then $\locOogx = \locStpOogx$
 		\end{enumerate}
-	\item[\underline{Setting the \oobMod{} instruction:}]
-		we impose \If $\miscOobFlag_{i + \createMiscRowOffset} = 1$ \Then
+	\item[\underline{Setting the \oobMod{} instruction: exceptional case:}]
+		\If $\locTriggerOobX = 1$ \Then
+		we impose
+		\[
+			\setOobInstructionXcreate {
+				anchorRow      = i                    ,
+				relOffset      = \createMiscRowOffset ,
+				initCodeSizeHi = \locInitCodeSizeHi   ,
+				initCodeSizeLo = \locInitCodeSizeLo   ,
+			}
+		\]
+	\item[\underline{Setting the \oobMod{} instruction: unexceptional case:}]
+		\If $\locTriggerOobU = 1$ \Then
+		we impose
 		\[
 			\setOobInstructionCreate {
 				anchorRow      = i                    ,
@@ -124,6 +136,7 @@ The present section deals with generalities pertaining to \inst{CREATE}-type ins
 				hasCode        = \locCreateeHasCode   ,
 				callStackDepth = \locCsd              ,
 				creatorNonce   = \locCreatorNonce     ,
+				initCodeSize   = \locInitCodeSize     ,
 			}
 		\]
 		where we define the following shorthands:
