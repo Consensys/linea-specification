@@ -46,6 +46,7 @@
 |:---------:+--------+----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
 |   i - 2   | STACK  |                                                    | required:                                                   |
 |   i - 1   | STACK  |                                                    | * stack/STATICX ≡ 0                                         |
+|           |        |                                                    | * stack/MAXCSX  ≡ 0                                         |
 |           |        |                                                    | * stack/MXPX    ≡ 0                                         |
 |           |        |                                                    | * stack/OOGX    ≡ 0                                         |
 |           |        |                                                    | .      => XAHOY ≡ 0                                         |
@@ -97,8 +98,8 @@
 |-----------+--------+----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
 |   i + 3   | ACC    | Load account with address I_a                      |                                                             | τ ∙ h + 0          | 0         |
 |           |        | Compute deployment address                         |                                                             |                    |           |
-|           |        | ⤴️incrementNonce (i.e. nonce += 1)                 |                                                             |                    |           |
-|           |        | ⤴️decrementBalance (i.e. balance -= value)         |                                                             |                    |           |
+|           |        | ⤴️incrementNonce (i.e. nonce += 1)                  |                                                             |                    |           |
+|           |        | ⤴️decrementBalance (i.e. balance -= value)          |                                                             |                    |           |
 |           |        |                                                    | Provides:                                                   |                    |           |
 |           |        |                                                    | * acc/BALANCE                                               |                    |           |
 |           |        | computeDeploymentAddress()                         | * acc/DEPLOYMENT_ADDRESS ≡ δ                                |                    |           |
@@ -108,10 +109,10 @@
 |           |        |                                                    | .   (<== this triggers OOB_aborting_condition ≡ 0)          |                    |           |
 |-----------+--------+----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
 |   i + 4   | ACC    | Read account with address δ                        |                                                             | τ ∙ h + 1          | 0         |
-|           |        | ⤴️incrementNonce            (i.e. nonce: 0 → 1)    |                                                             |                    |           |
-|           |        | ⤴️incrementBalance          (i.e. balance += value)|                                                             |                    |           |
-|           |        | ⤴️incrementDeploymentNumber (i.e. depNumber += 1)  |                                                             |                    |           |
-|           |        | ⤴️turnOnWarmth              (i.e. warmth ↑)        |                                                             |                    |           |
+|           |        | ⤴️incrementNonce            (i.e. nonce: 0 → 1)     |                                                             |                    |           |
+|           |        | ⤴️incrementBalance          (i.e. balance += value) |                                                             |                    |           |
+|           |        | ⤴️incrementDeploymentNumber (i.e. depNumber += 1)   |                                                             |                    |           |
+|           |        | ⤴️turnOnWarmth              (i.e. warmth ↑)         |                                                             |                    |           |
 |           |        | updateCodeSize( size_lo )                          |                                                             |                    |           |
 |           |        | updateCodeHash( KECCAK( ∅ ) )                      |                                                             |                    |           |
 |           |        |                                                    | Provides:                                                   |                    |           |
@@ -125,7 +126,7 @@
 |           |        |                                                    | .   (<== this triggers OOB_failure_condition ≡ 0)           |                    |           |
 |-----------+--------+----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
 |   i + 5   | ACC    | Load account with address I_a                      |                                                             | τ ∙ ρ_curr + ε_rev | τ ∙ h + 2 |
-|           |        | ♻️sameAddress[5,3]                                 |                                                             |                    |           |
+|           |        | ♻️sameAddress[5,3]                                  |                                                             |                    |           |
 |           |        | ⏪undoNonceUpdate                                  |                                                             |                    |           |
 |           |        | ⏪undoBalanceUpdate                                |                                                             |                    |           |
 |           |        | ⏪undoCodeUpdate                                   |                                                             |                    |           |
@@ -134,7 +135,7 @@
 |           |        |                                                    | * acc/DEPLOYMENT_ADDRESS ≡ δ                                |                    |           |
 |-----------+--------+----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
 |   i + 6   | ACC    | Read account with address δ                        |                                                             | τ ∙ ρ_curr + ε_rev | τ ∙ h + 3 |
-|           |        | ♻️sameAddress[6,4]                                 |                                                             |                    |           |
+|           |        | ♻️sameAddress[6,4]                                  |                                                             |                    |           |
 |           |        | ⏪undoNonceUpdate                                  |                                                             |                    |           |
 |           |        | ⏪undoBalanceUpdate                                |                                                             |                    |           |
 |           |        | ⏪undoDeploymentNumberAndStatus                    |                                                             |                    |           |
