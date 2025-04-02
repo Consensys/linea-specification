@@ -349,10 +349,10 @@ At the first row of BLS_PAIRING_CHECK we assume both triviality cases are true, 
 - IS_BLS_PAIRING_CHECK_DATA_{i-1} = 0 && IS_BLS_PAIRING_CHECK_DATA_i = 1 => TRIVIAL_ALL_INFTY = 1, TRIVIAL_WITH_MEMBERSHIP_CHECK = 1
 
 As soon as we find a pair in which at least one point is not at infinity:
-- TRIAL_ALL_INFTY = 0
+- TRIVIAL_ALL_INFTY = 0
 
 As soon as we find a pair in which both points are not at infinity:
-- TRIAL_WITH_MEMBERSHIP_CHECK = 0
+- TRIVIAL_WITH_MEMBERSHIP_CHECK = 0
 
 Note that the first pair in which at least one point is not at infinity may also be the first pair in which both points are not at infinity.
 
