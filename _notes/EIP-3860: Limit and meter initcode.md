@@ -19,7 +19,7 @@ Impacted modules
 - [ ] HUB
     - [ ] acceptable exceptions of CREATE instruction family
         - will we require a new MISC row ? purely for the OOB instruction ?
-    - [ ] only RETURN and CREATE(2) may trigger `MAXCSX`
+    - [x] only RETURN and CREATE(2) may trigger `MAXCSX`
     - [ ] interface with MXP
 
 Here's how to deal with the new `OOB_INST_XCREATE` instruction least disruptively:
