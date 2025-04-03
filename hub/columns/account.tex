@@ -12,12 +12,14 @@
 		account code hash and its updated value;
 	\item $\accHasCode$ and $\accHasCode\new$:
 		binary columns indicating whether the account has empty code;
+	\item $\accHadCodeAtTransactionStart$:
+		binary column used to log whether the account had nonempty bytecode at the start of the transaction;
+		used in \inst{SELFDESTRUCT} instruction processing after \cite{EIP-6780};
 	\item $\accCfi$:
 		the \CFI{} of the account's code; only listed if necessary;
 	\item $\accRomLexFlag$:
 		binary column which lights up whenever the account's \CFI{} is required;
 \end{enumerate}
-% \saNote{} $\accCodehash$ and $\accCodehash\new$ are (both) split into high and low parts.
 
 \saNote{} The constraints will implement $\accHasCode = 1 \iff \accCodehash \neq \emptyKeccak$ i.e. we don't use the $\accCodesize$; recall that while a contract is deploying its code is empty from the point of view of the world state yet its code size is that of the initialization code.
 \begin{enumerate}[resume]
