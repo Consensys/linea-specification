@@ -29,8 +29,8 @@ We impose the following consistency constraint:
 			\end{array} \right.
 		\]
 		\saNote{}
-		The constraint pertaining to $\accTrmIsPrecompile$ is less of a ``linking-constraint''
-		than an ``address-constancy'' constraint.
+		The constraint pertaining to $\accTrmIsPrecompile$ is less of a ``linking constraint''
+		than an ``address constancy'' constraint.
 
 	\item[\underline{At the block level:}]
 		\If $\accAgainInBlock_{i} = 1$
@@ -47,10 +47,17 @@ We impose the following consistency constraint:
 		\If $\accAgainInTransaction_{i} = 1$
 		\Then we impose
 		\begin{enumerate}
-			\item $\order{\accWarmth}_{i}                = \order{\accWarmth\new}_{i                - 1} $
-			\item $\order{\accMarkedForSelfdestruct}_{i} = \order{\accMarkedForSelfdestruct\new}_{i - 1} $
+			\item
+				\label{hub: consistency: account: constancy of "acc had code at tx start"}
+				$\order{\accHadCodeAtTransactionStart} _{i} = \order{\accHadCodeAtTransactionStart} _{i - 1}$
+			\item $\order{\accWarmth}                    _{i} = \order{\accWarmth\new}                _{i - 1}$
+			\item $\order{\accMarkedForSelfdestruct}     _{i} = \order{\accMarkedForSelfdestruct\new} _{i - 1}$
 			\item \label{hub: consistency: account: linking at the transaction level: marked for selfdestruct is monotonous} \If $\order{\accMarkedForSelfdestruct}_{i} = 1$ \Then $\order{\accMarkedForSelfdestruct\new}_{i}~=~1$
 		\end{enumerate}
+		\saNote{}
+		Constraint (\ref{hub: consistency: account: constancy of "acc had code at tx start"})
+		is more of a ``transaction constancy condition'' than a ``linking constraint.''
+
 		\saNote{}
 		Constraint (\ref{hub: consistency: account: linking at the transaction level: marked for selfdestruct is monotonous})
 		enforces monotony of \accMarkedForSelfdestruct{} on the transaction level.
