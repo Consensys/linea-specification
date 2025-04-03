@@ -56,8 +56,11 @@
 |-----------+-------+--------+---------------------------------------------------------------+--------------+-----------|
 |     "     | i + 2 |   ACC  |                                                               |  τ • h  + 0  |     0     |
 |           |       |        | • account/ADDRESS = account_address                           |              |           |
-|           |       |        | • account/MARKED_FOR_SELFDESTRUCT     = 0                     |              |           |
-|           |       |        | • bal ← acc/BALANCE                                           |              |           |
+|           |       |        | • account/MARKED_FOR_SELFDESTRUCT  =  false                   |              |           |
+|           |       |        |                                                               |              |           |
+|           |       |        | • bal                     ←  acc/BALANCE                      |              |           |
+|           |       |        | • acc_initially_had_code  ←  acc/INITIALLY_HAD_CODE           |              |           |
+|           |       |        |                                                               |              |           |
 |           |       |        | • [2]decrementBalance(bal)                                    |              |           |
 |           |       |        | • [2]accSameWarmth                                            |              |           |
 |           |       |        | • [2]accSameNonce                                             |              |           |
@@ -67,9 +70,17 @@
 |-----------+-------+--------+---------------------------------------------------------------+--------------+-----------|
 |     "     | i + 3 |   ACC  |                                                               |  τ • h  + 1  |     0     |
 |           |       |        | • recipient_address ← acc/ADDRESS                             |              |           |
-|           |       |        | • recipient_address == account_address ?                      |              |           |
-|           |       |        | .    • true:  [3]accSameBalance()                             |              |           |
-|           |       |        | .    • false: [3]accIncrementBalance(bal)                     |              |           |
+|           |       |        | • address_collision                                           |              |           |
+|           |       |        | .      ←  recipient_address == account_address                |              |           |
+|           |       |        |                                                               |              |           |
+|           |       |        | If acc_initially_had_code:                                    |              |           |
+|           |       |        | .      [3]accIncrementBalance(bal)                            |              |           |
+|           |       |        | If ¬ acc_initially_had_no_code:                               |              |           |
+|           |       |        | .      If  address_collision:                                 |              |           |
+|           |       |        | .           [3]accSameBalance                                 |              |           |
+|           |       |        | .      If ¬address_collision:                                 |              |           |
+|           |       |        | .           [3]accIncrementBalance(bal)                       |              |           |
+|           |       |        |                                                               |              |           |
 |           |       |        | • [3]accTurnOnWarmth                                          |              |           |
 |           |       |        | • [3]accSameNonce                                             |              |           |
 |           |       |        | • [3]accSameCode                                              |              |           |
@@ -79,6 +90,7 @@
 |     "     | i + 4 |   ACC  |                                                               | τ • ζ + ε_sd |   τ • h   |
 |           |       |        | • account/ADDRESS = account_address                           |              |           |
 |           |       |        |                                                               |              |           |
+|           |       |        | If acc_initially_had_no_code:                                 |              |           |
 |           |       |        | Delete account from state:                                    |              |           |
 |           |       |        | .    + account/BALANCE_NEW   = 0                              |              |           |
 |           |       |        | .    + account/NONCE_NEW     = 0                              |              |           |
@@ -86,6 +98,14 @@
 |           |       |        | .    + account/CODE_HASH_NEW = KECCAK(∅)                      |              |           |
 |           |       |        | .    + account/DEPLOYMENT_NUMBER += 1                         |              |           |
 |           |       |        | .    + account/DEPLOYMENT_STATUS  = 0                         |              |           |
+|           |       |        |                                                               |              |           |
+|           |       |        | If acc_initially_had_no_code:                                 |              |           |
+|           |       |        | Account stays the same:                                       |              |           |
+|           |       |        | • [4]accSameBalance                                           |              |           |
+|           |       |        | • [4]accSameNonce                                             |              |           |
+|           |       |        | • [4]accSameCode                                              |              |           |
+|           |       |        | • [4]accSameDeployment                                        |              |           |
+|           |       |        | • [4]accSameWarmth                                            |              |           |
 |           |       |        | • [4]accSameMarkForSelfdestruct                               |              |           |
 |-----------+-------+--------+---------------------------------------------------------------+--------------+-----------|
 |     "     | i + 5 |   CON  |                                                               |              |           |

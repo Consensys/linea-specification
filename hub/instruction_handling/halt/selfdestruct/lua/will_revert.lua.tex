@@ -34,73 +34,83 @@
                            \_/\_/   _| _| _|     _|   \___|   \_/  \___| _|    \__|
 
 
-| HUB_STAMP |  row  | persp. | actions                                          |   DOM_STAMP   |  SUB_STAMP |
-|:---------:+:-----:+:------:+:-------------------------------------------------+:-------------:+:----------:|
-|   h - 1   |       |        |                                                  |               |            |
-|-----------+-------+--------+--------------------------------------------------+---------------+------------|
-|-----------+-------+--------+--------------------------------------------------+---------------+------------|
-|     h     | i - 1 |  STACK |                                                  |       ∅       |      ∅     |
-|           |       |        | ⇒ raw_recipient_address                          |               |            |
-|           |       |        | • stack/STATICX = 0                        ⟦ π ⟧ |               |            |
-|           |       |        | • stack/OOGX    = 0                        ⟦ π ⟧ |               |            |
-|-----------+-------+--------+--------------------------------------------------+---------------+------------|
-|     "     |   i   |   SCN  |                                                  |       ∅       |      ∅     |
-|           |       |        | • scen/SELFDESTRUCT_WILL_REVERT = 1        ⟦ π ⟧ |               |            |
-|-----------+-------+--------+--------------------------------------------------+---------------+------------|
-|     "     | i + 1 |   CON  |                                                  |       ∅       |      ∅     |
-|           |       |        | • readContextData()                              |               |            |
-|           |       |        | .    • account_address ← context/ACCOUNT_ADDRESS |               |            |
-|           |       |        | .    • is_static       ← context/IS_STATIC       |               |            |
-|           |       |        | .    ∴ is_static = 0                             |               |            |
-|-----------+-------+--------+--------------------------------------------------+---------------+------------|
-|     "     | i + 2 |   ACC  |                                                  |   τ • h  + 0  |      0     |
-|           |       |        | • acc/ADDRESS = account_address                  |               |            |
-|           |       |        | • bal ← acc/BALANCE                              |               |            |
-|           |       |        | • [2]decrementBalance(bal)                       |               |            |
-|           |       |        | • [2]accSameWarmth                               |               |            |
-|           |       |        | • [2]accSameNonce                                |               |            |
-|           |       |        | • [2]accSameCode           (or empty deployment) |               |            |
-|           |       |        | • [2]accSameDeployment     (or empty deployment) |               |            |
-|           |       |        | • [2]accSameMarkForSelfdestruct                  |               |            |
-|-----------+-------+--------+--------------------------------------------------+---------------+------------|
-|     "     | i + 3 |   ACC  |                                                  |   τ • h  + 1  |      0     |
-|           |       |        | • acc/TRM_FLAG = 1                               |               |            |
-|           |       |        | • acc/ADDRESS  = trm_recipient_address           |               |            |
-|           |       |        | • recipient_address ← acc/ADDRESS                |               |            |
-|           |       |        | • recipient_address == account_address ?         |               |            |
-|           |       |        | .    • true:  [3]accSameBalance()                |               |            |
-|           |       |        | .    • false: [3]accIncrementBalance(bal)        |               |            |
-|           |       |        | • [3]accTurnOnWarmth                             |               |            |
-|           |       |        | • [3]accSameNonce                                |               |            |
-|           |       |        | • [3]accSameCode                                 |               |            |
-|           |       |        | • [3]accSameDeployment                           |               |            |
-|           |       |        | • [3]accSameMarkForSelfdestruct                  |               |            |
-|-----------+-------+--------+--------------------------------------------------+---------------+------------|
-|     "     | i + 4 |   ACC  |                                                  | τ • ρ + ε_rev | τ • h  + 2 |
-|           |       |        | • acc/ADDRESS = account_address                  |               |            |
-|           |       |        | • [4,2]accUndoBalanceUpdate                      |               |            |
-|           |       |        | • [4,2]accUndoWarmthUpdate                       |               |            |
-|           |       |        | • [4,2]accUndoNonceUpdate                        |               |            |
-|           |       |        | • [4,2]accUndoCodeUpdate                         |               |            |
-|           |       |        | • [4,2]accUndoDeploymentUpdate                   |               |            |
-|           |       |        | • [4]accSameMarkForSelfdestruct                  |               |            |
-|-----------+-------+--------+--------------------------------------------------+---------------+------------|
-|     "     | i + 5 |   ACC  |                                                  | τ • ρ + ε_rev | τ • h  + 3 |
-|           |       |        | • acc/TRM_FLAG = 0                               |               |            |
-|           |       |        | • acc/ADDRESS  = trm_recipient_address           |               |            |
-|           |       |        | • [5,3]accUndoBalanceUpdate                      |               |            |
-|           |       |        | • [5,3]accUndoWarmthUpdate                       |               |            |
-|           |       |        | • [5,3]accUndoNonceUpdate                        |               |            |
-|           |       |        | • [5,3]accUndoCodeUpdate                         |               |            |
-|           |       |        | • [5,3]accUndoDeploymentUpdate                   |               |            |
-|           |       |        | • [5]accSameMarkForSelfdestruct                  |               |            |
-|-----------+-------+--------+--------------------------------------------------+---------------+------------|
-|     "     | i + 6 |   CON  |                                                  |       ∅       |      ∅     |
-|           |       |        | ∙ executionProvidesEmptyReturnData()             |               |            |
-|-----------+-------+--------+--------------------------------------------------+---------------+------------|
-|-----------+-------+--------+--------------------------------------------------+---------------+------------|
-|   h + 1   |       |        |                                                  |               |            |
-|           |       |        |                                                  |               |            |
+| HUB_STAMP |  row  | persp. | actions                                                |   DOM_STAMP   |  SUB_STAMP |
+|:---------:+:-----:+:------:+:-------------------------------------------------------+:-------------:+:----------:|
+|   h - 1   |       |        |                                                        |               |            |
+|-----------+-------+--------+--------------------------------------------------------+---------------+------------|
+|-----------+-------+--------+--------------------------------------------------------+---------------+------------|
+|     h     | i - 1 |  STACK |                                                        |       ∅       |      ∅     |
+|           |       |        | ⇒ raw_recipient_address                                |               |            |
+|           |       |        | • stack/STATICX = 0                        ⟦ π ⟧       |               |            |
+|           |       |        | • stack/OOGX    = 0                        ⟦ π ⟧       |               |            |
+|-----------+-------+--------+--------------------------------------------------------+---------------+------------|
+|     "     |   i   |   SCN  |                                                        |       ∅       |      ∅     |
+|           |       |        | • scen/SELFDESTRUCT_WILL_REVERT = 1        ⟦ π ⟧       |               |            |
+|-----------+-------+--------+--------------------------------------------------------+---------------+------------|
+|     "     | i + 1 |   CON  |                                                        |       ∅       |      ∅     |
+|           |       |        | • readContextData()                                    |               |            |
+|           |       |        | .    • account_address ← context/ACCOUNT_ADDRESS       |               |            |
+|           |       |        | .    • is_static       ← context/IS_STATIC             |               |            |
+|           |       |        | .    ∴ is_static = 0                                   |               |            |
+|-----------+-------+--------+--------------------------------------------------------+---------------+------------|
+|     "     | i + 2 |   ACC  |                                                        |   τ • h  + 0  |      0     |
+|           |       |        | • acc/ADDRESS = account_address                        |               |            |
+|           |       |        | • bal                        ←  acc/BALANCE            |               |            |
+|           |       |        | • acc_initially_had_code     ←  acc/INITIALLY_HAD_CODE |               |            |
+|           |       |        |                                                        |               |            |
+|           |       |        | • [2]decrementBalance(bal)                             |               |            |
+|           |       |        | • [2]accSameWarmth                                     |               |            |
+|           |       |        | • [2]accSameNonce                                      |               |            |
+|           |       |        | • [2]accSameCode           (or empty deployment)       |               |            |
+|           |       |        | • [2]accSameDeployment     (or empty deployment)       |               |            |
+|           |       |        | • [2]accSameMarkForSelfdestruct                        |               |            |
+|-----------+-------+--------+--------------------------------------------------------+---------------+------------|
+|     "     | i + 3 |   ACC  |                                                        |   τ • h  + 1  |      0     |
+|           |       |        | • acc/TRM_FLAG = 1                                     |               |            |
+|           |       |        | • acc/ADDRESS  = trm_recipient_address                 |               |            |
+|           |       |        | • recipient_address ← acc/ADDRESS                      |               |            |
+|           |       |        | • address_collision                                    |               |            |
+|           |       |        | .      ←   recipient_address == account_address ?      |               |            |
+|           |       |        |                                                        |               |            |
+|           |       |        | If acc_initially_had_code:                             |               |            |
+|           |       |        | .      [3]accIncrementBalance(bal)                     |               |            |
+|           |       |        | If ¬ acc_initially_had_code:                           |               |            |
+|           |       |        | .      If  address_collision:                          |               |            |
+|           |       |        | .           [3]accSameBalance                          |               |            |
+|           |       |        | .      If ¬address_collision:                          |               |            |
+|           |       |        | .           [3]accIncrementBalance(bal)                |               |            |
+|           |       |        |                                                        |               |            |
+|           |       |        | • [3]accTurnOnWarmth                                   |               |            |
+|           |       |        | • [3]accSameNonce                                      |               |            |
+|           |       |        | • [3]accSameCode                                       |               |            |
+|           |       |        | • [3]accSameDeployment                                 |               |            |
+|           |       |        | • [3]accSameMarkForSelfdestruct                        |               |            |
+|-----------+-------+--------+--------------------------------------------------------+---------------+------------|
+|     "     | i + 4 |   ACC  |                                                        | τ • ρ + ε_rev | τ • h  + 2 |
+|           |       |        | • acc/ADDRESS = account_address                        |               |            |
+|           |       |        | • [4,2]accUndoBalanceUpdate                            |               |            |
+|           |       |        | • [4,2]accUndoWarmthUpdate                             |               |            |
+|           |       |        | • [4,2]accUndoNonceUpdate                              |               |            |
+|           |       |        | • [4,2]accUndoCodeUpdate                               |               |            |
+|           |       |        | • [4,2]accUndoDeploymentUpdate                         |               |            |
+|           |       |        | • [4]accSameMarkForSelfdestruct                        |               |            |
+|-----------+-------+--------+--------------------------------------------------------+---------------+------------|
+|     "     | i + 5 |   ACC  |                                                        | τ • ρ + ε_rev | τ • h  + 3 |
+|           |       |        | • acc/TRM_FLAG = 0                                     |               |            |
+|           |       |        | • acc/ADDRESS  = trm_recipient_address                 |               |            |
+|           |       |        | • [5,3]accUndoBalanceUpdate                            |               |            |
+|           |       |        | • [5,3]accUndoWarmthUpdate                             |               |            |
+|           |       |        | • [5,3]accUndoNonceUpdate                              |               |            |
+|           |       |        | • [5,3]accUndoCodeUpdate                               |               |            |
+|           |       |        | • [5,3]accUndoDeploymentUpdate                         |               |            |
+|           |       |        | • [5]accSameMarkForSelfdestruct                        |               |            |
+|-----------+-------+--------+--------------------------------------------------------+---------------+------------|
+|     "     | i + 6 |   CON  |                                                        |       ∅       |      ∅     |
+|           |       |        | ∙ executionProvidesEmptyReturnData()                   |               |            |
+|-----------+-------+--------+--------------------------------------------------------+---------------+------------|
+|-----------+-------+--------+--------------------------------------------------------+---------------+------------|
+|   h + 1   |       |        |                                                        |               |            |
+|           |       |        |                                                        |               |            |
 
 NOTE. In the above ρ = CON_REV_STAMP
 \end{verbatim}
