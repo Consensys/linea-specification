@@ -18,18 +18,18 @@ Note that by definition, see section~(\ref{hub: scenarios: shorthands: selfdestr
 \end{multicols}
 \noindent We now proceed with the constraints
 \begin{description}
-	\item[\underline{Looking back:}]
+	\item[\underline{{\underline{Looking back:}}}]
 		we impose the following
 		\[
 			\left\{ \begin{array}{lclr}
-				\peekStack  _{i - 1} & = & 1                                          \\
-				\stackInst  _{i - 1} & = & \inst{SELFDESTRUCT}                        \\
-				\xAhoy      _{i}     & = & \stackStaticx_{i - 1} + \stackOogx_{i - 1}  & (\trash) \\
+				\peekStack  _{i - \locPreviousStackRow} & = & 1                                                                                \\
+				\stackInst  _{i - \locPreviousStackRow} & = & \inst{SELFDESTRUCT}                                                              \\
+				\xAhoy      _{i}                        & = & \locStackStaticx + \locStackOogx  & (\trash) \\
 			\end{array} \right.
 		\]
-	\item[\underline{Setting the stack pattern:}]
-		we impose $\oneZeroSP_{i - 1}$;
-	\item[\underline{Setting the \inst{SELFDESTRUCT} scenario:}]
+	\item[\underline{\underline{Setting the stack pattern:}}]
+		we impose $\oneZeroSP_{i - \locPreviousStackRow}$;
+	\item[\underline{\underline{Setting the \inst{SELFDESTRUCT} scenario:}}]
 		we impose that
 		\begin{enumerate}
 			\item $\scenSelfdestructException _{i} = \xAhoy_{i}$
@@ -43,103 +43,119 @@ Note that by definition, see section~(\ref{hub: scenarios: shorthands: selfdestr
 			\item \If $\cnWillRev_{i} = 0$ \Then
 				\[
 					\left\{ \begin{array}{lclr}
-						\scenSelfdestructWontRevert               _{i} & = & \rOne                   \\
-						\scenSelfdestructWontRevertAlreadyMarked  _{i} & = & \locAccountIsMarked     \\
-						\scenSelfdestructWontRevertNotYetMarked   _{i} & = & 1 - \locAccountIsMarked \\
+						\scenSelfdestructWontRevert               _{i} & = & \rOne                                           \\
+						\scenSelfdestructWontRevertAlreadyMarked  _{i} & = & 1 - \locTriggerFutureAccountDeletion            \\
+						\scenSelfdestructWontRevertNotYetMarked   _{i} & = & \locTriggerFutureAccountDeletion   \vspace{2mm} \\
+						%
+						\multicolumn{3}{l}{
+							\locTriggerFutureAccountDeletion \define 
+							\left[ \begin{array}{cr}
+								\cdot & (1 - \locAccountIsMarked)     \\
+								\cdot & \locAccountHadNoCodeInitially \\
+							\end{array} \right]
+						}
+						\\
 					\end{array} \right.
 				\]
-				\saNote{} We will later impose that $\stackStaticx_{i - 1} = 0$ \Then $\peekAccount_{i + \locFirstAccountRow} \equiv 1$.
+				\saNote{} We will later impose that $\locStackStaticx = 0$ \Then $\peekAccount_{i + \locFirstAccountRow} \equiv 1$.
 				As a consequence the definition of \locAccountIsMarked{} makes sense since 
-				$\cnWillRev_{i} \equiv 0$ implies $\xAhoy_{i} \equiv 0$ and thus $\stackStaticx_{i - 1} = 0$.
+				$\cnWillRev_{i} \equiv 0$ implies $\xAhoy_{i} \equiv 0$ and thus $\locStackStaticx = 0$.
 		\end{enumerate}
-	\item[\underline{Setting $\nonStackRows$ and peeking flags:}] we impose that
+	\item[\underline{\underline{Setting $\nonStackRows$ and peeking flags:}}]
+		\label{hub: instruction handling: halt: selfdestruct: non stack rows and peeking flags}
+		we impose that
 		\begin{enumerate}
-			\item \If $\stackStaticx_{i - 1} = 1$ \Then
+			\item \If $\locStackStaticx = 1$ \Then
 				\[
-					\nonStackRows_{i - 1} = 3
-					\quad\text{and}\quad
-					\left[ \begin{array}{cl}
-						+ & \peekScenario _{i    }                   \\
-						+ & \peekContext  _{i + \locFirstContextRow} \\
-						+ & \peekContext  _{i + 2}                   \\
-					\end{array} \right]
-					= \nonStackRows_{i - 1}
-				\]
-			\item \If $\stackOogx_{i - 1} = 1$ \Then
-				\[
-					\nonStackRows_{i - 1} = 5
+					\nonStackRows_{i - \locPreviousStackRow} = 3
 					\quad\text{and}\quad
 					\left[ \begin{array}{cl}
 						+ & \peekScenario _{i    }                          \\
-						+ & \peekContext  _{i + \locFirstContextRow}                          \\
-						+ & \peekAccount  _{i + \locFirstAccountRow} + \peekAccount  _{i + \locSecondAccountRow} \\
-						+ & \peekContext  _{i + 4}                          \\
+						+ & \peekContext  _{i + \locFirstContextRow}        \\
+						+ & \peekContext  _{i + \locFinalContextRowStaticx} \\
 					\end{array} \right]
-					= \nonStackRows_{i - 1}
+					= \nonStackRows_{i - \locPreviousStackRow}
+				\]
+			\item \If $\locStackOogx = 1$ \Then
+				\[
+					\nonStackRows_{i - \locPreviousStackRow} = 5
+					\quad\text{and}\quad
+					\left[ \begin{array}{cl}
+						+ & \peekScenario _{i    }                                                               \\
+						+ & \peekContext  _{i + \locFirstContextRow}                                             \\
+						+ & \peekAccount  _{i + \locFirstAccountRow} + \peekAccount  _{i + \locSecondAccountRow} \\
+						+ & \peekContext  _{i + \locFinalContextRowOogx}                                         \\
+					\end{array} \right]
+					= \nonStackRows_{i - \locPreviousStackRow}
 				\]
 			\item \If $\scenSelfdestructWillRevert_{i} = 1$ \Then
 				\[
-					\nonStackRows_{i - 1} = 7
+					\nonStackRows_{i - \locPreviousStackRow} = 7
 					\quad\text{and}\quad
 					\left[ \begin{array}{cl}
-						+ & \peekScenario _{i    }                          \\
-						+ & \peekContext  _{i + \locFirstContextRow}                          \\
-						+ & \peekAccount  _{i + \locFirstAccountRow} + \peekAccount  _{i + \locSecondAccountRow} \\
+						+ & \peekScenario _{i    }                                                                             \\
+						+ & \peekContext  _{i + \locFirstContextRow}                                                           \\
+						+ & \peekAccount  _{i + \locFirstAccountRow} + \peekAccount  _{i + \locSecondAccountRow}               \\
 						+ & \peekAccount  _{i + \locFirstAccountUndoingRow} + \peekAccount  _{i + \locSecondAccountUndoingRow} \\
-						+ & \peekContext  _{i + 6}                          \\
+						+ & \peekContext  _{i + \locFinalContextRowWillRevert}                                                 \\
 					\end{array} \right]
-					= \nonStackRows_{i - 1}
+					= \nonStackRows_{i - \locPreviousStackRow}
 				\]
 			\item \If $\scenSelfdestructWontRevertAlreadyMarked_{i} = 1$ \Then
 				\[
-					\nonStackRows_{i - 1} = 5
+					\nonStackRows_{i - \locPreviousStackRow} = 5
 					\quad\text{and}\quad
 					\left[ \begin{array}{cl}
-						+ & \peekScenario _{i    }                          \\
-						+ & \peekContext  _{i + \locFirstContextRow}                          \\
+						+ & \peekScenario _{i    }                                                               \\
+						+ & \peekContext  _{i + \locFirstContextRow}                                             \\
 						+ & \peekAccount  _{i + \locFirstAccountRow} + \peekAccount  _{i + \locSecondAccountRow} \\
-						+ & \peekContext  _{i + 4}                          \\
+						+ & \peekContext  _{i + \locFinalContextRowWontRevertAlreadyYetMarked}                   \\
 					\end{array} \right]
-					= \nonStackRows_{i - 1}
+					= \nonStackRows_{i - \locPreviousStackRow}
 				\]
 			\item \If $\scenSelfdestructWontRevertNotYetMarked_{i} = 1$ \Then
 				\[
-					\nonStackRows_{i - 1} = 6
+					\nonStackRows_{i - \locPreviousStackRow} = 6
 					\quad\text{and}\quad
 					\left[ \begin{array}{cl}
-						+ & \peekScenario _{i    } \\
-						+ & \peekContext  _{i + \locFirstContextRow} \\
+						+ & \peekScenario _{i    }                                                               \\
+						+ & \peekContext  _{i + \locFirstContextRow}                                             \\
 						+ & \peekAccount  _{i + \locFirstAccountRow} + \peekAccount  _{i + \locSecondAccountRow} \\
-						+ & \peekAccount  _{i + \locSelfdestructAccountRow} \\
-						+ & \peekContext  _{i + 5} \\
+						+ & \peekAccount  _{i + \locSelfdestructAccountRow}                                      \\
+						+ & \peekContext  _{i + \locFinalContextRowWontRevertNotYetMarked}                       \\
 					\end{array} \right]
-					= \nonStackRows_{i - 1}
+					= \nonStackRows_{i - \locPreviousStackRow}
 				\]
 		\end{enumerate}
 		\saNote{} For instructions raising the \haltFlag{} it holds that $\cmc \equiv 1$, see section~\ref{hub: generalities: execution context may change flag}.
 
 		\saNote{} In all cases $\peekContext  _{i + \locFirstContextRow} = 1$.
-	\item[\underline{Reading context data:}]
+	\item[\underline{\underline{Reading context data:}}]
 		we impose $\readContextData {i}{\locFirstContextRow}{\cn_{i}}$.
-	\item[\underline{Returning empty return data:}]
+
+		\saNote{}
+		Following the ``non stack rows and peeking flags'' constraints of
+		section~(\ref{hub: instruction handling: halt: selfdestruct: non stack rows and peeking flags}),
+		the row with relative row offset $\locFirstContextRow$ is \emph{always} a context-row.
+	\item[\underline{\underline{Returning empty return data:}}]
 		we impose
 		\begin{enumerate}
-			\item \If $\stackStaticx_{i - 1} = 1$                        \Then \[ \executionProvidesEmptyReturnData {i}{2}  \]
-			\item \If $\stackOogx_{i - 1} = 1$                           \Then \[ \executionProvidesEmptyReturnData {i}{4}  \]
-			\item \If $\scenSelfdestructWillRevert_{i} = 1$              \Then \[ \executionProvidesEmptyReturnData {i}{6}  \]
-			\item \If $\scenSelfdestructWontRevertAlreadyMarked_{i} = 1$ \Then \[ \executionProvidesEmptyReturnData {i}{4}  \]
-			\item \If $\scenSelfdestructWontRevertNotYetMarked_{i} = 1$  \Then \[ \executionProvidesEmptyReturnData {i}{5}  \]
+			\item \If $\locStackStaticx = 1$                             \Then \[ \executionProvidesEmptyReturnData {i}{\locFinalContextRowStaticx                    } \quad (\sanityCheck) \]
+			\item \If $\locStackOogx = 1$                                \Then \[ \executionProvidesEmptyReturnData {i}{\locFinalContextRowOogx                       } \quad (\sanityCheck) \]
+			\item \If $\scenSelfdestructWillRevert_{i} = 1$              \Then \[ \executionProvidesEmptyReturnData {i}{\locFinalContextRowWillRevert                 }  \]
+			\item \If $\scenSelfdestructWontRevertAlreadyMarked_{i} = 1$ \Then \[ \executionProvidesEmptyReturnData {i}{\locFinalContextRowWontRevertAlreadyYetMarked }  \]
+			\item \If $\scenSelfdestructWontRevertNotYetMarked_{i} = 1$  \Then \[ \executionProvidesEmptyReturnData {i}{\locFinalContextRowWontRevertNotYetMarked     }  \]
 		\end{enumerate}
-	\item[\underline{Justifying the static exception:}]
-		we impose $\stackStaticx_{i - 1} = \locIsStatic$
-	\item[\underline{Justifying the gas cost:}]
-		\If $\stackStaticx_{i - 1} = 0$ \Then we impose
+	\item[\underline{\underline{Justifying the static exception:}}]
+		we impose $\locStackStaticx = \locIsStatic$
+	\item[\underline{\underline{Justifying the gas cost:}}]
+		\If $\locStackStaticx = 0$ \Then we impose
 		\begin{enumerate}
 			\item \If $\locBalance =    0$ \Then
 				\[
 					\gasCost_{i} =
 					\left[ \begin{array}{crcl}
-						+ &                           & \!\!\!       \!\!\! & \stackStaticGas _{i - 1}   \\
+						+ &                           & \!\!\!       \!\!\! & \stackStaticGas _{i - \locPreviousStackRow}   \\
 						+ & (1 - \locRecipientWarmth) & \!\!\! \cdot \!\!\! & G_\text{coldaccountaccess} \\
 					\end{array} \right]
 				\]
@@ -147,7 +163,7 @@ Note that by definition, see section~(\ref{hub: scenarios: shorthands: selfdestr
 				\[
 					\gasCost_{i} =
 					\left[ \begin{array}{crcl}
-						+ &                           & \!\!\!       \!\!\! & \stackStaticGas _{i - 1}   \\
+						+ &                           & \!\!\!       \!\!\! & \stackStaticGas _{i - \locPreviousStackRow}   \\
 						+ & (1 - \locRecipientWarmth) & \!\!\! \cdot \!\!\! & G_\text{coldaccountaccess} \\
 						+ & (1 - \locRecipientExists) & \!\!\! \cdot \!\!\! & G_\text{newaccount}        \\
 					\end{array} \right]
@@ -159,7 +175,7 @@ Note that by definition, see section~(\ref{hub: scenarios: shorthands: selfdestr
 		the first account row peeks into the account which is currently accessible i.e. with address $I_\text{a}$, using \cite{EYP} notations i.e. the account which stands to \inst{SELFDESTRUCT};
 		this account will be accessed in all cases except for that of a \staticxSH{}.
 
-		\If $\stackStaticx_{i - 1} = 0$ \Then we impose
+		\If $\locStackStaticx = 0$ \Then we impose
 		\[
 			\left\{ \begin{array}{lcl}
 				\accRomLexFlag  _{i + \locFirstAccountRow} & = & \nothing             \\
@@ -185,11 +201,10 @@ Note that by definition, see section~(\ref{hub: scenarios: shorthands: selfdestr
 			\end{array} \right.
 		\]
 		\saNote{} We must still specify the intende updates to balance, code, deployment and selfdestruct marking.
-	\item[\underline{Setting code and deployment of the first account row:}]
-		\If $\stackStaticx_{i - 1} = 0$ \Then
+	\item[\underline{\underline{Setting code and deployment of the first account row:}}]
 		we impose the following for code and deployment:
 		\begin{enumerate}
-			\item \If $\xAhoy_{i} = 1$ \Then 
+			\item \If $\locStackOogx = 1$ \Then 
 				\[
 					\left\{ \begin{array}{lcl}
 						\accSameCode       {i}{\locFirstAccountRow} \\
@@ -217,11 +232,10 @@ Note that by definition, see section~(\ref{hub: scenarios: shorthands: selfdestr
 				\]
 		\end{enumerate}
 		\saNote{} An unexceptional \inst{SELFDESTRUCT} carried out in a deployment context leads to the deployment of empty byte code at the current address (i.e. at $I_\text{a}$.)
-	\item[\underline{Setting balance and selfdestruct marking of the first account row:}]
-		\If $\stackStaticx_{i - 1} = 0$ \Then
+	\item[\underline{\underline{Setting balance and selfdestruct marking of the first account row:}}]
 		we impose the following for code and deployment:
 		\begin{enumerate}
-			\item \If $\stackOogx_{i - 1} = 1$ \Then we impose
+			\item \If $\locStackOogx = 1$ \Then we impose
 				\[
 					\left\{ \begin{array}{l}
 						\accSameBalance                    {i}{\locFirstAccountRow} \\
@@ -254,12 +268,45 @@ Note that by definition, see section~(\ref{hub: scenarios: shorthands: selfdestr
 					\end{array} \right.
 				\]
 		\end{enumerate}
-	\item[\underline{Generalities about the second account row:}]
+	\item[\underline{\underline{Address collision shorthand:}}]
+		we introduce the following shorthands
+		\begin{enumerate}
+		        \item
+				\If $\locRecipientAddress = \locRecipientAddress$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\locAddressCollision   & \define & 1 \\
+						\locNoAddressCollision & \define & 0 \\
+					\end{array} \right.
+				\]
+		        \item
+				\If $\locRecipientAddress \neq \locRecipientAddress$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\locAddressCollision   & \define & 0 \\
+						\locNoAddressCollision & \define & 1 \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+		\saNote{}
+		For these shorthands to \emph{make sense} both accounts must have been loaded into the \hubMod{} module.
+		Given the ``peeking flags'' constraints of
+		section~(\ref{hub: instruction handling: halt: selfdestruct: non stack rows and peeking flags}),
+		this happens \emph{precisely} whenever $\locStackStaticx \equiv 0$.
+		However these shorthands \emph{will only be used} in the more stringent subcase
+		of $\xAhoy \equiv 0$ i.e.
+		if $\scenSelfdestructUnexceptional \equiv 1$.
+
+		\saNote{}
+		Starting with \cite{EIP-6780} the behaviour of \inst{SELFDESTRUCT} is dependent on whether the account undergoing \inst{SELFDESTRUCT}
+		was deployed within the current transaction or not.
+		One change in particular is what happens when the self destructing account and the heir coincide.
+	\item[\underline{\underline{Generalities about the second account row:}}]
 		the second account row peeks into the recipient account;
 		the reference provided to said account is a stack argument and must thus be trimmed of its leading bytes;
 		again, this account will be accessed in all cases except for that of a \staticxSH{}.
 
-		\If $\stackStaticx_{i - 1} = 0$ \Then we impose that
+		\If $\locStackStaticx = 0$ \Then we impose that
 		\[
 			\left\{ \begin{array}{lcl}
 				\accRomLexFlag     _{i + \locSecondAccountRow} & = & \nothing                  \\
@@ -280,39 +327,60 @@ Note that by definition, see section~(\ref{hub: scenarios: shorthands: selfdestr
 						domOffset        = 1,
 					}
 				} \\
-					% \standardDomSubStamps              {i}{\locSecondAccountRow}{1}}           \\
+				% \standardDomSubStamps              {i}{\locSecondAccountRow}{1}}           \\
 			\end{array} \right.
 		\]
-	\item[\underline{Balance and warmth constraints for the second account row:}]
+	\item[\underline{\underline{Balance and warmth constraints for the second account row:}}]
 		the previous constraints left balance and warmth updates unconstrained;
 		we impose that
-		\begin{enumerate}
-			\item \If $\stackOogx_{i - 1} = 1$ \Then we impose
+		\begin{description}
+			\item[\underline{The \oogxSH{} case:}]
+				\If $\locStackOogx = 1$ \Then
+				we impose
 				\[
 					\left\{ \begin{array}{l}
 						\accSameBalance {i}{\locSecondAccountRow} \\
 						\accSameWarmth  {i}{\locSecondAccountRow} \\
 					\end{array} \right.
 				\]
-			\item \If $\scenSelfdestructUnexceptional_{i} = 1$ \Then we impose
+			\item[\underline{The unexceptional case:}]
+				\If $\scenSelfdestructUnexceptional_{i} = 1$ \Then
+				we impose
 				\[
 					\accTurnOnWarmth  {i}{\locSecondAccountRow}
 				\]
-				\begin{enumerate}
-				        \item \If $\locAccountAddress =    \locRecipientAddress$ \Then
+				and with respect to balances we impose the following
+				\begin{description}
+					\item[\underline{The account had code prior to the transaction:}]
+						\If $\locAccountHadCodeInitially = 1$ \Then
 						\[
-							\left\{ \begin{array}{lclr}
-								\accBalance     _{i + \locSecondAccountRow}                       & = & 0 & (\trash) \\
-								\multicolumn{3}{l}{ \accSameBalance  {i}{\locSecondAccountRow}} \\
-							\end{array} \right.
+							\accIncrementBalance
+							{i}{\locSecondAccountRow}{\locBalance}
 						\]
-				        \item \If $\locAccountAddress \neq \locRecipientAddress$ \Then
-						\[
-							\accIncrementBalance  {i}{\locSecondAccountRow}{\locBalance} \\
-						\]
-				\end{enumerate}
-		\end{enumerate}
-		\saNote{} Both conditions ``$\stackOogx_{i - 1} = 1$'' and ``$\scenSelfdestructUnexceptional_{i} = 1$'' imply that ``$\stackStaticx_{i - 1} = 0$''.
+					\item[\underline{The account did not have code prior to the transaction:}]
+						\If   $\locAccountHadNoCodeInitially = 1$
+						\Then
+						\begin{description}
+							\item[\underline{}]
+								\If $\locAccountAddress =    \locRecipientAddress$ \Then
+								\[
+									\accSameBalance
+									{i}{\locSecondAccountRow}
+								\]
+							\item[\underline{}]
+								\If $\locAccountAddress \neq \locRecipientAddress$ \Then
+								\[
+									\accIncrementBalance
+									{i}{\locSecondAccountRow}{\locBalance}
+								\]
+						\end{description}
+				\end{description}
+				we may further impose the following sanity check
+				\[
+					\If \locAccountAddress = \locRecipientAddress ~ \Then
+					\accBalance _{i + \locSecondAccountRow} = 0 \quad (\sanityCheck)
+				\]
+		\end{description}
 \end{description}
 At this stage what remains to be done is deal with the remaining account rows in the following cases
 \begin{itemize}
