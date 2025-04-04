@@ -25,6 +25,10 @@ If acp_AGAIN_IN_TXN[i] ≡ 1 Then acp_HAS_CODE_FIRST_IN_TRANSACTION[i] = acp_HAS
             - the balance
             - the code
             - the nonce
+- the marking system has to be amended as we only need it for accounts that can get wiped off of the state i.e. with `HAD_CODE_INITIALLY ≡ false`.
+- also the **account deletion** row is only relevant if SELFDESTRUCT effectively leads to account deletion. Again, this can only happen if `HAD_CODE_INITIALLY ≡ false`.
+- we should add a sanity check constraint à la
+    - if `acc/HAD_CODE_INITIALLY ≡ true` Then `acc/MARKED_FOR_SELFDESTRUCT ≡ false`
 
 > **Question.** Why only log the first recorded value of `account/HAS_CODE` ? I.e. why don't we care about the `balance` and the `nonce` or e.g. log the first recorded value of `account/EXISTS` ?
 
