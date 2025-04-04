@@ -42,12 +42,11 @@
 | ⟦OOB_INST_identity⟧       |            |            |               |                           |                               |                            |                            |                            |            |
 | ⟦OOB_INST_ecadd⟧          |            |            |               |                           |                               |                            |                            |                            |            |
 | ⟦OOB_INST_ecmul⟧          |            |            |               |                           |                               |                            |                            |                            |            |
-| ⟦OOB_INST_bls12_*⟧        |            |            |               |                           |                               |                            |                            |                            |            |
 |                           | ✓ trusted  | ✓ trusted  | ✓ trusted     | ⟦ π ⟧                     | ⟦ π ⟧                         | ⟦ π ⟧                      | ⟦ π ⟧                      | ⟦ π ⟧                      |            |
 |---------------------------+------------+------------+---------------+---------------------------+-------------------------------+----------------------------+----------------------------+----------------------------+------------|
 | ⟦OOB_INST_ecpairing⟧      | callee_gas | cds        | r@c           | hub_success ≡             | return_gas ≡                  | extract_call_data ≡        | empty_call_data ≡          | r@c_nonzero ≡              |            |
-|                           |            |            |               | . [gas_cost ≤ callee_gas] | . 0 ∨ [callee_gas - gas_cost] | .   hub_success            | .   hub_success            | .   [r@c ≠ 0]              |            |
-|                           |            |            |               | . ∧ [cds ≡ 0 mod 192]     | . (if hub_success ≡ true)     | .   ∧ [cds ≠ 0]            | .   ∧ [cds = 0]            |                            |            |
+| ⟦OOB_INST_bls12_*⟧        |            |            |               | . [gas_cost ≤ callee_gas] | . 0 ∨ [callee_gas - gas_cost] | .   hub_success            | .   hub_success            | .   [r@c ≠ 0]              |            |
+|                           |            |            |               | . ∧ [cds is valid]        | . (if hub_success ≡ true)     | .   ∧ [cds ≠ 0]            | .   ∧ [cds = 0]            |                            |            |
 |                           |            |            |               |                           |                               |                            |                            |                            |            |
 |                           | ✓ trusted  | ✓ trusted  | ✓ trusted     | ⟦ π ⟧                     | ⟦ π ⟧                         | ⟦ π ⟧                      | ⟦ π ⟧                      | ⟦ π ⟧                      |            |
 |---------------------------+------------+------------+---------------+---------------------------+-------------------------------+----------------------------+----------------------------+----------------------------+------------|
@@ -98,6 +97,11 @@ Comments:
 - callee_gas, cds and r@c always occupy the same columns (when present);
 - return_gas, r@c_nonzero and hub_success/ram_success always occupy the same columns (when present);
 - ⟦OOB_INST_bls12_*⟧ is a placeholder for all BLS12-* precompiles;
+- [cds is valid] is a placeholder for the validity of cds and it is instruction dependent:
+        * ⟦OOB_INST_ecpairing⟧: [cds ≡ 0 mod 192]
+        * ⟦OOB_INST_bls12_g1add⟧, ⟦OOB_INST_bls12_g2add⟧, ⟦OOB_INST_bls12_map_fp_to_g1⟧, ⟦OOB_INST_bls12_map_fp2_to_g2⟧: [cds = fixed_size] where fixed_size = 256, 512, 64, 128 respectively  
+        * ⟦OOB_INST_bls12_g1msm⟧, ⟦OOB_INST_bls12_g2msm⟧: [cds ≡ 0 mod msm_size] where msm_size = 160, 288 respectively
+        * ⟦OOB_INST_bls12_pairing_check⟧: [cds ≡ 0 mod 384]
 - the data layout for
         * ⟦OOB_ecrecover⟧        * ⟦OOB_sha2-256⟧         * ⟦OOB_ecpairing⟧
         * ⟦OOB_ecadd⟧            * ⟦OOB_ripemd-160⟧       * ⟦OOB_INST_bls12_*⟧              

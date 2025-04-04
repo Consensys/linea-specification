@@ -45,18 +45,29 @@ We furthermore use the \oobMod{} for the pricing of certain precompiles and the 
 \RAC{} (recall its abbreviation \rac{}.)
 \saNote{} Below we use the \cite{EYP}'s notation $I_\textbf{d}$ for call data.
 \begin{description}
-	\item[\underline{\inst{ECRECOVER}, \inst{SHA2-256}, \inst{RIPEMD-160}, \inst{IDENTITY}, \inst{ECADD}, \inst{ECMUL}, \inst{ECPAIRING} parameters:}]
-		detect both $\cds \equiv 0$ and $\rac \equiv 0$; 
-	\item[\underline{\inst{ECRECOVER}, \inst{ECADD} and \inst{ECMUL} pricing:}]
-		performs the comparison
+	\item[\underline{\inst{ECRECOVER}, \inst{SHA2-256}, \inst{RIPEMD-160}, \inst{IDENTITY}, \inst{ECADD}, \inst{ECMUL}, \inst{ECPAIRING},\inst{BLS12\_G1ADD}, \inst{BLS12\_G2ADD}, \inst{BLS12\_MAP\_FP\_TO\_G1}, \inst{BLS12\_MAP\_FP2\_TO\_G2}:}]
+	detect both $\cds \equiv 0$ and $\rac \equiv 0$; 
+	\item[\underline{\inst{ECRECOVER}, \inst{ECADD} and \inst{ECMUL}:}]
+		performs the comparisons
 		\[
 			\left\{ \begin{array}{llcrcl}
-				\text{for }\inst{ECRECOVER}   : & \locCalleeGas \leq g_\text{r} & := & 3000 \\
-				\text{for }\inst{ECADD}       : & \locCalleeGas \leq g_\text{r} & := &  150 \\
-				\text{for }\inst{ECMUL}       : & \locCalleeGas \leq g_\text{r} & := & 6000 \\
+				\text{for }\inst{ECRECOVER}          	: & \locCalleeGas \leq g_\text{r} & := &  3000 \\
+				\text{for }\inst{ECADD}              	: & \locCalleeGas \leq g_\text{r} & := &   150 \\
+				\text{for }\inst{ECMUL}              	: & \locCalleeGas \leq g_\text{r} & := &  6000 \\
 			\end{array} \right.
 		\]
-	\item[\underline{\inst{SHA2-256}, \inst{RIPEMD-160} and \inst{IDENTITY} pricing:}]
+	\item[\underline{\inst{BLS12\_G1ADD}, \inst{BLS12\_G2ADD}, \inst{BLS12\_MAP\_FP\_TO\_G1} and \inst{BLS12\_MAP\_FP2\_TO\_G2}:}]
+		verifies that $\| I_\textbf{d} \| = \locFixedCds$ and performs the comparisons
+		\[
+			\left\{ \begin{array}{llcrcl}
+				\text{for }\inst{BLS12\_G1ADD}        	    : & \locCalleeGas \leq g_\text{r} & := &   375 \\
+				\text{for }\inst{BLS12\_G2ADD}        	    : & \locCalleeGas \leq g_\text{r} & := &   600 \\
+				\text{for }\inst{BLS12\_MAP\_FP\_TO\_G1} 	: & \locCalleeGas \leq g_\text{r} & := &  5500 \\
+				\text{for }\inst{BLS12\_MAP\_FP2\_TO\_G2} 	: & \locCalleeGas \leq g_\text{r} & := & 23800 \\
+			\end{array} \right.
+		\]
+		See section~(\ref{oob: shorthands}) for the definition of \locFixedCds{}.	
+	\item[\underline{\inst{SHA2-256}, \inst{RIPEMD-160} and \inst{IDENTITY}:}]
 		compute the ceiling
 		\[ \col{ceil} := \left \lceil \frac{\| I_\textbf{d} \|}{32} \right \rceil \]
 		and respectively perform the comparisons
@@ -67,9 +78,16 @@ We furthermore use the \oobMod{} for the pricing of certain precompiles and the 
 				\text{for }\inst{IDENTITY}   : & \locCalleeGas \leq g_\text{r} & := & 15  & + & 3   \cdot \locCeil  \\
 			\end{array} \right.
 		\]
-	\item[\underline{\inst{ECPAIRING} pricing:}]
+	\item[\underline{\inst{BLS12\_G1MSM} and \inst{BLS12\_G2MSM}:}]
+		verifies that $\| I_\textbf{d} \| \equiv 0 \mod \locMsmSize$ and performs the comparison 
+		\[ \locCalleeGas \leq g_\text{r} := \frac{\| I_\textbf{d} \|}{\locMsmSize} \cdot \locMsmMultiplicationCost \cdot \frac{\locDiscount}{\prcBlsMultiplicationMultiplier} \]
+		See section~(\ref{oob: shorthands}) for the definition of \locMsmSize{}, \locMsmMultiplicationCost{} and \prcBlsMultiplicationMultiplier{} and section~(\ref{oob: precompiles: bls: msm}) for the definition of \locDiscount{}.
+	\item[\underline{\inst{ECPAIRING}:}]
 		verifies that $\| I_\textbf{d} \| \equiv 0 \mod 192$ and performs the comparison 
 		\[ \locCalleeGas \leq g_\text{r} := 34000 \cdot \frac{\| I_\textbf{d} \|}{192} + 45000 \]
+	\item[\underline{\inst{BLS12\_PAIRING\_CHECK}:}]
+		verifies that $\| I_\textbf{d} \| \equiv 0 \mod 384$ and performs the comparison 
+		\[ \locCalleeGas \leq g_\text{r} := 32600 \cdot \frac{\| I_\textbf{d} \|}{384} + 37700 \]
 \end{description}
 
 \saNote{}
