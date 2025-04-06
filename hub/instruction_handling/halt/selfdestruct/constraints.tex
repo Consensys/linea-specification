@@ -60,6 +60,10 @@ Note that by definition, see section~(\ref{hub: scenarios: shorthands: selfdestr
 				\saNote{} We will later impose that $\locStackStaticx = 0$ \Then $\peekAccount_{i + \locFirstAccountRow} \equiv 1$.
 				As a consequence the definition of \locAccountIsMarked{} makes sense since 
 				$\cnWillRev_{i} \equiv 0$ implies $\xAhoy_{i} \equiv 0$ and thus $\locStackStaticx = 0$.
+
+				\saNote{}
+				The definition of \locTriggerFutureAccountDeletion{}
+				reflects the changes to the semantics of the \inst{SELFDESTRUCT} opcode of \cite{EIP-6780}.
 		\end{enumerate}
 	\item[\underline{\underline{Setting $\nonStackRows$ and peeking flags:}}]
 		\label{hub: instruction handling: halt: selfdestruct: non stack rows and peeking flags}
@@ -268,39 +272,34 @@ Note that by definition, see section~(\ref{hub: scenarios: shorthands: selfdestr
 					\end{array} \right.
 				\]
 		\end{enumerate}
-	\item[\underline{\underline{Address collision shorthand:}}]
-		we introduce the following shorthands
-		\begin{enumerate}
-		        \item
-				\If $\locRecipientAddress = \locRecipientAddress$ \Then
-				\[
-					\left\{ \begin{array}{lcl}
-						\locAddressCollision   & \define & 1 \\
-						\locNoAddressCollision & \define & 0 \\
-					\end{array} \right.
-				\]
-		        \item
-				\If $\locRecipientAddress \neq \locRecipientAddress$ \Then
-				\[
-					\left\{ \begin{array}{lcl}
-						\locAddressCollision   & \define & 0 \\
-						\locNoAddressCollision & \define & 1 \\
-					\end{array} \right.
-				\]
-		\end{enumerate}
-		\saNote{}
-		For these shorthands to \emph{make sense} both accounts must have been loaded into the \hubMod{} module.
-		Given the ``peeking flags'' constraints of
-		section~(\ref{hub: instruction handling: halt: selfdestruct: non stack rows and peeking flags}),
-		this happens \emph{precisely} whenever $\locStackStaticx \equiv 0$.
-		However these shorthands \emph{will only be used} in the more stringent subcase
-		of $\xAhoy \equiv 0$ i.e.
-		if $\scenSelfdestructUnexceptional \equiv 1$.
-
-		\saNote{}
-		Starting with \cite{EIP-6780} the behaviour of \inst{SELFDESTRUCT} is dependent on whether the account undergoing \inst{SELFDESTRUCT}
-		was deployed within the current transaction or not.
-		One change in particular is what happens when the self destructing account and the heir coincide.
+	% \item[\underline{\underline{Address collision shorthand:}}]
+	% 	we introduce the following shorthands
+	% 	\begin{enumerate}
+	% 	        \item
+	% 			\If $\locAccountAddress = \locRecipientAddress$ \Then
+	% 			\[
+	% 				\left\{ \begin{array}{lcl}
+	% 					\locAddressCollision   & \define & 1 \\
+	% 					\locNoAddressCollision & \define & 0 \\
+	% 				\end{array} \right.
+	% 			\]
+	% 	        \item
+	% 			\If $\locAccountAddress \neq \locRecipientAddress$ \Then
+	% 			\[
+	% 				\left\{ \begin{array}{lcl}
+	% 					\locAddressCollision   & \define & 0 \\
+	% 					\locNoAddressCollision & \define & 1 \\
+	% 				\end{array} \right.
+	% 			\]
+	% 	\end{enumerate}
+	% 	\saNote{}
+	% 	For these shorthands to \emph{make sense} both accounts must have been loaded into the \hubMod{} module.
+	% 	Given the ``peeking flags'' constraints of
+	% 	section~(\ref{hub: instruction handling: halt: selfdestruct: non stack rows and peeking flags}),
+	% 	this happens \emph{precisely} whenever $\locStackStaticx \equiv 0$.
+	% 	However these shorthands \emph{will only be used} in the more stringent subcase
+	% 	of $\xAhoy \equiv 0$ i.e.
+	% 	if $\scenSelfdestructUnexceptional \equiv 1$.
 	\item[\underline{\underline{Generalities about the second account row:}}]
 		the second account row peeks into the recipient account;
 		the reference provided to said account is a stack argument and must thus be trimmed of its leading bytes;
@@ -380,10 +379,22 @@ Note that by definition, see section~(\ref{hub: scenarios: shorthands: selfdestr
 					\If \locAccountAddress = \locRecipientAddress ~ \Then
 					\accBalance _{i + \locSecondAccountRow} = 0 \quad (\sanityCheck)
 				\]
+				\saNote{}
+				Starting with \cite{EIP-6780} the behaviour of \inst{SELFDESTRUCT} is dependent on whether the account undergoing \inst{SELFDESTRUCT}
+				was deployed within the current transaction or not.
+				If the account was created within the transaction the \inst{SELFDESTRUCT} opcode behaves as it did prior to \cite{EIP-6780}.
+				In particular if the recipient and underlying account coincide the account's balance is lost.
+				If, on the other hand, the account was deployed prior to the transaction, \inst{SELFDESTRUCT}%
+				\footnote{and therefore had nonempty bytecode,
+				since executing a \inst{SELFDESTRUCT} (or any non \inst{STOP} opcode) requires nonempty byte code,
+				if only to trigger said opcode by way of \inst{CALLCODE} or \inst{DELEGATECALL}%
+				}
+				leaves the underlying account unchanged save for its balance which is transferred to the recipient.
+				This applies even if the recipient coincides with the underlying account, in which case the balance remains unchanged.
 		\end{description}
-\end{description}
-At this stage what remains to be done is deal with the remaining account rows in the following cases
-\begin{itemize}
-	\item \scenSelfdestructWillRevert{}
-	\item \scenSelfdestructWontRevertNotYetMarked{}
-\end{itemize}
+	\end{description}
+	At this stage what remains to be done is deal with the remaining account rows in the following cases
+	\begin{itemize}
+		\item \scenSelfdestructWillRevert{}
+		\item \scenSelfdestructWontRevertNotYetMarked{}
+	\end{itemize}
