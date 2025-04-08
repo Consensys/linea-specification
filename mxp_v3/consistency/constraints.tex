@@ -1,0 +1,38 @@
+The constraints below impose coherence of
+$\mxpScenarioWords$ and
+$\mxpScenarioCmem $
+across execution contexts and over time.
+The constraints impose that when a new execution context is first encountered both are zero,
+while if two consecutive rows pertain to the same execution context the ``current values'' are the ``new values'' from the previous row.
+\begin{enumerate}
+	\item
+		\If $\order{\isMxpScenario} _{i - 1} = 0$
+		\et $\order{\isMxpScenario} _{i}     = 1$:
+		\Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\order{\mxpScenarioWords} _{i} & \!\!\! = \!\!\! & 0 \vspace{2mm} \\
+				\order{\mxpScenarioCmem}  _{i} & \!\!\! = \!\!\! & 0              \\
+			\end{array} \right.
+		\]
+	\item
+		\If $\order{\isMxpScenario} _{i - 1} = 1$
+		\et $\order{\isMxpScenario} _{i}     = 1$:
+		\Then
+		\begin{enumerate}
+			\item \If $\order{\cn}_{i - 1} \neq \order{\cn}_{i}$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\order{\mxpScenarioWords} _{i} & \!\!\! = \!\!\! & 0 \vspace{2mm} \\
+						\order{\mxpScenarioCmem}  _{i} & \!\!\! = \!\!\! & 0 \\
+					\end{array} \right.
+				\]
+			\item \If $\order{\cn}_{i - 1} = \order{\cn}_{i}$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\order{\mxpScenarioWords} _{i} & \!\!\! = \!\!\! & \order{\mxpScenarioWordsNew} _{i - 1} \vspace{2mm} \\
+						\order{\mxpScenarioCmem}  _{i} & \!\!\! = \!\!\! & \order{\mxpScenarioCmemNew } _{i - 1} \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+\end{enumerate}
