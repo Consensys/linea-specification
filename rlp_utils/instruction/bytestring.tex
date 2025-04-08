@@ -3,16 +3,16 @@
 \]
 $\argOne$ represents the length of the byteString and $\argTwo$ represents the first byte of the byte string, if any.
 We use the following shorthand:
-         \[
-            \left\{ \begin{array}{lcl}
-                \res{4}_{i}             & \define & \locIsList \\
-                \locBaseRlpPrefixShort  & \define & \rlprefixShortInt \cdot (1 - \locIsList) + \rlprefixShortList \cdot \locIsList \\
-                \locBaseRlpPrefixLong   & \define & \rlprefixLongInt  \cdot (1 - \locIsList) + \rlprefixLongList  \cdot \locIsList \\
-            \end{array} \right.
-        \]
+\[
+    \left\{ \begin{array}{lcl}
+        \res{4}_{i}             & \define & \locIsList \\
+        \locBaseRlpPrefixShort  & \define & \rlprefixShortInt \cdot (1 - \locIsList) + \rlprefixShortList \cdot \locIsList \\
+        \locBaseRlpPrefixLong   & \define & \rlprefixLongInt  \cdot (1 - \locIsList) + \rlprefixLongList  \cdot \locIsList \\
+    \end{array} \right.
+\]
 
 \begin{description}
-\def\nRows{\rowOffsetNullString}\item[\underline{\underline{Processing row $n^\circ(\nRows)$:}} \underline{Detecting null byte string:}]
+    \def\nRows{\rowOffsetNullString}\item[\underline{\underline{Processing row $n^\circ(\nRows)$:}} \underline{Detecting null byte string:}]
         we impose that
         \[
             \wcpCallToIszero {
@@ -41,13 +41,13 @@ We use the following shorthand:
         \]
 
         \If $\locNullBytestring = 0$ we impose
-         \[
+        \[
             \left\{ \begin{array}{lcl}
                 \maxCt_{i}    & = & \bytestringNonEmptyCtMax \\
             \end{array} \right.
         \]
 
-\def\nRows{\rowOffsetLengthIsOne}\item[\underline{\underline{Processing row $n^\circ(\nRows)$:}} \underline{Detecting null byte string:}]
+    \def\nRows{\rowOffsetLengthIsOne}\item[\underline{\underline{Processing row $n^\circ(\nRows)$:}} \underline{Detecting null byte string:}]
         we impose that
         \[
             \wcpCallToEq {
@@ -66,8 +66,8 @@ We use the following shorthand:
             \end{array} \right.
         \]
 
-\If $\locLengthIsOne =1$:
-\def\nRows{\rowOffsetCompareOneTwoEight}\item[\underline{\underline{Processing row $n^\circ(\nRows)$:}} \underline{Comparing data to $\rlprefixShortInt$:}]
+        \If $\locLengthIsOne =1$:
+    \def\nRows{\rowOffsetCompareOneTwoEight}\item[\underline{\underline{Processing row $n^\circ(\nRows)$:}} \underline{Comparing data to $\rlprefixShortInt$:}]
         we impose that
         \[
             \wcpCallToLeq {
@@ -97,7 +97,7 @@ We use the following shorthand:
         \]
 
         \If $\locByteIsLeqOneTwoEight = 0$ we impose
-         \[
+        \[
             \left\{ \begin{array}{lcl}
                 \res{1}_{i}   & = & 0 \\
                 \res{2}_{i}   & = & (\locBaseRlpPrefixShort + 1) \cdot 256 ^{\llargeMO} \\
@@ -105,8 +105,8 @@ We use the following shorthand:
             \end{array} \right.
         \]
 
-\If $\locLengthIsOne = 0$:
-\def\nRows{\rowOffsetCompareFiftyFive}\item[\underline{\underline{Processing row $n^\circ(\nRows)$:}} \underline{Comparing data length to $\fiftySix$:}]
+        \If $\locLengthIsOne = 0$:
+    \def\nRows{\rowOffsetCompareFiftyFive}\item[\underline{\underline{Processing row $n^\circ(\nRows)$:}} \underline{Comparing data length to $\fiftySix$:}]
         we impose that
         \[
             \wcpCallToLt {
@@ -143,7 +143,7 @@ We use the following shorthand:
         \]
 
         And we impose
-         \[
+        \[
             \left\{ \begin{array}{lcl}
                 \shfFlag{i + \nRows}  & = & 1 \\
                 \shfArg{i + \nRows}   & = & 8 \cdot (\llargeMO - \locbytestringLengthBytesize) \\
@@ -152,3 +152,4 @@ We use the following shorthand:
                 \res{3}_{i}           & = & 1 + \locbytestringLengthBytesize \\
             \end{array} \right.
         \]
+\end{description}
