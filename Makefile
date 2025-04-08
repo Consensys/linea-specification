@@ -35,6 +35,7 @@ prc:   	      view-prc
 rlp_addr:     view-rlp_addr
 rlp_txn:      view-rlp_txn
 rlp_txnrcpt:  view-rlp_txnrcpt
+rlp_utils:    view-rlp_utils
 rom:          view-rom
 rom_v3:       view-rom_v3
 rom_lex:      view-rom_lex
@@ -71,6 +72,7 @@ rprc:          recompile-prc
 rrlp_addr:     recompile-rlp_addr
 rrlp_txn:      recompile-rlp_txn
 rrlp_txnrcpt:  recompile-rlp_txnrcpt
+rrlp_utils:    recompile-rlp_utils
 rrom:          recompile-rom
 rrom_v3:       recompile-rom_v3
 rrom_lex:      recompile-rom_lex
