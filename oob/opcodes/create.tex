@@ -22,11 +22,12 @@ Next it detects failure conditions for \inst{CREATE}-type instructions:
 		\locAbortingCondition  & \define & \oobDataCol  {7}  _{i} & \prediction \\
 		\locFailureCondition   & \define & \oobDataCol  {8}  _{i} & \prediction \\
 		\locCreatorNonce       & \define & \oobDataCol  {9}  _{i} \\
+		\locInitCodeSize       & \define & \oobDataCol {10}  _{i} \\
 	\end{array} \right.
 \]
 We impose the following constraints:
 \begin{description}
-	\item[\underline{Rows n°$(i)$, n°$(i + 1)$, n°$(i + 2)$ and n°$(i + 3)$:}] 
+	\item[\underline{Rows n°$(i)$, n°$(i + 1)$, n°$(i + 2)$, n°$(i + 3)$ and n°$(i + 4)$:}] 
 		this row compares the balance to the value to transfer:
 		\[
 			\left\{ \begin{array}{l}
@@ -48,34 +49,52 @@ We impose the following constraints:
 				{i}{3}
 				{0}{\locCreatorNonce}
 				{0}{\maxNonce}
+				\vspace{2mm} \\
+				\oobCallToLt
+				{i}{4}
+				{0}{\maxInitCodeSize}
+				{0}{\locInitCodeSize}
 			\end{array} \right.
 		\]
 		and we introduce the following shorthands
 		\[
 			\left\{ \begin{array}{lcl}
-				\locBalanceAbort  				   & \define & \outgoingResLo          _{i    } \\
-				\locCsdAbort                       & \define & 1 - \outgoingResLo      _{i + 1} \\
-				\locNonzeroNonce                   & \define & 1 - \outgoingResLo      _{i + 2} \\
-				\locCreatorNonceAbort              & \define & 1 - \outgoingResLo      _{i + 3} \\				 
+				\locBalanceAbort           & \define & \outgoingResLo     _{i    } \\
+				\locCsdAbort               & \define & 1 - \outgoingResLo _{i + 1} \\
+				\locNonzeroNonce           & \define & 1 - \outgoingResLo _{i + 2} \\
+				\locCreatorNonceAbort      & \define & 1 - \outgoingResLo _{i + 3} \\
+				\locExceedsMaxInitCodeSize & \define & \outgoingResLo     _{i + 4} \\
 			\end{array} \right.
 		\]
 		Thus by construction
-		$\locBalanceAbort = 1 \iff \locBalance        <    \locValue $,
-		$\locCsdAbort     = 1 \iff \locCallStackDepth \geq \col{1024}$,
-		$\locNonzeroNonce = 1 \iff \locNonce          \neq 0$ and
-		$\locCreatorNonceAbort = 1 \iff \locCreatorNonce \geq \maxNonce$. Recall that $\maxNonce = 2^{64} - 1$.
-	\item[\underline{Justifying \hubMod{} predictions:}] 
-		we impose
+		\begin{itemize}
+			\item $\locBalanceAbort = 1 \iff \locBalance        <    \locValue $
+			\item $\locCsdAbort     = 1 \iff \locCallStackDepth \geq \col{1024}$
+			\item $\locNonzeroNonce = 1 \iff \locNonce          \neq 0$
+			\item $\locCreatorNonceAbort = 1 \iff \locCreatorNonce \geq \maxNonce$
+			\item $\locExceedsMaxInitCodeSize = 1 \iff \maxInitCodeSize < \locInitCodeSize$
+		\end{itemize}
+		\saNote{}
+		Recall that
 		\[
 			\left\{ \begin{array}{lcl}
+			        \maxNonce        & \define & 2^{64} - 1            \\
+				\maxInitCodeSize & \define & \maxInitCodeSizeValue \\
+			\end{array} \right.
+		\]
+	\item[\underline{Justifying \hubMod{} predictions:}] 
+		furthermore
+		\[
+			\left\{ \begin{array}{lcl}
+				\locExceedsMaxInitCodeSize & = & 0 \\
 				\locAbortingConditionsSum & \define & 
 				\left[ \begin{array}{cr}
 					+ & \locBalanceAbort \\
 					+ & \locCsdAbort     \\
 					+ & \locCreatorNonceAbort \\
 				\end{array} \right] \\
-				\If \locAbortingConditionsSum & = & 0 ~ \Then \locAbortingCondition = 0 \\
-				\If \locAbortingConditionsSum & \neq & 0 ~ \Then \locAbortingCondition = 1 \\
+				\If \locAbortingConditionsSum & =    & 0 ~~ \Then \locAbortingCondition = 0 \\
+				\If \locAbortingConditionsSum & \neq & 0 ~~ \Then \locAbortingCondition = 1 \\
 				\locFailureCondition  & = &
 				(1 - \locAbortingCondition) \cdot
 				\left[ \begin{array}{crcl}
@@ -84,10 +103,28 @@ We impose the following constraints:
 				\end{array} \right] \\
 			\end{array} \right.	
 		\]
-		\saNote{} In other words
+		\saNote{}
+		While there is no explicit \hubMod{} prediction associated with it,
+		the above enforces that $\maxInitCodeSize \geq \locInitCodeSize$.
+		The interpretation of the above is therefore as follows:
+		for the \hubMod{} module to invoke the $\oobInstCreate$ \oobMod{}-instruction,
+		the underlying \inst{CREATE(2)}-instruction \textbf{must not} raise the \maxcsxSH{}.
+
+		\saNote{}
+		Recall furthermore that the detection of \maxcsxSH{} in the context of \inst{CREATE(2)}-instructions
+		is handled by $\oobInstXcreate$ instructions.
+		When comparing the two \oobMod{} module instructions one notices that $\oobInstXcreate$ requires
+		both a high and a low part (\locInitCodeSizeHi{} and \locInitCodeSizeLo{}) of the \locInitCodeSize{} parameter,
+		while the present instruction, $\oobInstCreate$, doesn't. It is given a single $\locInitCodeSize$ parameter.
+		This points to another peculiarity of the $\oobInstCreate$ instruction,
+		which is that it should \emph{only} be invoked when
+		\mxpxSH{} exceptions have been ruled out in the \hubMod{} module.
+
+		\saNote{}
+		In other words
 		$\locAbortingCondition$ tracks the \textbf{aborting conditions} for \inst{CREATE}'s instructions (which are the same as for \inst{CALL}-type instructions) while
 		$\locFailureCondition$  tracks the \textbf{failure conditions} for \inst{CREATE}'s.
 
-		\saNote{} By construction $\locAbortingCondition$ and $\locFailureCondition$ are \textbf{mutually exclusive binary flags}.
+		\saNote{}
+		By construction $\locAbortingCondition$ and $\locFailureCondition$ are \textbf{mutually exclusive binary flags}.
 \end{description}
-

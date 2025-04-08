@@ -13,6 +13,9 @@
 \define@cmdkey [OOB] {var} {callGas}          {}
 \define@cmdkey [OOB] {var} {calleeGas}        {}
 \define@cmdkey [OOB] {var} {callDataSize}     {}
+\define@cmdkey [OOB] {var} {initCodeSize}     {}
+\define@cmdkey [OOB] {var} {initCodeSizeHi}   {}
+\define@cmdkey [OOB] {var} {initCodeSizeLo}   {}
 \define@cmdkey [OOB] {var} {returnAtCapacity} {}
 \define@cmdkey [OOB] {var} {xbsHi}            {}
 \define@cmdkey [OOB] {var} {xbsLo}            {}
@@ -41,6 +44,9 @@
     callGas          = \missingParameter,
     calleeGas        = \missingParameter,
     callDataSize     = \missingParameter,
+    initCodeSize     = \missingParameter,
+    initCodeSizeHi   = \missingParameter,
+    initCodeSizeLo   = \missingParameter,
     returnAtCapacity = \missingParameter,
     xbsHi            = \missingParameter,
     xbsLo            = \missingParameter,
@@ -64,6 +70,7 @@
 \newcommand{\setOobInstructionCdlName        } {\oobInstructionNamePrefix\texttt{Cdl}}
 \newcommand{\setOobInstructionXcallName      } {\oobInstructionNamePrefix\texttt{Xcall}}
 \newcommand{\setOobInstructionCallName       } {\oobInstructionNamePrefix\texttt{Call}}
+\newcommand{\setOobInstructionXcreateName    } {\oobInstructionNamePrefix\texttt{Xcreate}}
 \newcommand{\setOobInstructionCreateName     } {\oobInstructionNamePrefix\texttt{Create}}
 \newcommand{\setOobInstructionSstoreName     } {\oobInstructionNamePrefix\texttt{Sstore}}
 \newcommand{\setOobInstructionDeploymentName } {\oobInstructionNamePrefix\texttt{Deployment}}
@@ -80,8 +87,8 @@
     \setOobInstructionXcallName _{\cmdOOB@var@anchorRow}
     \left[ \begin{array}{ll}
         \utt{Rel. row offset:} & \cmdOOB@var@relOffset \\
-        \utt{Value high:}      & \cmdOOB@var@valueHi   \\
-        \utt{Value low:}       & \cmdOOB@var@valueLo   \\
+        \utt{Value hi:}        & \cmdOOB@var@valueHi   \\
+        \utt{Value lo:}        & \cmdOOB@var@valueLo   \\
     \end{array} \right]
 }
 
@@ -90,10 +97,20 @@
     \setOobInstructionCallName _{\cmdOOB@var@anchorRow}
     \left[ \begin{array}{ll}
         \utt{Rel. row offset:}  & \cmdOOB@var@relOffset      \\
-        \utt{Value high:}       & \cmdOOB@var@valueHi        \\
-        \utt{Value low:}        & \cmdOOB@var@valueLo        \\
+        \utt{Value hi:}         & \cmdOOB@var@valueHi        \\
+        \utt{Value lo:}         & \cmdOOB@var@valueLo        \\
         \utt{Balance:}          & \cmdOOB@var@balance        \\
         \utt{Call stack depth:} & \cmdOOB@var@callStackDepth \\
+    \end{array} \right]
+}
+
+\newcommand{\setOobInstructionXcreate } [1] {
+    \setkeys[OOB]{var}{#1}
+    \setOobInstructionXcreateName _{\cmdOOB@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}   & \cmdOOB@var@relOffset      \\
+        \utt{Init code size hi:} & \cmdOOB@var@initCodeSizeHi \\
+        \utt{Init code size lo:} & \cmdOOB@var@initCodeSizeLo \\
     \end{array} \right]
 }
 
@@ -102,13 +119,14 @@
     \setOobInstructionCreateName _{\cmdOOB@var@anchorRow}
     \left[ \begin{array}{ll}
         \utt{Rel. row offset:}  & \cmdOOB@var@relOffset      \\
-        \utt{Value high:}       & \cmdOOB@var@valueHi        \\
-        \utt{Value low:}        & \cmdOOB@var@valueLo        \\
+        \utt{Value hi:}         & \cmdOOB@var@valueHi        \\
+        \utt{Value lo:}         & \cmdOOB@var@valueLo        \\
         \utt{Balance:}          & \cmdOOB@var@balance        \\
         \utt{Createe nonce:}    & \cmdOOB@var@nonce          \\
         \utt{Createe has code:} & \cmdOOB@var@hasCode        \\
         \utt{Call stack depth:} & \cmdOOB@var@callStackDepth \\
         \utt{Creator nonce:}    & \cmdOOB@var@creatorNonce   \\
+        \utt{Init code size:}   & \cmdOOB@var@initCodeSize   \\
     \end{array} \right]
 }
 
@@ -193,9 +211,9 @@
     \setOobInstructionModexpXbsName _{\cmdOOB@var@anchorRow}
     \left[ \begin{array}{ll}
         \utt{Rel. row offset:}       & \cmdOOB@var@relOffset  \\
-        \utt{``xbs'' high:}          & \cmdOOB@var@xbsHi      \\
-        \utt{``xbs'' low:}           & \cmdOOB@var@xbsLo      \\
-        \utt{``ybs'' low:}           & \cmdOOB@var@ybsLo      \\
+        \utt{``xbs'' hi:}            & \cmdOOB@var@xbsHi      \\
+        \utt{``xbs'' lo:}            & \cmdOOB@var@xbsLo      \\
+        \utt{``ybs'' lo:}            & \cmdOOB@var@ybsLo      \\
         \utt{Extra computation bit:} & \cmdOOB@var@computeMax \\
     \end{array} \right]
 }

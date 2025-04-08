@@ -31,7 +31,8 @@
 
   \begin{scope}[every node/.style={rectangle, thick, draw, rounded corners = 3pt, inner sep=6pt, outer sep = 4pt}]
     \path (exception)                     ++ (\Droite,0)                        node [draw = draculacomment] (staticx)                       {\staticxSH};
-    \path (staticx)                       ++ (0,\bas)                           node [draw = draculacomment] (mxpx)                          {\mxpxSH};
+    \path (staticx)                       ++ (0,\bas)                           node [draw = draculacomment] (maxcsx)                        {\maxcsxSH};
+    \path (maxcsx)                        ++ (0,\bas)                           node [draw = draculacomment] (mxpx)                          {\mxpxSH};
     \path (mxpx)                          ++ (0,\bas)                           node [draw = draculacomment] (oogx)                          {\oogxSH};
     \path (failure condition)             ++ (\Gauche,0)                        node [draw = draculacomment] (failure condition will revert) {will revert};
     \path (failure condition will revert) ++ (0,\bas)                           node [draw = draculacomment] (failure condition wont revert) {won't revert};
@@ -70,7 +71,8 @@
     \path [->] (sux)                                  edge (exception);
     \path [->] (exception)                            edge (staticx);
     \path [->] (exception)                            edge (abort);
-    \path [->] (staticx)                              edge (mxpx);
+    \path [->] (staticx)                              edge (maxcsx);
+    \path [->] (maxcsx)                               edge (mxpx);
     \path [->] (mxpx)                                 edge (oogx);
     \path [->] (abort)                                edge (failure condition);
     \path [->] (failure condition)                    edge (failure condition will revert);
