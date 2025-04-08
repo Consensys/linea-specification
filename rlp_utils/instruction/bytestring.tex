@@ -5,9 +5,9 @@ $\argOne$ represents the length of the byteString and $\argTwo$ represents the f
 We use the following shorthand:
 \[
     \left\{ \begin{array}{lcl}
-        \res{4}_{i}             & \define & \locIsList \\
-        \locBaseRlpPrefixShort  & \define & \rlprefixShortInt \cdot (1 - \locIsList) + \rlprefixShortList \cdot \locIsList \\
-        \locBaseRlpPrefixLong   & \define & \rlprefixLongInt  \cdot (1 - \locIsList) + \rlprefixLongList  \cdot \locIsList \\
+        \resultColumn{4}_{i}   & \define & \locIsList                                                                     \\
+        \locBaseRlpPrefixShort & \define & \rlprefixShortInt \cdot (1 - \locIsList) + \rlprefixShortList \cdot \locIsList \\
+        \locBaseRlpPrefixLong  & \define & \rlprefixLongInt  \cdot (1 - \locIsList) + \rlprefixLongList  \cdot \locIsList \\
     \end{array} \right.
 \]
 
@@ -33,10 +33,10 @@ We use the following shorthand:
 
         \[
             \left\{ \begin{array}{lcl}
-                \maxCt_{i}    & = & \bytestringEmptyCtMax \\
-                \res{1}_{i}   & = & 0 \\
-                \res{2}_{i}   & = & \locBaseRlpPrefixShort \cdot 256 ^{\llargeMO} \\
-                \res{3}_{i}   & = & 1 \\
+                \maxCt_{i}           & = & \bytestringEmptyCtMax                         \\
+                \resultColumn{1}_{i} & = & 0                                             \\
+                \resultColumn{2}_{i} & = & \locBaseRlpPrefixShort \cdot 256 ^{\llargeMO} \\
+                \resultColumn{3}_{i} & = & 1                                             \\
             \end{array} \right.
         \]
 
@@ -90,18 +90,18 @@ We use the following shorthand:
 
         \[
             \left\{ \begin{array}{lcl}
-                \res{1}_{i}   & = & 1 \\
-                \res{2}_{i}   & = & 0 \quad (\trash) \\
-                \res{3}_{i}   & = & 0 \quad (\trash) \\
+                \resultColumn{1}_{i} & = & 1                \\
+                \resultColumn{2}_{i} & = & 0 \quad (\trash) \\
+                \resultColumn{3}_{i} & = & 0 \quad (\trash) \\
             \end{array} \right.
         \]
 
         \If $\locByteIsLeqOneTwoEight = 0$ we impose
         \[
             \left\{ \begin{array}{lcl}
-                \res{1}_{i}   & = & 0 \\
-                \res{2}_{i}   & = & (\locBaseRlpPrefixShort + 1) \cdot 256 ^{\llargeMO} \\
-                \res{3}_{i}   & = & 1 \\
+                \resultColumn{1}_{i} & = & 0                                                   \\
+                \resultColumn{2}_{i} & = & (\locBaseRlpPrefixShort + 1) \cdot 256 ^{\llargeMO} \\
+                \resultColumn{3}_{i} & = & 1                                                   \\
             \end{array} \right.
         \]
 
@@ -129,9 +129,9 @@ We use the following shorthand:
 
         \[
             \left\{ \begin{array}{lcl}
-                \res{1}_{i}   & = & 0 \\
-                \res{2}_{i}   & = & (\locBaseRlpPrefixShort + \argOne_{i}) \cdot 256 ^{\llargeMO} \\
-                \res{3}_{i}   & = & 1 \\
+                \resultColumn{1}_{i} & = & 0                                                             \\
+                \resultColumn{2}_{i} & = & (\locBaseRlpPrefixShort + \argOne_{i}) \cdot 256 ^{\llargeMO} \\
+                \resultColumn{3}_{i} & = & 1                                                             \\
             \end{array} \right.
         \]
 
@@ -145,11 +145,11 @@ We use the following shorthand:
         And we impose
         \[
             \left\{ \begin{array}{lcl}
-                \shfFlag{i + \nRows}  & = & 1 \\
-                \shfArg{i + \nRows}   & = & 8 \cdot (\llargeMO - \locbytestringLengthBytesize) \\
-                \res{1}_{i}           & = & 0 \\
-                \res{2}_{i}           & = & (\locBaseRlpPrefixLong + \locbytestringLengthBytesize) \cdot 256 ^{\llargeMO} + \shfRes{i + \nRows} \\
-                \res{3}_{i}           & = & 1 + \locbytestringLengthBytesize \\
+                \shfFlag _{i + \nRows} & = & 1                                                                                                   \\
+                \shfArg  _{i + \nRows}  & = & 8 \cdot (\llargeMO - \locbytestringLengthBytesize)                                                  \\
+                \resultColumn{1}_{i} & = & 0                                                                                                   \\
+                \resultColumn{2}_{i} & = & (\locBaseRlpPrefixLong + \locbytestringLengthBytesize) \cdot 256 ^{\llargeMO} + \shfRes{i + \nRows} \\
+                \resultColumn{3}_{i} & = & 1 + \locbytestringLengthBytesize                                                                    \\
             \end{array} \right.
         \]
 \end{description}
