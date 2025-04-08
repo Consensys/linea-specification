@@ -16,9 +16,10 @@ There is no scenario where the data transfer step is skipped.
 At this point in time I believe that, given that we will use the same common part of the OOB processing of precompiles for the BLS precompiles, that we can keep the same processing
 for all the BLS precompiles as we have for `ECADD` / `ECMUL`:
 
-- always transfer since `hub_success ≡ extract_call_data`
+- if `hub_success ≡ true` then transfer data to the BLS module
+    - indeed `hub_success ≡ extract_call_data` for BLS instructions
 - if `SUCCESS_BIT ≡ false` then
     - we stop here
 - if `SUCCESS_BIT ≡ true` then
     - perform a full copy of the result from `XXX_DATA` module to dedicated RAM segment
-    - if `r@c ≠ 0` then perform a partial result from the dedicated RAM segment module to the caller's RAM
+- if `SUCCESS_BIT ≡ true` `r@c ≠ 0` then perform a partial result from the dedicated RAM segment module to the caller's RAM
