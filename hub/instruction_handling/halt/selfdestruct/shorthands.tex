@@ -9,28 +9,24 @@
 We define several shorthands:
 \[
 	\left\{ \begin{array}{lcl}
-		\locRawRecipientAddressHi & \define & \stackItemValHi     {1}   _{i - 1}                                          \\
-		\locRawRecipientAddressLo & \define & \stackItemValLo     {1}   _{i - 1}                             \vspace{2mm} \\
-		\locIsStatic              & \define & \cnStatic                 _{i + \locFirstContextRow}                        \\
-		\locIsDeployment          & \define & \cnCodeDepStatus          _{i + \locFirstContextRow}                        \\
-		\locAccountAddressHi      & \define & \cnAccountAddress\high    _{i + \locFirstContextRow}                        \\
-		\locAccountAddressLo      & \define & \cnAccountAddress\low     _{i + \locFirstContextRow}                        \\
-		\locAccountAddress        & \define & 256^\llarge \cdot \locAccountAddressHi + \locAccountAddressLo  \vspace{2mm} \\
-		\locAccountBalance        & \define & \accBalance               _{i + \locFirstAccountRow}                        \\
-		\locAccountIsMarked       & \define & \accMarkedForSelfdestruct _{i + \locFirstAccountRow}           \vspace{2mm} \\
-		\locRecipientAddressHi    & \define & \accAddressHi             _{i + \locSecondAccountRow}                       \\
-		\locRecipientAddressLo    & \define & \accAddressLo             _{i + \locSecondAccountRow}                       \\
-		\locRecipientAddress      & \define & 256^\llarge \cdot \locRecipientAddressHi + \locRecipientAddressLo           \\
-		\locRecipientTrimFlag     & \define & \accTrmFlag               _{i + \locSecondAccountRow}                       \\
-		\locRecipientExists       & \define & \accExists                _{i + \locSecondAccountRow}                       \\
-		\locRecipientWarmth       & \define & \accWarmth                _{i + \locSecondAccountRow}                       \\
-		% \loc                         & \define &                                                                   \\
-		% \loc                         & \define &                                                                   \\
-		% \locFirstContextRow
-		% \locFirstAccountRow
-		% \locSecondAccountRow
-		% \locSelfdestructAccountRow
-		% \locFirstAccountUndoingRow
-		% \locSecondAccountUndoingRow
+		\locRawRecipientAddressHi     & \define & \stackItemValHi     {1}   _{i - \locPreviousStackRow}              \\
+		\locRawRecipientAddressLo     & \define & \stackItemValLo     {1}   _{i - \locPreviousStackRow}              \\
+		\locStackStaticx              & \define & \stackStaticx             _{i - \locPreviousStackRow}              \\
+		\locStackOogx                 & \define & \stackOogx                _{i - \locPreviousStackRow} \vspace{2mm} \\
+		\locIsStatic                  & \define & \cnStatic                 _{i + \locFirstContextRow}               \\
+		\locIsDeployment              & \define & \cnCodeDepStatus          _{i + \locFirstContextRow}  \vspace{2mm} \\
+		\locAccountAddressHi          & \define & \cnAccountAddress\high    _{i + \locFirstContextRow}               \\
+		\locAccountAddressLo          & \define & \cnAccountAddress\low     _{i + \locFirstContextRow}               \\
+		\locAccountAddress            & \define & 256^\llarge \cdot \locAccountAddressHi + \locAccountAddressLo      \\
+		\locAccountBalance            & \define & \accBalance               _{i + \locFirstAccountRow}               \\
+		\locAccountIsMarked           & \define & \accMarkedForDeletion     _{i + \locFirstAccountRow}               \\
+		\locAccountHadCodeInitially   & \define & \accHadCodeInitially      _{i + \locFirstAccountRow}               \\
+		\locAccountHadNoCodeInitially & \define & 1 - \locAccountHadCodeInitially                       \vspace{2mm} \\
+		\locRecipientAddressHi        & \define & \accAddressHi             _{i + \locSecondAccountRow}              \\
+		\locRecipientAddressLo        & \define & \accAddressLo             _{i + \locSecondAccountRow}              \\
+		\locRecipientAddress          & \define & 256^\llarge \cdot \locRecipientAddressHi + \locRecipientAddressLo  \\
+		\locRecipientTrimFlag         & \define & \accTrmFlag               _{i + \locSecondAccountRow}              \\
+		\locRecipientExists           & \define & \accExists                _{i + \locSecondAccountRow}              \\
+		\locRecipientWarmth           & \define & \accWarmth                _{i + \locSecondAccountRow}              \\
 	\end{array} \right.
 \]

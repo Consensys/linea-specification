@@ -1,7 +1,13 @@
 The binary flag $\mayTriggerNonTrivialOperation$ indicates whether a $\decMxpType{4}$ instruction has any chance of triggering the \mmuMod{} module (i.e. of touching \textsc{ram}.)
 The main question is that of whether these instructions ``actually require touching \textsc{ram}''.
-Note that \textbf{exceptional} instructions almost never require touching \textsc{ram}, the exception being \inst{RETURN}'s attempting to deploy bytecode starting with \texttt{0x\,EF} thus raising the \icpxSH{}\footnote{as well as \inst{CALL}'s to precompiles which cna ``fail in \textsc{ram}''; the analysis below explicitly \textbf{excludes} the memory operations that may be triggered by calls to precompiles; such \inst{CALL}'s follow a completely separate ``biphasic'' or ``first half/second half'' or ``two scenarios'' regime which is of no relevance to the present analysis}
-But instructions raising the \mxpxSH{} exception \textbf{never} trigger the \mmuMod{} module.
+Note that \textbf{exceptional} instructions almost never require touching \textsc{ram}.
+The exception being \inst{RETURN}'s attempting to deploy bytecode starting with \texttt{0x\,EF},
+thus raising the \icpxSH{}\footnote{as well as
+\inst{CALL}'s to precompiles which can ``fail in \textsc{ram}'';
+the analysis below explicitly \textbf{excludes} the memory operations that may be triggered by calls to precompiles;
+such \inst{CALL}'s follow a completely separate ``biphasic'' or ``first half/second half'' or ``two scenarios'' regime which is of no relevance to the present analysis},
+see \cite{EIP-3541}.
+Instructions raising the \mxpxSH{} exception will \textbf{never} trigger the \mmuMod{} module.
 Below we assume instructions don't raise the \mxpxSH{}.
 \begin{description}
     \item[$\decMxpType{1}$ operations:]\footnote{that is, \inst{MSIZE}}

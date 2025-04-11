@@ -23,7 +23,7 @@ In particular we explain which precompiles may raise the $\scenPrcFailureKnownTo
 		\iffalse\fi                       &                                                &                            & $f$ is not a bit                                                 \\ \hline
 	\end{tabular}
 	\label{hub: instruction handling: call: precompiles: table classifying failures known to the HUB vs. to RAM}
-	\caption{All justifications for \scenPrcFailureKnownToHub{}'s are done through the \oobMod{} module. Notations such as ``$x = \varnothing$'' are from the \cite{EYP}.}
+	\caption{All justifications for \scenPrcFailureKnownToHub{}'s are done through the \oobMod{} module. Notations such as ``$x = \varnothing$'' are from the \cite{EYP-London}.}
 \end{figure}
 
 \noindent We now give full details. 
@@ -43,7 +43,7 @@ In particular we explain which precompiles may raise the $\scenPrcFailureKnownTo
 		this holds true on all levels: \hubMod{} general workflow, \oobMod{}, \expMod{}, \mmuMod{} and \textsc{ram} interaction;
 		failure can only be due to insufficient gas;
 		but computing the gas cost requires interacting with \textsc{ram} in order to extract certain parameters
-		($\locBase$, $\locExponent$, $\locModulus$ and $\locExponentLogEYP$ using notations from the \cite{EYP});
+		($\locBase$, $\locExponent$, $\locModulus$ and $\locExponentLogEYP$ using notations from the \cite{EYP-London});
 		data extraction is complicated by the fact that $\cds$, the $\CDS$, may be arbitrary long / short;
 		shortness may lead to the extraction of fewer parameters according to the result of the following comparisons $\cds > 0 $, $\cds > 32$, $\cds > 64$;
 		on the other hand the result of comparisons such as $0 < \cds < 32$, $32 <\cds < 64$, $64 < \cds < 96$ impacts whether or not data must be trimmed before use;
@@ -83,6 +83,6 @@ In particular we explain which precompiles may raise the $\scenPrcFailureKnownTo
 		(\emph{b}) insufficient gas
 		(\emph{c}) the ``$f$'' parameter isn't a bit;
 		the first point (\emph{a}) is detectable without touching \textsc{ram} and is detected by \scenPrcFailureKnownToHub{} 
-		in order to address points (\emph{b}) and (\emph{c}) the arithmetization has to extract certain parameters from \textsc{ram} ($r$ and $f$ in \cite{EYP} notation);
+		in order to address points (\emph{b}) and (\emph{c}) the arithmetization has to extract certain parameters from \textsc{ram} ($r$ and $f$ in \cite{EYP-London} notation);
 		these conditions are thus detected by \scenPrcFailureKnownToRam{};
 \end{description}

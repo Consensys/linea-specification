@@ -85,8 +85,11 @@
 
 \newcounter{alu_ext_counter}
 
-\usepackage[sorting=none, backend=bibtex]{biblatex}
-\addbibresource{references.bib}
+\usepackage[sorting=nty, backend=bibtex, backend=biber,style=authoryear]{biblatex}
+\bibliography{../references.bib}
+
+% Customize the citation format to include square brackets around shorthand names
+\DeclareFieldFormat{shorthand}{\texttt{[#1]}}
 
 \title{A \textsc{zk-evm} specification}
 \author{%
@@ -139,6 +142,9 @@ Nicolas Liochon
 \chapter{RLP patterns}                               \label{chap: RLP patterns}    \minitoc    \subfile{../rlp_patterns/_inputs}
 \chapter{Generic data module}                        \label{chap: generic data}    \minitoc    \subfile{../generic/data/_inputs}
 \chapter{Generic info module}                        \label{chap: generic info}    \minitoc    \subfile{../generic/info/_inputs}
-\printbibliography
+
+\nocite{*}
+
+\printbibliography % Print the bibliography
 
 \end{document}

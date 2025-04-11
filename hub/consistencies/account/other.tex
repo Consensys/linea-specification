@@ -35,4 +35,20 @@ We collect here some other constraints that don't fit in the previous trichotomy
 				initially has zero nonce and zero code size.
 				The balance may of course be nonzero.
 		\end{enumerate}
+	\item
+		\If   $\order{\accHadCodeInitially} = 1$
+		\Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\order{\accMarkedForDeletion     } _{i} & = & 0 \\
+				\order{\accMarkedForDeletion \new} _{i} & = & 0 \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		This reflects the \inst{SELFDESTRUCT} semantics of \cite{EIP-6780}.
+		An account may only become ``marked for deletion'',
+		see section~(\ref{hub: instruction handling: halt: selfdestruct: constraints}),
+		and actually get deleted,
+		see section~(\ref{hub: instruction handling: halt: selfdestruct: not yet marked}),
+		if initially (i.e. before transaction processing starts) it had no byte code.
 \end{enumerate}
