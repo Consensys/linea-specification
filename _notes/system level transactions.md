@@ -4,7 +4,7 @@ There are currently two EIP's that introduce system level transactions:
 - [EIP-4788: Beacon block root in the EVM](https://eips.ethereum.org/EIPS/eip-4788) (Cancun)
 - [EIP-2935: Serve historical block hashes from state](https://eips.ethereum.org/EIPS/eip-2935) (Prague)
 
-There are two further EIP's featuring system level transactions WHICH LINEA WON'T IMPLEMENT:
+There are two further EIP's featuring system level transactions **WHICH LINEA WON'T IMPLEMENT**:
 - [EIP-7002: Execution layer triggerable withdrawals](https://eips.ethereum.org/EIPS/eip-7002) (Prague)
 - [EIP-7251: Increase the MAX_EFFECTIVE_BALANCE](https://eips.ethereum.org/EIPS/eip-7251) (Prague)
 
@@ -76,12 +76,24 @@ transaction/IS_FIRST_IN_BLOCK
 transaction/L1_TIMESTAMP_MOD_8191
 transaction/BEACON_ROOT_HI
 transaction/BEACON_ROOT_LO
-transaction/BLOCK_NUMBER_MOD_8191
+transaction/PREV_BLOCK_NUMBER_MOD_8191
 transaction/PREV_BLOCK_HASH_HI
 transaction/PREV_BLOCK_HASH_LO
 ```
 
 We introduce a new module `TXN_SYSTEM` that will contain the data required to deal with both EIP's.
+Its columns will be
+```rust
+L1_TIMESTAMP
+L1_TIMESTAMP_MOD_8191
+BEACON_ROOT_HI
+BEACON_ROOT_LO
+PREV_BLOCK_NUMBER
+PREV_BLOCK_NUMBER_MOD_8191
+PREV_BLOCK_HASH_HI
+PREV_BLOCK_HASH_LO
+```
+and it will compute
 In the `TX_SKIP` and `TX_INIT` sections we do things like previously but we also distinguish between whether `transaction/IS_FIRST_IN_BLOCK ≡ 1` or not
 
 ## BLOCKHASH opcode when the state knows it, too

@@ -45,6 +45,7 @@ full_names = {
 	"ecData": "ec Data",
 	"precInfo": "prec Info",
 	"txnData": "txn Data",
+	"txnSystem": "txn System",
 	"txnComp": "txn Comp",
 	"romLex": "rom Lex",
 	"shakira": "shakira",
