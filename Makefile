@@ -43,6 +43,7 @@ spec:         view-spec
 stp:          view-stp
 trm:          view-trm
 txn_data:     view-txn_data
+txn_system:   view-txn_system
 wcp:          view-wcp
 
 ralu:          recompile-alu
@@ -79,6 +80,7 @@ rspec:         recompile-spec
 rstp:          recompile-stp
 rtrm:          recompile-trm
 rtxn_data:     recompile-txn_data
+rtxn_system:   recompile-txn_system
 rwcp:          recompile-wcp
 
 ospec:         buildOnGithub-spec
