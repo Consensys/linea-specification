@@ -32,20 +32,24 @@ k ≡ timestamp mod 8191
 
 ## Special operations solution
 
-This can be dealt with by adding a new execution mode of the zkEVM:
-- SYSTEM
+A new execution mode of the zkEVM associated to it
+- TX_SYST
 - TX_SKIP
 - TX_WARM
 - TX_INIT
 - TX_EXEC
 - TX_FINL
 
-And the SYSTEM rows are straight to the point: update the relevant storage key.
+And the TX_SYST rows are straight to the point: update the relevant storage key.
 
 ## Standard transaction solution
 
+We _may_ introduce a new perspective
+```
+SYSTEM_TRANSACTION ↔ SYSTEM
+```
 We can have a new execution mode
-- TX_SYST
+- SYSTEM
 - TX_SKIP
 - TX_WARM
 - TX_INIT
@@ -63,14 +67,12 @@ We would need to add special transactions to the TXN_DATA module or have an alte
 
 ## Actual solution for now
 
-We _may_ introduce a new perspective
-```
-SYSTEM_TRANSACTION ↔ SYS
-```
-Though this is is not completely necessary.
 We may alternatively add columns to the `PEEK_AT_TRANSACTION` perspective which is rather small to begin with.
+We introduce a new column `IS_FIRST_IN_BLOCK` in the `TXN_DATA` module. It lights up precisely when `ABS_TX_NUM = 1`.
+We introduce the following columns in the HUB, too:
 
 ```rust
+transaction/IS_FIRST_IN_BLOCK
 transaction/L1_TIMESTAMP_MOD_8191
 transaction/BEACON_ROOT_HI
 transaction/BEACON_ROOT_LO
@@ -79,7 +81,12 @@ transaction/PREV_BLOCK_HASH_HI
 transaction/PREV_BLOCK_HASH_LO
 ```
 
-**Note.** We could add a storage-row to (unexceptional and in range) `BLOCKHASH` opcodes. This would have the following benefit
+We introduce a new module `TXN_SYSTEM` that will contain the data required to deal with both EIP's.
+In the `TX_SKIP` and `TX_INIT` sections we do things like previously but we also distinguish between whether `transaction/IS_FIRST_IN_BLOCK ≡ 1` or not
+
+## BLOCKHASH opcode when the state knows it, too
+
+We could add a storage-row to (unexceptional and in range) `BLOCKHASH` opcodes. This would have the following benefit
 - the output of `BLOCKHASH` would provably be the same from one conflation to another
 
 **Note.** This would require some further checks which can be carried out in the `BLOCKHASH` module:
@@ -92,7 +99,3 @@ And this bit would be handed down to the HUB which would load a STORAGE row acco
 Alternatively we would leave the BLOCKHASH module as is an introduce a MISC row and define a simple OOB_INST_BLOCKHASH instruction.
 The issue being that the OOB doesn't know the current block NUMBER.
 Though the OOB could learn it from the BTC module (as for the BLOCK_HASH module) from the REL_BLOCK_NUMBER column.
-
-We introduce a new module `TXN_SYSTEM` that will contain the data required to deal with both EIP's.
-We introduce a new column `IS_FIRST_IN_BLOCK` in the `TXN_DATA` module. It lights up precisely when `ABS_TX_NUM = 1`.
-In the `TX_SKIP` and `TX_INIT` sections we do things like previously but we also distinguish between whether `transaction/IS_FIRST_IN_BLOCK ≡ 1` or not
