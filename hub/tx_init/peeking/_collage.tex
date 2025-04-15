@@ -1,0 +1,32 @@
+\begin{center}
+	\boxed{\text{All constraints in this subsection assume that $\txInit _{i - 1} = 0$ and $\txInit _{i} = 1$.}}
+\end{center}
+In other words we assume row $i$ is the first row of the initialization phase.
+We unconditionally impose the following
+\begin{enumerate}
+	\item 
+		\label{hub: initialization phase: the first rows are misc and transaction rows}
+		$\locTxInitCommonPeekingFlagSum = \nsrTxInitCommon$
+\end{enumerate}
+Given peeking flag exclusivity,
+see section~(\ref{hub: heartbeat: peeking flag exclusivity}),
+the above imposes in particular
+\begin{enumerate}[resume]
+	\item $\peekMisc        _{i + \locTxInitRoffMisc} = 1$ \qquad (\sanityCheck)
+	\item $\peekTransaction _{i + \locTxInitRoffTxn}  = 1$ \qquad (\sanityCheck)
+\end{enumerate}
+so that the shorthands from
+section~(\ref{hub: initialization phase: shorthands})
+are well defined.
+
+We go on to describe the flag sums on a ``scenario by scenario'' basis:
+\begin{description}
+		\input{tx_init/peeking/will_revert_first}
+		\input{tx_init/peeking/will_revert_not_first}
+		\input{tx_init/peeking/wont_revert_first}
+		\input{tx_init/peeking/wont_revert_not_first}
+\end{description}
+\saNote{}
+We remind the reader about
+constraint~(\ref{hub: heartbeat: initialization phase finishes on a context row})
+which explains why we make both sections finish on a context-row.

@@ -6,7 +6,7 @@
 \def\locTxInitValue                                 {\col{value}}
 \def\locTxInitIsDeployment                          {\col{is\_deployment}}
 \def\locTxInitIsMessageCall                         {\col{is\_message\_call}}
-\def\locTxInitTriggerMmu                            {\col{trigger\_MMU}}
+\def\locTxInitTriggerMmu                            {\col{trigger\_}\mmuMod}
 \def\locTxInitCallDataContextNumber                 {\col{call\_data\_context\_number}}
 \def\locTxInitSenderAddressHi                       {\col{sender\_addr\_hi}}
 \def\locTxInitSenderAddressLo                       {\col{sender\_addr\_lo}}
@@ -15,21 +15,58 @@
 \def\locTxInitCoinbaseAddressHi                     {\col{coinbase\_addr\_hi}}
 \def\locTxInitCoinbaseAddressLo                     {\col{coinbase\_addr\_lo}}
 
+\def\locTxInitCommonPeekingFlagSum                  {\col{common\_flag\_sum}}
+\def\locTxInitCommonUndoingPeekingFlagSum           {\col{undoing\_flag\_sum}}
 
-\def\locTxInitRoffMisc                              {\yellowm{0}}
-\def\locTxInitRoffTxn                               {\yellowm{1}}
-\def\locTxInitWarmCoinbase      					{\yellowm{2}}
-\def\locTxInitRoffAccDoingSndPayGas                 {\yellowm{3}}
-\def\locTxInitRoffAccDoingSenderValueTransfer       {\yellowm{4}}
-\def\locTxInitRoffAccDoingRecipientValueReception   {\yellowm{5}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def\locTxInitRoffConUnexceptionalContextRowOffset  {\orangem{6}}
-\def\locTxInitRoffUnexceptionalFirstExecutionRow    {\greenm {7}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def\locTxInitRoffAccUndoingSenderValueTransfer     {\yellowm{6}}
-\def\locTxInitRoffAccUndoingRecipientValueReception {\yellowm{7}}
-\def\locTxInitRoffConExceptionalContextRowOffset    {\orangem{8}}
-\def\locTxInitRoffExceptionalFirstExecutionRow      {\greenm {9}}
+%%%%%%   COMMON   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\locTxInitRoffMisc                                    {\yellowm{0}}
+\def\locTxInitRoffTxn                                     {\yellowm{1}}
+\def\locTxInitRoffWarmCoinbase                            {\yellowm{2}}
+\def\locTxInitRoffAccDoingSndPayGas                       {\yellowm{3}}
+\def\locTxInitRoffAccDoingSenderValueTransfer             {\yellowm{4}}
+\def\locTxInitRoffAccDoingRecipientValueReception         {\yellowm{5}}
+%%%%%%   WILL REVERT   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\locTxInitRoffAccUndoingSenderValueTransfer           {\yellowm{6}}
+\def\locTxInitRoffAccUndoingRecipientValueReception       {\yellowm{7}}
 
-\def\nsrTxInitWillRevert                            {\greenm{9}}
-\def\nsrTxInitWontRevert                            {\greenm{7}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%   WILL REVERT   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% FIRST
+\def\locTxInitRoffWillRevertFirstTxnAccBeaconRoot        {\yellowm{8}}
+\def\locTxInitRoffWillRevertFirstTxnStoBeaconRoot        {\yellowm{9}}
+% \def\locTxInitRoffWillRevertFirstTxnAccBlockHash         {\yellowm{10}}
+% \def\locTxInitRoffWillRevertFirstTxnStoBlockHash         {\yellowm{11}} % XXXXXX \specTodo
+\def\locTxInitRoffWillRevertFirstTxnConInitializing      {\orangem{10}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% NOT FIRST
+\def\locTxInitRoffWillRevertNotFirstTxnConInitializing   {\orangem{8}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%   WON'T REVERT   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% FIRST
+\def\locTxInitRoffWontRevertFirstTxnAccBeaconRoot        {\yellowm{6}}
+\def\locTxInitRoffWontRevertFirstTxnStoBeaconRoot        {\yellowm{7}}
+% \def\locTxInitRoffWontRevertFirstTxnAccBlockHash         {\yellowm{8}}
+% \def\locTxInitRoffWontRevertFirstTxnStoBlockHash         {\yellowm{9}} % XXXXXX \specTodo
+\def\locTxInitRoffWontRevertFirstTxnConInitializing      {\orangem{8}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% NOT FIRST
+\def\locTxInitRoffWontRevertNotFirstTxnConInitializing   {\orangem{6}}
+
+
+\def\nsrTxInitCommon                 {\greenm{6}}
+\def\nsrTxInitCommonRevert           {\greenm{8}}
+\def\nsrTxInitCommonFirst            {\greenm{3}}
+\def\nsrTxInitCommonNotFirst         {\greenm{1}}
+
+\def\nsrTxInitWillRevertFirst                       {\nsrTxInitCommonRevert + \nsrTxInitCommonFirst}
+\def\nsrTxInitWillRevertNotFirst                    {\nsrTxInitCommonRevert + \nsrTxInitCommonNotFirst}
+\def\nsrTxInitWontRevertFirst                       {\nsrTxInitCommon + \nsrTxInitCommonFirst}
+\def\nsrTxInitWontRevertNotFirst                    {\nsrTxInitCommon + \nsrTxInitCommonNotFirst}
+
+\def\locTxInitRoffWillRevertFirstTxnFirstExecutionRow    {\greenm {11}}
+\def\locTxInitRoffWillRevertNotFirstTxnFirstExecutionRow {\greenm {9}}
+\def\locTxInitRoffWontRevertFirstTxnFirstExecutionRow    {\greenm {9}}
+\def\locTxInitRoffWontRevertNotFirstTxnFirstExecutionRow {\greenm {7}}

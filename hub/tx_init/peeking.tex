@@ -6,7 +6,7 @@ We unconditionally impose the following
 \begin{enumerate}
 	\item 
 		\label{hub: initialization phase: the first rows are misc and transaction rows}
-		$\peekMisc _{i + \locTxInitRoffMisc} + \peekTransaction _{i + \locTxInitRoffTxn} + \peekAccount _{i + \locTxInitWarmCoinbase} = 3$
+		$\peekMisc _{i + \locTxInitRoffMisc} + \peekTransaction _{i + \locTxInitRoffTxn} + \peekAccount _{i + \locTxInitRoffWarmCoinbase} = 3$
 \end{enumerate}
 Given peeking flag exclusivity,
 see section~(\ref{hub: heartbeat: peeking flag exclusivity}),
@@ -14,55 +14,120 @@ the above translates precisely to
 \begin{enumerate}[resume]
 	\item $\peekMisc        _{i + \locTxInitRoffMisc}     = 1$ ~ (\trash)
 	\item $\peekTransaction _{i + \locTxInitRoffTxn}      = 1$ ~ (\trash)
-	\item $\peekAccount     _{i + \locTxInitWarmCoinbase} = 1$ ~ (\trash)
+	\item $\peekAccount     _{i + \locTxInitRoffWarmCoinbase} = 1$ ~ (\trash)
 \end{enumerate}
+We introduce the following shorthand
+\[
+	\left\{ \begin{array}{lcl}
+		\locTxInitCommonPeekingFlagSum & \define &
+		\left[ \begin{array}{cl} 
+			+ & \peekMisc        _{i + \locTxInitRoffMisc                            } \\
+			+ & \peekTransaction _{i + \locTxInitRoffTxn                             } \\
+			+ & \peekAccount     _{i + \locTxInitRoffWarmCoinbase                    } \\
+			+ & \peekAccount     _{i + \locTxInitRoffAccDoingSndPayGas               } \\
+			+ & \peekAccount     _{i + \locTxInitRoffAccDoingSenderValueTransfer     } \\
+			+ & \peekAccount     _{i + \locTxInitRoffAccDoingRecipientValueReception } \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locTxInitCommonUndoingPeekingFlagSum & \define &
+		\left[ \begin{array}{cl} 
+			+ & \locTxInitCommonPeekingFlagSum                                           \\
+			+ & \peekAccount     _{i + \locTxInitRoffAccUndoingSenderValueTransfer     } \\
+			+ & \peekAccount     _{i + \locTxInitRoffAccUndoingRecipientValueReception } \\
+		\end{array} \right]
+		\\
+	\end{array} \right.
+\]
 \begin{enumerate}[resume]
-	\item \If $\locTransactionWillRevert = 1$ \Then
+	\item 
+		\If
+		$\locTransactionWillRevert = 1$ \et
+		$\locFirstTransactionInBlock = 1$
+		\Then
 		\begin{enumerate}
 			\item we justify 
 				\[
 					\left\{ \begin{array}{lcr}
-						\locTransactionWillRevert  & = & \cnSelfRev  _ {i + \locTxInitRoffExceptionalFirstExecutionRow} \\
-						\locTransactionRevertStamp & = & \cnRevStamp _ {i + \locTxInitRoffExceptionalFirstExecutionRow} \\
+						\locTransactionWillRevert  & = & \cnSelfRev  _ {i + \locTxInitRoffWillRevertFirstTxnFirstExecutionRow} \\
+						\locTransactionRevertStamp & = & \cnRevStamp _ {i + \locTxInitRoffWillRevertFirstTxnFirstExecutionRow} \\
 					\end{array} \right.
 				\]
 			\item we set the peeking flags
 				\[
 					\left[ \begin{array}{cl} 
-						+ & \peekMisc        _{i + \locTxInitRoffMisc                           } \\
-						+ & \peekTransaction _{i + \locTxInitRoffTxn                            } \\
-						+ & \peekAccount     _{i + \locTxInitWarmCoinbase                       } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccDoingSndPayGas              } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccDoingSenderValueTransfer            } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccDoingRecipientValueReception            } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccUndoingSenderValueTransfer          } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccUndoingRecipientValueReception          } \\
-						+ & \peekContext     _{i + \locTxInitRoffConExceptionalContextRowOffset } \\
+						+ & \locTxInitCommonUndoingPeekingFlagSum                                    \\
+						+ & \peekAccount     _{i + \locTxInitRoffWillRevertFirstTxnAccBeaconRoot   } \\
+						+ & \peekStorage     _{i + \locTxInitRoffWillRevertFirstTxnStoBeaconRoot   } \\
+						+ & \peekContext     _{i + \locTxInitRoffWillRevertFirstTxnConInitializing } \\
 					\end{array} \right] =
-					\nsrTxInitWillRevert
+					\nsrTxInitWillRevertFirst
 				\]
 		\end{enumerate}
-	\item \If $\locTransactionWontRevert = 1$ \Then
+	\item 
+		\If
+		$\locTransactionWillRevert = 1$ \et
+		$\locNotFirstTransactionInBlock = 1$
+		\Then
 		\begin{enumerate}
 			\item we justify 
 				\[
 					\left\{ \begin{array}{lcr}
-						\locTransactionWillRevert  & = & \cnSelfRev  _ {i + \locTxInitRoffUnexceptionalFirstExecutionRow} \\
-						\locTransactionRevertStamp & = & \cnRevStamp _ {i + \locTxInitRoffUnexceptionalFirstExecutionRow} \\
+						\locTransactionWillRevert  & = & \cnSelfRev  _ {i + \locTxInitRoffWillRevertFirstTxnFirstExecutionRow} \\
+						\locTransactionRevertStamp & = & \cnRevStamp _ {i + \locTxInitRoffWillRevertFirstTxnFirstExecutionRow} \\
 					\end{array} \right.
 				\]
 			\item we set the peeking flags
 				\[
 					\left[ \begin{array}{cl} 
-						+ & \peekMisc        _{i + \locTxInitRoffMisc                             } \\
-						+ & \peekTransaction _{i + \locTxInitRoffTxn                              } \\
-						+ & \peekAccount     _{i + \locTxInitWarmCoinbase                       } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccDoingSndPayGas                } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccDoingSenderValueTransfer      } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccDoingRecipientValueReception   } \\
-						+ & \peekContext     _{i + \locTxInitRoffConUnexceptionalContextRowOffset } \\
+						+ & \locTxInitCommonUndoingPeekingFlagSum                                    \\
+						+ & \peekContext     _{i + \locTxInitRoffWillRevertFirstTxnConInitializing    } \\
 					\end{array} \right] =
-					\nsrTxInitWontRevert
+					\nsrTxInitWillRevertFirst
+				\]
+		\end{enumerate}
+	\item 
+		\If
+		$\locTransactionWontRevert = 1$ \et
+		$\locFirstTransactionInBlock = 1$
+		\Then
+		\begin{enumerate}
+			\item we justify 
+				\[
+					\left\{ \begin{array}{lcr}
+						\locTransactionWillRevert  & = & \cnSelfRev  _ {i + \locTxInitRoffWontRevertFirstTxnFirstExecutionRow} \\
+						\locTransactionRevertStamp & = & \cnRevStamp _ {i + \locTxInitRoffWontRevertFirstTxnFirstExecutionRow} \\
+					\end{array} \right.
+				\]
+			\item we set the peeking flags
+				\[
+					\left[ \begin{array}{cl} 
+						+ & \locTxInitCommonPeekingFlagSum                                           \\
+						+ & \peekContext     _{i + \locTxInitRoffWontRevertFirstTxnConInitializing } \\
+					\end{array} \right] =
+					\nsrTxInitWontRevertFirst
+				\]
+		\end{enumerate}
+	\item 
+		\If
+		$\locTransactionWontRevert = 1$ \et
+		$\locNotFirstTransactionInBlock = 1$
+		\Then
+		\begin{enumerate}
+			\item we justify 
+				\[
+					\left\{ \begin{array}{lcr}
+						\locTransactionWillRevert  & = & \cnSelfRev  _ {i + \locTxInitRoffWontRevertNotFirstTxnFirstExecutionRow} \\
+						\locTransactionRevertStamp & = & \cnRevStamp _ {i + \locTxInitRoffWontRevertNotFirstTxnFirstExecutionRow} \\
+					\end{array} \right.
+				\]
+			\item we set the peeking flags
+				\[
+					\left[ \begin{array}{cl} 
+						+ & \locTxInitCommonPeekingFlagSum                                                \\
+						+ & \peekContext     _{i + \locTxInitRoffWontRevertNotFirstTxnConInitializing} \\
+					\end{array} \right] =
+					\nsrTxInitWontRevertNotFirst
 				\]
 		\end{enumerate}
 \end{enumerate}

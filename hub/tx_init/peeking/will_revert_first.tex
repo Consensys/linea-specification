@@ -1,0 +1,23 @@
+\item[\underline{\underline{Will revert, first transaction in block:}}]
+	\[
+		\If
+		\left\{ \begin{array}{lcl}
+			\locTransactionWillRevert   & = & 1 \\
+			\locFirstTransactionInBlock & = & 1 \\
+		\end{array} \right.
+		\Then
+	\]
+	we impose that
+	\[
+		\left\{ \begin{array}{lcr}
+			\locTransactionWillRevert  & = & \cnSelfRev  _ {i + \locTxInitRoffWillRevertFirstTxnFirstExecutionRow} \\
+			\locTransactionRevertStamp & = & \cnRevStamp _ {i + \locTxInitRoffWillRevertFirstTxnFirstExecutionRow} \vspace{2mm} \\
+			\multicolumn{3}{l}{\left[ \begin{array}{cl} 
+				+ & \locTxInitCommonUndoingPeekingFlagSum                                    \\
+				+ & \peekAccount     _{i + \locTxInitRoffWillRevertFirstTxnAccBeaconRoot   } \\
+				+ & \peekStorage     _{i + \locTxInitRoffWillRevertFirstTxnStoBeaconRoot   } \\
+				+ & \peekContext     _{i + \locTxInitRoffWillRevertFirstTxnConInitializing } \\
+			\end{array} \right] =
+			\nsrTxInitWillRevertFirst} \\
+		\end{array} \right.
+	\]

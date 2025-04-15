@@ -5,17 +5,42 @@ We draw the attention to the reader to
 which justifies us using various row offsets and associating them with a transaction row / a miscellaneous row.
 \[
 	\left\{ \begin{array}{lcl}
-		\locTransactionWillRevert  & \define &     \miscChildSelfReverts _{i + \locTxInitRoffMisc}               \\
-		\locTransactionWontRevert  & \define & 1 - \miscChildSelfReverts _{i + \locTxInitRoffMisc}               \\
-		\locTransactionRevertStamp & \define &     \miscChildRevertStamp _{i + \locTxInitRoffMisc} \vspace{2mm}  \\
-		\locTxInitSenderAddressHi    & \define & \txFrom  \high  _{i + \locTxInitRoffTxn}                                        \\
-		\locTxInitSenderAddressLo    & \define & \txFrom  \low   _{i + \locTxInitRoffTxn}                                        \\
-		\locTxInitRecipientAddressHi & \define & \txTo    \high  _{i + \locTxInitRoffTxn}                                        \\
-		\locTxInitRecipientAddressLo & \define & \txTo    \low   _{i + \locTxInitRoffTxn}          \vspace{2mm}                  \\
-		\locTxInitIsDeployment       & \define & \txIsDeployment _{i + \locTxInitRoffTxn}                                        \\
-		\locTxInitIsMessageCall      & \define & 1 - \txIsDeployment _{i + \locTxInitRoffTxn}                                    \\
-		\locTxInitGasCost            & \define & \txGasPrice _{i + \locTxInitRoffTxn} \cdot \txGasLimit _{i + \locTxInitRoffTxn} \\
-		\locTxInitCoinbaseAddressHi  & \define & \txCoinbase\high  _{i + \locTxInitRoffTxn}                                      \\
-		\locTxInitCoinbaseAddressLo  & \define & \txCoinbase\low   _{i + \locTxInitRoffTxn}                                      \\
+		\locFirstTransactionInBlock    & \define & \txFirstTransactionInBlock _{i + \locTxInitRoffTxn}                             \\
+		\locNotFirstTransactionInBlock & \define & 1 - \locFirstTransactionInBlock                 \vspace{2mm}                    \\
+		\locTransactionWillRevert      & \define & \miscChildSelfReverts _{i + \locTxInitRoffMisc}                                 \\
+		\locTransactionWontRevert      & \define & 1 - \locTransactionWillRevert                                                   \\
+		\locTransactionRevertStamp     & \define & \miscChildRevertStamp _{i + \locTxInitRoffMisc} \vspace{2mm}                    \\
+		\locTxInitSenderAddressHi      & \define & \txFrom  \high  _{i + \locTxInitRoffTxn}                                        \\
+		\locTxInitSenderAddressLo      & \define & \txFrom  \low   _{i + \locTxInitRoffTxn}                                        \\
+		\locTxInitRecipientAddressHi   & \define & \txTo    \high  _{i + \locTxInitRoffTxn}                                        \\
+		\locTxInitRecipientAddressLo   & \define & \txTo    \low   _{i + \locTxInitRoffTxn}          \vspace{2mm}                  \\
+		\locTxInitIsDeployment         & \define & \txIsDeployment _{i + \locTxInitRoffTxn}                                        \\
+		\locTxInitIsMessageCall        & \define & 1 - \txIsDeployment _{i + \locTxInitRoffTxn}                                    \\
+		\locTxInitGasCost              & \define & \txGasPrice _{i + \locTxInitRoffTxn} \cdot \txGasLimit _{i + \locTxInitRoffTxn} \\
+		\locTxInitCoinbaseAddressHi    & \define & \txCoinbase\high  _{i + \locTxInitRoffTxn}                                      \\
+		\locTxInitCoinbaseAddressLo    & \define & \txCoinbase\low   _{i + \locTxInitRoffTxn}                                      \\
+	\end{array} \right.
+\]
+We further introduce the following shorthand
+\[
+	\left\{ \begin{array}{lcl}
+		\locTxInitCommonPeekingFlagSum & \define &
+		\left[ \begin{array}{cl} 
+			+ & \peekMisc        _{i + \locTxInitRoffMisc                            } \\
+			+ & \peekTransaction _{i + \locTxInitRoffTxn                             } \\
+			+ & \peekAccount     _{i + \locTxInitRoffWarmCoinbase                    } \\
+			+ & \peekAccount     _{i + \locTxInitRoffAccDoingSndPayGas               } \\
+			+ & \peekAccount     _{i + \locTxInitRoffAccDoingSenderValueTransfer     } \\
+			+ & \peekAccount     _{i + \locTxInitRoffAccDoingRecipientValueReception } \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locTxInitCommonUndoingPeekingFlagSum & \define &
+		\left[ \begin{array}{cl} 
+			+ & \locTxInitCommonPeekingFlagSum                                           \\
+			+ & \peekAccount     _{i + \locTxInitRoffAccUndoingSenderValueTransfer     } \\
+			+ & \peekAccount     _{i + \locTxInitRoffAccUndoingRecipientValueReception } \\
+		\end{array} \right]
+		\\
 	\end{array} \right.
 \]
