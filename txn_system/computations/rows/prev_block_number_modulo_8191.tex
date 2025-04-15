@@ -5,8 +5,8 @@
 			\eucCall {
 				anchorRow = i                                   ,
 				relOffset = \previousBlockNumberModuloRowOffset ,
-				argOne    = \locLayerOneTimeStamp               ,
-				argTwo    = \locBeaconRootPrimeModulus          ,
+				argOne    = \locPreviousBlockNumber             ,
+				argTwo    = \locBlockHashPrimeModulus           ,
 			}
 			\vspace{2mm} \\
 			\locPreviousBlockNumberModulo = \computationRes _{i + \previousBlockNumberModuloRowOffset} \\
@@ -16,4 +16,10 @@
 	\[
 		\locBlockHashPrimeModulus \define \locBlockHashPrimeModulusValue
 	\]
-	We further impose $\previousBlockNumberModuloRowOffset = \absBlock _{i}$
+\item[\underline{Previous block number vs. the absolute block number:}]
+	\If $\relBlock _{i} \neq 0$ \Then
+	we further impose that
+	\begin{enumerate}
+	        \item $\locPreviousBlockNumber = \absBlock _{i + 1} - 1$.
+		\item $\locPreviousBlockNumber = \absBlock _{i}$ \quad (\sanityCheck)
+	\end{enumerate}
