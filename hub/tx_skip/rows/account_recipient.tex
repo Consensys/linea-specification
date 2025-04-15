@@ -1,0 +1,112 @@
+\item[\underline{\underline{Recipient account-row n$^°~\bm{(i + \locTxSkipRecipientAccountRowOffset)}$:}}]
+	the \zkEvm{} peeks into the recipient account:
+	\[
+		\left\{ \begin{array}{lcl}
+			\accAddress    \high _{i + \locTxSkipRecipientAccountRowOffset} & = & \txTo  \high  _{i + \locTxSkipTransactionRowOffset}              \\
+			\accAddress    \low  _{i + \locTxSkipRecipientAccountRowOffset} & = & \txTo  \low   _{i + \locTxSkipTransactionRowOffset} \vspace{2mm} \\
+			\multicolumn{3}{l}{\accIncrementBalance {i}{\locTxSkipRecipientAccountRowOffset}{\txValue_{i + \locTxSkipTransactionRowOffset}}} \\
+			\texttt{Nonce:}      & \multicolumn{2}{l}{\valueToBeSet} \\
+			\texttt{Code:}       & \multicolumn{2}{l}{\valueToBeSet} \\
+			\texttt{Deployment:} & \multicolumn{2}{l}{\valueToBeSet} \\
+			\multicolumn{3}{l}{\accSameWarmth                      {i}{\locTxSkipRecipientAccountRowOffset}} \\
+			\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag   {i}{\locTxSkipRecipientAccountRowOffset}} \\
+			\multicolumn{3}{l}{\accIsntPrecompile                  {i}{\locTxSkipRecipientAccountRowOffset}} \\
+			\multicolumn{3}{l}{
+				\standardDomSubStamps {
+					anchorRow        = i,
+					relOffset        = \locTxSkipRecipientAccountRowOffset,
+					domOffset        = 1,
+				}
+			} \\
+			% \standardDomSubStamps               {i}{\locTxSkipRecipientAccountRowOffset}{1}      } \\
+		\end{array} \right.
+	\]
+	In order to correctly update the recipient account one must distinguish between message call transactions (e.g. pure transfers) and (trivial) deployments.
+	For that purpose we introduce the following shorthand
+	\[
+		\locTxSkipIsTrivialDeployment \define \txIsDeployment _{i + \locTxSkipTransactionRowOffset}
+	\]
+	and set
+	\begin{description}
+		\item[\underline{Pure transfers:}] 
+			\If $\locTxSkipIsTrivialDeployment = 0$ \Then
+			\[
+				\left\{ \begin{array}{lcl}
+					\multicolumn{3}{l}{\accSameNonce       {i}{\locTxSkipRecipientAccountRowOffset}} \\
+					\multicolumn{3}{l}{\accSameCode        {i}{\locTxSkipRecipientAccountRowOffset}} \\
+					\multicolumn{3}{l}{\accSameDeployment  {i}{\locTxSkipRecipientAccountRowOffset}} \\
+				\end{array} \right.
+			\]
+		\item[\underline{Trivial deployments:}] 
+			\If $\locTxSkipIsTrivialDeployment = 1$ \Then
+			\begin{description}
+				\item[Nonce:] 
+					we impose
+					\[
+						\left\{ \begin{array}{lclr}
+							\multicolumn{3}{l}{\accIncrementNonce {i}{\locTxSkipRecipientAccountRowOffset}} \\
+							\accNonce_{i + \locTxSkipRecipientAccountRowOffset} & = & 0 & (\trash) \vspace{2mm} \\
+						\end{array} \right.
+					\]
+				\item[Code:] 
+					we impose
+					\[
+						\left\{ \begin{array}{lclr}
+							\accHasCode           _{i + \locTxSkipRecipientAccountRowOffset} & = & 0              \\
+							\accCodehashHi        _{i + \locTxSkipRecipientAccountRowOffset} & = & \emptyKeccakHi  & (\trash) \\
+							\accCodehashLo        _{i + \locTxSkipRecipientAccountRowOffset} & = & \emptyKeccakLo  & (\trash) \\
+							\accCodesize          _{i + \locTxSkipRecipientAccountRowOffset} & = & 0              \\
+						\end{array} \right.
+						\;\text{and}\;
+						\left\{ \begin{array}{lclr}
+							\accHasCode     \new  _{i + \locTxSkipRecipientAccountRowOffset} & = & 0                                                     \\
+							\accCodehashHi  \new  _{i + \locTxSkipRecipientAccountRowOffset} & = & \emptyKeccakHi                                         & (\trash) \\
+							\accCodehashLo  \new  _{i + \locTxSkipRecipientAccountRowOffset} & = & \emptyKeccakLo                                         & (\trash) \\
+							\accCodesize    \new  _{i + \locTxSkipRecipientAccountRowOffset} & = & \txInitCodeSize _{i + \locTxSkipTransactionRowOffset} \\
+							\accCodesize    \new  _{i + \locTxSkipRecipientAccountRowOffset} & = & 0                                                      & (\trash) \\
+						\end{array} \right.
+					\]
+				\item[Deployment:] 
+					we impose
+					\[
+						\left\{ \begin{array}{lclr}
+							\multicolumn{3}{l}{\accIncrementDeploymentNumber  {i}{\locTxSkipRecipientAccountRowOffset}} \\
+							\accDeploymentStatus      _{i + \locTxSkipRecipientAccountRowOffset} & = & 0  & (\trash) \\
+							\accDeploymentStatus\new  _{i + \locTxSkipRecipientAccountRowOffset} & = & 0 \\
+						\end{array} \right.
+					\]
+					\saNote{}
+					As no deployment phase (in the sense of: execution of initialization code) will happen given that the transaction provided initialization code is empty we directly skip to the "deployed status" of the account through $\accDeploymentStatus\new \equiv 0$.
+
+					\saNote{}
+					It seems tempting to further impose that the deployment number should (initially) be zero (and go to one.)
+					While this will be true in practice there are scenarios in the \evm{} test suite where this assumption is violated.
+					In \texttt{BlockchainReferenceTest\_612/suicideStorageCheck\_London}, for instance,
+					the initial (world) state is made to contain an account with nonempty bytecode which allowing it to \inst{SELFDESTRUCT}.
+					In a subsequent deployment transaction this account is resurrected (with different bytecode.)
+					In that particular scenario the initial deployment number is 0.
+					It goes to 1 after the \inst{SELFDESTRUCT}.
+					It then goes from 1 to 2 with the deployment transaction resurrecting said acount.
+			\end{description}
+	\end{description}
+	we further impose
+	\begin{description}
+		\item[\underline{Address trimming:}]
+			\If $\locTxSkipIsTrivialDeployment = 0$
+			\[
+				\accTrimAddress
+				{i}{\locTxSkipRecipientAccountRowOffset}
+				{\txTo  \high  _{i + \locTxSkipTransactionRowOffset}}
+				{\txTo  \low   _{i + \locTxSkipTransactionRowOffset}}
+			\]
+	\end{description}
+	\saNote{}
+	Let us provide context for the above:
+	\begin{itemize}
+		\item
+			setting the \accTrmFlag{} enforces the computation (in the \trmMod{} module) of the \accTrmIsPrecompile{} flag;
+		\item
+			we already required $\accIsntPrecompile {i}{\locTxSkipRecipientAccountRowOffset}$;
+			this \textbf{disallows message call transactions to precompiles}\label{warning: no message calls to precompiles};
+	\end{itemize}
+

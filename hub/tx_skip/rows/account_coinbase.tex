@@ -1,0 +1,30 @@
+\item[\underline{\underline{Coinbase account-row n$^°~\bm{(i + \locTxSkipCoinbaseAccountRowOffset)}$:}}]
+	the \zkEvm{} peeks into the coinbase account:
+	\[
+		\left\{ \begin{array}{lcl}
+			\accAddress    \high _{i + \locTxSkipCoinbaseAccountRowOffset} & = & \txCoinbase  \high  _{i + \locTxSkipTransactionRowOffset}              \\
+			\accAddress    \low  _{i + \locTxSkipCoinbaseAccountRowOffset} & = & \txCoinbase  \low   _{i + \locTxSkipTransactionRowOffset} \vspace{2mm} \\
+			\multicolumn{3}{l}{\accIncrementBalance                  {i}{\locTxSkipCoinbaseAccountRowOffset}{\locCoinbaseFee}} \\
+			\multicolumn{3}{l}{\accSameNonce                         {i}{\locTxSkipCoinbaseAccountRowOffset}      } \\
+			\multicolumn{3}{l}{\accSameCode                          {i}{\locTxSkipCoinbaseAccountRowOffset}} \\
+			\multicolumn{3}{l}{\accSameDeployment                    {i}{\locTxSkipCoinbaseAccountRowOffset}} \\
+			\multicolumn{3}{l}{\accSameWarmth                        {i}{\locTxSkipCoinbaseAccountRowOffset}} \\
+			\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag     {i}{\locTxSkipCoinbaseAccountRowOffset}} \\
+			\multicolumn{3}{l}{
+				\standardDomSubStamps {
+					anchorRow        = i,
+					relOffset        = \locTxSkipCoinbaseAccountRowOffset,
+					domOffset        = 2,
+				}
+			} \\
+			% \standardDomSubStamps                 {i}{\locTxSkipCoinbaseAccountRowOffset}{2}} \\
+		\end{array} \right.
+	\]
+	where we define the \locCoinbaseFee{} shorthand as follows:
+	\[
+		\locCoinbaseFee \define
+		\left[ \begin{array}{cl}
+			\cdot & \txPriorityFeePerGas_{i + \locTxSkipTransactionRowOffset}                                                    \\
+			\cdot & (\txGasLimit_{i + \locTxSkipTransactionRowOffset} - \txEffectiveRefund_{i + \locTxSkipTransactionRowOffset}) \\
+		\end{array} \right]
+	\]
