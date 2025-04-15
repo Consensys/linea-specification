@@ -1,9 +1,33 @@
-There is a single finalization constraint:
+The following are the finalization constraints:
 \begin{enumerate}
-	\item \If $\absTxNum_{N} \neq 0$ \Then $\txSkip_{N} + \txFinl_{N} + \peekTransaction_{N} = 2$
+	\item \If $\absTxNum_{N} \neq 0$ \Then
+		\begin{enumerate}
+		        \item $\txSkip _{N} + \txFinl _{N} = 1$
+		        \item \If $\txSkip _{N} = 1$ \Then $\peekContext     _{N} = 1$
+		        \item \If $\txFinl _{N} = 1$ \Then $\peekTransaction _{N} = 1$
+		\end{enumerate}
 \end{enumerate}
-\saNote{} Given that on every row \emph{at most one} of
+\saNote{}
+The above must be seen in conjunction with
+constraint~(\ref{hub: heartbeat: abs tx num increments}) and the definition of
+$\locEndOfTransactionBit$.
+
+\saNote{}
+Given that on every row \emph{at most one} of
 $\txSkip$ and $\txFinl$ may be on this equality is a compressed way of stating that
 \[
-	\Big( \txSkip_{N} = 1 ~\OR \txFinl_{N} = 1 \Big) ~ \et \peekTransaction_{N} = 1.
-\] 
+	\left\{ \begin{array}{c}
+		\txSkip      _{N} = 1 \\ \et \\
+		\peekContext _{N} = 1 \\
+	\end{array} \right\}
+	\quad\OR\quad
+	\left\{ \begin{array}{c}
+		\txFinl          _{N} = 1 \\ \et \\
+		\peekTransaction _{N} = 1 \\
+	\end{array} \right\}
+\]
+\saNote{}
+These finalization constraints may equivalently be compressed into the single constraint
+\[
+	\If \absTxNum_{N} \neq 0 ~ \Then \locEndOfTransactionBit _{N} = 1 \quad (\trash)
+\]

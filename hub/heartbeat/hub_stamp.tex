@@ -1,10 +1,3 @@
-\def\st{\col{st}}
-\def\ts{\col{ts}}
-\def\tw{\col{tw}}
-\def\ti{\col{ti}}
-\def\te{\col{te}}
-\def\tf{\col{tf}}
-%%%%%%%%%%%%%%%%%
 The present section constrains the hub stamp column $\hubStamp$.
 The main expectations we place upon the hub stamp are as follows:
 (\emph{a}) every time a new transaction starts processing $\hubStamp$ should jump by $1$;
@@ -17,13 +10,13 @@ The main expectations we place upon the hub stamp are as follows:
 
 For more concise equations we shall use the following shorthands:
 \[
-	\left\{ \qquad \begin{array}{rcl}
+	\left\{ \begin{array}{rcl}
 		\ts & \define & \txSkip{} \\
 		\tw & \define & \txWarm{} \\
 		\ti & \define & \txInit{} \\
 		\te & \define & \txExec{} \\
 		\tf & \define & \txFinl{} \\
-	\end{array} \qquad \right\}
+	\end{array} \qquad \right.
 \]
 respectively.
 
@@ -34,14 +27,14 @@ respectively.
 	\item we impose
 		\[
 			\If
-			\left\{ \begin{array}{rrcl}
+			\left[ \begin{array}{rrcl}
 				+ & (1 - \ts_{i}) & \!\!\! \cdot \!\!\! & \ts_{i + 1} \\
 				+ & (1 - \tw_{i}) & \!\!\! \cdot \!\!\! & \tw_{i + 1} \\
 				+ & (1 - \ti_{i}) & \!\!\! \cdot \!\!\! & \ti_{i + 1} \\
 				+ & (1 - \te_{i}) & \!\!\! \cdot \!\!\! & \te_{i + 1} \\
 				+ & (1 - \tf_{i}) & \!\!\! \cdot \!\!\! & \tf_{i + 1} \\
 				+ &      \tw_{i}  &                     &             \\
-			\end{array} \right\}
+			\end{array} \right]
 			\neq 0
 			~
 			\Then \hubStamp_{i + 1} = 1 + \hubStamp_{i}.
@@ -55,26 +48,16 @@ Note that the term in braces is itself binary so that ``$\neq 0$'' really means 
 We nonetheless want to impose a jump under those circumstances.
 The associated jump in $\hubStamp$ is enforced in the constraint below.
 \begin{enumerate}[resume]
-	\item
-		\[
-			\If
-			\left[ \begin{array}{cccc}
-				+ & \ts_{i} \\
-				+ & \tf_{i} \\
-			\end{array} \right]
-			\neq 0
-			~ \Then \hubStamp_{i + 1} = \hubStamp_{i} + \peekTransaction_{i}.
-		\]
-	\item
-		\[
-			\If \ti_{i} \neq 0
-			~ \Then \hubStamp_{i + 1} = \hubStamp_{i} + \peekContext _{i}.
-		\]
+	\item \( \If \ts_{i} \neq 0 ~ \Then \hubStamp_{i + 1} = \hubStamp_{i} + \peekContext     _{i} \)
+	\item \( \If \ti_{i} \neq 0 ~ \Then \hubStamp_{i + 1} = \hubStamp_{i} + \peekContext     _{i} \)
+	\item \( \If \tf_{i} \neq 0 ~ \Then \hubStamp_{i + 1} = \hubStamp_{i} + \peekTransaction _{i} \)
 \end{enumerate}
 \saNote{}
-The above enforces that $\hubStamp$ remains constant throughout the processing of any transaction which requires no \textsc{evm}-execution as well as during the initialization and finalization phases of transactions that require \evm{} execution. The \hubStamp{} furthermore will jump by one (on any one of those phases) whenever the current row peeks into the transaction.
+The above enforces that $\hubStamp$ remains constant
+throughout the processing of any \txSkip{}-transaction as well as
+during the initialization and finalization phases of transactions that require \evm{} execution.
 We remind the reader that for these three phases (\txSkip, \txInit{} and \txFinl{}) the $\peekTransaction{}$ flag already played a special role in the previous section, see constraints
-(\ref{hub: heartbeat: skipping phase finishes on a transaction row}),
+(\ref{hub: heartbeat: skipping phase finishes on a context row}),
 (\ref{hub: heartbeat: initialization phase finishes on a context row}) and
 (\ref{hub: heartbeat: finalization phase finishes on a transaction row}).
 This column also served a special purpose with respect to the \absTxNum, see constraint (\ref{hub: heartbeat: abs tx num increments}).

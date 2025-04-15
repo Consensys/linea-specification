@@ -1,5 +1,3 @@
-\def\locTransactionPhaseSum                                             {\col{tx\_phase\_sum}}
-\def\locAcceptableTransactionPhaseFlagsAtFirstRowOfNewTransaction       {\txSkip_{i} + \txWarm_{i} + \txInit_{i} = 1}
 In this section we constrain the binary flags $\txSkip$, $\txWarm$, $\txInit$, $\txExec$, $\txFinl$ which indicate the transaction processing phase. We enforce a phase-rotation i.e. when which bits $\txWarm$, $\txInit$, $\txExec$, $\txFinl$ get turned on and off in non-padding rows.
 These phases are expected to transition as shown in figure~\ref{fig: processing phase transition graph}.
 
@@ -9,48 +7,71 @@ These phases are expected to transition as shown in figure~\ref{fig: processing 
 \begin{enumerate}
 	\item $\txSkip$, $\txWarm$, $\txInit$, $\txExec$ and $\txFinl$ are binary;
 \end{enumerate}
-We define the following shorthand:
+We define the following shorthands:
 \[
-	\locTransactionPhaseSum_{i}
-	\define
-	\left[ \begin{array}{cl}
-		+ & \txSkip_{i} \\ 
-		+ & \txWarm_{i} \\
-		+ & \txInit_{i} \\
-		+ & \txExec_{i} \\
-		+ & \txFinl_{i} \\
-	\end{array} \right]
+	\left\{ \begin{array}{lcl}
+		\locTransactionStartPhaseSum _{i}
+                & \define &
+		\left[ \begin{array}{cl}
+			+ & \txSkip _{i} \\ 
+			+ & \txWarm _{i} \\
+			+ & \txInit _{i} \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\locTransactionPhaseSum _{i}
+                & \define &
+		\left[ \begin{array}{cl}
+			+ & \locTransactionStartPhaseSum _{i} \\
+			+ & \txExec                      _{i} \\
+			+ & \txFinl                      _{i} \\
+		\end{array} \right]
+		\\
+	\end{array} \right.
 \]
 \begin{enumerate}[resume] \label{hub:heartbeat: tx phase sum constraints}
 	\item \If $\absTxNum_{i} = 0$ \Then $\locTransactionPhaseSum_{i} = 0$;
 	\item \label{hub: heartbeat: tx phase flag exclusivity}
 		\If $\absTxNum_{i} \neq 0$ \Then $\locTransactionPhaseSum_{i} = 1$;
 	\item \label{hub: heartbeat: acceptable tx phases at first row of new transaction}
-		\If $\absTxNum_{i} \neq \absTxNum_{i - 1}$ \Then $\locAcceptableTransactionPhaseFlagsAtFirstRowOfNewTransaction$;
+		\If $\absTxNum_{i} \neq \absTxNum_{i - 1}$ \Then $\locDisplayAcceptableTransactionPhaseFlagsAtFirstRowOfNewTransaction$;
 \end{enumerate}
 The above says that on padding rows all processing flags are off while on non-padding rows \emph{precisely} one of the processing flags flags is set. Furthermore when a new transaction starts processing it either
 requires no \textsc{evm}-execution ($\txSkip_{i} = 1$)
 or does and starts in either the pre-warming phase ($\txWarm_{i} = 1$)
 or the initialization phase ($\txInit_{i} = 1$.)
 Phases follow a cyclical pattern where the order is set (the prewarming phase being optional.)
+
+We define the following shorthand for immediate use:
+\[
+	\locEndOfTransactionBit _{i}
+	\define
+	\left[ \begin{array}{clcl}
+		+ & \txSkip_{i} & \cdot & \peekContext     _{i} \\
+		+ & \txFinl_{i} & \cdot & \peekTransaction _{i} \\
+	\end{array} \right] \quad \undefinedStar
+\]
+\saNote{}
+It follows from (binary) exclusivity constraints that the expression $\undefinedStar$ defining the $\locEndOfTransactionBit$ shorthand is \textbf{binary}.
 \begin{enumerate}[resume]
 	\item\label{hub: heartbeat: abs tx num increments}
-		\If $\absTxNum_{i} \neq 0$ \Then
-		\[ \absTxNum_{i + 1} = \absTxNum_{i} + (\txFinl_{i} + \txSkip_{i}) \cdot \peekTransaction_{i} \]
+		\If $\absTxNum_{i} \neq 0$ \Then \( \absTxNum_{i + 1} = \absTxNum_{i} + \locEndOfTransactionBit _{i} \)
 \end{enumerate}
-\saNote{} The expression $(\txFinl + \txSkip) \cdot \peekTransaction$ which we use above is \textbf{binary}.
+\saNote{}
+The above complements the general constraints of (\ref{hub: heartbeat: abs tx num increment generalities}).
 
-The above specifies precisely, for non padding rows $i$, when $\absTxNum$ is required to change from row $i$ to row $i + 1$. It remains unchanged in all cases \emph{except} if the transaction requires no \textsc{evm}-execution and the present row peeks into transaction data \emph{or} the transaction requires \textsc{evm}-execution, is in the finalization phase and and the present row peeks into transaction data. In this case the next row thus marks the beginning of the processing of a new transaction.
-
+The above specifies precisely, for non padding rows $i$, when $\absTxNum$ is required to change from row $i$ to row $i + 1$.
+When it does, the next row (i.e. row $i + 1$) marks the beginning of the processing of a new transaction.
 We now deal with the cyclical nature of the process.
 
 \paragraph{Transactions whose processing requires no \textsc{evm} execution}
 \begin{enumerate}[resume]
 	\item
-		\label{hub: heartbeat: skipping phase finishes on a transaction row}
-		\If \Big($\txSkip_{i} = 1$ \et $\peekTransaction_{i} = 0$\Big) \Then $\txSkip_{i + 1} = 1$;
+		\label{hub: heartbeat: skipping phase finishes on a context row}
+		\If \Big($\txSkip_{i} = 1$ \et $\peekContext _{i} = 0$\Big) \Then $\txSkip_{i + 1} = 1$;
 \end{enumerate}
-\saNote{} The case $\txSkip_{i} = 1$ \et $\peekTransaction_{i} = 1$ is already known: the $\absTxNum$ changes at the following row and so by the above $\locAcceptableTransactionPhaseFlagsAtFirstRowOfNewTransaction$.
+\saNote{}
+The case $\txSkip_{i} = 1$ \et $\peekContext _{i} = 1$ is already known:
+the $\absTxNum$ changes at the following row and so by the above $\locDisplayAcceptableTransactionPhaseFlagsAtFirstRowOfNewTransaction$.
 
 \paragraph{Transactions whose processing \emph{does} require \textsc{evm} execution}
 \begin{enumerate}[resume]
@@ -74,7 +95,7 @@ Just as above we note that the case $\txFinl_{i} = 1$ \et $\peekTransaction_{i} 
 Indeed, in that case the absolute transaction number must change at the next row due to constraint~(\ref{hub: heartbeat: abs tx num increments}).
 It follows from constraint,
 see section~(\ref{hub: heartbeat: acceptable tx phases at first row of new transaction}),
-that $\locAcceptableTransactionPhaseFlagsAtFirstRowOfNewTransaction$.
+that $\locDisplayAcceptableTransactionPhaseFlagsAtFirstRowOfNewTransaction$.
 By flag exclusivity,
 see section~(\ref{hub: heartbeat: tx phase flag exclusivity}),
 it follows in particular that $\txFinl_{i + 1} = 0$.
