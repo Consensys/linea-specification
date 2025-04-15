@@ -1,0 +1,42 @@
+\begin{center}
+	\boxed{\text{All constraints in this subsection assume that $\txInit_{i} = 1$ and $\peekMisc _{i} = 1$.}}
+\end{center}
+We unconditionally impose that
+\begin{enumerate}
+	\item 
+		\label{hub: initialization phase: looking back from misc row is storage or transaction}
+		$\peekTransaction _{i - 1} + \peekStorage _{i - 1} = 1$
+\end{enumerate}
+And we impose that
+\begin{enumerate}
+	\item \If $\peekStorage _{i - 1} = 1$ \Then
+		\[
+			\left[ \begin{array}{cl} 
+				+ & \peekTransaction _{i - \locTxInitRoffForwardMiscFirstTxn   } \\
+				+ & \peekAccount     _{i - \locTxInitRoffForwardStoBeaconRoot  } \\
+				+ & \peekStorage     _{i - \locTxInitRoffForwardAccBeaconRoot  } \\
+				+ & \peekMisc        _{i - \locTxInitRoffForwardTxn            } \\
+			\end{array} \right]
+			= \nsrTxInitForwardFirstTxn
+			\quad\text{and}\quad
+			\left[ \begin{array}{cccl}
+				+ &   & \!\!\!     \!\!\! & \txInit _{i - \locTxInitRoffForwardMiscFirstTxn - 1} \\
+				+ & 2 & \!\!\!\cdot\!\!\! & \txInit _{i - \locTxInitRoffForwardMiscFirstTxn}     \\
+			\end{array} \right]
+			= 2
+		\]
+        \item \If $\peekTransaction _{i - 1} = 1$ \Then
+		\[
+			\left[ \begin{array}{cl} 
+				+ & \peekTransaction _{i - \locTxInitRoffForwardMiscNotFirstTxn  } \\
+				+ & \peekMisc        _{i - \locTxInitRoffForwardTxn  }             \\
+			\end{array} \right]
+			= \nsrTxInitForwardNotFirstTxn
+			\quad\text{and}\quad
+			\left[ \begin{array}{cccl}
+				+ &   & \!\!\!     \!\!\! & \txInit _{i - \locTxInitRoffForwardMiscNotFirstTxn - 1} \\
+				+ & 2 & \!\!\!\cdot\!\!\! & \txInit _{i - \locTxInitRoffForwardMiscNotFirstTxn}     \\
+			\end{array} \right]
+			= 2
+		\]
+\end{enumerate}

@@ -1,0 +1,37 @@
+\begin{center}
+	\boxed{\text{All constraints in this subsection assume that $\txInit _{i - 1} = 0$ and $\txInit _{i} = 1$.}}
+\end{center}
+We unconditionally impose that
+\begin{enumerate}
+	\item 
+		\label{hub: initialization phase: the first rows is a transaction row}
+		$\peekTransaction _{i + \locTxInitRoffForwardTxn} = 1$
+\end{enumerate}
+We define the following shorthands
+\[
+	\left\{ \begin{array}{lcl}
+		\locFirstTransactionInBlock    & \define & \txFirstTransactionInBlock _{i + \locTxInitRoffForwardTxn} \\
+		\locNotFirstTransactionInBlock & \define & 1 - \locFirstTransactionInBlock                            \\
+	\end{array} \right.
+\]
+And we impose that
+\begin{enumerate}
+        \item \If $\locFirstTransactionInBlock = 1$ \Then
+		\[
+			\left[ \begin{array}{cl} 
+				+ & \peekTransaction _{i + \locTxInitRoffForwardTxn            } \\
+				+ & \peekAccount     _{i + \locTxInitRoffForwardAccBeaconRoot  } \\
+				+ & \peekStorage     _{i + \locTxInitRoffForwardStoBeaconRoot  } \\
+				+ & \peekMisc        _{i + \locTxInitRoffForwardMiscFirstTxn   } \\
+			\end{array} \right]
+			= \nsrTxInitForwardFirstTxn
+		\]
+	\item \If $\locNotFirstTransactionInBlock = 1$ \Then
+		\[
+			\left[ \begin{array}{cl} 
+				+ & \peekTransaction _{i + \locTxInitRoffForwardTxn              } \\
+				+ & \peekMisc        _{i + \locTxInitRoffForwardMiscNotFirstTxn  } \\
+			\end{array} \right]
+			= \nsrTxInitForwardNotFirstTxn
+		\]
+\end{enumerate}
