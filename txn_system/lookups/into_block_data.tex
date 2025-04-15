@@ -2,37 +2,22 @@ Several columns are direct imports from the \btcMod{} module.
 The present lookup justifies them:
 \begin{description}
 	\item[\underline{Selector:}]
-		we define the following selector
-		\begin{enumerate}
-			\item \If $\absTxNum _{i} =    0$ \Then $\col{sel}_{i} \define 0$
-		        \item \If $\absTxNum _{i} \neq 0$ \Then $\col{sel}_{i} \define 1$
-		\end{enumerate}
+		we use $\isMacro$ as the selector;
 	\item[\underline{Source columns:}] ---
-		\begin{multicols}{4}
-			\begin{enumerate}
-				\item $\relBlock        _{i}$
-				\item $\relTxMax        _{i}$
-				\item $\txCoinbase\high _{i}$
-				\item $\txCoinbase\low  _{i}$
-				\item $\txBasefee       _{i}$
-				\item $\blockGasLimit   _{i}$
-				\item $1$
-				\item[\vspace{\fill}]
+		\begin{enumerate}
+			\item $1$
+			\item $\relBlock        _{i}$
+			\item $\absBlock        _{i}$
+			\item[\vspace{\fill}]
 				%\item[\vspace{\fill}]
-			\end{enumerate}
-		\end{multicols}
+		\end{enumerate}
 	\item[\underline{Target columns:}] ---
-		\begin{multicols}{4}
-			\begin{enumerate}
-				\item $\relBlock          _{j}$
-				\item $\relTxMax          _{j}$
-				\item $\coinbase\high     _{j}$
-				\item $\coinbase\low      _{j}$
-				\item $\basefee           _{j}$
-				\item $\blockGasLimit     _{j}$
-				\item $\currentConflation _{j}$
-				\item[\vspace{\fill}]
+		\begin{enumerate}
+			\item $\isNumber _{j}$
+			\item $\relBlock _{j}$
+			\item $\blockNumberOfFirstBlockInConflation _{j} + (\relBlock _{j} - 1)$
+				% \item $\isNumber _{j} \cdot \big(\relBlock _{j}\big)$
+				% \item $\isNumber _{j} \cdot \big(\blockNumberOfFirstBlockInConflation _{j} + (\relBlock _{j} - 1)\big)$
 				%\item[\vspace{\fill}]
-			\end{enumerate}
-		\end{multicols}
+		\end{enumerate}
 \end{description}
