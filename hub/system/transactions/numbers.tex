@@ -1,0 +1,35 @@
+We introduce three ``transaction numbers'':
+(\emph{a}) \sysiTransactionNumber{}, which tracks and identifies system transactions which take place prior to (user) transaction processing,
+(\emph{b}) \userTransactionNumber{}, which tracks and identifies user transactions,
+(\emph{c}) \sysfTransactionNumber{}, which tracks and identifies system transactions which take place after (user) transaction processing.
+The associated constraints are as follows:
+\begin{description}
+	\item[\underline{Initialization:}] 
+		we impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\sysiTransactionNumber _{0} & = & 0 \\
+				\userTransactionNumber _{0} & = & 0 \\
+				\sysfTransactionNumber _{0} & = & 0 \\
+			\end{array} \right.
+		\]
+	\item[\underline{Increments:}] 
+		we impose that
+		\[
+			\left\{ \begin{array}{lcl}
+				\sysiTransactionNumber _{i} & = & \sysiTransactionNumber _{i - 1} + \sysiTransactionStart _{i} \\
+				\userTransactionNumber _{i} & = & \userTransactionNumber _{i - 1} + \userTransactionStart _{i} \\
+				\sysfTransactionNumber _{i} & = & \sysfTransactionNumber _{i - 1} + \sysfTransactionStart _{i} \\
+			\end{array} \right.
+		\]
+\end{description}
+We further define the following shorthand:
+\[
+	\totalTransactionNumber _{i}
+	\define
+	\left[ \begin{array}{cr}
+		+ & \sysiTransactionNumber _{i} \\
+		+ & \userTransactionNumber _{i} \\
+		+ & \sysfTransactionNumber _{i} \\
+	\end{array} \right]
+\]

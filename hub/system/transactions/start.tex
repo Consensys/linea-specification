@@ -1,0 +1,24 @@
+We define the following shorthands
+\[
+	\left\{ \begin{array}{lcl}
+		\sysiTransactionStart _{i} & \define & \sysi _{i} \cdot \txSkip _{i} \cdot \peekTransaction _{i} \\
+		\sysfTransactionStart _{i} & \define & \sysf _{i} \cdot \txSkip _{i} \cdot \peekTransaction _{i} \\
+		\userTransactionStart _{i} & \define &
+		\user _{i} \cdot
+		\left[ \begin{array}{rrcl}
+			+ & \txSkip _{i}           & \!\!\!\cdot\!\!\! & \peekTransaction _{i} \\
+			+ & (1 - \txWarm _{i - 1}) & \!\!\!\cdot\!\!\! & \txWarm          _{i} \\
+			+ & (1 - \txWarm _{i - 1}) & \!\!\!\cdot\!\!\! & \txInit          _{i} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\transactionStart _{i} & \define &
+		\left[ \begin{array}{rrcl}
+			+ & \sysiTransactionStart _{i} \\
+			+ & \userTransactionStart _{i} \\
+			+ & \sysfTransactionStart _{i} \\
+		\end{array} \right]
+	\end{array} \right.
+\]
+\saNote{}
+The above expressions always take on binary values.
