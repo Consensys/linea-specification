@@ -3,15 +3,16 @@
 	\centering
         \def\vert {1.5cm}
         \def\hori {4cm}
+        \def\Hori {5cm}
 	\begin{tikzpicture}[node distance={2cm}, standard/.style={rectangle, thick, draw, rounded corners = 3pt, inner sep = 6pt, outer sep = 4pt}] 
 		\node[          color = draculacomment    ]   (padding)                               {\Large{padding-rows}};
 		\node[standard, color = draculagreen      ]   (sysi)         [below right = \vert and \hori of padding] {$\sysi$};
 		\node[standard, color =        yellow!70  ]   (user)         [below right = \vert and \hori of sysi]    {$\user$};
 		\node[standard, color =        orange!70  ]   (sysf)         [below left  = \vert and \hori of user]    {$\sysf$};
 		\node[          color = draculacomment    ]   (end)          [below of=sysf]          {\Large{end of trace}};
-                \draw[-latex] (padding.east) .. controls +(right:\hori) and +(up:\vert) .. (sysi)        ;
-                \draw[rounded corners = 0.5cm, -latex, dashed] (sysi)        -- ++ (\hori, 0) -- (user)        ;
-                \draw[rounded corners = 0.5cm, latex-] (sysf)        -- ++ (\hori, 0) -- (user)        ;
+                \draw[rounded corners = 0.5cm, -latex]         (padding)   -- ++ (\Hori, 0) -- (sysi)        ;
+                \draw[rounded corners = 0.5cm, -latex, dashed] (sysi)      -- ++ (\hori, 0) -- (user)        ;
+                \draw[rounded corners = 0.5cm, latex-]         (sysf)      -- ++ (\hori, 0) -- (user)        ;
 		\draw[-latex] (sysf)        -- (end)         ;
 		\draw[-latex, dashed] (sysi.250)    -- (sysf.110)        ;
                 \draw[-latex] (sysf.70 )    -- node [right] {\, $\equiv\blockNumber \mathtt{\;\pluseq 1}$} (sysi.290)        ;
