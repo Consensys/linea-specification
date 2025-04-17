@@ -1,0 +1,32 @@
+We impose the following constraints
+\begin{enumerate}
+	\item $\phaseSum _{i} = \flagSum _{i}$
+	\item \If $\hubStamp _{i} =    0$ \Then $\phaseSum _{i} = 0$
+	\item \If $\hubStamp _{i} \neq 0$ \Then $\phaseSum _{i} = 1$
+	\item $\weightedPhaseSum$ is \hubStamp{}-constant
+\end{enumerate}
+where we have used the following shorthands
+\[
+	\phaseSum _{i} \define
+	\left[ \begin{array}{cl}
+		+ & \txSkip _{i} \\
+		+ & \txWarm _{i} \\
+		+ & \txInit _{i} \\
+		+ & \txExec _{i} \\
+		+ & \txFinl _{i} \\
+	\end{array} \right]
+	\quad\text{and}\quad
+	\weightedPhaseSum _{i} \define
+	\left[ \begin{array}{ccl}
+		+ ~ 1 & \!\!\!\cdot\!\!\! & \txSkip _{i} \\
+		+ ~ 2 & \!\!\!\cdot\!\!\! & \txWarm _{i} \\
+		+ ~ 3 & \!\!\!\cdot\!\!\! & \txInit _{i} \\
+		+ ~ 4 & \!\!\!\cdot\!\!\! & \txExec _{i} \\
+		+ ~ 5 & \!\!\!\cdot\!\!\! & \txFinl _{i} \\
+	\end{array} \right]
+\]
+and as per usual we declare a column \col{X} to be \textbf{\hubStamp{}-constant} if
+\[
+	\If   \hubStamp _{i + 1} \neq 1 + \hubStamp _{i} ~
+	\Then \col{X} _{i + 1} = \col{X} _{i}
+\]
