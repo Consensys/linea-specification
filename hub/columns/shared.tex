@@ -167,19 +167,19 @@ We further note that it is the perview of the \stpMod{} module to compute the \g
 
 Note that the "the reprisal of execution" case is also when $\gasExpected$ may differ from $\gasActual$, as this is when ``remaining gas refunds'' can be added to $\gasExpected$.
 
-The following are two sets of ``counter/maximal counter value'' columns. Within execution rows the counters $\ct$ and $\nonStackRowsCounter$ impose at what point the \hubStamp{} changes (i.e. increases by $1$.)
+The following are two sets of ``counter/maximal counter value'' columns. Within execution rows the counters $\tliCounter$ and $\nonStackRowsCounter$ impose at what point the \hubStamp{} changes (i.e. increases by $1$.)
 \begin{enumerate}[resume]
 	\item $\tli{}$:
 		hub-stamp-constant binary column;
-	\item $\ct$:
+	\item $\tliCounter$:
 		binary counter column;
 	\item $\nonStackRows$:
 		hub-stamp-constant column containing the number of non stack-rows required for the present instruction;
 	\item $\nonStackRowsCounter$:
-		counter; remains constant while $\ct\neq\tli$ and the counts up until $\nonStackRows$;
+		counter; remains constant while $\tliCounter \neq \tli$ and the counts up until $\nonStackRows$;
 \end{enumerate}
 The pairs
-$\ct$/$\tli$ and
+$\tliCounter$/$\tli$ and
 $\nonStackRowsCounter$/$\nonStackRows$
 only matter along execution rows.
 Along execution rows an instruction occupies precisely
@@ -189,7 +189,7 @@ Along execution rows an instruction occupies precisely
 individual rows.
 $\tli$ is instruction decoded (on stack rows.)
 It indicates whether dealing with the instruction requires one stack row or two.
-Thus, along stack rows $\ct$ counts from $0$ to $\tli$.
+Thus, along stack rows $\tliCounter$ counts from $0$ to $\tli$.
 $\nonStackRows$ is constructed by hand on stack rows ($\tli$ is shorthand for $\TLI{}$.)
 It indicates how many (if any) non stack-rows are required to deal with the instruction at hand.
-As soon as $\ct$ reaches $\tli$ the $\nonStackRowsCounter$ column starts counting up from $1$ to $\nonStackRows$.
+As soon as $\tliCounter$ reaches $\tli$ the $\nonStackRowsCounter$ column starts counting up from $1$ to $\nonStackRows$.
