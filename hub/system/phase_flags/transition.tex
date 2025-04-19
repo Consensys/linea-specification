@@ -1,6 +1,17 @@
 We impose that
 \begin{enumerate}
-        \item \If $\txSkip _{i} = 1$ \Then $\txSkip _{i + 1} + \txWarm _{i + 1} + \txInit _{i + 1} = 1$
+        \item \If $\txSkip _{i} = 1$ \Then
+                \begin{enumerate}
+                        \item $\txSkip _{i + 1} + \txWarm _{i + 1} + \txInit _{i + 1} = 1$
+                        \item \If $\peekContext _{i} = 0$ \Then $\txSkip _{i + 1} = 1$ (\sanityCheck)
+                        \item \If $\peekContext _{i} = 1$ \Then $\txSkip _{i + 1} + \txWarm _{i + 1} + \txInit _{i + 1} = 1$ (\sanityCheck)
+                \end{enumerate}
+                \saNote{}
+                The last two constraints follow from the first one,
+                from \hubStamp-constancy of $\txSkip$,
+                and of the way in which the \hubStamp{} increments when in \txSkip-transaction phase,
+                see constraint~(\ref{hub: system: phase flags: transaction phase flags are hub stamp constant}) and
+                see constraint~(\ref{hub: system: hub stamp: increments: SKIP case}) respectively.
         \item \If $\txWarm _{i} = 1$ \Then $                   \txWarm _{i + 1} + \txInit _{i + 1} = 1$
         \item \If $\txInit _{i} = 1$ \Then
                 \begin{enumerate}
