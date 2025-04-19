@@ -1,0 +1,55 @@
+Recall that \totalTransactionNumber{} has $0/1$-increments, and increments (by one) \emph{precisely} at \transactionStart{},
+see note~(\ref{hub: system: transaction start: total transaction number increments}).
+Thus, when it comes to transactions, ``every beginning has a start''.
+To prevent two \transactionStart{}'s in succession without the first one running into \transactionEnd{},
+we impose extra constraints.
+These make sure that, conversely,
+``every new beginning comes from some other beginning's end.''
+While we're at it we describe the final context-row of every transaction,
+see constraint~(\ref{hub: system: transaction end: every transaction must end on a context row}),
+and ensure that traces themselves finish on a $\transactionEnd$.
+\begin{description}
+	\item[\underline{``Every beginning has a start'':}]
+		we require that
+		\[
+			\If \totalTransactionNumber _{i} \neq \totalTransactionNumber _{i - 1}
+			~ \Then
+			\transactionStart _{i} = 1
+			\quad (\sanityCheck)
+		\]
+	\item[\underline{``Every new beginning comes from some other beginning's end'':}]
+		we require that
+		\[
+			\If
+			\left\{ \begin{array}{l}
+				\totalTransactionNumber _{i + 1} \neq \totalTransactionNumber _{i} \\
+				\quad \et                                                          \\
+				\totalTransactionNumber _{i} \neq 0                                \\
+			\end{array} \right\}
+			~ \Then
+			\transactionEnd _{i} = 1
+		\]
+	\item[\underline{The final context-row of any transaction:}]
+		the final row of any transaction is always the same:
+		\[
+			\If \transactionEnd _{i} = 1
+			~ \Then \readContextData {i}{0}{\zeroContext}
+		\]
+		where we have used the following shorthand
+		\[
+			\zeroContext \define 0.
+		\]
+		\saNote{}
+		The above thus enforces that the final row of any transaction,
+		whether it's a \textsc{system transaction} or a \textsc{user transaction},
+		consists in loading the ``\zeroContext{}.''
+		This execution context is entirely fictious and corresponds to no real execution.
+		Recall further that the ``\zeroContext{}'' remains unconstrained in consistency arguments,
+		see section~(\ref{hub: consistencies: context}).
+	\item[\underline{The final row of any trace:}]
+		we impose the following finalization constraints
+		\begin{enumerate}
+			\item $\sysf           _{N} = 1$
+			\item $\transactionEnd _{N} = 1$
+		\end{enumerate}
+\end{description}
