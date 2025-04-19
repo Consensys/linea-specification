@@ -1,16 +1,19 @@
-We define the following shorthands related to flags and flag transitions:
+We define the following shorthand
 \[
-	\left\{ \begin{array}{lcl}
-		\aboutToEnterSystemInit       _{i} & \define & (1 - \sysi _{i}) \cdot \sysi _{i + 1} \\
-		\aboutToEnterUserTransactions _{i} & \define & (1 - \user _{i}) \cdot \user _{i + 1} \\
-		\aboutToEnterSystemFinl       _{i} & \define & (1 - \sysf _{i}) \cdot \sysf _{i + 1} \\
-		\aboutToTransition _{i} & \define &
-		\left[ \begin{array}{cl}
-			+ & \aboutToEnterSystemInit       _{i} \\
-			+ & \aboutToEnterUserTransactions _{i} \\
-			+ & \aboutToEnterSystemFinl       _{i} \\
-		\end{array} \right]
-	\end{array} \right.
+        \left\{ \begin{array}{lcr}
+                \flagSum _{i} & \define &
+                \left[ \begin{array}{cl}
+                        + & \sysi _{i} \\
+                        + & \user _{i} \\
+                        + & \sysf _{i} \\
+                \end{array} \right]
+                \vspace{2mm}
+                \\
+                \weightedFlagSum _{i} & \define &
+                \left[ \begin{array}{crcl}
+                        + & 2^{0} & \!\!\! \cdot \!\!\! & \sysi _{i} \\
+                        + & 2^{1} & \!\!\! \cdot \!\!\! & \user _{i} \\
+                        + & 2^{2} & \!\!\! \cdot \!\!\! & \sysf _{i} \\
+                \end{array} \right]
+        \end{array} \right.
 \]
-\saNote{}
-So far only $\aboutToEnterSystemInit$ is being used \dots{} Why did I define the others ? \specTodo{}
