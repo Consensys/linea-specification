@@ -1,11 +1,15 @@
 We universally specify the behaviour of the final context-row of any transaction:
 \begin{enumerate}
-	\item \If $\transactionEnd _{i} = 1$ \Then $\readContextData {i}{0}{0}$.
+	\item \If $\transactionEnd _{i} = 1$ \Then $\readContextData {i}{0}{\zeroContext}$.
 \end{enumerate}
+where
+\[
+	\zeroContext \define 0.
+\]
 \saNote{}
 The above thus enforces that the final row of any transaction,
 whether it's a \textsc{system transaction} or a \textsc{user transaction},
-consists in loading the ``zero context.''
+consists in loading the ``\zeroContext{}.''
 This execution context is entirely fictious and corresponds to no real execution.
-Recall further that the ``zero context'' remains unconstrained in consistency arguments,
+Recall further that the ``\zeroContext{}'' remains unconstrained in consistency arguments,
 see section~(\ref{hub: consistencies: context}).

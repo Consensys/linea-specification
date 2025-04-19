@@ -1,0 +1,75 @@
+We impose that
+\begin{enumerate}
+        \item \If $\txSkip _{i} = 1$ \Then $\txSkip _{i + 1} + \txWarm _{i + 1} + \txInit _{i + 1} = 1$
+        \item \If $\txWarm _{i} = 1$ \Then $                   \txWarm _{i + 1} + \txInit _{i + 1} = 1$
+        \item \If $\txInit _{i} = 1$ \Then
+                \begin{enumerate}
+                        \item $\txInit _{i + 1} + \txExec _{i + 1} = 1$
+                        \item furthermore\footnote{\input{system/fine_structure/footnotes/init}}
+                                \[
+                                        \txExec _{i + 1} = \peekContext _{i}
+                                \]
+                \end{enumerate}
+        \item \If $\txExec _{i} = 1$ \Then
+                \begin{enumerate}
+                        \item $\txExec _{i + 1} + \txFinl _{i + 1} = 1$
+                        \item furthermore\footnote{\input{system/fine_structure/footnotes/exec}}
+                                \begin{enumerate}
+                                        \item \If $\hubStamp _{i + 1} \neq 1 + \hubStamp _{i}$ \Then $\txExec _{i + 1} = 1$\footnote{\input{system/fine_structure/footnotes/exec_sanity_check}} \quad (\sanityCheck)
+                                        \item \If $\hubStamp _{i + 1} \neq     \hubStamp _{i}$ \Then
+                                                \begin{enumerate}
+                                                        \item \If $\cn\new _{i} \neq 0$ \Then $\txExec _{i + 1} = 1$
+                                                        \item \If $\cn\new _{i} =    0$ \Then $\txFinl _{i + 1} = 1$
+                                                \end{enumerate}
+                                \end{enumerate}
+                \end{enumerate}
+        \item \If $\txFinl _{i} = 1$ \Then
+                \begin{enumerate}
+                        \item $\txFinl _{i + 1} + \txSkip _{i + 1} + \txWarm _{i + 1} + \txInit _{i + 1} = 1$
+                        \item furthermore\footnote{\input{system/fine_structure/footnotes/finl}}
+                                \[
+                                        \left[ \begin{array}{lcl}
+                                                + & \txSkip _{i + 1} \\
+                                                + & \txWarm _{i + 1} \\
+                                                + & \txInit _{i + 1} \\
+                                        \end{array} \right]
+                                        = \peekContext _{i}
+                                \]
+                \end{enumerate}
+\end{enumerate}
+% \[
+%         \left\{ \begin{array}{cccccccccc}
+%                 \If \txSkip _{i} = 1 ~ \Then & + \; \txSkip _{i + 1} & + \; \txWarm _{i + 1} & + \; \txInit _{i + 1} &                       &                       & = & 1 \\
+%                 \If \txWarm _{i} = 1 ~ \Then &                       & + \; \txWarm _{i + 1} & + \; \txInit _{i + 1} &                       &                       & = & 1 \\
+%                 \If \txInit _{i} = 1 ~ \Then &                       &                       & + \; \txInit _{i + 1} & + \; \txExec _{i + 1} &                       & = & 1 \\
+%                 \If \txExec _{i} = 1 ~ \Then &                       &                       &                       & + \; \txExec _{i + 1} & + \; \txFinl _{i + 1} & = & 1 \\
+%                 \If \txFinl _{i} = 1 ~ \Then & + \; \txSkip _{i + 1} & + \; \txWarm _{i + 1} & + \; \txInit _{i + 1} &                       & + \; \txFinl _{i + 1} & = & 1 \\
+%         \end{array} \right.
+% \]
+% We make the above more precise:
+% \begin{enumerate}
+%         \item[\underline{The $\txSkip$ case:}] \If $\txSkip _{i} = 1$ we can't impose anything;
+%         \item[\underline{The $\txWarm$ case:}] \If $\txWarm _{i} = 1$ we can't impose anything;
+%         \item[\underline{The $\txInit$ case:}] \If $\txInit _{i} = 1$ \Then\footnote{\input{system/fine_structure/footnotes/init}}
+%                 \[
+%                          \txExec _{i + 1} = \peekContext _{i}
+%                 \]
+%         \item[\underline{The $\txExec$ case:}] \If $\txExec _{i} = 1$ \Then\footnote{\input{system/fine_structure/footnotes/exec}}
+%                 \begin{enumerate}
+%                         \item \If $\hubStamp _{i + 1} \neq 1 + \hubStamp _{i}$ \Then $\txExec _{i} = 1$\footnote{\input{system/fine_structure/footnotes/exec_sanity_check}} \quad (\sanityCheck)
+%                         \item \If $\hubStamp _{i + 1} \neq     \hubStamp _{i}$ \Then
+%                                 \begin{enumerate}
+%                                         \item \If $\cn\new _{i} \neq 0$ \Then $\txExec _{i} = 1$
+%                                         \item \If $\cn\new _{i} =    0$ \Then $\txFinl _{i} = 1$
+%                                 \end{enumerate}
+%                 \end{enumerate}
+%         \item[\underline{The $\txFinl$ case:}] \If $\txFinl _{i} = 1$ \Then
+%                 \[
+%                         \left[ \begin{array}{lcl}
+%                                 + & \txSkip _{i + 1} \\
+%                                 + & \txWarm _{i + 1} \\
+%                                 + & \txInit _{i + 1} \\
+%                         \end{array} \right]
+%                         = \peekContext _{i}
+%                 \]
+% \end{enumerate}
