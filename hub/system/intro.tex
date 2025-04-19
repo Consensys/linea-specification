@@ -1,0 +1,18 @@
+The present section deals with the most low-level constraints in the \hubMod{} module.
+At its core the \hubMod{} module handles the sequence of instructions that our \zkEvm{} processes.
+Starting with the \textsc{Cancun} hardfork, \evm{} transactions may be split into three buckets:
+(\emph{a}) \textsc{initial system transactions}, that is to say: system transactions that are to be performed ahead of block processing
+(\emph{b}) \textsc{user transactions} which constitute the underlying block
+(\emph{c}) \textsc{final system transactions}, that is to say: system transactions which are to be performed after block processing.
+We therefore introduce exclusive binary flags by which we distinguish between these different kinds of transactions:
+(\emph{a}) $\sysi \equiv 1$ for initial system transactions
+(\emph{b}) $\user \equiv 1$ for user transactions
+(\emph{c}) $\sysf \equiv 1$ for final system transactions.
+We further enforce that our \zkEvm{} always process transactions in the order presented above
+(user transactions being potentially absent from a particular block.)
+
+Leveraging this predictability we characterize \blockNumber{}'s and its transitions.
+We are furthermore able to count and label transactions using
+$\sysiTransactionNumber$,
+$\userTransactionNumber$,
+$\sysfTransactionNumber$.
