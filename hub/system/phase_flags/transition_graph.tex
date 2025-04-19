@@ -21,18 +21,17 @@
                 \draw (skip.315) edge [-latex, dashed, color = solarized-blue] (warm.155);
                 \draw (skip) edge [-latex, dashed, out = -10, in = 135, color = solarized-blue] (init.155);
         \end{tikzpicture}
+        \label{hub: system: phase flags: transaction phase transition graph}
         \caption{%
                 The above is the transition graph of the boolean flags $\txSkip$, $\txWarm$, $\txInit$, $\txExec$ and $\txFinl$.
-                To occupy a node in this graph at time (i.e. row index) $i$ is to have the associated boolean flag $=1$ on that row.
+                To occupy a node in this graph at row index $i$ is to have the associated boolean flag $=1$ on that row.
                 Every non-padding row $i$ occupies a single vertex of the above graph.
-                To move along an oriented edge is to have the source node's boolean flag $=1$ at time $i$ and have the target node's boolean flag $=1$ at time $i+1$. \vspace{1mm} \\
+                To move along an oriented edge is to have the source node's boolean flag $=1$ at time $i$ and have the target node's boolean flag $=1$ at time $i+1$.
+                \vspace{1mm} \\
                 %
                 The label $\deterministic$ above certain nodes indicates that the number of rows in that transaction processing phase is \textbf{deterministic}.
-                On the contrary nodes which have the $(\star)$ label may appear an arbitrary number of times without a transation phase transition.
-                There can be an arbitrary number of prewarming rows.
-                There are $\nsrTransactionInitializationPhase$ initialization rows.
-                There is then an arbitrary \emph{positive} number of execution rows and $\nsrTransactionFinalizationPhaseWillRevert$ or $\nsrTransactionFinalizationPhaseWontRevert$ finalization rows depending on if the transaction reverts or not. Crossing from a finalization row to another type of row (i.e. transitioning along one of the dashed blue edges ${\color{solarized-blue}\dashrightarrow}$) takes $\absTxNum$ to $1 + \col{a}_{0}$.
-                Similarly hitting a transaction row on a \txSkip-row also raises the absolute transaction number to $1 + \col{a}_{0}$}
-                \label{fig: processing phase transition graph}
+                On the contrary, nodes which have the $(\star)$ label may appear an arbitrary number of times without transitioning to a different transaction phase.
+                Transitioning along one of the dashed blue edges ${\color{solarized-blue}\dashrightarrow}$ indicates a change in the underlying transaction,
+                and thus in the $\totalTransactionNumber$.
+                }
 \end{figure}
-

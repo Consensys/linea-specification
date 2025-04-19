@@ -1,7 +1,7 @@
 \def\locTransactionPhaseSum                                             {\col{tx\_phase\_sum}}
 \def\locAcceptableTransactionPhaseFlagsAtFirstRowOfNewTransaction       {\txSkip_{i} + \txWarm_{i} + \txInit_{i} = 1}
 In this section we constrain the binary flags $\txSkip$, $\txWarm$, $\txInit$, $\txExec$, $\txFinl$ which indicate the transaction processing phase. We enforce a phase-rotation i.e. when which bits $\txWarm$, $\txInit$, $\txExec$, $\txFinl$ get turned on and off in non-padding rows.
-These phases are expected to transition as shown in figure~\ref{fig: processing phase transition graph}.
+These phases are expected to transition as shown in figure~\ref{hub: system: phase flags: transaction phase transition graph}.
 
 \input{figures/processing_phase_transition_graph}
 
@@ -79,4 +79,4 @@ By flag exclusivity,
 see section~(\ref{hub: heartbeat: tx phase flag exclusivity}),
 it follows in particular that $\txFinl_{i + 1} = 0$.
 
-The above enforces the basic cycling behaviour as depicted in figure~\ref{fig: processing phase transition graph}. Prewarming rows (if any) lead to initialization rows which lead to execution rows which lead to finalization rows. Furthermore, the finalization phase may only end on a row that peeks into transaction data. The number of rows of each phase will be specified later.
+The above enforces the basic cycling behaviour as depicted in figure~\ref{hub: system: phase flags: transaction phase transition graph}. Prewarming rows (if any) lead to initialization rows which lead to execution rows which lead to finalization rows. Furthermore, the finalization phase may only end on a row that peeks into transaction data. The number of rows of each phase will be specified later.
