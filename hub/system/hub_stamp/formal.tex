@@ -1,0 +1,18 @@
+The following are formal consequences of other constraints.
+We include them in order to make expectations explicit.
+\begin{enumerate}
+	\item \If $\blockNumber       _{i + 1} \neq \blockNumber       _{i}$ \Then $\hubStamp _{i + 1} = 1 + \hubStamp _{i}$ (\sanityCheck)
+	\item \If $\transactionNumber _{i + 1} \neq \transactionNumber _{i}$ \Then $\hubStamp _{i + 1} = 1 + \hubStamp _{i}$ (\sanityCheck)
+        \item \If
+		\[
+			\left[ \begin{array}{lcl}
+				(1 - \txSkip _{i}) & \!\!\!\cdot\!\!\! & \txSkip _{i + 1} \\
+				                   &                   & \txWarm _{i + 1} \\
+				(1 - \txInit _{i}) & \!\!\!\cdot\!\!\! & \txInit _{i + 1} \\
+				(1 - \txFinl _{i}) & \!\!\!\cdot\!\!\! & \txFinl _{i + 1} \\
+				(1 - \txExec _{i}) & \!\!\!\cdot\!\!\! & \txExec _{i + 1} \\
+			\end{array} \right]
+			\neq 0
+		\]
+		\Then $\hubStamp _{i + 1} = 1 + \hubStamp _{i}$ (\sanityCheck)
+\end{enumerate}

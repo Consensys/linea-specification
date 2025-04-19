@@ -3,12 +3,12 @@ The missing piece pertains to its increments.
 \begin{enumerate}
 	\item the following specifies its increments:
 		\begin{enumerate}
-			\item \If $\blockNumber _{i + 1} \neq \blockNumber _{i}$ \Then $\hubStamp _{i + 1} =  \hubStamp _{i} + 1$
-			\item \If $\txSkip _{i} = 1$ \Then $\hubStamp _{i + 1} = \hubStamp _{i} + \peekContext _{i}$
-		        \item \If $\txWarm _{i} = 1$ \Then $\hubStamp _{i + 1} = \hubStamp _{i} + 1$
-		        \item \If $\txInit _{i} = 1$ \Then $\hubStamp _{i + 1} = \hubStamp _{i} + \peekContext _{i}$
-		        \item \If $\txFinl _{i} = 1$ \Then $\hubStamp _{i + 1} = \hubStamp _{i} + \peekContext _{i}$
-		        \item \If $\txExec _{i} = 1$ \Then
+			\item \label{hub: system: hub stamp: increments: at block number increment} \If $\blockNumber _{i + 1} \neq \blockNumber _{i}$ \Then $\hubStamp _{i + 1} =  \hubStamp _{i} + 1$
+			\item \label{hub: system: hub stamp: increments: SKIP case} \If $\txSkip _{i} = 1$ \Then $\hubStamp _{i + 1} = \hubStamp _{i} + \peekContext _{i}$
+		        \item \label{hub: system: hub stamp: increments: WARM case} \If $\txWarm _{i} = 1$ \Then $\hubStamp _{i + 1} = \hubStamp _{i} + 1$
+		        \item \label{hub: system: hub stamp: increments: INIT case} \If $\txInit _{i} = 1$ \Then $\hubStamp _{i + 1} = \hubStamp _{i} + \peekContext _{i}$
+		        \item \label{hub: system: hub stamp: increments: FINL case} \If $\txFinl _{i} = 1$ \Then $\hubStamp _{i + 1} = \hubStamp _{i} + \peekContext _{i}$
+		        \item \label{hub: system: hub stamp: increments: EXEC case} \If $\txExec _{i} = 1$ \Then
 				\[
 					\left\{ \begin{array}{ll}
 						\If \tliCounter          _{i} \neq \tli          _{i} & \Then \hubStamp _{i + 1} = \hubStamp _{i} \\
@@ -24,3 +24,15 @@ The missing piece pertains to its increments.
 				\]
 		\end{enumerate}
 \end{enumerate}
+\saNote{} \label{hub: system: hub stamp: why we specify the hub stamp increment at block boundaries}
+We include a constraint specifying \hubStamp-incrementation at block boundaries,
+constraint~(\ref{hub: system: hub stamp: increments: at block number increment}),
+in order to ensure that the \hubStamp{} will increment when transitioning from padding-rows to non-padding-rows.
+Note that,
+if we were to prescribe $\hubStamp$ to have $0/1$-increments
+(i.e. remove the (\sanityCheck) from constraint~(\ref{hub: system: hub stamp: hub stamp has 0/1 increments})),
+this constraint would formally follows from
+section~(\ref{hub: system: hub stamp: generalities}),
+where we impose that $\hubStamp \equiv 0 \iff \flagSum \equiv 0$,
+and section~(\ref{hub: system: block number: block number})
+where we enforces that $\flagSum \equiv 0 \iff \blockNumber \equiv 0$.
