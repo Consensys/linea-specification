@@ -12,7 +12,13 @@ We impose that
                 and of the way in which the \hubStamp{} increments when in \txSkip-transaction phase,
                 see constraint~(\ref{hub: system: phase flags: transaction phase flags are hub stamp constant}) and
                 see constraint~(\ref{hub: system: hub stamp: increments: SKIP case}) respectively.
-        \item \If $\txWarm _{i} = 1$ \Then $                   \txWarm _{i + 1} + \txInit _{i + 1} = 1$
+        \item \If $\txWarm _{i} = 1$ \Then
+                \begin{enumerate}
+                        \item $\txWarm _{i + 1} + \txInit _{i + 1} = 1$
+                        \item $\txInit _{i + 1} = \peekTransaction _{i + 1}$
+                        \item \If $\peekTransaction _{i + 1} = 0$ \Then $\txWarm _{i + 1} = 1$ (\sanityCheck)
+                        \item \If $\peekTransaction _{i + 1} = 1$ \Then $\txInit _{i + 1} = 1$ (\sanityCheck)
+                \end{enumerate}
         \item \If $\txInit _{i} = 1$ \Then
                 \begin{enumerate}
                         \item $\txInit _{i + 1} + \txExec _{i + 1} = 1$
