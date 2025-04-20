@@ -1,5 +1,11 @@
-Recall that \totalTransactionNumber{} has $0/1$-increments, and increments (by one) \emph{precisely} at \transactionStart{},
-see note~(\ref{hub: system: transaction start: total transaction number increments}).
+\epigraph{
+	“What we call the beginning is often the end \\
+	And to make an end is to make a beginning.   \\
+	The end is where we start from\dots{}}
+{T. S. Eliot, \textit{Little Gidding}}
+
+\noindent Recall that \totalTransactionNumber{} has $0/1$-increments, and increments (by one) \emph{precisely} at \transactionStart{},
+see note~(\ref{hub: system: transaction start: transaction numbers}).
 Thus, when it comes to transactions, ``every beginning has a start''.
 To prevent two \transactionStart{}'s in succession without the first one running into \transactionEnd{},
 we impose extra constraints.
@@ -9,29 +15,28 @@ While we're at it we describe the final context-row of every transaction,
 see constraint~(\ref{hub: system: transaction end: every transaction must end on a context row}),
 and ensure that traces themselves finish on a $\transactionEnd$.
 \begin{description}
-	\item[\underline{``Every beginning has a start'':}]
-		we require that
+	% \item[\underline{``Every new beginning comes from some other beginning's end'':}]
+	\item[\underline{``What we call the beginning is often the end''}]
+		% we conditionally require that
+		\If $\totalTransactionNumber _{i} \neq 0$ \Then
 		\[
-			\If \totalTransactionNumber _{i} \neq \totalTransactionNumber _{i - 1}
-			~ \Then
-			\transactionStart _{i} = 1
+			\totalTransactionNumber _{i + 1} = \totalTransactionNumber _{i} +  \transactionEnd _{i}
+		\]
+	% \item[\underline{``Every beginning has a start'':}]
+	\item[\underline{``And to make an end is to make a beginning''}]
+		we unconditionally require that
+		\[
+			\totalTransactionNumber _{i} = \totalTransactionNumber _{i - 1} + \transactionStart _{i}
 			\quad (\sanityCheck)
 		\]
-	\item[\underline{``Every new beginning comes from some other beginning's end'':}]
-		we require that
-		\[
-			\If
-			\left\{ \begin{array}{l}
-				\totalTransactionNumber _{i + 1} \neq \totalTransactionNumber _{i} \\
-				\quad \et                                                          \\
-				\totalTransactionNumber _{i} \neq 0                                \\
-			\end{array} \right\}
-			~ \Then
-			\transactionEnd _{i} = 1
-		\]
-	\item[\underline{Ends aren't beginnings:}]
+		\saNote{}
+		This constraint was already mentioned as a formal consequence of others in
+		section~(\ref{hub: system: transaction start: transaction numbers}).
+	\item[\underline{``The end is [\textbf{not}] where we start from''}]
 		we unconditionally impose that
-		$\transactionStart _{i} \cdot \transactionEnd _{i} = 0$
+		\[
+			\transactionStart _{i} \cdot \transactionEnd _{i} = 0
+		\]
 	\item[\underline{The final context-row of every transaction:}]
 		the final row of any transaction is always the same:
 		\[
