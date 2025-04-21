@@ -1,48 +1,29 @@
-\item[\underline{\underline{Coinbase account-row n$^°~\bm{(i + \locTxSkipCoinbaseAccountRowOffset)}$:}}]
+\item[\underline{\underline{Coinbase account-row n$^°~\bm{(i + \roffTxSkipUserCoinbaseAccount)}$:}}]
+	we pay the \textsc{coinbase} address in transaction fees:
 	\[
 		\left\{ \begin{array}{lcl}
-			\accAddress    \high _{i + \locTxSkipCoinbaseAccountRowOffset} & = & \txCoinbase  \high  _{i + \locTxSkipTransactionRowOffset}              \\
-			\accAddress    \low  _{i + \locTxSkipCoinbaseAccountRowOffset} & = & \txCoinbase  \low   _{i + \locTxSkipTransactionRowOffset} \vspace{2mm} \\
-			\multicolumn{3}{l}{\accIncrementBalance                  {i}{\locTxSkipCoinbaseAccountRowOffset}{\locCoinbaseFee}} \\
-			\multicolumn{3}{l}{\accSameNonce                         {i}{\locTxSkipCoinbaseAccountRowOffset}      } \\
-			\multicolumn{3}{l}{\accSameCode                          {i}{\locTxSkipCoinbaseAccountRowOffset}} \\
-			\multicolumn{3}{l}{\accSameDeployment                    {i}{\locTxSkipCoinbaseAccountRowOffset}} \\
-			\multicolumn{3}{l}{\accSameWarmth                        {i}{\locTxSkipCoinbaseAccountRowOffset}} \\
-			\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag     {i}{\locTxSkipCoinbaseAccountRowOffset}} \\
+			\accAddress    \high _{i + \roffTxSkipUserCoinbaseAccount} & = & \txCoinbase  \high  _{i + \roffTxSkipUserTransaction}              \\
+			\accAddress    \low  _{i + \roffTxSkipUserCoinbaseAccount} & = & \txCoinbase  \low   _{i + \roffTxSkipUserTransaction} \vspace{2mm} \\
+			\multicolumn{3}{l}{\accIncrementBalance                  {i}{\roffTxSkipUserCoinbaseAccount}{\locCoinbaseFee}} \\
+			\multicolumn{3}{l}{\accSameNonce                         {i}{\roffTxSkipUserCoinbaseAccount}      } \\
+			\multicolumn{3}{l}{\accSameCode                          {i}{\roffTxSkipUserCoinbaseAccount}} \\
+			\multicolumn{3}{l}{\accSameDeployment                    {i}{\roffTxSkipUserCoinbaseAccount}} \\
+			\multicolumn{3}{l}{\accSameWarmth                        {i}{\roffTxSkipUserCoinbaseAccount}} \\
+			\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag     {i}{\roffTxSkipUserCoinbaseAccount}} \\
 			\multicolumn{3}{l}{
 				\standardDomSubStamps {
 					anchorRow        = i,
-					relOffset        = \locTxSkipCoinbaseAccountRowOffset,
+					relOffset        = \roffTxSkipUserCoinbaseAccount,
 					domOffset        = 2,
 				}
 			} \\
-			% \standardDomSubStamps                 {i}{\locTxSkipCoinbaseAccountRowOffset}{2}} \\
 		\end{array} \right.
 	\]
 	where we define the \locCoinbaseFee{} shorthand as follows:
 	\[
 		\locCoinbaseFee \define
 		\left[ \begin{array}{cl}
-			\cdot & \txPriorityFeePerGas_{i + \locTxSkipTransactionRowOffset}                                                    \\
-			\cdot & (\txGasLimit_{i + \locTxSkipTransactionRowOffset} - \txEffectiveRefund_{i + \locTxSkipTransactionRowOffset}) \\
+			\cdot & \txPriorityFeePerGas_{i + \roffTxSkipUserTransaction}                                                    \\
+			\cdot & (\txGasLimit_{i + \roffTxSkipUserTransaction} - \txEffectiveRefund_{i + \roffTxSkipUserTransaction}) \\
 		\end{array} \right]
 	\]
-	% \begin{enumerate}
-	% 	\item \If $\txIsTypeTwo_{i + \locTxSkipTransactionRowOffset} = 0$ \Then
-	% 		\[
-	% 			\locCoinbaseFee \define
-	% 			\left[ \begin{array}{cl}
-	% 				\cdot & \txGasPrice_{i + \locTxSkipTransactionRowOffset}                                                             \\
-	% 				\cdot & (\txGasLimit_{i + \locTxSkipTransactionRowOffset} - \txEffectiveRefund_{i + \locTxSkipTransactionRowOffset}) \\
-	% 			\end{array} \right]
-	% 		\]
-	% 	\item \If $\txIsTypeTwo_{i + \locTxSkipTransactionRowOffset} = 1$ \Then
-	% 		\[
-	% 			\locCoinbaseFee \define
-	% 			\left[ \begin{array}{cl}
-	% 				\cdot & (\txGasPrice_{i + \locTxSkipTransactionRowOffset} - \txBasefee_{i + \locTxSkipTransactionRowOffset})         \\
-	% 				\cdot & (\txGasLimit_{i + \locTxSkipTransactionRowOffset} - \txEffectiveRefund_{i + \locTxSkipTransactionRowOffset}) \\
-	% 			\end{array} \right]
-	% 		\]
-	% \end{enumerate}
-

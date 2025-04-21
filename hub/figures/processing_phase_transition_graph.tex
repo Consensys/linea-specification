@@ -17,7 +17,7 @@
 \draw (init) edge [-latex, out=135,in=45,looseness=5] node [above right]       {$\nsrTransactionInitializationPhase$} (init);
 \draw (exec) edge [-latex, out=135,in=45,looseness=5] node [above right]       {$> 0$}                     (exec);
 \draw (finl) edge [-latex, out=-135,in=-45,looseness=5] node [below]           {$\nsrTransactionFinalizationPhaseWillRevert$ \OR $\nsrTransactionFinalizationPhaseWontRevert$}         (finl);
-\draw (skip) edge [-latex, out=135,in=45,looseness=5] node [above]             {$\nsrTransactionSkippingPhase^*$} (skip);
+\draw (skip) edge [-latex, out=135,in=45,looseness=5] node [above]             {$\nsrTxSkipUserTransaction^*$} (skip);
 	\draw (skip) edge [-latex, dashed, color = solarized-blue, out=245,in=155,looseness=5] (skip);
 \draw (skip.315) edge [-latex, dashed, color = solarized-blue] (warm.155);
 \draw (skip) edge [-latex, dashed, out = -10, in = 135, color = solarized-blue] (init.155);
@@ -30,8 +30,8 @@
 	%
 	Consider the collection of row indices $i$ along which $\absTxNum_{i} \equiv \col{a}_{0}$ for some fixed \emph{nonzero} $\col{a}_{0}$.
 	These indices form an integer interval $[\![\,i_{0}, j_{0}[\![$.
-	If ``transaction $\col{a}_{0}$'' skips \textsc{evm}-execution then its processing occupies $\nsrTransactionSkippingPhase$ rows (and occupies the $\txSkip$ node throughout) i.e. $j_{0} = i_{0} + \nsrTransactionSkippingPhase$.
-	Several transactions in a row may skip execution (whence the asterisk $\nsrTransactionSkippingPhase^*$.)
+	If ``transaction $\col{a}_{0}$'' skips \textsc{evm}-execution then its processing occupies $\nsrTxSkipUserTransaction$ rows (and occupies the $\txSkip$ node throughout) i.e. $j_{0} = i_{0} + \nsrTxSkipUserTransaction$.
+	Several transactions in a row may skip execution (whence the asterisk $\nsrTxSkipUserTransaction^*$.)
 	If ``transaction $\col{a}_{0}$'' requires \textsc{evm}-execution one either has $\txWarm_{i_{0}} = 1$ or $\txInit_{i_{0}} = 1$.
 	There can be an arbitrary number of prewarming rows.
 	There are $\nsrTransactionInitializationPhase$ initialization rows.

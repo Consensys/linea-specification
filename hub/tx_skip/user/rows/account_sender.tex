@@ -1,36 +1,35 @@
-\item[\underline{\underline{Sender account-row n$^°~\bm{(i + \locTxSkipSenderAccountRowOffset)}$:}}]
-	the first row peeks into the sender account:
+\item[\underline{\underline{Sender account-row n$^°~\bm{(i + \roffTxSkipUserSenderAccount)}$:}}]
+	we peek into the sender account:
 	\[
 		\left\{ \begin{array}{lclr}
-			\accAddress    \high _{i + \locTxSkipSenderAccountRowOffset} & = & \txFrom  \high  _{i + \locTxSkipTransactionRowOffset}              \\
-			\accAddress    \low  _{i + \locTxSkipSenderAccountRowOffset} & = & \txFrom  \low   _{i + \locTxSkipTransactionRowOffset} \vspace{2mm} \\
-			\multicolumn{3}{l}{\accDecrementBalance               {i}{\locTxSkipSenderAccountRowOffset}{\locWeiCost}} \\
-			\multicolumn{3}{l}{\accIncrementNonce                 {i}{\locTxSkipSenderAccountRowOffset}} \\
-			\multicolumn{3}{l}{\accSameCode                       {i}{\locTxSkipSenderAccountRowOffset}} \\
-			\multicolumn{3}{l}{\accSameDeployment                 {i}{\locTxSkipSenderAccountRowOffset}} \\
-			\multicolumn{3}{l}{\accSameWarmth                     {i}{\locTxSkipSenderAccountRowOffset}} \\
-			\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag  {i}{\locTxSkipSenderAccountRowOffset}} \\
-			\multicolumn{3}{l}{\accIsntPrecompile                 {i}{\locTxSkipSenderAccountRowOffset}} & (\trash) \\
+			\accAddress    \high _{i + \roffTxSkipUserSenderAccount} & = & \txFrom  \high  _{i + \roffTxSkipUserTransaction}              \\
+			\accAddress    \low  _{i + \roffTxSkipUserSenderAccount} & = & \txFrom  \low   _{i + \roffTxSkipUserTransaction} \vspace{2mm} \\
+			\multicolumn{3}{l}{\accDecrementBalance               {i}{\roffTxSkipUserSenderAccount}{\locWeiCost}} \\
+			\multicolumn{3}{l}{\accIncrementNonce                 {i}{\roffTxSkipUserSenderAccount}} \\
+			\multicolumn{3}{l}{\accSameCode                       {i}{\roffTxSkipUserSenderAccount}} \\
+			\multicolumn{3}{l}{\accSameDeployment                 {i}{\roffTxSkipUserSenderAccount}} \\
+			\multicolumn{3}{l}{\accSameWarmth                     {i}{\roffTxSkipUserSenderAccount}} \\
+			\multicolumn{3}{l}{\accSameMarkedForSelfdestructFlag  {i}{\roffTxSkipUserSenderAccount}} \\
+			\multicolumn{3}{l}{\accIsntPrecompile                 {i}{\roffTxSkipUserSenderAccount}} & (\trash) \\
 			\multicolumn{3}{l}{
 				\standardDomSubStamps {
 					anchorRow        = i,
-					relOffset        = \locTxSkipSenderAccountRowOffset,
+					relOffset        = \roffTxSkipUserSenderAccount,
 					domOffset        = 0,
 				}
 			} \\
-			% \standardDomSubStamps              {i}{\locTxSkipSenderAccountRowOffset}{0}                } \\
 		\end{array} \right.
 	\]
 	where
 	\[
 		\locWeiCost \define
 		\left[ \begin{array}{cr}
-			+ & \txValue_{i + \locTxSkipTransactionRowOffset}                                                                                                                            \\
-			+ & \txGasPrice_{i + \locTxSkipTransactionRowOffset} \cdot \big( \txGasLimit_{i + \locTxSkipTransactionRowOffset} - \txInitialGas_{i + \locTxSkipTransactionRowOffset} \big) \\
+			+ & \txValue_{i + \roffTxSkipUserTransaction}                                                                                                                            \\
+			+ & \txGasPrice_{i + \roffTxSkipUserTransaction} \cdot \big( \txGasLimit_{i + \roffTxSkipUserTransaction} - \txInitialGas_{i + \roffTxSkipUserTransaction} \big) \\
 		\end{array} \right]
 	\]
 	In accordance with \cite{EIP-3607} we further impose
 	\[
-		\accHasCode _{i + \locTxSkipSenderAccountRowOffset} = 0
+		\accHasCode _{i + \roffTxSkipUserSenderAccount} = 0
 	\]
 

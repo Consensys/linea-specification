@@ -1,31 +1,15 @@
-\begin{center}
-	\boxed{\text{All constraints in this section assume that
-	\(
-	\left\{ \begin{array}{lclr}
-		\totalTransactionNumber _{i - 1} & \neq & \totalTransactionNumber _{i} \\
-		\sysi                   _{i}     & =    & 1                            \\
-		\systemTxnEipBeaconRoot _{i}     & =    & 1                            \\
-	\end{array} \right.
-	\)
-	}}
-\end{center}
+\input{tx_skip/sysi/eip-4788/_precondition}
 In other words: row $i$ marks the beginning of the processing of a new transaction which (supposedly) requires no \textsc{evm}-execution. We impose the views over the next rows:
 \begin{enumerate}
 	\item The following rows (in which we include the present row with index $i$) peek into account data and finally peek into transaction data:
 	\[
 		\left[ \begin{array}{cl}
-			+ & \peekAccount      _{i + \locTxSkipSenderAccountRowOffset    } \\
-			+ & \peekAccount      _{i + \locTxSkipRecipientAccountRowOffset } \\
-			+ & \peekAccount      _{i + \locTxSkipCoinbaseAccountRowOffset  } \\
-			+ & \peekTransaction  _{i + \locTxSkipTransactionRowOffset      } \\
+			+ & \peekTransaction  _{i + \roffTxSkipSysiBeaconRootTransaction            } \\
+			+ & \peekAccount      _{i + \roffTxSkipSysiBeaconRootSystemContractAccount  } \\
+			+ & \peekStorage      _{i + \roffTxSkipSysiBeaconRootSystemContractStorage  } \\
+			+ & \peekContext      _{i + \roffTxSkipSysiBeaconRootZeroContext            } \\
 		\end{array} \right]
 		= 
-		\nsrTransactionSkippingPhase.
+		\nsrTxSkipSysiBeaconRoot
 	\]
 \end{enumerate}
-% \saNote{} The above enforces (through other constraints) that $\relativeBlockNumber_{j}$, $\txNum_{j}$, $\hubStamp_{j}$ and $\txSkip_{j}$ (for $i\leq j \leq i+3$) remain constant throughout; furthermore, if the trace contains an $(i+4)$-th row, then at that row the pair $\big[ \relativeBlockNumber, \txNum \big]$ changes and $\hubStamp$ jumps by $1$.
-\saNote{} Given the heartbeat constraints, the above has several \emph{implicit} consequences\footnote{which the implemenation need \textbf{not} enforce through new constraints}. The following are some of them:
-\begin{itemize}
-	\item $\relativeBlockNumber_{j}$, $\absTxNum_{j}$, $\hubStamp_{j}$, $\txSkip_{j}$ remain constant on the rows $i \leq j < i + 4$;
-	\item $\hubStamp_{i + 4} = 1 + \hubStamp_{i}$;
-\end{itemize}
