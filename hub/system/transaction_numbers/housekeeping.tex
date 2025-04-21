@@ -15,15 +15,14 @@ While we're at it we describe the final context-row of every transaction,
 see constraint~(\ref{hub: system: transaction numbers: every transaction must end on a context row}),
 and ensure that traces themselves finish on a $\transactionEnd$.
 \begin{description}
-	% \item[\underline{``Every new beginning comes from some other beginning's end'':}]
 	\item[\underline{``What we call the beginning is often the end''}]
-		% we conditionally require that
+		\label{hub: system: transaction numbers: housekeeping: transactions must end}
 		\If $\totalTransactionNumber _{i} \neq 0$ \Then
 		\[
 			\totalTransactionNumber _{i + 1} = \totalTransactionNumber _{i} +  \transactionEnd _{i}
 		\]
-	% \item[\underline{``Every beginning has a start'':}]
 	\item[\underline{``And to make an end is to make a beginning''}]
+		\label{hub: system: transaction numbers: housekeeping: transactions must start}
 		we unconditionally require that
 		\[
 			\totalTransactionNumber _{i} = \totalTransactionNumber _{i - 1} + \transactionStart _{i}
@@ -33,11 +32,13 @@ and ensure that traces themselves finish on a $\transactionEnd$.
 		This constraint was already mentioned as a formal consequence of others in
 		section~(\ref{hub: system: transaction numbers: transaction numbers}).
 	\item[\underline{``The end is [\textbf{not}] where we start from''}]
+		\label{hub: system: transaction numbers: housekeeping: transactions don't start and end at the same time}
 		we unconditionally impose that
 		\[
 			\transactionStart _{i} \cdot \transactionEnd _{i} = 0
 		\]
 	\item[\underline{The final context-row of every transaction:}]
+		\label{hub: system: transaction numbers: housekeeping: transactions end by loading the zero context}
 		the final row of any transaction is always the same:
 		\[
 			\If \transactionEnd _{i} = 1
@@ -55,6 +56,7 @@ and ensure that traces themselves finish on a $\transactionEnd$.
 		Recall further that the ``\zeroContext{}'' remains unconstrained in consistency arguments,
 		see section~(\ref{hub: consistencies: context}).
 	\item[\underline{The final row of every trace:}]
+		\label{hub: system: transaction numbers: housekeeping: finalization constraint of trace}
 		we impose the following finalization constraints
 		\begin{enumerate}
 			\item $\sysf           _{N} = 1$
