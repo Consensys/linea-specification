@@ -1,19 +1,13 @@
 The first volley of columns pertain to heartbeat and bookkeeping:
 \begin{enumerate}
 	\item
-		\relBlock{}:
+		\blockNumber{}:
 		relative block number;
 		starts counting at $1$;
 	\item
 		\absBlock{}:
 		absolute block number;
 		starts at the block number of the first block in the conflation;
-	\item
-		$\isMacro$:
-		binary perspective column;
-	\item
-		$\isComputation$:
-		binary perspective column;
 	\item
 		\ct{}:
 		counter column;
@@ -22,34 +16,32 @@ The first volley of columns pertain to heartbeat and bookkeeping:
 		counter-constant column;
 		contains the maximum value of the counter column;
 \end{enumerate}
+The following are the perspective columns of the present module:
+\begin{enumerate}[resume]
+	\item
+		$\isMacro$:
+		binary perspective column;
+	\item
+		$\isComputation$:
+		binary perspective column;
+\end{enumerate}
 The following columns contain data relevant to the processing of system level transactions.
 \begin{enumerate}[resume]
 	\item
-		\godGiven{}
-		\layerOneTimeStamp{}:
+		\systemTxnNoop:
+		boolean column;
+		lights up for \textsc{noop} system transactions;
 	\item
-		\godGiven{}
-		\beaconRootHi{}:
+		\systemTxnEipBeaconRoot:
+		boolean column;
+		lights up for \cite{eip-4788} system transactions;
 	\item
-		\godGiven{}
-		\beaconRootLo{}:
-	% XXXXXX uncomment when implemeting \cite{EIP-2935} \specTodo
-	% \item
-	% 	\godGiven{}
-	% 	\previousBlockNumber{}:
-	% \item
-	% 	\godGiven{}
-	% 	\previousBlockHashHi{}:
-	% \item
-	% 	\godGiven{}
-	% 	\previousBlockHashLo{}:
+		\systemTxnEipBlockHash:
+		boolean column;
+		lights up for \cite{eip-4788} system transactions;
 	\item
-		\markAsJustifiedHere{}
-		\layerOneTimeStampModuloPrime{}:
-	% XXXXXX uncomment when implemeting \cite{EIP-2935} \specTodo
-	% \item
-	% 	\markAsJustifiedHere{}
-	% 	\previousBlockNumberModuloPrime{}:
+		$\systemTxnDataCol{k}$, $1 \leq k \leq \systemTxnNumberOfDataColumnsExtra$:
+		data column used by system transactions;
 \end{enumerate}
 The following columns pertain to computations outsource to other modules.
 \begin{enumerate}[resume]
