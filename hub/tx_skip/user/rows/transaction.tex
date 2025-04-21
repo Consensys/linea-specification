@@ -1,0 +1,24 @@
+\item[\underline{\underline{Transaction-row n$^°~(\bm{i + \locTxSkipTransactionRowOffset})$:}}]
+	the fourth row peeks into transaction data and justifies transaction data
+	\begin{description}
+		\item[\underline{(Partially) justifying \txRequiresEvmExecution{}:}]
+			we impose the following
+			\begin{enumerate}
+				\item $\txRequiresEvmExecution_{i + \locTxSkipTransactionRowOffset} = \rZero$;
+				\item \If $\txIsDeployment _{i + \locTxSkipTransactionRowOffset} = 0$ \Then $\accHasCode     _{i + \locTxSkipRecipientAccountRowOffset}  = 0$
+				\item \If $\txIsDeployment _{i + \locTxSkipTransactionRowOffset} = 1$ \Then $\txInitCodeSize _{i + \locTxSkipTransactionRowOffset}    = 0$
+			\end{enumerate}
+		\item[\underline{Justifying $\txFinalRefundCounter$:}]
+			we impose that $\txFinalRefundCounter _{i + \locTxSkipTransactionRowOffset} = 0$
+		\item[\underline{Justifying $\txInitialBalance$:}]
+			we impose that $\txInitialBalance _{i + \locTxSkipTransactionRowOffset} = \accBalance _{i + \locTxSkipSenderAccountRowOffset}$
+		\item[\underline{Justifying \txStatusCode{}:}]
+			we impose that $\txStatusCode _{i + \locTxSkipTransactionRowOffset} = 1$
+		\item[\underline{Justifying \txNonce{}:}]
+			we impose $\accNonce_{i + \locTxSkipSenderAccountRowOffset} = \txNonce_{i + \locTxSkipTransactionRowOffset}$;
+		\item[\underline{Justifying $\txLeftoverGas$:}]
+			we impose that $\txLeftoverGas _{i + \locTxSkipTransactionRowOffset} = \txInitialGas _{i + \locTxSkipTransactionRowOffset}$
+		\item[\underline{(Optional) justifying $\txEffectiveRefund$:}]
+			we may optionnally impose
+			\[ \txEffectiveRefund _{i + \locTxSkipTransactionRowOffset} = \txLeftoverGas _{i + \locTxSkipTransactionRowOffset} \quad (\trash) \]
+	\end{description}
