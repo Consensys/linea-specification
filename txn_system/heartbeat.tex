@@ -1,0 +1,39 @@
+The heartbeat is very standard.
+\begin{enumerate}
+	\item we require that
+		\begin{enumerate}
+		        \item $\locFlagSum _{i}$ be binary
+		        \item $\locFlagSum _{0} = 0$
+		        \item \If $\locFlagSum _{i} = 0$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\ct            _{i}      & = & 0 \\
+						\maxCt         _{i}      & = & 0 \\
+						\ct            _{i  + 1} & = & 0 \\
+						\isComputation _{i  + 1} & = & 0 \\
+					\end{array} \right.
+				\]
+		        \item \If $\locFlagSum _{i} = 1$ \Then $\locFlagSum _{i + 1} = 1$
+		\end{enumerate}
+	\item $\relBlock _{0} = 0$
+	\item $\relBlock _{i + 1} = \relBlock _{i} + \locTransitionToMacro _{i}$ 
+	\item $\relBlock _{i + 1} \in \{ \relBlock _{i}, \relBlock _{i} + 1 \}$ (\sanityCheck)
+	\item \If $\locFlagSum _{i} = 1$ \Then
+		\begin{enumerate}
+			\item \If $\ct _{i} \neq \maxCt _{i}$ \Then $\ct _{i + 1} = 1 + \ct _{i}$
+			\item \If $\ct _{i} =    \maxCt _{i}$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\ct               _{i  + 1} & = & 0 \\
+						\locTransitionSum _{i}      & = & 1 \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+	\item we impose finalization constraints
+		\[
+			\left\{ \begin{array}{lcl}
+				\isComputation _{N} & = & 1           \\
+				\ct _{N}            & = & \maxCt _{N} \\
+			\end{array} \right.
+		\]
+\end{enumerate}
