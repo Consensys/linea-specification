@@ -1,0 +1,155 @@
+\begin{center}
+	\boxed{%
+		\text{The stack constraints presented below assume }
+		\begin{cases}
+			\peekStack_{i} = 1 \\
+			\stackDecTransFlag_{i} = 1 \\
+			\stackSux_{i} + \stackSox_{i} = 0 \\
+		\end{cases}}
+\end{center}
+
+\begin{description}
+	\item[\underline{Setting the stack pattern:}]
+		we impose $\loadStoreSP\big[ \locIsTstore \big]_{i}$
+	\item[\underline{Valid exceptions:}]
+		the constraints below don't need to be imposed in the implementation:
+		\begin{enumerate}
+			\item \If $\locIsTload  = 1$ \Then $\xAhoy_{i} = \stackOogx_{i}$ \quad (\trash)
+			\item \If $\locIsTstore = 1$ \Then $\xAhoy_{i} = \stackStaticx_{i} + \stackOogx_{i}$ \quad (\trash)
+		\end{enumerate}
+		\saNote{}
+		Given section~(\ref{hub: generalities: exceptions: automatic vanishing})
+		\inst{TLOAD} may only raise stack exceptions or \oogxSH{}
+		while \inst{TSTORE} may raise stack exceptions, \staticxSH{} or \oogxSH{}.
+	\item[\underline{Setting $\nonStackRows$ and peeking flags:}]
+		\label{hub: instruction handling: storage: non stack rows and peeking flags}
+		transient storage operations can provoke exceptions in multiple ways and are rollback sensitive;
+		the \zkEvm{} checks exceptions in the following order (assuming no stack exception):
+		\staticxSH{} (\inst{TSTORE} only),
+		\oogxSH{}.
+		\begin{enumerate}
+			\item \If $\xAhoy_{i} = 1$ \Then $\nonStackRows_{i} = 2$ and furthermore
+				\[
+					\left[ \begin{array}{cr}
+						+ & \peekContext _{i + \locTransientCurrContextRow        } \\
+						+ & \peekContext _{i + \locTransientPrntContextRowStaticx } \\
+					\end{array} \right]
+					=
+					\nonStackRows _{i}
+				\]
+			\item \If $\xAhoy_{i} = 0$ \Then $\nonStackRows_{i} = 2 + \locIsTstore \cdot \cnWillRev_{i}$ and furthermore
+				\[
+					\left[ \begin{array}{crcl}
+						+ &                                    &                   & \peekContext   _{i + \locTransientCurrContextRow } \\
+						+ &                                    &                   & \peekTransient _{i + \locTransientDoingRow       } \\
+						+ & \locIsTstore \cdot \cnWillRev _{i} & \!\!\!\cdot\!\!\! & \peekTransient _{i + \locTransientUndoingRow     } \\
+					\end{array} \right]
+					=
+					\nonStackRows _{i}
+				\]
+		\end{enumerate}
+	\item[\underline{The first context-row:}]
+		we \textbf{unconditionally} impose
+		\[
+			\readContextData {i}{\locFirstCon}{\cn_{i}}
+		\]
+		\saNote{}
+		There is really no reason to load the current execution context in case of an \oogxSH{}.
+		We do it regardless to simplify constraints.
+	\item[\underline{Setting \stackStaticx{} flag:}]
+		we impose that
+		$\stackStaticx_{i} = \locIsTstore \cdot \cnStatic_{i + \locTransientCurrContextRow}$;
+
+		\saNote{}
+		Recall that (among instructions raising the $\stackDecTransFlag$ flag) only \inst{TSTORE} may raise a \staticxSH{}.
+
+		\saNote{}
+		The above ensures that the \staticxSH{} has absolute priority over \oogxSH{}.
+	\item[\underline{Setting transient storage slot parameters:}]
+		\If $\xAhoy_{i} = 0$ \Then
+		\[
+			\left\{ \begin{array}{lclr}
+				\transAddressHi         _{i + \locTransientDoingRow} & = & \cnAccountAddress\high  _{i + \locTransientCurrContextRow } \\
+				\transAddressLo         _{i + \locTransientDoingRow} & = & \cnAccountAddress\low   _{i + \locTransientCurrContextRow } \\
+				\transKeyHi             _{i + \locTransientDoingRow} & = & \locStorageKeyHi                                            \\
+				\transKeyLo             _{i + \locTransientDoingRow} & = & \locStorageKeyLo                                            \\
+				\multicolumn{3}{l}{
+					\standardDomSubStamps {
+						anchorRow = i                     ,
+						relOffset = \locTransientDoingRow ,
+						domOffset = 0                     ,
+					}}
+					\\
+			\end{array} \right.
+		\]
+	\item[\underline{Defining storage value operations:}]
+		we impose that
+		\begin{description}
+			\item[\underline{The \inst{TLOAD} case:}]
+				\If $\locIsTload = 1$ \et $\xAhoy_{i} = 0$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\multicolumn{3}{l}{ \locTransientValueToLoadHi = \transCurrValueHi_{i + \locTransientDoingRow} }              \\
+						\multicolumn{3}{l}{ \locTransientValueToLoadLo = \transCurrValueLo_{i + \locTransientDoingRow} } \vspace{2mm} \\
+						\transientStorageReading {
+							anchorRow = i                     ,
+							relOffset = \locTransientDoingRow ,
+						}
+						\\
+					\end{array} \right.
+				\]
+				\saNote{}
+				In other words: unexceptional \inst{TLOAD} instructions
+				(\emph{a}) don't modify the value in transient storage and
+				(\emph{b}) write the transient storage value to the stack.
+			\item[\underline{The \inst{TSTORE} case:}]
+				\If $\locIsTstore = 1$  \et $\xAhoy_{i} = 0$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\transNextValueHi _{i + \locTransientDoingRow} & \!\!\! = \!\!\! & \locTransientValueToStoreHi \\
+						\transNextValueLo _{i + \locTransientDoingRow} & \!\!\! = \!\!\! & \locTransientValueToStoreLo \\
+					\end{array} \right.
+				\]
+				\saNote{}
+				In other words: unexceptional \inst{TSTORE} instructions update the value in transient storage with the stack value.
+			\item[\underline{Inverse, undoing operation:}]
+				\If $\locIsTstore = 1$  \et $\xAhoy_{i} = 0$ \et $\cnWillRev_{i} = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\transientStorageSameSlot {
+							anchorRow     = i                       ,
+							undoingOffset = \locTransientUndoingRow ,
+							doingOffset   = \locTransientDoingRow   ,
+						}
+						\vspace{2mm} \\
+						\transientStorageUndoingUpdate {
+							anchorRow     = i                       ,
+							undoingOffset = \locTransientUndoingRow ,
+							doingOffset   = \locTransientDoingRow   ,
+						}
+						\vspace{2mm} \\
+						\revertDomSubStamps {
+							anchorRow        = i,
+							relOffset        = \locTransientUndoingRow,
+							subOffset        = 0,
+						} \\
+					\end{array} \right.
+				\]
+				\saNote{}
+				Among transient storage opcodes (\inst{TSTORE} and \inst{TLOAD})
+				only \inst{TSTORE} induces undoing operations upon rollback ($\cnWillRev \equiv 1$.)
+				However, both storage opcodes (\inst{SSTORE} and \inst{SLOAD})
+				may induce undoing operations, see
+				section~(\ref{hub: instruction handling: storage: constraints}).
+				The reason for this is that \evm{} storage keys can be warm/cold and (storage key) warmth,
+				as tracked in $A_\textbf{K}$ in the accrued state $A$,
+				is rollback sensitive.
+				Transient storage keys, on the other hand, don't have a warmth attribute in the accrued state.
+				The only updates that need reverting are value updates, and only \inst{TSTORE} may induce such changes.
+		\end{description}
+	\item[\underline{Setting the gas cost:}]
+		\If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \Then $\gasCost_{i} = \stackStaticGas _{i}$
+
+		\saNote{}
+		Both transient opcodes have a static gas cost of $\stackStaticGas \equiv G_{\text{warmaccess}}$.
+\end{description}
