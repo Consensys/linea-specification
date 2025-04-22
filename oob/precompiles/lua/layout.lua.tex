@@ -50,6 +50,12 @@
 |                           |            |            |               |                           |                               |                            |                            |                            |            |
 |                           | ✓ trusted  | ✓ trusted  | ✓ trusted     | ⟦ π ⟧                     | ⟦ π ⟧                         | ⟦ π ⟧                      | ⟦ π ⟧                      | ⟦ π ⟧                      |            |
 |---------------------------+------------+------------+---------------+---------------------------+-------------------------------+----------------------------+----------------------------+----------------------------+------------|
+| ⟦OOB_INST_pointevaluation⟧| callee_gas | cds        | r@c           | hub_success ≡             | return_gas ≡                  | extract_call_data ≡        | empty_call_data ≡          | r@c_nonzero ≡              |            |
+|                           |            |            |               | . [gas_cost ≤ callee_gas] | . 0 ∨ [callee_gas - gas_cost] | .   hub_success            | .   hub_success            | .   [r@c ≠ 0]              |            |
+|                           |            |            |               | . ∧ [cds = 192]           | . (if hub_success ≡ true)     | .   ∧ [cds ≠ 0]            | .   ∧ [cds = 0]            |                            |            |
+|                           |            |            |               |                           |                               |                            |                            |                            |            |
+|                           | ✓ trusted  | ✓ trusted  | ✓ trusted     | ⟦ π ⟧                     | ⟦ π ⟧                         | ⟦ π ⟧                      | ⟦ π ⟧                      | ⟦ π ⟧                      |            | 
+|---------------------------+------------+------------+---------------+---------------------------+-------------------------------+----------------------------+----------------------------+----------------------------+------------|
 |---------------------------+------------+------------+---------------+---------------------------+-------------------------------+----------------------------+----------------------------+----------------------------+------------|
 | ⟦OOB_INST_modexp_cds⟧     |            | cds        | extract_bbs ≡ | extract_ebs ≡             | extract_mbs ≡                 |                            |                            |                            |            |
 |                           |            |            | .   [0 < cds] | .   [32 < cds]            | .   [64 < cds]                |                            |                            |                            |            |
@@ -104,7 +110,7 @@ Comments:
         * ⟦OOB_INST_bls12_pairing_check⟧: [cds ≡ 0 mod 384]
 - the data layout for
         * ⟦OOB_ecrecover⟧        * ⟦OOB_sha2-256⟧         * ⟦OOB_ecpairing⟧
-        * ⟦OOB_ecadd⟧            * ⟦OOB_ripemd-160⟧       * ⟦OOB_INST_bls12_*⟧              
+        * ⟦OOB_ecadd⟧            * ⟦OOB_ripemd-160⟧       * ⟦OOB_INST_pointevaluation⟧           
         * ⟦OOB_ecmul⟧            * ⟦OOB_identity⟧
   is precisely the same;
 - the ``⟦ π ⟧'' label applies to HUB-module PREDICTIONS which the OOB module is tasked with justifying;

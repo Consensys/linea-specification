@@ -22,6 +22,7 @@ We use the following shorthands
 			+ & \oobInstIsEcadd        _{i}  \\
 			+ & \oobInstIsEcmul        _{i}  \\
 			+ & \oobInstIsEcpairing    _{i}  \\
+			+ & \oobInstIsPointEvaluation_{i}\\
 			+ & \locPrcFlagSumBls      _{i}  \\
 		\end{array} \right] \vspace{2mm} \\
 		\locPrcFlagSumBlake_{i} & \define &
@@ -82,13 +83,14 @@ and
 		\end{array} \right] \vspace{2mm} \\
 		\weightedPrcFlagSumCommon_{i} & \define &
 		\left[ \begin{array}{crcl}
-			+ & \oobInstEcrecover     & \cdot & \oobInstIsEcrecover          _{i} \\
-			+ & \oobInstShaTwo        & \cdot & \oobInstIsShaTwo             _{i} \\
-			+ & \oobInstRipemd        & \cdot & \oobInstIsRipemd             _{i} \\
-			+ & \oobInstIdentity      & \cdot & \oobInstIsIdentity           _{i} \\
-			+ & \oobInstEcadd         & \cdot & \oobInstIsEcadd              _{i} \\
-			+ & \oobInstEcmul         & \cdot & \oobInstIsEcmul              _{i} \\
-			+ & \oobInstEcpairing     & \cdot & \oobInstIsEcpairing          _{i} \\
+			+ & \oobInstEcrecover       & \cdot & \oobInstIsEcrecover_{i}           \\
+			+ & \oobInstShaTwo          & \cdot & \oobInstIsShaTwo_{i}              \\
+			+ & \oobInstRipemd          & \cdot & \oobInstIsRipemd_{i}              \\
+			+ & \oobInstIdentity        & \cdot & \oobInstIsIdentity_{i}            \\
+			+ & \oobInstEcadd           & \cdot & \oobInstIsEcadd_{i}               \\
+			+ & \oobInstEcmul           & \cdot & \oobInstIsEcmul_{i}               \\
+			+ & \oobInstEcpairing       & \cdot & \oobInstIsEcpairing_{i}           \\
+			+ & \oobInstPointEvaluation & \cdot & \oobInstIsPointEvaluation_{i}     \\
 			+ & \weightedPrcFlagSumBls_{i} \\
 		\end{array} \right] \vspace{2mm} \\
 		\weightedPrcFlagSumBlake_{i} & \define &
@@ -147,15 +149,16 @@ where
 	\end{array} \right.                                 
 	,
 	\left\{ \begin{array}{lclcr}
-		\oobInstEcrecover     & \define &   \oxEcrecover   \\
-		\oobInstShaTwo        & \define &   \oxShaTwo      \\
-		\oobInstRipemd        & \define &   \oxRipemd      \\
-		\oobInstIdentity      & \define &   \oxIdentity    \\
-		\oobInstEcadd         & \define &   \oxEcadd       \\
-		\oobInstEcmul         & \define &   \oxEcmul       \\
-		\oobInstEcpairing     & \define &   \oxEcpairing   \\
-		\oobInstBlakeCds      & \define &   \oxBlakeCds    \\
-		\oobInstBlakeParams   & \define &   \oxBlakeParams \\
+		\oobInstEcrecover       & \define &   \oxEcrecover   \\
+		\oobInstShaTwo          & \define &   \oxShaTwo      \\
+		\oobInstRipemd          & \define &   \oxRipemd      \\
+		\oobInstIdentity        & \define &   \oxIdentity    \\
+		\oobInstEcadd           & \define &   \oxEcadd       \\
+		\oobInstEcmul           & \define &   \oxEcmul       \\
+		\oobInstEcpairing       & \define &   \oxEcpairing   \\
+		\oobInstPointEvaluation & \define &   \oxPointEvaluation \\
+		\oobInstBlakeCds        & \define &   \oxBlakeCds    \\
+		\oobInstBlakeParams     & \define &   \oxBlakeParams \\
 	\end{array} \right.
 \]
 and
@@ -274,13 +277,14 @@ We further set
 		\end{array} \right] \vspace{2mm} \\
 		\maxCtFlagSumPrcCommon_{i} & \define &
 		\left[ \begin{array}{crcl}
-			+ & \oobCtMaxEcrecover & \cdot & \oobInstIsEcrecover  _{i} \\
-			+ & \oobCtMaxShaTwo    & \cdot & \oobInstIsShaTwo     _{i} \\
-			+ & \oobCtMaxRipemd    & \cdot & \oobInstIsRipemd     _{i} \\
-			+ & \oobCtMaxIdentity  & \cdot & \oobInstIsIdentity   _{i} \\
-			+ & \oobCtMaxEcadd     & \cdot & \oobInstIsEcadd      _{i} \\
-			+ & \oobCtMaxEcmul     & \cdot & \oobInstIsEcmul      _{i} \\
-			+ & \oobCtMaxEcpairing & \cdot & \oobInstIsEcpairing  _{i} \\
+			+ & \oobCtMaxEcrecover       & \cdot & \oobInstIsEcrecover  _{i} \\
+			+ & \oobCtMaxShaTwo          & \cdot & \oobInstIsShaTwo     _{i} \\
+			+ & \oobCtMaxRipemd          & \cdot & \oobInstIsRipemd     _{i} \\
+			+ & \oobCtMaxIdentity        & \cdot & \oobInstIsIdentity   _{i} \\
+			+ & \oobCtMaxEcadd           & \cdot & \oobInstIsEcadd      _{i} \\
+			+ & \oobCtMaxEcmul           & \cdot & \oobInstIsEcmul      _{i} \\
+			+ & \oobCtMaxEcpairing       & \cdot & \oobInstIsEcpairing  _{i} \\
+			+ & \oobCtMaxPointEvaluation & \cdot & \oobInstIsPointEvaluation_{i} \\
 			+ & \maxCtFlagSumPrcBls_{i} \\
 		\end{array} \right] \vspace{2mm} \\
 		\maxCtFlagSumPrcBlake_{i} & \define &
@@ -340,13 +344,14 @@ where
     \end{array} \right. 
     &
     \left\{ \begin{array}{lcl}
-        \oobCtMaxEcrecover    & \define &  2 \\
-        \oobCtMaxShaTwo       & \define &  3 \\
-        \oobCtMaxRipemd       & \define &  3 \\
-        \oobCtMaxIdentity     & \define &  3 \\
-        \oobCtMaxEcadd        & \define &  2 \\
-        \oobCtMaxEcmul        & \define &  2 \\
-        \oobCtMaxEcpairing    & \define &  4 \\
+        \oobCtMaxEcrecover       & \define &  2 \\
+        \oobCtMaxShaTwo          & \define &  3 \\
+        \oobCtMaxRipemd          & \define &  3 \\
+        \oobCtMaxIdentity        & \define &  3 \\
+        \oobCtMaxEcadd           & \define &  2 \\
+        \oobCtMaxEcmul           & \define &  2 \\
+        \oobCtMaxEcpairing       & \define &  4 \\
+		\oobCtMaxPointEvaluation & \define &  3 \\
     \end{array} \right. \\
     \left\{ \begin{array}{lcl}
         \oobCtMaxBlakeCds     & \define &  1 \\
