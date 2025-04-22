@@ -1,0 +1,54 @@
+The lookup is structured as follows:
+\begin{description}
+	\item[\underline{Selector:}]
+		we use $\loc{into\_hub\_selector} \define \isMacro _{i}$
+	\item[\underline{Source columns:}] ---
+		\begin{multicols}{4}
+			\begin{enumerate}
+				\item $\blockNumber                 _{i}$
+				\item[\vspace{\fill}]
+				\item[\vspace{\fill}]
+					%
+				\item $1$
+				\item $\macroSystemSysi             _{i}$
+				\item $\macroSystemSysf             _{i}$
+					%
+				\item $\macroSystemTxnNoop          _{i}$
+				\item $\macroSystemTxnEipBeaconRoot _{i}$
+				\item $\macroSystemTxnEipBlockHash  _{i}$
+					%
+				\item $\macroSystemTxnDataCol{k}    _{i}$
+				\item[\vspace{\fill}]
+				\item[\vspace{\fill}]
+			\end{enumerate}
+		\end{multicols}
+		where we let $k$ range over $1 \leq k \leq \systemTxnNumberOfDataColumns$.
+	\item[\underline{Target columns:}] ---
+		\begin{multicols}{4}
+			\begin{enumerate}
+				\item $\blockNumber            _{j}$
+				\item[\vspace{\fill}]
+				\item[\vspace{\fill}]
+					%
+				\item $\peekTransaction        _{j}$
+				\item $\sysi                   _{j}$
+				\item $\sysf                   _{j}$
+					%
+				\item $\systemTxnNoop          _{j}$
+				\item $\systemTxnEipBeaconRoot _{j}$
+				\item $\systemTxnEipBlockHash  _{j}$
+					%
+				\item $\systemTxnDataCol{k}    _{j}$
+				\item[\vspace{\fill}]
+				\item[\vspace{\fill}]
+			\end{enumerate}
+		\end{multicols}
+		where we let $k$ range over $1 \leq k \leq \systemTxnNumberOfDataColumns$.
+\end{description}
+
+\saNote{}
+There are two different numbers which we use for the number of system transaction data columns:
+\begin{itemize}
+	\item there are \macroSystemTxnNumberOfDataColumnsExtra{} different $\macroSystemTxnDataCol{k}$ columns in the \txnSystemDataMod{} module,
+	\item there are \systemTxnNumberOfDataColumns{}           different $\systemTxnDataCol{k}$      columns in the \hubMod{}           module.
+\end{itemize}
