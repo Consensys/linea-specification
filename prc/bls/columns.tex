@@ -1,0 +1,136 @@
+The first set of columns arrives to the present module from the \mmioMod{} module:
+\begin{enumerate}
+      \item \blsStamp{}: %\markAsExtractedFromMmio{}:
+            module stamp; has simple $0/1$ increments;
+      \item \blsId{}: %\markAsExtractedFromMmio{}:
+            unique identifier of a precompile \inst{CALL} triggering the present module;
+            contains a context number derived from the \hubStamp{};
+      \item \blsIndex{}: %\markAsExtractedFromMmio{}:
+            data limb index;
+      \item \blsLimb{}: %\markAsExtractedFromMmio{}:
+            data limb; either input or output;
+      \item \blsTotalSize{}: %\markAsExtractedFromMmio{}:
+            total size of input or output; Especially relevant for \inst{BLS12\_G1MSM}, \inst{BLS12\_G2MSM} and \inst{BLS12\_PAIRING\_CHECK} which have variable size inputs;
+      \item \blsPhase{}: %\markAsExtractedFromMmio{}:
+            phase identifying which precompile is being called and whether the data represents inputs or outputs;
+      \item \indexMax{}: %\markAsExtractedFromMmio{}:
+            maximum value of \blsIndex{} for a given phase;
+      \item \blsSuccessBit{} \hubMmuMmioBlsPrediction{} \markAsPartiallyJustifiedHere{}:
+            success bit of the operation;
+\end{enumerate}
+
+The following columns partake in the ``instruction decoding'' of the above:
+\begin{multicols}{2}
+      \begin{enumerate}
+        \item \isBlsGOneAddData             
+        \item \isBlsGOneAddResult           
+             
+        \item \isBlsGOneMsmData             
+        \item \isBlsGOneMsmResult 
+
+        \item \isBlsGTwoAddData             
+        \item \isBlsGTwoAddResult   
+
+        \item \isBlsGTwoMsmData
+        \item \isBlsGTwoMsmResult
+
+        \item \isBlsPairingCheckData
+        \item \isBlsPairingCheckResult          
+      
+        \item \isBlsMapFpToGOneData         
+        \item \isBlsMapFpToGOneResult       
+      
+        \item \isBlsMapFpTwoToGTwoData         
+        \item \isBlsMapFpTwoToGTwoResult           
+      \end{enumerate}
+\end{multicols}
+
+We further define: 
+
+\begin{enumerate}[resume]
+  \item \totalInputs:
+        In the context of \inst{BLS12\_G1MSM}, \inst{BLS12\_G2MSM} and \inst{BLS12\_PAIRING\_CHECK}, equals to the number of inputs passed to the precompile;
+  \item \accInputs: In the context of \inst{BLS12\_G1MSM}, \inst{BLS12\_G2MSM} and \inst{BLS12\_PAIRING\_CHECK}, counts the inputs starting from 1. It is equal to 0 otherwise.
+  \item \both{\internalChecksPassed}:
+        binary column, constant for a given \blsId, which lights up when all the internal checks passed.
+  \item \hurdle:
+        binary columns used to compute the value of \internalChecksPassed{}. This is likely not necessary as we can compute \internalChecksPassed{} directly; 
+  \item $\byteCol{$\Delta$}$:
+        byte column; used to justify that \blsId{} increments;
+\end{enumerate}
+
+The following batch of columns is relevant in the context of \inst{BLS12\_G1MSM}, \inst{BLS12\_G2MSM} and \inst{BLS12\_PAIRING\_CHECK}, which have variable size inputs.
+In the case of \inst{BLS12\_PAIRING\_CHECK}, we refer to data supposedly containing a $C_1$ point as \textbf{small points} and to data supposedly containing a $C_2$ point as \textbf{large points}.
+\begin{enumerate}[resume]
+      \item \ct:
+            for each pair of inputs:
+            \begin{itemize}
+                  \item for \inst{BLS12\_PAIRING\_CHECK}, counts from 0 to \ctMaxSmallPoint{} and from 0 to \ctMaxLargePoint{} along the coordinate of the small and large point respectively;
+                  \item for \inst{BLS12\_G1MSM}, counts from 0 to \ctMaxSmallPoint{} and from 0 to \ctMaxScalar{} along the coordinate of the small point and the scalar respectively;
+                  \item for \inst{BLS12\_G2MSM}, counts from 0 to \ctMaxLargePoint{} and from 0 to \ctMaxScalar{} along the coordinate of the large point and the scalar respectively;
+            \end{itemize}
+      \item \maxCt:
+            the maximum value $\ct$ should count to;
+      \item \isFirstInput:
+            binary column, which lights up when the input is the first;
+      \item \isSecondInput:
+            binary column, which lights up when the input is the second;
+      \item \isInfinity:
+            binary column;
+            constant along the 8 or 16 rows occupied by a (supposed) curve point;
+            lights up precisely when all coordinates of said point vanish;
+      \item \both{\trivialPairing}: binary column; the last data row of each pairing indicates if we are in a trivial case, in the sense that all small points are points at infinity and all large points are points at infinity;
+      
+      In the following 6 columns, in case \isFirstInput{} equals $1$, $C_x$ and $G_x$ need to be intended as $C_1$ and $G_1$ respectively; in case \isSecondInput{} equals $1$, $C_x$ and $G_x$ need to be intended as $C_2$ and $G_2$ respectively:
+
+      \item \notOnCX{} \blsPrediction{}: binary column, which lights up on the 8 lines of a point that is not on $C_x$ (the first point, in the context of pairings). If 2 (or more) points are not on $C_x$, it only lights up for the first one. An external circuit may then justify that this point is indeed not on $C_x$;     
+      \item \notOnCXAcc: binary column which lights up when $\notOnCX$ equals $1$;  
+      \item \notOnCXAccMax: binary column which lights up if there is a point that is not on $C_x$ (equals to the final value of \notOnCXAcc);
+
+      \item \notOnGX{ }\blsPrediction{}: binary column, which lights up on the 16 lines of a point that is not on $G_x$ (the first point, in the context of pairings). If 2 (or more) points are not on $G_x$, it only lights up for the first one. An external circuit may then justify that this point is indeed not on $G_x$;
+      \item \notOnGXAcc: binary column which lights up when $\notOnGX$ equals $1$;
+      \item \notOnGXAccMax: binary column which lights up if there is a point that is not on $G_x$ (equals to the final value of \notOnGXAcc);
+      
+      \item \both{\cOneMembershipTestRequired}:
+            constant along the 8 rows containing a supposed $C_1$ point and zero along $C_2$ points. It lights up when ...;
+      \item \both{\gOneMembershipTestRequired}:
+            constant along the 16 rows containing a supposed $G_1$ point and zero along $C_2$ points. It lights up when ...;
+      \item \both{\cTwoMembershipTestRequired}:
+            constant along the 8 rows containing a supposed $C_2$ point and zero along $C_1$ points. It lights up when ...;
+      \item \both{\gTwoMembershipTestRequired}:
+            constant along the 16 rows containing a supposed $G_2$ point and zero along $C_1$ points. It lights up when ...;
+      \item \both{\acceptablePairOfPoints}: constant along the 24 rows of a pair of points. It lights up when the small point and the large points are predicted to be in $C_1,G_1$ and $C_2, G_2$ respectively and neither of the points is the point at infinity;
+\end{enumerate}
+     
+The following columns defines the external circuits interface:
+\begin{enumerate}[resume]
+      \item \both{\csCOne}: indicates if inputs should be sent to the circuit for $C_1$ membership test;
+      \item \both{\csGOne}: indicates if inputs should be sent to the circuit for $G_1$ membership test;
+      \item \both{\csCTwo}: indicates if inputs should be sent to the circuit for $C_2$ membership test;
+      \item \both{\csGTwo}: indicates if inputs should be sent to the circuit for $G_2$ membership test;
+      \item \both{\csPairing}: indicates if inputs should be sent to the circuit for \inst{BLS12\_PAIRING\_CHECK};
+      \item \both{\csGOneAdd}: indicates if inputs should be sent to the circuit for \inst{BLS12\_G1ADD};
+      \item \both{\csGTwoAdd}: indicates if inputs should be sent to the circuit for \inst{BLS12\_G2ADD};
+      \item \both{\csGOneMsm}: indicates if inputs should be sent to the circuit for \inst{BLS12\_G1MSM};
+      \item \both{\csGTwoMsm}: indicates if inputs should be sent to the circuit for \inst{BLS12\_G2MSM};
+      \item \both{\csMapFpToGOne}: indicates if inputs should be sent to the circuit for \inst{BLS12\_MAP\_FP\_TO\_G1};
+      \item \both{\csMapFpTwoToGTwo}: indicates if inputs should be sent to the circuit for \inst{BLS12\_MAP\_FP2\_TO\_G2};
+\end{enumerate}
+
+The following columns are used for the $\wcpMod$ lookup
+\begin{multicols}{2}
+      \begin{enumerate}[resume]
+            \item \wcpFlag
+            \item \wcpArgOneHi
+            \item \wcpArgOneLo
+            \item \wcpArgTwoHi
+            \item \wcpArgTwoLo
+            \item \wcpRes
+            \item \wcpInst
+            \item[\vspace{\fill}]
+      \end{enumerate}
+\end{multicols}
+
+     
+      
+     

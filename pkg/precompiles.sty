@@ -22,6 +22,7 @@
 %
 \newcommand{\ctMaxSmallPoint}                {\texttt{CT\_MAX\_SMALL\_POINT}}
 \newcommand{\ctMaxLargePoint}                {\texttt{CT\_MAX\_LARGE\_POINT}}
+\newcommand{\ctMaxScalar}                    {\texttt{CT\_MAX\_SCALAR}}
 %
 \newcommand{\totalSizeEcrecoverData}{\texttt{TOTAL\_SIZE\_ECRECOVER\_DATA}}
 \newcommand{\totalSizeEcaddData}{\texttt{TOTAL\_SIZE\_ECADD\_DATA}}
@@ -38,12 +39,7 @@
 \newcommand{\ecAdd}                     {\col{ECADD}\flag}
 \newcommand{\ecMul}                     {\col{ECMUL}\flag}
 \newcommand{\ecPairing}                 {\col{ECPAIRING}\flag}
-%
-\newcommand{\locIsEcrecover}            {\col{is\_ecrecover}}
-\newcommand{\locIsEcadd}                {\col{is\_ecadd}}
-\newcommand{\locIsEcmul}                {\col{is\_ecmul}}
-\newcommand{\locIsEcpairing}            {\col{is\_ecpairing}}
-%
+
 \newcommand{\isEcrecoverData}           {\col{IS\_ECRECOVER\_DATA}\flag}
 \newcommand{\isEcrecoverResult}         {\col{IS\_ECRECOVER\_RESULT}\flag}
 \newcommand{\isEcaddData}               {\col{IS\_ECADD\_DATA}\flag}
@@ -297,9 +293,116 @@
 \newcommand{\weightedPrcFlagSumCommon}            {\weightedPrcFlagSum\col{\_common}}
 \newcommand{\weightedPrcFlagSumBlake}             {\weightedPrcFlagSum\col{\_blake}}
 \newcommand{\weightedPrcFlagSumModexp}            {\weightedPrcFlagSum\col{\_modexp}}
+\newcommand{\weightedPrcFlagSumBls}               {\weightedPrcFlagSum\col{\_bls}}
 \newcommand{\maxCtFlagSum}                        {\col{ct\_max\_sum}}
 \newcommand{\maxCtFlagSumInst}                    {\maxCtFlagSum\col{\_inst}}
 \newcommand{\maxCtFlagSumPrc}                     {\maxCtFlagSum\col{\_prc}}
 \newcommand{\maxCtFlagSumPrcCommon}               {\maxCtFlagSumPrc\col{\_common}}
 \newcommand{\maxCtFlagSumPrcBlake}                {\maxCtFlagSumPrc\col{\_blake}}
 \newcommand{\maxCtFlagSumPrcModexp}               {\maxCtFlagSumPrc\col{\_modexp}}
+\newcommand{\maxCtFlagSumPrcBls}                  {\maxCtFlagSumPrc\col{\_bls}}
+
+\newcommand{\hubMmuMmioEcDataPrediction}     {\colorbox{solarized-orange}{\textbf{~~$\hubMod \rightarrow \mmuMod \rightarrow \mmioMod \rightarrow \ecDataMod$ prediction~~}}}
+\newcommand{\hubMmuMmioBlsPrediction}        {\colorbox{solarized-orange}{\textbf{~~$\hubMod \rightarrow \mmuMod \rightarrow \mmioMod \rightarrow \blsMod$ prediction~~}}}
+\newcommand{\ecDataPrediction}               {\colorbox{solarized-orange}{\textbf{~~$\ecDataMod$ prediction~~}}}
+\newcommand{\blsPrediction}                  {\colorbox{solarized-orange}{\textbf{~~$\blsMod$ prediction~~}}}
+
+% BLS 
+
+\newcommand{\blsId}                               {\col{ID}}
+\newcommand{\blsIndex}                            {\col{\index}}
+\newcommand{\blsLimb}                             {\col{\limb}}
+\newcommand{\blsTotalSize}                        {\col{TOTAL\_SIZE}}
+\newcommand{\blsPhase}                            {\col{PHASE}}
+\newcommand{\blsSuccessBit}                       {\col{SUCCESS\_BIT}}
+   
+\newcommand{\isBlsGOneAddData}                    {\col{IS\_BLS\_G1\_ADD\_DATA}\flag}
+\newcommand{\isBlsGOneAddResult}                  {\col{IS\_BLS\_G1\_ADD\_RESULT}\flag}
+
+\newcommand{\isBlsGOneMsmData}                    {\col{IS\_BLS\_G1\_MSM\_DATA}\flag}
+\newcommand{\isBlsGOneMsmResult}                  {\col{IS\_BLS\_G1\_MSM\_RESULT}\flag}
+
+\newcommand{\isBlsGTwoAddData}                    {\col{IS\_BLS\_G2\_ADD\_DATA}\flag}
+\newcommand{\isBlsGTwoAddResult}                  {\col{IS\_BLS\_G2\_ADD\_RESULT}\flag}
+
+\newcommand{\isBlsGTwoMsmData}                    {\col{IS\_BLS\_G2\_MSM\_DATA}\flag}
+\newcommand{\isBlsGTwoMsmResult}                  {\col{IS\_BLS\_G2\_MSM\_RESULT}\flag}
+
+\newcommand{\isBlsPairingCheckData}               {\col{IS\_BLS\_PAIRING\_CHECK\_DATA}\flag}
+\newcommand{\isBlsPairingCheckResult}             {\col{IS\_BLS\_PAIRING\_CHECK\_RESULT}\flag}
+
+\newcommand{\isBlsMapFpToGOneData}                {\col{IS\_BLS\_MAP\_FP\_TO\_G1\_DATA}\flag}
+\newcommand{\isBlsMapFpToGOneResult}              {\col{IS\_BLS\_MAP\_FP\_TO\_G1\_RESULT}\flag}
+
+\newcommand{\isBlsMapFpTwoToGTwoData}             {\col{IS\_BLS\_MAP\_FP2\_TO\_G2\_DATA}\flag}
+\newcommand{\isBlsMapFpTwoToGTwoResult}           {\col{IS\_BLS\_MAP\_FP2\_TO\_G2\_RESULT}\flag}
+
+\newcommand{\totalInputs}                         {\col{TOTAL\_INPUTS}}
+\newcommand{\accInputs}                           {\col{ACC\_INPUTS}}
+
+\newcommand{\notOnCX}                        {\col{NOT\_ON\_CX}}
+\newcommand{\notOnCXAcc}                     {\col{NOT\_ON\_CX\_ACC}}
+\newcommand{\notOnCXAccMax}                  {\col{NOT\_ON\_CX\_ACC\_MAX}}
+\newcommand{\notOnGX}                        {\col{NOT\_ON\_GX}}
+\newcommand{\notOnGXAcc}                     {\col{NOT\_ON\_GX\_ACC}}
+\newcommand{\notOnGXAccMax}                  {\col{NOT\_ON\_GX\_ACC\_MAX}}
+\newcol{\cOneMembershipTestRequired}         {C1MTR}{\col{C1\_MEMBERSHIP\_TEST\_REQUIRED}}
+\newcol{\gOneMembershipTestRequired}         {G1MTR}{\col{G1\_MEMBERSHIP\_TEST\_REQUIRED}}
+\newcol{\cTwoMembershipTestRequired}         {C2MTR}{\col{C2\_MEMBERSHIP\_TEST\_REQUIRED}}
+\newcol{\gTwoMembershipTestRequired}         {G2MTR}{\col{G2\_MEMBERSHIP\_TEST\_REQUIRED}}
+
+\newcol{\csCOne}                             {CS\_C1\_MEMBERSHIP}{CIRCUIT\_SELECTOR\_C1\_MEMBERSHIP}
+\newcol{\csGOne}                             {CS\_G1\_MEMBERSHIP}{CIRCUIT\_SELECTOR\_G1\_MEMBERSHIP}
+\newcol{\csCTwo}                             {CS\_C2\_MEMBERSHIP}{CIRCUIT\_SELECTOR\_C2\_MEMBERSHIP}
+\newcol{\csPairing}                          {CS\_PAIRING}{CIRCUIT\_SELECTOR\_PAIRING}
+\newcol{\csGOneAdd}                          {CS\_G1\_ADD}{CIRCUIT\_SELECTOR\_G1\_ADD}
+\newcol{\csGTwoAdd}                          {CS\_G2\_ADD}{CIRCUIT\_SELECTOR\_G2\_ADD}
+\newcol{\csGOneMsm}                          {CS\_G1\_MSM}{CIRCUIT\_SELECTOR\_G1\_MSM}
+\newcol{\csGTwoMsm}                          {CS\_G2\_MSM}{CIRCUIT\_SELECTOR\_G2\_MSM}
+\newcol{\csMapFpToGOne}                      {CS\_MAP\_FP\_TO\_G1}{CIRCUIT\_SELECTOR\_MAP\_FP\_TO\_G1}
+\newcol{\csMapFpTwoToGTwo}                   {CS\_MAP\_FP2\_TO\_G2}{CIRCUIT\_SELECTOR\_MAP\_FP2\_TO\_G2}
+
+\newcommand{\isFirstInput}                    {\col{IS\_FIRST\_INPUT}}
+\newcommand{\isSecondInput}                   {\col{IS\_SECOND\_INPUT}}
+
+\newcommand{\indexMaxBlsGOneAddData}             {\texttt{INDEX\_MAX\_BLS\_G1\_ADD\_DATA}}
+\newcommand{\indexMaxBlsGOneAddResult}           {\texttt{INDEX\_MAX\_BLS\_G1\_ADD\_RESULT}}
+
+\newcommand{\indexMaxBlsGOneMsmDataMin}          {\texttt{INDEX\_MAX\_BLS\_G1\_MSM\_DATA\_MIN}}
+\newcommand{\indexMaxBlsGOneMsmResult}           {\texttt{INDEX\_MAX\_BLS\_G1\_MSM\_RESULT}}
+
+\newcommand{\indexMaxBlsGTwoAddData}             {\texttt{INDEX\_MAX\_BLS\_G2\_ADD\_DATA}}
+\newcommand{\indexMaxBlsGTwoAddResult}           {\texttt{INDEX\_MAX\_BLS\_G2\_ADD\_RESULT}}
+
+\newcommand{\indexMaxBlsGTwoMsmDataMin}          {\texttt{INDEX\_MAX\_BLS\_G2\_MSM\_DATA\_MIN}}
+\newcommand{\indexMaxBlsGTwoMsmResult}           {\texttt{INDEX\_MAX\_BLS\_G2\_MSM\_RESULT}}
+
+\newcommand{\indexMaxBlsPairingCheckDataMin}     {\texttt{INDEX\_MAX\_BLS\_PAIRING\_CHECK\_DATA\_MIN}}
+\newcommand{\indexMaxBlsPairingCheckResult}      {\texttt{INDEX\_MAX\_BLS\_PAIRING\_CHECK\_RESULT}}
+
+\newcommand{\indexMaxBlsMapFpToGOneData}         {\texttt{INDEX\_MAX\_BLS\_MAP\_FP\_TO\_G1\_DATA}}
+\newcommand{\indexMaxBlsMapFpToGOneResult}       {\texttt{INDEX\_MAX\_BLS\_MAP\_FP\_TO\_G1\_RESULT}}
+
+\newcommand{\indexMaxBlsMapFpTwoToGTwoData}      {\texttt{INDEX\_MAX\_BLS\_MAP\_FP2\_TO\_G2\_DATA}}
+\newcommand{\indexMaxBlsMapFpTwoToGTwoResult}    {\texttt{INDEX\_MAX\_BLS\_MAP\_FP2\_TO\_G2\_RESULT}}
+
+\newcommand{\totalSizeBlsGOneAddData}             {\texttt{TOTAL\_SIZE\_BLS\_G1\_ADD\_DATA}}
+\newcommand{\totalSizeBlsGOneAddResult}           {\texttt{TOTAL\_SIZE\_BLS\_G1\_ADD\_RESULT}}
+
+\newcommand{\totalSizeBlsGOneMsmDataMin}          {\texttt{TOTAL\_SIZE\_BLS\_G1\_MSM\_DATA\_MIN}}
+\newcommand{\totalSizeBlsGOneMsmResult}           {\texttt{TOTAL\_SIZE\_BLS\_G1\_MSM\_RESULT}}
+
+\newcommand{\totalSizeBlsGTwoAddData}             {\texttt{TOTAL\_SIZE\_BLS\_G2\_ADD\_DATA}}
+\newcommand{\totalSizeBlsGTwoAddResult}           {\texttt{TOTAL\_SIZE\_BLS\_G2\_ADD\_RESULT}}
+
+\newcommand{\totalSizeBlsGTwoMsmDataMin}          {\texttt{TOTAL\_SIZE\_BLS\_G2\_MSM\_DATA\_MIN}}
+\newcommand{\totalSizeBlsGTwoMsmResult}           {\texttt{TOTAL\_SIZE\_BLS\_G2\_MSM\_RESULT}}
+
+\newcommand{\totalSizeBlsPairingCheckDataMin}     {\texttt{TOTAL\_SIZE\_BLS\_PAIRING\_CHECK\_DATA\_MIN}}
+\newcommand{\totalSizeBlsPairingCheckResult}      {\texttt{TOTAL\_SIZE\_BLS\_PAIRING\_CHECK\_RESULT}}
+
+\newcommand{\totalSizeBlsMapFpToGOneData}         {\texttt{TOTAL\_SIZE\_BLS\_MAP\_FP\_TO\_G1\_DATA}}
+\newcommand{\totalSizeBlsMapFpToGOneResult}       {\texttt{TOTAL\_SIZE\_BLS\_MAP\_FP\_TO\_G1\_RESULT}}
+
+\newcommand{\totalSizeBlsMapFpTwoToGTwoData}      {\texttt{TOTAL\_SIZE\_BLS\_MAP\_FP2\_TO\_G2\_DATA}}
+\newcommand{\totalSizeBlsMapFpTwoToGTwoResult}    {\texttt{TOTAL\_SIZE\_BLS\_MAP\_FP2\_TO\_G2\_RESULT}}
