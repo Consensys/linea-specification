@@ -21,7 +21,8 @@ The following constraints hold for all transaction types:
 				\\
 			\end{array}\right.
 		\]
-		where, as per \cite{EIP2681}, $\maxNonce \define 2^{64} - 1$.
+		where, as per \cite{EIP-2681},
+		$\maxNonce \define 2^{64} - 1$.
 
 		\saNote{}
 		In other words we require that $\txNonce_{i} < \maxNonce$.
@@ -44,6 +45,10 @@ The following constraints hold for all transaction types:
 		\]
 		\saNote{}
 		In other words we require that $\locValue + \locMaxFee \cdot \locGasLimit \leq \txInitialBalance_{i}$.
+		%
+		\input{computations/init_code_does_not_exceed_max_size}
+		\input{computations/init_code_pricing}
+		%
 	\item[\underline{\underline{Row n$°(i + \gasLimitRowOffset)$: Sufficient gas limit:}}]
 		we impose that
 		\[
@@ -74,14 +79,16 @@ The following constraints hold for all transaction types:
 				\locLegacyUpfrontGasCost & \define &
 				\left[ \begin{array}{crcl}
 					+ \!\!\! &           &       & \locDataCost           \\
-					+ \!\!\! &           &       & G_{\text{transaction}} \\
 					+ \!\!\! & \locIsDep & \cdot & G_{\text{txcreate}}    \\
+					+ \!\!\! & \locIsDep & \cdot & \locInitCodeCost       \\
+					+ \!\!\! &           &       & G_{\text{transaction}} \\
 				\end{array} \right] \vspace{4mm} \\
 				\locAccessUpfrontGasCost & \define &
 				\left[ \begin{array}{crcl}
 					+ \!\!\! &             &                     & \locDataCost               \\
-					+ \!\!\! &             &                     & G_{\text{transaction}}     \\
 					+ \!\!\! & \locIsDep   & \!\!\! \cdot \!\!\! & G_{\text{txcreate}}        \\
+					+ \!\!\! & \locIsDep   & \!\!\! \cdot \!\!\! & \locInitCodeCost           \\
+					+ \!\!\! &             &                     & G_{\text{transaction}}     \\
 					+ \!\!\! & \locNumAddr & \!\!\! \cdot \!\!\! & G_\text{accesslistaddress} \\
 					+ \!\!\! & \locNumKeys & \!\!\! \cdot \!\!\! & G_\text{accessliststorage} \\
 				\end{array} \right] \\

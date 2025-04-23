@@ -6,16 +6,16 @@ We unconditionally impose the following
 \begin{enumerate}
 	\item 
 		\label{hub: initialization phase: the first rows are misc and transaction rows}
-		$\peekMisc _{i + \locTxInitRoffMisc} + \peekTransaction _{i + \locTxInitRoffTxn} = 2$
+		$\peekMisc _{i + \locTxInitRoffMisc} + \peekTransaction _{i + \locTxInitRoffTxn} + \peekAccount _{i + \locTxInitWarmCoinbase} = 3$
 \end{enumerate}
 Given peeking flag exclusivity,
 see section~(\ref{hub: heartbeat: peeking flag exclusivity}),
 the above translates precisely to
 \begin{enumerate}[resume]
-	\item $\peekMisc        _{i + \locTxInitRoffMisc} = 1$ ~ (\trash)
-	\item $\peekTransaction _{i + \locTxInitRoffTxn}  = 1$ ~ (\trash)
+	\item $\peekMisc        _{i + \locTxInitRoffMisc}     = 1$ ~ (\trash)
+	\item $\peekTransaction _{i + \locTxInitRoffTxn}      = 1$ ~ (\trash)
+	\item $\peekAccount     _{i + \locTxInitWarmCoinbase} = 1$ ~ (\trash)
 \end{enumerate}
-This way the first row of the initialization phase is necessarily an miscellaneous-row and the next one a transaction row.
 \begin{enumerate}[resume]
 	\item \If $\locTransactionWillRevert = 1$ \Then
 		\begin{enumerate}
@@ -31,6 +31,7 @@ This way the first row of the initialization phase is necessarily an miscellaneo
 					\left[ \begin{array}{cl} 
 						+ & \peekMisc        _{i + \locTxInitRoffMisc                           } \\
 						+ & \peekTransaction _{i + \locTxInitRoffTxn                            } \\
+						+ & \peekAccount     _{i + \locTxInitWarmCoinbase                       } \\
 						+ & \peekAccount     _{i + \locTxInitRoffAccDoingSndPayGas              } \\
 						+ & \peekAccount     _{i + \locTxInitRoffAccDoingSenderValueTransfer            } \\
 						+ & \peekAccount     _{i + \locTxInitRoffAccDoingRecipientValueReception            } \\
@@ -55,6 +56,7 @@ This way the first row of the initialization phase is necessarily an miscellaneo
 					\left[ \begin{array}{cl} 
 						+ & \peekMisc        _{i + \locTxInitRoffMisc                             } \\
 						+ & \peekTransaction _{i + \locTxInitRoffTxn                              } \\
+						+ & \peekAccount     _{i + \locTxInitWarmCoinbase                       } \\
 						+ & \peekAccount     _{i + \locTxInitRoffAccDoingSndPayGas                } \\
 						+ & \peekAccount     _{i + \locTxInitRoffAccDoingSenderValueTransfer      } \\
 						+ & \peekAccount     _{i + \locTxInitRoffAccDoingRecipientValueReception   } \\
