@@ -73,7 +73,9 @@ The columns below are related to the bytecode itself: the bytes that make it up,
 	depends on the the context i.e. on whether the byte is shadowed by a \inst{PUSH} instruction (i.e. \( \ipd{}=1 \)) and whether the \CSR{} flag is on (at which point we impose $\pbcb=\opc=\texttt{0x00}$);
 	in all other circumstances \( \opc{} = \PBCB{} \);
     \item \IP{}:
-	lights up precisely when $\opc \equiv \inst{PUSHX}$ for some $\inst{X} \in \{ 1, 2, \dots, \evmWordSize \}$;
+	lights up precisely when
+	$\opc \equiv \inst{PUSHX}$\footnote{Recall our convention~(\ref{rom: intro: convention: PUSHX implicitly refers to PUSH1 through PUSH32 but not PUSH0})}
+	for some $\inst{X}$;
 	abbreviated to \ip{};
     \item \IPD{}:
 	binary flag;
@@ -89,3 +91,20 @@ The columns below are related to the bytecode itself: the bytes that make it up,
 The \opc{} and \pbcb{} columns differ in that bytes that are ``obscured'' by a previous \inst{PUSHX} opcode
 will appear unaltered in the \pbcb{} column, but altered to \inst{INVALID} in the \opc{} column, see section~(\ref{rom: opcode: opcode from padded byte code byte}).
 As such the above precisely recognizes valid jump destinations as specified in the \cite{EYP-London}.
+
+\saNote{}
+\label{rom: columns: IS_PUSH_FLAG does not light up for PUSH0}
+We draw attention to the fact that the \romMod{} module
+doesn't deal with the \inst{PUSH0} instruction of \cite{EIP-3855} as it does with
+\inst{PUSHX} instructions\footnote{Recall our convention~(\ref{rom: intro: convention: PUSHX implicitly refers to PUSH1 through PUSH32 but not PUSH0})}.
+For one, it doesn't construct a ``push value'' for \inst{PUSH0} instructions.
+As a consequence, the \inst{PUSH0} opcode \textbf{does not raise} the \IP{} flag while the other \inst{PUSHX} instructions do,
+see diagram~(\ref{rom: instruction decoding: relevant portion of ID module}).
+
+\saNote{}
+\label{rom: columns: push values for PUSH0 vs PUSHX in the HUB}
+Given that the ``push value'' of a \inst{PUSH0} instruction is zero by definition,
+the \hubMod{} module knows to push \inst{0x\,00} to the stack for that opcode,
+see section~(\ref{hub: instruction handling: push pop: setting result to zero for PUSH0}).
+For \inst{PUSHX} instructions the \hubMod{} module is reliant on the $\PV$ constructed in the present module,
+see section~(\ref{hub: instruction handling: push pop: setting result to push value for PUSHX}).
