@@ -23,8 +23,15 @@ We impose the following consistency constraint:
 		\If $\accFirstInTransaction _{i} = 1$
 		\Then we impose that
 		\begin{enumerate}
-			\item $\order{\accWarmth}_{i} = \order{\accTrmIsPrecompile}_{i}$
-			\item $\order{\accDeploymentStatus}_{i} = 0$
-			\item $\order{\accMarkedForSelfdestruct}_{i} = 0$
+			\item $\order{\accWarmth} _{i} = \order{\accTrmIsPrecompile}_{i}$
+			\item $\order{\accDeploymentStatus} _{i} = 0$
+			\item $\order{\accMarkedForDeletion} _{i} = 0$
+			\item
+				\label{hub: consistency: account: initialization at the transaction level of the "acc had code at tx start" column}
+				$\order{\accHadCodeInitially} _{i} = \order{\accHasCode} _{i}$
 		\end{enumerate}
 \end{description}
+\saNote{}
+We include $\accHasCode$ in the account consistency permutation argument ($\order{\accHasCode}$)
+in order to set $\order{\accHadCodeInitially}$ correctly,
+see constraint (\ref{hub: consistency: account: initialization at the transaction level of the "acc had code at tx start" column}).
