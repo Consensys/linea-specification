@@ -205,6 +205,24 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
     - BLS
         - coordinate encoding
 
+- POINT_EVALUATION (192 bytes) $\rightarrow$ (64 bytes)
+    - OOB:
+        - input length:
+            ```
+            PRC_POINT_EVALUATION_SIZE = 192
+            ```
+        - gas check: 
+            ```
+            GAS_CONST_POINT_EVALUATION = 50000
+            ```
+    - BLS
+        - coordinate encoding, which in this case means:
+        ```
+        z, y < BLS_PRIME
+        where BLS_PRIME = 73EDA753299D7D483339D80809A1D80553BDA402FFFE5BFEFFFFFFFF00000001
+        ```
+
+
 Note that addition operations do not require subgroup membership checks. 
 In case the operations are executed on points not in the subgroup, also the result will not be in the subgroup.
 A user who wants addition and subgroup membership check can use $MSM((P,1),(Q,1))=P \times 1 + Q \times 1 = P + Q$ since MSM precompile does subgroup membership check.
