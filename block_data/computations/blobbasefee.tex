@@ -1,0 +1,43 @@
+\begin{center}
+	\boxed{\text{%
+        The following constraints assume that
+	$\left\{ \begin{array}{lcl}
+		\isBlobBasefee _{i - 1} & = & 0 \\
+		\isBlobBasefee _{i}     & = & 1 \\
+	\end{array} \right.$}}
+\end{center}
+We use the following shorthand
+\[
+	\left\{ \begin{array}{lc l}
+		\currBlobBaseFeeHi & \define & \currDataHi \\
+		\currBlobBaseFeeLo & \define & \currDataLo \\
+	\end{array} \right.
+\]
+We impose the following constraints
+\begin{description}
+	\item[\underline{\underline{Horizontalization of \inst{BLOBBASEFEE}:}}]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\currBlobBaseFeeHi & = & 0                 \\
+				\currBlobBaseFeeLo & = & \lineaBlobBaseFee \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		The ``blob base fee'' on \linea{} is therefore constant equal to $\lineaBlobBaseFee$.
+	\item[\underline{\underline{\inst{BLOBBASEFEE} bound:}}]
+		\def\rowOffset{\yellowm{0}}
+		we impose
+		\[
+			\wcpCallToGeq{
+				anchorRow = i                  ,
+				relOffset = \rowOffset         ,
+				argOneHi  = \currBlobBaseFeeHi ,
+				argOneLo  = \currBlobBaseFeeLo ,
+				argTwoHi  = 0                  ,
+				argTwoLo  = 0                  ,
+			}
+		\]
+		\saNote{}
+		The above makes sure that $\lineaBlobBaseFee$ is well-formed, i.e. is a $\llarge$-byte integer.
+\end{description}
