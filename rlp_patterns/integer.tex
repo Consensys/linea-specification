@@ -30,6 +30,7 @@ We shall assume the following: we are provided with columns
     \col{resNoRlpPrefix},
     \col{resBigInt},
     \col{resValueRlpPrefix},
+    \col{resFirstPart},
     \col{resNBytes}; \\
     \col{limb},
     \col{lc},
@@ -48,10 +49,10 @@ We shall assume the following: we are provided with columns
     \item $\col{nBytes}_{i} = 1 \cdot \col{resNoRlpPrefix}_{i}$
 
     \item $\col{lc}_{i+1} = \col{resBigInt}_{i}$
-    \item $\col{limb}_{i+1}=\col{input1}_{i}$
+    \item $\col{limb}_{i+1} = \col{resBigInt}_{i} \cdot \col{resFirstPart}$
     \item $\col{nBytes}_{i+1} = \col{resBigInt}_{i} \cdot \col{resNBytes}_{i}$
 
     \item $\col{lc}_{i+2} = 1$
-    \item $\col{limb}_{i+2}=\col{input2}_{i}$
-    \item $\col{nBytes}_{i+2} = \llarge $
+    \item $\col{limb}_{i+2} = \col{resBigInt}_{i} \cdot \col{input2}_{i} + (1 - \col{resBigInt}_{i}) \cdot \col{resFirstPart}$
+    \item $\col{nBytes}_{i+2} = \col{resBigInt}_{i} \cdot \llarge + (1 - \col{resBigInt}_{i}) \cdot \col{resNBytes}_{i}$
 \end{enumerate}
