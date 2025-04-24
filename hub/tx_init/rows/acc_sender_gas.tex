@@ -1,41 +1,42 @@
-the purpose of the current row is for the sender to pay for \textbf{gas costs}:
-\[
-	\left\{ \begin{array}{lclr}
-		\accAddress  \high _{i + \locTxInitRoffAccDoingSndPayGas} & = & \locTxInitSenderAddressHi \\
-		\accAddress  \low  _{i + \locTxInitRoffAccDoingSndPayGas} & = & \locTxInitSenderAddressLo \\
-		\multicolumn{3}{l}{
-		\accTrimAddress
-		{i}{\locTxInitRoffAccDoingSndPayGas}
-		{\locTxInitSenderAddressHi}
-		{\locTxInitSenderAddressLo}} \vspace{2mm} \\
-		\multicolumn{3}{l}{\accDecrementBalance                  {i}{\locTxInitRoffAccDoingSndPayGas}{\locTxInitGasCost}} \\
-		\multicolumn{3}{l}{\accIncrementNonce                    {i}{\locTxInitRoffAccDoingSndPayGas}} \\
-		\multicolumn{3}{l}{\accSameCode                          {i}{\locTxInitRoffAccDoingSndPayGas}} \\
-		\multicolumn{3}{l}{\accSameDeployment                    {i}{\locTxInitRoffAccDoingSndPayGas}} \\
-		\multicolumn{3}{l}{\accTurnOnWarmth                      {i}{\locTxInitRoffAccDoingSndPayGas}} \\
-		\multicolumn{3}{l}{\accSameMarkedForDeletionFlag         {i}{\locTxInitRoffAccDoingSndPayGas}} \\
-		\multicolumn{3}{l}{\accIsntPrecompile                    {i}{\locTxInitRoffAccDoingSndPayGas}} \\
-		\multicolumn{3}{l}{
-			\standardDomSubStamps {
-				anchorRow = i                               ,
-				relOffset = \locTxInitRoffAccDoingSndPayGas ,
-				domOffset = 1                               ,
-			}
-		} \\
-	\end{array} \right.
-\]
-In accordance with \cite{EIP-3607} we further impose
-\[
-	\accHasCode _{i + \locTxInitRoffAccDoingSndPayGas} = 0
-\]
-\saNote{} \label{hub: initialization phase: why we trim the sender address}
-We impose address trimming constraints \emph{in spite} of the fact that the pair
-\[
-	\big( \locTxInitSenderAddressHi, \locTxInitSenderAddressLo \big)
-\]
-both of whose components come from the \txnDataMod{} module,
-necessarily constitutes valid high and low parts of an address.
-The reason for this precaution is that the present row \emph{may} constitute the first occurrence of this particular address in the present conflation of blocks.
-Imposing trimming \emph{here} ensures that
-constraint~(\ref{hub: consistency: account: trimming first appearance of an address})
-will automatically hold \emph{if} this row turns out to be the first encounter with that particular address.
+\item[\underline{\underline{Sender account-row n$^°\bm{(i + \locTxInitRoffAccDoingSndPayGas)}$:}}]
+	the purpose of the current row is for the sender to pay for \textbf{gas costs}:
+	\[
+		\left\{ \begin{array}{lclr}
+			\accAddress  \high _{i + \locTxInitRoffAccDoingSndPayGas} & = & \locTxInitSenderAddressHi \\
+			\accAddress  \low  _{i + \locTxInitRoffAccDoingSndPayGas} & = & \locTxInitSenderAddressLo \\
+			\multicolumn{3}{l}{
+				\accTrimAddress
+				{i}{\locTxInitRoffAccDoingSndPayGas}
+				{\locTxInitSenderAddressHi}
+				{\locTxInitSenderAddressLo}} \vspace{2mm} \\
+			\multicolumn{3}{l}{\accDecrementBalance                  {i}{\locTxInitRoffAccDoingSndPayGas}{\locTxInitGasCost}} \\
+			\multicolumn{3}{l}{\accIncrementNonce                    {i}{\locTxInitRoffAccDoingSndPayGas}} \\
+			\multicolumn{3}{l}{\accSameCode                          {i}{\locTxInitRoffAccDoingSndPayGas}} \\
+			\multicolumn{3}{l}{\accSameDeployment                    {i}{\locTxInitRoffAccDoingSndPayGas}} \\
+			\multicolumn{3}{l}{\accTurnOnWarmth                      {i}{\locTxInitRoffAccDoingSndPayGas}} \\
+			\multicolumn{3}{l}{\accSameMarkedForDeletionFlag         {i}{\locTxInitRoffAccDoingSndPayGas}} \\
+			\multicolumn{3}{l}{\accIsntPrecompile                    {i}{\locTxInitRoffAccDoingSndPayGas}} \\
+			\multicolumn{3}{l}{
+				\standardDomSubStamps {
+					anchorRow = i                               ,
+					relOffset = \locTxInitRoffAccDoingSndPayGas ,
+					domOffset = 1                               ,
+				}
+			} \\
+		\end{array} \right.
+	\]
+	In accordance with \cite{EIP-3607} we further impose
+	\[
+		\accHasCode _{i + \locTxInitRoffAccDoingSndPayGas} = 0
+	\]
+	\saNote{} \label{hub: initialization phase: why we trim the sender address}
+	We impose address trimming constraints \emph{in spite} of the fact that the pair
+	\[
+		\big( \locTxInitSenderAddressHi, \locTxInitSenderAddressLo \big)
+	\]
+	both of whose components come from the \txnDataMod{} module,
+	necessarily constitutes valid high and low parts of an address.
+	The reason for this precaution is that the present row \emph{may} constitute the first occurrence of this particular address in the present conflation of blocks.
+	Imposing trimming \emph{here} ensures that
+	constraint~(\ref{hub: consistency: account: trimming first appearance of an address})
+	will automatically hold \emph{if} this row turns out to be the first encounter with that particular address.

@@ -1,53 +1,54 @@
-since the number of rows in the initialization section depends on whether or not the transaction is predicted to be rolled back,
-we must distinguish between these possibilities when defining the execution context;
-given some relative row offset $\relof$ we define $\initializeRootContextName$ at that row like so:
-\[
-	\left\{ \begin{array}{l}
-		\initializeRootContext{
-			anchorRow = i      ,
-			relOffset = \relof ,
-		} ~ \define \vspace{4mm} \\
-		\qquad
-		\initializeContext{
-			anchorRow                   = i                                                                              ,
-			relOffset                   = \relof                                                                         ,
-			contextNumber               = \cn\new _{i}                                                                   ,
-			callStackDepth              = \rZero                                                                         ,
-			isRoot                      = \rOne                                                                          ,
-			isStatic                    = \rZero                                                                         ,
-			accountAddressHigh          = \locTxInitRecipientAddressHi                                                   ,
-			accountAddressLow           = \locTxInitRecipientAddressLo                                                   ,
-			accountDeploymentNumber     = \accDeploymentNumber \new _{i + \locTxInitRoffAccDoingRecipientValueReception} ,
-			byteCodeAddressHi           = \locTxInitRecipientAddressHi                                                   ,
-			byteCodeAddressLo           = \locTxInitRecipientAddressLo                                                   ,
-			byteCodeDeploymentNumber    = \accDeploymentNumber \new _{i + \locTxInitRoffAccDoingRecipientValueReception} ,
-			byteCodeDeploymentStatus    = \accDeploymentStatus \new _{i + \locTxInitRoffAccDoingRecipientValueReception} ,
-			byteCodeCodeFragmentIndex   = \accCfi                   _{i + \locTxInitRoffAccDoingRecipientValueReception} ,
-			callerAddressHi             = \locTxInitSenderAddressHi                                                      ,
-			callerAddressLo             = \locTxInitSenderAddressLo                                                      ,
-			callValue                   = \locTxInitValue                                                                ,
-			callDataContextNumber       = \locTxInitCallDataContextNumber                                                ,
-			callDataOffset              = 0                                                                              ,
-			callDataSize                = \txCallDataSize           _{i + \locTxInitRoffTxn}                             ,
-			returnAtOffset              = 0                                                                              ,
-			returnAtCapacity            = 0                                                                              ,
-		}
-	\end{array} \right.
-\]
-\saNote{} Recall that $\cn\new _{i} = 1 + \hubStamp _{i}$, see section~(\ref{hub: generalities: context: context numbers}).
-\begin{enumerate}
-	\item \If $\locTransactionWillRevert = 1$ \Then
-		\[
+\item[\underline{\underline{Initializing the root context:}}]
+	since the number of rows in the initialization section depends on whether or not the transaction is predicted to be rolled back,
+	we must distinguish between these possibilities when defining the execution context;
+	given some relative row offset $\relof$ we define $\initializeRootContextName$ at that row like so:
+	\[
+		\left\{ \begin{array}{l}
 			\initializeRootContext{
-				anchorRow = i                                            ,
-				relOffset = \locTxInitRoffConExceptionalContextRowOffset ,
+				anchorRow = i      ,
+				relOffset = \relof ,
+			} ~ \define \vspace{4mm} \\
+			\qquad
+			\initializeContext{
+				anchorRow                   = i                                                                              ,
+				relOffset                   = \relof                                                                         ,
+				contextNumber               = \cn\new _{i}                                                                   ,
+				callStackDepth              = \rZero                                                                         ,
+				isRoot                      = \rOne                                                                          ,
+				isStatic                    = \rZero                                                                         ,
+				accountAddressHigh          = \locTxInitRecipientAddressHi                                                   ,
+				accountAddressLow           = \locTxInitRecipientAddressLo                                                   ,
+				accountDeploymentNumber     = \accDeploymentNumber \new _{i + \locTxInitRoffAccDoingRecipientValueReception} ,
+				byteCodeAddressHi           = \locTxInitRecipientAddressHi                                                   ,
+				byteCodeAddressLo           = \locTxInitRecipientAddressLo                                                   ,
+				byteCodeDeploymentNumber    = \accDeploymentNumber \new _{i + \locTxInitRoffAccDoingRecipientValueReception} ,
+				byteCodeDeploymentStatus    = \accDeploymentStatus \new _{i + \locTxInitRoffAccDoingRecipientValueReception} ,
+				byteCodeCodeFragmentIndex   = \accCfi                   _{i + \locTxInitRoffAccDoingRecipientValueReception} ,
+				callerAddressHi             = \locTxInitSenderAddressHi                                                      ,
+				callerAddressLo             = \locTxInitSenderAddressLo                                                      ,
+				callValue                   = \locTxInitValue                                                                ,
+				callDataContextNumber       = \locTxInitCallDataContextNumber                                                ,
+				callDataOffset              = 0                                                                              ,
+				callDataSize                = \txCallDataSize           _{i + \locTxInitRoffTxn}                             ,
+				returnAtOffset              = 0                                                                              ,
+				returnAtCapacity            = 0                                                                              ,
 			}
-		\]
-	\item \If $\locTransactionWontRevert = 1$ \Then
-		\[
-			\initializeRootContext{
-				anchorRow = i                                              ,
-				relOffset = \locTxInitRoffConUnexceptionalContextRowOffset ,
-			}
-		\]
-\end{enumerate}
+		\end{array} \right.
+	\]
+	\saNote{} Recall that $\cn\new _{i} = 1 + \hubStamp _{i}$, see section~(\ref{hub: generalities: context: context numbers}).
+	\begin{enumerate}
+		\item \If $\locTransactionWillRevert = 1$ \Then
+			\[
+				\initializeRootContext{
+					anchorRow = i                                            ,
+					relOffset = \locTxInitRoffConExceptionalContextRowOffset ,
+				}
+			\]
+		\item \If $\locTransactionWontRevert = 1$ \Then
+			\[
+				\initializeRootContext{
+					anchorRow = i                                              ,
+					relOffset = \locTxInitRoffConUnexceptionalContextRowOffset ,
+				}
+			\]
+	\end{enumerate}

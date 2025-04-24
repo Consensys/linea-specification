@@ -1,8 +1,16 @@
 The following constraints define legal flag transitions:
 \[
-	\left\{ \begin{array}{lrrrrrrrrr}
-		\If \sysi _{i} = 1 ~ \Then + ~ \sysi _{i + 1} & + ~ \user _{i + 1} & + ~ \sysf _{i + 1} & = & 1 & (\sanityCheck) \\
-		\If \user _{i} = 1 ~ \Then   ~                & + ~ \user _{i + 1} & + ~ \sysf _{i + 1} & = & 1                  \\
-		\If \sysf _{i} = 1 ~ \Then + ~ \sysi _{i + 1} &   ~                & + ~ \sysf _{i + 1} & = & 1                  \\
+	\left\{ \begin{array}{lrrrrr}
+		% \If \sysi _{i} = 1 ~ \Then + ~ \sysi _{i + 1} & + ~ \user _{i + 1} & + ~ \sysf _{i + 1} & = & 1 & (\sanityCheck) \\
+		\If \sysi _{i} = 1 ~ \Then + ~ \sysi _{i + 1} & + ~ \user _{i + 1} &                    & = & 1 & \undefinedStar \\
+		\If \user _{i} = 1 ~ \Then   ~                & + ~ \user _{i + 1} & + ~ \sysf _{i + 1} & = & 1 \\
+		\If \sysf _{i} = 1 ~ \Then + ~ \sysi _{i + 1} & ~                  & + ~ \sysf _{i + 1} & = & 1 \\
 	\end{array} \right.
 \]
+\saNote{}
+The \zkEvm{} may be upgraded to allow for empty blocks (that is: blocks containing no user transactions)
+by replacing the equation $\undefinedStar$ with
+\[
+	``\If \sysi _{i} = 1 ~ \Then + ~ \sysi _{i + 1} + \user _{i + 1} + \sysf _{i + 1} = 1"
+\]
+
