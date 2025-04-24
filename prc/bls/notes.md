@@ -295,8 +295,9 @@ Note that in practice $B$ will likely always be $p$
 - G2_MSM
 - MAP_FP_TO_G1
 - MAP_FP2_TO_G2
+- POINT_EVALUATION
 
-### Failure case (assuming ICP = 1)
+### Failure case (assuming ICP = 0)
 
 - BLS12_G1ADD: send to C1_MEMBERSHIP circuit the first point predicted not to be in C1, so as to prove non-membership.            
 - BLS12_G1MSM: 
@@ -322,6 +323,7 @@ Based on the predictions related to a point being in C2 or G2, the following cas
 so as to prove non-membership. Note that in the first case we prove C2 non-membership as it is cheaper than G2 non-membership, and that is enough to justify failure.
 - BLS12_MAP_FP_TO_G1: no circuit needed.
 - BLS12_MAP_FP2_TO_G2: no circuit needed.
+- POINT_EVALUATION: no circuit needed.
 
 ### Success case (assuming ICP = 1 and NOT_ON_C1_ACC_MAX = NOT_ON_C2_ACC_MAX = NOT_ON_G1_ACC_MAX = NOT_ON_G2_ACC_MAX = 0 and SUCCESS_BIT = 1)
 
@@ -340,6 +342,7 @@ so as to prove non-membership. Note that in the first case we prove C2 non-membe
         - If pair of point is non-trivial (neither the small point nor the large are at infinity) , send the pair to the PAIRING circuit. 
 - BLS12_MAP_FP_TO_G1: send field element to MAP_FP_TO_G1 circuit.
 - BLS12_MAP_FP2_TO_G2: send field element to MAP_FP2_TO_G2 circuit.
+- POINT_EVALUATION: send input to POINT_EVALUATION circuit.
 
 ## Properties of circuits
 
