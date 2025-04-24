@@ -1,0 +1,61 @@
+\subsubsubsection{Constraints}
+
+We let $\threeZeroSP_{i}$ stand for the following collection of constraints:
+\begin{description}
+	\item[\underline{Stack Item $n^\circ\,1$:}] ---
+	\[
+	\left\{
+		\begin{array}{lcl}
+			\stackItemHeight{1}_{i}	& = & \stackHeight_{i}, \\
+			\stackItemPop{1}_{i}	& = & 1, \\
+			\stackItemStamp{1}_{i}	& = & \hubTau \cdot \hubStamp_{i}
+		\end{array}
+	\right.
+	\]
+	\item[\underline{Stack Item $n^\circ\,2$:}] ---
+	\[
+	\left\{
+		\begin{array}{lcl}
+			\stackItemHeight{2}_{i}	& = & \stackHeight_{i} - 1 \\
+			\stackItemPop{2}_{i}	& = & 1 \\
+			\stackItemStamp{2}_{i}	& = & \hubTau \cdot \hubStamp_{i} + 1
+		\end{array}
+	\right.
+	\]
+	\item[\underline{Stack Item $n^\circ\,3$:}] ---
+	\[
+	\left\{
+		\begin{array}{lcl}
+			\stackItemHeight{3}_{i}	& = & \stackHeight_{i} - 2 \\
+			\stackItemPop{3}_{i}	& = & 1 \\
+			\stackItemStamp{3}_{i}	& = & \hubTau \cdot \hubStamp_{i} + 2
+		\end{array}
+	\right.
+	\]
+	\item[\underline{Stack Item $n^\circ\,4$:}] is empty: $\emptyStackItem{4} _{i}$;
+	\item[\underline{Height update:}] $\stackHeight{}\new{}_{i} = \stackHeight{}_{i} - 3$ \quad (\sanityCheck),
+\end{description}
+
+
+
+\subsubsubsection{Graphical representation}
+
+
+\noindent The following is the associated graphical representation:
+\begin{figure}[h!]
+\[
+	\begin{array}{|l|r|r|c|r|}
+	\cline{2-5}
+	\multicolumn{1}{c|}{}                              & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  \\
+	\multicolumn{1}{c|}{}                              & \multicolumn{1}{c|}{\text{Item 1}} & \multicolumn{1}{c|}{\text{Item 2}} & \multicolumn{1}{c|}{\text{Item 3}} & \multicolumn{1}{c|}{\text{Item 4}} \\ \hline
+	\stackItemHeight {k} _{i}                          & \col{h}                            & \col{h} - 1                        & \col{h} -  2                       & \graym{\varnothing}                \\ \hline
+	\stackItemValHi  {k} _{i} / \stackItemValLo{k}_{i} & \col{arg1}                         & \col{arg2}                         & \col{arg3}                         & \graym{\varnothing}                \\ \hline
+	\stackItemPop    {k} _{i}                          & 1                                  & 1                                  & 1                                  & \graym{\varnothing}                \\ \hline
+	\stackItemStamp  {k} _{i}                          & \hubTau \cdot \col{st}             & \hubTau \cdot \col{st} + 1         & \hubTau \cdot \col{st} + 2         & \graym{\varnothing}                \\ \hline
+	\end{array}
+\]
+\caption{%
+Graphical representation of $\threeZeroSP _{i}$.
+We write $\col{h} := \stackHeight_{i}$ and $\hubStamp_{i} = \col{st}$.}
+\end{figure}
+
