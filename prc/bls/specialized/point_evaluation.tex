@@ -1,0 +1,80 @@
+\[
+    \boxed{\text{All constraints in this subsection assume }
+        \left\{ \begin{array}{lcl}
+            \isPointEvaluationData_{i} & =    & 1               \\
+            \blsId_{i}        & \neq & \blsId_{i-1} \\
+        \end{array} \right.
+    }
+\]
+
+We introduce the following (local) shorthands:
+\[
+    \left\{ \begin{array}{lclr}
+        \locVerHashHi   & \define & \blsLimb_{i}      \\
+        \locVerHashLo   & \define & \blsLimb_{i + 1}  \\
+        \locZHi         & \define & \blsLimb_{i + 2}  \\
+        \locZLo         & \define & \blsLimb_{i + 3}  \\
+        \locYHi         & \define & \blsLimb_{i + 4}  \\
+        \locYLo         & \define & \blsLimb_{i + 5}  \\
+        \locComTwo      & \define & \blsLimb_{i + 6}  \\
+        \locComOne      & \define & \blsLimb_{i + 7}  \\
+        \locComZero     & \define & \blsLimb_{i + 8}  \\
+        \locProofTwo    & \define & \blsLimb_{i + 9}  \\
+        \locProofOne    & \define & \blsLimb_{i + 10} \\
+        \locProofZero   & \define & \blsLimb_{i + 11} \\
+
+    \end{array} \right.
+\]
+
+We set the following constraints:
+
+\begin{description}
+    \item[\underline{Row $n^°(i)$:}]
+          we impose
+          \[
+              \wcpCallToLt {
+                  anchorRow = i             ,
+                  relOffset = 0             ,
+                  argOneHi  = \locZHi       ,
+                  argOneLo  = \locZLo       ,
+                  argTwoHi  = \secpNHi      ,
+                  argTwoLo  = \secpNLo      ,
+              }
+          \]
+          as well as define the shorthand
+          \[
+              \locZIsInRange \define \wcpRes_{i}
+          \]
+   
+    \item[\underline{Row $n^°(i + 1)$:}]
+          we impose
+          \[
+              \wcpCallToLt {
+                  anchorRow = i             ,
+                  relOffset = 2             ,
+                  argOneHi  = \locYHi       ,
+                  argOneLo  = \locYHi       ,
+                  argTwoHi  = \secpNHi      ,
+                  argTwoLo  = \secpNLo      ,
+              }
+          \]
+          as well as define the shorthand
+          \[
+              \locYIsInRange  \define \wcpRes_{i + 1}
+          \]
+    \item[\underline{Justifying the \blsSuccessBit{}:}]
+          we define the following shorthand
+          \[
+              \locInternalChecksPassed \define \hurdle_{i+\indexMaxPointEvaluationData} \\
+          \]
+          and impose the following constraints
+          \[
+              \left\{ \begin{array}{lcl}
+                  \hurdle_{i}                  & = & \locZIsInRange                                                   \\ % TODO: actually, the hurdle may be needed only for the PAIRING case
+                  \hurdle_{i + 1}              & = & \locYIsInRange                                                   \\
+                  \locInternalChecksPassed     & = & \locZIsInRange \cdot \locYIsInRange                              \\
+                  \If \locInternalChecksPassed & = & 0 ~ \Then \blsSuccessBit _{i} = 0                                \\
+                  \If \locInternalChecksPassed & = & 1 ~ \Then \blsSuccessBit _{i} \equiv \justifiedByExternalCircuit \\
+              \end{array} \right.
+          \]
+\end{description}
