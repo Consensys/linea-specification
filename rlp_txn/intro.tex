@@ -18,7 +18,7 @@ It verifies that this string is of the form $\locLtTildeOfT$ for some well-forme
 In the process it extracts the fields of that transaction (\texttt{gasPrice}, \texttt{nonce}, \texttt{accessList}, etc\dots{}).
 Any such ``extraction step'' comprises one of the various ``\textbf{phases}'' of the arithmetization presented here.
 Note that this \textbf{does not} include the verification of the validity of these fields (e.g. \texttt{value}, \texttt{gasPrice}, \texttt{nonce}, \dots) against account data.
-The associated checks are performed in the \txnDataMod{} and \hubMod{} modules.
+The associated checks are performed in the \userTxnDataMod{} and \hubMod{} modules.
 Second, it performs the \rlp{} \textbf{encoding} of the relevant data to construct $\locLxTildeOfT$.
 
 Since the layout of the fields of a transaction varies according to the \textbf{transaction type} our arithmetization distinguishes between
@@ -37,7 +37,7 @@ Rather it produces a series of chunks of bytes which, when correctly identified 
 
 We now provide slightly more detail on the procedure.
 First of all we recall that, in the \zkEvm{} in general, and in this module in particular, transactions are identified with their absolute transaction number $\absTxNum$.
-The reader will find more information on this in the \txnDataMod{} module.
+The reader will find more information on this in the \userTxnDataMod{} module.
 We therefore consider a (well-formed) transaction $\locTransaction$ with $\absTxNum \equiv \col{a}$.
 The goal is that, considering exactly those rows $i$ where
 \begin{multicols}{3}
