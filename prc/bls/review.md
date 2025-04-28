@@ -16,8 +16,6 @@
 
 - Considering not using the hurdle when not useful (i.e., does not reduce the degree of the constraints or we are not in the case of a variable size precompile) or rename it to PRELIMINARY_RESULTS
 
-- Fix ordering, point evaluation comes first as it has lower address than BLS precompiles
-
 - Considering using markdown tables (tablemode for vim)
 
 - Finalize POINT_EVALUATION writing so as it can be merged into main

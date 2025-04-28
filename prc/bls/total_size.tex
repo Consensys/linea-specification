@@ -3,6 +3,8 @@ The $\blsTotalSize$ varies depending on the precompile, if data or results are c
 We define the following module constants
 \[
     \left\{ \begin{array}{lcl}
+        \totalSizePointEvaluationData        & \!\!\! \define \!\!\! & \redm{...} \\
+        \totalSizePointEvaluationResult      & \!\!\! \define \!\!\! & \redm{...} \\
         \totalSizeBlsGOneAddData             & \!\!\! \define \!\!\! & \redm{...} \\         
         \totalSizeBlsGOneAddResult           & \!\!\! \define \!\!\! & \redm{...} \\
         \totalSizeBlsGOneMsmDataMin          & \!\!\! \define \!\!\! & \redm{...} \\
@@ -17,8 +19,6 @@ We define the following module constants
         \totalSizeBlsMapFpToGOneResult       & \!\!\! \define \!\!\! & \redm{...} \\
         \totalSizeBlsMapFpTwoToGTwoData      & \!\!\! \define \!\!\! & \redm{...} \\
         \totalSizeBlsMapFpTwoToGTwoResult    & \!\!\! \define \!\!\! & \redm{...} \\
-        \totalSizePointEvaluationData        & \!\!\! \define \!\!\! & \redm{...} \\
-        \totalSizePointEvaluationResult      & \!\!\! \define \!\!\! & \redm{...} \\
     \end{array} \right.
 \]
 Thus we impose the following constraints:
@@ -26,6 +26,7 @@ Thus we impose the following constraints:
     \blsTotalSize _{i}
     =
     \left[ \begin{array}{crcccl}
+        + & \isPointEvaluationData _{i} & \cdot & \totalSizePointEvaluationData \\
         + & \isBlsGOneAddData  _{i} & \cdot & \totalSizeBlsGOneAddData    \\
         + & \isBlsGOneMsmData  _{i} & \cdot & \totalSizeBlsGOneMsmDataMin & \cdot & \totalInputs      _{i} \\
         + & \isBlsGTwoAddData  _{i} & \cdot & \totalSizeBlsGTwoAddData    \\
@@ -33,7 +34,7 @@ Thus we impose the following constraints:
         + & \isBlsPairingCheckData _{i} & \cdot & \totalSizeBlsPairingCheckDataMin & \cdot & \totalInputs _{i} \\
         + & \isBlsMapFpToGOneData _{i} & \cdot & \totalSizeBlsMapFpToGOneData \\
         + & \isBlsMapFpTwoToGTwoData _{i} & \cdot & \totalSizeBlsMapFpTwoToGTwoData \\
-        + & \isPointEvaluationData _{i} & \cdot & \totalSizePointEvaluationData \\
+        + & \isPointEvaluationResult _{i} & \cdot & \totalSizePointEvaluationResult & \cdot & \blsSuccessBit _{i} \\
         + & \isBlsGOneAddResult _{i} & \cdot & \totalSizeBlsGOneAddResult & \cdot & \blsSuccessBit _{i} \\
         + & \isBlsGOneMsmResult _{i} & \cdot & \totalSizeBlsGOneMsmResult & \cdot & \blsSuccessBit _{i} \\
         + & \isBlsGTwoAddResult _{i} & \cdot & \totalSizeBlsGTwoAddResult & \cdot & \blsSuccessBit _{i} \\
@@ -41,12 +42,12 @@ Thus we impose the following constraints:
         + & \isBlsPairingCheckResult _{i} & \cdot & \totalSizeBlsPairingCheckResult & \cdot & \blsSuccessBit _{i} \\
         + & \isBlsMapFpToGOneResult _{i} & \cdot & \totalSizeBlsMapFpToGOneResult & \cdot & \blsSuccessBit _{i} \\
         + & \isBlsMapFpTwoToGTwoResult _{i} & \cdot & \totalSizeBlsMapFpTwoToGTwoResult & \cdot & \blsSuccessBit _{i} \\
-        + & \isPointEvaluationResult _{i} & \cdot & \totalSizePointEvaluationResult & \cdot & \blsSuccessBit _{i} \\
     \end{array} \right]
 \]
 
 \saNote{} The above translates to the following:
 \begin{enumerate}
+    \item \If $\isPointEvaluationData$    \Then $\blsTotalSize = \totalSizePointEvaluationData$
     \item \If $\isBlsGOneAddData$         \Then $\blsTotalSize = \totalSizeBlsGOneAddData$
     \item \If $\isBlsGOneMsmData$         \Then $\blsTotalSize = \totalSizeBlsGOneMsmDataMin \cdot \totalInputs$
     \item \If $\isBlsGTwoAddData$         \Then $\blsTotalSize = \totalSizeBlsGTwoAddData$
@@ -54,7 +55,7 @@ Thus we impose the following constraints:
     \item \If $\isBlsPairingCheckData$    \Then $\blsTotalSize = \totalSizeBlsPairingCheckDataMin \cdot \totalInputs$
     \item \If $\isBlsMapFpToGOneData$     \Then $\blsTotalSize = \totalSizeBlsMapFpToGOneData$
     \item \If $\isBlsMapFpTwoToGTwoData$  \Then $\blsTotalSize = \totalSizeBlsMapFpTwoToGTwoData$
-    \item \If $\isPointEvaluationData$    \Then $\blsTotalSize = \totalSizePointEvaluationData$
+    \item \If $\isPointEvaluationResult$  \Then $\blsTotalSize = \totalSizePointEvaluationResult \cdot \blsSuccessBit$
     \item \If $\isBlsGOneAddResult$       \Then $\blsTotalSize = \totalSizeBlsGOneAddResult \cdot \blsSuccessBit$
     \item \If $\isBlsGOneMsmResult$       \Then $\blsTotalSize = \totalSizeBlsGOneMsmResult \cdot \blsSuccessBit$
     \item \If $\isBlsGTwoAddResult$       \Then $\blsTotalSize = \totalSizeBlsGTwoAddResult \cdot \blsSuccessBit$
@@ -62,7 +63,6 @@ Thus we impose the following constraints:
     \item \If $\isBlsPairingCheckResult$  \Then $\blsTotalSize = \totalSizeBlsPairingCheckResult \cdot \blsSuccessBit$
     \item \If $\isBlsMapFpToGOneResult$   \Then $\blsTotalSize = \totalSizeBlsMapFpToGOneResult \cdot \blsSuccessBit$
     \item \If $\isBlsMapFpTwoToGTwoResult$ \Then $\blsTotalSize = \totalSizeBlsMapFpTwoToGTwoResult \cdot \blsSuccessBit$
-    \item \If $\isPointEvaluationResult$  \Then $\blsTotalSize = \totalSizePointEvaluationResult \cdot \blsSuccessBit$
 \end{enumerate}
 
 \saNote{} We use the name $\totalSizeBlsGOneMsmDataMin, \totalSizeBlsGTwoMsmDataMin, \totalSizeBlsPairingCheckDataMin$ for homogeneity reasons, but it is important to note that:
