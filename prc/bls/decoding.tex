@@ -1,6 +1,11 @@
 We define the usual shorthands
 \[
 	\left\{ \begin{array}{lcl}
+		\locIsPointEvaluation_{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \isPointEvaluationData   _{i} \\
+			+ & \isPointEvaluationResult _{i} \\
+		\end{array} \right] \\
 		\locIsBlsGOneAdd_{i} & \define &
 		\left[ \begin{array}{cl}
 			+ & \isBlsGOneAddData   _{i} \\
@@ -36,11 +41,6 @@ We define the usual shorthands
 			+ & \isBlsMapFpTwoToGTwoData   _{i} \\
 			+ & \isBlsMapFpTwoToGTwoResult _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\locIsPointEvaluation_{i} & \define &
-		\left[ \begin{array}{cl}
-			+ & \isPointEvaluationData   _{i} \\
-			+ & \isPointEvaluationResult _{i} \\
-		\end{array} \right] \\
 	\end{array} \right.
 \]
 and 
@@ -48,6 +48,7 @@ and
 	\left\{ \begin{array}{lcl}
 		\locFlagSum_{i} & \define &
 		\left[ \begin{array}{cl}
+			+ & \locIsPointEvaluation _{i} \\
 			+ & \locIsBlsGOneAdd      _{i} \\
 			+ & \locIsBlsGOneMsm      _{i} \\
 			+ & \locIsBlsGTwoAdd      _{i} \\
@@ -55,10 +56,10 @@ and
 			+ & \locIsBlsPairingCheck _{i} \\
 			+ & \locIsBlsMapFpToGOne  _{i} \\
 			+ & \locIsBlsMapFpTwoToGTwo_{i} \\
-			+ & \locIsPointEvaluation _{i} \\
 		\end{array} \right] \vspace{2mm} \\
 		\locAddressSum_{i} & \define &
 		\left[ \begin{array}{crcl}
+			+ & 10 & \!\!\!\cdot\!\!\! & \locIsPointEvaluation _{i} \\
 			+ & 11 & \!\!\!\cdot\!\!\! & \locIsBlsGOneAdd  _{i} \\
 			+ & 12 & \!\!\!\cdot\!\!\! & \locIsBlsGOneMsm  _{i} \\
 			+ & 13 & \!\!\!\cdot\!\!\! & \locIsBlsGTwoAdd  _{i} \\
@@ -66,7 +67,6 @@ and
 			+ & 15 & \!\!\!\cdot\!\!\! & \locIsBlsPairingCheck  _{i} \\
 			+ & 16 & \!\!\!\cdot\!\!\! & \locIsBlsMapFpToGOne  _{i} \\
 			+ & 17 & \!\!\!\cdot\!\!\! & \locIsBlsMapFpTwoToGTwo_{i} \\
-			+ & 10 & \!\!\!\cdot\!\!\! & \locIsPointEvaluation _{i} \\
 		\end{array} \right] \\
 	\end{array} \right.
 \]
@@ -74,6 +74,8 @@ and
 \[
 	\weightedPhaseFlagSum_{i} \define
 	\left[ \begin{array}{crcl}
+		+ & \phasePointEvaluationData  & \!\!\!\cdot\!\!\! & \isPointEvaluationData  _{i} \\
+		+ & \phasePointEvaluationResult& \!\!\!\cdot\!\!\! & \isPointEvaluationResult_{i} \\
         + & \phaseBlsGOneAddData  & \!\!\!\cdot\!\!\! & \isBlsGOneAddData  _{i} \\
 		+ & \phaseBlsGOneAddResult& \!\!\!\cdot\!\!\! & \isBlsGOneAddResult_{i} \\
 		+ & \phaseBlsGOneMsmData  & \!\!\!\cdot\!\!\! & \isBlsGOneMsmData  _{i} \\
@@ -88,8 +90,6 @@ and
 		+ & \phaseBlsMapFpToGOneResult& \!\!\!\cdot\!\!\! & \isBlsMapFpToGOneResult_{i} \\
 		+ & \phaseBlsMapFpTwoToGTwoData  & \!\!\!\cdot\!\!\! & \isBlsMapFpTwoToGTwoData  _{i} \\
 		+ & \phaseBlsMapFpTwoToGTwoResult& \!\!\!\cdot\!\!\! & \isBlsMapFpTwoToGTwoResult_{i} \\
-		+ & \phasePointEvaluationData  & \!\!\!\cdot\!\!\! & \isPointEvaluationData  _{i} \\
-		+ & \phasePointEvaluationResult& \!\!\!\cdot\!\!\! & \isPointEvaluationResult_{i} \\
 	\end{array} \right] \\
 \]
 and we further define the following shorthands
@@ -97,6 +97,7 @@ and we further define the following shorthands
 	\left\{ \begin{array}{lcl}
 		\locIsData_{i} & \define &  
 		\left[ \begin{array}{cl}
+			+ & \isPointEvaluationData  _{i}   \\
             + & \isBlsGOneAddData  _{i}        \\
 			+ & \isBlsGOneMsmData  _{i}        \\
 			+ & \isBlsGTwoAddData  _{i}        \\
@@ -104,10 +105,10 @@ and we further define the following shorthands
 			+ & \isBlsPairingCheckData  _{i}   \\
 			+ & \isBlsMapFpToGOneData  _{i}    \\
 			+ & \isBlsMapFpTwoToGTwoData  _{i} \\
-			+ & \isPointEvaluationData  _{i}  \\
 		\end{array} \right] \vspace{2mm} \\
 		\locIsResult_{i} & \define &  
 		\left[ \begin{array}{cl}
+			+ & \isPointEvaluationResult  _{i}   \\
 			+ & \isBlsGOneAddResult  _{i}        \\
 			+ & \isBlsGOneMsmResult  _{i}        \\
 			+ & \isBlsGTwoAddResult  _{i}        \\
@@ -115,7 +116,6 @@ and we further define the following shorthands
 			+ & \isBlsPairingCheckResult  _{i}   \\
 			+ & \isBlsMapFpToGOneResult  _{i}    \\
 			+ & \isBlsMapFpTwoToGTwoResult  _{i} \\
-			+ & \isPointEvaluationResult  _{i}  \\
 		\end{array} \right] \\
 	\end{array} \right.
 \]
@@ -148,6 +148,7 @@ and
 \saNote{} It follows that
 \begin{multicols}{4}
 	\begin{enumerate}
+		\item $\locIsPointEvaluation$
 		\item $\locIsBlsGOneAdd$
 		\item $\locIsBlsGOneMsm$
 		\item $\locIsBlsGTwoAdd$
@@ -155,7 +156,6 @@ and
 		\item $\locIsBlsPairingCheck$
 		\item $\locIsBlsMapFpToGOne$
 		\item $\locIsBlsMapFpTwoToGTwo$
-		\item $\locIsPointEvaluation$
 	\end{enumerate}
 \end{multicols}
 \noindent are binary.
