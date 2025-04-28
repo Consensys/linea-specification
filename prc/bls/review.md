@@ -1,6 +1,5 @@
 # OOB
 
-- Add shorthand for bls_fixed_size (it seems we would need that only in one spot, is it actually useful?)
 - Formatting
 
 # BLS
@@ -17,5 +16,3 @@
 22/04
 
 - Ensure the trivility cases are detected correctly even in the case of a single pair of points. Specifically, we need to take into consideration both if the small point and the large point are at infinity.
-- Add POINT_EVALUATION to the BLS module and give priority to this.
-- Merge https://github.com/Consensys/linea-specification/pull/148 into https://github.com/Consensys/linea-specification/pull/129.
