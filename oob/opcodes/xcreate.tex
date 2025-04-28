@@ -1,0 +1,51 @@
+The present section describes the data layout for the \inst{XCREATE} case. As such:
+\[
+	\boxed{\text{All constraints in this subsection further assume } \oobInstIsXcreate _{i} = 1}
+\]
+We remind the reader that purpose of the \oobInstXcreate{} instruction is to detect when a \inst{CREATE(2)}'s
+initialization code size exceeds $\maxInitCodeSize \define 2 \cdot \maxCodeSize = \maxInitCodeSizeValue$.
+These are liable to trigger a \staticxSH{}.
+
+We introduce the following shorthands:
+\[
+	\left\{ \begin{array}{lclr}
+		\locInitCodeSizeHi             & \define & \oobDataCol{1} _{i} \\
+		\locInitCodeSizeLo             & \define & \oobDataCol{2} _{i} \\
+		%                              & \define & \oobDataCol{3} _{i} \\
+		%                              & \define & \oobDataCol{4} _{i} \\
+		%                              & \define & \oobDataCol{5} _{i} \\
+		%                              & \define & \oobDataCol{6} _{i} \\
+		% \locMaxInitCodeSizeException   & \define & \oobDataCol{7} _{i}  & \prediction \\
+		% \locNoMaxInitCodeSizeException & \define & \oobDataCol{8} _{i}  & \prediction \\
+		%                              & \define & \oobDataCol{9} _{i} \\
+	\end{array} \right.
+\]
+We impose the following constraints:
+\begin{description}
+	\item[\underline{Row n°$(i)$:}] we impose the following:
+		\[
+			\left\{ \begin{array}{l}
+				\oobCallToLt
+				{i}{0}
+				{0}{\maxInitCodeSize}
+				{\locInitCodeSizeHi}{\locInitCodeSizeLo}
+				\vspace{2mm} \\
+				\locExceedsMaxInitCodeSize = 1
+			\end{array} \right.
+		\]
+		where we define the following associated shorthand
+		\[
+			\locExceedsMaxInitCodeSize \define \outgoingResLo _{i}
+		\]
+		\saNote{}
+		It follows that $\locExceedsMaxInitCodeSize = 1 \iff \maxInitCodeSizeValue < \col{init\_code\_size}$.
+		The final constraint therefore enforces that the init code size exceed $\maxInitCodeSizeValue$.
+	% \item[\underline{Justifying the \hubMod's prediction:}]
+	% 	we impose
+	% 	\[
+	% 		\left\{ \begin{array}{lcl}
+	% 			\locMaxInitCodeSizeException   & = & \locExceedsMaxInitCodeSize     \\
+	% 			\locNoMaxInitCodeSizeException & = & 1 - \locExceedsMaxInitCodeSize \\
+	% 		\end{array} \right.
+	% 	\]
+\end{description}

@@ -6,6 +6,10 @@
 \define@cmdkey [MXP] {var} {deploys}              {}
 \define@cmdkey [MXP] {var} {offsetHi}             {}
 \define@cmdkey [MXP] {var} {offsetLo}             {}
+\define@cmdkey [MXP] {var} {targetOffsetHi}       {}
+\define@cmdkey [MXP] {var} {targetOffsetLo}       {}
+\define@cmdkey [MXP] {var} {sourceOffsetHi}       {}
+\define@cmdkey [MXP] {var} {sourceOffsetLo}       {}
 \define@cmdkey [MXP] {var} {sizeHi}               {}
 \define@cmdkey [MXP] {var} {sizeLo}               {}
 \define@cmdkey [MXP] {var} {callDataOffsetHi}     {}
@@ -18,6 +22,7 @@
 \define@cmdkey [MXP] {var} {returnAtCapacityLo}   {}
 
 
+
 \presetkeys    [MXP] {var} {
 	anchorRow          = \missingParameter,
 	relOffset          = \missingParameter,
@@ -25,6 +30,10 @@
         deploys            = \missingParameter,
         offsetHi           = \missingParameter,
         offsetLo           = \missingParameter,
+        targetOffsetHi     = \missingParameter,
+        targetOffsetLo     = \missingParameter,
+        sourceOffsetHi     = \missingParameter,
+        sourceOffsetLo     = \missingParameter,
         sizeHi             = \missingParameter,
         sizeLo             = \missingParameter,
         callDataOffsetHi   = \missingParameter,
@@ -43,6 +52,7 @@
 \newcommand{\setMxpInstructionTypeThreeName}   {\texttt{setMxpInstructionType\_3}}
 \newcommand{\setMxpInstructionTypeFourName }   {\texttt{setMxpInstructionType\_4}}
 \newcommand{\setMxpInstructionTypeFiveName }   {\texttt{setMxpInstructionType\_5}}
+\newcommand{\setMxpInstructionMcopyName    }   {\texttt{setMxpInstructionMcopy}}
 
 % misc/MXP instructions
 \newcommand{\setMxpInstructionTypeOne}      [2]     {\setMxpInstructionTypeOneName   _{#1} \big[\;#2\;]}
@@ -50,10 +60,10 @@
     \setkeys[MXP]{var}{#1}
     \setMxpInstructionTypeTwoName _{\cmdMXP@var@anchorRow}
     \left[ \begin{array}{ll}
-        \utt{Rel. row offset:}  & \cmdMXP@var@relOffset   \\
-        \utt{Instruction:}      & \cmdMXP@var@instruction \\
-        \utt{Offset high part:} & \cmdMXP@var@offsetHi    \\
-        \utt{Offset low  part:} & \cmdMXP@var@offsetLo    \\
+        \utt{Rel. row offset:} & \cmdMXP@var@relOffset   \\
+        \utt{Instruction:}     & \cmdMXP@var@instruction \\
+        \utt{Offset hi part:}  & \cmdMXP@var@offsetHi    \\
+        \utt{Offset lo part:}  & \cmdMXP@var@offsetLo    \\
     \end{array} \right]
 }
 
@@ -62,8 +72,8 @@
     \setMxpInstructionTypeThreeName _{\cmdMXP@var@anchorRow}
     \left[ \begin{array}{ll}
         \utt{Rel. row offset:}  & \cmdMXP@var@relOffset \\
-        \utt{Offset high part:} & \cmdMXP@var@offsetHi  \\
-        \utt{Offset low  part:} & \cmdMXP@var@offsetLo  \\
+        \utt{Offset hi part:}   & \cmdMXP@var@offsetHi  \\
+        \utt{Offset lo part:}   & \cmdMXP@var@offsetLo  \\
     \end{array} \right]
 }
 
@@ -71,13 +81,13 @@
     \setkeys[MXP]{var}{#1}
     \setMxpInstructionTypeFourName _{\cmdMXP@var@anchorRow}
     \left[ \begin{array}{ll}
-        \utt{Rel. row offset:}     & \cmdMXP@var@relOffset   \\
-        \utt{Instruction:}         & \cmdMXP@var@instruction \\
-        \utt{Deploys byte code:}   & \cmdMXP@var@deploys     \\
-        \utt{Offset high part:}    & \cmdMXP@var@offsetHi    \\
-        \utt{Offset low  part:}    & \cmdMXP@var@offsetLo    \\
-        \utt{Size high part:}      & \cmdMXP@var@sizeHi      \\
-        \utt{Size low  part:}      & \cmdMXP@var@sizeLo      \\
+        \utt{Rel. row offset:}   & \cmdMXP@var@relOffset   \\
+        \utt{Instruction:}       & \cmdMXP@var@instruction \\
+        \utt{Deploys byte code:} & \cmdMXP@var@deploys     \\
+        \utt{Offset hi part:}    & \cmdMXP@var@offsetHi    \\
+        \utt{Offset lo part:}    & \cmdMXP@var@offsetLo    \\
+        \utt{Size hi part:}      & \cmdMXP@var@sizeHi      \\
+        \utt{Size lo part:}      & \cmdMXP@var@sizeLo      \\
     \end{array} \right]
 }
 
@@ -85,18 +95,19 @@
     \setkeys[MXP]{var}{#1}
     \setMxpInstructionTypeFiveName _{\cmdMXP@var@anchorRow}
     \left[ \begin{array}{ll}
-        \utt{Rel. row offset:}              & \cmdMXP@var@relOffset          \\
-        \utt{Instruction:}                  & \cmdMXP@var@instruction        \\
-        \utt{Call data offset high part:}   & \cmdMXP@var@callDataOffsetHi   \\
-        \utt{Call data offset low  part:}   & \cmdMXP@var@callDataOffsetLo   \\
-        \utt{Call data size high part:}     & \cmdMXP@var@callDataSizeHi     \\
-        \utt{Call data size low  part:}     & \cmdMXP@var@callDataSizeLo     \\
-        \utt{Return at offset high part:}   & \cmdMXP@var@returnAtOffsetHi   \\
-        \utt{Return at offset low  part:}   & \cmdMXP@var@returnAtOffsetLo   \\
-        \utt{Return at capacity high part:} & \cmdMXP@var@returnAtCapacityHi \\
-        \utt{Return at capacity low  part:} & \cmdMXP@var@returnAtCapacityLo \\
+        \utt{Rel. row offset:}            & \cmdMXP@var@relOffset          \\
+        \utt{Instruction:}                & \cmdMXP@var@instruction        \\
+        \utt{Call data offset hi part:}   & \cmdMXP@var@callDataOffsetHi   \\
+        \utt{Call data offset lo part:}   & \cmdMXP@var@callDataOffsetLo   \\
+        \utt{Call data size hi part:}     & \cmdMXP@var@callDataSizeHi     \\
+        \utt{Call data size lo part:}     & \cmdMXP@var@callDataSizeLo     \\
+        \utt{Return at offset hi part:}   & \cmdMXP@var@returnAtOffsetHi   \\
+        \utt{Return at offset lo part:}   & \cmdMXP@var@returnAtOffsetLo   \\
+        \utt{Return at capacity hi part:} & \cmdMXP@var@returnAtCapacityHi \\
+        \utt{Return at capacity lo part:} & \cmdMXP@var@returnAtCapacityLo \\
     \end{array} \right]
 }
+
 
 \iffalse
 \setMxpInstructionTypeFive {
@@ -111,5 +122,31 @@
     returnAtOffsetLo   = ,
     returnAtCapacityHi = ,
     returnAtCapacityLo = ,
+    }
+\fi
+
+\newcommand{\setMxpInstructionMcopy}     [1]     {
+    \setkeys[MXP]{var}{#1}
+    \setMxpInstructionMcopyName _{\cmdMXP@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:}  & \cmdMXP@var@relOffset      \\
+        \utt{Target offset hi:} & \cmdMXP@var@targetOffsetHi \\
+        \utt{Target offset lo:} & \cmdMXP@var@targetOffsetLo \\
+        \utt{Source offset hi:} & \cmdMXP@var@sourceOffsetHi \\
+        \utt{Source offset lo:} & \cmdMXP@var@sourceOffsetLo \\
+        \utt{Size hi part:}     & \cmdMXP@var@sizeHi         \\
+        \utt{Size lo part:}     & \cmdMXP@var@sizeLo         \\
+    \end{array} \right]
+}
+
+\iffalse
+\setMxpInstructionMcopy {
+    relOffset      = ,
+    targetOffsetHi = ,
+    targetOffsetLo = ,
+    sourceOffsetHi = ,
+    sourceOffsetLo = ,
+    sizeHi         = ,
+    sizeLo         = ,
     }
 \fi
