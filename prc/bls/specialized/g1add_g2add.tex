@@ -28,3 +28,47 @@ We introduce the following (local) shorthands:
         \locBYZero  & \define & \blsLimb_{i + 15} \\
     \end{array} \right.
 \]
+
+We set the following constraints:
+
+\begin{description}
+    \item[\underline{Row $n^°(i)$:}]
+          we impose
+          \[
+                \wcpGeneralizedCallToLt {
+                    anchorRow = i             ,
+                    relOffset = 0             ,
+                    argOneThree = \locAXThree ,
+                    argOneTwo   = \locAXTwo   ,
+                    argOneOne   = \locAXOne   ,
+                    argOneZero  = \locAXZero  ,
+                    argTwoThree = \hdots      ,
+                    argTwoTwo   = \hdots      ,
+                    argTwoOne   = \hdots      ,
+                    argTwoZero  = \hdots      ,
+                }
+          \]
+          as well as define the shorthand
+          \[
+              \locAIsInRange \define \partialComputations_{i}
+          \]
+    % TODO: consider adding function similar to callToWellFormedCoordinates used in ecdata
+    % we need Ax, Ay, Bx, By to be in range and to check if (Ax, Ay) and (Bx, By) are at infinity    
+
+    % \item[\underline{Justifying the \blsSuccessBit{}:}]
+    %       we define the following shorthand
+    %       \[
+    %           \locInternalChecksPassed \define \partialComputations_{i+\indexMaxPointEvaluationData} \\
+    %       \]
+    %       and impose the following constraints
+    %       \[
+    %           \left\{ \begin{array}{lcl}
+    %               \partialComputations_{i}                  & = & \locZIsInRange                                                   \\ % TODO: actually, the hurdle may be needed only for the PAIRING case
+    %               \partialComputations_{i + 1}              & = & \locYIsInRange                                                   \\
+    %               \locInternalChecksPassed     & = & \locZIsInRange \cdot \locYIsInRange                              \\
+    %               \If \locInternalChecksPassed & = & 0 ~ \Then \blsSuccessBit _{i} = 0                                \\
+    %               \If \locInternalChecksPassed & = & 1 ~ \Then \blsSuccessBit _{i} \equiv \justifiedByExternalCircuit \\
+    %           \end{array} \right.
+    %       \]
+\end{description}
+

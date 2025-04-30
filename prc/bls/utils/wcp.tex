@@ -66,3 +66,85 @@ and
                 \end{array} \right.
     \end{array} \right.
 \]
+and
+\[
+    \left\{ \begin{array}{l}
+        \wcpGeneralizedCallToLt {
+            anchorRow = i             ,
+            relOffset = \relof        ,
+            argOneThree = \col{a}     ,
+            argOneTwo   = \col{b}     ,
+            argOneOne   = \col{c}     ,
+            argOneZero  = \col{d}     ,
+            argTwoThree = \col{e}     ,
+            argTwoTwo   = \col{f}     ,
+            argTwoOne   = \col{g}     ,
+            argTwoZero  = \col{h}     ,
+        }
+        \vspace{4mm} \\
+        \qquad \qquad \iff
+        \left\{ \begin{array}{l}
+            \wcpCallToLt {
+                anchorRow = i             ,
+                relOffset = \relof        ,
+                argOneHi  = \col{a}       ,
+                argOneLo  = \col{b}       ,
+                argTwoHi  = \col{e}       ,
+                argTwoLo  = \col{f}       ,
+            } \\
+            \wcpCallToEq {
+                anchorRow = i             ,
+                relOffset = \relof + 1    ,
+                argOneHi  = \col{a}       ,
+                argOneLo  = \col{b}       ,
+                argTwoHi  = \col{e}       ,
+                argTwoLo  = \col{f}       ,
+            } \\
+            \wcpCallToLt {
+                anchorRow = i             ,
+                relOffset = \relof + 2    ,
+                argOneHi  = \col{c}       ,
+                argOneLo  = \col{d}       ,
+                argTwoHi  = \col{g}       ,
+                argTwoLo  = \col{h}       ,
+            } \\
+            \locWcpGeneralizedRes = \wcpRes_{i+\relof} \cdot (\wcpRes_{i+\relof+1} + \wcpRes_{i+\relof+2})
+            \partialComputations_{i+\relof} = \locWcpGeneralizedRes
+        \end{array} \right.
+    \end{array} \right.
+\]
+and
+% TODO: do we actually need this to check if a point is at infinity or can we just check that the sum of the coordinates is zero?
+\[
+    \left\{ \begin{array}{l}
+        \wcpGeneralizedCallToIszero {
+            anchorRow = i             ,
+            relOffset = \relof        ,
+            argOneThree = \col{a}     ,
+            argOneTwo   = \col{b}     ,
+            argOneOne   = \col{c}     ,
+            argOneZero  = \col{d}     ,
+        }
+        \vspace{4mm} \\
+        \qquad \qquad \iff
+        \left\{ \begin{array}{l}
+            \wcpCallToIszero {
+                anchorRow = i             ,
+                relOffset = \relof        ,
+                argOneHi  = \col{a}       ,
+                argOneLo  = \col{b}       ,
+            } \\
+            \wcpCallToIszero {
+                anchorRow = i             ,
+                relOffset = \relof + 1    ,
+                argOneHi  = \col{c}       ,
+                argOneLo  = \col{d}       ,
+            } \\
+            \locWcpGeneralizedRes = \wcpRes_{i+\relof} \cdot \wcpRes_{i+\relof+1}
+            \partialComputations_{i+\relof} = \locWcpGeneralizedRes
+        \end{array} \right.
+    \end{array} \right.
+\]
+
+
+
