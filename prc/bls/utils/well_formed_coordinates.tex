@@ -1,0 +1,61 @@
+\[
+    \left\{ \begin{array}{l}
+        \callToWellFormedCoordinatesBls{\relof}{\locPXThree}{\locPXTwo}{\locPXOne}{\locPXZero}{\locPYThree}{\locPYTwo}{\locPYOne}{\locPYZero} \vspace{4mm} \\
+        
+        \qquad \qquad \iff
+        \left\{ \begin{array}{l}
+
+                    \wcpGeneralizedCallToLt {
+                         anchorRow = i             ,
+                         relOffset = \relof        ,
+                         argOneThree = \locPXThree ,
+                         argOneTwo   = \locPXTwo   ,
+                         argOneOne   = \locPXOne   ,
+                         argOneZero  = \locPXZero  ,
+                         argTwoThree = \hdots      ,
+                         argTwoTwo   = \hdots      ,
+                         argTwoOne   = \hdots      ,
+                         argTwoZero  = \hdots      ,
+                    } \\ % TODO: add correct prime
+                    \locPXIsInRange \define \wcpRes_{i+\relof} \\
+
+                    \vspace{1mm}
+
+                    \wcpGeneralizedCallToLt {
+                         anchorRow = i             ,
+                         relOffset = \relof + 4    ,
+                         argOneThree = \locPYThree ,
+                         argOneTwo   = \locPYTwo   ,
+                         argOneOne   = \locPYOne   ,
+                         argOneZero  = \locPYZero  ,
+                         argTwoThree = \hdots      ,
+                         argTwoTwo   = \hdots      ,
+                         argTwoOne   = \hdots      ,
+                         argTwoZero  = \hdots      ,
+                    } \\ % TODO: add correct prime
+                    \locPYIsInRange \define \wcpRes_{i+\relof+4} \\
+
+                    \vspace{1mm}
+
+                    \locWellFormedCoordinates \define \partialComputations_{i + \relof}              \\
+                    \locWellFormedCoordinates = \locPXIsInRange \cdot \locPYIsInRange   \\
+                    
+                    % \vspace{1mm}
+                    
+                    \locVeryLargeSum  \define
+                    \left[ \begin{array}{r}
+                            + \locPXThree + \locPXTwo + \locPXOne + \locPXZero  \\
+                            + \locPYThree + \locPYTwo + \locPYOne + \locPYZero  \\
+                    \end{array} \right]          \\
+
+                    \locPXpYIsInfinity  \define  \isInfinity_{i+\relof}                 \\
+
+                    \If \locWellFormedCoordinates = 0 ~ \Then \locPXpYIsInfinity = 0    \\
+                    \If \locWellFormedCoordinates = 1 ~ \Then                           \\
+                    \qquad \If \locVeryLargeSum =    0  ~ \Then  \locPXpYIsInfinity = 1 \\
+                    \qquad \If \locVeryLargeSum \neq 0  ~ \Then  \locPXpYIsInfinity = 0 \\
+                \end{array} \right.
+    \end{array} \right.
+\]
+%
+\saNote{} $\partialComputations_{\relof}$ is expected to contain the final result. Intermediate results may be contained in the subsequents rows. %, potentially up to $\relof + 5$.
