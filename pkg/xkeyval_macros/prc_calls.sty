@@ -1,0 +1,57 @@
+\makeatletter
+% DEFINING KEYS
+
+\define@cmdkey [PRC] {var} {anchorRow} {} % "i" in the spec, ALWAYS use this name
+\define@cmdkey [PRC] {var} {relOffset} {} % relative offset, ALWAYS use this name
+% \define@cmdkey [PRC] {var} {argOneHi}  {}
+% \define@cmdkey [PRC] {var} {argOneLo}  {}
+% \define@cmdkey [PRC] {var} {argTwoHi}  {}
+% \define@cmdkey [PRC] {var} {argTwoLo}  {}
+
+\define@cmdkey [PRC] {var} {argOneThree}  {}
+\define@cmdkey [PRC] {var} {argOneTwo}    {}
+\define@cmdkey [PRC] {var} {argOneOne}    {}
+\define@cmdkey [PRC] {var} {argOneZero}   {}
+\define@cmdkey [PRC] {var} {argTwoThree}  {}
+\define@cmdkey [PRC] {var} {argTwoTwo}    {}
+\define@cmdkey [PRC] {var} {argTwoOne}    {}
+\define@cmdkey [PRC] {var} {argTwoZero}   {}
+
+% the above defines macros à la "\cmdPRC@var@anchorRow"
+
+% DEFAULT VALUES
+\presetkeys [PRC] {var} {
+	anchorRow = \missingParameter,
+	relOffset = \missingParameter,
+	% argOneHi  = \missingParameter,
+	% argOneLo  = \missingParameter,
+	% argTwoHi  = \missingParameter,
+	% argTwoLo  = \missingParameter,
+	argOneThree = \missingParameter,
+	argOneTwo   = \missingParameter,
+	argOneOne   = \missingParameter,
+	argOneZero  = \missingParameter,
+	argTwoThree = \missingParameter,
+	argTwoTwo   = \missingParameter,
+	argTwoOne   = \missingParameter,
+	argTwoZero  = \missingParameter,
+}{}
+
+
+
+\newcommand{\callToWellFormedCoordinatesBlsName} {\texttt{callToWellFormedCoordinates}}
+\newcommand{\callToWellFormedCoordinatesBls} [1] {
+	\setkeys[PRC]{var}{#1}
+	\callToWellFormedCoordinatesBlsName _{\cmdPRC@var@anchorRow}
+	\left[ \begin{array}{ll}
+			\utt{Rel. row offset:}  & \cmdPRC@var@relOffset    \\
+			\utt{First argument 3:} & \cmdPRC@var@argOneThree  \\
+			\utt{First argument 2:} & \cmdPRC@var@argOneTwo    \\
+			\utt{First argument 1:} & \cmdPRC@var@argOneOne    \\
+			\utt{First argument 0:} & \cmdPRC@var@argOneZero   \\
+			\utt{Second argument 3:} & \cmdPRC@var@argTwoThree  \\
+			\utt{Second argument 2:} & \cmdPRC@var@argTwoTwo    \\
+			\utt{Second argument 1:} & \cmdPRC@var@argTwoOne    \\
+			\utt{Second argument 0:} & \cmdPRC@var@argTwoZero   \\
+		\end{array} \right]
+}
