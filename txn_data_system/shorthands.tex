@@ -1,0 +1,34 @@
+We define some standard shorthands:
+\[
+	\left\{ \begin{array}{lcrrr}
+		\locFlagSum         _{i} & \define & \isMacro _{i} & + & \isComputation _{i}                      \\
+		\locWeightedFlagSum _{i} & \define & \isMacro _{i} & + & 2 \cdot \isComputation _{i} \vspace{2mm} \\
+		\locCtMaxSum        _{i} & \define &
+		\multicolumn{3}{l}{\left[ \begin{array}{crcl}
+			+ & \locCtMaxNoop          & \!\!\!\cdot\!\!\! & \macroSystemTxnNoop          _{i} \\
+			+ & \locCtMaxEipBeaconRoot & \!\!\!\cdot\!\!\! & \macroSystemTxnEipBeaconRoot _{i} \\
+			+ & \locCtMaxEipBlockHash  & \!\!\!\cdot\!\!\! & \macroSystemTxnEipBlockHash  _{i} \\
+		\end{array} \right]}
+		\\
+	\end{array} \right.
+\]
+where
+\[
+	\left\{ \begin{array}{lcl}
+		\locCtMaxNoop          & \define & \locCtMaxNoopValue          \\
+		\locCtMaxEipBeaconRoot & \define & \locCtMaxEipBeaconRootValue \\
+		\locCtMaxEipBlockHash  & \define & \locCtMaxEipBlockHashValue  \\
+	\end{array} \right.
+\]
+and
+\[
+	\left\{ \begin{array}{lcrrr}
+		\locTransitionToMacro       _{i} & \define & (1 - \isMacro       _{i}) & \cdot & \isMacro       _{i + 1}              \\
+		\locTransitionToComputation _{i} & \define & (1 - \isComputation _{i}) & \cdot & \isComputation _{i + 1} \vspace{2mm} \\
+		\multicolumn{5}{l}{\locTransitionSum _{i} \define
+		\left[ \begin{array}{cl}
+			+ & \locTransitionToMacro       _{i} \\
+			+ & \locTransitionToComputation _{i} \\
+		\end{array} \right]} \\
+	\end{array} \right.
+\]

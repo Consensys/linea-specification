@@ -4,7 +4,7 @@
 
 
 Suppose we are given a bit $\col{b} \in \{ 0, 1\}$. We let $\createSP\big[\col{b}\big]_{i}$ stand for the following collection of constraints spanning rows $i$ and $i+1$.
-The first lot of constraints pertains to the first row (i.e. $\ct_{i} = 0$):
+The first lot of constraints pertains to the first row (i.e. $\tliCounter_{i} = 0$):
 \begin{description}
 	\item[\underline{Stack Item $n^\circ\,1$:}] ---
 	\[
@@ -30,7 +30,7 @@ The first lot of constraints pertains to the first row (i.e. $\ct_{i} = 0$):
 	\item[\underline{Stack Item $n^\circ\,4$:}] is empty i.e. $\emptyStackItem{4}_{i}$;
 	\item[\underline{Height update:}] $\stackHeight{}\new{}_{i} = \stackHeight{}_{i} - 2 - \col{b}$ \quad (\sanityCheck);
 \end{description}
-The second lot of constraints pertains to the second row (i.e. $\ct_{i + 1} = 1$):
+The second lot of constraints pertains to the second row (i.e. $\tliCounter_{i + 1} = 1$):
 \begin{description}
 	\item[\underline{Stack Item ``$n^\circ\,5$'':}] is empty i.e. $\emptyStackItem{1}_{i + 1}$;
 	\item[\underline{Stack Item ``$n^\circ\,6$'':}] contains the \emph{salt} in case of a \inst{CREATE2}, empty otherwise:
@@ -82,12 +82,12 @@ the ``($\col{b} = 1$)-variant'' (figure~\ref{fig: create2 stack pattern}) is the
 \[
 	\begin{array}{|l|r|r|c|c|}
 	\cline{2-5}
-	\multicolumn{1}{c|}{\ct_{i} = 0}      & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  \\
-	\multicolumn{1}{c|}{}                 & \multicolumn{1}{c|}{\text{Item 1}} & \multicolumn{1}{c|}{\text{Item 2}} & \multicolumn{1}{c|}{\text{Item 3}} & \multicolumn{1}{c|}{\text{Item 4}} \\ \hline
-	\stackItemHeight{k}_{i}               & \col{h} - 1                        & \col{h} - 2                        & \nothing                           & \nothing                           \\ \hline
-	\stackItemValHi{k}/\stackItemValLo{k} & \col{offset}                       & \col{init\_code\_size}             & \nothing                           & \nothing                           \\ \hline
-	\stackItemPop{k}_{i}                  & 1                                  & 1                                  & \nothing                           & \nothing                           \\ \hline
-	\stackItemStamp{k}_{i}                & \hubTau \cdot \col{st} + 1         & \hubTau \cdot \col{st} + 2         & \nothing                           & \nothing                           \\ \hline
+	\multicolumn{1}{c|}{\tliCounter_{i} = 0} & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  \\
+	\multicolumn{1}{c|}{}                    & \multicolumn{1}{c|}{\text{Item 1}} & \multicolumn{1}{c|}{\text{Item 2}} & \multicolumn{1}{c|}{\text{Item 3}} & \multicolumn{1}{c|}{\text{Item 4}} \\ \hline
+	\stackItemHeight{k}_{i}                  & \col{h} - 1                        & \col{h} - 2                        & \nothing                           & \nothing                           \\ \hline
+	\stackItemValHi{k}/\stackItemValLo{k}    & \col{offset}                       & \col{init\_code\_size}             & \nothing                           & \nothing                           \\ \hline
+	\stackItemPop{k}_{i}                     & 1                                  & 1                                  & \nothing                           & \nothing                           \\ \hline
+	\stackItemStamp{k}_{i}                   & \hubTau \cdot \col{st} + 1         & \hubTau \cdot \col{st} + 2         & \nothing                           & \nothing                           \\ \hline
 	\end{array}
 \]
 \caption{%
@@ -97,12 +97,12 @@ We write $\col{h} := \stackHeight_{i}$ and $\col{st} := \hubStamp_{i}$.}
 	\tag{$\col{b} = 0$}
 	\begin{array}{|l|c|c|r|r|}
 	\cline{2-5}
-	\multicolumn{1}{c|}{\ct_{i + 1} = 1}                    & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}   \\
-	\multicolumn{1}{c|}{}                                   & \multicolumn{1}{c|}{\text{Item 1}} & \multicolumn{1}{c|}{\text{Item 2}} & \multicolumn{1}{c|}{\text{Item 3}} & \multicolumn{1}{c|}{\text{Item 4}}  \\ \hline
-	\stackItemHeight{k}_{i + 1}                             & \nothing                           & \nothing                           & \col{h}                            & \col{h} - 2                         \\ \hline 
-	\stackItemValHi{k}_{i + 1} / \stackItemValLo{k}_{i + 1} & \nothing                           & \nothing                           & \col{value}                        & \col{address (or 0)}                \\ \hline
-	\stackItemPop{k}_{i + 1}                                & \nothing                           & \nothing                           & 1                                  & 0                                   \\ \hline
-	\stackItemStamp{k}_{i + 1}                              & \nothing                           & \nothing                           & \hubTau \cdot \col{st}             & \hubTau \cdot \col{st} + 4          \\ \hline
+	\multicolumn{1}{c|}{\tliCounter_{i + 1} = 1}            & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  \\
+	\multicolumn{1}{c|}{}                                   & \multicolumn{1}{c|}{\text{Item 1}} & \multicolumn{1}{c|}{\text{Item 2}} & \multicolumn{1}{c|}{\text{Item 3}} & \multicolumn{1}{c|}{\text{Item 4}} \\ \hline
+	\stackItemHeight{k}_{i + 1}                             & \nothing                           & \nothing                           & \col{h}                            & \col{h} - 2                        \\ \hline
+	\stackItemValHi{k}_{i + 1} / \stackItemValLo{k}_{i + 1} & \nothing                           & \nothing                           & \col{value}                        & \col{address (or 0)}               \\ \hline
+	\stackItemPop{k}_{i + 1}                                & \nothing                           & \nothing                           & 1                                  & 0                                  \\ \hline
+	\stackItemStamp{k}_{i + 1}                              & \nothing                           & \nothing                           & \hubTau \cdot \col{st}             & \hubTau \cdot \col{st} + 4         \\ \hline
 	\end{array}
 \]
 \label{fig: create stack pattern}
@@ -113,9 +113,9 @@ We write $\col{h} := \stackHeight_{i}$ and $\col{st} := \hubStamp_{i}$.}
 	\tag{$\col{b} = 1$}
 	\begin{array}{|l|c|r|r|r|}
 	\cline{2-5}
-	\multicolumn{1}{c|}{\ct_{i + 1} = 1}                    & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  \\
+	\multicolumn{1}{c|}{\tliCounter_{i + 1} = 1}            & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  \\
 	\multicolumn{1}{c|}{}                                   & \multicolumn{1}{c|}{\text{Item 1}} & \multicolumn{1}{c|}{\text{Item 2}} & \multicolumn{1}{c|}{\text{Item 3}} & \multicolumn{1}{c|}{\text{Item 4}} \\ \hline
-	\stackItemHeight{k}_{i + 1}                             & \nothing                           & \col{h} - 3                        & \col{h}                            & \col{h} - 3                        \\ \hline 
+	\stackItemHeight{k}_{i + 1}                             & \nothing                           & \col{h} - 3                        & \col{h}                            & \col{h} - 3                        \\ \hline
 	\stackItemValHi{k}_{i + 1} / \stackItemValLo{k}_{i + 1} & \nothing                           & \col{salt}                         & \col{value}                        & \col{address (or 0)}               \\ \hline
 	\stackItemPop{k}_{i + 1}                                & \nothing                           & 1                                  & 1                                  & 0                                  \\ \hline
 	\stackItemStamp{k}_{i + 1}                              & \nothing                           & \hubTau \cdot \col{st} + 3         & \hubTau \cdot \col{st}             & \hubTau \cdot \col{st} + 4         \\ \hline

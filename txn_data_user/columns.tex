@@ -1,0 +1,147 @@
+The first volley of columns pertain to heartbeat and bookkeeping:
+\begin{enumerate}
+	\item $\relBlock$:
+		current relative block number in this conflation;
+	\item $\relTxMax$:
+		total number of transactions in the current block;
+	\item $\relTx$:
+		relative transaction number in the current block;
+	\item $\ABSTXNUM^\infty$:
+		total number of transactions in the conflation; 
+	\item $\ABSTXNUM$:
+		relative transaction number in the conflation;
+\end{enumerate}
+To simplify notations we use the following abbreviations/shorthands
+\[
+	\left\{ \begin{array}{lcl}
+		\block     & \!\!\!\define\!\!\! & \relBlock        \vspace{2mm} \\
+		\locRelMax & \!\!\!\define\!\!\! & \relTxMax                     \\
+		\locRel    & \!\!\!\define\!\!\! & \relTx           \vspace{2mm} \\
+		\locAbsMax & \!\!\!\define\!\!\! & \ABSTXNUM^\infty              \\
+		\locAbs    & \!\!\!\define\!\!\! & \ABSTXNUM                     \\
+	\end{array} \right.
+\]
+We explain how to extract \locAbs{} from \block{} and \locRel{} in section~(\ref{user txn data: constraints: constructing ABS}).
+
+The next volley of columns pertains to sender account information:
+\begin{enumerate}[resume]
+	\item $\txFrom\high$, $\txFrom\low$:
+		\markAsExtractedFromEcrecover{}
+		high and low parts of the sender address;
+	\item $\txNonce$:
+		\markAsExtractedFromRlpTxn{}
+		transaction nonce;
+	\item $\txInitialBalance$:
+		\markAsExtractedFromHub{}
+		\godGiven{}
+		sender account's balance right before the transaction starts execution; confirmed against state data in the \hubMod{} module;
+	\item $\txValue$:
+		\markAsExtractedFromRlpTxn{}
+		contains the value to be transferred in the transaction;
+\end{enumerate}
+The next volley of columns pertains to recipient account information:
+\begin{enumerate}[resume]
+	\item $\txTo\high$, $\txTo\low$:
+		\markAsSometimesExtractedFromRlpTxn{}
+		columns containing the high and low part of the recipient address;
+	\item $\txIsDeployment$:
+		\markAsExtractedFromRlpTxn{}
+		binary column; equals $1$ $\iff$ the transaction is a contract creation i.e. $T_\text{t} = \varnothing$;
+\end{enumerate}
+The next volley of columns pertains to gas and gas price parameters: 
+\begin{enumerate}[resume]
+	\item $\txGasLimit$:
+		\markAsExtractedFromRlpTxn{}
+		column containing the gas limit as specified in the transaction;
+	\item $\txInitialGas$:
+		\markAsComputedHere{}
+		gas available after deducting the \textbf{intrinsic gas} from the gas limit;
+	\item $\txGasPrice$:
+		\markAsComputedHere{}
+		column containing the gas price as returned by the \inst{GASPRICE} opcode;
+	\item $\txPriorityFeePerGas$:
+		\markAsComputedHere{}
+		column containing the effective rate at which the \inst{COINBASE} address receives fees;
+	\item $\txBasefee$:
+		\markAsExtractedFromBtc{}
+		conflation-constant column containing the base fee;
+	\item $\txCoinbase\high$, $\txCoinbase\low$:
+		\markAsExtractedFromBtc{}
+		conflation-constant columns containing the (high and low parts of the) coinbase address;
+	\item $\blockGasLimit$:
+		\markAsExtractedFromBtc{}
+		block-constant columns containing the block gas limit;
+\end{enumerate}
+Recall that the \textbf{intrinsic gas (cost)} is ``the amount of gas this transaction requires to be paid prior to execution'' \ob{TODO: add reference ot \cite{EYP-London}, page 9}.
+
+The following are other data related to the transaction (such as data size and transaction type):
+\begin{enumerate}[resume]
+	\item $\txCallDataSize$:
+		\markAsExtractedFromRlpTxn{}
+		column containing the call data size of message call transactions;
+	\item $\txInitCodeSize$:
+		\markAsExtractedFromRlpTxn{}
+		column containing the initialization code size of deployment transactions;
+	\item $\txIsLegacy$, $\txIsAccessSet$, $\txIsTypeTwo$:
+		\markAsExtractedFromRlpTxn{}
+		transaction constant exclusive binary columns;
+\end{enumerate}
+We now list several columns which record \textbf{transaction data} extracted from the \hubMod{} either at the beginning of a transaction or at transaction end.
+\begin{enumerate}[resume]
+	\item $\txRequiresEvmExecution$:
+		\markAsComputedHere{}
+		\markAsExtractedFromHub{}
+		\partiallyGodGiven{}
+		binary column; records whether the transaction required \textsc{EVM} execution;  confirmed in the \hubMod{} module;
+	\item \txCopyTxcd{}:
+		\markAsComputedHere{}
+		binary columns;
+		indicates wheter the transaction is provided with call data and whether it needs to be transferred to \textsc{ram} during the \hubMod{}'s initialization phase;
+	\item $\txLeftoverGas$:
+		\markAsExtractedFromHub{}
+		\godGiven{}
+		left over gas after transaction processing; what the yellow paper calls $g'$; confirmed in the \hubMod{} module;
+	\item $\txFinalRefundCounter$:
+		\markAsExtractedFromHub{}
+		\godGiven{}
+		sum of all gas refunds accrued during transaction processing; tallied in the \hubMod{} module;
+	\item $\txEffectiveRefund$:
+		\markAsComputedHere{}
+		effective gas refund to the transaction sender;
+\end{enumerate}
+\saNote{} A transaction requires \textsc{EVM} execution whenever it is a message call to a contract with nonempty code or a contract creation with nonempty initialization code.
+
+\saNote{} The $\txRequiresEvmExecution$ binary flag must be passed on to the \rlpTxnMod{}. Its purpose there is to filter out those (pathological) transactions which include addresses / storage keys to pre-warm yet target an account with empty bytecode or are deployment transactions with empty initialization code. Indeed these transactions are dealt with in a special way in the \hubMod{} module; in particular address / storage key pre-warming is skipped.
+
+The following columns are relevant for creating the transaction receipt.
+\begin{enumerate}[resume]
+	\item $\txCumulativeConsumedGas$:
+		\markAsComputedHere{}
+		cumulative sum of all consumed gas within a conflation of transactions; resets with every new conflation of transactions; 
+	\item $\txStatusCode$:
+		\markAsExtractedFromHub{}
+		\godGiven{}
+		binary column which records the status code of the transaction; confirmed in the \hubMod{} module;
+\end{enumerate}
+The following columns are used in lookup arguments: 
+\begin{enumerate}[resume]
+	\item $\ct$:
+		counter column; used to specify the depth of verticalization; resets with every new transaction; 
+	\item $\phaseNumRlpTxn$:
+		identifies the phase for the lookup into the \rlpTxnMod{} module lookup;
+	\item $\phaseNumRlpTxnRcpt$:
+		identifies the phase for the lookup into the \rlpTxnRcptMod{} module lookup;
+	\item $\cfi$:
+		provides nontrivial deployment transactions with a $\CFI$; 
+	\item $\outgoingDataHi$ and $\outgoingDataLo$:
+		these two columns are connected to the \rlpTxnMod{} module; they are the entry point for transaction data;
+	\item $\outgoingTxrcpt$:
+		column connected to the \rlpTxnRcptMod{} through lookup;
+	\item $\wcpFlag$ and $\eucFlag$:
+		binary flags used as selectors for lookups;
+	\item $\argOneLo$, $\argTwoLo$, $\res$, $\INST$:
+		arguments for calls to the \wcpMod{} module and \eucMod{} module;
+	\item \isLastTxOfBlock{}:
+		a bit column that lights up only for the last transaction of each block of the conflation;
+\end{enumerate}
+
