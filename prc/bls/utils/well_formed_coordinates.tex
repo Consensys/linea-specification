@@ -70,3 +70,134 @@
 \]
 %
 \saNote{} $\partialComputations_{\relof}$ is expected to contain the final result. Intermediate results may be contained in the subsequents rows. %, potentially up to $\relof + 5$.
+
+
+\[
+    \left\{ \begin{array}{l}
+        % \callToWellFormedCoordinatesBlsTwo {
+        %     anchorRow = i               ,
+        %     relOffset = \relof          ,
+        %     argOneSeven = \locPXImThree ,
+        %     argOneSix   = \locPXImTwo   ,
+        %     argOneFive  = \locPXImOne   ,
+        %     argOneFour  = \locPXImZero  ,
+        %     argOneThree = \locPXReThree ,
+        %     argOneTwo   = \locPXReTwo   ,
+        %     argOneOne   = \locPXReOne   ,
+        %     argOneZero  = \locPXReZero  ,
+        %     argTwoSeven = \locPYImThree ,
+        %     argTwoSix   = \locPYImTwo   ,
+        %     argTwoFive  = \locPYImOne   ,
+        %     argTwoFour  = \locPYImZero  ,
+        %     argTwoThree = \locPYReThree ,
+        %     argTwoTwo   = \locPYReTwo   ,
+        %     argTwoOne   = \locPYReOne   ,
+        %     argTwoZero  = \locPYReZero  ,
+        % }       
+        \vspace{4mm} \\
+        \qquad \qquad \iff
+        \left\{ \begin{array}{l}
+
+                    \wcpGeneralizedCallToLt {
+                         anchorRow = i                ,
+                         relOffset = \relof           ,
+                         argOneThree = \locPXImThree  ,
+                         argOneTwo   = \locPXImTwo    ,
+                         argOneOne   = \locPXImOne    ,
+                         argOneZero  = \locPXImZero   ,
+                         argTwoThree = \blsPrimeThree ,
+                         argTwoTwo   = \blsPrimeTwo   ,
+                         argTwoOne   = \blsPrimeOne   ,
+                         argTwoZero  = \blsPrimeZero  ,
+                    } \\ 
+                    \locPXImIsInRange \define \wcpRes_{i+\relof} \\
+
+                    \vspace{1mm}
+
+                    \wcpGeneralizedCallToLt {
+                         anchorRow = i                ,
+                         relOffset = \relof + 4       ,
+                         argOneThree = \locPXReThree  ,
+                         argOneTwo   = \locPXReTwo    ,
+                         argOneOne   = \locPXReOne    ,
+                         argOneZero  = \locPXReZero   ,
+                         argTwoThree = \blsPrimeThree ,
+                         argTwoTwo   = \blsPrimeTwo   ,
+                         argTwoOne   = \blsPrimeOne   ,
+                         argTwoZero  = \blsPrimeZero  ,
+                    } \\ 
+                    \locPXReIsInRange \define \wcpRes_{i+\relof+4} \\
+
+                    \vspace{1mm}
+
+                    \wcpGeneralizedCallToLt {
+                         anchorRow = i                ,
+                         relOffset = \relof + 8       ,
+                         argOneThree = \locPYImThree  ,
+                         argOneTwo   = \locPYImTwo    ,
+                         argOneOne   = \locPYImOne    ,
+                         argOneZero  = \locPYImZero   ,
+                         argTwoThree = \blsPrimeThree ,
+                         argTwoTwo   = \blsPrimeTwo   ,
+                         argTwoOne   = \blsPrimeOne   ,
+                         argTwoZero  = \blsPrimeZero  ,
+                    } \\ 
+                    \locPYImIsInRange \define \wcpRes_{i+\relof+8} \\
+
+                    \vspace{1mm}
+
+                    \wcpGeneralizedCallToLt {
+                         anchorRow = i                ,
+                         relOffset = \relof + 12      ,
+                         argOneThree = \locPYReThree  ,
+                         argOneTwo   = \locPYReTwo    ,
+                         argOneOne   = \locPYReOne    ,
+                         argOneZero  = \locPYReZero   ,
+                         argTwoThree = \blsPrimeThree ,
+                         argTwoTwo   = \blsPrimeTwo   ,
+                         argTwoOne   = \blsPrimeOne   ,
+                         argTwoZero  = \blsPrimeZero  ,
+                    } \\ 
+                    \locPYReIsInRange \define \wcpRes_{i+\relof+12} \\
+
+                    \vspace{1mm}
+                    \locPXIsInRange \define \partialComputations_{i + \relof + 2}      \\
+                    \locPYIsInRange \define \partialComputations_{i + \relof + 1}      \\
+                    \locWellFormedCoordinates \define \hurdle_{i + \relof}              \\
+                    \vspace{1mm}
+                    \locPXIsInRange = \locPXImIsInRange \cdot \locPXReIsInRange         \\
+                    \locPYIsInRange =  \locPYImIsInRange \cdot \locPYReIsInRange        \\
+                    \locWellFormedCoordinates = \locPXIsInRange \cdot \locPYIsInRange   \\
+                    \vspace{1mm}
+                    
+                    \locVeryLargeSum  \define
+                    \left[ \begin{array}{r}
+                        \locPXImThree +
+                        \locPXImTwo   +
+                        \locPXImOne   +
+                        \locPXImZero  \\
+                        \locPXReThree +
+                        \locPXReTwo   +
+                        \locPXReOne   +
+                        \locPXReZero  \\
+                        \locPYImThree +
+                        \locPYImTwo   +
+                        \locPYImOne   +
+                        \locPYImZero  \\
+                        \locPYReThree +
+                        \locPYReTwo   +
+                        \locPYReOne   +
+                        \locPYReZero  \\                            
+                    \end{array} \right]          \\
+
+                    \locPXpYIsInfinity  \define  \isInfinity_{i+\relof}                 \\
+
+                    \If \locWellFormedCoordinates = 0 ~ \Then \locPXpYIsInfinity = 0    \\
+                    \If \locWellFormedCoordinates = 1 ~ \Then                           \\
+                    \qquad \If \locVeryLargeSum =    0  ~ \Then  \locPXpYIsInfinity = 1 \\
+                    \qquad \If \locVeryLargeSum \neq 0  ~ \Then  \locPXpYIsInfinity = 0 \\
+                \end{array} \right.
+    \end{array} \right.
+\]
+%
+\saNote{} $\partialComputations_{\relof}$ is expected to contain the final result. Intermediate results may be contained in the subsequents rows. %, potentially up to $\relof + 5$.
