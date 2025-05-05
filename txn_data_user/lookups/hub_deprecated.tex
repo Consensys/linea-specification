@@ -1,29 +1,29 @@
 \def\lookupColumnsHubIntoTxnData{%
-				\item \locAbsMax{}
-				\item \locAbs{}
-				\item \block{}
+				\item $\locAbsMax$
+				\item $\locAbs$
+				\item $\block$
 				\item $\txFrom\high$
 				\item $\txFrom\low$
 				\item $\txTo\high$
 				\item $\txTo\low$
 				\item $\txCoinbase\high$
 				\item $\txCoinbase\low$
-				\item \txGasLimit{}
-				\item \txInitialGas{}
-				\item \txLeftoverGas{}
-				\item $\txFinalRefundCounter{}$
+				\item $\txGasLimit$
+				\item $\txInitialGas$
+				\item $\txLeftoverGas$
+				\item $\txFinalRefundCounter$
 				\item $\txEffectiveRefund$
-				\item \txIsTypeTwo{}
-				\item \txBasefee{}
-				\item \txGasPrice{}
-				\item \txNonce{}
+				\item $\txIsTypeTwo$
+				\item $\txBasefee$
+				\item $\txGasPrice$
+				\item $\txNonce$
 				\item $\txValue$
 				\item $\txInitialBalance$
-				\item \txIsDeployment{}
-				\item \txCallDataSize{}
-				\item \txInitCodeSize{}
-				\item \txStatusCode{}
-				\item \txRequiresEvmExecution{}
+				\item $\txIsDeployment$
+				\item $\txCallDataSize$
+				\item $\txInitCodeSize$
+				\item $\txStatusCode$
+				\item $\txRequiresEvmExecution$
 				\item[\vspace{\fill}]
 				\item[\vspace{\fill}]
 }
@@ -37,20 +37,26 @@ certain opcodes require access to data contained in the present module (e.g. \in
 transaction \textbf{finalization}: the left over gas and applicable refunds are returned to the sender, the coinbase address is paid in accordance with the valid \inst{GASPRICE} (and \inst{BASEFEE} for \textsc{eip1550} transactions), the transaction status code is confirmed etc \dots{}
 
 \begin{description}
-	\item[Source columns:] the source module is the \hubMod{} module; it uses the following \textbf{selector} column:
+	\item[\underline{Source selector:}]
+		the source module is the \hubMod{} module; it uses the following \textbf{selector} column:
 		\[
 			\col{sel} := \peekTransaction{}
 		\]
-		in other words we select for \textbf{transaction-rows}; its source columns are:
+		in other words we select for \textbf{transaction-rows};
+	\item[\underline{Source columns:}]
+		its source columns are:
 		\begin{multicols}{3}
 			\begin{enumerate}
-					\lookupColumnsHubIntoTxnData{}					% \item[\vspace{\fill}]
+					\lookupColumnsHubIntoTxnData{}
 			\end{enumerate}
 		\end{multicols}
-	\item[Target columns:] the target module is the present \userTxnDataMod{} module; it requires no selector; the required columns are
+	\item[\underline{Target columns:}]
+		the target module is the present \userTxnDataMod{} module;
+		it requires no selector;
+		the required columns are
 		\begin{multicols}{3}
 			\begin{enumerate}
-					\lookupColumnsHubIntoTxnData{}					% \item[\vspace{\fill}]
+					\lookupColumnsHubIntoTxnData{}
 			\end{enumerate}
 		\end{multicols}
 \end{description}
