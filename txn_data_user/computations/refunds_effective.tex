@@ -1,0 +1,23 @@
+\item[\underline{\underline{Row n$°(i + \effectiveRefundRowOffset)$: Effective refund:}}]
+	we impose that
+	\[
+		\smallCallToLt {
+			anchorRow = i                         ,
+			relOffset = \effectiveRefundRowOffset ,
+			argOneLo  = \txFinalRefundCounter_{i} ,
+			argTwoLo  = \locRefundLimit           ,
+		}
+	\]
+	and define the following shorthand
+	\[
+		\locGetFullRefund
+		\define
+		\res_{i + \effectiveRefundRowOffset}
+	\]
+	\saNote{}
+	The interpretation is as follows:
+	\begin{IEEEeqnarray*}{LCL}
+		\locGetFullRefund = 1 & \iff & \txFinalRefundCounter _{i} < \locRefundLimit                                                                     \\
+		& \iff & \txFinalRefundCounter _{i} < \left\lfloor\frac{\locGasLimit - \txLeftoverGas_{i}}\maxRefundQuotient\right\rfloor \\
+	\end{IEEEeqnarray*}
+

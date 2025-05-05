@@ -20,54 +20,60 @@ For the last transaction of each block of the conflation, we constrain that the 
 
 \begin{enumerate}[resume]
 	\item \If $\locAbs_{i} \neq \locAbs_{i - 1}$ \et $\isLastTxOfBlock_{i} = 1$:
-	\begin{enumerate}
-		\item \If $\txIsLegacy_{i} = 1$ \Then:
-		\[
-	        \left\{ \begin{array}{l}
-	                \smallCallToLeq
-	                {i}{\maxCtTypeZero + 1}
-	                {\txCumulativeConsumedGas}
-	                {\blockGasLimit}
-	                \vspace{2mm}
-	                \\
-			\resultMustBeTrue {
-				anchorRow = i                  ,
-				relOffset = \maxCtTypeZero + 1 ,
-			}
-	                \\
-	        \end{array} \right.
-	    \]
-	    \item \If $\txIsAccessSet_{i} = 1$ \Then:
-		\[
-	        \left\{ \begin{array}{l}
-	                \smallCallToLeq
-	                {i}{\maxCtTypeOne + 1}
-	                {\txCumulativeConsumedGas}
-	                {\blockGasLimit}
-	                \vspace{2mm}
-	                \\
-			\resultMustBeTrue {
-				anchorRow = i                 ,
-				relOffset = \maxCtTypeOne + 1 ,
-			}
-	                \\
-	        \end{array} \right.
-	    \]
-		\item \If $\txIsTypeTwo_{i} = 1$ \Then:
-		\[
-	        \left\{ \begin{array}{l}
-	                \smallCallToLeq
-	                {i}{\maxCtTypeTwo + 1}
-	                {\txCumulativeConsumedGas}
-	                {\blockGasLimit}
-	                \vspace{2mm}
-	                \\
-			\resultMustBeTrue {
-				anchorRow = i                 ,
-				relOffset = \maxCtTypeTwo + 1 ,
-			}
-	                \\
-	        \end{array} \right.
-	    \]
-	\end{enumerate}
+		\begin{enumerate}
+			\item \If $\txIsLegacy_{i} = 1$ \Then:
+				\[
+					\left\{ \begin{array}{l}
+						\smallCallToLeq {
+							anchorRow = i ,
+							relOffset = \maxCtTypeZero + 1 ,
+							argOneLo  = \txCumulativeConsumedGas ,
+							argTwoLo  = \blockGasLimit ,
+						}
+						\vspace{2mm}
+						\\
+						\resultMustBeTrue {
+							anchorRow = i                  ,
+							relOffset = \maxCtTypeZero + 1 ,
+						}
+						\\
+					\end{array} \right.
+				\]
+			\item \If $\txIsAccessSet_{i} = 1$ \Then:
+				\[
+					\left\{ \begin{array}{l}
+						\smallCallToLeq {
+							anchorRow = i ,
+							relOffset = \maxCtTypeOne + 1 ,
+							argOneLo  = \txCumulativeConsumedGas ,
+							argTwoLo  = \blockGasLimit ,
+						}
+						\vspace{2mm}
+						\\
+						\resultMustBeTrue {
+							anchorRow = i                 ,
+							relOffset = \maxCtTypeOne + 1 ,
+						}
+						\\
+					\end{array} \right.
+				\]
+			\item \If $\txIsTypeTwo_{i} = 1$ \Then:
+				\[
+					\left\{ \begin{array}{l}
+						\smallCallToLeq {
+							anchorRow = i ,
+							relOffset = \maxCtTypeTwo + 1 ,
+							argOneLo  = \txCumulativeConsumedGas ,
+							argTwoLo  = \blockGasLimit ,
+						}
+						\vspace{2mm}
+						\\
+						\resultMustBeTrue {
+							anchorRow = i                 ,
+							relOffset = \maxCtTypeTwo + 1 ,
+						}
+						\\
+					\end{array} \right.
+				\]
+		\end{enumerate}
 \end{enumerate}
