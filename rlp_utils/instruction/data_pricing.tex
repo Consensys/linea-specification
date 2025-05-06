@@ -1,0 +1,39 @@
+\[
+    \boxed{\text{All constraints in this subsection assume } \isRlpUtilsMacro_{i} = 1 \et \INST_{i} = \inst{INTEGER} }
+\]
+We use the following shorthand:
+\[
+    \left\{ \begin{array}{lcl}
+        \locLimb              & \define & \inputColumn{1}_{i} 
+        \locCtMax             & \define & \inputColumn{2}_{i} -1
+    \end{array} \right.
+\]
+
+We impose $\maxCt_{i+1} = \locCtMax$.
+We initialize the counter:
+\begin{enumerate}
+    \item $\zeroCounter   _{i+1} = \resultColumn{2}_{i}$
+    \item $\nonZeroCounter_{i+1} = \resultColumn{4}_{i}$
+    \item $\limb          _{i+1} = \locLimb$
+\end{enumerate}
+
+In the following, we assume $\isRlpUtilsCompt_{i} = 1$
+
+We inconditionnaly impose:
+\begin{enumerate}
+    \item bytedecomposition(\ct, \argOneLO, \acc)
+    \item $\INST          _{i} = \isnt{IS_ZERO}$
+    \item $\zeroCounter   _{i} = \zeroCounter   _{i-1} - \res{i}$
+    \item $\nonZeroCounter_{i} = \nonZeroCounter_{i-1} - (1 - \res{i})$ 
+    \item $\limb          _{i} = \limb          _{i-1}$
+\end{enumerate}
+
+\If $\ct_{i} = \maxCt_{i}$ \Then:
+\begin{enumerate}
+    \item $\zeroCounter   _{i} = 0$
+    \item $\nonZeroCounter_{i} = 0$
+    \item $\shfFlag       _{i} = 1$
+    \item $\shfArg        _{i} = \acc_{i}$
+    \item $\shfValue      _{i} = \llargeMO - \maxCt_{i}$
+    \item $\shfRes        _{i} = \limb_{i}$
+\end{enumerate}
