@@ -1,28 +1,3 @@
-The first volley of columns pertain to heartbeat and bookkeeping:
-\begin{enumerate}
-	\item $\relBlock$:
-		current relative block number in this conflation;
-	\item $\relTxMax$:
-		total number of transactions in the current block;
-	\item $\relTx$:
-		relative transaction number in the current block;
-	\item $\ABSTXNUM^\infty$:
-		total number of transactions in the conflation; 
-	\item $\ABSTXNUM$:
-		relative transaction number in the conflation;
-\end{enumerate}
-To simplify notations we use the following abbreviations/shorthands
-\[
-	\left\{ \begin{array}{lcl}
-		\block     & \!\!\!\define\!\!\! & \relBlock        \vspace{2mm} \\
-		\locRelMax & \!\!\!\define\!\!\! & \relTxMax                     \\
-		\locRel    & \!\!\!\define\!\!\! & \relTx           \vspace{2mm} \\
-		\locAbsMax & \!\!\!\define\!\!\! & \ABSTXNUM^\infty              \\
-		\locAbs    & \!\!\!\define\!\!\! & \ABSTXNUM                     \\
-	\end{array} \right.
-\]
-We explain how to extract \locAbs{} from \block{} and \locRel{} in section~(\ref{user txn data: constraints: constructing ABS}).
-
 The next volley of columns pertains to sender account information:
 \begin{enumerate}[resume]
 	\item $\txFrom\high$, $\txFrom\low$:
@@ -117,7 +92,8 @@ The following columns are relevant for creating the transaction receipt.
 \begin{enumerate}[resume]
 	\item $\txCumulativeConsumedGas$:
 		\markAsComputedHere{}
-		cumulative sum of all consumed gas within a conflation of transactions; resets with every new conflation of transactions; 
+		cumulative sum of all consumed gas within a conflation of transactions;
+		resets with every new conflation of transactions; 
 	\item $\txStatusCode$:
 		\markAsExtractedFromHub{}
 		\godGiven{}
@@ -125,22 +101,10 @@ The following columns are relevant for creating the transaction receipt.
 \end{enumerate}
 The following columns are used in lookup arguments: 
 \begin{enumerate}[resume]
-	\item $\ct$:
-		counter column; used to specify the depth of verticalization; resets with every new transaction; 
-	\item $\phaseNumRlpTxn$:
-		identifies the phase for the lookup into the \rlpTxnMod{} module lookup;
-	\item $\phaseNumRlpTxnRcpt$:
-		identifies the phase for the lookup into the \rlpTxnRcptMod{} module lookup;
 	\item $\cfi$:
 		provides nontrivial deployment transactions with a $\CFI$; 
-	\item $\outgoingDataHi$ and $\outgoingDataLo$:
-		these two columns are connected to the \rlpTxnMod{} module; they are the entry point for transaction data;
 	\item $\outgoingTxrcpt$:
 		column connected to the \rlpTxnRcptMod{} through lookup;
-	\item $\wcpFlag$ and $\eucFlag$:
-		binary flags used as selectors for lookups;
-	\item $\argOneLo$, $\argTwoLo$, $\res$, $\INST$:
-		arguments for calls to the \wcpMod{} module and \eucMod{} module;
 	\item \isLastTxOfBlock{}:
 		a bit column that lights up only for the last transaction of each block of the conflation;
 \end{enumerate}

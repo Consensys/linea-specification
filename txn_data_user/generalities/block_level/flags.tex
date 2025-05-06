@@ -1,0 +1,48 @@
+We describe ``block level'' generalities. We require some shorthands:
+\[
+		\blockCycleSum _{i} \define
+		\left[ \begin{array}{cl}
+			+ & \blockIsEmpty    _{i} \\
+			+ & \blockProcessing _{i} \\
+			+ & \blockAccounting _{i} \\
+		\end{array} \right]
+\]
+We impose that
+\begin{enumerate}
+	\item $\blockCycleSum$ is binary
+	\item $\blockCycleSum _{0} = 0$
+	\item \If $\blockCycleSum _{i} = 0$ \Then $\blockAccounting _{i + 1} = 0$
+	\item \If $\blockCycleSum _{i} = 1$ \Then $\blockCycleSum   _{i + 1} = 1$
+\end{enumerate}
+\saNote{} \label{user txn data: generalities: block cycle: blocks start with empty or processing phase}
+As per usual we define \textbf{padding-rows} to be those rows where ``$\blockCycleSum _{i} = 0$'' and
+\textbf{non-padding-rows} to be those rows where ``$\blockCycleSum _{i} = 1$.''
+The above thus enforces that at the transition of padding-rows to non-padding-rows either 
+\blockIsEmpty{} or
+\blockProcessing{}
+turns on (and not \blockAccounting{}.)
+
+We next describe ``block level flag transitions.''
+\begin{enumerate}[resume]
+	\item
+		\label{user txn data: generalities: block level: flags: legal transitions}
+		we impose that
+		\[
+			\hspace*{-1cm}
+			\left\{ \begin{array}{llllllr}
+				\If \blockIsEmpty    _{i} \!\!\! & = 1 & \Then \!\!\! & + ~ \blockIsEmpty    _{i + 1} \!\!\! & + ~ \blockProcessing _{i + 1} \!\!\! &                               \!\!\! & = 1 \\
+				\If \blockProcessing _{i} \!\!\! & = 1 & \Then \!\!\! &                               \!\!\! & + ~ \blockProcessing _{i + 1} \!\!\! & + ~ \blockAccounting _{i + 1} \!\!\! & = 1 \\
+				\If \blockAccounting _{i} \!\!\! & = 1 & \Then \!\!\! & + ~ \blockIsEmpty    _{i + 1} \!\!\! & + ~ \blockProcessing _{i + 1} \!\!\! &                               \!\!\! & = 1 \\
+			\end{array} \right.
+		\]
+\end{enumerate}
+We further impose finalization constraints:
+\begin{enumerate}[resume]
+	\item $\blockProcessing _{N} = 0$
+\end{enumerate}
+\saNote{}
+The above is a slightly more succinct way of imposing the following, ``proper'', finalization constraint:
+\begin{enumerate}[resume]
+	\item \If $\blockCycleSum _{N} = 1$ \Then $\blockIsEmpty _{N} + \blockAccounting _{N} = 1$ (\sanityCheck)
+\end{enumerate}
+which assserts that we must terminate on either an empty block or the ``block-accounting'' row of a nonempty block.

@@ -1,0 +1,48 @@
+We impose the following constraints on perspective flag transitions.
+We impose both
+``forward''  facing constraints and
+``backward'' facing ones.
+\begin{enumerate}
+	\item \If $\aboutToStartBlockWithUserTransactions _{i} = 1$ \Then $\isUserTxnHubView _{i + 1} = 1$
+	\item \If $\isUserTxnHubView     _{i} = 1$ \Then $\isUserTxnRlpView     _{i + 1} = 1$
+	\item \If $\isUserTxnRlpView     _{i} = 1$ \Then $\isUserTxnComputation _{i + 1} = 1$
+	\item \If $\isUserTxnComputation _{i} = 1$ \Then \dots{} see below.
+\end{enumerate}
+\saNote{}
+The legal transitions in the ``$\isUserTxnComputation _{i} = 1$'' case require more care.
+There are two cases to consider:
+\begin{enumerate}
+	\item
+		if the current row index $i$ lies within a counter-cycle (i.e. $\ct \neq \maxCt$),
+		we \textbf{shall impose} $\isUserTxnComputation _{i + 1}$ to remain constant $\equiv 1$,
+		see section~(\ref{user txn data: generalities: constancies});
+	\item 
+		if the current row index $i$ is the final row of a counter-cycle (i.e. $\ct = \maxCt$), then by
+		\begin{enumerate}
+			\item 
+				if $\blockProcessing _{i} \equiv 1$ then,
+				by section~(\ref{user txn data: generalities: block level: flags: legal transitions})
+				we may transition either to $\blockProcessing$ or to $\blockAccounting$;
+				then
+				\begin{enumerate}
+					\item
+						if $\blockProcessing _{i + 1} \equiv 1$ we \textbf{shall impose} $\isUserTxnHubView     _{i + 1} \equiv 1$,
+						see section~(\ref{user txn data: generalities: perspectives: heartbeat})
+					\item
+						if $\blockAccounting _{i + 1} \equiv 1$ we \textbf{already have} $\isUserTxnComputation _{i + 1} \equiv 1$,
+						see section~(\ref{user txn data: generalities: perspectives: flags});
+				\end{enumerate}
+			\item 
+				if $\blockAccounting _{i} = 1$ then,
+				by section~(\ref{user txn data: generalities: block level: flags: legal transitions}),
+				we may transition either to $\blockIsEmpty$ or to $\blockProcessing$;
+				then
+				\begin{enumerate}
+					\item if $\blockIsEmpty    _{i + 1} \equiv 1$ we \textbf{already have} $\perspectiveSum   _{i + 1} \equiv 0$;
+					\item if $\blockProcessing _{i + 1} \equiv 1$ we \textbf{already have} $\isUserTxnHubView _{i + 1} \equiv 1$,
+						given that we are $\aboutToStartBlockWithUserTransactions _{i}$;
+				\end{enumerate}
+		\end{enumerate}
+\end{enumerate}
+If $\blockAccounting _{i} = 1$ then we may transition either to $\blockIsEmpty$ in which case $\perspectiveSum _{i + 1} \equiv 0$ by
+section~(\ref{user txn data: generalities: perspectives: flags})
