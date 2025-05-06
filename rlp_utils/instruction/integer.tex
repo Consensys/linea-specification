@@ -1,7 +1,13 @@
 \[
     \boxed{\text{All constraints in this subsection assume } \first_{i} = 1 \et \INST_{i} = \inst{INTEGER} }
 \]
-$\argOne$ and $\argTwo$ represent high and low parts of an integer to \rlp{}-ize.
+We use the following shorthand:
+\[
+    \left\{ \begin{array}{lcl}
+        \integerHi             & \define & \inputColumn{1}_{i} 
+        \integerLo             & \define & \inputColumn{2}_{i} 
+    \end{array} \right.
+\]
 
 We impose $\maxCt_{i} = \integerCtMax$.
 
@@ -12,7 +18,7 @@ We impose $\maxCt_{i} = \integerCtMax$.
             \wcpCallToGt {
                 anchorRow = i                      ,
                 relOffset = \nRows                 ,
-                argOneHi  = \argOne                ,
+                argOneHi  = \integerHi             ,
                 argOneLo  = 0                      ,
                 argTwoHi  = 0                      ,
                 argTwoLo  = 0                      ,
@@ -33,7 +39,7 @@ We impose $\maxCt_{i} = \integerCtMax$.
                 anchorRow = i                      ,
                 relOffset = \nRows                 ,
                 argOneHi  = 0                      ,
-                argOneLo  = \argTwo                ,
+                argOneLo  = \integerLo             ,
                 argTwoHi  = 0                      ,
                 argTwoLo  = \oneTwoEight           ,
             }
@@ -53,9 +59,13 @@ Finalization constraint:
 We impose
 \[
     \left\{ \begin{array}{lcl}
-        \resultColumn {1} _{i} & \define & \locSmallInt                      \\
-        \resultColumn {2} _{i} & \define & \locBigInt                        \\
-        \resultColumn {3} _{i} & \define & \rlprefixShortInt + \locTotalSize \\
-        \resultColumn {4} _{i} & \define & \locNBytes                        \\
+        \shfFlag          _{i + \nRows} & = & 1                                                                 \\
+        \shfArg           _{i + \nRows} & = & \locBigInt \cdot \integerHi + (1 - \locBigInt) \cdot \integerLo   \\
+        \shfValue         _{i + \nRows} & = & \llarge - \locNBytes                                              \\
+        \resultColumn {1} _{i}          & = & 1 - \locSmallInt                                                  \\
+        \resultColumn {2} _{i}          & = & \rlprefixShortInt + \locTotalSize                                 \\
+        \resultColumn {3} _{i}          & = & \locBigInt                                                        \\
+        \resultColumn {4} _{i}          & = & \shfRes _{i + \nRows}                                             \\
+        \resultColumn {5} _{i}          & = & \locNBytes                                                        \\
     \end{array} \right.
 \]

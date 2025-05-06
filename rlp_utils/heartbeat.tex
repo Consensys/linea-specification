@@ -2,17 +2,18 @@ The heartbeat of the address trimming module is very simple: the \ct{} column co
 \begin{enumerate}
     \item $\iomf_{0} = 0$
     \item $\iomf_{i + 1} \in \{ \iomf_{i}, 1 + \iomf_{i} \}$
-    \item \If $\iomf_{i} = 0$ \Then
-	\begin{enumerate}
-	    \item $\INST_{i}           = 0 $
-	    \item $\ct_{i+1}           = 0 $
-	\end{enumerate}
+    \item \If $\iomf_{i} = 0$ \Then  $\isRlpUtilsMacro_{i} + \isRlpUtilsCompt_{i}   =0$
     \item \If $\iomf_{i} = 1$ \Then
 	\begin{enumerate}
-	    \item \If $\ct_{i} =    0$ \Then $\first_{i} = 1$
-	    \item \If $\ct_{i} \neq 0$ \Then $\first_{i} = 0$ (\trash)
+		\item $\isRlpUtilsMacro_{i} + \isRlpUtilsCompt_{i}   =1$
+		\item $\isRlpUtilsMacro_{i} =1$ \Then $\maxCt_{i} = 0$
 	    \item \If $\ct_{i} \neq \maxCt_{i}$ \Then $\ct_{i + 1} = 1 + \ct_{i}$
-	    \item \If $\ct_{i} = \maxCt_{i}$ \Then $\ct_{i + 1} = 0$
+	    \item \If $\ct_{i} = \maxCt_{i}$ \Then 
+	    \begin{enumerate}
+	    	\item $\ct_{i + 1} = 0$
+	    	\item \If $\isRlpUtilsMacro_{i} =1$ \Then $\isRlpUtilsCompt_{i+1} =1$
+	    	\item \If $\isRlpUtilsCompt_{i} =1$ \Then $\isRlpUtilsMacro_{i+1} =1$
+	    \end{enumerate}
 	\end{enumerate}
-    \item \If $\iomf_{N} = 1$ \Then $\ct_{i} = \maxCt_{i}$
+    \item \If $\iomf_{N} = 1$ \Then $\ct_{i} = \maxCt_{i}$ \et $\isRlpUtilsCompt_{i} = 1$
 \end{enumerate}
