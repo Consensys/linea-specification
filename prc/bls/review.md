@@ -18,6 +18,5 @@
 # Review 6th of May
 
 - Do not compress the ISZERO check by adding the coordinates as the addition will become costly when we change field
-- Change max ct for g1 add
 - Check input of fp fp2 maps ... being smaller than BLS_PRIME
 - Check with BESU team or execution specs to understand if we need some check over the scalar for MSM. Actually, no check is needed, write a note in the specs maybe.
