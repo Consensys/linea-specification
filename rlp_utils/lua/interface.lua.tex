@@ -1,0 +1,33 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NL Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\usepackage{../../pkg/draculatheme}
+
+
+\begin{document}
+\begin{ve
+|--------------++-------------------+------------+-----------++--------------+------------+----------+---------------+-----------|
+| Instruction  || Input1            | Input2     | Input3    || Output1      | Output2    | Output3  | Output4       | Output5   |
+|--------------++-------------------+------------+-----------++--------------+------------+----------+---------------+-----------|
+| BYTESTRING   || bytestring lengtht| first byte | is_list ? || rlp prefix ? | rlp prefix |          |               | nBytes    |
+|--------------++-------------------+------------+-----------++--------------+------------|----------+---------------|-----------|
+| INTEGER      || integer_hi        | integer_lo |           || rlp prefix ? | rlp prefix | hi part ?| first rlp     | nBytes    |
+|--------------++-------------------+------------+-----------++--------------+------------+----------+---------------+-----------|
+| DATA_PRICING || limb              |            |           ||              | #of zeros  |          | #of nonzeros  | nBytes    |
+|--------------++-------------------+------------+-----------++--------------+------------+----------+---------------+-----------|
+
+
+\end{verbatim}
+\end{document}

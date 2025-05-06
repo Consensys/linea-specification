@@ -27,9 +27,9 @@ We shall assume the following: we are provided with columns
     \col{ctMax}; \\
     \col{rlpUtilFlag},
     \col{inst},
-    \col{resNoRlpPrefix},
-    \col{resBigInt},
+    \col{resRlpPrefix},
     \col{resValueRlpPrefix},
+    \col{resHiPart},
     \col{resFirstPart},
     \col{resNBytes}; \\
     \col{limb},
@@ -44,15 +44,15 @@ We shall assume the following: we are provided with columns
     \item $\col{inst}_{i} = \inst{INTEGER}$
     \item $\col{ctMax}_{i} = 2$
 
-    \item $\col{lc}_{i} = \col{resNoRlpPrefix}_{i}$
-    \item $\col{limb}_{i} = \col{resValueRlpPrefix}_{i} \cdot (256 ^{\llargeMO})$
-    \item $\col{nBytes}_{i} = 1 \cdot \col{resNoRlpPrefix}_{i}$
+    \item $\col{lc}_{i}     = \col{resRlpPrefix}_{i}$
+    \item $\col{limb}_{i}   = \col{resValueRlpPrefix}_{i} \cdot (256 ^{\llargeMO})$
+    \item $\col{nBytes}_{i} = \col{resRlpPrefix}_{i} \cdot 1$
 
-    \item $\col{lc}_{i+1} = \col{resBigInt}_{i}$
-    \item $\col{limb}_{i+1} = \col{resBigInt}_{i} \cdot \col{resFirstPart}$
-    \item $\col{nBytes}_{i+1} = \col{resBigInt}_{i} \cdot \col{resNBytes}_{i}$
+    \item $\col{lc}_{i+1}     = \col{resHiPart}_{i}$
+    \item $\col{limb}_{i+1}   = \col{resHiPart}_{i} \cdot \col{resFirstPart}$
+    \item $\col{nBytes}_{i+1} = \col{resHiPart}_{i} \cdot \col{resNBytes}_{i}$
 
-    \item $\col{lc}_{i+2} = 1$
-    \item $\col{limb}_{i+2} = \col{resBigInt}_{i} \cdot \col{input2}_{i} + (1 - \col{resBigInt}_{i}) \cdot \col{resFirstPart}$
-    \item $\col{nBytes}_{i+2} = \col{resBigInt}_{i} \cdot \llarge + (1 - \col{resBigInt}_{i}) \cdot \col{resNBytes}_{i}$
+    \item $\col{lc}_{i+2}     = 1$
+    \item $\col{limb}_{i+2}   = \col{resHiPart}_{i} \cdot \col{input2}_{i} + (1 - \col{resHiPart}_{i}) \cdot \col{resFirstPart} $
+    \item $\col{nBytes}_{i+2} = \col{resHiPart}_{i} \cdot \llarge          + (1 - \col{resHiPart}_{i}) \cdot \col{resNBytes}_{i}$
 \end{enumerate}
