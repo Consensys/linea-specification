@@ -56,12 +56,18 @@ We impose
 \[
     \left\{ \begin{array}{lcl}
         \shfFlag          _{i + \nRows} & = & 1                                                                 \\
-        \shfArg           _{i + \nRows} & = & \locBigInt \cdot \integerHi + (1 - \locBigInt) \cdot \integerLo   \\
-        \shfValue         _{i + \nRows} & = & \llarge - \locNBytes                                              \\
+        \shfArg           _{i + \nRows} & = & \llarge - \locNBytes                                              \\
         \resultColumn {1} _{i}          & = & 1 - \locSmallInt                                                  \\
         \resultColumn {2} _{i}          & = & \rlprefixShortInt + \locTotalSize                                 \\
         \resultColumn {3} _{i}          & = & \locBigInt                                                        \\
-        \resultColumn {4} _{i}          & = & \shfRes _{i + \nRows}                                             \\
+        \resultColumn {4} _{i}          & = & \locPaddedLimb                                                    \\
         \resultColumn {5} _{i}          & = & \locNBytes                                                        \\
     \end{array} \right.
 \]
+
+ where we used the following shorthand
+        \[
+            \left\{ \begin{array}{lcl}
+                \locPaddedLimb  & \define & \res_{i + \nRows} \cdot (\locBigInt \cdot \integerHi + (1 - \locBigInt) \cdot \integerLo) \\
+            \end{array} \right.
+        \]

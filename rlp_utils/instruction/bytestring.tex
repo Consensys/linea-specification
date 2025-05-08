@@ -140,11 +140,17 @@ We use the following shorthand:
         \[
             \left\{ \begin{array}{lcl}
                 \shfFlag         _{i + \nRows} & = & 1                                                               \\
-                \shfArg          _{i + \nRows} & = & \locBytestringLength                                            \\
-                \shfValue        _{i + \nRows} & = & \llargeMO - \locbytestringLengthBytesize                        \\
+                \shfArg          _{i + \nRows} & = & \llargeMO - \locbytestringLengthBytesize                        \\
                 \resultColumn{1} _{i}          & = & 1                                                               \\
-                \resultColumn{2} _{i}          & = & (\locBaseRlpPrefixLong + \locbytestringLengthBytesize) \cdot 256 ^{\llargeMO} + \shfRes _{i + \nRows} \\
+                \resultColumn{2} _{i}          & = & (\locBaseRlpPrefixLong + \locbytestringLengthBytesize) \cdot 256 ^{\llargeMO} + \locPaddedLimb \\
                 \resultColumn{5} _{i}          & = & 1 + \locbytestringLengthBytesize                                \\
+            \end{array} \right.
+        \]
+
+        where we used the following shorthand
+        \[
+            \left\{ \begin{array}{lcl}
+                \locPaddedLimb  & \define & \res_{i + \nRows} \cdot \locBytestringLength \\
             \end{array} \right.
         \]
 \end{description}
