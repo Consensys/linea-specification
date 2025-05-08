@@ -1,11 +1,19 @@
 We describe ``block level'' generalities. We require some shorthands:
 \[
-		\blockCycleSum _{i} \define
+	\left\{ \begin{array}{lcl}
+		\blockCycleSum _{i} & \define &
 		\left[ \begin{array}{cl}
-			+ & \blockIsEmpty    _{i} \\
+			+ & \blockIsEmpty  _{i} \\
+			+ & \blockNonempty _{i} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\blockNonempty _{i} & \define &
+		\left[ \begin{array}{cl}
 			+ & \blockProcessing _{i} \\
 			+ & \blockAccounting _{i} \\
 		\end{array} \right]
+	\end{array} \right.
 \]
 We impose that
 \begin{enumerate}
@@ -42,7 +50,8 @@ We further impose finalization constraints:
 \end{enumerate}
 \saNote{}
 The above is a slightly more succinct way of imposing the following, ``proper'', finalization constraint:
-\begin{enumerate}[resume]
-	\item \If $\blockCycleSum _{N} = 1$ \Then $\blockIsEmpty _{N} + \blockAccounting _{N} = 1$ (\sanityCheck)
-\end{enumerate}
+	\[
+		``\If \blockCycleSum _{N} = 1 ~ \Then \blockIsEmpty _{N} + \blockAccounting _{N} = 1"
+		\quad (\sanityCheck)
+	\]
 which assserts that we must terminate on either an empty block or the ``block-accounting'' row of a nonempty block.
