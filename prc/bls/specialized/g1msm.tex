@@ -6,3 +6,79 @@
         \end{array} \right.
     }
 \]
+
+We introduce the following (local) shorthands:
+
+\[
+    \left\{ \begin{array}{lclr}
+        \locAXImThree                    & \define & \blsLimb _{i}                             \\
+        \locAXImTwo                      & \define & \blsLimb _{i + 1}                         \\
+        \locAXImOne                      & \define & \blsLimb _{i + 2}                         \\
+        \locAXImZero                     & \define & \blsLimb _{i + 3}                         \\
+        \locAXReThree                    & \define & \blsLimb _{i + 4}                         \\
+        \locAXReTwo                      & \define & \blsLimb _{i + 5}                         \\
+        \locAXReOne                      & \define & \blsLimb _{i + 6}                         \\
+        \locAXReZero                     & \define & \blsLimb _{i + 7}                         \\
+        \locAYImThree                    & \define & \blsLimb _{i + 8}                         \\
+        \locAYImTwo                      & \define & \blsLimb _{i + 9}                         \\
+        \locAYImOne                      & \define & \blsLimb _{i + 10}                        \\
+        \locAYImZero                     & \define & \blsLimb _{i + 11}                        \\
+        \locAYReThree                    & \define & \blsLimb _{i + 12}                        \\
+        \locAYReTwo                      & \define & \blsLimb _{i + 13}                        \\
+        \locAYReOne                      & \define & \blsLimb _{i + 14}                        \\
+        \locAYReZero                     & \define & \blsLimb _{i + 15}                        \\
+        \locNHi                          & \define & \blsLimb _{i + 16}                        \\
+        \locNLo                          & \define & \blsLimb _{i + 17}                        \\
+        \locInternalChecksPassed         & \define & \partialComputations     _{i + \indexMaxBlsGOneMsmDataMin} \\
+        \locPreviousInternalChecksPassed & \define & \partialComputations     _{i - \redm{1}}                  \\
+    \end{array} \right.
+\]
+We introduce the following constraints:
+\begin{description}
+    \item[\underline{Row $n^°(i)$:}]
+        we impose
+            \[
+                \callToWellFormedCoordinatesBls {
+                    anchorRow = i             ,
+                    relOffset = 0             ,
+                    argOneThree = \locAXThree ,
+                    argOneTwo   = \locAXTwo   ,
+                    argOneOne   = \locAXOne   ,
+                    argOneZero  = \locAXZero  ,
+                    argTwoThree = \locAYThree ,
+                    argTwoTwo   = \locAYTwo   ,
+                    argTwoOne   = \locAYOne   ,
+                    argTwoZero  = \locAYZero  ,
+                }           
+            \]
+        as well as define the shorthand
+            \[
+                \locAIsWellFormed \define \partialComputations_{i}
+            \]
+\end{description}
+
+\begin{description}
+    \item[\underline{Propagation of \locInternalChecksPassed:}]
+          The following constraint defines the value of $\locInternalChecksPassed$ for the first input and the subsequents, if any.
+          For each subsequent, $\locPreviousInternalChecksPassed$ is propagated so as to compute the latest $\locInternalChecksPassed$.
+          Note that this approach is adopted to deal with an arbitrary number of inputs:
+          \begin{enumerate}
+              \item \If $\accInputs_{i} = 1$ \Then
+                    \[
+                        \locInternalChecksPassed = \locAIsWellFormed 
+                    \]
+              \item \If $\accInputs_{i} \neq 1$ \Then
+                    \begin{enumerate}
+                        \item $\locInternalChecksPassed = \locAIsWellFormed \cdot \locPreviousInternalChecksPassed$
+                    \end{enumerate}
+          \end{enumerate}
+\end{description}
+\saNote{} \If $\isBlsGOneMsmData_{i} = 0$ \Then $\accInputs_{i} = 0$ and the first input corresponds to $\accInputs_{i} = 1$.
+\begin{description}
+    \item[\underline{Justifying the \blsSuccessBit{}:}]
+          We impose the following constraints
+          \begin{enumerate}
+              \item \If $\internalChecksPassed _{i}= 0$ \Then $\blsSuccessBit _{i} = 0$
+              \item \If $\internalChecksPassed _{i}= 1$  \Then $\blsSuccessBit_{i} = 1 - \notOnGXAccMax _{i}$
+          \end{enumerate}
+\end{description}
