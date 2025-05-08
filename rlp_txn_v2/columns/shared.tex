@@ -1,0 +1,32 @@
+\begin{enumerate}
+    \item $\absTxNum$:
+    transaction number column, starts at 0 and is incremented by one when starting a new transaction. TODO: renamed USER_TX_NUM
+    \item $\isTxn$:
+	bit column that defines the transaction perspective;
+	\item $\isCmp$:
+	bit column that defines the computation perspective;
+	\item \col{LIMB\_CONSTRUCTED}:
+    binary column;
+    is equal to $1$ when the $\limb$ is part of either \rlp{} bytestrings $\locLtTilde$ or $\locLxTilde$, otherwise is equal to $0$;
+    abbreviated to $\lc$;
+    \item $\indext$:
+    index of the current limb within the current string of $\locLtTilde$. Starts at 0 when starting a new transaction and increments by 1 when $\lc$ and $\lt$ are one; 
+    \item $\indexx$:                                                       
+    index of the current limb within the current string of $\locLxTilde$. Starts at 0 when starting a new transaction and increments by 1 when $\lc$ and $\lx$ are one;
+    \item $\rlptsize$:
+    number of bytes of $L_{\mathrm{T}}$ of the current transaction, used in \phaseRlpPrefix{} to verify the RLP prefix. Decreases by $\limbsize$ when $\lc$ and $\lt$ are one, must be 0 at the end of the transaction.
+    \item $\rlpxsize$:
+    number of bytes of $L_{\mathrm{X}}$ of the current transaction, used in \phaseRlpPrefix{} to verify the RLP prefix. Decreases by $\limbsize$ when $\lc$ and $\lx$ are one, must be 0 at the end of the transaction.
+\end{enumerate}
+Columns used for heartbeat:
+\begin{enumerate}[resume]
+    \item \typeZeroTx{}, \typeOneTx{}, \typeTwoTx{}:
+    exclusive bit columns definibg the type of transaction. The phase heartbeat depends of the \transactionType{} of the transaction.
+    \item \phaseRlpPrefix{}, \phaseChainId{}, \phaseNonce{}, \phaseGasPrice{}, \phaseMaxPriorityFeePerGas{}, \phaseMaxFeePerGas{}, \phaseGasLimit{}, \phaseTo{}, \phaseValue{}, \phaseData{}, \phaseAccessList{}, \phaseBeta{}, \phaseY{}, \phaseR{}, \phaseS{}:  
+    \item \ct{}:
+	counter column; 
+	either hovers around $0$ or counts continuously up from $0$ to \maxCt{} whereupon it resets;
+    \item \maxCt:
+	counter-constant column;
+	indicates the value at which \ct{} must reset;
+\end{enumerate}
