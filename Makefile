@@ -34,6 +34,7 @@ oob:          view-oob
 prc:   	      view-prc
 rlp_addr:     view-rlp_addr
 rlp_txn:      view-rlp_txn
+rlp_txn_v2:   view-rlp_txn_v2
 rlp_txnrcpt:  view-rlp_txnrcpt
 rlp_utils:    view-rlp_utils
 rom:          view-rom
@@ -71,6 +72,7 @@ roob:          recompile-oob
 rprc:          recompile-prc
 rrlp_addr:     recompile-rlp_addr
 rrlp_txn:      recompile-rlp_txn
+rrlp_txn_v2:   recompile-rlp_txn_v2
 rrlp_txnrcpt:  recompile-rlp_txnrcpt
 rrlp_utils:    recompile-rlp_utils
 rrom:          recompile-rom
