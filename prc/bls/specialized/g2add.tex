@@ -6,3 +6,120 @@
         \end{array} \right.
     }
 \]
+
+We introduce the following (local) shorthands:
+\[
+    \left\{ \begin{array}{lclr}
+       \locAXImThree & \define & \blsLimb_{i}      \\
+       \locAXImTwo   & \define & \blsLimb_{i + 1}  \\
+       \locAXImOne   & \define & \blsLimb_{i + 2}  \\
+       \locAXImZero  & \define & \blsLimb_{i + 3}  \\
+       \locAXReThree & \define & \blsLimb_{i + 4}  \\
+       \locAXReTwo   & \define & \blsLimb_{i + 5}  \\
+       \locAXReOne   & \define & \blsLimb_{i + 6}  \\
+       \locAXReZero  & \define & \blsLimb_{i + 7}  \\
+       \locAYImThree & \define & \blsLimb_{i + 8}  \\
+       \locAYImTwo   & \define & \blsLimb_{i + 9}  \\
+       \locAYImOne   & \define & \blsLimb_{i + 10} \\
+       \locAYImZero  & \define & \blsLimb_{i + 11} \\
+       \locAYReThree & \define & \blsLimb_{i + 12} \\
+       \locAYReTwo   & \define & \blsLimb_{i + 13} \\
+       \locAYReOne   & \define & \blsLimb_{i + 14} \\
+       \locAYReZero  & \define & \blsLimb_{i + 15} \\
+       \locBXImThree & \define & \blsLimb_{i + 16} \\
+       \locBXImTwo   & \define & \blsLimb_{i + 17} \\
+       \locBXImOne   & \define & \blsLimb_{i + 18} \\
+       \locBXImZero  & \define & \blsLimb_{i + 19} \\
+       \locBXReThree & \define & \blsLimb_{i + 20} \\
+       \locBXReTwo   & \define & \blsLimb_{i + 21} \\
+       \locBXReOne   & \define & \blsLimb_{i + 22} \\
+       \locBXReZero  & \define & \blsLimb_{i + 23} \\
+       \locBYImThree & \define & \blsLimb_{i + 24} \\
+       \locBYImTwo   & \define & \blsLimb_{i + 25} \\
+       \locBYImOne   & \define & \blsLimb_{i + 26} \\
+       \locBYImZero  & \define & \blsLimb_{i + 27} \\
+       \locBYReThree & \define & \blsLimb_{i + 28} \\
+       \locBYReTwo   & \define & \blsLimb_{i + 29} \\
+       \locBYReOne   & \define & \blsLimb_{i + 30} \\
+       \locBYReZero  & \define & \blsLimb_{i + 31} \\
+    \end{array} \right.
+\]
+
+We set the following constraints:
+
+\begin{description}
+    \item[\underline{Row $n^°(i)$:}]
+        we impose
+            \[         
+                \callToWellFormedCoordinatesBlsTwo {
+                    anchorRow = i               ,
+                    relOffset = 0               ,
+                    argOneSeven = \locAXImThree ,
+                    argOneSix   = \locAXImTwo   ,
+                    argOneFive  = \locAXImOne   ,
+                    argOneFour  = \locAXImZero  ,
+                    argOneThree = \locAXReThree ,
+                    argOneTwo   = \locAXReTwo   ,
+                    argOneOne   = \locAXReOne   ,
+                    argOneZero  = \locAXReZero  ,
+                    argTwoSeven = \locAYImThree ,
+                    argTwoSix   = \locAYImTwo   ,
+                    argTwoFive  = \locAYImOne   ,
+                    argTwoFour  = \locAYImZero  ,
+                    argTwoThree = \locAYReThree ,
+                    argTwoTwo   = \locAYReTwo   ,
+                    argTwoOne   = \locAYReOne   ,
+                    argTwoZero  = \locAYReZero  ,
+                }       
+            \]
+        as well as define the shorthand
+            \[
+                \locAIsWellFormed \define \partialComputations_{i}
+            \]
+
+        \item[\underline{Row $n^°(i + 16)$:}]
+        we impose
+            \[
+                \callToWellFormedCoordinatesBlsTwo {
+                    anchorRow = i               ,
+                    relOffset = 16               ,
+                    argOneSeven = \locBXImThree ,
+                    argOneSix   = \locBXImTwo   ,
+                    argOneFive  = \locBXImOne   ,
+                    argOneFour  = \locBXImZero  ,
+                    argOneThree = \locBXReThree ,
+                    argOneTwo   = \locBXReTwo   ,
+                    argOneOne   = \locBXReOne   ,
+                    argOneZero  = \locBXReZero  ,
+                    argTwoSeven = \locBYImThree ,
+                    argTwoSix   = \locBYImTwo   ,
+                    argTwoFive  = \locBYImOne   ,
+                    argTwoFour  = \locBYImZero  ,
+                    argTwoThree = \locBYReThree ,
+                    argTwoTwo   = \locBYReTwo   ,
+                    argTwoOne   = \locBYReOne   ,
+                    argTwoZero  = \locBYReZero  ,
+                }                
+            \]
+        as well as define the shorthand
+            \[
+                \locBIsWellFormed \define \partialComputations_{i + 16}
+            \]
+            % TODO: IS_INFINITY is set within the calls, we need to read it to decide if we should call or not the external circuit      
+    \item[\underline{Justifying the \blsSuccessBit{}:}]
+          we define the following shorthand
+          \[
+              \locInternalChecksPassed \define \partialComputations_{i+\indexMaxBlsGTwoAddData} \\
+          \]
+
+          and impose the following constraints
+          
+          \[
+              \left\{ \begin{array}{lcl}
+                  \locInternalChecksPassed     & = & \locAIsWellFormed \cdot \locBIsWellFormed                        \\
+                  \If \locInternalChecksPassed & = & 0 ~ \Then \blsSuccessBit _{i} = 0                                \\
+                  \If \locInternalChecksPassed & = & 1 ~ \Then \blsSuccessBit _{i} \equiv 1 - \notOnGXAccMax _{i}     \\
+              \end{array} \right.
+          \]
+\end{description}
+

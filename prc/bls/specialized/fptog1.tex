@@ -6,3 +6,51 @@
         \end{array} \right.
     }
 \]
+
+We introduce the following (local) shorthands:
+\[
+    \left\{ \begin{array}{lclr}
+        \locEThree & \define & \blsLimb_{i}      \\
+        \locETwo   & \define & \blsLimb_{i + 1}  \\
+        \locEOne   & \define & \blsLimb_{i + 2}  \\
+        \locEZero  & \define & \blsLimb_{i + 3}  \\
+    \end{array} \right.
+\]
+
+We set the following constraints:
+
+\begin{description}
+    \item[\underline{Row $n^°(i)$:}]
+        we impose
+            \[
+                \wcpGeneralizedCallToLt {
+                    anchorRow = i             ,
+                    relOffset = 0             ,
+                    argOneThree = \locEThree  ,
+                    argOneTwo   = \locETwo    ,
+                    argOneOne   = \locEOne    ,
+                    argOneZero  = \locEZero   ,
+                    argTwoThree = \blsPrimeThree ,
+                    argTwoTwo   = \blsPrimeTwo   ,
+                    argTwoOne   = \blsPrimeOne   ,
+                    argTwoZero  = \blsPrimeZero  ,
+               }         
+            \]
+        as well as define the shorthand
+            \[
+                \locEIsInRange \define \partialComputations_{i}
+            \]
+    \item[\underline{Justifying the \blsSuccessBit{}:}]
+          we define the following shorthand
+          \[
+              \locInternalChecksPassed \define \partialComputations_{i+\indexMaxBlsMapFpToGOneData} \\
+          \]
+          and impose the following constraints
+          \[
+              \left\{ \begin{array}{lcl}
+                  \locInternalChecksPassed     & = & \locEIsInRange                                                   \\
+                  \If \locInternalChecksPassed & = & 0 ~ \Then \blsSuccessBit _{i} = 0                                \\
+                  \If \locInternalChecksPassed & = & 1 ~ \Then \blsSuccessBit _{i} \equiv \justifiedByExternalCircuit \\
+              \end{array} \right.
+          \]
+\end{description}

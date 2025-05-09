@@ -6,3 +6,75 @@
         \end{array} \right.
     }
 \]
+
+We introduce the following (local) shorthands:
+\[
+    \left\{ \begin{array}{lclr}
+        \locEAThree & \define & \blsLimb_{i}      \\
+        \locEATwo   & \define & \blsLimb_{i + 1}  \\
+        \locEAOne   & \define & \blsLimb_{i + 2}  \\
+        \locEAZero  & \define & \blsLimb_{i + 3}  \\
+        \locEBThree & \define & \blsLimb_{i + 4}  \\
+        \locEBTwo   & \define & \blsLimb_{i + 5}  \\
+        \locEBOne   & \define & \blsLimb_{i + 6}  \\
+        \locEBZero  & \define & \blsLimb_{i + 7}  \\
+    \end{array} \right.
+\]
+
+We set the following constraints:
+
+\begin{description}
+    \item[\underline{Row $n^°(i)$:}]
+        we impose
+            \[
+                \wcpGeneralizedCallToLt {
+                    anchorRow = i             ,
+                    relOffset = 0             ,
+                    argOneThree = \locEAThree ,
+                    argOneTwo   = \locEATwo   ,
+                    argOneOne   = \locEAOne   ,
+                    argOneZero  = \locEAZero  ,
+                    argTwoThree = \blsPrimeThree ,
+                    argTwoTwo   = \blsPrimeTwo   ,
+                    argTwoOne   = \blsPrimeOne   ,
+                    argTwoZero  = \blsPrimeZero  ,
+               }         
+            \]
+        as well as define the shorthand
+            \[
+                \locEAIsInRange \define \partialComputations_{i}
+            \]
+    \item[\underline{Row $n^°(i + 4)$:}]
+        we impose
+            \[
+                \wcpGeneralizedCallToLt {
+                    anchorRow = i             ,
+                    relOffset = 4             ,
+                    argOneThree = \locEBThree ,
+                    argOneTwo   = \locEBTwo   ,
+                    argOneOne   = \locEBOne   ,
+                    argOneZero  = \locEBZero  ,
+                    argTwoThree = \blsPrimeThree ,
+                    argTwoTwo   = \blsPrimeTwo   ,
+                    argTwoOne   = \blsPrimeOne   ,
+                    argTwoZero  = \blsPrimeZero  ,
+                }         
+            \]
+        as well as define the shorthand
+            \[
+                \locEBIsInRange \define \partialComputations_{i + 4}
+            \]
+    \item[\underline{Justifying the \blsSuccessBit{}:}]
+          we define the following shorthand
+          \[
+              \locInternalChecksPassed \define \partialComputations_{i+\indexMaxBlsMapFpTwoToGTwoResult} \\
+          \]
+          and impose the following constraints
+          \[
+              \left\{ \begin{array}{lcl}
+                  \locInternalChecksPassed     & = & \locEAIsInRange \cdot \locEBIsInRange                            \\
+                  \If \locInternalChecksPassed & = & 0 ~ \Then \blsSuccessBit _{i} = 0                                \\
+                  \If \locInternalChecksPassed & = & 1 ~ \Then \blsSuccessBit _{i} \equiv \justifiedByExternalCircuit \\
+              \end{array} \right.
+          \]
+\end{description}
