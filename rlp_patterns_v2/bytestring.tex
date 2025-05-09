@@ -4,16 +4,16 @@ We shall assume the following: we are provided with columns
 \begin{itemize}
     \item $\col{input 1}$: containing the length of the byte string;
     \item $\col{input 2}$: containing the value of the first byte of the byte string;
+    \item $\col{input 3}$: bit column, 1 if the bytestring represents a list;
     \item $\col{ct}$: a counter;
     \item $\col{ctMax}$: a column which specifies the size of the ct-loop;
 
     \item $\col{rlpUtilFlag}$: a flag column;
     \item $\col{inst}$: a column containing the instruction;
-    \item $\col{resNoRlpPrefix}$: binary result column;
-    \item $\col{resValueRlpPrefix}$: result column;
+    \item $\col{resRlpPrefix?}$: binary result column;
+    \item $\col{resRlpPrefix}$: result column;
     \item $\col{resNBytes}$: result column;
-    \item $\col{isList}$: binary column to discriminate between the bytestring of a list or not;
-
+    
     \item $\col{limb}$: a column where the output is written;
     \item $\col{lc}$: a bit column, is 1 when something is written in the $\col{limb}$, else 0;
     \item $\col{nBytes}$: number of meaningfull bytes of the $\col{limb}$;
@@ -26,6 +26,7 @@ We shall assume the following: we are provided with columns
 	\begin{array}{r}
     \col{input1},
     \col{input2},
+    \col{input3},
     \col{ct},
     \col{ctMax}; \\
     \col{rlpUtilFlag},
@@ -45,7 +46,7 @@ We shall assume the following: we are provided with columns
     \item $\col{inst}_{i}        = \inst{BYTESTRING}$
     \item $\col{ctMax}_{i}       = 0$
 
-    \item $\col{lc}_{i}     = \col{resRlpPrefix}_{i}$
-    \item $\col{limb}_{i}   = \col{resValueRlpPrefix}_{i}$
+    \item $\col{lc}_{i}     = \col{resRlpPrefix?}_{i}$
+    \item $\col{limb}_{i}   = \col{resRlpPrefix}_{i}$
     \item $\col{nBytes}_{i} = \col{resNBytes}_{i}$
 \end{enumerate}
