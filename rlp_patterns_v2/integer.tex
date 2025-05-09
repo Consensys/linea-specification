@@ -7,9 +7,10 @@ We shall assume the following: we are provided with columns
     \item $\col{ctMax}$: a column which specifies the size of the ct-loop;
     \item $\col{rlpUtilFlag}$: a flag column;
     \item $\col{inst}$: a column containing the instruction;
-    \item $\col{resNoRlpPrefix}$: binary result column;
-    \item $\col{resBigInt}$: binary result column;
-    \item $\col{resValueRlpPrefix}$: result column;
+    \item $\col{resRlpPrefix?}$: binary result column;
+    \item $\col{resRlpPrefix}$: result column;
+    \item $\col{resHiPart?}$: binary result column;
+    \item $\col{resFirstRlp}$: result column;
     \item $\col{resNBytes}$: result column;
     \item $\col{limb}$: a column where the output is written;
     \item $\col{lc}$: a bit column, is 1 when something is written in the $\col{limb}$, else 0;
@@ -18,7 +19,7 @@ We shall assume the following: we are provided with columns
 
 \noindent We subsume under the short hand
 \[
-    \rlpStorageKey_{i}
+    \rlpInteger_{i}
     \left(
 	\begin{array}{r}
     \col{input1},
@@ -27,11 +28,11 @@ We shall assume the following: we are provided with columns
     \col{ctMax}; \\
     \col{rlpUtilFlag},
     \col{inst},
-    \col{resRlpPrefix},
-    \col{resValueRlpPrefix},
-    \col{resHiPart},
-    \col{resFirstPart},
-    \col{resNBytes}; \\
+    \item \col{resRlpPrefix?},
+    \item \col{resRlpPrefix},
+    \item \col{resHiPart?},
+    \item \col{resFirstRlp},
+    \item \col{resNBytes}; \\
     \col{limb},
     \col{lc},
     \col{nBytes}; \\
@@ -44,15 +45,15 @@ We shall assume the following: we are provided with columns
     \item $\col{inst}_{i} = \inst{INTEGER}$
     \item $\col{ctMax}_{i} = 2$
 
-    \item $\col{lc}_{i}     = \col{resRlpPrefix}_{i}$
-    \item $\col{limb}_{i}   = \col{resValueRlpPrefix}_{i} \cdot (256 ^{\llargeMO})$
-    \item $\col{nBytes}_{i} = \col{resRlpPrefix}_{i} \cdot 1$
+    \item $\col{lc}_{i}     = \col{resRlpPrefix?}_{i}$
+    \item $\col{limb}_{i}   = \col{resRlpPrefix}_{i} \cdot (256 ^{\llargeMO})$
+    \item $\col{nBytes}_{i} = \col{resRlpPrefix?}_{i} \cdot 1$
 
-    \item $\col{lc}_{i+1}     = \col{resHiPart}_{i}$
-    \item $\col{limb}_{i+1}   = \col{resHiPart}_{i} \cdot \col{resFirstPart}$
-    \item $\col{nBytes}_{i+1} = \col{resHiPart}_{i} \cdot \col{resNBytes}_{i}$
+    \item $\col{lc}_{i+1}     = \col{resHiPart?}_{i}$
+    \item $\col{limb}_{i+1}   = \col{resHiPart?}_{i} \cdot \col{resFirstRlp}_{i}$
+    \item $\col{nBytes}_{i+1} = \col{resHiPart?}_{i} \cdot \col{resNBytes}_{i}$
 
     \item $\col{lc}_{i+2}     = 1$
-    \item $\col{limb}_{i+2}   = \col{resHiPart}_{i} \cdot \col{input2}_{i} + (1 - \col{resHiPart}_{i}) \cdot \col{resFirstPart} $
-    \item $\col{nBytes}_{i+2} = \col{resHiPart}_{i} \cdot \llarge          + (1 - \col{resHiPart}_{i}) \cdot \col{resNBytes}_{i}$
+    \item $\col{limb}_{i+2}   = \col{resHiPart?}_{i} \cdot \col{input2}_{i} + (1 - \col{resHiPart?}_{i}) \cdot \col{resFirstRlp} $
+    \item $\col{nBytes}_{i+2} = \col{resHiPart?}_{i} \cdot \llarge          + (1 - \col{resHiPart?}_{i}) \cdot \col{resNBytes}_{i}$
 \end{enumerate}
