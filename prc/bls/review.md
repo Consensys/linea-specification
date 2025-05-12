@@ -5,7 +5,6 @@
 # BLS
 
 - Formatting
-
 - We want to distinguish trivial case:
     - Totally trivial: all points are at infinity. In this case, no circuit is needed.
     - Trivial: one of the two points is always at infinity and the other one belongs to the curve. In this case, we do not need (and cannot use it) the pairing circuit at all but just the membership one.
@@ -15,8 +14,5 @@
 
 - Considering using markdown tables (tablemode for vim)
 
-# Review 6th of May
-
 - Do not compress the ISZERO check by adding the coordinates as the addition will become costly when we change field
-- Check input of fp fp2 maps ... being smaller than BLS_PRIME
 - Check with BESU team or execution specs to understand if we need some check over the scalar for MSM. Actually, no check is needed, write a note in the specs maybe.
