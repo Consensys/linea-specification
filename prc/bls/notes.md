@@ -339,7 +339,7 @@ so as to prove non-membership. Note that in the first case we prove C2 non-membe
     - non_trivial case: If there is at least one pair points that are not at infinity, then:
         - If small point is at infinity, then send large point to G2_MEMBERSHIP circuit to prove membership to C2 and G2.
         - If large point is at infinity, then send small point to G1_MEMBERSHIP circuit to prove membership to C1 and G1.
-        - If pair of point is non-trivial (neither the small point nor the large are at infinity) , send the pair to the PAIRING circuit. 
+        - If pair of point is non-trivial (neither the small point nor the large are at infinity), send the pair to the PAIRING circuit. 
 - BLS12_MAP_FP_TO_G1: send field element to MAP_FP_TO_G1 circuit.
 - BLS12_MAP_FP2_TO_G2: send field element to MAP_FP2_TO_G2 circuit.
 - POINT_EVALUATION: send input to POINT_EVALUATION circuit.
