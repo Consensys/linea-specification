@@ -1,0 +1,72 @@
+\begin{center}
+\boxed{\text{In all this section, it is assumed that $\phaseData_{i}=1$.}}
+\end{center}
+We impose some generalities:
+\begin{enumerate}
+	\item $\lt_{i}=1$
+	\item $\lx_{i}=1$
+\end{enumerate}
+We prove some values of the transaction row:
+\begin{enumerate}[resume]
+	\item \If $\isTxn_{i-1}=0$ \Then
+	\begin{enumerate}
+		\item $\dataSize_{i-1} = \tmpData{1}_{i} + \tmpData{2}_{i}$
+		\item $\dataCost_{i-1} = \tmpData{1}_{i} \cdot G_{\mathrm{txdatazero}} + \tmpData{2}_{i} \cdot G_{\mathrm{txdatanonzero}}$ 
+		\footnote{Define in the \cite{EYP-London}, $G_{\mathrm{txdatanonzero}}=16$ and $G_{\mathrm{txdatazero}}=4$}
+	\end{enumerate}
+\end{enumerate}
+In other words, $\tmpData{1}_{i}$ stores the number of zero bytes in the data (resp. nonzeros). 
+\newline
+We first determine the RLP prefix of the data on the first row:
+\begin{enumerate}[resume]
+	\item \If $\isTxn_{i-1}=1$ \Then
+	\begin{enumerate}
+		\item $\isprefix_{i} = 1$
+		\item $\inputColumn{1}_{i} = \tmpData{1}_{i} + \tmpData{2}_{i}$
+		\item $\inputColumn{2}_{i} = \resultColumn{3}_{i} \cdot \resultColumn{5}_{i+1}$
+		\footnote{This mean that, if the data length is not zero, we constrain the value of the first byte of the data to be consistent.}
+		\item $\inputColumn{3}_{i} = 0$ 
+		\item 
+				\[
+    			\rlpBytestringPrefix_{i}
+    			\left(
+				\begin{array}{r}
+    			\inputColumn{1},
+    			\inputColumn{2},
+    			\inputColumn{3},
+    			\ct,
+    			\maxCt; \\
+    			\rlpUtilsFlag,
+    			\INST,
+    			\resultColumn{1},
+    			\resultColumn{2},
+    			\resultColumn{5}; \\
+    			\limb,
+    			\lc,
+    			\limbsize; \\
+    			\end{array}
+				\right)
+				\]
+		\item $\phasend_{i} = \resultColumn{3}_{i}$
+	\end{enumerate}
+\end{enumerate}
+We now have rows where we expose in the $\limb$ column chunks of the data. We delegate to RLPUTILS proving that the limb is up to $\llarge$ bytes long, and counting the number of zeros and nonzeros byte. 
+\begin{enumerate}[resume]
+	\item \If $\isTxn_{i-1}=0$ \Then
+	\begin{enumerate}
+		\item $\isprefix_{i} = 0$
+		\item $\rlpUtilsFlag_{i} = 1$
+		\item $\INST_{i} = \inst{DATA_PRICING}$
+		\item $\limb_{i} = \inputColumn{1}_{i}$
+		\item $\limbsize_{i} = \inputColumn{2}_{i}$
+		\item \If $\phasend_{i} = 0$ \Then: $\inputColumn{2}_{i} = \llarge$
+		\item $\tmpData{1}_{i} = \tmpData{1}_{i-1} - \resultColumn{2}_{i}$
+		\item $\tmpData{2}_{i} = \tmpData{2}_{i-1} - \resultColumn{4}_{i}$	
+	\end{enumerate}
+\end{enumerate}
+And we impose finalization constraint:
+\begin{enumerate}[resume]
+	\item \If $\tmpData{1}_{i} + \tmpData{2}_{i} =0$ \Then $\phasend_{i} = 1$  
+	\item \If $\phasend_{i} = 1$ \Then $\tmpData{1}_{i} + \tmpData{2}_{i} =0$
+\end{enumerate}
+
