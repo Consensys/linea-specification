@@ -173,6 +173,8 @@ Here we constraint what happens when we have to do the RLP of a storage key:
 \begin{enumerate}[resume]
 	\item \If $\isprefix_{i-1} = 0$ \et $\isAddr_{i-1} = 0$ \et $\isSto_{i-1} = 1$ \et $\done_{i-1} =1$ Then:
 	\begin{enumerate}
+		\item $\inputColumn{1}_{i} = \inputColumn{1}_{i+1} = \inputColumn{1}_{i+2}$
+		\item $\inputColumn{2}_{i} = \inputColumn{2}_{i+1} = \inputColumn{2}_{i+2}$
 		\item \[
     		  \rlpStorageKey_{i}
     		  \left(
@@ -191,7 +193,7 @@ Here we constraint what happens when we have to do the RLP of a storage key:
 			  \]
 	\end{enumerate}
 \end{enumerate}
-And the possibilities after the RLP of a storgae key:
+And the possibilities after the RLP of a storage key:
 \begin{enumerate}[resume]
 	\item \If $\isprefix_{i} = 0$ \et $\isAddr_{i} = 0$ \et $\isSto_{i} = 1$ \et $\done_{i} =1$ \Then:
 	\begin{enumerate}
@@ -213,5 +215,19 @@ We constraint finalize the phase before the end by imposing:
 		\item $\locTotNbOfAddress_{i} =0$
 		\item $\locTotNbOfStorage_{i} =0$
 	\end{enumerate}
+\end{enumerate}
+
+And some constancies properties:
+\begin{enumerate}
+	\item $\locPhaseSize_{i} = \locPhaseSize_{i-1} - \lc_{i} \cdot \limbsize_{i}$
+	\item \If $\isSto_{i} =1$ \Or ($\isAddr_{i} =1$ \et $\isprefix_{i} =0$) \Then: $\locAccessListTupleSize_{i} = \locAccessListTupleSize_{i-1} - \lc_{i} \cdot \limbsize_{i}$
+	\item $\locTotNbOfAddress_{i} = \locTotNbOfAddress_{i-1} - \isprefix_{i} \cdot \isAddr_{i}$
+	\item \If $\isAddr_{i} =1$ \et $\isSto_{i}=1$ \et $\locTotNbOfAddress_{i} = \locTotNbOfAddress_{i+1}$ \Then: 
+	\begin{enumerate}
+		\item $\locAddressHi_{i} = \locAddressHi_{i+1}$
+		\item $\locAddressLo_{i} = \locAddressLo_{i+1}$
+	\end{enumerate}
+	\item $\locTotNbOfStorage_{i} = \locTotNbOfStorage_{i} - \done_{i+2} \cdot \isSto_{i+2} \cdot (1 - \isprefix_{i+2})$
+	\item \If ($\isprefix_{i} =1$ \et $\isAddr_{i} =1$) \Then: $\locTotStorageForThisAddress_{i} = \locTotStorageForThisAddress_{i} - \done_{i+2} \cdot \isSto_{i+2} \cdot (1 - \isprefix_{i+2})$
 \end{enumerate}
 
