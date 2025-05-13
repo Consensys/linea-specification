@@ -15,3 +15,13 @@
 - Considering using markdown tables (tablemode for vim)
 
 - Do not compress the ISZERO check by adding the coordinates as the addition will become costly when we change field
+
+# Review
+
+- PART_COMP to PARTIAL_CHECKS
+- graded color
+- split triviality section, move 4 and 7 close to each other
+- CT, CT_MAX fill constants and defined CT for EVERY precompile
+- CT needs to count for every precompile, both to use an internal counter for constancy and to make IS_INFINITY work correctly
+- if we count with CT also along result rows, we do not need anymore the index constancy condition to propagate the triviality case
+- constraint 6 of heartbeat, extract shorthands, maybe into 4 chunck 

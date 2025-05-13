@@ -3,6 +3,17 @@ The present section provides constraints for
 \maxCt{} and \ct{}.
 The constraints for these columns are tightly intertwined.
 We start by defining the following module constants
+
+\[
+    \left\{ \begin{array}{lcl}
+        \ctMaxSmallPoint                  & \define & \redm{7} \\
+        \ctMaxLargePoint                  & \define & \redm{15} \\
+        \ctMaxScalar                      & \define & \redm{1} \\
+    \end{array} \right.
+\]
+
+and introduce the following shorthands 
+
 \[
     \left\{ \begin{array}{lcl}
         \locIsVariableSizeData_{i} & \define &  
@@ -11,17 +22,35 @@ We start by defining the following module constants
 			+ & \isBlsGTwoMsmData_{i}      \\
 			+ & \isBlsPairingCheckData_{i} \\
 		\end{array} \right] \vspace{2mm} \\
+        \locIsNInputsMultipleOfTwoData_{i} & \define &
+        \left[ \begin{array}{cl}
+            + & \isBlsGOneAddData_{i}     \\
+            + & \isBlsGOneMsmData_{i}        \\
+            + & \isBlsGTwoAddData_{i}     \\
+            + & \isBlsGTwoMsmData_{i}        \\
+            + & \isBlsPairingCheckData_{i}   \\
+        \end{array} \right] \vspace{2mm} \\
+    \end{array} \right.
+\]
+
+so as to define 
+\[
+    \left\{ \begin{array}{lcl}
         \locCtMaxFirstInput_{i} & \define &  
 		\left[ \begin{array}{cl}
-            + & \redm{...} \cdot \isBlsGOneMsmData_{i}      \\
-			+ & \redm{...} \cdot \isBlsGTwoMsmData_{i}      \\
-			+ & \redm{...} \cdot \isBlsPairingCheckData_{i} \\
+            + & \ctMaxSmallPoint      \cdot \isBlsGOneAddData_{i}      \\
+            + & \ctMaxSmallPoint      \cdot \isBlsGOneMsmData_{i}      \\
+            + & \ctMaxLargePoint      \cdot \isBlsGTwoAddData_{i}      \\
+			+ & \ctMaxLargePoint      \cdot \isBlsGTwoMsmData_{i}      \\
+			+ & \ctMaxSmallPoint      \cdot \isBlsPairingCheckData_{i} \\
 		\end{array} \right] \vspace{2mm} \\
         \locCtMaxSecondInput_{i} & \define &  
 		\left[ \begin{array}{cl}
-            + & \redm{...} \cdot \isBlsGOneMsmData_{i}      \\
-			+ & \redm{...} \cdot \isBlsGTwoMsmData_{i}      \\
-			+ & \redm{...} \cdot \isBlsPairingCheckData_{i} \\
+            + & \ctMaxSmallPoint      \cdot \isBlsGOneAddData_{i}      \\
+            + & \ctMaxScalar          \cdot \isBlsGOneMsmData_{i}      \\
+            + & \ctMaxLargePoint      \cdot \isBlsGTwoAddData_{i}      \\
+			+ & \ctMaxScalar          \cdot \isBlsGTwoMsmData_{i}      \\
+			+ & \ctMaxLargePoint      \cdot \isBlsPairingCheckData_{i} \\
 		\end{array} \right] \vspace{2mm} \\
     \end{array} \right.
 \]
@@ -29,7 +58,7 @@ We start by defining the following module constants
 Then, impose the following constraints
 \begin{enumerate}
     \item $\isFirstInput$ and $\isSecondInput$ are binary \quad (\trash)
-    \item $\locIsVariableSizeData_{i} = \isFirstInput_{i} + \isSecondInput_{i}$
+    \item $\locIsNInputsMultipleOfTwoData_{i} = \isFirstInput_{i} + \isSecondInput_{i}$
 \end{enumerate}
 
 \saNote{}
@@ -61,8 +90,8 @@ The first constraint below imposes that first input appears before the second in
 while the second constraint imposes that first input and the second input ``alternate.''
 
 \begin{enumerate}[resume]
-    \item \If $\locIsVariableSizeData_{i} = 0$ \Then $\isFirstInput_{i + 1} = \locIsVariableSizeData_{i + 1}$
-    \item \If $\locIsVariableSizeData_{i} = 1$ \et $\locIsVariableSizeData_{i+1} = 1$ \Then
+    \item \If $\locIsNInputsMultipleOfTwoData_{i} = 0$ \Then $\isFirstInput_{i + 1} = \locIsNInputsMultipleOfTwoData_{i + 1}$
+    \item \If $\locIsNInputsMultipleOfTwoData_{i} = 1$ \et $\locIsNInputsMultipleOfTwoData_{i+1} = 1$ \Then
         \begin{enumerate}
             \item \If $\ct_{i} \neq \maxCt_{i}$ \Then
                 \[
@@ -85,13 +114,14 @@ while the second constraint imposes that first input and the second input ``alte
 \end{enumerate}
 We now impose standard constraints on the \ct, \maxCt{} pair:
 \begin{enumerate}[resume]
-    \item \If $\locIsVariableSizeData_{i} = 0$ \Then
+    \item \If $\locIsNInputsMultipleOfTwoData_{i} = 0$ \et $\locIsData_{i} = 0$ \Then
         \[
             \left\{ \begin{array}{lcl}
                 \ct_{i}     & = & 0 \\
                 \ct_{i + 1} & = & 0 \\
             \end{array} \right.
         \]
+    \item \If $\locIsResult_{i} = 1$ \Then $\ct_{i} = \blsIndex_{i}$     
     \item \If $\ct_{i} \neq \maxCt_{i}$ \Then $\ct_{i + 1} = 1 + \ct_{i}$
     \item \If $\ct_{i} =    \maxCt_{i}$ \Then $\ct_{i + 1} = 0$
 \end{enumerate}
