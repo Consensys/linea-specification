@@ -32,7 +32,10 @@ We impose the following constraints on \gOneMembershipTestRequired{}:
             \left\{ \begin{array}{lcl}
                 \isFirstInput & = & 1 \\
                 \trivialAllInf & = & 0 \\
-                \isBlsGOneMsmData_{i} \cdot \notOnGXAccMax_{i}  + \isBlsPairingCheckData_{i} \cdot \hdots & = & 1 \\
+                \left[ \begin{array}{cl}
+                    + & \isBlsGOneMsmData_{i} \cdot \notOnGXAccMax_{i}  \\
+                    + & \isBlsPairingCheckData_{i} \cdot (1 - \notOnGXAccMax_{i}) \cdot \isFirstInput \\
+                \end{array} \right] & = & 1 \\
             \end{array} \right.
         \]
 \end{enumerate}
@@ -45,10 +48,15 @@ We impose the following constraints on \gTwoMembershipTestRequired{}:
             \left\{ \begin{array}{lcl}
                 \isFirstInput & = & 1 \\
                 \trivialAllInf & = & 0 \\
-                \isBlsGTwoMsmData_{i} \cdot \notOnGXAccMax_{i}  + \isBlsPairingCheckData_{i} \cdot \hdots & = & 1 \\
+                \left[ \begin{array}{cl}
+                    + & \isBlsGTwoMsmData_{i} \cdot \notOnGXAccMax_{i}  \\
+                    + & \isBlsPairingCheckData_{i} \cdot (1 - \notOnGXAccMax_{i}) \cdot \isSecondInput \\
+                \end{array} \right] & = & 1 \\
             \end{array} \right.
         \]
 \end{enumerate}
+
+% TODO: double check
 
 % \saNote{} The purpose of \membershipTestRequired{} is twofold:
 % (\emph{a}) in case the present module predicts that some point in the data of a call to the \inst{ECPAIRING} precompile is not on $G_2$ the \membershipTestRequired{} flag selects that point, see section~(\ref{prc: ec data: successful pairing: setting G2 non membership})
