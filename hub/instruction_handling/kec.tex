@@ -70,12 +70,12 @@ The constraints are as follows:
 	\item[\underline{Miscellaneous-row $n^°(i + \miscRowOffset)$: \mxpMod{} data:}]
 		we deal with the memory expansion cost:
 		\[
-			\setMxpInstructionTypeFour
+			\setMxpInstructionOneOffset
 			{
 				anchorRow   = i              ,
 				relOffset   = \miscRowOffset ,
 				instruction = \inst{SHA3}    ,
-				deploys     = \varnothing    ,
+				deploys     = \nothing       ,
 				offsetHi    = \locOffsetHi   ,
 				offsetLo    = \locOffsetLo   ,
 				sizeHi      = \locSizeHi     ,
@@ -84,8 +84,9 @@ The constraints are as follows:
 		\]
 	\item[\underline{Defining \locCallMmu{}:}] we define it as follows
 		\[
-			\locCallMmu \define
-			(1 - \xAhoy_{i}) \cdot \miscMxpTypeFourInstMayTriggerMmu_{i + \miscRowOffset}
+			\locCallMmu
+			\define
+			(1 - \xAhoy_{i}) \cdot \miscMxpSizeOneNonzeroNoMxpx _{i + \miscRowOffset}
 		\]
 		in other words
 		\begin{enumerate}
@@ -100,8 +101,8 @@ The constraints are as follows:
 		\If $\miscMmuFlag_{i + \miscRowOffset} = 1$ \Then
 		\[
 			\setMmuInstructionParametersRamToExoWithPadding {
-				anchorRow         = i ,
-				relOffset         = \miscRowOffset,
+				anchorRow         = i                     ,
+				relOffset         = \miscRowOffset        ,
 				sourceId          = \cn_{i}               ,
 				targetId          = \nothing              ,
 				auxiliaryId       = 1 + \hubStamp_{i}     ,
