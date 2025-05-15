@@ -6,9 +6,71 @@ The present section imposes the behaviour of the various circuit selectors.
         $\csMapFpToGOne_{i} = \internalChecksPassed_{i} \cdot \locIsBlsMapFpToGOne_{i}$
     \item[Circuit selector for the \inst{BLS12\_MAP\_FP2\_TO\_G2} circuit:]
         $\csMapFpTwoToGTwo_{i} = \internalChecksPassed_{i} \cdot \locIsBlsMapFpTwoToGTwo_{i}$
-\end{description}
+    \item[Circuit selector for the \inst{BLS12\_PAIRING\_CHECK} circuit:]
+    we impose the following constraints:
+        \begin {enumerate}
+            \item \If $\isBlsPairingCheckData_{i} = 1$ \Then  
+                \[
+                    \begin{array}{lcl}
+                        \csPairing_{i} & \equiv &
+                        \left[ \begin{array}{clcr}
+                            \wedge & \internalChecksPassed_{i}   & \equiv & \texttt{true}  \\
+                            \wedge & \notOnGXAccMax_{i}          & \equiv & \texttt{false} \\
+                            \wedge & \acceptablePairOfPoints_{i} & \equiv & \texttt{true}  \\
+                        \end{array} \right] \vspace{2mm} \\
+                        & \equiv & 
+                        \left[ \begin{array}{clcr}
+                            \cdot & \internalChecksPassed_{i}   \\
+                            \cdot & (1 - \notOnGXAccMax_{i})  \\
+                            \cdot & \acceptablePairOfPoints_{i} \\
+                        \end{array} \right] \vspace{2mm} \\
+                        & =      & \acceptablePairOfPoints_{i} \\
+                    \end{array}
+                \]
+            \item \If $\isBlsPairingCheckResult_{i} = 1$ \Then
+                \[
+                    \begin{array}{lcl}
+                        \csPairing_{i} & = & \blsSuccessBit_{i} \cdot \locNonTrivial_{i}
+                    \end{array}
+                \]
+            \item \If $\locIsBlsPairingCheck_{i} = 0$ \Then
+                \[
+                    \begin{array}{lcl}
+                        \csPairing_{i} & = & 0
+                    \end{array}
+                \]
+        \end{enumerate}
 
-% TODO: others require more complex conditions based on NOT_ON_GX_ACC_MAX and IS_INFINITY
+    
+    \item[Circuit selector for the \inst{C1\_MEMBERSHIP\_TEST} circuit:]
+        \[
+            \begin{array}{lcl}
+                \csCOne_{i} & \equiv &
+                \left[ \begin{array}{clcr}
+                    \wedge & \isBlsPairingCheckData_{i}        & \equiv & \texttt{true} \\
+                    \wedge & \internalChecksPassed_{i}   & \equiv & \texttt{true} \\
+                    \wedge & \cOneMembershipTestRequired_{i} & \equiv & \texttt{true} \\
+                \end{array} \right] \vspace{2mm} \\
+                & \equiv & 
+                \left[ \begin{array}{clcr}
+                    \cdot & \isBlsPairingCheckData_{i}        \\
+                    \cdot & \internalChecksPassed_{i}   \\
+                    \cdot & \cOneMembershipTestRequired_{i} \\
+                \end{array} \right] \vspace{2mm} \\
+                & =      & \cOneMembershipTestRequired_{i} \\
+            \end{array}
+        \]
+    \noindent
+    Similarly:
+    \item[Circuit selector for the \inst{C2\_MEMBERSHIP\_TEST} circuit:]
+        $\csCTwo_{i} = \cTwoMembershipTestRequired_{i}$
+    \item[Circuit selector for the \inst{G1\_MEMBERSHIP\_TEST} circuit:]
+        $\csGOne_{i} = \gOneMembershipTestRequired_{i}$
+    \item[Circuit selector for the \inst{G2\_MEMBERSHIP\_TEST} circuit:]
+        $\csGTwo_{i} = \gTwoMembershipTestRequired_{i}$
+\end{description}    
+
+% TODO: add ADD and MSM cases
 
 Note that, at most one of the circuit selectors may light up for a given row:
 
@@ -23,81 +85,13 @@ The data that should be read by external circuits are always the following:
     \item \blsSuccessBit{}
 \end{enumerate}
 
-% \item[Circuit selector for the \inst{ECPAIRING} circuit:]
-% we impose the following constraints:
-%     \begin {enumerate}
-%         \item \If $\isEcpairingData_{i} = 1$ \Then
-%             \[
-%                 \begin{array}{lcl}
-%                     \csEcpairing_{i} & \equiv &
-%                     \left[ \begin{array}{clcr}
-%                         \wedge & \isEcpairingData_{i}         & \equiv & \texttt{true}  \\
-%                         \wedge & \internalChecksPassed_{i}   & \equiv & \texttt{true}  \\
-%                         \wedge & \notOnGTwoAccMax_{i}        & \equiv & \texttt{false} \\
-%                         \wedge & \acceptablePairOfPoints_{i} & \equiv & \texttt{true}  \\
-%                     \end{array} \right] \vspace{2mm} \\
-%                     & \equiv & 
-%                     \left[ \begin{array}{clcr}
-%                         \cdot & \isEcpairingData_{i}         \\
-%                         \cdot & \internalChecksPassed_{i}   \\
-%                         \cdot & (1 - \notOnGTwoAccMax_{i})  \\
-%                         \cdot & \acceptablePairOfPoints_{i} \\
-%                     \end{array} \right] \vspace{2mm} \\
-%                     & =      & \acceptablePairOfPoints_{i} \\
-%                 \end{array}
-%             \]
-%         \item \If $\isEcpairingResult_{i} = 1$ \Then
-%             \[
-%                 \begin{array}{lcl}
-%                     \csEcpairing_{i} & = & \ecdataSuccessBit_{i} \cdot (1 - \trivialPairing_{i})
-%                 \end{array}
-%             \]
-%         \item \If $\locIsEcpairing_{i} = 0$ \Then
-%             \[
-%                 \begin{array}{lcl}
-%                     \csEcpairing_{i} & = & 0
-%                 \end{array}
-%             \]
-%     \end{enumerate}
-% \item[Circuit selector for the \inst{G2\_MEMBERSHIP\_TEST} circuit:]
-%     \[
-%         \begin{array}{lcl}
-%             \csGTwo_{i} & \equiv &
-%             \left[ \begin{array}{clcr}
-%                 \wedge & \isEcpairingData_{i}        & \equiv & \texttt{true} \\
-%                 \wedge & \internalChecksPassed_{i}   & \equiv & \texttt{true} \\
-%                 \wedge & \membershipTestRequired_{i} & \equiv & \texttt{true} \\
-%             \end{array} \right] \vspace{2mm} \\
-%             & \equiv & 
-%             \left[ \begin{array}{clcr}
-%                 \cdot & \isEcpairingData_{i}        \\
-%                 \cdot & \internalChecksPassed_{i}   \\
-%                 \cdot & \membershipTestRequired_{i} \\
-%             \end{array} \right] \vspace{2mm} \\
-%             & =      & \membershipTestRequired_{i} \\
-%         \end{array}
-%     \]
-% \end{description}
-
-% Note that, at most one of the circuit selectors may light up for a given row:
-% \begin{enumerate}
-% \item $\csEcrecover_{i} + \csEcadd_{i} + \csEcmul_{i} + \csEcpairing_{i} + \csGTwo_{i}$ is binary \quad (\trash)
-% \end{enumerate}
-% The data that should be read by external circuits are always the following:
-% \begin{enumerate}
-% \item \ecdataId{}
-% \item \ecdataIndex{}
-% \item \ecdataLimb{}
-% \item \ecdataSuccessBit{}
-% \end{enumerate}
+% \saNote{}
+% Whenever $\blsSuccessBit = 0$ then $\csEcpairing = 0$, while if $\blsSuccessBit = 1$ then $\csEcpairing = \acceptablePairOfPoints$.
 
 % \saNote{}
-% Whenever $\ecdataSuccessBit = 0$ then $\csEcpairing = 0$, while if $\ecdataSuccessBit = 1$ then $\csEcpairing = \acceptablePairOfPoints$.
-
-% \saNote{}
-% Given the \ecDataMod{} is processing \inst{ECPAIRING} instructions, the $\csGTwo$ flag lights up under two circumstances:
+% Given the \blsMod{} is processing \inst{ECPAIRING} instructions, the $\csGTwo$ flag lights up under two circumstances:
 % \begin{enumerate} 
-% \item $\internalChecksPassed = 1$, $\ecdataSuccessBit = 0$ along the rows of first large point that is predicted not to lie on the $G_2$ subgroup;
-% \item $\internalChecksPassed = 1$, $\ecdataSuccessBit = 1$ along the rows of the large point of every pair of the form $(\infty, \locB)$;
+% \item $\internalChecksPassed = 1$, $\blsSuccessBit = 0$ along the rows of first large point that is predicted not to lie on the $G_2$ subgroup;
+% \item $\internalChecksPassed = 1$, $\blsSuccessBit = 1$ along the rows of the large point of every pair of the form $(\infty, \locB)$;
 % \end{enumerate}
 
