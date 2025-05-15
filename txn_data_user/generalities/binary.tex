@@ -1,25 +1,46 @@
-We impose binary constraints on
-\begin{multicols}{2}
-	\begin{enumerate}
-		\item $\blockIsEmpty$
-		\item $\transactionProcessing$
-		\item $\transactionAccounting$
-		\item $\isUserTxnComputation$
-		\item $\isUserTxnHubView$
-		\item $\isUserTxnRlpView$
-		\item \txIsLegacy{}
-		\item \txIsAccessSet{}
-		\item \txIsTypeTwo{}
-		\item \txIsDeployment{}
-		\item \txStatusCode{}
-		\item \txCopyTxcd{} \quad (\trash)
-		\item \txRequiresEvmExecution{}
-		\item \eucFlag{}
-		\item \wcpFlag{}
-		\item \isLastTxOfBlock{} \quad (\trash)
-		%\item[\vspace{\fill}]
-		%\item[\vspace{\fill}]
-	\end{enumerate}
-\end{multicols}
+We impose binary constraints.
+\begin{enumerate}
+	\item
+		The following columns are \emph{de facto} binary given the lookup from
+		note~(\ref{user txn data: lookups: into hub: purpose and consequences}):
+		\begin{enumerate}
+			\item \sysi{} \quad (\sanityCheck)
+			\item \user{} \quad (\sanityCheck)
+			\item \sysf{} \quad (\sanityCheck)
+		\end{enumerate}
+	\item
+		Perspective flags are required to be binary:
+		\begin{enumerate}
+			\item $\isUserTxnComputation$
+			\item $\isUserTxnHubView$
+			\item $\isUserTxnRlpView$
+		\end{enumerate}
+	\item
+		The flags labeling
+		\textbf{legacy transactions} ($\txIsLegacy \equiv 1$),
+		\textbf{access list transactions} ($\txIsAccessSet \equiv 1$), and
+		\textbf{\cite{EIP-1559} transactions} ($\txIsTypeTwo \equiv 1$),
+		are required to be binary:
+		\begin{enumerate}
+			\item \txIsLegacy{}
+			\item \txIsAccessSet{}
+			\item \txIsTypeTwo{}
+		\end{enumerate}
+	\item
+		The following columns provide further ``boolean'' information on transactions:
+		\begin{enumerate}
+			\item \txIsDeployment{}
+			\item \txStatusCode{}
+			\item \txCopyTxcd{}
+			\item \txRequiresEvmExecution{}
+		\end{enumerate}
+	\item
+		The following flags trigger lookups and are similarly required to be binary:
+		\begin{enumerate}
+			\item \eucFlag{}
+			\item \wcpFlag{}
+				%\item[\vspace{\fill}]
+		\end{enumerate}
+\end{enumerate}
 \saNote{}
 There is in reality no reason to require (by constraint) that \txCopyTxcd{} and \isLastTxOfBlock{} be binary as it will be enforced through value assignment.
