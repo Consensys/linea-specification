@@ -21,65 +21,53 @@
 \define@cmdkey [MXP] {var} {returnAtCapacityHi}   {}
 \define@cmdkey [MXP] {var} {returnAtCapacityLo}   {}
 
-
-
 \presetkeys    [MXP] {var} {
-	anchorRow          = \missingParameter,
-	relOffset          = \missingParameter,
-        instruction        = \missingParameter,
-        deploys            = \missingParameter,
-        offsetHi           = \missingParameter,
-        offsetLo           = \missingParameter,
-        targetOffsetHi     = \missingParameter,
-        targetOffsetLo     = \missingParameter,
-        sourceOffsetHi     = \missingParameter,
-        sourceOffsetLo     = \missingParameter,
-        sizeHi             = \missingParameter,
-        sizeLo             = \missingParameter,
-        callDataOffsetHi   = \missingParameter,
-        callDataOffsetLo   = \missingParameter,
-        callDataSizeHi     = \missingParameter,
-        callDataSizeLo     = \missingParameter,
-        returnAtOffsetHi   = \missingParameter,
-        returnAtOffsetLo   = \missingParameter,
-        returnAtCapacityHi = \missingParameter,
-        returnAtCapacityLo = \missingParameter,
+	anchorRow          = \missingParameter ,
+	relOffset          = \missingParameter ,
+        instruction        = \missingParameter ,
+        deploys            = \missingParameter ,
+        offsetHi           = \missingParameter ,
+        offsetLo           = \missingParameter ,
+        targetOffsetHi     = \missingParameter ,
+        targetOffsetLo     = \missingParameter ,
+        sourceOffsetHi     = \missingParameter ,
+        sourceOffsetLo     = \missingParameter ,
+        sizeHi             = \missingParameter ,
+        sizeLo             = \missingParameter ,
+        callDataOffsetHi   = \missingParameter ,
+        callDataOffsetLo   = \missingParameter ,
+        callDataSizeHi     = \missingParameter ,
+        callDataSizeLo     = \missingParameter ,
+        returnAtOffsetHi   = \missingParameter ,
+        returnAtOffsetLo   = \missingParameter ,
+        returnAtCapacityHi = \missingParameter ,
+        returnAtCapacityLo = \missingParameter ,
 }{}
 
 % misc/MXP instruction names
-\newcommand{\setMxpInstructionTypeOneName  }   {\texttt{setMxpInstructionType\_1}}
-\newcommand{\setMxpInstructionTypeTwoName  }   {\texttt{setMxpInstructionType\_2}}
-\newcommand{\setMxpInstructionTypeThreeName}   {\texttt{setMxpInstructionType\_3}}
-\newcommand{\setMxpInstructionTypeFourName }   {\texttt{setMxpInstructionType\_4}}
-\newcommand{\setMxpInstructionTypeFiveName }   {\texttt{setMxpInstructionType\_5}}
-\newcommand{\setMxpInstructionMcopyName    }   {\texttt{setMxpInstructionMcopy}}
+\newcommand{\setMxpInstructionMsizeName     } {\texttt{setMxpInstructionMsize     }}
+\newcommand{\setMxpInstructionOneOffsetName } {\texttt{setMxpInstructionOneOffset }}
+\newcommand{\setMxpInstructionCallsName     } {\texttt{setMxpInstructionCalls     }}
+\newcommand{\setMxpInstructionMcopyName     } {\texttt{setMxpInstructionMcopy     }}
 
-% misc/MXP instructions
-\newcommand{\setMxpInstructionTypeOne}      [2]     {\setMxpInstructionTypeOneName   _{#1} \big[\;#2\;]}
-\newcommand{\setMxpInstructionTypeTwo}      [1]     {
+\newcommand{\setMxpInstructionMsize}     [1]     {
     \setkeys[MXP]{var}{#1}
-    \setMxpInstructionTypeTwoName _{\cmdMXP@var@anchorRow}
+    \setMxpInstructionMsizeName _{\cmdMXP@var@anchorRow}
     \left[ \begin{array}{ll}
-        \utt{Rel. row offset:} & \cmdMXP@var@relOffset   \\
-        \utt{Instruction:}     & \cmdMXP@var@instruction \\
-        \utt{Offset hi part:}  & \cmdMXP@var@offsetHi    \\
-        \utt{Offset lo part:}  & \cmdMXP@var@offsetLo    \\
+        \utt{Rel. row offset:}  & \cmdMXP@var@relOffset      \\
     \end{array} \right]
 }
 
-\newcommand{\setMxpInstructionTypeThree}    [1]     {
-    \setkeys[MXP]{var}{#1}
-    \setMxpInstructionTypeThreeName _{\cmdMXP@var@anchorRow}
-    \left[ \begin{array}{ll}
-        \utt{Rel. row offset:}  & \cmdMXP@var@relOffset \\
-        \utt{Offset hi part:}   & \cmdMXP@var@offsetHi  \\
-        \utt{Offset lo part:}   & \cmdMXP@var@offsetLo  \\
-    \end{array} \right]
+\iffalse
+\setMxpInstructionMsize {
+    anchorRow   = ,
+    relOffset   = ,
 }
+\fi
 
-\newcommand{\setMxpInstructionTypeFour}     [1]     {
+\newcommand{\setMxpInstructionOneOffset}     [1]     {
     \setkeys[MXP]{var}{#1}
-    \setMxpInstructionTypeFourName _{\cmdMXP@var@anchorRow}
+    \setMxpInstructionOneOffsetName _{\cmdMXP@var@anchorRow}
     \left[ \begin{array}{ll}
         \utt{Rel. row offset:}   & \cmdMXP@var@relOffset   \\
         \utt{Instruction:}       & \cmdMXP@var@instruction \\
@@ -91,9 +79,22 @@
     \end{array} \right]
 }
 
-\newcommand{\setMxpInstructionTypeFive}     [1]     {
+\iffalse
+\setMxpInstructionOneOffset {
+    anchorRow   = ,
+    relOffset   = ,
+    instruction = ,
+    deploys     = ,
+    offsetHi    = ,
+    offsetLo    = ,
+    sizeHi      = ,
+    sizeLo      = ,
+}
+\fi
+
+\newcommand{\setMxpInstructionCalls}     [1]     {
     \setkeys[MXP]{var}{#1}
-    \setMxpInstructionTypeFiveName _{\cmdMXP@var@anchorRow}
+    \setMxpInstructionCallsName _{\cmdMXP@var@anchorRow}
     \left[ \begin{array}{ll}
         \utt{Rel. row offset:}            & \cmdMXP@var@relOffset          \\
         \utt{Instruction:}                & \cmdMXP@var@instruction        \\
@@ -108,9 +109,8 @@
     \end{array} \right]
 }
 
-
 \iffalse
-\setMxpInstructionTypeFive {
+\setMxpInstructionCall {
     anchorRow          = ,
     relOffset          = ,
     instruction        = ,
