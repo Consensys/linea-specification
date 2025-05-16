@@ -1,0 +1,40 @@
+\begin{center}
+	\boxed{\text{The constraints below assume that }
+	\left\{ \begin{array}{lcl}
+	        \totalTransactionNumber _{i} & \neq & \totalTransactionNumber _{i - 1} \\
+		\user _{i}                   & =    & 1                                \\
+	\end{array} \right.
+	}
+\end{center}
+We impose preliminary constraints that apply to the processing of any type of user transaction.
+\begin{description}
+	\item[\underline{Setting the first few perspectives:}]
+		we impose that
+		\[
+			\left[ \begin{array}{cr}
+				+ & \isUserTxnHubView     _{i + \hubViewRowOffset } \\
+				+ & \isUserTxnRlpView     _{i + \rlpViewRowOffset } \\
+				+ & \isUserTxnComputation _{i + \nonceRowOffset   } \\
+			\end{array} \right]
+			=
+			\yellowm{3}
+		\]
+	\item[\underline{Setting \maxCt{}:}]
+		we impose the following
+		\[
+			\maxCt _{i} = \locMaxCtUserSum _{i}
+		\]
+		where
+		\[
+			\locMaxCtUserSum _{i}
+			\define
+			\left[ \begin{array}{clcl}
+				+ & \maxCtForTypeZero & \!\!\!\cdot\!\!\! & \txIsLegacy    _{i} \\
+				+ & \maxCtForTypeOne  & \!\!\!\cdot\!\!\! & \txIsAccessSet _{i} \\
+				+ & \maxCtForTypeTwo  & \!\!\!\cdot\!\!\! & \txIsTypeTwo   _{i} \\
+			\end{array} \right]
+		\]
+\end{description}
+
+
+
