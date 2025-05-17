@@ -18,7 +18,6 @@
 
 # Review
 
-- PART_COMP to PARTIAL_CHECKS
 - graded color
 - split triviality section, move 4 and 7 close to each other
 - CT, CT_MAX fill constants and defined CT for EVERY precompile
