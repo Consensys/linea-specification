@@ -1,10 +1,5 @@
 ## Pairing logic
 
-INTERNAL_CHECKS_PASSED ⇒ MALFORMED_DATA_INTERNAL_JUSTIFICATION
-MALFORMED              ⇒ MALFORMED_DATA_EXTERNAL_JUSTIFICATION
-TRIVIAL                ⇒ WELLFORMED_DATA_TRIVIAL
-NONTRIVIAL             ⇒ WELLFORMED_DATA_NONTRIVIAL
-
 wellformed_data ≡ + WELLFORMED_DATA_TRIVIAL
                   + WELLFORMED_DATA_NONTRIVIAL
 
@@ -27,7 +22,7 @@ We add another column that is pair-of-points constant called
     - If IS_BLS_PAIRING_DATA = 0     Then it's ≡ 0
     - If icf = 1  Then it's ≡ 0
     - If MALFORMED_DATA_EXTERNAL_JUSTIFICATION = 1               Then it's ≡ 0
-    - If TRIVIAL ∨ NONTRIVIAL ≡ true Then we set its value at the transition from small to large point
+    - If WELLFORMED_DATA_TRIVIAL ∨ WELLFORMED_DATA_NONTRIVIAL ≡ true Then we set its value at the transition from small to large point
         - small_point_is_infinity ≡ IS_INFINITY[i]
         - large_point_is_infinity ≡ IS_INFINITY[i + 1]
         - you set its value when transitioning from small point to large point:
@@ -37,7 +32,7 @@ We add another column that is pair-of-points constant called
 we talk exclusively about BLS_PAIRING
 we introduce the following columns / shorthands
 
-- icf ≡ 1 - MALFORMED_DATA_INTERNAL_JUSTIFICATION: `internal_checks_failed` shorthand; data is malformed and we can check in module
+- icf ≡ MALFORMED_DATA_INTERNAL_JUSTIFICATION: `internal_checks_failed` shorthand; data is malformed and we can check in module
 - MALFORMED_DATA_EXTERNAL_JUSTIFICATION: data is malformed but we cannot see it locally (and recognized as such by gnark)
 - TRIVIAL: data is not malformed in any way but every pair of points is either
     - (∞, ∞)
@@ -49,16 +44,16 @@ we introduce the following columns / shorthands
 We will still require a TRIVIAL_ACC column
 - it is counter-constant
 - you set it at transition points (when entering IS_SMALL / IS_LARGE) using IS_INFINITY
-- when transitioning from data to result you use it to set TRIVIAL / NONTRIVIAL
+- when transitioning from data to result you use it to set WELLFORMED_DATA_TRIVIAL / NONTRIVIAL
     - we are basically justifying predictions:
-    - If TRIVIAL    = 1 Then TRIVIAL_ACC = 1
-    - If NONTRIVIAL = 1 Then TRIVIAL_ACC = 0
+    - If WELLFORMED_DATA_TRIVIAL    = 1 Then TRIVIAL_ACC = 1
+    - If WELLFORMED_DATA_NONTRIVIAL = 1 Then TRIVIAL_ACC = 0
 
 They are
 - binary
 - ID or INDEX-constant (tbd) (probably ID-constant)
 - we ask that
-    icf + MALFORMED_DATA_EXTERNAL_JUSTIFICATION + TRIVIAL + NONTRIVIAL = 1
+    icf + MALFORMED_DATA_EXTERNAL_JUSTIFICATION + WELLFORMED_DATA_TRIVIAL + WELLFORMED_DATA_NONTRIVIAL = 1
 
 Concerning MALFORMED_DATA_EXTERNAL_JUSTIFICATION:
 - MALFORMED_DATA     binary counter-constant
@@ -90,22 +85,22 @@ If MALFORMED_DATA_EXTERNAL_JUSTIFICATION ≡ true then we only require that MALF
 
 
 - CIRCUIT_SELECTOR_G1_MEMBERSHIP_TEST (CSG1MT)
-    - malformed  data case: g1cs_for_pairing___malformed  ≡ MALFORMED_DATA_BIT ∙ SMALL_POINT
-    - wellformed data case: g1cs_for_pairing___wellformed ≡ wellformed_data    ∙ SMALL_POINT ∙ (1 - IS_INFINITY) ∙ PAIR_OF_POINTS_CONTAINS_INFINITY
+    - malformed  data case: g1cs_for_pairing___malformed  ≡ MALFORMED_DATA_BIT ∙ IS_FIRST_INPUT
+    - wellformed data case: g1cs_for_pairing___wellformed ≡ wellformed_data    ∙ IS_FIRST_INPUT ∙ (1 - IS_INFINITY) ∙ PAIR_OF_POINTS_CONTAINS_INFINITY
     - i.e.
         CIRCUIT_SELECTOR_G1_MEMBERSHIP_TEST___for_pairing ≡ + g1cs_for_pairing___malformed
                                                             + g1cs_for_pairing___wellformed
 
 - CIRCUIT_SELECTOR_G2_MEMBERSHIP_TEST (CSG2MT)
-    - malformed  data case: g2cs_for_pairing___malformed  ≡ MALFORMED_DATA_BIT ∙ SMALL_POINT
-    - wellformed data case: g2cs_for_pairing___wellformed ≡ wellformed_data    ∙ SMALL_POINT ∙ (1 - IS_INFINITY) ∙ PAIR_OF_POINTS_CONTAINS_INFINITY
+    - malformed  data case: g2cs_for_pairing___malformed  ≡ MALFORMED_DATA_BIT ∙ IS_FIRST_INPUT
+    - wellformed data case: g2cs_for_pairing___wellformed ≡ wellformed_data    ∙ IS_FIRST_INPUT ∙ (1 - IS_INFINITY) ∙ PAIR_OF_POINTS_CONTAINS_INFINITY
     - i.e.
         CIRCUIT_SELECTOR_G2_MEMBERSHIP_TEST___for_pairing ≡ + g2cs_for_pairing___malformed
                                                             + g2cs_for_pairing___wellformed
 
 - CIRCUIT_SELECTOR_PAIRING
     - wellformed data case:
-        CIRCUIT_SELECTOR_PAIRING ≡ NONTRIVIAL ∙ (1 - PAIR_OF_POINTS_CONTAINS_INFINITY)
+        CIRCUIT_SELECTOR_PAIRING ≡ WELLFORMED_DATA_NONTRIVIAL ∙ (1 - PAIR_OF_POINTS_CONTAINS_INFINITY)
 
 
 Note. You will have a constraint à la
@@ -118,7 +113,7 @@ CIRCUIT_SELECTOR_G2_MEMBERSHIP_TEST ≡ IS_BLS_PAIRING_DATA ∙ CIRCUIT_SELECTOR
 
 sections on
 - malformed stuff (former ICP)
-    INTERNAL_CHECKS_PASSED ⇒ MALFORMED_DATA_DISCOVERED_INTERNALLY
+    MALFORMED_DATA_INTERNAL_JUSTIFICATION
 - malformed stuff (totally generic)
     MALFORMED_DATA_BIT
     MALFORMED_DATA_ACC

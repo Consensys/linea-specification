@@ -134,7 +134,6 @@
 \newcommand{\secpNHexHi}                          {\red{\texttt{0x\,ffffffffffffffffffffffffffffffff}}}
 \newcommand{\secpNHexLo}                          {\red{\texttt{0x\,fffffffffffffffffffffffefffffc2f}}}
 
-% Recently added columns
 \newcommand{\isSmallPoint}              {\col{IS\_SMALL\_POINT}}
 \newcommand{\isLargePoint}              {\col{IS\_LARGE\_POINT}}
 
@@ -146,8 +145,6 @@
 \newcol{\csEcpairing}                   {CS\_ECPAIRING}{CIRCUIT\_SELECTOR\_ECPAIRING}
 \newcol{\csGTwo}                        {CS\_G2\_MEMBERSHIP}{CIRCUIT\_SELECTOR\_G2\_MEMBERSHIP}
 \newcol{\trivialPairing}                {TRIVIAL\_PAIRING}{OVERALL\_TRIVIAL\_PAIRING}
-\newcommand{\trivialAllInf}             {\col{TRIVIAL\_ALL\_INFTY}}
-\newcommand{\trivialWithMembershipCheck}{\col{TRIVIAL\_WITH\_MEMBERSHIP\_CHECK}}
 
 % System of constraints
 \newcommand{\callCOneMembership}             {\texttt{callToC1Membership}}
@@ -202,28 +199,9 @@
             \utt{Fourth argument (low):}  & \col{#9} \\
         \end{array} \right]}
 
-% \newcommand{\callToWellFormedCoordinatesBls}[9]{ % TODO: a standard macro cannot have more than 9 arguments, thus here 'i' is hardcoded: use xkeyval
-%     \callWellFormedCoordinates_{i}
-%     \left[ \begin{array}{ll}
-%             \utt{Rel. row offset:}   & #1       \\
-%             \utt{First argument 3:}  & \col{#2} \\
-%             \utt{First argument 2:}  & \col{#3} \\
-%             \utt{First argument 1:}  & \col{#4} \\
-%             \utt{First argument 0:}  & \col{#5} \\
-%             \utt{Second argument 3:} & \col{#6} \\
-%             \utt{Second argument 2:} & \col{#7} \\
-%             \utt{Second argument 1:} & \col{#8} \\
-%             \utt{Second argument 0:} & \col{#9} \\
-%         \end{array} \right]}
-
-% base 10 : 21888242871839275222246405745257275088696311157297823662689037894645226208583
-% base 16 : 30644E72E131A029B85045B68181585D97816A916871CA8D3C208C16D87CFD47
-% high part : 30644e72e131a029b85045b68181585d
-% low part : 97816a916871ca8d3c208c16d87cfd47
 \newcommand{\ttx}                 {\texttt{x}}
 \newcommand{\tty}                 {\texttt{y}}
-%\newcommand{}{\col{}}
-%\newcommand{}{\col{}}
+
 \newcommand{\PRECOMPILESUCCEDES}              {\col{PRECOMPILE\_SUCCEDES}}
 \newcommand{\precompileSuccedes}              {\col{PREC\_SUCC}}
 \newcommand{\PRECOMPILEPROVIDESRETURNDATA}    {\col{PRECOMPILE\_PROVIDES\_RETURNDATA}}
@@ -376,18 +354,23 @@
 \newcommand{\isBlsMapFpTwoToGTwoData}             {\col{IS\_MAP\_FP2\_TO\_G2\_DATA}\flag}
 \newcommand{\isBlsMapFpTwoToGTwoResult}           {\col{IS\_MAP\_FP2\_TO\_G2\_RESULT}\flag}
 
-\newcommand{\isPointEvaluationData}                      {\col{IS\_POINT\_EVALUATION\_DATA}\flag}
-\newcommand{\isPointEvaluationResult}                    {\col{IS\_POINT\_EVALUATION\_RESULT}\flag}
+\newcommand{\isPointEvaluationData}               {\col{IS\_POINT\_EVALUATION\_DATA}\flag}
+\newcommand{\isPointEvaluationResult}             {\col{IS\_POINT\_EVALUATION\_RESULT}\flag}
 
 \newcommand{\totalInputs}                         {\col{TOTAL\_INPUTS}}
 \newcommand{\accInputs}                           {\col{ACC\_INPUTS}}
 
+% TODO: delete
 \newcommand{\notOnCX}                        {\col{NOT\_ON\_CX}}
 \newcommand{\notOnCXAcc}                     {\col{NOT\_ON\_CX\_ACC}}
 \newcommand{\notOnCXAccMax}                  {\col{NOT\_ON\_CX\_ACC\_MAX}}
 \newcommand{\notOnGX}                        {\col{NOT\_ON\_GX}}
 \newcommand{\notOnGXAcc}                     {\col{NOT\_ON\_GX\_ACC}}
 \newcommand{\notOnGXAccMax}                  {\col{NOT\_ON\_GX\_ACC\_MAX}}
+\newcommand{\trivialAllInf}                  {\col{TRIVIAL\_ALL\_INFTY}}
+\newcommand{\trivialWithMembershipCheck}     {\col{TRIVIAL\_WITH\_MEMBERSHIP\_CHECK}}
+%
+
 \newcol{\cOneMembershipTestRequired}         {C1MTR}{\col{C1\_MEMBERSHIP\_TEST\_REQUIRED}}
 \newcol{\gOneMembershipTestRequired}         {G1MTR}{\col{G1\_MEMBERSHIP\_TEST\_REQUIRED}}
 \newcol{\cTwoMembershipTestRequired}         {C2MTR}{\col{C2\_MEMBERSHIP\_TEST\_REQUIRED}}
@@ -407,6 +390,19 @@
 
 \newcommand{\isFirstInput}                    {\col{IS\_FIRST\_INPUT}}
 \newcommand{\isSecondInput}                   {\col{IS\_SECOND\_INPUT}}
+
+% New columns
+\newcommand{\trivialAcc}                          {\col{TRIVIAL\_ACC}} % starts from 1 and goes to 0 as soon as a point not at infinity is found, if any
+\newcol{\wellformedDataTrivial}                   {WELL\_DATA\_TRIVIAL}{WELLFORMED\_DATA\_TRIVIAL} % indicating when all points are at infinity among all inputs
+\newcol{\wellformedDataNonTrivial}                {WELL\_DATA\_NON\_TRIVIAL}{WELLFORMED\_DATA\_NON\_TRIVIAL} % indicating when at least one point is not at infinity among all inputs
+
+\newcol{\pairOfPointsContainsInfinity}        {POP\_CONTAINS\_INFTY}{PAIR\_OF\_POINTS\_CONTAINS\_INFINITY} % indicating when at least one point is at infinity within a single pair
+
+\newcol{\malformedDataInternalJustification}  {MALF\_DATA\_INT}{MALFORMED\_DATA\_INTERNAL\_JUSTIFICATION} % similar to negation of INTERNAL_CHECK_PASSED in ECDATA
+\newcol{\malformedDataBit}                    {MALF\_DATA\_BIT}{MALFORMED\_DATA\_BIT} % similar to NOT_ON_G2 in ECDATA
+\newcol{\malformedDataAcc}                    {MALF\_DATA\_ACC}{MALFORMED\_DATA\_ACC} % similar to NOT_ON_G2_ACC in ECDATA
+\newcol{\malformedDataExternalJustification}  {MALF\_DATA\_EXT}{MALFORMED\_DATA\_EXTERNAL\_JUSTIFICATION} % similar to NOT_ON_G2_ACC_MAX in ECDATA
+%
 
 \newcommand{\indexMaxBlsGOneAddData}             {\texttt{INDEX\_MAX\_G1\_ADD\_DATA}}
 \newcommand{\indexMaxBlsGOneAddResult}           {\texttt{INDEX\_MAX\_G1\_ADD\_RESULT}}
