@@ -2,6 +2,14 @@
 	\item
 		$\txnDataRlpTxType$:
 		column containing the ``transaction type'' of the transaction;
+	\item 
+		$\txnDataRlpIsLegacyTransaction            $,
+		$\txnDataRlpIsAccessSetTransaction         $,
+		$\txnDataRlpIsTypeTwoTransaction           $,
+		$\txnDataRlpIsBlobTransaction              $ and
+		$\txnDataRlpIsAccountDelegationTransaction $:
+		exclusive binary columns that decode
+		$\txnDataRlpTxType$;
 \end{enumerate}
 We associate ``transaction types'' as follows
 \[
@@ -19,7 +27,8 @@ We associate ``transaction types'' as follows
 	\item
 		$\txnDataRlpToAddrHi$ and
 		$\txnDataRlpToAddrLo$:
-		recipient address of transaction;
+		recipient address of transaction for a message call transaction;
+		zero for deployment transactions;
 	\item
 		$\txnDataRlpNonce$:
 		transaction nonce;
@@ -44,17 +53,14 @@ We associate ``transaction types'' as follows
 		transaction gas limit;
 	\item
 		$\txnDataRlpGasPrice$:
-		transaction gas price;
+		transaction gas price for
+		\textsc{Legacy} and
+		\textsc{Access Set} transactions;
 	\item
-		${\txnDataHubPriorityFeePerGas}$
-	\item
-		${\txnDataHubMaxFee}$
-	\item
-		${\txnDataHubMaxTip}$
-	\item
-		$\txnDataRlpMaxPriorityFee$ and
-		$\txnDataRlpMaxFee$:
-		for \cite transactions;
+		$\txnDataRlpMaxPriorityFeePerGas $ and
+		$\txnDataRlpMaxFeePerGas         $:
+		gas parameters for transaction types implementing the
+		\cite{EIP-1559} gas price semantics;
 	\item
 		$\txnDataRlpNumAddr$
 		and

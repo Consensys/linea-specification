@@ -1,3 +1,84 @@
-The present section connects certain fields
-extracted from the \rlpTxnMod{} module to
-others passed on to the \hubMod{} module.
+\begin{center}
+	\boxed{\text{The constraints below assume that } \userTransactionStandingHypothesis }
+\end{center}
+The present section transfers certain values
+extracted from the \rlpTxnMod{} module (and thus present in the $\isUserTxnRlpView$ presepective) to
+values passed on to the \hubMod{} module (and thus present in the $\isUserTxnHubView$ presepective.)
+
+Constraints are conditional to the following standing hypothesis:
+\begin{description}
+	\item[\underline{Deployment bit, nonce and value:}]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\txnDataHubIsDeployment _{i + \hubViewRowOffset} & = & \locIsDeployment \\
+				\txnDataHubValue        _{i + \hubViewRowOffset} & = & \locValue        \\
+				\txnDataHubNonce        _{i + \hubViewRowOffset} & = & \locNonce        \\
+				\txnDataHubGasLimit     _{i + \hubViewRowOffset} & = & \locGasLimit     \\
+			\end{array} \right.
+		\]
+	\item[\underline{Call data and init code size:}] we impose
+		\[
+			\left\{ \begin{array}{lcrcl}
+				\txnDataHubInitCodeSize _{i + \hubViewRowOffset} & = & \locIsDeployment  \cdot \locDataSize \\
+				\txnDataHubCallDataSize _{i + \hubViewRowOffset} & = & \locIsMessageCall \cdot \locDataSize \\
+			\end{array} \right.
+		\]
+	\item[\underline{(Conditionally) set the \tt{gas price}:}]
+		\If
+	\item[\underline{(Conditionally) set the \tt{to} address:}]
+		\If $\locIsMessageCall = 1$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\txnDataHubToHi _{i + \hubViewRowOffset} & = & \txnDataRlpToAddrHi _{i + \rlpViewRowOffset} \\
+				\txnDataHubToLo _{i + \hubViewRowOffset} & = & \txnDataRlpToAddrLo _{i + \rlpViewRowOffset} \\
+			\end{array} \right.
+		\]
+\end{description}
+% $\txnDataRlpToAddrHi$
+% $\txnDataRlpToAddrLo$
+% $\txnDataRlpNonce$
+% $\txnDataRlpIsDep$
+% $\txnDataRlpValue$
+% $\txnDataRlpNumberOfZeroBytes$
+% $\txnDataRlpNumberOfNonzeroBytes$
+% $\txnDataRlpDataSize$
+% $\txnDataRlpNumKeys$
+% $\txnDataRlpNumAddr$
+% $\txnDataRlpGasLimit$
+% $\txnDataRlpGasPrice$
+% $\txnDataHubPriorityFeePerGas$
+% $\txnDataHubMaxFee$
+% $\txnDataHubMaxTip$
+% $\txnDataRlpMaxPriorityFee$
+% $\txnDataRlpMaxFee$
+% $\txnDataRlpNumAddr$
+% $\txnDataRlpNumKeys$
+%
+%
+%
+%
+% $\txnDataHubCoinbaseHi$
+% $\txnDataHubCoinbaseLo$
+% $\txnDataHubBasefee$
+% $\txnDataHubFromHi$
+% $\txnDataHubFromLo$
+% $\txnDataHubToHi$
+% $\txnDataHubToLo$
+% $\txnDataHubNonce$
+% $\txnDataHubInitialBalance$
+% $\txnDataHubGasLimit$
+% $\txnDataHubGasPrice$
+% $\txnDataHubInitialGas$
+% $\txnDataHubValue$
+% $\txnDataHubIsDeployment$
+% $\txnDataHubType$
+% $\txnDataHubCallDataSize$
+% $\txnDataHubInitCodeSize$
+% $\txnDataHubIsTypeTwo$
+% $\txnDataHubRequiresEvmExecution$
+% $\txnDataHubCopyTxcd$
+% $\txnDataHubStatusCode$
+% $\txnDataHubLeftoverGas$
+% $\txnDataHubFinalRefundCounter$
+% $\txnDataHubEffectiveRefund$

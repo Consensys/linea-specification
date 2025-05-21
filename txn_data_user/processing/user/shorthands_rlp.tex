@@ -1,23 +1,50 @@
+\begin{center}
+	\boxed{\text{The shorthands below only make sense given that } \userTransactionStandingHypothesis }
+\end{center}
 To simplify notations in following sections we use the following short hands:
 \[
 	\left\{ \begin{array}{lcl}
 		\locTxType               & \define & \txnDataRlpTxType               _{i + \rlpViewRowOffset} \vspace{1mm} \\
 		\locToAddrHi             & \define & \txnDataRlpToAddrHi             _{i + \rlpViewRowOffset} \vspace{1mm} \\
 		\locToAddrLo             & \define & \txnDataRlpToAddrLo             _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locIsDeployment         & \define & \txnDataRlpIsDep                _{i + \rlpViewRowOffset} \vspace{1mm} \\
 		\locNonce                & \define & \txnDataRlpNonce                _{i + \rlpViewRowOffset} \vspace{1mm} \\
-		\locIsDep                & \define & \txnDataRlpIsDep                _{i + \rlpViewRowOffset} \vspace{1mm} \\
 		\locValue                & \define & \txnDataRlpValue                _{i + \rlpViewRowOffset} \vspace{1mm} \\
 		\locNumberOfZeroBytes    & \define & \txnDataRlpNumberOfZeroBytes    _{i + \rlpViewRowOffset} \vspace{1mm} \\
 		\locNumberOfNonzeroBytes & \define & \txnDataRlpNumberOfNonzeroBytes _{i + \rlpViewRowOffset} \vspace{1mm} \\
-		\locDataSize             & \define & \txnDataRlpDataSize             _{i + \rlpViewRowOffset} \vspace{1mm} \\
 		\locGasLimit             & \define & \txnDataRlpGasLimit             _{i + \rlpViewRowOffset} \vspace{1mm} \\
 		\locGasPrice             & \define & \txnDataRlpGasPrice             _{i + \rlpViewRowOffset} \vspace{1mm} \\
-		\locMaxPriorityFee       & \define & \txnDataRlpMaxPriorityFee       _{i + \rlpViewRowOffset} \vspace{1mm} \\
-		\locMaxFee               & \define & \txnDataRlpMaxFee               _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locMaxPriorityFee       & \define & \txnDataRlpMaxPriorityFeePerGas _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locMaxFee               & \define & \txnDataRlpMaxFeePerGas         _{i + \rlpViewRowOffset} \vspace{1mm} \\
 		\locNumKeys              & \define & \txnDataRlpNumKeys              _{i + \rlpViewRowOffset} \vspace{1mm} \\
 		\locNumAddr              & \define & \txnDataRlpNumAddr              _{i + \rlpViewRowOffset} \\
 	\end{array} \right.
 \]
-\noindent These aliases should \textbf{only} be used in constraints written under the assumption that $\locAbs_{i} \neq \locAbs_{i - 1}$. See section~(\ref{txData: constraints: graphical rep data}).
+we further set
+\[
+	\locIsMessageCall \define 1 - \locIsDeployment
+\]
 \saNote{}
 $\outgoingDataLo_{i + 6}$ is given two different aliases. For the initial balance comparison we will use $\locMaxFee$ regardless of the transaction type to unify the presentation. Elsewhere, we may use the appropriate alias ($\locGasPrice$ for type $0$ and $1$ transactions, $\locMaxFee$ for type 2 transactions.)
+
+\noindent We further set
+\[
+	\left\{ \begin{array}{lcrcr}
+		\locDataSize          & \define & \locNumberOfZeroBytes & + &         \locNumberOfNonzeroBytes         \\
+		\locWeightedByteCount & \define & \locNumberOfZeroBytes & + & 4 \cdot \locNumberOfNonzeroBytes \\
+	\end{array} \right.
+\]
+and
+\[
+	\left\{ \begin{array}{lcrcl}
+		\locDataCost      & \define & \standardTokenCost & \cdot & \locWeightedByteCount \\
+		\locDataFloorCost & \define & \floorTokenCost    & \cdot & \locWeightedByteCount \\
+	\end{array} \right.
+\]
+where
+\[
+	\left\{ \begin{array}{lcl}
+		\standardTokenCost & \define & \standardTokenCostValue \\
+		\floorTokenCost    & \define & \floorTokenCostValue    \\
+	\end{array} \right.
+\]

@@ -1,0 +1,49 @@
+We impose the following constraints on the transaction type flag columns:
+\[
+	\left\{ \begin{array}{lcl}
+		\locGasPriceIsFixed _{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \txnDataRlpIsLegacyTransaction            _{i} \\
+			+ & \txnDataRlpIsAccessSetTransaction         _{i} \\
+			% + & \txnDataRlpIsTypeTwoTransaction           _{i} \\
+			% + & \txnDataRlpIsBlobTransaction              _{i} \\
+			% + & \txnDataRlpIsAccountDelegationTransaction _{i} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locGasPriceIsVariable _{i} & \define &
+		\left[ \begin{array}{cl}
+			% + & \txnDataRlpIsLegacyTransaction            _{i} \\
+			% + & \txnDataRlpIsAccessSetTransaction         _{i} \\
+			+ & \txnDataRlpIsTypeTwoTransaction           _{i} \\
+			+ & \txnDataRlpIsBlobTransaction              _{i} \\
+			+ & \txnDataRlpIsAccountDelegationTransaction _{i} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locTransactionTypeFlagSum _{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \locGasPriceIsFixed     _{i} \\
+			+ & \locGasPriceIsVariable  _{i} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locTransactionTypeWeightedFlagSum _{i} & \define &
+		\left[ \begin{array}{cccl}
+			+ & 0 & \cdot & \txnDataRlpIsLegacyTransaction            _{i} \\
+			+ & 1 & \cdot & \txnDataRlpIsAccessSetTransaction         _{i} \\
+			+ & 2 & \cdot & \txnDataRlpIsTypeTwoTransaction           _{i} \\
+			+ & 3 & \cdot & \txnDataRlpIsBlobTransaction              _{i} \\
+			+ & 4 & \cdot & \txnDataRlpIsAccountDelegationTransaction _{i} \\
+		\end{array} \right]
+		\\
+	\end{array} \right.
+\]
+We then impose that
+\begin{enumerate}
+	\item \If $\isUserTxnRlpView _{i} = 1$ \Then
+		\begin{enumerate}
+			\item $\locTransactionTypeFlagSum         _{i} = 1$
+			\item $\locTransactionTypeWeightedFlagSum _{i} = \txnDataRlpTxType _{i}$
+		\end{enumerate}
+\end{enumerate}
