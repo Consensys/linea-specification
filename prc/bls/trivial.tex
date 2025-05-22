@@ -1,0 +1,47 @@
+
+We enforce the following constraints:
+\begin{enumerate}
+    \item \trivialAcc{} is \textbf{counter-constant binary} \quad (\trash)
+    \item \If $\locIsBlsPairingCheck _{i} = 0$ \Then $\trivialAcc _{i} = 0$
+    \item \If $\isBlsPairingCheckData_{i - 1} = 0$ \et $\isBlsPairingCheckData _{i} = 1$ \Then $\trivialAcc_{i} = 1$
+    % \item \If $\isBlsPairingCheckResult_{i} = 1$ \Then \trivialAcc{} is \textbf{index-constant}
+    \item \If $\locTransitionFromLargeToSmall_{i} = 1$ \Then 
+          \begin{enumerate}
+              \item \If $\trivialAcc _{i} = 0$ \Then $\trivialAcc _{i + 1} = 0$
+              \item \If $\trivialAcc _{i} = 1$ \Then $\trivialAcc _{i + 1} = \isInfinity_{i + 1}$
+          \end{enumerate}
+    \item \If $\locTransitionFromSmallToLarge_{i} = 1$ \Then
+          \begin{enumerate}
+              \item \If $\trivialAcc _{i} = 0$ \Then $\trivialAcc _{i + 1} = 0$
+              \item \If $\trivialAcc _{i} = 1$ \Then $\trivialAcc _{i + 1} = \isInfinity_{i + 1}$
+          \end{enumerate}
+    \item \If $\locTransitionToResult_{i} = 1$ \Then 
+    \begin{enumerate}
+        \item $\trivialAcc_{i+1} = \trivialAcc_{i}$
+        \item \If $\wellformedDataTrivial_{i} = 1$ \Then $\trivialAcc_{i} = 1$
+        \item \If $\wellformedDataNonTrivial_{i} = 1$ \Then $\trivialAcc_{i} = 0$
+    \end{enumerate} 
+\end{enumerate}
+\saNote{} The above means that \trivialAcc{} records whether or not the pairing data contains at least one point, either small or large, that isn't the point at infinity.
+
+We use the \trivialAcc{} flag to set the result of unexceptional yet trivial pairings:
+\begin{enumerate}[resume]
+    \item we impose that
+          \[
+              \If
+              \left\{ \begin{array}{lcl}
+                  \locTransitionToResult _{i} & = & 1 \\
+                  \malformedDataInternalJustification  _{i} & = & 0 \\
+                  \notOnGXAccMax       _{i} & = & 0 \\
+                  \trivialAcc     _{i}     & = & 1 \\
+              \end{array} \right.
+              \Then
+              \left\{ \begin{array}{lcl}
+                  \locPairingsResultHi  & \define & \blsLimb _{i + 1} \\
+                  \locPairingsResultLo  & \define & \blsLimb _{i + 2} \\
+                  \blsSuccessBit_{i} & =       & 1                    \\
+                  \locPairingsResultHi  & =       & 0                    \\
+                  \locPairingsResultLo  & =       & 1
+              \end{array} \right.
+          \]
+\end{enumerate}
