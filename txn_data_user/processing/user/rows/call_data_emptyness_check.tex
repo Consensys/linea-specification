@@ -10,3 +10,23 @@
 	\[
 		\locNonzeroDataSize \define 1 - \res_{i + \detectingEmptyCallDataRowOffset}
 	\]
+	we impose that
+	\begin{enumerate}
+	        \item
+			\If $\locIsMessageCall = 1$ \Then
+			\[
+				\locCopyTxcd
+				=
+				\locRequiresEvmExecution
+				\cdot
+				\locNonzeroDataSize
+			\]
+	        \item
+			\If $\locIsDeployment = 1$ \Then
+			\[
+				\left\{ \begin{array}{lcl}
+					\locRequiresEvmExecution & = & \locNonzeroDataSize \\
+					\locCopyTxcd             & = & 0                   \\
+				\end{array} \right.
+			\]
+	\end{enumerate}

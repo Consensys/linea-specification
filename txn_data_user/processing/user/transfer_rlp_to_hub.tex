@@ -11,28 +11,55 @@ Constraints are conditional to the following standing hypothesis:
 		we impose
 		\[
 			\left\{ \begin{array}{lcl}
-				\txnDataHubIsDeployment _{i + \hubViewRowOffset} & = & \locIsDeployment \\
-				\txnDataHubValue        _{i + \hubViewRowOffset} & = & \locValue        \\
-				\txnDataHubNonce        _{i + \hubViewRowOffset} & = & \locNonce        \\
-				\txnDataHubGasLimit     _{i + \hubViewRowOffset} & = & \locGasLimit     \\
+				\txnDataHubIsDeployment _{i + \hubViewRowOffset} & = & \locRlpIsDeployment \\
+				\txnDataHubValue        _{i + \hubViewRowOffset} & = & \locRlpValue        \\
+				\txnDataHubNonce        _{i + \hubViewRowOffset} & = & \locRlpNonce        \\
+				\txnDataHubGasLimit     _{i + \hubViewRowOffset} & = & \locRlpGasLimit     \\
 			\end{array} \right.
 		\]
-	\item[\underline{Call data and init code size:}] we impose
+	\item[\underline{Call data and init code size:}]
+		we impose
 		\[
 			\left\{ \begin{array}{lcrcl}
-				\txnDataHubInitCodeSize _{i + \hubViewRowOffset} & = & \locIsDeployment  \cdot \locDataSize \\
-				\txnDataHubCallDataSize _{i + \hubViewRowOffset} & = & \locIsMessageCall \cdot \locDataSize \\
+				\locHubCallDataSize & = & \locRlpIsMessageCall & \cdot & \locDataSize \\
+				\locHubInitCodeSize & = & \locRlpIsDeployment  & \cdot & \locDataSize \\
 			\end{array} \right.
 		\]
 	\item[\underline{(Conditionally) set the \tt{gas price}:}]
-		\If
-	\item[\underline{(Conditionally) set the \tt{to} address:}]
-		\If $\locIsMessageCall = 1$ \Then
+		\If $\locGasPriceIsFixed = 1$ \Then
 		\[
-			\left\{ \begin{array}{lcl}
-				\txnDataHubToHi _{i + \hubViewRowOffset} & = & \txnDataRlpToAddrHi _{i + \rlpViewRowOffset} \\
-				\txnDataHubToLo _{i + \hubViewRowOffset} & = & \txnDataRlpToAddrLo _{i + \rlpViewRowOffset} \\
-			\end{array} \right.
+			\txnDataHubGasPrice _{i + \hubViewRowOffset}
+			=
+			\locRlpGasPrice
+		\]
+		\saNote{}
+		The ``$\locGasPriceIsVariable = 1$'' case will be addressed in \specTodo{}
+	\item[\underline{(Conditionally) set the \tt{to} address:}]
+		we impose
+		\begin{enumerate}
+			\item
+				\If $\locRlpIsMessageCall = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\txnDataHubToHi _{i + \hubViewRowOffset} & = & \locRlpToAddrHi \\
+						\txnDataHubToLo _{i + \hubViewRowOffset} & = & \locRlpToAddrLo \\
+					\end{array} \right.
+				\]
+			\item
+				\If $\locRlpIsDeployment = 1$ \Then see
+				section~(\ref{user txn data: lookups: addr rlp}).
+		\end{enumerate}
+	\item[\underline{Passing the \cfi{} along:}]
+		\If $\locIsDeployment = 1$ \et $\locRequiresEvmExecution = 1$ \Then
+		\[
+			\txnDataRlpCfi  _{i + \rlpViewRowOffset} = \txnDataHubCfi _{i + \hubViewRowOffset}
+		\]
+	\item[\underline{Marking transactions following \cite{EIP-1559} gas semantics:}]
+		we impose
+		\[
+			\txnDataHubHasTypeTwoGasSemantics _{i + \hubViewRowOffset}
+			=
+			\locGasPriceIsVariable
 		\]
 \end{description}
 % $\txnDataRlpToAddrHi$

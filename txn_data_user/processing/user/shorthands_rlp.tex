@@ -4,25 +4,26 @@
 To simplify notations in following sections we use the following short hands:
 \[
 	\left\{ \begin{array}{lcl}
-		\locTxType               & \define & \txnDataRlpTxType               _{i + \rlpViewRowOffset} \vspace{1mm} \\
-		\locToAddrHi             & \define & \txnDataRlpToAddrHi             _{i + \rlpViewRowOffset} \vspace{1mm} \\
-		\locToAddrLo             & \define & \txnDataRlpToAddrLo             _{i + \rlpViewRowOffset} \vspace{1mm} \\
-		\locIsDeployment         & \define & \txnDataRlpIsDep                _{i + \rlpViewRowOffset} \vspace{1mm} \\
-		\locNonce                & \define & \txnDataRlpNonce                _{i + \rlpViewRowOffset} \vspace{1mm} \\
-		\locValue                & \define & \txnDataRlpValue                _{i + \rlpViewRowOffset} \vspace{1mm} \\
-		\locNumberOfZeroBytes    & \define & \txnDataRlpNumberOfZeroBytes    _{i + \rlpViewRowOffset} \vspace{1mm} \\
-		\locNumberOfNonzeroBytes & \define & \txnDataRlpNumberOfNonzeroBytes _{i + \rlpViewRowOffset} \vspace{1mm} \\
-		\locGasLimit             & \define & \txnDataRlpGasLimit             _{i + \rlpViewRowOffset} \vspace{1mm} \\
-		\locGasPrice             & \define & \txnDataRlpGasPrice             _{i + \rlpViewRowOffset} \vspace{1mm} \\
-		\locMaxPriorityFee       & \define & \txnDataRlpMaxPriorityFeePerGas _{i + \rlpViewRowOffset} \vspace{1mm} \\
-		\locMaxFee               & \define & \txnDataRlpMaxFeePerGas         _{i + \rlpViewRowOffset} \vspace{1mm} \\
-		\locNumKeys              & \define & \txnDataRlpNumKeys              _{i + \rlpViewRowOffset} \vspace{1mm} \\
-		\locNumAddr              & \define & \txnDataRlpNumAddr              _{i + \rlpViewRowOffset} \\
+		\locRlpTxType                & \define & \txnDataRlpTxType                _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpToAddrHi              & \define & \txnDataRlpToAddrHi              _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpToAddrLo              & \define & \txnDataRlpToAddrLo              _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpIsDeployment          & \define & \txnDataRlpIsDep                 _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpNonce                 & \define & \txnDataRlpNonce                 _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpValue                 & \define & \txnDataRlpValue                 _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpNumberOfZeroBytes     & \define & \txnDataRlpNumberOfZeroBytes     _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpNumberOfNonzeroBytes  & \define & \txnDataRlpNumberOfNonzeroBytes  _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpGasLimit              & \define & \txnDataRlpGasLimit              _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpGasPrice              & \define & \txnDataRlpGasPrice              _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpMaxPriorityFee        & \define & \txnDataRlpMaxPriorityFeePerGas  _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpMaxFee                & \define & \txnDataRlpMaxFeePerGas          _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpNumKeys               & \define & \txnDataRlpNumKeys               _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpNumAddr               & \define & \txnDataRlpNumAddr               _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpNumAccountDelegations & \define & \txnDataRlpNumAccountDelegations _{i + \rlpViewRowOffset} \\
 	\end{array} \right.
 \]
 we further set
 \[
-	\locIsMessageCall \define 1 - \locIsDeployment
+	\locRlpIsMessageCall \define 1 - \locRlpIsDeployment
 \]
 \saNote{}
 $\outgoingDataLo_{i + 6}$ is given two different aliases. For the initial balance comparison we will use $\locMaxFee$ regardless of the transaction type to unify the presentation. Elsewhere, we may use the appropriate alias ($\locGasPrice$ for type $0$ and $1$ transactions, $\locMaxFee$ for type 2 transactions.)
@@ -30,8 +31,8 @@ $\outgoingDataLo_{i + 6}$ is given two different aliases. For the initial balanc
 \noindent We further set
 \[
 	\left\{ \begin{array}{lcrcr}
-		\locDataSize          & \define & \locNumberOfZeroBytes & + &         \locNumberOfNonzeroBytes         \\
-		\locWeightedByteCount & \define & \locNumberOfZeroBytes & + & 4 \cdot \locNumberOfNonzeroBytes \\
+		\locDataSize          & \define & \locRlpNumberOfZeroBytes & + &         \locRlpNumberOfNonzeroBytes         \\
+		\locWeightedByteCount & \define & \locRlpNumberOfZeroBytes & + & 4 \cdot \locRlpNumberOfNonzeroBytes \\
 	\end{array} \right.
 \]
 and

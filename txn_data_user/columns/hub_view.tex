@@ -12,56 +12,90 @@ The next volley of columns pertains to sender account information:
 		$\txnDataHubFromHi$ and
 		$\txnDataHubFromLo$
 	\item
-		\markAsSometimesExtractedFromRlpTxn{}
+		\markAsExtractedFromRlpTxn{}
+		\markAsExtractedFromRlpAddr{}
 		$\txnDataHubToHi$ and
 		$\txnDataHubToLo$
 	\item
 		\markAsExtractedFromRlpTxn{}
-		$\txnDataHubNonce$
+		$\txnDataHubIsDeployment$:
+		binary column;
+		turns on \emph{precisely} for deployment transactions;
 	\item
 		\markAsExtractedFromRlpTxn{}
-		$\txnDataHubGasLimit$
-	\item
-		\markAsExtractedFromHub{}
-		$\txnDataHubInitialBalance$
-	\item
-		\markAsJustifiedHere{}
-		$\txnDataHubGasPrice$
-	\item
-		\markAsJustifiedHere{}
-		$\txnDataHubInitialGas$
+		$\txnDataHubNonce$:
+		transaction nonce;
 	\item
 		\markAsExtractedFromRlpTxn{}
-		$\txnDataHubValue$
+		$\txnDataHubValue$:
+		transaction value;
 	\item
 		\markAsExtractedFromRlpTxn{}
-		$\txnDataHubIsDeployment$
+		$\txnDataHubGasLimit$:
+		transaction gas limit;
 	\item
 		\markAsJustifiedHere{}
-		$\txnDataHubCallDataSize$
+		$\txnDataHubGasPrice$:
+		effective gas price of the transaction as computed from transaction data;
+	\item
+		\markAsJustifiedHere{}
+		$\txnDataHubInitialGas$:
+		gas available to \evm{} execution after covering the transaction's upfront gas cost;
+	\item
+		\markAsJustifiedHere{}
+		$\txnDataHubCallDataSize$:
+		call data size;
+		vanishes for deployment transactions;
 	\item
 		\markAsJustifiedHere{}
 		$\txnDataHubInitCodeSize$
+		initialization code size;
+		vanishes for message call transactions;
 	\item
 		\markAsJustifiedHere{}
-		$\txnDataHubIsTypeTwo$
+		$\txnDataHubHasTypeTwoGasSemantics$:
+		boolean column;
+		lights up for transactions implementing \cite{EIP-1559} gas semantics;
 	\item
+		\markAsPartiallyJustifiedHere{}
 		$\txnDataHubRequiresEvmExecution$
+		binary column;
+		lights up precisely for message calls targeting accounts with nonempty bytecode
+		and for deployments provided with nonempty initialization code;
 	\item
-		$\txnDataHubCopyTxcd$
+		\markAsJustifiedHere{}
+		$\txnDataHubCopyTxcd$:
+		binary column;
+		turns on \emph{precisely}
+		for message call transaction
+		requiring \evm{} execution,
+		which are provided with nonempty call data;
 	\item
 		\markAsExtractedFromHub{}
-		\godGiven{}
-		$\txnDataHubStatusCode$
+		$\txnDataHubCfi$:
+		provides nontrivial deployment transactions with a $\CFI$;
+	\item
+		\markAsExtractedFromHub{}
+		$\txnDataHubInitialBalance$:
+		balance initially available in the sender account;
+	\item
+		\markAsExtractedFromHub{}
+		$\txnDataHubStatusCode$:
+		status code of the transaction;
+		$0$ if the transaction reverts,
+		$1$ otherwise;
 	\item
 		\markAsExtractedFromHub{}
 		$\txnDataHubLeftoverGas$
+		left over gas after transaction execution;
 	\item
 		\markAsExtractedFromHub{}
-		$\txnDataHubFinalRefundCounter$
+		$\txnDataHubFinalRefundCounter$:
+		accrued refunds of the transaction;
 	\item
 		\markAsJustifiedHere{}
-		$\txnDataHubEffectiveRefund$
+		$\txnDataHubEffectiveRefund$:
+		gas to be refunded to the sender at the end of the transaction;
 \end{enumerate}
 
 % \begin{enumerate}

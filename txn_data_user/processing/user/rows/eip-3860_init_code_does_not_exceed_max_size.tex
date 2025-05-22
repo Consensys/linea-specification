@@ -1,12 +1,11 @@
 \item[\underline{\underline{Row n$°(i + \initCodeSizeLimitRowOffset )$: Init code size check:}}]
-	\If   $\locIsDep = 1$
-	\Then we impose that
+	we impose that
 	\[
 		\left\{\begin{array}{l}
 			\smallCallToLeq {
 				anchorRow = i                           ,
 				relOffset = \initCodeSizeLimitRowOffset ,
-				argOneLo  = \locDataSize                ,
+				argOneLo  = \locInitCodeSize            ,
 				argTwoLo  = \maxInitCodeSize            ,
 			}
 			\vspace{2mm}
@@ -19,4 +18,5 @@
 		\end{array}\right.
 	\]
 	\saNote{}
+	Recall that for message calls ($\locIsMessageCall \equiv 1$) it holds that $\locInitCodeSize = 0$.
 	In other words we require that for deployments $\locDataSize \leq \maxInitCodeSize \define \maxInitCodeSizeValue$.

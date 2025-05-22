@@ -1,0 +1,22 @@
+\begin{center}
+	\boxed{\text{The constraints below assume that } \userTransactionStandingHypothesis }
+\end{center}
+The present section transfers certain values
+extracted from the \rlpTxnMod{} module (and thus present in the $\isUserTxnRlpView$ presepective) to
+values passed on to the \hubMod{} module (and thus present in the $\isUserTxnHubView$ presepective.)
+
+Constraints are conditional to the following standing hypothesis:
+\begin{description}
+	\item[\underline{Passing the \requiresEvmExecutionName{} along:}]
+		we impose
+		\[
+			\txnDataRlpRequiresEvmExecution _{i + \rlpViewRowOffset}
+			=
+			\locHubRequiresEvmExecution
+		\]
+	\item[\underline{Passing the \cfi{} along:}]
+		\If $\locHubIsDeployment = 1$ \et $\locRlpRequiresEvmExecution = 1$ \Then
+		\[
+			\txnDataRlpCfi  _{i + \rlpViewRowOffset} = \txnDataHubCfi _{i + \hubViewRowOffset}
+		\]
+\end{description}

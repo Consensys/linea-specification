@@ -1,49 +1,50 @@
+\begin{center}
+	\boxed{\text{The constraints below assume that } \userTransactionStandingHypothesis }
+\end{center}
 We impose the following constraints on the transaction type flag columns:
 \[
 	\left\{ \begin{array}{lcl}
-		\locGasPriceIsFixed _{i} & \define &
+		\locGasPriceIsFixed
+		& \define &
 		\left[ \begin{array}{cl}
-			+ & \txnDataRlpIsLegacyTransaction            _{i} \\
-			+ & \txnDataRlpIsAccessSetTransaction         _{i} \\
-			% + & \txnDataRlpIsTypeTwoTransaction           _{i} \\
-			% + & \txnDataRlpIsBlobTransaction              _{i} \\
-			% + & \txnDataRlpIsAccountDelegationTransaction _{i} \\
+			+ & \txnDataRlpIsLegacyTransaction            _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsAccessSetTransaction         _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsTypeTwoTransaction           _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsBlobTransaction              _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsAccountDelegationTransaction _{i + \rlpViewRowOffset} \\
 		\end{array} \right]
 		\vspace{2mm}
 		\\
-		\locGasPriceIsVariable _{i} & \define &
+		\locGasPriceIsVariable & \define &
 		\left[ \begin{array}{cl}
-			% + & \txnDataRlpIsLegacyTransaction            _{i} \\
-			% + & \txnDataRlpIsAccessSetTransaction         _{i} \\
-			+ & \txnDataRlpIsTypeTwoTransaction           _{i} \\
-			+ & \txnDataRlpIsBlobTransaction              _{i} \\
-			+ & \txnDataRlpIsAccountDelegationTransaction _{i} \\
+			% + & \txnDataRlpIsLegacyTransaction            _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsAccessSetTransaction         _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsTypeTwoTransaction           _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsBlobTransaction              _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsAccountDelegationTransaction _{i + \rlpViewRowOffset} \\
 		\end{array} \right]
 		\vspace{2mm}
 		\\
-		\locTransactionTypeFlagSum _{i} & \define &
+		\locTransactionTypeFlagSum & \define &
 		\left[ \begin{array}{cl}
-			+ & \locGasPriceIsFixed     _{i} \\
-			+ & \locGasPriceIsVariable  _{i} \\
+			+ & \locGasPriceIsFixed    \\
+			+ & \locGasPriceIsVariable \\
 		\end{array} \right]
 		\vspace{2mm}
 		\\
-		\locTransactionTypeWeightedFlagSum _{i} & \define &
+		\locTransactionTypeWeightedFlagSum & \define &
 		\left[ \begin{array}{cccl}
-			+ & 0 & \cdot & \txnDataRlpIsLegacyTransaction            _{i} \\
-			+ & 1 & \cdot & \txnDataRlpIsAccessSetTransaction         _{i} \\
-			+ & 2 & \cdot & \txnDataRlpIsTypeTwoTransaction           _{i} \\
-			+ & 3 & \cdot & \txnDataRlpIsBlobTransaction              _{i} \\
-			+ & 4 & \cdot & \txnDataRlpIsAccountDelegationTransaction _{i} \\
+			+ & 0 & \cdot & \txnDataRlpIsLegacyTransaction            _{i + \rlpViewRowOffset} \\
+			+ & 1 & \cdot & \txnDataRlpIsAccessSetTransaction         _{i + \rlpViewRowOffset} \\
+			+ & 2 & \cdot & \txnDataRlpIsTypeTwoTransaction           _{i + \rlpViewRowOffset} \\
+			+ & 3 & \cdot & \txnDataRlpIsBlobTransaction              _{i + \rlpViewRowOffset} \\
+			+ & 4 & \cdot & \txnDataRlpIsAccountDelegationTransaction _{i + \rlpViewRowOffset} \\
 		\end{array} \right]
 		\\
 	\end{array} \right.
 \]
 We then impose that
 \begin{enumerate}
-	\item \If $\isUserTxnRlpView _{i} = 1$ \Then
-		\begin{enumerate}
-			\item $\locTransactionTypeFlagSum         _{i} = 1$
-			\item $\locTransactionTypeWeightedFlagSum _{i} = \txnDataRlpTxType _{i}$
-		\end{enumerate}
+	\item $\locTransactionTypeFlagSum         = 1$
+	\item $\locTransactionTypeWeightedFlagSum = \locRlpTxType$
 \end{enumerate}
