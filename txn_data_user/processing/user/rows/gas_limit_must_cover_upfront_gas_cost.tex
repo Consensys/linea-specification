@@ -20,46 +20,63 @@
 	where, in order to define the transaction's upfront gas cost \locUpfrontGasCost{}
 	we must distinguish between transaction types that support access sets (types 1 and 2) and those that do not (type 0)
 	\[
-		\left\{ \begin{array}{lcl}
-			\locUpfrontGasCost & \define &
-			\left[ \begin{array}{crcl}
-				+ \!\!\! & \txIsLegacy    _{i} & \cdot & \locLegacyUpfrontGasCost            \\
-				+ \!\!\! & \txIsAccessSet _{i} & \cdot & \locAccessUpfrontGasCost            \\
-				+ \!\!\! & \txIsTypeTwo   _{i} & \cdot & \locAccessUpfrontGasCost            \\
-				+ \!\!\! & \txIsTypeThree _{i} & \cdot & \locAccessUpfrontGasCost            \\
-				+ \!\!\! & \txIsTypeFour  _{i} & \cdot & \locAccountDelegationUpfrontGasCost \\
-			\end{array} \right]
-			\vspace{4mm} \\
-			\locLegacyUpfrontGasCost & \define &
-			\left[ \begin{array}{crcl}
-				         &                     & \!\!\!   +   \!\!\! & \locDataCost           \\
-				         &                     & \!\!\!   +   \!\!\! & \locInitCodeCost       \\
-				         &                     & \!\!\!   +   \!\!\! & G_{\text{transaction}} \\
-				+ \!\!\! & \locRlpIsDeployment & \!\!\! \cdot \!\!\! & G_{\text{txcreate}}    \\
-			\end{array} \right]
-			\vspace{4mm} \\
-			\locAccessUpfrontGasCost & \define &
-			\left[ \begin{array}{crcl}
-				         &                     & \!\!\!   +   \!\!\! & \locDataCost               \\
-				         &                     & \!\!\!   +   \!\!\! & \locInitCodeCost           \\
-				         &                     & \!\!\!   +   \!\!\! & G_{\text{transaction}}     \\
-				+ \!\!\! & \locRlpIsDeployment & \!\!\! \cdot \!\!\! & G_{\text{txcreate}}        \\
-				+ \!\!\! & \locRlpNumAddr      & \!\!\! \cdot \!\!\! & G_\text{accesslistaddress} \\
-				+ \!\!\! & \locRlpNumKeys      & \!\!\! \cdot \!\!\! & G_\text{accessliststorage} \\
-			\end{array} \right]
-			\vspace{4mm} \\
-			\locAccountDelegationUpfrontGasCost & \define &
-			\left[ \begin{array}{crcl}
-				         &                              & \!\!\!   +   \!\!\! & \locDataCost               \\
-				         &                              & \!\!\!   +   \!\!\! & \locInitCodeCost           \\
-				         &                              & \!\!\!   +   \!\!\! & G_{\text{transaction}}     \\
-				+ \!\!\! & \locRlpIsDeployment          & \!\!\! \cdot \!\!\! & G_{\text{txcreate}}        \\
-				+ \!\!\! & \locRlpNumAddr               & \!\!\! \cdot \!\!\! & G_\text{accesslistaddress} \\
-				+ \!\!\! & \locRlpNumKeys               & \!\!\! \cdot \!\!\! & G_\text{accessliststorage} \\
-				+ \!\!\! & \locRlpNumAccountDelegations & \!\!\! \cdot \!\!\! & \perEmptyAccountCost       \\
-			\end{array} \right] \\
-		\end{array} \right.
+		\locUpfrontGasCost \define
+		\left[ \begin{array}{crcl}
+                                 &                              & \!\!\!   +   \!\!\! & \locDataCost               \\
+                                 &                              & \!\!\!   +   \!\!\! & \locInitCodeCost           \\
+                                 &                              & \!\!\!   +   \!\!\! & G_{\text{transaction}}     \\
+			+ \!\!\! & \locRlpIsDeployment          & \!\!\! \cdot \!\!\! & G_{\text{txcreate}}        \\
+			+ \!\!\! & \locRlpNumAddr               & \!\!\! \cdot \!\!\! & G_\text{accesslistaddress} \\
+			+ \!\!\! & \locRlpNumKeys               & \!\!\! \cdot \!\!\! & G_\text{accessliststorage} \\
+			+ \!\!\! & \locRlpNumAccountDelegations & \!\!\! \cdot \!\!\! & \perEmptyAccountCost       \\
+		\end{array} \right] \\
+		% \left\{ \begin{array}{lcl}
+		% 	\locUpfrontGasCost & \define &
+		% 	\left[ \begin{array}{crcl}
+		% 		+ \!\!\! & \txIsLegacy    _{i} & \cdot & \locLegacyUpfrontGasCost            \\
+		% 		+ \!\!\! & \txIsAccessSet _{i} & \cdot & \locAccessUpfrontGasCost            \\
+		% 		+ \!\!\! & \txIsTypeTwo   _{i} & \cdot & \locAccessUpfrontGasCost            \\
+		% 		+ \!\!\! & \txIsTypeThree _{i} & \cdot & \locAccessUpfrontGasCost            \\
+		% 		+ \!\!\! & \txIsTypeFour  _{i} & \cdot & \locAccountDelegationUpfrontGasCost \\
+		% 	\end{array} \right]
+		% 	\vspace{4mm} \\
+		% 	\locLegacyUpfrontGasCost & \define &
+		% 	\left[ \begin{array}{crcl}
+		% 		         &                     & \!\!\!   +   \!\!\! & \locDataCost           \\
+		% 		         &                     & \!\!\!   +   \!\!\! & \locInitCodeCost       \\
+		% 		         &                     & \!\!\!   +   \!\!\! & G_{\text{transaction}} \\
+		% 		+ \!\!\! & \locRlpIsDeployment & \!\!\! \cdot \!\!\! & G_{\text{txcreate}}    \\
+		% 	\end{array} \right]
+		% 	\vspace{4mm} \\
+		% 	\locAccessUpfrontGasCost & \define &
+		% 	\left[ \begin{array}{crcl}
+		% 		         &                     & \!\!\!   +   \!\!\! & \locDataCost               \\
+		% 		         &                     & \!\!\!   +   \!\!\! & \locInitCodeCost           \\
+		% 		         &                     & \!\!\!   +   \!\!\! & G_{\text{transaction}}     \\
+		% 		+ \!\!\! & \locRlpIsDeployment & \!\!\! \cdot \!\!\! & G_{\text{txcreate}}        \\
+		% 		+ \!\!\! & \locRlpNumAddr      & \!\!\! \cdot \!\!\! & G_\text{accesslistaddress} \\
+		% 		+ \!\!\! & \locRlpNumKeys      & \!\!\! \cdot \!\!\! & G_\text{accessliststorage} \\
+		% 	\end{array} \right]
+		% 	\vspace{4mm} \\
+		% 	\locAccountDelegationUpfrontGasCost & \define &
+		% 	\left[ \begin{array}{crcl}
+		% 		         &                              & \!\!\!   +   \!\!\! & \locDataCost               \\
+		% 		         &                              & \!\!\!   +   \!\!\! & \locInitCodeCost           \\
+		% 		         &                              & \!\!\!   +   \!\!\! & G_{\text{transaction}}     \\
+		% 		+ \!\!\! & \locRlpIsDeployment          & \!\!\! \cdot \!\!\! & G_{\text{txcreate}}        \\
+		% 		+ \!\!\! & \locRlpNumAddr               & \!\!\! \cdot \!\!\! & G_\text{accesslistaddress} \\
+		% 		+ \!\!\! & \locRlpNumKeys               & \!\!\! \cdot \!\!\! & G_\text{accessliststorage} \\
+		% 		+ \!\!\! & \locRlpNumAccountDelegations & \!\!\! \cdot \!\!\! & \perEmptyAccountCost       \\
+		% 	\end{array} \right] \\
+		% \end{array} \right.
 	\]
+	\saNote{}
+	The above formula applies to all transaction types.
+	Indeed consider
+	constraint~(\ref{user txn data: processing: user: transaction decoding: no access list if tx doesn't allow it}),
+	constraint~(\ref{user txn data: processing: user: transaction decoding: no account delegations if tx doesn't allow it}),
+	constraint~(\ref{user txn data: processing: user: common computations: init code cost vanishes for message calls}).
+
 	\saNote{}
 	In other words we require that
 	$\locUpfrontGasCost \leq \locRlpGasLimit$.

@@ -44,7 +44,7 @@ We impose the following constraints on the transaction type flag columns:
 		\end{array} \right]
 		\vspace{2mm}
 		\\
-		\locTransactionSansDelegations & \define &
+		\locTransactionSansDelegation & \define &
 		\left[ \begin{array}{cl}
 			+ & \txnDataRlpIsLegacyTransaction            _{i + \rlpViewRowOffset} \\
 			+ & \txnDataRlpIsAccessSetTransaction         _{i + \rlpViewRowOffset} \\
@@ -54,7 +54,7 @@ We impose the following constraints on the transaction type flag columns:
 		\end{array} \right]
 		\vspace{2mm}
 		\\
-		\locTransactionWithDelegations & \define &
+		\locTransactionWithDelegation & \define &
 		\left[ \begin{array}{cl}
 			% + & \txnDataRlpIsLegacyTransaction            _{i + \rlpViewRowOffset} \\
 			% + & \txnDataRlpIsAccessSetTransaction         _{i + \rlpViewRowOffset} \\
@@ -86,19 +86,14 @@ We impose the following constraints on the transaction type flag columns:
 	\begin{enumerate}
 		\item $\locTransactionTypeFlagSum         = 1$
 		\item $\locTransactionTypeWeightedFlagSum = \locRlpTxType$
-		\item \If $\txnDataRlpIsLegacyTransaction _{i + \rlpViewRowOffset} = 1$ \Then
+		\item \label{user txn data: processing: user: transaction decoding: no access list if tx doesn't allow it}
+			\If $\locTransactionSansAccessList = 1$ \Then
 			\[
 				\left\{ \begin{array}{lcl}
 					\locRlpNumKeys & = & 0 \\
 					\locRlpNumAddr & = & 0 \\
 				\end{array} \right.
 			\]
-		\item \If $\txnDataRlpIsAccountDelegationTransaction _{i + \rlpViewRowOffset} = 0$ \Then
-			\[
-				\locRlpNumAccountDelegations = 0
-			\]
+		\item \label{user txn data: processing: user: transaction decoding: no account delegations if tx doesn't allow it}
+			\If $\locTransactionSansDelegation = 1$ \Then $\locRlpNumAccountDelegations = 0$
 	\end{enumerate}
-  
-\locTransactionWithAccessList  
-\locTransactionSansDelegations 
-\locTransactionWithDelegations 
