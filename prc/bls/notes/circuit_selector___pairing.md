@@ -118,3 +118,28 @@ sections on
     MALFORMED_DATA_BIT
     MALFORMED_DATA_ACC
     MALFORMED_DATA_EXTERNAL_JUSTIFICATION
+
+
+## Macros to remove
+
+internalChecksPassed
+trivialAllInf
+trivialWithMembershipCheck
+notOnCX
+notOnCXAcc
+notOnCXAccMax
+notOnGX
+notOnGXAcc
+notOnGXAccMax
+
+## Macros added
+
+malformedDataInternalJustification
+trivialAcc
+wellformedDataTrivial
+wellformedDataNonTrivial
+pairOfPointsContainsInfinity
+malformedDataBit
+malformedDataAcc
+malformedDataExternalJustification
+
