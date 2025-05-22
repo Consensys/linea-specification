@@ -1,15 +1,15 @@
 The present section imposes the behaviour of the various circuit selectors.
 \begin{description}
     \item[Circuit selector for the \inst{PointEvaluation} circuit:]
-        $\csPointEvaluation_{i} = \internalChecksPassed_{i} \cdot \locIsPointEvaluation_{i}$
+        $\csPointEvaluation_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsPointEvaluation_{i}$
     \item[Circuit selector for the \inst{G1ADD} circuit:]
-        $\csGOneAdd_{i} = \internalChecksPassed_{i} \cdot \locIsBlsGOneAdd_{i} \cdot (1 - \notOnGXAccMax)$
+        $\csGOneAdd_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsGOneAdd_{i} \cdot (1 - \notOnGXAccMax)$
     \item[Circuit selector for the \inst{G1MSM} circuit:]
-        $\csGOneMsm_{i} = \internalChecksPassed_{i} \cdot \locIsBlsGOneMsm_{i} \cdot (1 - \notOnGXAccMax)$
+        $\csGOneMsm_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsGOneMsm_{i} \cdot (1 - \notOnGXAccMax)$
     \item[Circuit selector for the \inst{G2ADD} circuit:]
-        $\csGTwoAdd_{i} = \internalChecksPassed_{i} \cdot \locIsBlsGTwoAdd_{i} \cdot (1 - \notOnCXAccMax)$
+        $\csGTwoAdd_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsGTwoAdd_{i} \cdot (1 - \notOnCXAccMax)$
     \item[Circuit selector for the \inst{G2MSM} circuit:]
-        $\csGTwoMsm_{i} = \internalChecksPassed_{i} \cdot \locIsBlsGTwoMsm_{i} \cdot (1 - \notOnGXAccMax)$
+        $\csGTwoMsm_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsGTwoMsm_{i} \cdot (1 - \notOnGXAccMax)$
     \item[Circuit selector for the \inst{PAIRING\_CHECK} circuit:]
     we impose the following constraints:
         \begin {enumerate}
@@ -18,13 +18,13 @@ The present section imposes the behaviour of the various circuit selectors.
                     \begin{array}{lcl}
                         \csPairing_{i} & \equiv &
                         \left[ \begin{array}{clcr}
-                            \wedge & \internalChecksPassed_{i}   & \equiv & \texttt{true}  \\
+                            \wedge & (1 - \malformedDataInternalJustification_{i})   & \equiv & \texttt{true}  \\
                             \wedge & \notOnGXAccMax_{i}          & \equiv & \texttt{false} \\
                             \wedge & \acceptablePairOfPoints_{i} & \equiv & \texttt{true}  \\
                         \end{array} \right] \vspace{2mm} \\
                         & \equiv & 
                         \left[ \begin{array}{clcr}
-                            \cdot & \internalChecksPassed_{i}   \\
+                            \cdot & (1 - \malformedDataInternalJustification_{i})   \\
                             \cdot & (1 - \notOnGXAccMax_{i})  \\
                             \cdot & \acceptablePairOfPoints_{i} \\
                         \end{array} \right] \vspace{2mm} \\
@@ -52,13 +52,13 @@ The present section imposes the behaviour of the various circuit selectors.
                 \csCOne_{i} & \equiv &
                 \left[ \begin{array}{clcr}
                     \wedge & \isBlsPairingCheckData_{i}        & \equiv & \texttt{true} \\
-                    \wedge & \internalChecksPassed_{i}   & \equiv & \texttt{true} \\
+                    \wedge & (1 - \malformedDataInternalJustification_{i})   & \equiv & \texttt{true} \\
                     \wedge & \cOneMembershipTestRequired_{i} & \equiv & \texttt{true} \\
                 \end{array} \right] \vspace{2mm} \\
                 & \equiv & 
                 \left[ \begin{array}{clcr}
                     \cdot & \isBlsPairingCheckData_{i}        \\
-                    \cdot & \internalChecksPassed_{i}   \\
+                    \cdot & (1 - \malformedDataInternalJustification_{i})   \\
                     \cdot & \cOneMembershipTestRequired_{i} \\
                 \end{array} \right] \vspace{2mm} \\
                 & =      & \cOneMembershipTestRequired_{i} \\
@@ -73,9 +73,9 @@ The present section imposes the behaviour of the various circuit selectors.
     \item[Circuit selector for the \inst{G2\_MEMBERSHIP\_TEST} circuit:]
         $\csGTwo_{i} = \gTwoMembershipTestRequired_{i}$
     \item[Circuit selector for the \inst{MAP\_FP\_TO\_G1} circuit:]
-        $\csMapFpToGOne_{i} = \internalChecksPassed_{i} \cdot \locIsBlsMapFpToGOne_{i}$
+        $\csMapFpToGOne_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsMapFpToGOne_{i}$
     \item[Circuit selector for the \inst{MAP\_FP2\_TO\_G2} circuit:]
-        $\csMapFpTwoToGTwo_{i} = \internalChecksPassed_{i} \cdot \locIsBlsMapFpTwoToGTwo_{i}$
+        $\csMapFpTwoToGTwo_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsMapFpTwoToGTwo_{i}$
 \end{description}    
 
 % TODO: add ADD and MSM cases
