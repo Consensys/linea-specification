@@ -5,7 +5,7 @@
 			\smallCallToLeq {
 				anchorRow = i                           ,
 				relOffset = \initCodeSizeLimitRowOffset ,
-				argOneLo  = \locInitCodeSize            ,
+				argOneLo  = \locHubInitCodeSize         ,
 				argTwoLo  = \maxInitCodeSize            ,
 			}
 			\vspace{2mm}
@@ -17,6 +17,12 @@
 			\\
 		\end{array}\right.
 	\]
-	\saNote{}
-	Recall that for message calls ($\locIsMessageCall \equiv 1$) it holds that $\locInitCodeSize = 0$.
-	In other words we require that for deployments $\locDataSize \leq \maxInitCodeSize \define \maxInitCodeSizeValue$.
+	where, as per \cite{EIP-3860},
+	\[
+		\maxInitCodeSize \define \maxInitCodeSizeValue
+	\]
+	In other words, deployments must satisfy $\locHubInitCodeSize \leq \maxInitCodeSizeValue$.
+
+	\saNote{} \label{user txn data: processing: user: common computations: max init code size check}
+	Message calls satisfy $\locHubInitCodeSize \equiv 0$,
+	see constraint~(\ref{user txn data: processing: user: data transafer hub to rlp: call data size and init code size}).

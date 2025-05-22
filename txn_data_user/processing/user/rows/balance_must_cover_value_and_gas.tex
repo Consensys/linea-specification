@@ -3,10 +3,10 @@
 	\[
 		\left\{\begin{array}{l}
 			\smallCallToLeq {
-				anchorRow = i ,
-				relOffset = \balanceRowOffset ,
-				argOneLo  = \locValue + \locMaxFee \cdot \locGasLimit ,
-				argTwoLo  = \txInitialBalance _{i} ,
+				anchorRow = i                     ,
+				relOffset = \balanceRowOffset     ,
+				argOneLo  = \locMaxCostInWei      ,
+				argTwoLo  = \locHubInitialBalance ,
 			}
 			\vspace{2mm}
 			\\
@@ -17,5 +17,22 @@
 			\\
 		\end{array}\right.
 	\]
-	\saNote{}
-	In other words we require that $\locValue + \locMaxFee \cdot \locGasLimit \leq \txInitialBalance_{i}$.
+	where
+	\[
+		\left\{ \begin{array}{lcl}
+			\locMaxCostInWei & \define &
+			\left[ \begin{array}{clcl}
+				+ & \locRlpValue    \\
+				+ & \locRlpGasLimit  & \cdot & \locMaxGasPrice \\
+			\end{array} \right]
+			\vspace{2mm}
+			\\
+			\locMaxGasPrice  & \define &
+			\left[ \begin{array}{clcl}
+				+ & \locGasPriceIsFixed    & \cdot & \locRlpGasPrice       \\
+				+ & \locGasPriceIsVariable & \cdot & \locRlpMaxPriorityFee \\
+			\end{array} \right]
+			\\
+		\end{array} \right.
+	\]
+	In other words we require that $\locMaxCostInWei \leq \locHubInitialBalance$.

@@ -6,7 +6,7 @@
 				anchorRow = i                  ,
 				relOffset = \gasLimitRowOffset ,
 				argOneLo  = \locUpfrontGasCost ,
-				argTwoLo  = \locGasLimit       ,
+				argTwoLo  = \locRlpGasLimit    ,
 			}
 			\vspace{2mm}
 			\\
@@ -23,29 +23,46 @@
 		\left\{ \begin{array}{lcl}
 			\locUpfrontGasCost & \define &
 			\left[ \begin{array}{crcl}
-				+ \!\!\! & \txIsLegacy    _{i} & \cdot & \locLegacyUpfrontGasCost \\
-				+ \!\!\! & \txIsAccessSet _{i} & \cdot & \locAccessUpfrontGasCost \\
-				+ \!\!\! & \txIsTypeTwo   _{i} & \cdot & \locAccessUpfrontGasCost \\
-			\end{array} \right] \vspace{4mm} \\
+				+ \!\!\! & \txIsLegacy    _{i} & \cdot & \locLegacyUpfrontGasCost            \\
+				+ \!\!\! & \txIsAccessSet _{i} & \cdot & \locAccessUpfrontGasCost            \\
+				+ \!\!\! & \txIsTypeTwo   _{i} & \cdot & \locAccessUpfrontGasCost            \\
+				+ \!\!\! & \txIsTypeThree _{i} & \cdot & \locAccessUpfrontGasCost            \\
+				+ \!\!\! & \txIsTypeFour  _{i} & \cdot & \locAccountDelegationUpfrontGasCost \\
+			\end{array} \right]
+			\vspace{4mm} \\
 			\locLegacyUpfrontGasCost & \define &
 			\left[ \begin{array}{crcl}
-				+ \!\!\! &           &       & \locDataCost           \\
-				+ \!\!\! &           &       & G_{\text{transaction}} \\
-				+ \!\!\! & \locIsDep & \cdot & G_{\text{txcreate}}    \\
-			\end{array} \right] \vspace{4mm} \\
+				         &                     & \!\!\!   +   \!\!\! & \locDataCost           \\
+				         &                     & \!\!\!   +   \!\!\! & \locInitCodeCost       \\
+				         &                     & \!\!\!   +   \!\!\! & G_{\text{transaction}} \\
+				+ \!\!\! & \locRlpIsDeployment & \!\!\! \cdot \!\!\! & G_{\text{txcreate}}    \\
+			\end{array} \right]
+			\vspace{4mm} \\
 			\locAccessUpfrontGasCost & \define &
 			\left[ \begin{array}{crcl}
-				+ \!\!\! &             &                     & \locDataCost               \\
-				+ \!\!\! &             &                     & G_{\text{transaction}}     \\
-				+ \!\!\! & \locIsDep   & \!\!\! \cdot \!\!\! & G_{\text{txcreate}}        \\
-				+ \!\!\! & \locNumAddr & \!\!\! \cdot \!\!\! & G_\text{accesslistaddress} \\
-				+ \!\!\! & \locNumKeys & \!\!\! \cdot \!\!\! & G_\text{accessliststorage} \\
+				         &                     & \!\!\!   +   \!\!\! & \locDataCost               \\
+				         &                     & \!\!\!   +   \!\!\! & \locInitCodeCost           \\
+				         &                     & \!\!\!   +   \!\!\! & G_{\text{transaction}}     \\
+				+ \!\!\! & \locRlpIsDeployment & \!\!\! \cdot \!\!\! & G_{\text{txcreate}}        \\
+				+ \!\!\! & \locRlpNumAddr      & \!\!\! \cdot \!\!\! & G_\text{accesslistaddress} \\
+				+ \!\!\! & \locRlpNumKeys      & \!\!\! \cdot \!\!\! & G_\text{accessliststorage} \\
+			\end{array} \right]
+			\vspace{4mm} \\
+			\locAccountDelegationUpfrontGasCost & \define &
+			\left[ \begin{array}{crcl}
+				         &                              & \!\!\!   +   \!\!\! & \locDataCost               \\
+				         &                              & \!\!\!   +   \!\!\! & \locInitCodeCost           \\
+				         &                              & \!\!\!   +   \!\!\! & G_{\text{transaction}}     \\
+				+ \!\!\! & \locRlpIsDeployment          & \!\!\! \cdot \!\!\! & G_{\text{txcreate}}        \\
+				+ \!\!\! & \locRlpNumAddr               & \!\!\! \cdot \!\!\! & G_\text{accesslistaddress} \\
+				+ \!\!\! & \locRlpNumKeys               & \!\!\! \cdot \!\!\! & G_\text{accessliststorage} \\
+				+ \!\!\! & \locRlpNumAccountDelegations & \!\!\! \cdot \!\!\! & \perEmptyAccountCost       \\
 			\end{array} \right] \\
 		\end{array} \right.
 	\]
 	\saNote{}
 	In other words we require that
-	$\locUpfrontGasCost \leq \locGasLimit$.
+	$\locUpfrontGasCost \leq \locRlpGasLimit$.
 
 	\saNote{}
 	We remind the reader of the values of the following constants
@@ -55,5 +72,6 @@
 			G_\text{create}            & \!\!\! = \!\!\! & 32\,000 \\
 			G_\text{accesslistaddress} & \!\!\! = \!\!\! & 2\,400  \\
 			G_\text{accessliststorage} & \!\!\! = \!\!\! & 1\,900  \\
+			\perEmptyAccountCost       & \!\!\! = \!\!\! & 25\,000 \\
 		\end{array} \right.
 	\]

@@ -17,7 +17,7 @@ Constraints are conditional to the following standing hypothesis:
 				\txnDataHubGasLimit     _{i + \hubViewRowOffset} & = & \locRlpGasLimit     \\
 			\end{array} \right.
 		\]
-	\item[\underline{Call data and init code size:}]
+	\item[\underline{Call data and init code size:}] \label{user txn data: processing: user: data transafer hub to rlp: call data size and init code size}
 		we impose
 		\[
 			\left\{ \begin{array}{lcrcl}
@@ -26,14 +26,19 @@ Constraints are conditional to the following standing hypothesis:
 			\end{array} \right.
 		\]
 	\item[\underline{(Conditionally) set the \tt{gas price}:}]
-		\If $\locGasPriceIsFixed = 1$ \Then
-		\[
-			\txnDataHubGasPrice _{i + \hubViewRowOffset}
-			=
-			\locRlpGasPrice
-		\]
-		\saNote{}
-		The ``$\locGasPriceIsVariable = 1$'' case will be addressed in \specTodo{}
+		we impose
+		\begin{enumerate}
+		        \item
+				\If $\locGasPriceIsFixed = 1$ \Then
+				\[
+					\txnDataHubGasPrice _{i + \hubViewRowOffset}
+					=
+					\locRlpGasPrice
+				\]
+			\item
+				\If $\locGasPriceIsVariable = 1$ \Then see
+				section \specTodo{}
+		\end{enumerate}
 	\item[\underline{(Conditionally) set the \tt{to} address:}]
 		we impose
 		\begin{enumerate}
@@ -50,7 +55,7 @@ Constraints are conditional to the following standing hypothesis:
 				section~(\ref{user txn data: lookups: addr rlp}).
 		\end{enumerate}
 	\item[\underline{Passing the \cfi{} along:}]
-		\If $\locIsDeployment = 1$ \et $\locRequiresEvmExecution = 1$ \Then
+		\If $\locHubIsDeployment = 1$ \et $\locHubRequiresEvmExecution = 1$ \Then
 		\[
 			\txnDataRlpCfi  _{i + \rlpViewRowOffset} = \txnDataHubCfi _{i + \hubViewRowOffset}
 		\]

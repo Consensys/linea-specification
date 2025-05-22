@@ -4,8 +4,7 @@
 We impose the following constraints on the transaction type flag columns:
 \[
 	\left\{ \begin{array}{lcl}
-		\locGasPriceIsFixed
-		& \define &
+		\locGasPriceIsFixed & \define &
 		\left[ \begin{array}{cl}
 			+ & \txnDataRlpIsLegacyTransaction            _{i + \rlpViewRowOffset} \\
 			+ & \txnDataRlpIsAccessSetTransaction         _{i + \rlpViewRowOffset} \\
@@ -21,6 +20,46 @@ We impose the following constraints on the transaction type flag columns:
 			% + & \txnDataRlpIsAccessSetTransaction         _{i + \rlpViewRowOffset} \\
 			+ & \txnDataRlpIsTypeTwoTransaction           _{i + \rlpViewRowOffset} \\
 			+ & \txnDataRlpIsBlobTransaction              _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsAccountDelegationTransaction _{i + \rlpViewRowOffset} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locTransactionSansAccessList & \define &
+		\left[ \begin{array}{cl}
+			+ & \txnDataRlpIsLegacyTransaction            _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsAccessSetTransaction         _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsTypeTwoTransaction           _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsBlobTransaction              _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsAccountDelegationTransaction _{i + \rlpViewRowOffset} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locTransactionWithAccessList & \define &
+		\left[ \begin{array}{cl}
+			% + & \txnDataRlpIsLegacyTransaction            _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsAccessSetTransaction         _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsTypeTwoTransaction           _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsBlobTransaction              _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsAccountDelegationTransaction _{i + \rlpViewRowOffset} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locTransactionSansDelegations & \define &
+		\left[ \begin{array}{cl}
+			+ & \txnDataRlpIsLegacyTransaction            _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsAccessSetTransaction         _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsTypeTwoTransaction           _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsBlobTransaction              _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsAccountDelegationTransaction _{i + \rlpViewRowOffset} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locTransactionWithDelegations & \define &
+		\left[ \begin{array}{cl}
+			% + & \txnDataRlpIsLegacyTransaction            _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsAccessSetTransaction         _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsTypeTwoTransaction           _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsBlobTransaction              _{i + \rlpViewRowOffset} \\
 			+ & \txnDataRlpIsAccountDelegationTransaction _{i + \rlpViewRowOffset} \\
 		\end{array} \right]
 		\vspace{2mm}
@@ -42,9 +81,24 @@ We impose the following constraints on the transaction type flag columns:
 		\end{array} \right]
 		\\
 	\end{array} \right.
-\]
-We then impose that
-\begin{enumerate}
-	\item $\locTransactionTypeFlagSum         = 1$
-	\item $\locTransactionTypeWeightedFlagSum = \locRlpTxType$
-\end{enumerate}
+	\]
+	We then impose that
+	\begin{enumerate}
+		\item $\locTransactionTypeFlagSum         = 1$
+		\item $\locTransactionTypeWeightedFlagSum = \locRlpTxType$
+		\item \If $\txnDataRlpIsLegacyTransaction _{i + \rlpViewRowOffset} = 1$ \Then
+			\[
+				\left\{ \begin{array}{lcl}
+					\locRlpNumKeys & = & 0 \\
+					\locRlpNumAddr & = & 0 \\
+				\end{array} \right.
+			\]
+		\item \If $\txnDataRlpIsAccountDelegationTransaction _{i + \rlpViewRowOffset} = 0$ \Then
+			\[
+				\locRlpNumAccountDelegations = 0
+			\]
+	\end{enumerate}
+  
+\locTransactionWithAccessList  
+\locTransactionSansDelegations 
+\locTransactionWithDelegations 

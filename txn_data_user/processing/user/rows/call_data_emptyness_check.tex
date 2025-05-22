@@ -1,4 +1,5 @@
 \item[\underline{\underline{Row n$°(i + \detectingEmptyCallDataRowOffset)$: detecting empty call data:}}]
+	we unconditionally impose
 	\[
 		\smallCallToIszero {
 			anchorRow = i                                ,
@@ -13,20 +14,19 @@
 	we impose that
 	\begin{enumerate}
 	        \item
-			\If $\locIsMessageCall = 1$ \Then
+			\If $\locRlpIsMessageCall = 1$ \Then
 			\[
-				\locCopyTxcd
-				=
-				\locRequiresEvmExecution
+				\locHubCopyTxcd =
+				\locHubRequiresEvmExecution
 				\cdot
 				\locNonzeroDataSize
 			\]
 	        \item
-			\If $\locIsDeployment = 1$ \Then
+			\If $\locRlpIsDeployment = 1$ \Then
 			\[
 				\left\{ \begin{array}{lcl}
-					\locRequiresEvmExecution & = & \locNonzeroDataSize \\
-					\locCopyTxcd             & = & 0                   \\
+					\locHubRequiresEvmExecution & = & \locNonzeroDataSize \\
+					\locHubCopyTxcd             & = & 0                   \\
 				\end{array} \right.
 			\]
 	\end{enumerate}
