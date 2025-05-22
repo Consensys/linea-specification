@@ -1,0 +1,22 @@
+\item[\underline{\underline{Row n$°(i + \transactionFloorCostRowOffset)$: gas limit must cover the transaction floor cost:}}]
+	we impose that
+	\[
+		\left\{ \begin{array}{lcl}
+			\smallCallToLeq {
+				anchorRow = i                              ,
+				relOffset = \transactionFloorCostRowOffset ,
+				argOneLo  = \locDataFloorCost              ,
+				argTwoLo  = \locRlpGasLimit                ,
+			}
+			\vspace{2mm} \\
+			\resultMustBeTrue {
+				anchorRow = i                              ,
+				relOffset = \transactionFloorCostRowOffset ,
+			} \\
+		\end{array} \right.
+	\]
+	In other words we are requiring $\locDataFloorCost \leq \locRlpGasLimit$.
+
+	\saNote{}
+	Starting with \cite{EIP-7623} transaction call data induces a ``\textbf{transaction floor price}'' which has to be covered by the transaction's \textbf{gas limit}.
+	That floor price (and the usual call data cost) is defined like so

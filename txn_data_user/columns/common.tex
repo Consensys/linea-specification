@@ -1,0 +1,55 @@
+The first few columns pertain to block and transaction accounting.
+We refer to the \hubMod{}'s column descriptions,
+specifically section~(\ref{}),
+for the relevant interpretation.
+\begin{multicols}{3}
+	\begin{enumerate}
+		\item \blockNumber
+		\item[\vspace{\fill}]
+		\item[\vspace{\fill}]
+		% \item \sysiTransactionNumber
+		\item \totalTransactionNumber
+		\item \userTransactionNumber
+		% \item \sysfTransactionNumber
+		\item[\vspace{\fill}]
+		% \item[\vspace{\fill}]
+		\item \sysi
+		\item \user
+		\item \sysf
+		% \item[\vspace{\fill}]
+	\end{enumerate}
+\end{multicols}
+\noindent We refer the reader to
+section~(\ref{user txn data: lookups: into the hub}) and particularly
+note~(\ref{user txn data: lookups: into hub: purpose and consequences})
+for a discussion of the implicit constraints that apply to the above columns.
+
+The following rows are the \userTxnDataMod{}'s ``perspectives.''
+\begin{enumerate}\setcounter{enumi}{6}
+	\item
+		$\isUserTxnComputation$:
+		binary column which lights up on \textbf{computation-rows};
+	\item
+		$\isUserTxnHubView$:
+		binary column which lights up on \textbf{hub-view-rows};
+	\item
+		$\isUserTxnRlpView$:
+		binary column which lights up on \textbf{rlp-view-rows};
+\end{enumerate}
+The following columns will be used to set the present module's heartbeat.
+\begin{enumerate}[resume]
+	\item $\ct$:
+		counter column;
+		used to specify the depth of verticalization;
+		resets with every new transaction; 
+	\item $\maxCt$:
+		counter column;
+		used to specify the depth of verticalization;
+		resets with every new transaction; 
+\end{enumerate}
+We also require
+\begin{enumerate}[resume]
+	\item \cumulativeConsumedGas:
+		transaction-constant column which contains the cumulative gas consumption of the present block
+		\emph{up to and including the current (user) transaction};
+\end{enumerate}
