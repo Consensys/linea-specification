@@ -1,22 +1,22 @@
 \item[\underline{\underline{Row n$°(i + \transactionFloorCostRowOffset)$: gas limit must cover the transaction floor cost:}}]
-	we introduce the following shorthand plus constraint
-	\[
-		\left\{ \begin{array}{lcl}
-			\multicolumn{3}{l}{\standardTokenCost \cdot \locTransactionFloorCost = \floorTokenCost \cdot \locDataCost } \vspace{2mm} \\
-			\standardTokenCost                 & \define & \standardTokenCostValue                         \\
-			\floorTokenCost                    & \define & \floorTokenCostValue                            \\
-			\locTransactionFloorCost           & \define & \argOneLo _{i + \transactionFloorCostRowOffset} \\
-			\locRefundFromTransactionFloorCost & \define & \locGasLimit - \locTransactionFloorCost         \\
-		\end{array} \right.
-	\]
-	and we impose
+	% we introduce the following shorthand plus constraint
+	% \[
+	% 	\left\{ \begin{array}{lcl}
+	% 		\multicolumn{3}{l}{\standardTokenCost \cdot \locTransactionFloorCost = \floorTokenCost \cdot \locDataCost } \vspace{2mm} \\
+	% 		\standardTokenCost                 & \define & \standardTokenCostValue                         \\
+	% 		\floorTokenCost                    & \define & \floorTokenCostValue                            \\
+	% 		\locTransactionFloorCost           & \define & \argOneLo _{i + \transactionFloorCostRowOffset} \\
+	% 		\locRefundFromTransactionFloorCost & \define & \locGasLimit - \locTransactionFloorCost         \\
+	% 	\end{array} \right.
+	% \]
+	we impose that
 	\[
 		\left\{ \begin{array}{lcl}
 			\smallCallToLeq {
 				anchorRow = i                              ,
 				relOffset = \transactionFloorCostRowOffset ,
-				argOneLo  = \locTransactionFloorCost       ,
-				argTwoLo  = \locGasLimit                   ,
+				argOneLo  = \locDataFloorCost              ,
+				argTwoLo  = \locRlpGasLimit                ,
 			}
 			\vspace{2mm} \\
 			\resultMustBeTrue {
@@ -25,7 +25,7 @@
 			} \\
 		\end{array} \right.
 	\]
-	In other words we are requiring $\locTransactionFloorCost \leq \locGasLimit$.
+	In other words we are requiring $\locDataFloorCost \leq \locRlpGasLimit$.
 
 	\saNote{}
 	We explain the rationale behind the first constraint.
