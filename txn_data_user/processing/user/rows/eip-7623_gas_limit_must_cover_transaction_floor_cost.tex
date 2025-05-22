@@ -1,14 +1,4 @@
 \item[\underline{\underline{Row n$°(i + \transactionFloorCostRowOffset)$: gas limit must cover the transaction floor cost:}}]
-	% we introduce the following shorthand plus constraint
-	% \[
-	% 	\left\{ \begin{array}{lcl}
-	% 		\multicolumn{3}{l}{\standardTokenCost \cdot \locTransactionFloorCost = \floorTokenCost \cdot \locDataCost } \vspace{2mm} \\
-	% 		\standardTokenCost                 & \define & \standardTokenCostValue                         \\
-	% 		\floorTokenCost                    & \define & \floorTokenCostValue                            \\
-	% 		\locTransactionFloorCost           & \define & \argOneLo _{i + \transactionFloorCostRowOffset} \\
-	% 		\locRefundFromTransactionFloorCost & \define & \locGasLimit - \locTransactionFloorCost         \\
-	% 	\end{array} \right.
-	% \]
 	we impose that
 	\[
 		\left\{ \begin{array}{lcl}
@@ -28,32 +18,5 @@
 	In other words we are requiring $\locDataFloorCost \leq \locRlpGasLimit$.
 
 	\saNote{}
-	We explain the rationale behind the first constraint.
 	Starting with \cite{EIP-7623} transaction call data induces a ``\textbf{transaction floor price}'' which has to be covered by the transaction's \textbf{gas limit}.
 	That floor price (and the usual call data cost) is defined like so
-	\[
-		\left\{ \begin{array}{lcr}
-			\locTransactionFloorCost   & \define & \standardTokenCost \cdot \weightedTokenCount              \\
-			\locDataCost               & \define & \floorTokenCost    \cdot \weightedTokenCount \vspace{2mm} \\
-			\weightedTokenCount & \define & \multicolumn{1}{l}{\displaystyle \sum_{i \in T_\textbf{i}, T_\textbf{d}} ~
-			\begin{cases}
-				~ 1 & \text{if } i =    0 \\
-				~ 4 & \text{otherwise}    \\
-			\end{cases}}
-		\end{array} \right.
-	\]
-	Where we use \cite{EYP} notations:
-	the call data $T_\textbf{d}$ for message call transactions and
-	the init code $T_\textbf{i}$ for deployment transactions.
-	Thus, by requiring
-	\[
-		\standardTokenCost \cdot \locTransactionFloorCost = \floorTokenCost \cdot \locDataCost
-	\]
-	we are effectively imposing
-	\[
-		\begin{array}{lcl}
-			\locTransactionFloorCost
-			& = & \displaystyle \frac{\floorTokenCost}{\standardTokenCost} \cdot \locDataCost        \vspace{2mm} \\
-			& = & \displaystyle \floorTokenCost                            \cdot \weightedTokenCount \\
-		\end{array}
-	\]

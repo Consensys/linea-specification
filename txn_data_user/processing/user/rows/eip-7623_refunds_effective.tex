@@ -1,22 +1,44 @@
-\item[\underline{\underline{Row n$°(i + \effectiveRefundRowOffset)$: effective refund:}}]
+\item[\underline{\underline{Row n$°(i + \effectiveRefundRowOffset)$: Effective refund:}}]
 	we impose that
 	\[
 		\smallCallToLt {
 			anchorRow = i                         ,
 			relOffset = \effectiveRefundRowOffset ,
-			argOneLo  = \txFinalRefundCounter_{i} ,
+			argOneLo  = \locHubFinalRefundCounter ,
 			argTwoLo  = \locRefundLimit           ,
 		}
 	\]
-	and define the following shorthands
-	\begin{enumerate}
-		\item $\locGetFullRefund \define \res_{i + \effectiveRefundRowOffset}$
-		\item \If $\locGetFullRefund = 0$ \Then $\locRefundFromTransactionProcessing \define \txLeftoverGas _{i} + \locRefundLimit$
-		\item \If $\locGetFullRefund = 1$ \Then $\locRefundFromTransactionProcessing \define \txLeftoverGas _{i} + \txFinalRefundCounter _{i}$
-	\end{enumerate}
-	\saNote{}
+	thus
 	The interpretation is as follows:
 	\begin{IEEEeqnarray*}{LCL}
-		\locGetFullRefund = 1 & \iff & \txFinalRefundCounter _{i} < \locRefundLimit                                                                     \\
-                                      & \iff & \txFinalRefundCounter _{i} < \left\lfloor\frac{\locGasLimit - \txLeftoverGas_{i}}\maxRefundQuotient\right\rfloor \\
+		\locGetFullRefund = 1 & \iff & \locHubFinalRefundCounter < \locRefundLimit                                                                     \\
+                                      & \iff & \locHubFinalRefundCounter < \left\lfloor\frac{\locRlpGasLimit - \locHubLeftoverGas}\maxRefundQuotient\right\rfloor \\
 	\end{IEEEeqnarray*}
+	We further define the following shorthands:
+	\begin{enumerate}
+		\item $\locGetFullRefund \define \res_{i + \effectiveRefundRowOffset}$
+		\item \If $\locGetFullRefund = 0$ \Then
+			\[
+				\locLeftoverGasPlusRefunds \define
+				\left[ \begin{array}{cr}
+					+ & \locHubLeftoverGas \\
+					+ & \locRefundLimit    \\
+				\end{array} \right]
+			\]
+		\item \If $\locGetFullRefund = 1$ \Then
+			\[
+				\locLeftoverGasPlusRefunds \define
+				\left[ \begin{array}{cl}
+					+ & \locHubLeftoverGas        \\
+					+ & \locHubFinalRefundCounter \\
+				\end{array} \right]
+			\]
+		\item we define
+			\[
+				\locConsumedGasAfterRefunds \define
+				\left[ \begin{array}{cl}
+					+ & \locRlpGasLimit            \\
+					- & \locLeftoverGasPlusRefunds \\
+				\end{array} \right]
+			\]
+	\end{enumerate}

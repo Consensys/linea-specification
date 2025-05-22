@@ -6,17 +6,32 @@
 				\smallCallToLt {
 					anchorRow = i                                               ,
 					relOffset = \effectiveRefundVsTransactionFloorCostRowOffset ,
-					argOneLo  = \locGasPaidAfterRefunds                         ,
+					argOneLo  = \locConsumedGasAfterRefunds                     ,
 					argTwoLo  = \locTransactionFloorCost                        ,
 				}}
 				\vspace{2mm} \\
-				\locGasPaidAfterRefunds & \define & \locGasLimit - \locRefundFromTransactionProcessing          \\
 				\locPayFloorCost        & \define & \res _{i + \effectiveRefundVsTransactionFloorCostRowOffset} \\
 		\end{array} \right.
 	\]
 	In other words $\locPayFloorCost \equiv \texttt{true} \iff \big[ \locGasPaidAfterRefunds < \locTransactionFloorCost \big]$.
 	We further set
 	\begin{enumerate}
-		\item \If $\locPayFloorCost = 0$ \Then $\txEffectiveRefund _{i} = \locRefundFromTransactionProcessing$
-		\item \If $\locPayFloorCost = 1$ \Then $\txEffectiveRefund _{i} = \locRefundFromTransactionFloorCost$
+		\item \If $\locPayFloorCost = 0$ \Then
+			\[
+				\locHubEffectiveRefund
+				=
+				\left[ \begin{array}{cr}
+					+ & \locRlpGasLimit         \\
+					- & \locGasPaidAfterRefunds \\
+				\end{array} \right]
+			\]
+		\item \If $\locPayFloorCost = 1$ \Then
+			\[
+				\locHubEffectiveRefund
+				=
+				\left[ \begin{array}{cr}
+					+ & \locRlpGasLimit          \\
+					- & \locTransactionFloorCost \\
+				\end{array} \right]
+			\]
 	\end{enumerate}
