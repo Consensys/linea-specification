@@ -1,0 +1,20 @@
+We enforce the following constraints:
+\begin{enumerate}
+    \item \pairOfPointsContainsInfinity{} is \textbf{pair-of-points-constant binary} \quad (\trash)
+    \item \If $\locIsBlsPairingCheck = 0$ \Then $\pairOfPointsContainsInfinity = 0$
+    \item \If $\malformedDataExternalJustification = 0$ \Then $\pairOfPointsContainsInfinity = 0$
+    \item \If $\locInternalChecksFailed = 0$ \Then $\pairOfPointsContainsInfinity = 0$ % TODO: icf into a global function 
+    \item \If $\wellformedDataTrivial + \wellformedDataNonTrivial = 1$ \Then 
+        \begin{enumerate}
+            \item \If $\locTransitionFromSmallToLarge = 1$ \Then
+                \[
+                    \left\{ \begin{array}{lclr}
+                        \locSmallPointInfinity & \define & \isInfinity_{i}     \\
+                        \locLargePointInfinity & \define & \isInfinity_{i + 1} \\
+                    \end{array} \right.
+                \]
+                \begin{enumerate}
+                    \item $\pairOfPointsContainsInfinity = \locSmallPointInfinity + \locLargePointInfinity - \locSmallPointInfinity \cdot \locLargePointInfinity$
+                \end{enumerate}
+        \end{enumerate}
+\end{enumerate}
