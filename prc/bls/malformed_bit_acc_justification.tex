@@ -1,0 +1,49 @@
+The intent with the \notOnGTwo{} column is that this column may only turn on for a single \textbf{large} point within a given call to the \inst{ECPAIRING} precompile. Furthermore it should only be able to turn on if internal checks of the module passed.
+These two requirements (turning on at most once and only if internal checks passed) will follow from constraints on \notOnGTwoAcc{} and $\notOnGTwoAccMax$.
+\begin{enumerate}
+    \item \notOnGTwo{} is binary \quad (\trash)
+    \item \notOnGTwo{} is counter-constant \quad (\trash)
+    \item \If $\notOnGTwo_{i} = 1$ \Then $\isLargePoint_{i} = 1$
+\end{enumerate}
+We now specify the associated accumulator column:
+\begin{enumerate}[resume]
+    \item \notOnGTwoAcc{} is binary \quad (\trash)
+    \item \notOnGTwoAcc{} is counter-constant \quad (\trash)
+    \item \If $\isEcpairingData_{i} = 0$ \Then
+          \[
+              \left\{ \begin{array}{lcl}
+                  \notOnGTwoAcc _{i}     & = & 0 \\
+                  \notOnGTwoAcc _{i + 1} & = & 0 \\
+              \end{array} \right.
+          \]
+    \item \If $\locTransitionFromSmallToLarge_{i} = 1$ \Then
+          \[
+              \notOnGTwoAcc _{i + 1} =
+              \left[ \begin{array}{cr}
+                      + & \notOnGTwoAcc _{i}     \\
+                      + & \notOnGTwo    _{i + 1} \\
+                  \end{array} \right]
+          \]
+          \saNote{} The above has the following implicit consequence: \textbf{at most one} (supposedly) $G_2$ point pertaining to a particular \ecdataId{} may be be tagged as ``\notOnGTwo.''
+    \item \If $\locTransitionFromLargeToSmall_{i} = 1$ \Then
+          \[
+              \notOnGTwoAcc _{i + 1} = \notOnGTwoAcc _{i}
+          \]
+\end{enumerate}
+We finish this section by constraining the \notOnGTwoAccMax{} column:
+\begin{enumerate}[resume]
+    \item \notOnGTwoAccMax{} is binary \quad (\trash)
+    \item \notOnGTwoAccMax{} is index-constant \quad (\trash)
+    \item \If $\notOnGTwoAccMax_{i} = 1$ \Then
+          \[
+              \left\{ \begin{array}{lcl}
+                  \isEcpairingData      _{i} & = & 1 \\
+                  \internalChecksPassed _{i} & = & 1 \\
+              \end{array} \right.
+          \]
+          \saNote{} The above has the following implicit consequence: \notOnGTwoAcc{} (and hence \notOnGTwo{}) column may only turn on if all checks have passed.
+    \item \If $\isEcpairingData _{i} = 1$ \et $\isEcpairingResult _{i + 1} = 1$ \Then
+          \[
+              \notOnGTwoAccMax_{i} = \notOnGTwoAcc _{i}
+          \]
+\end{enumerate}
