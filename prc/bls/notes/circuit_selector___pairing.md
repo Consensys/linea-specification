@@ -4,6 +4,8 @@
 - Double check definitions of C/G 1,2 MTR columns and update corresponding section
 - global icf, icp definitions
 - double check constancies
+- check if we still need ACCPC
+- Fix interface
 
 ## Pairing logic
 
@@ -99,8 +101,8 @@ If MALFORMED_DATA_EXTERNAL_JUSTIFICATION ≡ true then we only require that MALF
                                                             + g1cs_for_pairing___wellformed
 
 - CIRCUIT_SELECTOR_G2_MEMBERSHIP_TEST (CSG2MT)
-    - malformed  data case: g2cs_for_pairing___malformed  ≡ MALFORMED_DATA_BIT ∙ IS_FIRST_INPUT
-    - wellformed data case: g2cs_for_pairing___wellformed ≡ wellformed_data    ∙ IS_FIRST_INPUT ∙ (1 - IS_INFINITY) ∙ PAIR_OF_POINTS_CONTAINS_INFINITY
+    - malformed  data case: g2cs_for_pairing___malformed  ≡ MALFORMED_DATA_BIT ∙ IS_SECOND_INPUT
+    - wellformed data case: g2cs_for_pairing___wellformed ≡ wellformed_data    ∙ IS_SECOND_INPUT ∙ (1 - IS_INFINITY) ∙ PAIR_OF_POINTS_CONTAINS_INFINITY
     - i.e.
         CIRCUIT_SELECTOR_G2_MEMBERSHIP_TEST___for_pairing ≡ + g2cs_for_pairing___malformed
                                                             + g2cs_for_pairing___wellformed
@@ -112,11 +114,11 @@ If MALFORMED_DATA_EXTERNAL_JUSTIFICATION ≡ true then we only require that MALF
 
 Note. You will have a constraint à la
 
-CIRCUIT_SELECTOR_G1_MEMBERSHIP_TEST ≡ IS_BLS_PAIRING_DATA ∙ CIRCUIT_SELECTOR_G1_MEMBERSHIP_TEST___for_pairing
-                                      IS_BLS_G1MSM_DATA   ∙ CIRCUIT_SELECTOR_G1_MEMBERSHIP_TEST___for_g1msm
+CIRCUIT_SELECTOR_G1_MEMBERSHIP_TEST ≡ + IS_BLS_PAIRING_DATA ∙ CIRCUIT_SELECTOR_G1_MEMBERSHIP_TEST___for_pairing
+                                      + IS_BLS_G1MSM_DATA   ∙ CIRCUIT_SELECTOR_G1_MEMBERSHIP_TEST___for_g1msm
 
-CIRCUIT_SELECTOR_G2_MEMBERSHIP_TEST ≡ IS_BLS_PAIRING_DATA ∙ CIRCUIT_SELECTOR_G2_MEMBERSHIP_TEST___for_pairing
-                                      IS_BLS_G2MSM_DATA   ∙ CIRCUIT_SELECTOR_G2_MEMBERSHIP_TEST___for_g2msm
+CIRCUIT_SELECTOR_G2_MEMBERSHIP_TEST ≡ + IS_BLS_PAIRING_DATA ∙ CIRCUIT_SELECTOR_G2_MEMBERSHIP_TEST___for_pairing
+                                      + IS_BLS_G2MSM_DATA   ∙ CIRCUIT_SELECTOR_G2_MEMBERSHIP_TEST___for_g2msm
 
 sections on
 - malformed stuff (former ICP)

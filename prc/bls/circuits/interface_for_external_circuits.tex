@@ -11,30 +11,67 @@ The present section imposes the behaviour of the various circuit selectors.
     \item[Circuit selector for the \inst{G2MSM} circuit:]
         $\csGTwoMsm_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsGTwoMsm_{i} \cdot (1 - \malformedDataExternalJustification_{i})$
     \item[Circuit selector for the \inst{PAIRING\_CHECK} circuit:]
+    we introduce the following shorthands:
+    \[
+        \begin{array}{lcl}
+            \locCsGOnePairingMalformed_{i} & \define &
+            \left[ \begin{array}{clcr}
+                \cdot & \locIsBlsPairingCheck_{i}                        \\
+                \cdot & \malformedDataBit_{i}                            \\
+                \cdot & \isFirstInput_{i}                                \\
+            \end{array} \right] \vspace{2mm}                             \\
+
+            \locCsGOnePairingWellformed_{i} & \define &
+            \left[ \begin{array}{clcr}
+                \cdot & \locIsBlsPairingCheck_{i}                        \\
+                \cdot & \locWellformedData_{i}                           \\
+                \cdot & \isFirstInput_{i}                                \\
+                \cdot & (1 - \isInfinity_{i})                            \\
+                \cdot & \pairOfPointsContainsInfinity_{i}                \\
+            \end{array} \right] \vspace{2mm}                             \\
+
+            \locCsGOnePairing_{i} & \define &
+            \left[ \begin{array}{clcr}
+                + & \locCsGOnePairingMalformed_{i}                       \\
+                + & \locCsGOnePairingWellformed_{i}                      \\
+            \end{array} \right] \vspace{2mm}                             \\
+
+            \locCsGTwoPairingMalformed_{i} & \define &
+            \left[ \begin{array}{clcr}
+                \cdot & \locIsBlsPairingCheck_{i}                        \\
+                \cdot & \malformedDataBit_{i}                            \\
+                \cdot & \isSecondInput_{i}                                \\
+            \end{array} \right] \vspace{2mm}                             \\
+
+            \locCsGTwoPairingWellformed_{i} & \define &
+            \left[ \begin{array}{clcr}
+                \cdot & \locIsBlsPairingCheck_{i}                        \\
+                \cdot & \locWellformedData_{i}                           \\
+                \cdot & \isSecondInput_{i}                                \\
+                \cdot & (1 - \isInfinity_{i})                            \\
+                \cdot & \pairOfPointsContainsInfinity_{i}                \\
+            \end{array} \right] \vspace{2mm}                             \\
+
+            \locCsGTwoPairing_{i} & \define &
+            \left[ \begin{array}{clcr}
+                + & \locCsGTwoPairingMalformed_{i}                       \\
+                + & \locCsGTwoPairingWellformed_{i}                      \\
+            \end{array} \right] \vspace{2mm}                             \\
+        \end{array}
+    \]
+
     we impose the following constraints:
         \begin {enumerate}
             \item \If $\isBlsPairingCheckData_{i} = 1$ \Then  
                 \[
                     \begin{array}{lcl}
-                        \csPairing_{i} & \equiv &
-                        \left[ \begin{array}{clcr}
-                            \wedge & (1 - \malformedDataInternalJustification_{i})   & \equiv & \texttt{true}  \\
-                            \wedge & \malformedDataExternalJustification_{i}          & \equiv & \texttt{false} \\
-                            \wedge & \acceptablePairOfPoints_{i} & \equiv & \texttt{true}  \\
-                        \end{array} \right] \vspace{2mm} \\
-                        & \equiv & 
-                        \left[ \begin{array}{clcr}
-                            \cdot & (1 - \malformedDataInternalJustification_{i})   \\
-                            \cdot & (1 - \malformedDataExternalJustification_{i})  \\
-                            \cdot & \acceptablePairOfPoints_{i} \\
-                        \end{array} \right] \vspace{2mm} \\
-                        & =      & \acceptablePairOfPoints_{i} \\
+                        \csPairing_{i} & = & \wellformedDataNonTrivial_{i} \cdot (1 - \pairOfPointsContainsInfinity_{i}) \\
                     \end{array}
                 \]
             \item \If $\isBlsPairingCheckResult_{i} = 1$ \Then
                 \[
                     \begin{array}{lcl}
-                        \csPairing_{i} & = & \blsSuccessBit_{i} \cdot \locNonTrivial_{i}
+                        \csPairing_{i} & = & \wellformedDataNonTrivial_{i} \cdot \blsSuccessBit_{i} \\
                     \end{array}
                 \]
             \item \If $\locIsBlsPairingCheck_{i} = 0$ \Then
@@ -44,41 +81,36 @@ The present section imposes the behaviour of the various circuit selectors.
                     \end{array}
                 \]
         \end{enumerate}
-
-    
     \item[Circuit selector for the \inst{C1\_MEMBERSHIP\_TEST} circuit:]
-        \[
-            \begin{array}{lcl}
-                \csCOne_{i} & \equiv &
-                \left[ \begin{array}{clcr}
-                    \wedge & \isBlsPairingCheckData_{i}        & \equiv & \texttt{true} \\
-                    \wedge & (1 - \malformedDataInternalJustification_{i})   & \equiv & \texttt{true} \\
-                    \wedge & \cOneMembershipTestRequired_{i} & \equiv & \texttt{true} \\
-                \end{array} \right] \vspace{2mm} \\
-                & \equiv & 
-                \left[ \begin{array}{clcr}
-                    \cdot & \isBlsPairingCheckData_{i}        \\
-                    \cdot & (1 - \malformedDataInternalJustification_{i})   \\
-                    \cdot & \cOneMembershipTestRequired_{i} \\
-                \end{array} \right] \vspace{2mm} \\
-                & =      & \cOneMembershipTestRequired_{i} \\
-            \end{array}
-        \]
-    \noindent
-    Similarly:
+        $\csCOne_{i} = \cOneMembershipTestRequired_{i}$
     \item[Circuit selector for the \inst{C2\_MEMBERSHIP\_TEST} circuit:]
         $\csCTwo_{i} = \cTwoMembershipTestRequired_{i}$
     \item[Circuit selector for the \inst{G1\_MEMBERSHIP\_TEST} circuit:]
-        $\csGOne_{i} = \gOneMembershipTestRequired_{i}$
+        % $\csGOne_{i} = \gOneMembershipTestRequired_{i}$
+
+        \[
+            \csGOne_{i} = 
+            \left[ \begin{array}{clcr}
+                + & \isBlsPairingCheckData_{i} \cdot \locCsGOnePairing   \\
+                + & \isBlsGOneMsmData_{i} \cdot \locCsGOneMsm            \\ % TODO: introduce that
+            \end{array} \right] \vspace{2mm}                             \\
+        \]
+
     \item[Circuit selector for the \inst{G2\_MEMBERSHIP\_TEST} circuit:]
-        $\csGTwo_{i} = \gTwoMembershipTestRequired_{i}$
+        %$\csGTwo_{i} = \gTwoMembershipTestRequired_{i}$
+
+        \[
+            \csGTwo_{i} = 
+            \left[ \begin{array}{clcr}
+                + & \isBlsPairingCheckData_{i} \cdot \locCsGTwoPairing   \\
+                + & \isBlsGTwoMsmData_{i} \cdot \locCsGTwoMsm            \\ % TODO: introduce that
+            \end{array} \right] \vspace{2mm}                             \\
+        \]
     \item[Circuit selector for the \inst{MAP\_FP\_TO\_G1} circuit:]
         $\csMapFpToGOne_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsMapFpToGOne_{i}$
     \item[Circuit selector for the \inst{MAP\_FP2\_TO\_G2} circuit:]
         $\csMapFpTwoToGTwo_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsMapFpTwoToGTwo_{i}$
 \end{description}    
-
-% TODO: add ADD and MSM cases
 
 Note that, at most one of the circuit selectors may light up for a given row:
 
