@@ -1,3 +1,10 @@
+
+## TODO
+
+- Double check definitions of C/G 1,2 MTR columns and update corresponding section
+- global icf, icp definitions
+- double check constancies
+
 ## Pairing logic
 
 wellformed_data ≡ + WELLFORMED_DATA_TRIVIAL

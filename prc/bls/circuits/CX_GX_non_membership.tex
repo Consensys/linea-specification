@@ -1,22 +1,16 @@
 The present section selects the rows of supposed $G_2$ points that are predicted not to belong to $G_2$.
-
-
 These are sent off to the relevant ``$G_2$ membership'' circuit.
+
 \begin{enumerate}
-    \item \If $\notOnCXAccMax_{i} = 1$ \Then
-          \begin{enumerate}
-              \item $\acceptablePairOfPoints_{i} = 0$
-              \item $\cOneMembershipTestRequired _{i} \cdot \isFirstInput + \cTwoMembershipTestRequired _{i} \cdot \isSecondInput = \notOnCX_{i}$ % TODO: check this
-              \item \If $\cOneMembershipTestRequired _{i} = 1$ \Then $\isInfinity_{i} = 0$
-              \item \If $\cTwoMembershipTestRequired _{i} = 1$ \Then $\isInfinity_{i} = 0$
-          \end{enumerate}
-    \item \If $\notOnGXAccMax_{i} = 1$ \Then
-          \begin{enumerate}
-              \item $\acceptablePairOfPoints_{i} = 0$
-              \item $\gOneMembershipTestRequired _{i} \cdot \isFirstInput + \gTwoMembershipTestRequired _{i} \cdot \isSecondInput = \notOnGX_{i}$ % TODO: check this
-              \item \If $\gOneMembershipTestRequired _{i} = 1$ \Then $\isInfinity_{i} = 0$
-              \item \If $\gTwoMembershipTestRequired _{i} = 1$ \Then $\isInfinity_{i} = 0$
-          \end{enumerate}
+    \item \If $\malformedDataExternalJustification_{i} = 1$ \Then
+        \begin{enumerate}
+            \item $\acceptablePairOfPoints_{i} = 0$
+            \item $(\cOneMembershipTestRequired _{i} + \gOneMembershipTestRequired _{i}) \cdot \isFirstInput + (\cTwoMembershipTestRequired _{i} + \gTwoMembershipTestRequired _{i}) \cdot \isSecondInput = \malformedDataBit_{i}$ % TODO: check this
+            \item \If $\cOneMembershipTestRequired _{i} = 1$ \Then $\isInfinity_{i} = 0$
+            \item \If $\cTwoMembershipTestRequired _{i} = 1$ \Then $\isInfinity_{i} = 0$
+            \item \If $\gOneMembershipTestRequired _{i} = 1$ \Then $\isInfinity_{i} = 0$
+            \item \If $\gTwoMembershipTestRequired _{i} = 1$ \Then $\isInfinity_{i} = 0$
+        \end{enumerate}
 \end{enumerate}
 
 % TODO: adapt

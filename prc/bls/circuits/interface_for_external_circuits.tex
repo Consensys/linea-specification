@@ -3,13 +3,13 @@ The present section imposes the behaviour of the various circuit selectors.
     \item[Circuit selector for the \inst{PointEvaluation} circuit:]
         $\csPointEvaluation_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsPointEvaluation_{i}$
     \item[Circuit selector for the \inst{G1ADD} circuit:]
-        $\csGOneAdd_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsGOneAdd_{i} \cdot (1 - \notOnGXAccMax)$
+        $\csGOneAdd_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsGOneAdd_{i} \cdot (1 - \malformedDataExternalJustification_{i})$
     \item[Circuit selector for the \inst{G1MSM} circuit:]
-        $\csGOneMsm_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsGOneMsm_{i} \cdot (1 - \notOnGXAccMax)$
+        $\csGOneMsm_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsGOneMsm_{i} \cdot (1 - \malformedDataExternalJustification_{i})$
     \item[Circuit selector for the \inst{G2ADD} circuit:]
-        $\csGTwoAdd_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsGTwoAdd_{i} \cdot (1 - \notOnCXAccMax)$
+        $\csGTwoAdd_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsGTwoAdd_{i} \cdot (1 - \malformedDataExternalJustification_{i})$
     \item[Circuit selector for the \inst{G2MSM} circuit:]
-        $\csGTwoMsm_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsGTwoMsm_{i} \cdot (1 - \notOnGXAccMax)$
+        $\csGTwoMsm_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsGTwoMsm_{i} \cdot (1 - \malformedDataExternalJustification_{i})$
     \item[Circuit selector for the \inst{PAIRING\_CHECK} circuit:]
     we impose the following constraints:
         \begin {enumerate}
@@ -19,13 +19,13 @@ The present section imposes the behaviour of the various circuit selectors.
                         \csPairing_{i} & \equiv &
                         \left[ \begin{array}{clcr}
                             \wedge & (1 - \malformedDataInternalJustification_{i})   & \equiv & \texttt{true}  \\
-                            \wedge & \notOnGXAccMax_{i}          & \equiv & \texttt{false} \\
+                            \wedge & \malformedDataExternalJustification_{i}          & \equiv & \texttt{false} \\
                             \wedge & \acceptablePairOfPoints_{i} & \equiv & \texttt{true}  \\
                         \end{array} \right] \vspace{2mm} \\
                         & \equiv & 
                         \left[ \begin{array}{clcr}
                             \cdot & (1 - \malformedDataInternalJustification_{i})   \\
-                            \cdot & (1 - \notOnGXAccMax_{i})  \\
+                            \cdot & (1 - \malformedDataExternalJustification_{i})  \\
                             \cdot & \acceptablePairOfPoints_{i} \\
                         \end{array} \right] \vspace{2mm} \\
                         & =      & \acceptablePairOfPoints_{i} \\

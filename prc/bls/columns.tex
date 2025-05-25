@@ -68,7 +68,7 @@ We further define:
 \end{enumerate}
 
 The following batch of columns is relevant in the context of \inst{G1MSM}, \inst{G2MSM} and \inst{PAIRING\_CHECK}, which have variable size inputs.
-In the case of \inst{PAIRING\_CHECK}, we refer to data supposedly containing a $C_1$ point as \textbf{small points} and to data supposedly containing a $C_2$ point as \textbf{large points}.
+In the case of \inst{PAIRING\_CHECK}, we refer to data supposedly containing a $G_1$ point as \textbf{small points} and to data supposedly containing a $G_2$ point as \textbf{large points}.
 \begin{enumerate}[resume]
       \item \ct:
             for each pair of inputs:
@@ -90,7 +90,7 @@ In the case of \inst{PAIRING\_CHECK}, we refer to data supposedly containing a $
 
       %\item \trivialAllInf: binary column; the last data row of each pairing indicates if we are in this trivial case, in the sense that all small points are points at infinity and all large points are points at infinity;
       %\item \trivialWithMembershipCheck: binary column; the last data row of each pairing indicates if we are in this trivial case, in the sense for every pair of points, at least one of the two points is a point at infinity and there is at least one where only one of the two points is a point at infinity;
-      \item \trivialAcc: binary column; binary column; the last data row of each pairing indicates if we are in this trivial case, in the sense that all small points are points at infinity and all large points are points at infinity;
+      \item \trivialAcc: binary column; binary column; the last data row of each pairing indicates if we are in a trivial case, in the sense that all small points are points at infinity and all large points are points at infinity;
       \item \both{\wellformedDataTrivial}: binary column, constant for a given \blsId, which lights up when the data is well formed and it is in the trivial case based on the value of the last data row of the corresponding pairing;
       \item \both{\wellformedDataNonTrivial}: binary column, constant for  given \blsId, which lights up when the data is well formed and it is not in the trivial case based on the value of the last data row of the corresponding pairing;
       \item \both{\pairOfPointsContainsInfinity}: binary column, constant for a pair of points, which lights up when at least one of the two points is a point at infinity;
@@ -110,14 +110,15 @@ In the case of \inst{PAIRING\_CHECK}, we refer to data supposedly containing a $
       \item \both{\malformedDataExternalJustification}: binary column, constant for a given \blsId, which lights up when the data is malformed and it needs to be justified extenrally;
       %
       
+      % TODO: double check if this description is accurate
       \item \both{\cOneMembershipTestRequired}:
-            constant along the 8 rows containing a supposed $C_1$ point and zero along $C_2$ points. It lights up when ...;
+            constant along the 8 rows containing a supposed $C_1$ point and zero along $C_2$ points. It lights up when the small point is predicted to be not in $C_1$ or when the large point is the point at infinity; 
       \item \both{\gOneMembershipTestRequired}:
-            constant along the 16 rows containing a supposed $G_1$ point and zero along $C_2$ points. It lights up when ...;
+            constant along the 16 rows containing a supposed $G_1$ point and zero along $C_2$ points. It lights up when the small point is predicted to be not in $G_1$ or when the large point is the point at infinity; 
       \item \both{\cTwoMembershipTestRequired}:
-            constant along the 8 rows containing a supposed $C_2$ point and zero along $C_1$ points. It lights up when ...;
+            constant along the 8 rows containing a supposed $C_2$ point and zero along $C_1$ points. It lights up when the large point is predicted to be not in $C_2$ or when the small point is the point at infinity;
       \item \both{\gTwoMembershipTestRequired}:
-            constant along the 16 rows containing a supposed $G_2$ point and zero along $C_1$ points. It lights up when ...;
+            constant along the 16 rows containing a supposed $G_2$ point and zero along $C_1$ points. It lights up when the large point is predicted to be not in $G_2$ or when the small point is the point at infinity;
       \item \both{\acceptablePairOfPoints}: constant along the 24 rows of a pair of points. It lights up when the small point and the large points are predicted to be in $C_1,G_1$ and $C_2,G_2$ respectively and neither of the points is the point at infinity;
 \end{enumerate}
      
