@@ -3,13 +3,13 @@ The present section imposes the behaviour of the various circuit selectors.
     \item[Circuit selector for the \inst{PointEvaluation} circuit:]
         $\csPointEvaluation_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsPointEvaluation_{i}$
     \item[Circuit selector for the \inst{G1ADD} circuit:]
-        $\csGOneAdd_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsGOneAdd_{i} \cdot (1 - \malformedDataExternalJustification_{i})$
+        $\csGOneAdd_{i} = \locWellformedData_{i} \cdot \locIsBlsGOneAdd_{i}$
     \item[Circuit selector for the \inst{G1MSM} circuit:]
-        $\csGOneMsm_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsGOneMsm_{i} \cdot (1 - \malformedDataExternalJustification_{i})$
+        $\csGOneMsm_{i} = (1 - \locMalformedData_{i}) \cdot \locIsBlsGOneMsm_{i}$
     \item[Circuit selector for the \inst{G2ADD} circuit:]
-        $\csGTwoAdd_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsGTwoAdd_{i} \cdot (1 - \malformedDataExternalJustification_{i})$
+        $\csGTwoAdd_{i} = (1 - \locMalformedData_{i}) \cdot \locIsBlsGTwoAdd_{i}$
     \item[Circuit selector for the \inst{G2MSM} circuit:]
-        $\csGTwoMsm_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsGTwoMsm_{i} \cdot (1 - \malformedDataExternalJustification_{i})$
+        $\csGTwoMsm_{i} = (1 - \locMalformedData_{i}) \cdot \locIsBlsGTwoMsm_{i}$
     \item[Circuit selector for the \inst{PAIRING\_CHECK} circuit:]
     we introduce the following shorthands:
     \[
@@ -87,7 +87,18 @@ The present section imposes the behaviour of the various circuit selectors.
         $\csCTwo_{i} = \cTwoMembershipTestRequired_{i}$
     \item[Circuit selector for the \inst{G1\_MEMBERSHIP\_TEST} circuit:]
         % $\csGOne_{i} = \gOneMembershipTestRequired_{i}$
+        we introduce the following shorthands:
+        \[
+            \begin{array}{lcl}
+                \locCsGOneMsm_{i} & \define &
+                \left[ \begin{array}{clcr}
+                    % + & \locCsGTwoPairingMalformed_{i}                       \\
+                    % + & \locCsGTwoPairingWellformed_{i}                      \\
+                \end{array} \right] \vspace{2mm}                             \\
+            \end{array}
+        \]
 
+        we impose the following constraints:
         \[
             \csGOne_{i} = 
             \left[ \begin{array}{clcr}
@@ -98,7 +109,18 @@ The present section imposes the behaviour of the various circuit selectors.
 
     \item[Circuit selector for the \inst{G2\_MEMBERSHIP\_TEST} circuit:]
         %$\csGTwo_{i} = \gTwoMembershipTestRequired_{i}$
+        we introduce the following shorthands:
+        \[
+            \begin{array}{lcl}
+                \locCsGTwoMsm_{i} & \define &
+                \left[ \begin{array}{clcr}
+                    % + & \locCsGTwoPairingMalformed_{i}                     \\
+                    % + & \locCsGTwoPairingWellformed_{i}                    \\
+                \end{array} \right] \vspace{2mm}                             \\
+            \end{array}
+        \]
 
+        we impose the following constraints:
         \[
             \csGTwo_{i} = 
             \left[ \begin{array}{clcr}

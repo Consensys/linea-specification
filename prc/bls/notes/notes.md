@@ -297,9 +297,9 @@ Note that in practice $B$ will likely always be $p$
 - MAP_FP2_TO_G2
 - POINT_EVALUATION
 
-### Failure case (assuming ICP = 0)
+### Failure case (assuming ICP = 1 but NOT_ON_G1_ACC_MAX = 0 or NOT_ON_G2_ACC_MAX = 0 and SUCCESS_BIT = 0)
 
-- BLS12_G1ADD: send to C1_MEMBERSHIP circuit the first point predicted not to be in C1, so as to prove non-membership.            
+- BLS12_G1ADD: send to C1_MEMBERSHIP circuit the point predicted not to be in C1, so as to prove non-membership.            
 - BLS12_G1MSM: 
 Based on the predictions related to a point being in C1 or G1, the following cases are possible:
 
@@ -310,7 +310,7 @@ Based on the predictions related to a point being in C1 or G1, the following cas
 |     1 |     0 | G1_MEMBERSHIP |
 
 so as to prove non-membership. Note that in the first case we prove C1 non-membership as it is cheaper than G1 non-membership, and that is enough to justify failure.
-- BLS12_G2ADD: send to C2_MEMBERSHIP circuit the first point predicted not to be in C2, so as to prove non-membership.           
+- BLS12_G2ADD: send to C2_MEMBERSHIP circuit the point predicted not to be in C2, so as to prove non-membership.           
 - BLS12_G2MSM:
 Based on the predictions related to a point being in C2 or G2, the following cases are possible:
 
