@@ -6,6 +6,7 @@
 - check if we still need ACCPC or PAIR_OF_POINTS_CONTAINS_INFINITY is enough
 - Fix interface
 - Double check definitions of C/G 1,2 MTR columns and update corresponding section
+- MALFORMED_DATA_INTERNAL_JUSTIFICATION + MALFORMED_DATA_EXTERNAL_JUSTIFICATION + WELLFORMED_DATA_TRIVIAL + WELLFORMED_DATA_NONTRIVIAL = 1 makes sense only for pairings. For the others, we can have only MALFORMED_DATA_INTERNAL_JUSTIFICATION + MALFORMED_DATA_EXTERNAL_JUSTIFICATION being equal to 1, but they can also be both 0. 
 
 ## Pairing logic
 
