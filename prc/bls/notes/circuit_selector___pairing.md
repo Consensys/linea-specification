@@ -177,15 +177,14 @@ icp_i = 1 - MALFORMED_DATA_INTERNAL_JUSTIFICATION_i
     - binary, ID-constant
     - TRIVIAL case is relevant only for pairings
     - MALFORMED_DATA_EXT must be 0 for POINTEVALUATION and the maps, too
-- Create a single section that defines all circuit selectors
-- The section about CX, GX non membership and succeseful pairing die
-- ACCPC is not necessary anymore indeed, PAIR_OF_POINTS_CONTAINS_INFINITY is enough
+
+;; - Create a single section that defines all circuit selectors
 
 - Refine behaviour of MALFORMED_DATA_EXTERNAL_JUSTIFICATION in the case of ADD and MSM. Treat it uniformly.
 
-- PARTIAL_CHECKS could be renamed to PARTIAL_INTERNAL_CHECKS (INTERNAL is the focus)
-- Only if the internal checks succeed, we start caring about external checks.
-- MALFORMED_DATA_(EXTERNAL_)BIT, MALFORMED_DATA_(EXTERNAL_)ACC  
+- Only if the internal checks succeed, we start caring about external checks and so on.
+- Rename MALFORMED_DATA_(EXTERNAL_)BIT, MALFORMED_DATA_(EXTERNAL_)ACC  
+- Look at the conversation with Olivier.
 
 - Find out if the specification for C/G 1,2 MTR columns fully defines also the corresponding selectors that are relevant for ADD, MSM and PAIRING
 

@@ -2,8 +2,12 @@ We impose the following constraints on \cOneMembershipTestRequired{}:
 \begin{enumerate}
     \item \cOneMembershipTestRequired{} is \textbf{counter-constant, binary} \quad (\trash)
     \item % TODO: improve formatting
-        \[
-            \cOneMembershipTestRequired_{i} = \malformedDataBit \cdot (\isBlsGOneAddData_{i} + \isBlsGOneMsmData_{i} \cdot \isFirstInput)
+        \[  
+            \cOneMembershipTestRequired_{i} = 
+            \left[ \begin{array}{clcr}
+              + & \malformedDataBit \cdot \isBlsGOneAddData_{i} \\
+              + & \malformedDataBit \cdot \isBlsGOneMsmData_{i} \cdot \isFirstInput \\
+            \end{array} \right] \vspace{2mm}  
         \]
 \end{enumerate}
 \noindent
@@ -11,8 +15,12 @@ We impose the following constraints on \cTwoMembershipTestRequired{}:
 \begin{enumerate}
     \item \cTwoMembershipTestRequired{} is \textbf{counter-constant, binary} \quad (\trash)
     \item 
-    \[
-        \cTwoMembershipTestRequired_{i} = \malformedDataBit \cdot (\isBlsGTwoAddData_{i} + \isBlsGTwoMsmData_{i} \cdot \isFirstInput)
+    \[  
+        \cTwoMembershipTestRequired_{i} = 
+        \left[ \begin{array}{clcr}
+          + & \malformedDataBit \cdot \isBlsGTwoAddData_{i} \\
+          + & \malformedDataBit \cdot \isBlsGTwoMsmData_{i} \cdot \isFirstInput \\
+        \end{array} \right] \vspace{2mm}  
     \]
 \end{enumerate}
 \noindent
@@ -20,36 +28,33 @@ We impose the following constraints on \gOneMembershipTestRequired{}:
 \begin{enumerate}
     \item \gOneMembershipTestRequired{} is \textbf{counter-constant, binary} \quad (\trash)
     \item 
-        % \[
-        %     \gOneMembershipTestRequired_{i} = 
-        %     \left\{ \begin{array}{lcl}
-        %         \left[ \begin{array}{cl}
-        %             \isFirstInput \cdot ( 
-        %             + & \isBlsGOneMsmData_{i} \cdot \malformedDataBit_{i}  \\
-        %             + & \isBlsPairingCheckData_{i} \cdot \malformedDataBit_{i} \\
-        %             + & \isBlsPairingCheckData_{i} \cdot \locWellformedData_{i} \cdot \pairOfPointsContainsInfinity_{i} \cdot (1 - \isInfinity_{i})) \\
-        %         \end{array} \right]
-        %     \end{array} \right.
-        % \]
-
-        % TODO:
-        % MSM case
-        % G1MTR = IS_BLS_G_ONE_MSM_DATA and IS_FIRST_INPUT and MALFORMED_DATA_BIT
-        % PAIRING failure case
-        % G1MTR = IS_BLS_PAIRING_CHECK_DATA and IS_FIRST_INPUT and MALFORMED_DATA_BIT
-        % PAIRING success case
-        % G1MTR = IS_BLS_PAIRING_CHECK_DATA and IS_FIRST_INPUT and wellformed_data and PAIR_OF_POINTS_CONTAINS_INFINITY and (1 - IS_INFINITY)
+        \[
+            \gOneMembershipTestRequired_{i} = 
+                \left[ \begin{array}{cl} 
+                    + & \isBlsGOneMsmData_{i} \cdot \isFirstInput \cdot \malformedDataBit_{i}  \\
+                    + & \isBlsPairingCheckData_{i} \cdot \isFirstInput \cdot \malformedDataBit_{i} \\
+                    + & \isBlsPairingCheckData_{i} \cdot \isFirstInput \cdot \locWellformedData_{i} \cdot \\
+                      & \pairOfPointsContainsInfinity_{i} \cdot (1 - \isInfinity_{i}) \\
+                \end{array} \right] \\
+        \]
 \end{enumerate}
 \noindent
 We impose the following constraints on \gTwoMembershipTestRequired{}:
 \begin{enumerate}
     \item \gTwoMembershipTestRequired{} is \textbf{counter-constant, binary} \quad (\trash)
-    \item \If $\gTwoMembershipTestRequired_{i} = 1$ \Then
-        % TODO: same as above except pairing needs the second input
+    \item 
+        \[
+            \gTwoMembershipTestRequired_{i} = 
+                \left[ \begin{array}{cl} 
+                    + & \isBlsGTwoMsmData_{i} \cdot \isFirstInput \cdot \malformedDataBit_{i}  \\
+                    + & \isBlsPairingCheckData_{i} \cdot \isSecondInput \cdot \malformedDataBit_{i} \\
+                    + & \isBlsPairingCheckData_{i} \cdot \isSecondInput \cdot \locWellformedData_{i} \cdot \\
+                    & \pairOfPointsContainsInfinity_{i} \cdot (1 - \isInfinity_{i}) \\
+                \end{array} \right] \\
+        \]
 \end{enumerate}
 
-% TODO: double check
-
+% TODO: adapt
 % \saNote{} The purpose of \membershipTestRequired{} is twofold:
 % (\emph{a}) in case the present module predicts that some point in the data of a call to the \inst{ECPAIRING} precompile is not on $G_2$ the \membershipTestRequired{} flag selects that point, see section~(\ref{prc: ec data: successful pairing: setting G2 non membership})
 % (\emph{b}) in case the present module predicts that all points in the data of the same call are on $G_2$ the \membershipTestRequired{} flag selects for every pair of points $(P,Q)$ those $Q$ whose accompanying $P$ is the point at infinity, see section~(\ref{prc: ec data: successful pairing: setting membershipTestRequired}).

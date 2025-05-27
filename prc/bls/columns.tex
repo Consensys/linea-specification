@@ -57,9 +57,10 @@ We further define:
   
   %\item \both{\internalChecksPassed}:
   %      binary column, constant for a given \blsId, which lights up when all the internal checks passed.
+
   \both{\malformedDataInternalJustification}:
         binary column, constant for a given \blsId, which lights up when the data is malformed and it can be justified internally;
-  %
+
 
   \item \both{\partialChecks}:
         binary columns containing partial computations of \malformedDataInternalJustification{}.
@@ -88,29 +89,20 @@ In the case of \inst{PAIRING\_CHECK}, we refer to data supposedly containing a $
             constant along the 8 or 16 rows occupied by a (supposed) curve point;
             lights up precisely when all coordinates of said point vanish;
 
-      %\item \trivialAllInf: binary column; the last data row of each pairing indicates if we are in this trivial case, in the sense that all small points are points at infinity and all large points are points at infinity;
-      %\item \trivialWithMembershipCheck: binary column; the last data row of each pairing indicates if we are in this trivial case, in the sense for every pair of points, at least one of the two points is a point at infinity and there is at least one where only one of the two points is a point at infinity;
       \item \trivialAcc: binary column; binary column; the last data row of each pairing indicates if we are in a trivial case, in the sense that all small points are points at infinity and all large points are points at infinity;
       \item \both{\wellformedDataTrivial}: binary column, constant for a given \blsId, which lights up when the data is well formed and it is in the trivial case based on the value of the last data row of the corresponding pairing;
       \item \both{\wellformedDataNonTrivial}: binary column, constant for  given \blsId, which lights up when the data is well formed and it is not in the trivial case based on the value of the last data row of the corresponding pairing;
       \item \both{\pairOfPointsContainsInfinity}: binary column, constant for a pair of points, which lights up when at least one of the two points is a point at infinity;
-      %
+      
 
       %In the following 6 columns, in case \isFirstInput{} equals $1$, $C_x$ and $G_x$ need to be intended as $C_1$ and $G_1$ respectively; in case \isSecondInput{} equals $1$, $C_x$ and $G_x$ need to be intended as $C_2$ and $G_2$ respectively:
 
-      %\item \notOnCX{} \blsPrediction{}: binary column, which lights up on the 8 lines of a point that is not on $C_x$ (the first point, in the context of pairings). If 2 (or more) points are not on $C_x$, it only lights up for the first one. An external circuit may then justify that this point is indeed not on $C_x$;     
-      %\item \notOnCXAcc: binary column which lights up when $\notOnCX$ equals $1$;  
-      %\item \notOnCXAccMax: binary column which lights up if there is a point that is not on $C_x$ (equals to the final value of \notOnCXAcc);
-
-      %\item \notOnGX{ }\blsPrediction{}: binary column, which lights up on the 16 lines of a point that is not on $G_x$ (the first point, in the context of pairings). If 2 (or more) points are not on $G_x$, it only lights up for the first one. An external circuit may then justify that this point is indeed not on $G_x$;
-      %\item \notOnGXAcc: binary column which lights up when $\notOnGX$ equals $1$;
-      %\item \notOnGXAccMax: binary column which lights up if there is a point that is not on $G_x$ (equals to the final value of \notOnGXAcc);
       \item \both{\malformedDataBit} \blsPrediction{}: binary columns, constant for a given point, which lights up when that point does not belong to the expected field; % counter-constant           
       \item \both{\malformedDataAcc}: binary columns which lights up when \malformedDataBit{} equals $1$;              
       \item \both{\malformedDataExternalJustification}: binary column, constant for a given \blsId, which lights up when the data is malformed and it needs to be justified extenrally;
       %
       
-      % TODO: double check if this description is accurate
+      % TODO: double check if these descriptions are accurate
       \item \both{\cOneMembershipTestRequired}:
             constant along the 8 rows containing a supposed $C_1$ point and zero along $C_2$ points. It lights up when the small point is predicted to be not in $C_1$ or when the large point is the point at infinity; 
       \item \both{\gOneMembershipTestRequired}:
@@ -119,7 +111,6 @@ In the case of \inst{PAIRING\_CHECK}, we refer to data supposedly containing a $
             constant along the 8 rows containing a supposed $C_2$ point and zero along $C_1$ points. It lights up when the large point is predicted to be not in $C_2$ or when the small point is the point at infinity;
       \item \both{\gTwoMembershipTestRequired}:
             constant along the 16 rows containing a supposed $G_2$ point and zero along $C_1$ points. It lights up when the large point is predicted to be not in $G_2$ or when the small point is the point at infinity;
-      \item \both{\acceptablePairOfPoints}: constant along the 24 rows of a pair of points. It lights up when the small point and the large points are predicted to be in $C_1,G_1$ and $C_2,G_2$ respectively and neither of the points is the point at infinity;
 \end{enumerate}
      
 The following columns defines the external circuits interface:
