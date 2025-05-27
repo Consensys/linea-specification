@@ -1,11 +1,11 @@
 
 ## TODO
 
-- Double check definitions of C/G 1,2 MTR columns and update corresponding section
 - global icf, icp definitions
 - double check constancies
-- check if we still need ACCPC
+- check if we still need ACCPC or PAIR_OF_POINTS_CONTAINS_INFINITY is enough
 - Fix interface
+- Double check definitions of C/G 1,2 MTR columns and update corresponding section
 
 ## Pairing logic
 

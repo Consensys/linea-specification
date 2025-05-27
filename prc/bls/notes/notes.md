@@ -382,3 +382,7 @@ non_trivial may be a shorthand that is true when both triviliaty cases are false
 - non_trivial = (1 - TRIVIAL_ALL_INFTY) * (1 - TRIVIAL_WITH_MEMBERSHIP_CHECK)
 
 In order to determine in which case we are, we need to look at the last row of BLS_PAIRING_CHECK data.
+
+## Update
+
+Note NOT_ON_... columns have been replaced by MALFORMED_DATA_EXTERNAL_JUSTIFICATION.
