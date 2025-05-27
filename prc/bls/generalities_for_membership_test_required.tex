@@ -1,58 +1,51 @@
 We impose the following constraints on \cOneMembershipTestRequired{}:
 \begin{enumerate}
     \item \cOneMembershipTestRequired{} is \textbf{counter-constant, binary} \quad (\trash)
-    \item \If $\cOneMembershipTestRequired_{i} = 1$ \Then
+    \item % TODO: improve formatting
         \[
-            \left\{ \begin{array}{lcl}
-                \malformedDataInternalJustification _{i} & = & 0 \\
-                \malformedDataExternalJustification_{i}  & = & 1 \\
-                \isBlsGOneAddData_{i} + \isBlsGOneMsmData_{i} \cdot \isFirstInput & = & 1 \\
-            \end{array} \right.
+            \cOneMembershipTestRequired_{i} = \malformedDataBit \cdot (\isBlsGOneAddData_{i} + \isBlsGOneMsmData_{i} \cdot \isFirstInput)
         \]
 \end{enumerate}
 \noindent
 We impose the following constraints on \cTwoMembershipTestRequired{}:
 \begin{enumerate}
     \item \cTwoMembershipTestRequired{} is \textbf{counter-constant, binary} \quad (\trash)
-    \item \If $\cTwoMembershipTestRequired_{i} = 1$ \Then
-        \[
-            \left\{ \begin{array}{lcl}
-                \malformedDataInternalJustification _{i} & = & 0 \\
-                \malformedDataExternalJustification _{i} & = & 1 \\
-                \isBlsGTwoAddData_{i} + \isBlsGTwoMsmData_{i} \cdot \isFirstInput & = & 1 \\
-            \end{array} \right.
-        \]
+    \item 
+    \[
+        \cTwoMembershipTestRequired_{i} = \malformedDataBit \cdot (\isBlsGTwoAddData_{i} + \isBlsGTwoMsmData_{i} \cdot \isFirstInput)
+    \]
 \end{enumerate}
 \noindent
 We impose the following constraints on \gOneMembershipTestRequired{}:
 \begin{enumerate}
     \item \gOneMembershipTestRequired{} is \textbf{counter-constant, binary} \quad (\trash)
-    \item \If $\gOneMembershipTestRequired_{i} = 1$ \Then
-        \[
-            \left\{ \begin{array}{lcl}
-                \malformedDataInternalJustification _{i} & = & 0 \\
-                \isFirstInput & = & 1 \\
-                \left[ \begin{array}{cl}
-                    + & \isBlsGOneMsmData_{i} \cdot \malformedDataExternalJustification_{i}  \\
-                    + & \isBlsPairingCheckData_{i} \cdot \wellformedDataNonTrivial_{i} \\
-                \end{array} \right] & = & 1 \\
-            \end{array} \right.
-        \]
+    \item 
+        % \[
+        %     \gOneMembershipTestRequired_{i} = 
+        %     \left\{ \begin{array}{lcl}
+        %         \left[ \begin{array}{cl}
+        %             \isFirstInput \cdot ( 
+        %             + & \isBlsGOneMsmData_{i} \cdot \malformedDataBit_{i}  \\
+        %             + & \isBlsPairingCheckData_{i} \cdot \malformedDataBit_{i} \\
+        %             + & \isBlsPairingCheckData_{i} \cdot \locWellformedData_{i} \cdot \pairOfPointsContainsInfinity_{i} \cdot (1 - \isInfinity_{i})) \\
+        %         \end{array} \right]
+        %     \end{array} \right.
+        % \]
+
+        % TODO:
+        % MSM case
+        % G1MTR = IS_BLS_G_ONE_MSM_DATA and IS_FIRST_INPUT and MALFORMED_DATA_BIT
+        % PAIRING failure case
+        % G1MTR = IS_BLS_PAIRING_CHECK_DATA and IS_FIRST_INPUT and MALFORMED_DATA_BIT
+        % PAIRING success case
+        % G1MTR = IS_BLS_PAIRING_CHECK_DATA and IS_FIRST_INPUT and wellformed_data and PAIR_OF_POINTS_CONTAINS_INFINITY and (1 - IS_INFINITY)
 \end{enumerate}
 \noindent
 We impose the following constraints on \gTwoMembershipTestRequired{}:
 \begin{enumerate}
     \item \gTwoMembershipTestRequired{} is \textbf{counter-constant, binary} \quad (\trash)
     \item \If $\gTwoMembershipTestRequired_{i} = 1$ \Then
-        \[
-            \left\{ \begin{array}{lcl}
-                \malformedDataInternalJustification _{i} & = & 0 \\
-                \left[ \begin{array}{cl}
-                    + & \isBlsGTwoMsmData_{i} \cdot \malformedDataExternalJustification_{i} \cdot \isFirstInput_{i}  \\
-                    + & \isBlsPairingCheckData_{i} \cdot \wellformedDataNonTrivial_{i} \cdot \isSecondInput \\
-                \end{array} \right] & = & 1 \\
-            \end{array} \right.
-        \]
+        % TODO: same as above except pairing needs the second input
 \end{enumerate}
 
 % TODO: double check

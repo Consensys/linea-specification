@@ -1,15 +1,15 @@
 The present section imposes the behaviour of the various circuit selectors.
 \begin{description}
     \item[Circuit selector for the \inst{PointEvaluation} circuit:]
-        $\csPointEvaluation_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsPointEvaluation_{i}$
+        $\csPointEvaluation_{i} = \locIsPointEvaluation_{i} \cdot \wellformedDataNonTrivial_{i}$
     \item[Circuit selector for the \inst{G1ADD} circuit:]
-        $\csGOneAdd_{i} = (1 - \locMalformedData_{i}) \cdot \locIsBlsGOneAdd_{i}$ % TODO: the trivial cases make sense only for pairings, so wellformedData does not work here
+        $\csGOneAdd_{i} = \locIsBlsGOneAdd_{i} \cdot \wellformedDataNonTrivial_{i}$
     \item[Circuit selector for the \inst{G1MSM} circuit:]
-        $\csGOneMsm_{i} = (1 - \locMalformedData_{i}) \cdot \locIsBlsGOneMsm_{i}$
+        $\csGOneMsm_{i} = \locIsBlsGOneMsm_{i} \cdot \wellformedDataNonTrivial_{i}$
     \item[Circuit selector for the \inst{G2ADD} circuit:]
-        $\csGTwoAdd_{i} = (1 - \locMalformedData_{i}) \cdot \locIsBlsGTwoAdd_{i}$
+        $\csGTwoAdd_{i} = \locIsBlsGTwoAdd_{i} \cdot \wellformedDataNonTrivial_{i}$
     \item[Circuit selector for the \inst{G2MSM} circuit:]
-        $\csGTwoMsm_{i} = (1 - \locMalformedData_{i}) \cdot \locIsBlsGTwoMsm_{i}$
+        $\csGTwoMsm_{i} = \locIsBlsGTwoMsm_{i} \cdot \wellformedDataNonTrivial_{i}$
     \item[Circuit selector for the \inst{PAIRING\_CHECK} circuit:]
     we introduce the following shorthands:
     \[
@@ -62,16 +62,11 @@ The present section imposes the behaviour of the various circuit selectors.
 
     we impose the following constraints:
         \begin {enumerate}
-            \item \If $\isBlsPairingCheckData_{i} = 1$ \Then  
+            \item 
                 \[
                     \begin{array}{lcl}
-                        \csPairing_{i} & = & \wellformedDataNonTrivial_{i} \cdot (1 - \pairOfPointsContainsInfinity_{i}) \\
-                    \end{array}
-                \]
-            \item \If $\isBlsPairingCheckResult_{i} = 1$ \Then
-                \[
-                    \begin{array}{lcl}
-                        \csPairing_{i} & = & \wellformedDataNonTrivial_{i} \cdot \blsSuccessBit_{i} \\
+                        \csPairing_{i} & = & \isBlsPairingCheckData_{i} \cdot \wellformedDataNonTrivial_{i} \cdot (1 - \pairOfPointsContainsInfinity_{i})  \\
+                        & & + \isBlsPairingCheckResult_{i} \cdot \wellformedDataNonTrivial_{i} \\
                     \end{array}
                 \]
             \item \If $\locIsBlsPairingCheck_{i} = 0$ \Then
@@ -129,9 +124,9 @@ The present section imposes the behaviour of the various circuit selectors.
             \end{array} \right] \vspace{2mm}                             \\
         \]
     \item[Circuit selector for the \inst{MAP\_FP\_TO\_G1} circuit:]
-        $\csMapFpToGOne_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsMapFpToGOne_{i}$
+        $\csMapFpToGOne_{i} = \locIsBlsMapFpToGOne_{i} \cdot \wellformedDataNonTrivial_{i}$
     \item[Circuit selector for the \inst{MAP\_FP2\_TO\_G2} circuit:]
-        $\csMapFpTwoToGTwo_{i} = (1 - \malformedDataInternalJustification_{i}) \cdot \locIsBlsMapFpTwoToGTwo_{i}$
+        $\csMapFpTwoToGTwo_{i} = \locIsBlsMapFpTwoToGTwo_{i} \cdot \wellformedDataNonTrivial_{i}$
 \end{description}    
 
 Note that, at most one of the circuit selectors may light up for a given row:

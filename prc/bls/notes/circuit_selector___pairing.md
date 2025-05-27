@@ -63,7 +63,12 @@ They are
 - binary
 - ID or INDEX-constant (tbd) (probably ID-constant)
 - we ask that
-    MALFORMED_DATA_INTERNAL_JUSTIFICATION + MALFORMED_DATA_EXTERNAL_JUSTIFICATION + WELLFORMED_DATA_TRIVIAL + WELLFORMED_DATA_NONTRIVIAL = 1
+    MALFORMED_DATA_INTERNAL_JUSTIFICATION + MALFORMED_DATA_EXTERNAL_JUSTIFICATION + WELLFORMED_DATA_TRIVIAL + WELLFORMED_DATA_NONTRIVIAL = flag_sum
+
+TODO: 
+- WELLFORMED_DATA_NONTRIVIAL, in the case of precompieles other than pairings, menas data are wellformed and the TRIVIAL case must be 0 as it is not relevant.
+- POINTEVALUATION can be malformed and justified internally completely;
+- All the others can be malformed both internally and externally;
 
 Concerning MALFORMED_DATA_EXTERNAL_JUSTIFICATION:
 - MALFORMED_DATA     binary counter-constant
@@ -142,6 +147,8 @@ notOnGX
 notOnGXAcc
 notOnGXAccMax
 
+- This can probably die: acceptablePairOfPoints
+
 ## Macros added
 
 malformedDataInternalJustification
@@ -152,4 +159,33 @@ pairOfPointsContainsInfinity
 malformedDataBit
 malformedDataAcc
 malformedDataExternalJustification
+
+Consider keeping ICP and adding:
+
+ICP + MALFORMED_DATA_INTERNAL_JUSTIFICATION = 1
+
+or 
+
+icp_i = 1 - MALFORMED_DATA_INTERNAL_JUSTIFICATION_i
+
+
+## TODO
+
+- Add section for generalities about MALFORMED_DATA_INT/EXT and WELLFORMED_DATA_TRIVIAL/NONTRIVIAL
+    - case_sum = flag_sum
+    - SUCCESS_BIT = WELLFORMED_DATA_TRIVIAL + WELLFORMED_DATA_NONTRIVIAL 
+    - binary, ID-constant
+    - TRIVIAL case is relevant only for pairings
+    - MALFORMED_DATA_EXT must be 0 for POINTEVALUATION and the maps, too
+- Create a single section that defines all circuit selectors
+- The section about CX, GX non membership and succeseful pairing die
+- ACCPC is not necessary anymore indeed, PAIR_OF_POINTS_CONTAINS_INFINITY is enough
+
+- Refine behaviour of MALFORMED_DATA_EXTERNAL_JUSTIFICATION in the case of ADD and MSM. Treat it uniformly.
+
+- PARTIAL_CHECKS could be renamed to PARTIAL_INTERNAL_CHECKS (INTERNAL is the focus)
+- Only if the internal checks succeed, we start caring about external checks.
+- MALFORMED_DATA_(EXTERNAL_)BIT, MALFORMED_DATA_(EXTERNAL_)ACC  
+
+- Find out if the specification for C/G 1,2 MTR columns fully defines also the corresponding selectors that are relevant for ADD, MSM and PAIRING
 

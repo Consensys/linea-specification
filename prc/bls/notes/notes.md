@@ -352,7 +352,12 @@ so as to prove non-membership. Note that in the first case we prove C2 non-membe
 - G2_ADD circuit includes C2 membership check.
 - G2_MSM circuit includes C2 and G2 membership check.
 - PAIRING circuit accepts only non-trivial pair of points.
-- Points at infinity be detected on the arithmetization side and never be sent to a circuit.
+- Points at infinity must be detected on the arithmetization side and never be sent to the pairing circut, but they can be sent to any other.
+
+- GX_MEMBERSHIP_TEST = 1 means the point belongs to both GX and CX.
+- GX_MEMBERSHIP_TEST = 0 means the point does not belong to GX. Does it imply also that it does not belong to CX?
+- CX_MEMBERSHIP_TEST = 1 means the point belongs to CX.
+- CX_MEMBERSHIP_TEST = 0 means the point does not belong to CX.
 
 ## Details about TRIVIAL_ALL_INFTY, TRIVIAL_WITH_MEMBERSHIP_CHECK and non_trivial 
 
