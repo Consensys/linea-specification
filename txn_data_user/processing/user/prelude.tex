@@ -1,0 +1,41 @@
+\begin{center}
+	\boxed{\text{The constraints below assume that } \userTransactionStandingHypothesis }
+\end{center}
+We impose preliminary constraints that apply to the processing of any type of user transaction.
+\begin{description}
+	\item[\underline{Setting the first few perspectives:}]
+		we impose that
+		\[
+			\left[ \begin{array}{cr}
+				+ & \isUserTxnHubView     _{i + \hubViewRowOffset } \\
+				+ & \isUserTxnRlpView     _{i + \rlpViewRowOffset } \\
+				+ & \isUserTxnComputation _{i + \nonceRowOffset   } \\
+			\end{array} \right]
+			=
+			\yellowm{3}
+		\]
+	\item[\underline{Setting \maxCt{}:}]
+		we impose the following
+		\[
+			\maxCt _{i} = \locMaxCtUserSum _{i}
+		\]
+		where
+		\[
+			\locMaxCtUserSum _{i}
+			\define
+			\left[ \begin{array}{clcl}
+				+ & \maxCtForTypeZero  & \!\!\!\cdot\!\!\! & \txnDataRlpIsLegacyTransaction            _{i + \rlpViewRowOffset} \\
+				+ & \maxCtForTypeOne   & \!\!\!\cdot\!\!\! & \txnDataRlpIsAccessSetTransaction         _{i + \rlpViewRowOffset} \\
+				+ & \maxCtForTypeTwo   & \!\!\!\cdot\!\!\! & \txnDataRlpIsTypeTwoTransaction           _{i + \rlpViewRowOffset} \\
+				+ & \maxCtForTypeThree & \!\!\!\cdot\!\!\! & \txnDataRlpIsBlobTransaction              _{i + \rlpViewRowOffset} \\
+				+ & \maxCtForTypeFour  & \!\!\!\cdot\!\!\! & \txnDataRlpIsAccountDelegationTransaction _{i + \rlpViewRowOffset} \\
+			\end{array} \right]
+		\]
+\end{description}
+
+\saNote{}
+We could alternatively use the (equivalent) alternative ``standard hypothesis'' marking the start of a user transaction
+\[
+	``\userTransactionNumber _{i} \neq \userTransactionNumber _{i - 1}"
+\]
+and thereby reduce the degree of all following constraints by $1$.

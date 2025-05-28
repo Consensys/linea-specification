@@ -36,7 +36,7 @@
 % }
 \newcommand{\col} [1]{\texttt{#1}}
 \newcommand{\colm}[1]{\mathtt{#1}}
-\newcommand{\loc} [1]{{\color{ForestGreen}\texttt{#1}}}
+\newcommand{\loc} [1]{{\color{Green}\texttt{#1}}}
 \newcommand{\locm}[1]{\mathtt{#1}}
 \newcommand{\stampSignifier}{\stamp}%{\blacksquare}
 %\newcommand{\stampCol}[1]{\prescript{\stampSignifier}{}{#1}}
@@ -191,13 +191,14 @@
 \newcommand{\deprecated}                            {\colorbox{solarized-green}     {\textbf{~~Deprecated~~}}}
 \newcommand{\markAsExtractedFromBtc}                {\colorbox{solarized-red}       {\textbf{~~Extracted from \btcMod{}~~}}}
 \newcommand{\markAsExtractedFromRlpTxn}             {\colorbox{solarized-blue}      {\textbf{~~Extracted from \rlpTxnMod{}~~}}}
-\newcommand{\markAsSometimesExtractedFromRlpTxn}    {\colorbox{solarized-blue}      {\textbf{~~Sometimes extracted from \rlpTxnMod{}~~}}}
+\newcommand{\markAsDerivedFromRlpTxn}               {\colorbox{solarized-green}     {\textbf{~~Derived from \rlpTxnMod{}~~}}}
+\newcommand{\markAsExtractedFromRlpAddr}            {\colorbox{solarized-blue}      {\textbf{~~Extracted from \rlpAddrMod{}~~}}}
 \newcommand{\markAsExtractedFromHub}                {\colorbox{solarized-orange}    {\textbf{~~Extracted from \hubMod{}~~}}}
 \newcommand{\markAsPartiallyComputedHere}           {\colorbox{solarized-yellow}    {\textbf{~~Partially computed here~~}}}
 \newcommand{\markAsComputedHere}                    {\colorbox{solarized-yellow}    {\textbf{~~Computed here~~}}}
 \newcommand{\markAsPartiallyJustifiedHere}          {\colorbox{solarized-yellow}    {\textbf{~~Partially justified here~~}}}
 \newcommand{\markAsJustifiedHere}                   {\colorbox{solarized-yellow}    {\textbf{~~Justified here~~}}}
-\newcommand{\markAsExtractedFromEcrecover}          {\colorbox{solarized-yellow}    {\textbf{~~Extracted from ECRECOVER~~}}}
+\newcommand{\markAsExtractedFromEcrecover}          {\colorbox{solarized-yellow}    {\textbf{~~Extracted from \texttt{ECRECOVER}~~}}}
 
 
 % \newcommand{\define}        {\triangleq}
@@ -298,3 +299,14 @@
 % TODO: move to file for global macros
 \newcommand{\both}[1]                   {#1[] \textcolor{magenta}{$\equiv$} #1}
 \newcommand{\newcol}[3]                 {\newcommand{#1}[1][\empty]{\ifx\empty##1\col{#2}\else\col{#3}\fi}}
+
+\usepackage{graphicx}
+
+\makeatletter
+\providecommand{\leftsquigarrow}{%
+  \mathrel{\mathpalette\reflect@squig\relax}%
+}
+\newcommand{\reflect@squig}[2]{%
+  \reflectbox{$\m@th#1\rightsquigarrow$}%
+}
+\makeatother
