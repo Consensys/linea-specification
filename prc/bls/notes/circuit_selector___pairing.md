@@ -171,15 +171,6 @@ icp_i = 1 - MALFORMED_DATA_INTERNAL_JUSTIFICATION_i
 
 ## TODO
 
-- Add section for generalities about MALFORMED_DATA_INT/EXT and WELLFORMED_DATA_TRIVIAL/NONTRIVIAL
-    - case_sum = flag_sum
-    - SUCCESS_BIT = WELLFORMED_DATA_TRIVIAL + WELLFORMED_DATA_NONTRIVIAL 
-    - binary, ID-constant
-    - TRIVIAL case is relevant only for pairings
-    - MALFORMED_DATA_EXT must be 0 for POINTEVALUATION and the maps, too
-
-;; - Create a single section that defines all circuit selectors
-
 - Refine behaviour of MALFORMED_DATA_EXTERNAL_JUSTIFICATION in the case of ADD and MSM. Treat it uniformly.
 
 - Only if the internal checks succeed, we start caring about external checks and so on.
