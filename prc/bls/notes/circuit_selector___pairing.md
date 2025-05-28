@@ -156,8 +156,8 @@ trivialAcc
 wellformedDataTrivial
 wellformedDataNonTrivial
 pairOfPointsContainsInfinity
-malformedDataBit
-malformedDataAcc
+malformedDataExternalBit
+malformedDataExternalAcc
 malformedDataExternalJustification
 
 Consider keeping ICP and adding:
