@@ -5,16 +5,16 @@ As such we impose the following constraints:
     \item \If $\malformedDataInternalTot _{i} = 1$ \Then
         \[
             \left\{ \begin{array}{lclr}
-                \malformedDataExternalBit           _{i} & = & 0 \\
-                \malformedDataExternalAcc           _{i} & = & 0 & (\sanityCheck) \\
+                \malformedDataExternalBit _{i} & = & 0 \\
+                \malformedDataExternalAcc _{i} & = & 0 & (\sanityCheck) \\
                 \malformedDataExternalTot _{i} & = & 0 & (\sanityCheck) \\
             \end{array} \right.
         \]
     \item \If $\locIsData _{i} = 0$ \Then
         \[
             \left\{ \begin{array}{lclr}
-                \malformedDataExternalBit           _{i} & = & 0 \\
-                \malformedDataExternalAcc           _{i} & = & 0 \\
+                \malformedDataExternalBit _{i} & = & 0 \\
+                \malformedDataExternalAcc _{i} & = & 0 \\
             \end{array} \right.
         \]
 \end{enumerate}
@@ -22,8 +22,22 @@ Furthermore, echoing
 section~(\ref{bls: generalities for malformed and wellformed}),
 not all precompiles require $\malformedDataExternalBit$:
 \begin{enumerate}[resume]
-    \item \If $\locIsBlsMapFpToGOne    _{i} = 1$ \Then $\malformedDataExternalBit _{i} = 0$
-    \item \If $\locIsBlsMapFpTwoToGTwo _{i} = 1$ \Then $\malformedDataExternalBit _{i} = 0$
+    \item \If $\locIsBlsMapFpToGOne    _{i} = 1$ \Then
+        \[
+            \left\{ \begin{array}{lclr}
+                \malformedDataExternalBit _{i} & = & 0 \\
+                \malformedDataExternalAcc _{i} & = & 0 & (\sanityCheck) \\
+                \malformedDataExternalTot _{i} & = & 0 & (\sanityCheck) \\
+            \end{array} \right.
+        \]
+    \item \If $\locIsBlsMapFpTwoToGTwo _{i} = 1$ \Then
+        \[
+            \left\{ \begin{array}{lclr}
+                \malformedDataExternalBit _{i} & = & 0 \\
+                \malformedDataExternalAcc _{i} & = & 0 & (\sanityCheck) \\
+                \malformedDataExternalTot _{i} & = & 0 & (\sanityCheck) \\
+            \end{array} \right.
+        \]
 \end{enumerate}
 The following are general constraints for both the ``\col{BIT}'' and ``\col{ACC}'' column:
 \begin{enumerate}[resume]
@@ -49,7 +63,12 @@ We now specify the associated accumulator column:
                 + & \malformedDataExternalBit _{i + 1} \\
             \end{array} \right]
         \]
-        \saNote{} The above has the following implicit consequence: \textbf{at most one} point pertaining to a particular \blsId{} may be be tagged as ``\malformedDataExternalBit.''
+        \saNote{}
+        The above has the following implicit consequence: \textbf{at most one} point pertaining to a particular \blsId{} may be be tagged as ``\malformedDataExternalBit.''
+
+        \saNote{}
+        There is no issue with ``undefined $\malformedDataExternalAcc$'' in case of $\locTransitionToData \equiv 1$
+        as in that case on has $\malformedDataExternalAcc \equiv 0$.
 \end{enumerate}
 We finish this section by constraining the \malformedDataExternalTot{} column:
 \begin{enumerate}[resume]
