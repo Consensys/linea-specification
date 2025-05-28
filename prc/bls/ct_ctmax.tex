@@ -1,0 +1,86 @@
+The present section provides constraints for \maxCt{} and \ct{}.
+The constraints for these columns are tightly intertwined.
+We start by defining the following module constants
+\[
+    \left\{ \begin{array}{lcr}
+        \ctMaxPointEvaluation & \define & \redm{12} - 1 \\
+        \ctMaxSmallPoint      & \define & \redm{8}  - 1 \\
+        \ctMaxLargePoint      & \define & \redm{16} - 1 \\
+        \ctMaxScalar          & \define & \redm{2}  - 1 \\
+        \ctMaxFpToGOne        & \define & \redm{4}  - 1 \\
+        \ctMaxFpTwoToGTwo     & \define & \redm{8}  - 1 \\
+    \end{array} \right.
+\]
+and introduce the following shorthands 
+\[
+    \left\{ \begin{array}{lcl}
+        \locIsVariableSizeData _{i} & \define &  
+        \left[ \begin{array}{cl}
+            + & \isBlsGOneMsmData      _{i} \\
+            + & \isBlsGTwoMsmData      _{i} \\
+            + & \isBlsPairingCheckData _{i} \\
+        \end{array} \right]
+        \vspace{2mm}
+        \\
+        \locPrecompileWithTwoInputTypes _{i} & \define &
+        \left[ \begin{array}{cl}
+            + & \isBlsGOneAddData      _{i} \\
+            + & \isBlsGOneMsmData      _{i} \\
+            + & \isBlsGTwoAddData      _{i} \\
+            + & \isBlsGTwoMsmData      _{i} \\
+            + & \isBlsPairingCheckData _{i} \\
+        \end{array} \right]
+        \vspace{2mm}
+        \\
+        \locPrecompileWithOneInputTypes _{i} & \define &
+        \left[ \begin{array}{cl}
+            + & \isPointEvaluationData   _{i} \\
+            + & \isBlsMapFpToGOneData    _{i} \\
+            + & \isBlsMapFpTwoToGTwoData _{i} \\
+        \end{array} \right]
+        \\
+    \end{array} \right.
+\]
+so as to define 
+\[
+    \left\{ \begin{array}{lcl}
+        \locCtMaxFirstInput_{i} & \define &  
+        \left[ \begin{array}{crcl}
+            + & \ctMaxPointEvaluation & \cdot & \isPointEvaluationData   _{i} \\
+            + & \ctMaxSmallPoint      & \cdot & \isBlsGOneAddData        _{i} \\
+            + & \ctMaxSmallPoint      & \cdot & \isBlsGOneMsmData        _{i} \\
+            + & \ctMaxLargePoint      & \cdot & \isBlsGTwoAddData        _{i} \\
+            + & \ctMaxLargePoint      & \cdot & \isBlsGTwoMsmData        _{i} \\
+            + & \ctMaxSmallPoint      & \cdot & \isBlsPairingCheckData   _{i} \\
+            + & \ctMaxFpToGOne        & \cdot & \isBlsMapFpToGOneData    _{i} \\
+            + & \ctMaxFpTwoToGTwo     & \cdot & \isBlsMapFpTwoToGTwoData _{i} \\
+        \end{array} \right] \vspace{2mm} \\
+        \locCtMaxSecondInput _{i} & \define &  
+        \left[ \begin{array}{crcl}
+            + & \ctMaxSmallPoint & \cdot & \isBlsGOneAddData      _{i} \\
+            + & \ctMaxScalar     & \cdot & \isBlsGOneMsmData      _{i} \\
+            + & \ctMaxLargePoint & \cdot & \isBlsGTwoAddData      _{i} \\
+            + & \ctMaxScalar     & \cdot & \isBlsGTwoMsmData      _{i} \\
+            + & \ctMaxLargePoint & \cdot & \isBlsPairingCheckData _{i} \\
+        \end{array} \right] \vspace{2mm} \\
+    \end{array} \right.
+\]
+The constraints linking $\ct$ to $\maxCt$ are standard:
+\begin{enumerate}
+    \item $\maxCt$ is counter-constant \quad (\trash)
+    \item \If $\ct_{i} \neq \maxCt_{i}$ \Then $\ct_{i + 1} = 1 + \ct_{i}$
+    \item \If $\ct_{i} =    \maxCt_{i}$ \Then $\ct_{i + 1} = 0$
+    \item we unconditionally impose that
+        \[
+            \begin{array}{l}
+                \maxCt _{i} =
+                \left[ \begin{array}{clcl}
+                    + & \locCtMaxFirstInput  _{i} & \cdot & \isFirstInput  _{i} \\
+                    + & \locCtMaxSecondInput _{i} & \cdot & \isSecondInput _{i} \\
+                    + & \indexMax            _{i} & \cdot & \locIsResult   _{i} \\
+                \end{array} \right] \\
+            \end{array}
+        \]
+\end{enumerate}
+\saNote{}
+During any result phase $\ct_{i} = \blsIndex_{i}$.

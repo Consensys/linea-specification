@@ -44,36 +44,11 @@ Thus we impose the following constraints:
         + & \isBlsMapFpTwoToGTwoResult _{i} & \cdot & \totalSizeBlsMapFpTwoToGTwoResult & \cdot & \blsSuccessBit _{i} \\
     \end{array} \right]
 \]
-
-\saNote{} The above translates to the following:
-\begin{enumerate}
-    \item \If $\isPointEvaluationData$    \Then $\blsTotalSize = \totalSizePointEvaluationData$
-    \item \If $\isBlsGOneAddData$         \Then $\blsTotalSize = \totalSizeBlsGOneAddData$
-    \item \If $\isBlsGOneMsmData$         \Then $\blsTotalSize = \totalSizeBlsGOneMsmDataMin \cdot \totalInputs$
-    \item \If $\isBlsGTwoAddData$         \Then $\blsTotalSize = \totalSizeBlsGTwoAddData$
-    \item \If $\isBlsGTwoMsmData$         \Then $\blsTotalSize = \totalSizeBlsGTwoMsmDataMin \cdot \totalInputs$
-    \item \If $\isBlsPairingCheckData$    \Then $\blsTotalSize = \totalSizeBlsPairingCheckDataMin \cdot \totalInputs$
-    \item \If $\isBlsMapFpToGOneData$     \Then $\blsTotalSize = \totalSizeBlsMapFpToGOneData$
-    \item \If $\isBlsMapFpTwoToGTwoData$  \Then $\blsTotalSize = \totalSizeBlsMapFpTwoToGTwoData$
-    \item \If $\isPointEvaluationResult$  \Then $\blsTotalSize = \totalSizePointEvaluationResult \cdot \blsSuccessBit$
-    \item \If $\isBlsGOneAddResult$       \Then $\blsTotalSize = \totalSizeBlsGOneAddResult \cdot \blsSuccessBit$
-    \item \If $\isBlsGOneMsmResult$       \Then $\blsTotalSize = \totalSizeBlsGOneMsmResult \cdot \blsSuccessBit$
-    \item \If $\isBlsGTwoAddResult$       \Then $\blsTotalSize = \totalSizeBlsGTwoAddResult \cdot \blsSuccessBit$
-    \item \If $\isBlsGTwoMsmResult$       \Then $\blsTotalSize = \totalSizeBlsGTwoMsmResult \cdot \blsSuccessBit$
-    \item \If $\isBlsPairingCheckResult$  \Then $\blsTotalSize = \totalSizeBlsPairingCheckResult \cdot \blsSuccessBit$
-    \item \If $\isBlsMapFpToGOneResult$   \Then $\blsTotalSize = \totalSizeBlsMapFpToGOneResult \cdot \blsSuccessBit$
-    \item \If $\isBlsMapFpTwoToGTwoResult$ \Then $\blsTotalSize = \totalSizeBlsMapFpTwoToGTwoResult \cdot \blsSuccessBit$
-\end{enumerate}
-
-\saNote{} We use the name $\totalSizeBlsGOneMsmDataMin, \totalSizeBlsGTwoMsmDataMin, \totalSizeBlsPairingCheckDataMin$ for homogeneity reasons, but it is important to note that:
+\saNote{}
+We use the name $\totalSizeBlsGOneMsmDataMin, \totalSizeBlsGTwoMsmDataMin, \totalSizeBlsPairingCheckDataMin$ for homogeneity reasons, but it is important to note that:
 \begin{itemize}
     \item
         the $\blsTotalSize$ of a call to the \inst{G1MSM}, \inst{G2MSM} and \inst{PAIRING\_CHECK} precompiles \textbf{must} be a multiple of $\totalSizeBlsGOneMsmDataMin, \totalSizeBlsGTwoMsmDataMin, \totalSizeBlsPairingCheckDataMin$ respectively;
         this check is done in the \oobMod{} module, see
         section~(\ref{oob: precompiles: common precompiles: bls}); 
-    % TODO: adapt this: \item
-    %     in particular providing the ECPAIRING precompile with empty call data is allowed;
-    %     however, such calls do not trigger the present module, see
-    %     section~(\ref{hub: instruction handling: call: precompiles: common: empty}) and
-    %     section~(\ref{hub: instruction handling: call: precompiles: ecadd, ecmul and ecpairing: success});
 \end{itemize}
