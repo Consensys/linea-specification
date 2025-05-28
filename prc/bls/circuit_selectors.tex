@@ -89,164 +89,34 @@ We impose the following constraints:
 \end{enumerate}
 We now define the behaviour of the various circuit selectors.
 \begin{description}
-    \item[Circuit selector for the \inst{PointEvaluation} circuit:]
-        $\csPointEvaluation _{i} = \locIsPointEvaluation _{i} \cdot \wellformedDataNontrivial _{i}$
-    \item[Circuit selector for the \inst{G1ADD} circuit:]
-        $\csGOneAdd _{i} = \locIsBlsGOneAdd _{i} \cdot \wellformedDataNontrivial _{i}$
-    \item[Circuit selector for the \inst{G1MSM} circuit:]
-        $\csGOneMsm _{i} = \locIsBlsGOneMsm _{i} \cdot \wellformedDataNontrivial _{i}$
-    \item[Circuit selector for the \inst{G2ADD} circuit:]
-        $\csGTwoAdd _{i} = \locIsBlsGTwoAdd _{i} \cdot \wellformedDataNontrivial _{i}$
-    \item[Circuit selector for the \inst{G2MSM} circuit:]
-        $\csGTwoMsm _{i} = \locIsBlsGTwoMsm _{i} \cdot \wellformedDataNontrivial _{i}$
-    \item[Circuit selector for the \inst{PAIRING\_CHECK} circuit:]
-        we introduce the following shorthands:
+    \item[\underline{Circuit selectors:}]
+        we impose
         \[
-            \begin{array}{lcl}
-                \locCsGOneForPairingMalformed _{i} & \define &
-                \left[ \begin{array}{clcr}
-                    \cdot & \locIsBlsPairingCheck _{i}     \\
-                    \cdot & \malformedDataExternalBit _{i} \\
-                    \cdot & \isFirstInput _{i}             \\
-                \end{array} \right]
-                \vspace{2mm}
-                \\
-                %
-                \locCsGOneForPairingWellformed _{i} & \define &
-                \left[ \begin{array}{clcr}
-                    \cdot & \locIsBlsPairingCheck _{i}            \\
-                    \cdot & \locWellformedData _{i}               \\
-                    \cdot & \isFirstInput _{i}                    \\
-                    \cdot & (1 - \isInfinity _{i})                \\
-                    \cdot & (1 - \nontrivialPairOfPointsBit _{i}) \\
-                \end{array} \right]
-                \vspace{2mm}
-                \\
-                %
-                \locCsGOneForPairing _{i} & \define &
-                \left[ \begin{array}{clcr}
-                    + & \locCsGOneForPairingMalformed _{i}  \\
-                    + & \locCsGOneForPairingWellformed _{i} \\
-                \end{array} \right]
-                \vspace{2mm}
-                \\
-                %
-                \locCsGTwoForPairingMalformed _{i} & \define &
-                \left[ \begin{array}{clcr}
-                    \cdot & \locIsBlsPairingCheck _{i}                        \\
-                    \cdot & \malformedDataExternalBit _{i}                            \\
-                    \cdot & \isSecondInput _{i}                                \\
-                \end{array} \right]
-                \vspace{2mm}
-                \\
-                %
-                \locCsGTwoForPairingWellformed _{i} & \define &
-                \left[ \begin{array}{clcr}
-                    \cdot & \locIsBlsPairingCheck _{i}                        \\
-                    \cdot & \locWellformedData _{i}                           \\
-                    \cdot & \isSecondInput _{i}                                \\
-                    \cdot & (1 - \isInfinity _{i})                            \\
-                    \cdot & (1 - \nontrivialPairOfPointsBit _{i})                \\
-                \end{array} \right]
-                \vspace{2mm}
-                \\
-                %
-                \locCsGTwoForPairing _{i} & \define &
-                \left[ \begin{array}{clcr}
-                    + & \locCsGTwoForPairingMalformed _{i}                       \\
-                    + & \locCsGTwoForPairingWellformed _{i}                      \\
-                \end{array} \right]
-                \\
-            \end{array}
+            \left\{ \begin{array}{lcrcl}
+                \csPointEvaluation _{i} & = & \wellformedDataNontrivial _{i} & \cdot & \locIsPointEvaluation                    _{i} \\
+                \csGOneAdd         _{i} & = & \wellformedDataNontrivial _{i} & \cdot & \locIsBlsGOneAdd                         _{i} \\
+                \csGOneMsm         _{i} & = & \wellformedDataNontrivial _{i} & \cdot & \locIsBlsGOneMsm                         _{i} \\
+                \csGTwoAdd         _{i} & = & \wellformedDataNontrivial _{i} & \cdot & \locIsBlsGTwoAdd                         _{i} \\
+                \csGTwoMsm         _{i} & = & \wellformedDataNontrivial _{i} & \cdot & \locIsBlsGTwoMsm                         _{i} \\
+                \csPairing         _{i} & = & \wellformedDataNontrivial _{i} & \cdot & \locIsBlsIsNontrivialPairingDataOrResult _{i} \\
+                \csMapFpToGOne     _{i} & = & \wellformedDataNontrivial _{i} & \cdot & \locIsBlsMapFpToGOne                     _{i} \\
+                \csMapFpTwoToGTwo  _{i} & = & \wellformedDataNontrivial _{i} & \cdot & \locIsBlsMapFpTwoToGTwo                  _{i} \\
+            \end{array} \right.
         \]
-        we impose the following constraints:
-        \begin {enumerate}
-    \item
+        where
         \[
-            \begin{array}{lcl}
-                \csPairing _{i} & = & \isBlsPairingCheckData _{i} \cdot \wellformedDataNontrivial _{i} \cdot \nontrivialPairOfPointsBit _{i} \\
-                &   & + \isBlsPairingCheckResult _{i} \cdot \wellformedDataNontrivial _{i}                               \\
-            \end{array}
+            \locIsBlsIsNontrivialPairingDataOrResult _{i}
+            =
+            \left[ \begin{array}{crcl}
+                + & \isBlsPairingCheckData   _{i} & \cdot & \nontrivialPairOfPointsBit _{i} \\
+                + & \isBlsPairingCheckResult _{i} \\
+            \end{array} \right]
         \]
-    \item \If $\locIsBlsPairingCheck _{i} = 0$ \Then
-        \[
-            \begin{array}{lcl}
-                \csPairing _{i} & = & 0
-            \end{array}
-        \]
-\end{enumerate}
-    \item[Circuit selector for the \inst{C1\_MEMBERSHIP\_TEST} circuit:]
-        $\csCOne _{i} = \csCOne _{i}$
-    \item[Circuit selector for the \inst{C2\_MEMBERSHIP\_TEST} circuit:]
-        $\csCTwo _{i} = \csCTwo _{i}$
-    \item[Circuit selector for the \inst{G1\_MEMBERSHIP\_TEST} circuit:]
-        % $\csGOne _{i} = \csGOne _{i}$
-        we introduce the following shorthands:
-        \[
-            \begin{array}{lcl}
-                \locCsGOneForMsm _{i} & \define &
-                \left[ \begin{array}{clcr}
-                    % + & \locCsGTwoForPairingMalformed _{i}                       \\
-                    % + & \locCsGTwoForPairingWellformed _{i}                      \\
-                \end{array} \right] \vspace{2mm}                             \\
-            \end{array}
-        \]
-
-        we impose the following constraints:
-        \[
-            \csGOne _{i} =
-            \left[ \begin{array}{clcr}
-                + & \isBlsPairingCheckData _{i} \cdot \locCsGOneForPairing \\
-                + & \isBlsGOneMsmData      _{i} \cdot \locCsGOneForMsm     \\
-            \end{array} \right] \vspace{2mm}                             \\
-        \]
-
-    \item[Circuit selector for the \inst{G2\_MEMBERSHIP\_TEST} circuit:]
-        %$\csGTwo _{i} = \csGTwo _{i}$
-        we introduce the following shorthands:
-        \[
-            \begin{array}{lcl}
-                \locCsGTwoForMsm _{i} & \define &
-                \left[ \begin{array}{clcr}
-                    % + & \locCsGTwoForPairingMalformed _{i}                     \\
-                    % + & \locCsGTwoForPairingWellformed _{i}                    \\
-                \end{array} \right] \vspace{2mm}                             \\
-            \end{array}
-        \]
-
-        we impose the following constraints:
-        \[
-            \csGTwo _{i} =
-            \left[ \begin{array}{clcr}
-                + & \isBlsPairingCheckData _{i} \cdot \locCsGTwoForPairing \\
-                + & \isBlsGTwoMsmData      _{i} \cdot \locCsGTwoForMsm     \\
-            \end{array} \right] \vspace{2mm}                             \\
-        \]
-    \item[Circuit selector for the \inst{MAP\_FP\_TO\_G1} circuit:]
-        $\csMapFpToGOne _{i} = \locIsBlsMapFpToGOne _{i} \cdot \wellformedDataNontrivial _{i}$
-    \item[Circuit selector for the \inst{MAP\_FP2\_TO\_G2} circuit:]
-        $\csMapFpTwoToGTwo _{i} = \locIsBlsMapFpTwoToGTwo _{i} \cdot \wellformedDataNontrivial _{i}$
 \end{description}
-
-Note that, at most one of the circuit selectors may light up for a given row:
-
-\begin{enumerate}
-    \item
-        $\csPointEvaluation _{i}
-        + \csCOne _{i}
-        + \csGOne _{i}
-        + \csCTwo _{i}
-        + \csGTwo _{i}
-        + \csPairing _{i}
-        + \csGOneAdd _{i}
-        + \csGTwoAdd _{i}
-        + \csGOneMsm _{i}
-        + \csGTwoMsm _{i}
-        + \csMapFpToGOne _{i}
-        + \csMapFpTwoToGTwo _{i}$
-        is binary \quad (\trash)
-\end{enumerate}
-The data that should be read by external circuits are always the following:
+Note that, given flag exclusivity constraints,
+see section~(\ref),
+at most one of the circuit selectors may light up for a given row.
+The data which gets passed on to external circuits is always the following:
 \begin{enumerate}
     \item \blsId{}
     \item \blsIndex{}
