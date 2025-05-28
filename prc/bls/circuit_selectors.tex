@@ -1,33 +1,17 @@
-We impose the following constraints on \cOneMembershipTestRequired{}:
+We impose the following constraints:
 \begin{enumerate}
-    \item \cOneMembershipTestRequired{} is \textbf{counter-constant, binary} \quad (\trash)
+    \item \csCOne{}, \csCTwo{}, \csGOne{}, \csGTwo{} are \textbf{counter-constant, binary} \quad (\trash)
     \item
         \[  
-        \cOneMembershipTestRequired_{i} = 
-        \left[ \begin{array}{clcr}
-            + & \malformedDataExternalBit \cdot \isBlsGOneAddData_{i} \\
-            + & \malformedDataExternalBit \cdot \isBlsGOneMsmData_{i} \cdot \isFirstInput \\
-        \end{array} \right] \vspace{2mm}  
+            \csCOne _{i} = \malformedDataExternalBit \cdot \isBlsGOneAddData_{i}
         \]
-\end{enumerate}
-We impose the following constraints on \cTwoMembershipTestRequired{}:
-\begin{enumerate}
-    \item \cTwoMembershipTestRequired{} is \textbf{counter-constant, binary} \quad (\trash)
     \item 
         \[  
-        \cTwoMembershipTestRequired_{i} = 
-        \left[ \begin{array}{clcr}
-            + & \malformedDataExternalBit \cdot \isBlsGTwoAddData_{i} \\
-            + & \malformedDataExternalBit \cdot \isBlsGTwoMsmData_{i} \cdot \isFirstInput \\
-        \end{array} \right] \vspace{2mm}  
+            \csCTwo _{i} = \malformedDataExternalBit \cdot \isBlsGTwoAddData_{i}    
         \]
-\end{enumerate}
-We impose the following constraints on \gOneMembershipTestRequired{}:
-\begin{enumerate}
-    \item \gOneMembershipTestRequired{} is \textbf{counter-constant, binary} \quad (\trash)
     \item 
         \[
-            \gOneMembershipTestRequired_{i} = 
+            \csGOne _{i} = 
             \left[ \begin{array}{cl} 
                 + & \isBlsGOneMsmData_{i} \cdot \isFirstInput \cdot \malformedDataExternalBit_{i}  \\
                 + & \isBlsPairingCheckData_{i} \cdot \isFirstInput \cdot \malformedDataExternalBit_{i} \\
@@ -35,13 +19,9 @@ We impose the following constraints on \gOneMembershipTestRequired{}:
                 & (1 - \nontrivialPairOfPointsBit_{i}) \cdot (1 - \isInfinity_{i}) \\
             \end{array} \right] \\
         \]
-\end{enumerate}
-We impose the following constraints on \gTwoMembershipTestRequired{}:
-\begin{enumerate}
-    \item \gTwoMembershipTestRequired{} is \textbf{counter-constant, binary} \quad (\trash)
     \item 
         \[
-            \gTwoMembershipTestRequired_{i} = 
+            \csGTwo _{i} = 
             \left[ \begin{array}{cl} 
                 + & \isBlsGTwoMsmData_{i} \cdot \isFirstInput \cdot \malformedDataExternalBit_{i}  \\
                 + & \isBlsPairingCheckData_{i} \cdot \isSecondInput \cdot \malformedDataExternalBit_{i} \\
@@ -133,11 +113,11 @@ We now define the behaviour of the various circuit selectors.
         \]
 \end{enumerate}
     \item[Circuit selector for the \inst{C1\_MEMBERSHIP\_TEST} circuit:]
-        $\csCOne_{i} = \cOneMembershipTestRequired_{i}$
+        $\csCOne_{i} = \csCOne_{i}$
     \item[Circuit selector for the \inst{C2\_MEMBERSHIP\_TEST} circuit:]
-        $\csCTwo_{i} = \cTwoMembershipTestRequired_{i}$
+        $\csCTwo_{i} = \csCTwo_{i}$
     \item[Circuit selector for the \inst{G1\_MEMBERSHIP\_TEST} circuit:]
-        % $\csGOne_{i} = \gOneMembershipTestRequired_{i}$
+        % $\csGOne_{i} = \csGOne_{i}$
         we introduce the following shorthands:
         \[
             \begin{array}{lcl}
@@ -159,7 +139,7 @@ We now define the behaviour of the various circuit selectors.
         \]
 
     \item[Circuit selector for the \inst{G2\_MEMBERSHIP\_TEST} circuit:]
-        %$\csGTwo_{i} = \gTwoMembershipTestRequired_{i}$
+        %$\csGTwo_{i} = \csGTwo_{i}$
         we introduce the following shorthands:
         \[
             \begin{array}{lcl}
