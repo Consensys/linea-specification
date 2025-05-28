@@ -1,0 +1,22 @@
+\item[\underline{\underline{Row n$°(i + \effectiveRefundVsTransactionFloorCostRowOffset)$: comparing effective refund to transaction floor cost:}}]
+	we impose that
+	\[
+		\left\{ \begin{array}{lcl}
+			\multicolumn{3}{l}{%
+				\smallCallToLt {
+					anchorRow = i                                               ,
+					relOffset = \effectiveRefundVsTransactionFloorCostRowOffset ,
+					argOneLo  = \locGasPaidAfterRefunds                         ,
+					argTwoLo  = \locTransactionFloorCost                        ,
+				}}
+				\vspace{2mm} \\
+				\locGasPaidAfterRefunds & \define & \locGasLimit - \locRefundFromTransactionProcessing          \\
+				\locPayFloorCost        & \define & \res _{i + \effectiveRefundVsTransactionFloorCostRowOffset} \\
+		\end{array} \right.
+	\]
+	In other words $\locPayFloorCost \equiv \texttt{true} \iff \big[ \locGasPaidAfterRefunds < \locTransactionFloorCost \big]$.
+	We further set
+	\begin{enumerate}
+		\item \If $\locPayFloorCost = 0$ \Then $\txEffectiveRefund _{i} = \locRefundFromTransactionProcessing$
+		\item \If $\locPayFloorCost = 1$ \Then $\txEffectiveRefund _{i} = \locRefundFromTransactionFloorCost$
+	\end{enumerate}

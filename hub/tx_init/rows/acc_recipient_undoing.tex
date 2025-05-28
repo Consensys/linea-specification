@@ -1,25 +1,26 @@
-\If $\locTransactionWillRevert = 1$ \Then we impose that
-\[
-	\left\{ \begin{array}{lcll}
-		\multicolumn{4}{l}{\accSameAddr                   {i}{\locTxInitRoffAccUndoingRecipientValueReception}{\locTxInitRoffAccDoingRecipientValueReception}} \\
-		\multicolumn{4}{l}{\accUndoBalanceUpdate          {i}{\locTxInitRoffAccUndoingRecipientValueReception}{\locTxInitRoffAccDoingRecipientValueReception}} \\
-		\multicolumn{4}{l}{\accUndoNonceUpdate            {i}{\locTxInitRoffAccUndoingRecipientValueReception}} \\
-		\multicolumn{4}{l}{\accUndoCodeUpdate             {i}{\locTxInitRoffAccUndoingRecipientValueReception}} \\
-		\multicolumn{4}{l}{\accSameWarmth                 {i}{\locTxInitRoffAccUndoingRecipientValueReception}} \\
-		\multicolumn{4}{l}{\accSameDeploymentNumber       {i}{\locTxInitRoffAccUndoingRecipientValueReception}} \\
-		\multicolumn{4}{l}{\accUndoDeploymentStatusUpdate {i}{\locTxInitRoffAccUndoingRecipientValueReception}{\locTxInitRoffAccDoingRecipientValueReception}} \\
-		%%%%
-		\multicolumn{4}{l}{\accSameMarkedForSelfdestructFlag {i}{\locTxInitRoffAccUndoingRecipientValueReception}} \\
-		\accRomLexFlag   _{i + \locTxInitRoffAccUndoingRecipientValueReception} & = & 0 & (\trash) \\
-		\accTrmFlag      _{i + \locTxInitRoffAccUndoingRecipientValueReception} & = & 0 & (\trash) \\
-		\accRlpAddrFlag  _{i + \locTxInitRoffAccUndoingRecipientValueReception} & = & 0 & (\trash) \vspace{2mm} \\
-		\multicolumn{4}{l}{
-			\revertWithChildFailureDomSubStamps {
-				anchorRow        = i                                               ,
-				relOffset        = \locTxInitRoffAccUndoingRecipientValueReception ,
-				subOffset        = 4                                               ,
-				childRevertStamp = \locTransactionRevertStamp                      ,
-			}
-		} \\
-	\end{array} \right.
-\]
+\item[\underline{\underline{Recipient account-undoing-row n$^°\bm{(i + \locTxInitRoffAccUndoingRecipientValueReception)}$:}}]
+	\If $\locTransactionWillRevert = 1$ \Then we impose that
+	\[
+		\left\{ \begin{array}{lcll}
+			\multicolumn{4}{l}{\accSameAddr                   {i}{\locTxInitRoffAccUndoingRecipientValueReception}{\locTxInitRoffAccDoingRecipientValueReception}} \\
+			\multicolumn{4}{l}{\accUndoBalanceUpdate          {i}{\locTxInitRoffAccUndoingRecipientValueReception}{\locTxInitRoffAccDoingRecipientValueReception}} \\
+			\multicolumn{4}{l}{\accUndoNonceUpdate            {i}{\locTxInitRoffAccUndoingRecipientValueReception}} \\
+			\multicolumn{4}{l}{\accUndoCodeUpdate             {i}{\locTxInitRoffAccUndoingRecipientValueReception}} \\
+			\multicolumn{4}{l}{\accSameWarmth                 {i}{\locTxInitRoffAccUndoingRecipientValueReception}} \\
+			\multicolumn{4}{l}{\accSameDeploymentNumber       {i}{\locTxInitRoffAccUndoingRecipientValueReception}} \\
+			\multicolumn{4}{l}{\accUndoDeploymentStatusUpdate {i}{\locTxInitRoffAccUndoingRecipientValueReception}{\locTxInitRoffAccDoingRecipientValueReception}} \\
+			%%%%
+			\multicolumn{4}{l}{\accSameMarkedForDeletionFlag {i}{\locTxInitRoffAccUndoingRecipientValueReception}} \\
+			\accRomLexFlag   _{i + \locTxInitRoffAccUndoingRecipientValueReception} & = & 0 & (\trash) \\
+			\accTrmFlag      _{i + \locTxInitRoffAccUndoingRecipientValueReception} & = & 0 & (\trash) \\
+			\accRlpAddrFlag  _{i + \locTxInitRoffAccUndoingRecipientValueReception} & = & 0 & (\trash) \vspace{2mm} \\
+			\multicolumn{4}{l}{
+				\revertWithChildFailureDomSubStamps {
+					anchorRow        = i                                               ,
+					relOffset        = \locTxInitRoffAccUndoingRecipientValueReception ,
+					subOffset        = 4                                               ,
+					childRevertStamp = \locTransactionRevertStamp                      ,
+				}
+			} \\
+		\end{array} \right.
+	\]

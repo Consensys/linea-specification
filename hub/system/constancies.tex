@@ -1,0 +1,59 @@
+We define a number of \textbf{constancy conditions}.
+We say that a column $\col{X}$ is
+\begin{description}
+	\item[\textbf{block-constant}] if it satisfies
+		\[
+			\If     \blockNumber _{i} \neq 1 + \blockNumber _{i - 1}
+			~ \Then \col{X}      _{i} =        \col{X}      _{i - 1}
+		\]
+	\item[\textbf{transaction-constant}] if it satisfies
+		\[
+			\If     \totalTransactionNumber  _{i} \neq 1 + \totalTransactionNumber _{i - 1}
+			~ \Then \col{X}                  _{i} =        \col{X}                 _{i - 1}
+		\]
+	\item[\textbf{hub-stamp-constant}] if it satisfies
+		\[
+			\If     \hubStamp _{i} \neq 1 + \hubStamp _{i - 1}
+			~ \Then \col{X}   _{i} =        \col{X}   _{i - 1}
+		\]
+	\item[\textbf{stack-row-constant}] if it satisfies
+		\[
+			\If
+			\left\{ \begin{array}{lcl}
+				\peekStack _{i} & \!\!\! = \!\!\! & 1 \\
+				\ct        _{i} & \!\!\! = \!\!\! & 1 \\
+			\end{array} \right\}
+			~ \Then \col{X} _{i} = \col{X} _{i - 1}
+		\]
+		\saNote{} Stack-rows always occupy the first one or two rows of the processing of any instruction, as such $\peekStack _{i} = 1$ really means $\peekStack _{i} = \peekStack _{i - 1} = 1$.
+	\item[\textbf{context-constant}] if it satisfies
+		\[
+			\If     \cn     _{i} = \cn     _{i - 1}
+			~ \Then \col{X} _{i} = \col{X} _{i - 1}
+		\]
+\end{description}
+Given the increment constraints imposed on
+\blockNumber{}            of section~(\ref{hub: system: system flags: block number: 0/1 increments}),
+\totalTransactionNumber{} of section~(\ref{hub: system: transaction numbers: 0/1 increments}),
+\hubStamp{}               of section~(\ref{hub: system: hub stamp: 0/1 increments}),
+respectively,
+these constancy conditions are equivalent to
+\If $\col{NUM} _{i} = \col{NUM} _{i - 1}$ \Then $\col{X} _{i} = \col{X} _{i - 1}$ where 
+$\col{NUM} = \blockNumber, \totalTransactionNumber, \hubStamp$ respectively.
+
+\noindent We impose transaction-constancy conditions on the following columns:
+\begin{multicols}{2}
+	\begin{itemize}
+		\item \blockNumber{}
+		\item[\vspace{\fill}]
+	\end{itemize}
+\end{multicols}
+
+\noindent We impose hub-stamp-constancy condition at various places in the specification, e.g. in sections
+(\ref{hub: generalities: program counter}),
+(\ref{hub: generalities: stack height}),
+(\ref{hub: generalities: exceptions}),
+(\ref{hub: generalities: context changes}),
+(\ref{hub: generalities: gas}),
+(\ref{hub: generalities: refunds}),
+(\ref{hub: generalities: auxiliary stamps and flags}).

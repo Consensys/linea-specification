@@ -1,0 +1,59 @@
+\item[\underline{\underline{Row n$°(i + \gasLimitRowOffset)$: gas limit must cover the upfront gas cost:}}]
+	we impose that
+	\[
+		\left\{\begin{array}{l}
+			\smallCallToLeq {
+				anchorRow = i                  ,
+				relOffset = \gasLimitRowOffset ,
+				argOneLo  = \locUpfrontGasCost ,
+				argTwoLo  = \locGasLimit       ,
+			}
+			\vspace{2mm}
+			\\
+			\resultMustBeTrue {
+				anchorRow = i                  ,
+				relOffset = \gasLimitRowOffset ,
+			}
+			\\
+		\end{array}\right.
+	\]
+	where, in order to define the transaction's upfront gas cost \locUpfrontGasCost{}
+	we must distinguish between transaction types that support access sets (types 1 and 2) and those that do not (type 0)
+	\[
+		\left\{ \begin{array}{lcl}
+			\locUpfrontGasCost & \define &
+			\left[ \begin{array}{crcl}
+				+ \!\!\! & \txIsLegacy    _{i} & \cdot & \locLegacyUpfrontGasCost \\
+				+ \!\!\! & \txIsAccessSet _{i} & \cdot & \locAccessUpfrontGasCost \\
+				+ \!\!\! & \txIsTypeTwo   _{i} & \cdot & \locAccessUpfrontGasCost \\
+			\end{array} \right] \vspace{4mm} \\
+			\locLegacyUpfrontGasCost & \define &
+			\left[ \begin{array}{crcl}
+				+ \!\!\! &           &       & \locDataCost           \\
+				+ \!\!\! &           &       & G_{\text{transaction}} \\
+				+ \!\!\! & \locIsDep & \cdot & G_{\text{txcreate}}    \\
+			\end{array} \right] \vspace{4mm} \\
+			\locAccessUpfrontGasCost & \define &
+			\left[ \begin{array}{crcl}
+				+ \!\!\! &             &                     & \locDataCost               \\
+				+ \!\!\! &             &                     & G_{\text{transaction}}     \\
+				+ \!\!\! & \locIsDep   & \!\!\! \cdot \!\!\! & G_{\text{txcreate}}        \\
+				+ \!\!\! & \locNumAddr & \!\!\! \cdot \!\!\! & G_\text{accesslistaddress} \\
+				+ \!\!\! & \locNumKeys & \!\!\! \cdot \!\!\! & G_\text{accessliststorage} \\
+			\end{array} \right] \\
+		\end{array} \right.
+	\]
+	\saNote{}
+	In other words we require that
+	$\locUpfrontGasCost \leq \locGasLimit$.
+
+	\saNote{}
+	We remind the reader of the values of the following constants
+	\[
+		\left\{ \begin{array}{lcr}
+			G_\text{transaction}       & \!\!\! = \!\!\! & 21\,000 \\
+			G_\text{create}            & \!\!\! = \!\!\! & 32\,000 \\
+			G_\text{accesslistaddress} & \!\!\! = \!\!\! & 2\,400  \\
+			G_\text{accessliststorage} & \!\!\! = \!\!\! & 1\,900  \\
+		\end{array} \right.
+	\]

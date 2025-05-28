@@ -1,0 +1,50 @@
+We define the $\setMxpInstructionOneOffsetName$ macro as follows:
+\[
+	\begin{array}{l}
+		\setMxpInstructionOneOffset
+		{
+			anchorRow   = i                 ,
+			relOffset   = \relof            ,
+			instruction = \col{instruction} ,
+			deploys     = \col{deploys}     ,
+			offsetHi    = \col{offset\_hi}  ,
+			offsetLo    = \col{offset\_lo}  ,
+			sizeHi      = \col{size\_hi}    ,
+			sizeLo      = \col{size\_lo}    ,
+		}
+		\vspace{2mm} \\
+		\qquad
+		\qquad
+		\define
+		\left\{ \begin{array}{lclr}
+			\miscMxpInst                         _{i + \relof} & = & \col{instruction} \\
+			\miscMxpCodeDeployment               _{i + \relof} & = & \col{deploys}     \\
+			\miscMxpOffsetOneHi                  _{i + \relof} & = & \col{offset\_hi}  \\
+			\miscMxpOffsetOneLo                  _{i + \relof} & = & \col{offset\_lo}  \\
+			\miscMxpSizeOneHi                    _{i + \relof} & = & \col{size\_hi}    \\
+			\miscMxpSizeOneLo                    _{i + \relof} & = & \col{size\_lo}    \\
+			\miscMxpOffsetTwoHi                  _{i + \relof} & = & \nothing          \\
+			\miscMxpOffsetTwoLo                  _{i + \relof} & = & \nothing          \\
+			\miscMxpSizeTwoHi                    _{i + \relof} & = & \nothing          \\
+			\miscMxpSizeTwoLo                    _{i + \relof} & = & \nothing          \\
+			\miscMxpMxpx                         _{i + \relof} & = & \prediction       \\
+			\miscMxpWords                        _{i + \relof} & = & \prediction       \\
+			\miscMxpGasMxp                       _{i + \relof} & = & \prediction       \\
+			\miscMxpSizeOneNonzeroNoMxpx         _{i + \relof} & = & \prediction       \\
+			\miscMxpSizeTwoNonzeroNoMxpx         _{i + \relof} & = & \nothing          \\
+		\end{array} \right.
+	\end{array}
+\]
+\saNote{} \label{hub: misc: mxp: type4: purpose of checking nonzeroness of size 1}
+The
+\miscMxpSizeOneNonzeroNoMxpx{} prediction
+is meaningful in the context of both \inst{RETURN} and \inst{REVERT} instructions.
+They will impact what the parent context records as its ``\texttt{return data offset}.''
+The point being that the \zkEvm{} needs to prevent scenarios where one of the aforementioned instructions provides \emph{de facto} empty return data starting at a comically large offset,
+e.g.
+\[
+	\texttt{offset\_1} ~ \equiv ~ \texttt{0x\,\utt{ff}\,\utt{ff}\,\dots\,\utt{ff}} \in \mathbb{B}_{\evmWordSize}.
+\]
+Such a ``meaningless'' offset (given that the return data is empty) could pollute our traces and lead to type violations in the \hubMod{} module as well as downstream,
+e.g. in the \mmuMod{} module.
+

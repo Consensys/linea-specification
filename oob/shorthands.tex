@@ -9,6 +9,7 @@ We use the following shorthands
 			+ & \oobInstIsCdl          _{i} \\
 			+ & \oobInstIsCall         _{i} \\
 			+ & \oobInstIsXcall        _{i} \\
+			+ & \oobInstIsXcreate      _{i} \\
 			+ & \oobInstIsCreate       _{i} \\
 			+ & \oobInstIsSstore       _{i} \\
 			+ & \oobInstIsDeployment   _{i} \\
@@ -59,7 +60,7 @@ we also set
 			+ & \locPrcFlagSumBlake_{i}  \\
 			+ & \locPrcFlagSumModexp_{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\flagSum_{i}       & \define & 
+		\flagSum_{i}       & \define &
 		\left[ \begin{array}{cl}
 			+ & \locInstFlagSum_{i} \\
 			+ & \locPrcFlagSum_{i}  \\
@@ -71,15 +72,16 @@ and
 	\left\{ \begin{array}{lcl}
 		\weightedFlagSumInst_{i} & \define &
 		\left[ \begin{array}{crcl}
-			+ & \oobInstJump       & \cdot & \oobInstIsJump                  _{i} \\
-			+ & \oobInstJumpI      & \cdot & \oobInstIsJumpI                 _{i} \\
-			+ & \oobInstRdc        & \cdot & \oobInstIsRdc                   _{i} \\
-			+ & \oobInstCdl        & \cdot & \oobInstIsCdl                   _{i} \\
-			+ & \oobInstXcall      & \cdot & \oobInstIsXcall                 _{i} \\
-			+ & \oobInstCall       & \cdot & \oobInstIsCall                  _{i} \\
-			+ & \oobInstCreate     & \cdot & \oobInstIsCreate                _{i} \\
-			+ & \oobInstSstore     & \cdot & \oobInstIsSstore                _{i} \\
-			+ & \oobInstDeployment & \cdot & \oobInstIsDeployment            _{i} \\
+			+ & \oobInstJump       & \cdot & \oobInstIsJump        _{i} \\
+			+ & \oobInstJumpI      & \cdot & \oobInstIsJumpI       _{i} \\
+			+ & \oobInstRdc        & \cdot & \oobInstIsRdc         _{i} \\
+			+ & \oobInstCdl        & \cdot & \oobInstIsCdl         _{i} \\
+			+ & \oobInstXcall      & \cdot & \oobInstIsXcall       _{i} \\
+			+ & \oobInstCall       & \cdot & \oobInstIsCall        _{i} \\
+			+ & \oobInstXcreate    & \cdot & \oobInstIsXcreate     _{i} \\
+			+ & \oobInstCreate     & \cdot & \oobInstIsCreate      _{i} \\
+			+ & \oobInstSstore     & \cdot & \oobInstIsSstore      _{i} \\
+			+ & \oobInstDeployment & \cdot & \oobInstIsDeployment  _{i} \\
 		\end{array} \right] \vspace{2mm} \\
 		\weightedPrcFlagSumCommon_{i} & \define &
 		\left[ \begin{array}{crcl}
@@ -127,7 +129,7 @@ and
 			+ & \weightedPrcFlagSumBlake_{i}  \\
 			+ & \weightedPrcFlagSumModexp_{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\weightedFlagSum_{i}       & \define & 
+		\weightedFlagSum_{i}       & \define &
 		\left[ \begin{array}{cl}
 			+ & \weightedFlagSumInst_{i} \\
 			+ & \weightedPrcFlagSum_{i}  \\
@@ -143,10 +145,11 @@ where
 		\oobInstCdl        & \define & \texttt{0x\,35} \\
 		\oobInstXcall      & \define & \oxXcall        \\
 		\oobInstCall       & \define & \oxCall         \\
+		\oobInstXcreate    & \define & \oxXcreate      \\
 		\oobInstCreate     & \define & \oxCreate       \\
 		\oobInstSstore     & \define & \texttt{0x\,55} \\
 		\oobInstDeployment & \define & \texttt{0x\,F3} \\
-	\end{array} \right.                                 
+	\end{array} \right.
 	,
 	\left\{ \begin{array}{lclcr}
 		\oobInstEcrecover       & \define &   \oxEcrecover   \\
@@ -275,6 +278,7 @@ We further set
 			+ & \oobCtMaxCdl        & \cdot & \oobInstIsCdl        _{i} \\
 			+ & \oobCtMaxXcall      & \cdot & \oobInstIsXcall      _{i} \\
 			+ & \oobCtMaxCall       & \cdot & \oobInstIsCall       _{i} \\
+			+ & \oobCtMaxXcreate    & \cdot & \oobInstIsXcreate    _{i} \\
 			+ & \oobCtMaxCreate     & \cdot & \oobInstIsCreate     _{i} \\
 			+ & \oobCtMaxSstore     & \cdot & \oobInstIsSstore     _{i} \\
 			+ & \oobCtMaxDeployment & \cdot & \oobInstIsDeployment _{i} \\
@@ -325,7 +329,7 @@ and
 			+ & \maxCtFlagSumPrcBlake_{i}  \\
 			+ & \maxCtFlagSumPrcModexp_{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\maxCtFlagSum_{i}       & \define & 
+		\maxCtFlagSum_{i}       & \define &
 		\left[ \begin{array}{cl}
 			+ & \weightedFlagSumInst_{i} \\
 			+ & \weightedPrcFlagSum_{i}  \\
@@ -342,10 +346,11 @@ where
         \oobCtMaxCdl        & \define & 0 \\
         \oobCtMaxXcall      & \define & 0 \\
         \oobCtMaxCall       & \define & 2 \\
-        \oobCtMaxCreate     & \define & 3 \\ 
+        \oobCtMaxXcreate    & \define & 0 \\
+        \oobCtMaxCreate     & \define & 4 \\
         \oobCtMaxSstore     & \define & 0 \\
         \oobCtMaxDeployment & \define & 0 \\
-    \end{array} \right. 
+    \end{array} \right.
     &
     \left\{ \begin{array}{lcl}
         \oobCtMaxEcrecover       & \define &  2 \\
@@ -360,7 +365,7 @@ where
     \left\{ \begin{array}{lcl}
         \oobCtMaxBlakeCds     & \define &  1 \\
         \oobCtMaxBlakeParams  & \define &  1 \\
-    \end{array} \right. 
+    \end{array} \right.
     &
     \left\{ \begin{array}{lcl}
         \oobCtMaxModexpCds      & \define & 2 \\

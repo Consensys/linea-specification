@@ -37,13 +37,14 @@ What follows is the list of tasks in which the present module helps the \hubMod{
 		determine if $\col{gas} \leq G_\text{callstipend} = 2300$;
 		see section~(\ref{oob: populating: sstore});
 	\item[\underline{\maxcsxSH{} detection:}]
-		determine if a \inst{RETURN} in a deployment context returns code that is too big (i.e. $(\col{codesize} > 24576$);
+		determine if a \inst{RETURN} in a deployment context returns code that is too long (i.e. $(\col{codesize} > \maxCodeSizeValue$);
 		see section~(\ref{oob: populating: return});
+		alternatively determine if a \inst{CREATE(2)} instruction's init code is too long (i.e. $(\col{initcodesize} > \maxInitCodeSizeValue$);
 \end{description}
 We furthermore use the \oobMod{} for the pricing of certain precompiles and the testing of certain conditions pertaining to some of the underlying \inst{CALL}'s parameters
 \CDS{} (recall its abbreviation \cds{}) and
 \RAC{} (recall its abbreviation \rac{}.)
-\saNote{} Below we use the \cite{EYP}'s notation $I_\textbf{d}$ for call data.
+\saNote{} Below we use the \cite{EYP-London}'s notation $I_\textbf{d}$ for call data.
 \begin{description}
 	\item[\underline{\inst{ECRECOVER}, \inst{SHA2-256}, \inst{RIPEMD-160}, \inst{IDENTITY}, \inst{ECADD}, \inst{ECMUL}, \inst{ECPAIRING}, \inst{POINT\_EVALUATION}, \inst{BLS\_G1ADD}, \inst{BLS\_G2ADD}, \inst{BLS\_MAP\_FP\_TO\_G1}, \inst{BLS\_MAP\_FP2\_TO\_G2}:}]
 		detect both $\cds \equiv 0$ and $\rac \equiv 0$; 
