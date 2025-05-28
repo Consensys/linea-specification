@@ -151,14 +151,14 @@ notOnGXAccMax
 
 ## Macros added
 
-malformedDataInternalJustification
+malformedDataInternalTot
 nontrivialPairOfPointsAcc
 wellformedDataTrivial
 wellformedDataNontrivial
 nontrivialPairOfPoints
 malformedDataExternalBit
 malformedDataExternalAcc
-malformedDataExternalJustification
+malformedDataExternal
 
 Consider keeping ICP and adding:
 

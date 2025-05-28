@@ -1,7 +1,7 @@
 We introduce shorthands:
 \[
     \left\{ \begin{array}{lcl}
-        \locMalformedData_{i}  & \define & \malformedDataInternalJustification_{i} + \malformedDataExternalJustification_{i}  \\
+        \locMalformedData_{i}  & \define & \malformedDataInternalTot_{i} + \malformedDataExternalTot_{i}  \\
         \locWellformedData_{i} & \define & \wellformedDataTrivial_{i} + \wellformedDataNontrivial_{i}            \vspace{2mm} \\
         \locCaseDataSum_{i}    & \define &
         \left[ \begin{array}{cl}
@@ -13,21 +13,21 @@ We introduce shorthands:
 \]
 We impose the following constraints:
 \begin{enumerate}
-    \item \malformedDataInternalJustification{}, \malformedDataExternalJustification{}, \wellformedDataTrivial{}, \wellformedDataNontrivial{}  are \textbf{id-constant, binary} \quad (\trash)
+    \item \malformedDataInternalTot{}, \malformedDataExternalTot{}, \wellformedDataTrivial{}, \wellformedDataNontrivial{}  are \textbf{id-constant, binary} \quad (\trash)
     \item $\locCaseDataSum _{i} = \locFlagSum        _{i}$
 \end{enumerate}
 \saNote{}
 The above implies both that
-\malformedDataInternalJustification{}, \malformedDataExternalJustification{}, \wellformedDataTrivial{}, \wellformedDataNontrivial{}
+\malformedDataInternalTot{}, \malformedDataExternalTot{}, \wellformedDataTrivial{}, \wellformedDataNontrivial{}
 are \textbf{binary exclusive}
 and that every precompile call carries precisely one of these labels.
 \begin{enumerate}[resume]
     \item
         \label{bls: top level: hash to G1 cannot throw MEXT}
-        \If $\locIsBlsMapFpToGOne    _{i} = 1$ \Then $\malformedDataExternalJustification _{i} = 0$
+        \If $\locIsBlsMapFpToGOne    _{i} = 1$ \Then $\malformedDataExternalTot _{i} = 0$
     \item
         \label{bls: top level: hash to G2 cannot throw MEXT}
-        \If $\locIsBlsMapFpTwoToGTwo _{i} = 1$ \Then $\malformedDataExternalJustification _{i} = 0$
+        \If $\locIsBlsMapFpTwoToGTwo _{i} = 1$ \Then $\malformedDataExternalTot _{i} = 0$
     \item
         \label{bls: top level: only pairings may be well formed trivial}
         \If $\locIsBlsPairingCheck _{i} = 0$ \Then $\wellformedDataTrivial _{i} = 0$
