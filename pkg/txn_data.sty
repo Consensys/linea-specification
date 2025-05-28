@@ -42,6 +42,9 @@
 \newcommand{\finalRefundCounterName     } {\col{REFUND\_COUNTER\_FINAL}}
 \newcommand{\effectiveRefundName        } {\col{REFUND\_EFFECTIVE}}
 \newcommand{\cumulativeConsumedGasName  } {\col{GAS\_CUMULATIVE}}
+\newcommand{\beaconRootName             } {\col{BEACON\_ROOT}}
+\newcommand{\prevBlockNumberName        } {\col{PREV\_BLOCK\_NUMBER}}
+\newcommand{\prevBlockHashName          } {\col{PREV\_BLOCK\_HASH}}
 
 
 \newcommand{\txTxNum}                {\transactionSignifier\txNumName                }
@@ -146,6 +149,8 @@
 \newcommand{\txnDataRlpTxType                         } {\userTxnRlpViewColumn{TX\_TYPE}}
 \newcommand{\txnDataRlpToAddrHi                       } {\userTxnRlpViewColumn{TO\_ADDR\_HI}}
 \newcommand{\txnDataRlpToAddrLo                       } {\userTxnRlpViewColumn{TO\_ADDR\_LO}}
+\newcommand{\txnDataRlpCoinbaseHi                     } {\userTxnHubViewColumn{\coinbaseHiName}}
+\newcommand{\txnDataRlpCoinbaseLo                     } {\userTxnHubViewColumn{\coinbaseLoName}}
 \newcommand{\txnDataRlpNonce                          } {\userTxnRlpViewColumn{NONCE}}
 \newcommand{\txnDataRlpIsDep                          } {\userTxnRlpViewColumn{IS\_DEPLOYMENT}}
 \newcommand{\txnDataRlpValue                          } {\userTxnRlpViewColumn{VALUE}}
@@ -166,49 +171,57 @@
 \newcommand{\txnDataRlpNumAccountDelegations          } {\userTxnRlpViewColumn{NUMBER\_OF\_ACCOUNT\_DELEGATIONS}}
 \newcommand{\txnDataRlpCfi                            } {\userTxnRlpViewColumn{\cfi}}
 \newcommand{\txnDataRlpRequiresEvmExecution           } {\userTxnRlpViewColumn{\requiresEvmExecutionName}}
+\newcommand{\txnDataRlpBasefee                        } {\userTxnHubViewColumn{\basefeeName     }}
 
 % HUB view columns
-\newcommand{\txnDataHubCoinbase}               {\userTxnHubViewColumn{\coinbaseName               }}
-\newcommand{\txnDataHubCoinbaseHi}             {\userTxnHubViewColumn{\coinbaseHiName             }}
-\newcommand{\txnDataHubCoinbaseLo}             {\userTxnHubViewColumn{\coinbaseLoName             }}
-\newcommand{\txnDataHubNonce}                  {\userTxnHubViewColumn{\nonceName                  }}
-\newcommand{\txnDataHubTo}                     {\userTxnHubViewColumn{\toName                     }}
-\newcommand{\txnDataHubFrom}                   {\userTxnHubViewColumn{\fromName                   }}
-\newcommand{\txnDataHubToHi}                   {\userTxnHubViewColumn{\toHiName                   }}
-\newcommand{\txnDataHubToLo}                   {\userTxnHubViewColumn{\toLoName                   }}
-\newcommand{\txnDataHubFromHi}                 {\userTxnHubViewColumn{\fromHiName                 }}
-\newcommand{\txnDataHubFromLo}                 {\userTxnHubViewColumn{\fromLoName                 }}
-\newcommand{\txnDataHubGasLimit}               {\userTxnHubViewColumn{\gasLimitName               }}
-\newcommand{\txnDataHubGasPrice}               {\userTxnHubViewColumn{\gasPriceName               }}
-\newcommand{\txnDataHubPriorityFeePerGas}      {\userTxnHubViewColumn{\priorityFeePerGasName      }}
-\newcommand{\txnDataHubInitialGas}             {\userTxnHubViewColumn{\initialGasName             }}
-\newcommand{\txnDataHubInitialGasCost}         {\userTxnHubViewColumn{\initialGasCostName         }}
-\newcommand{\txnDataHubMaxFee}                 {\userTxnHubViewColumn{\maxFeeName                 }}
-\newcommand{\txnDataHubMaxTip}                 {\userTxnHubViewColumn{\maxTipName                 }}
-\newcommand{\txnDataHubValue}                  {\userTxnHubViewColumn{\valueName                  }}
-\newcommand{\txnDataHubIsDeployment}           {\userTxnHubViewColumn{\isDeploymentName           }}
-\newcommand{\txnDataHubType}                   {\userTxnHubViewColumn{\typeName                   }}
-\newcommand{\txnDataHubDataSize}               {\userTxnHubViewColumn{\dataSizeName               }}
-\newcommand{\txnDataHubCallDataSize}           {\userTxnHubViewColumn{\callDataSizeName           }}
-\newcommand{\txnDataHubInitCodeSize}           {\userTxnHubViewColumn{\initCodeSizeName           }}
-\newcommand{\txnDataHubDataCost}               {\userTxnHubViewColumn{\dataCostName               }}
-\newcommand{\txnDataHubBasefee}                {\userTxnHubViewColumn{\basefeeName                }}
-\newcommand{\txnDataHubFullTip}                {\userTxnHubViewColumn{\fullTipName                }}
-\newcommand{\txnDataHubTypeBit}                {\userTxnHubViewColumn{\typeBitName                }}
-\newcommand{\txnDataHubIsLegacy}               {\userTxnHubViewColumn{\isTypeZeroName             }}
-\newcommand{\txnDataHubIsAccessSet}            {\userTxnHubViewColumn{\isTypeOneName              }}
-\newcommand{\txnDataHubIsTypeTwo}              {\userTxnHubViewColumn{\isTypeTwoName              }}
-\newcommand{\txnDataHubIsTypeThree}            {\userTxnHubViewColumn{\isTypeThreeName            }}
-\newcommand{\txnDataHubIsTypeFour}             {\userTxnHubViewColumn{\isTypeFourName             }}
-\newcommand{\txnDataHubInitialBalance}         {\userTxnHubViewColumn{\initialBalanceName         }}
-\newcommand{\txnDataHubRequiresEvmExecution}   {\userTxnHubViewColumn{\requiresEvmExecutionName   }}
-\newcommand{\txnDataHubCopyTxcd}               {\userTxnHubViewColumn{\copyTxcdName               }}
-\newcommand{\txnDataHubStatusCode}             {\userTxnHubViewColumn{\statusCodeName             }}
-\newcommand{\txnDataHubLeftoverGas}            {\userTxnHubViewColumn{\leftoverGasName            }}
-\newcommand{\txnDataHubFinalRefundCounter}     {\userTxnHubViewColumn{\finalRefundCounterName     }}
-\newcommand{\txnDataHubEffectiveRefund}        {\userTxnHubViewColumn{\effectiveRefundName        }}
-\newcommand{\txnDataHubCfi}                    {\userTxnHubViewColumn{\cfi                        }}
-\newcommand{\txnDataHubHasTypeTwoGasSemantics} {\userTxnHubViewColumn{\hasTypeTwoGasSemanticsName }}
+\newcommand{\txnDataHubCoinbase               } {\userTxnHubViewColumn{\coinbaseName               }}
+\newcommand{\txnDataHubCoinbaseHi             } {\userTxnHubViewColumn{\coinbaseHiName             }}
+\newcommand{\txnDataHubCoinbaseLo             } {\userTxnHubViewColumn{\coinbaseLoName             }}
+\newcommand{\txnDataHubNonce                  } {\userTxnHubViewColumn{\nonceName                  }}
+\newcommand{\txnDataHubTo                     } {\userTxnHubViewColumn{\toName                     }}
+\newcommand{\txnDataHubFrom                   } {\userTxnHubViewColumn{\fromName                   }}
+\newcommand{\txnDataHubToHi                   } {\userTxnHubViewColumn{\toHiName                   }}
+\newcommand{\txnDataHubToLo                   } {\userTxnHubViewColumn{\toLoName                   }}
+\newcommand{\txnDataHubFromHi                 } {\userTxnHubViewColumn{\fromHiName                 }}
+\newcommand{\txnDataHubFromLo                 } {\userTxnHubViewColumn{\fromLoName                 }}
+\newcommand{\txnDataHubGasLimit               } {\userTxnHubViewColumn{\gasLimitName               }}
+\newcommand{\txnDataHubGasPrice               } {\userTxnHubViewColumn{\gasPriceName               }}
+\newcommand{\txnDataHubPriorityFeePerGas      } {\userTxnHubViewColumn{\priorityFeePerGasName      }}
+\newcommand{\txnDataHubInitialGas             } {\userTxnHubViewColumn{\initialGasName             }}
+\newcommand{\txnDataHubInitialGasCost         } {\userTxnHubViewColumn{\initialGasCostName         }}
+\newcommand{\txnDataHubMaxFee                 } {\userTxnHubViewColumn{\maxFeeName                 }}
+\newcommand{\txnDataHubMaxTip                 } {\userTxnHubViewColumn{\maxTipName                 }}
+\newcommand{\txnDataHubValue                  } {\userTxnHubViewColumn{\valueName                  }}
+\newcommand{\txnDataHubIsDeployment           } {\userTxnHubViewColumn{\isDeploymentName           }}
+\newcommand{\txnDataHubType                   } {\userTxnHubViewColumn{\typeName                   }}
+\newcommand{\txnDataHubDataSize               } {\userTxnHubViewColumn{\dataSizeName               }}
+\newcommand{\txnDataHubCallDataSize           } {\userTxnHubViewColumn{\callDataSizeName           }}
+\newcommand{\txnDataHubInitCodeSize           } {\userTxnHubViewColumn{\initCodeSizeName           }}
+\newcommand{\txnDataHubDataCost               } {\userTxnHubViewColumn{\dataCostName               }}
+\newcommand{\txnDataHubBasefee                } {\userTxnHubViewColumn{\basefeeName                }}
+\newcommand{\txnDataHubFullTip                } {\userTxnHubViewColumn{\fullTipName                }}
+\newcommand{\txnDataHubTypeBit                } {\userTxnHubViewColumn{\typeBitName                }}
+\newcommand{\txnDataHubIsLegacy               } {\userTxnHubViewColumn{\isTypeZeroName             }}
+\newcommand{\txnDataHubIsAccessSet            } {\userTxnHubViewColumn{\isTypeOneName              }}
+\newcommand{\txnDataHubIsTypeTwo              } {\userTxnHubViewColumn{\isTypeTwoName              }}
+\newcommand{\txnDataHubIsTypeThree            } {\userTxnHubViewColumn{\isTypeThreeName            }}
+\newcommand{\txnDataHubIsTypeFour             } {\userTxnHubViewColumn{\isTypeFourName             }}
+\newcommand{\txnDataHubInitialBalance         } {\userTxnHubViewColumn{\initialBalanceName         }}
+\newcommand{\txnDataHubRequiresEvmExecution   } {\userTxnHubViewColumn{\requiresEvmExecutionName   }}
+\newcommand{\txnDataHubCopyTxcd               } {\userTxnHubViewColumn{\copyTxcdName               }}
+\newcommand{\txnDataHubStatusCode             } {\userTxnHubViewColumn{\statusCodeName             }}
+\newcommand{\txnDataHubLeftoverGas            } {\userTxnHubViewColumn{\leftoverGasName            }}
+\newcommand{\txnDataHubFinalRefundCounter     } {\userTxnHubViewColumn{\finalRefundCounterName     }}
+\newcommand{\txnDataHubEffectiveRefund        } {\userTxnHubViewColumn{\effectiveRefundName        }}
+\newcommand{\txnDataHubCfi                    } {\userTxnHubViewColumn{\cfi                        }}
+\newcommand{\txnDataHubHasTypeTwoGasSemantics } {\userTxnHubViewColumn{\hasTypeTwoGasSemanticsName }}
+\newcommand{\txnDataHubBeaconRoot             } {\userTxnHubViewColumn{\beaconRootName             }}
+\newcommand{\txnDataHubPrevBlockNumberName    } {\userTxnHubViewColumn{\prevBlockNumberName        }}
+\newcommand{\txnDataHubPrevBlockHashName      } {\userTxnHubViewColumn{\prevBlockHashName          }}
+\newcommand{\txnDataHubEipBeaconRoot          } {\userTxnHubViewColumn{\systemTxnEipBeaconRoot     }}
+\newcommand{\txnDataHubEipBlockHash           } {\userTxnHubViewColumn{\systemTxnEipBlockHash      }}
+
+
 
 % Instruction decoder columns
 \newcommand{\userTxnDecoderInst                  } {\userTxnInstructionDecoderColumn{INST}}
