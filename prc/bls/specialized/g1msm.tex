@@ -1,14 +1,12 @@
 \[
     \boxed{\text{All constraints in this subsection assume }
         \left\{ \begin{array}{lcl}
-            \isBlsGOneMsmData      & =    & 1            \\
-            \blsId_{i}             & \neq & \blsId_{i-1} \\
+            \isBlsGOneMsmData                                 & =    & 1            \\
+            (1 - \isFirstInput_{i-1}) \cdot \isFirstInput_{i} & =    & 1            \\
         \end{array} \right.
     }
 \]
-
 We introduce the following (local) shorthands:
-
 \[
     \left\{ \begin{array}{lclr}
         \locAXThree                    & \define & \blsLimb _{i}                             \\
@@ -19,10 +17,6 @@ We introduce the following (local) shorthands:
         \locAYTwo                      & \define & \blsLimb _{i + 5}                         \\
         \locAYOne                      & \define & \blsLimb _{i + 6}                         \\
         \locAYZero                     & \define & \blsLimb _{i + 7}                         \\
-        \locNHi                        & \define & \blsLimb _{i + 8}                         \\
-        \locNLo                        & \define & \blsLimb _{i + 9}                         \\
-        \locInternalChecksPassed         & \define & \partialChecks     _{i + \indexMaxBlsGOneMsmDataMin} \\
-        \locPreviousInternalChecksPassed & \define & \partialChecks     _{i - \redm{1}}                  \\
     \end{array} \right.
 \]
 We introduce the following constraints:
@@ -43,34 +37,7 @@ We introduce the following constraints:
                     argTwoZero  = \locAYZero  ,
                 }           
             \]
-        as well as define the shorthand
-            \[
-                \locAIsWellFormed \define \partialChecks_{i}
-            \]
 \end{description}
-
-\begin{description}
-    \item[\underline{Propagation of \locInternalChecksPassed:}]
-          The following constraint defines the value of $\locInternalChecksPassed$ for the first input and the subsequents, if any.
-          For each subsequent, $\locPreviousInternalChecksPassed$ is propagated so as to compute the latest $\locInternalChecksPassed$.
-          Note that this approach is adopted to deal with an arbitrary number of inputs:
-          \begin{enumerate}
-              \item \If $\accInputs_{i} = 1$ \Then
-                    \[
-                        \locInternalChecksPassed = \locAIsWellFormed 
-                    \]
-              \item \If $\accInputs_{i} \neq 1$ \Then
-                    \item $\locInternalChecksPassed = \locAIsWellFormed \cdot \locPreviousInternalChecksPassed$
-          \end{enumerate}
-\end{description}
-\saNote{} \If $\isBlsGOneMsmData_{i} = 0$ \Then $\accInputs_{i} = 0$ and the first input corresponds to $\accInputs_{i} = 1$.
-\begin{description}
-    \item[\underline{Justifying the \blsSuccessBit{}:}]
-          We impose the following constraints
-          \begin{enumerate}
-              \item \If $\malformedDataInternalTot _{i} = 1$ \Then $\blsSuccessBit _{i} = 0$
-              \item \If $\malformedDataInternalTot _{i} = 0$ \Then $\blsSuccessBit_{i} = 1 - \notOnGXAccMax _{i}$
-          \end{enumerate}
-\end{description}
-
-\saNote{} no check is required over the $\locNHi$ and $\locNLo$ limbs.
+\saNote{} No check is required over the $\locNHi$ and $\locNLo$ limbs, where  
+$\locNHi                         \define \blsLimb _{i + 8}$ and                        
+$\locNLo                         \define  \blsLimb _{i + 9}$.                      

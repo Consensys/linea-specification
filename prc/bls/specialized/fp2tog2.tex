@@ -6,7 +6,6 @@
         \end{array} \right.
     }
 \]
-
 We introduce the following (local) shorthands:
 \[
     \left\{ \begin{array}{lclr}
@@ -20,9 +19,7 @@ We introduce the following (local) shorthands:
         \locEBZero  & \define & \blsLimb_{i + 7}  \\
     \end{array} \right.
 \]
-
 We set the following constraints:
-
 \begin{description}
     \item[\underline{Row $n^°(i)$:}]
         we impose
@@ -42,7 +39,7 @@ We set the following constraints:
             \]
         as well as define the shorthand
             \[
-                \locEAIsInRange \define \partialChecks_{i}
+                \locEAIsInRange \define \wcpRes_{i}
             \]
     \item[\underline{Row $n^°(i + 4)$:}]
         we impose
@@ -62,19 +59,15 @@ We set the following constraints:
             \]
         as well as define the shorthand
             \[
-                \locEBIsInRange \define \partialChecks_{i + 4}
+                \locEBIsInRange \define \wcpRes_{i + 4}
             \]
-    \item[\underline{Justifying the \blsSuccessBit{}:}]
-          we define the following shorthand
-          \[
-              \locInternalChecksPassed \define \partialChecks_{i+\indexMaxBlsMapFpTwoToGTwoResult} \\
-          \]
-          and impose the following constraints
-          \[
-              \left\{ \begin{array}{lcl}
-                  \locInternalChecksPassed     & = & \locEAIsInRange \cdot \locEBIsInRange                            \\
-                  \If \locInternalChecksPassed & = & 0 ~ \Then \blsSuccessBit _{i} = 0                                \\
-                  \If \locInternalChecksPassed & = & 1 ~ \Then \blsSuccessBit _{i} \equiv \justifiedByExternalCircuit \\
-              \end{array} \right.
-          \]
+        \item[\underline{Setting \malformedDataInternalBit{}:}]
+            we define the following shorthand
+            \[
+                \locInternalChecksPassed \define 1 - \malformedDataInternalBit _{i} 
+            \]
+            and impose the following constraints
+            \[
+              \locInternalChecksPassed = \locEAIsInRange \cdot \locEBIsInRange
+            \]
 \end{description}

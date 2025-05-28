@@ -6,28 +6,24 @@
         \end{array} \right.
     }
 \]
-
 We introduce the following (local) shorthands:
 \[
     \left\{ \begin{array}{lclr}
-        \locVerHashHi   & \define & \blsLimb_{i}      \\
-        \locVerHashLo   & \define & \blsLimb_{i + 1}  \\
+        %\locVerHashHi   & \define & \blsLimb_{i}      \\
+        %\locVerHashLo   & \define & \blsLimb_{i + 1}  \\
         \locZHi         & \define & \blsLimb_{i + 2}  \\
         \locZLo         & \define & \blsLimb_{i + 3}  \\
         \locYHi         & \define & \blsLimb_{i + 4}  \\
         \locYLo         & \define & \blsLimb_{i + 5}  \\
-        \locComTwo      & \define & \blsLimb_{i + 6}  \\
-        \locComOne      & \define & \blsLimb_{i + 7}  \\
-        \locComZero     & \define & \blsLimb_{i + 8}  \\
-        \locProofTwo    & \define & \blsLimb_{i + 9}  \\
-        \locProofOne    & \define & \blsLimb_{i + 10} \\
-        \locProofZero   & \define & \blsLimb_{i + 11} \\
-
+        %\locComTwo      & \define & \blsLimb_{i + 6}  \\
+        %\locComOne      & \define & \blsLimb_{i + 7}  \\
+        %\locComZero     & \define & \blsLimb_{i + 8}  \\
+        %\locProofTwo    & \define & \blsLimb_{i + 9}  \\
+        %\locProofOne    & \define & \blsLimb_{i + 10} \\
+        %\locProofZero   & \define & \blsLimb_{i + 11} \\
     \end{array} \right.
 \]
-
 We set the following constraints:
-
 \begin{description}
     \item[\underline{Row $n^°(i)$:}]
           we impose
@@ -45,7 +41,6 @@ We set the following constraints:
           \[
               \locZIsInRange \define \wcpRes_{i}
           \]
-   
     \item[\underline{Row $n^°(i + 1)$:}]
           we impose
           \[
@@ -62,19 +57,14 @@ We set the following constraints:
           \[
               \locYIsInRange  \define \wcpRes_{i + 1}
           \]
-    \item[\underline{Justifying the \blsSuccessBit{}:}]
+    \item[\underline{Setting \malformedDataInternalBit{}:}]
           we define the following shorthand
           \[
-              \locInternalChecksPassed \define \partialChecks_{i+\indexMaxPointEvaluationData} \\
+              \locInternalChecksPassed \define 1 - \malformedDataInternalBit _{i} 
           \]
           and impose the following constraints
           \[
-              \left\{ \begin{array}{lcl}
-                  \partialChecks_{i}                  & = & \locZIsInRange                                                   \\ % This is actually not necessary
-                  \partialChecks_{i + 1}              & = & \locYIsInRange                                                   \\
-                  \locInternalChecksPassed     & = & \locZIsInRange \cdot \locYIsInRange                              \\
-                  \If \locInternalChecksPassed & = & 0 ~ \Then \blsSuccessBit _{i} = 0                                \\
-                  \If \locInternalChecksPassed & = & 1 ~ \Then \blsSuccessBit _{i} \equiv \justifiedByExternalCircuit \\
-              \end{array} \right.
+            \locInternalChecksPassed = \locZIsInRange \cdot \locYIsInRange 
           \]
 \end{description}
+\saNote{} The present module performs no checks on the other parts of the call data. Those checks are handled elsewhere.   

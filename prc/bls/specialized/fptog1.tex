@@ -6,7 +6,6 @@
         \end{array} \right.
     }
 \]
-
 We introduce the following (local) shorthands:
 \[
     \left\{ \begin{array}{lclr}
@@ -16,9 +15,7 @@ We introduce the following (local) shorthands:
         \locEZero  & \define & \blsLimb_{i + 3}  \\
     \end{array} \right.
 \]
-
 We set the following constraints:
-
 \begin{description}
     \item[\underline{Row $n^°(i)$:}]
         we impose
@@ -38,19 +35,15 @@ We set the following constraints:
             \]
         as well as define the shorthand
             \[
-                \locEIsInRange \define \partialChecks_{i}
+                \locEIsInRange \define \wcpRes_{i}
             \]
-    \item[\underline{Justifying the \blsSuccessBit{}:}]
+    \item[\underline{Setting \malformedDataInternalBit{}:}]
           we define the following shorthand
           \[
-              \locInternalChecksPassed \define \partialChecks_{i+\indexMaxBlsMapFpToGOneData} \\
+              \locInternalChecksPassed \define 1 - \malformedDataInternalBit _{i} 
           \]
           and impose the following constraints
           \[
-              \left\{ \begin{array}{lcl}
-                  \locInternalChecksPassed     & = & \locEIsInRange                                                   \\
-                  \If \locInternalChecksPassed & = & 0 ~ \Then \blsSuccessBit _{i} = 0                                \\
-                  \If \locInternalChecksPassed & = & 1 ~ \Then \blsSuccessBit _{i} \equiv \justifiedByExternalCircuit \\
-              \end{array} \right.
+            \locInternalChecksPassed = \locEIsInRange
           \]
 \end{description}
