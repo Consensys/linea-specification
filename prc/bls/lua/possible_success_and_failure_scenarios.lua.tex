@@ -19,49 +19,49 @@
 \begin{document}
 \begin{verbatim}
 
-|---------------------+------+------+----------+---------+------------------------------------------------------------------------------------------------------------------------|
-| Precompile          | MINT | MEXT | WTRIVIAL | WNONTRV | Notes                                                                                                                  |
-|---------------------+:----:+:----:+:--------:+:-------:+------------------------------------------------------------------------------------------------------------------------|
-| POINTEVALUATION     |   ✓  |   ✓  |          |    ✓    | MINT: if either z or y is ≥ BLS_PRIME                                                                                  |
-|                     |      |      |          |         | MEXT: if any of the commitment or KZG checks fails                                                                     |
-|---------------------+------+------+----------+---------+------------------------------------------------------------------------------------------------------------------------|
-| BLS12_G1ADD         |   ✓  |   ✓  |          |    ✓    | MINT: any of the 4 = 2 + 2 coordinates are ≥ than the BLS_PRIME                                                        |
-|                     |      |      |          |         | MEXT: any of the points fails to belong to the curve C1                                                                |
-|---------------------+------+------+----------+---------+------------------------------------------------------------------------------------------------------------------------|
-| BLS12_G1MSM         |   ✓  |   ✓  |          |    ✓    | MINT: any of the "curve points" fails to have its coordinates in Fp (i.e. < BLS_PRIME)                                 |
-|                     |      |      |          |         | MEXT: any of the "curve points" fails to belong to G1                                                                  |
-|---------------------+------+------+----------+---------+------------------------------------------------------------------------------------------------------------------------|
-| BLS12_G2ADD         |   ✓  |   ✓  |          |    ✓    | MINT: any of the 4 = 2 + 2 "Fp2" coordinates fails to define a valid Fp2 scalar                                        |
-|                     |      |      |          |         | .     any of the 8 = 4 + 4 "Fp"  coordinates fails to define a valid Fp  scalar                                        |
-|                     |      |      |          |         | MEXT: any of the 2 points fails to belong to the curve C2                                                              |
-|---------------------+------+------+----------+---------+------------------------------------------------------------------------------------------------------------------------|
-| BLS12_G2MSM         |   ✓  |   ✓  |          |    ✓    | MINT: any of the "curve points" fails to have its coordinates in Fp2                                                   |
-|                     |      |      |          |         | MEXT: any of the "curve points" fails to belong to G2                                                                  |
-|---------------------+------+------+----------+---------+------------------------------------------------------------------------------------------------------------------------|
-| BLS12_PAIRING_CHECK |   ✓  |   ✓  |     ✓    |    ✓    | MINT: any of the "curve point coordinates" fails to belong to Fp / Fp2                                                 |
-|                     |      |      |          |         | MEXT: one or more of the "curve points" fails to belong to G1 / G2                                                     |
-|                     |      |      |          |         |                                                                                                                        |
-|                     |      |      |          |         | both cases below have wellformed_data ≡ true                                                                           |
-|                     |      |      |          |         | WTRIVIAL: for every pair of points in the inputs one or both is the point at infinity                                  |
-|                     |      |      |          |         | WNONTRIV: at least one pair of points in the inputs has both its points not at infinity                                |
-|---------------------+------+------+----------+---------+------------------------------------------------------------------------------------------------------------------------|
-| BLS12_MAP_FP_TO_G1  |   ✓  |      |          |    ✓    | MINT: the "Fp" scalar fails to define a Fp point (i.e. fails to be < BLS_PRIME)                                        |
-|                     |      |      |          |         | MEXT: ∅                                                                                                                |
-|---------------------+------+------+----------+---------+------------------------------------------------------------------------------------------------------------------------|
-| BLS12_MAP_FP2_TO_G2 |   ✓  |      |          |    ✓    | MINT: the "Fp2" scalar fails to define a Fp2 point (i.e. both its "real" and "imaginary" parts fail to be < BLS_PRIME) |
-|                     |      |      |          |         | MEXT: ∅                                                                                                                |
-|---------------------+------+------+----------+---------+------------------------------------------------------------------------------------------------------------------------|
+|---------------------+------+------+------+------+------------------------------------------------------------------------------------------------------------------------|
+| Precompile          | MINT | MEXT | WTRV | WNON | Notes                                                                                                                  |
+|---------------------+:----:+:----:+:----:+:----:+------------------------------------------------------------------------------------------------------------------------|
+| POINTEVALUATION     |   ✓  |   ✓  |      |   ✓  | MINT: if either z or y is ≥ BLS_PRIME                                                                                  |
+|                     |      |      |      |      | MEXT: if any of the commitment or KZG checks fails                                                                     |
+|---------------------+------+------+------+------+------------------------------------------------------------------------------------------------------------------------|
+| BLS12_G1ADD         |   ✓  |   ✓  |      |   ✓  | MINT: any of the 4 = 2 + 2 coordinates are ≥ than the BLS_PRIME                                                        |
+|                     |      |      |      |      | MEXT: any of the points fails to belong to the curve C1                                                                |
+|---------------------+------+------+------+------+------------------------------------------------------------------------------------------------------------------------|
+| BLS12_G1MSM         |   ✓  |   ✓  |      |   ✓  | MINT: any of the "curve points" fails to have its coordinates in Fp (i.e. < BLS_PRIME)                                 |
+|                     |      |      |      |      | MEXT: any of the "curve points" fails to belong to G1                                                                  |
+|---------------------+------+------+------+------+------------------------------------------------------------------------------------------------------------------------|
+| BLS12_G2ADD         |   ✓  |   ✓  |      |   ✓  | MINT: any of the 4 = 2 + 2 "Fp2" coordinates fails to define a valid Fp2 scalar                                        |
+|                     |      |      |      |      | .     any of the 8 = 4 + 4 "Fp"  coordinates fails to define a valid Fp  scalar                                        |
+|                     |      |      |      |      | MEXT: any of the 2 points fails to belong to the curve C2                                                              |
+|---------------------+------+------+------+------+------------------------------------------------------------------------------------------------------------------------|
+| BLS12_G2MSM         |   ✓  |   ✓  |      |   ✓  | MINT: any of the "curve points" fails to have its coordinates in Fp2                                                   |
+|                     |      |      |      |      | MEXT: any of the "curve points" fails to belong to G2                                                                  |
+|---------------------+------+------+------+------+------------------------------------------------------------------------------------------------------------------------|
+| BLS12_PAIRING_CHECK |   ✓  |   ✓  |   ✓  |   ✓  | MINT: any of the "curve point coordinates" fails to belong to Fp / Fp2                                                 |
+|                     |      |      |      |      | MEXT: one or more of the "curve points" fails to belong to G1 / G2                                                     |
+|                     |      |      |      |      |                                                                                                                        |
+|                     |      |      |      |      | both cases below have wellformed_data ≡ true                                                                           |
+|                     |      |      |      |      | WTRV: for every pair of points in the inputs one or both is the point at infinity                                      |
+|                     |      |      |      |      | WNON: at least one pair of points in the inputs has both its points not at infinity                                    |
+|---------------------+------+------+------+------+------------------------------------------------------------------------------------------------------------------------|
+| BLS12_MAP_FP_TO_G1  |   ✓  |      |      |   ✓  | MINT: the "Fp" scalar fails to define a Fp point (i.e. fails to be < BLS_PRIME)                                        |
+|                     |      |      |      |      | MEXT: ∅                                                                                                                |
+|---------------------+------+------+------+------+------------------------------------------------------------------------------------------------------------------------|
+| BLS12_MAP_FP2_TO_G2 |   ✓  |      |      |   ✓  | MINT: the "Fp2" scalar fails to define a Fp2 point (i.e. both its "real" and "imaginary" parts fail to be < BLS_PRIME) |
+|                     |      |      |      |      | MEXT: ∅                                                                                                                |
+|---------------------+------+------+------+------+------------------------------------------------------------------------------------------------------------------------|
 
 NOTE. Recall the definition shorthand
 
-    wellformed_data ≡ WTRIVIAL + WNONTRV ∈ {0, 1}
+    wellformed_data ≡ WTRV + WNON ∈ {0, 1}
 
 The intent is that `wellformed_data = 1` is equivalent to the success of the precompile
 as measured by pushing a 1 onto the stack following the CALL-type instruction, i.e.
 
     wellformed_data ≡ true ⇔ μ_s'|0] = 1
 
-The only precompile which may use both WTRIVIAL and WNONTRV is BLS_PAIRING_CHECK.
+The only precompile which may use both WTRV and WNON is BLS_PAIRING_CHECK.
 
 NOTE. There are two distinct primes:
 
