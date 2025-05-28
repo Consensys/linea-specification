@@ -1,66 +1,59 @@
-% TODO: merge
-
 We impose the following constraints on \cOneMembershipTestRequired{}:
 \begin{enumerate}
     \item \cOneMembershipTestRequired{} is \textbf{counter-constant, binary} \quad (\trash)
     \item
         \[  
-            \cOneMembershipTestRequired_{i} = 
-            \left[ \begin{array}{clcr}
-              + & \malformedDataExternalBit \cdot \isBlsGOneAddData_{i} \\
-              + & \malformedDataExternalBit \cdot \isBlsGOneMsmData_{i} \cdot \isFirstInput \\
-            \end{array} \right] \vspace{2mm}  
+        \cOneMembershipTestRequired_{i} = 
+        \left[ \begin{array}{clcr}
+            + & \malformedDataExternalBit \cdot \isBlsGOneAddData_{i} \\
+            + & \malformedDataExternalBit \cdot \isBlsGOneMsmData_{i} \cdot \isFirstInput \\
+        \end{array} \right] \vspace{2mm}  
         \]
 \end{enumerate}
-\noindent
 We impose the following constraints on \cTwoMembershipTestRequired{}:
 \begin{enumerate}
     \item \cTwoMembershipTestRequired{} is \textbf{counter-constant, binary} \quad (\trash)
     \item 
-    \[  
+        \[  
         \cTwoMembershipTestRequired_{i} = 
         \left[ \begin{array}{clcr}
-          + & \malformedDataExternalBit \cdot \isBlsGTwoAddData_{i} \\
-          + & \malformedDataExternalBit \cdot \isBlsGTwoMsmData_{i} \cdot \isFirstInput \\
+            + & \malformedDataExternalBit \cdot \isBlsGTwoAddData_{i} \\
+            + & \malformedDataExternalBit \cdot \isBlsGTwoMsmData_{i} \cdot \isFirstInput \\
         \end{array} \right] \vspace{2mm}  
-    \]
+        \]
 \end{enumerate}
-\noindent
 We impose the following constraints on \gOneMembershipTestRequired{}:
 \begin{enumerate}
     \item \gOneMembershipTestRequired{} is \textbf{counter-constant, binary} \quad (\trash)
     \item 
         \[
             \gOneMembershipTestRequired_{i} = 
-                \left[ \begin{array}{cl} 
-                    + & \isBlsGOneMsmData_{i} \cdot \isFirstInput \cdot \malformedDataExternalBit_{i}  \\
-                    + & \isBlsPairingCheckData_{i} \cdot \isFirstInput \cdot \malformedDataExternalBit_{i} \\
-                    + & \isBlsPairingCheckData_{i} \cdot \isFirstInput \cdot \locWellformedData_{i} \cdot \\
-                      & \pairOfPointsContainsInfinity_{i} \cdot (1 - \isInfinity_{i}) \\
-                \end{array} \right] \\
+            \left[ \begin{array}{cl} 
+                + & \isBlsGOneMsmData_{i} \cdot \isFirstInput \cdot \malformedDataExternalBit_{i}  \\
+                + & \isBlsPairingCheckData_{i} \cdot \isFirstInput \cdot \malformedDataExternalBit_{i} \\
+                + & \isBlsPairingCheckData_{i} \cdot \isFirstInput \cdot \locWellformedData_{i} \cdot \\
+                & (1 - \nontrivialPairOfPoints_{i}) \cdot (1 - \isInfinity_{i}) \\
+            \end{array} \right] \\
         \]
 \end{enumerate}
-\noindent
 We impose the following constraints on \gTwoMembershipTestRequired{}:
 \begin{enumerate}
     \item \gTwoMembershipTestRequired{} is \textbf{counter-constant, binary} \quad (\trash)
     \item 
         \[
             \gTwoMembershipTestRequired_{i} = 
-                \left[ \begin{array}{cl} 
-                    + & \isBlsGTwoMsmData_{i} \cdot \isFirstInput \cdot \malformedDataExternalBit_{i}  \\
-                    + & \isBlsPairingCheckData_{i} \cdot \isSecondInput \cdot \malformedDataExternalBit_{i} \\
-                    + & \isBlsPairingCheckData_{i} \cdot \isSecondInput \cdot \locWellformedData_{i} \cdot \\
-                    & \pairOfPointsContainsInfinity_{i} \cdot (1 - \isInfinity_{i}) \\
-                \end{array} \right] \\
+            \left[ \begin{array}{cl} 
+                + & \isBlsGTwoMsmData_{i} \cdot \isFirstInput \cdot \malformedDataExternalBit_{i}  \\
+                + & \isBlsPairingCheckData_{i} \cdot \isSecondInput \cdot \malformedDataExternalBit_{i} \\
+                + & \isBlsPairingCheckData_{i} \cdot \isSecondInput \cdot \locWellformedData_{i} \cdot \\
+                & (1 - \nontrivialPairOfPoints_{i}) \cdot (1 - \isInfinity_{i}) \\
+            \end{array} \right] \\
         \]
 \end{enumerate}
-
 % TODO: adapt
 % \saNote{} The purpose of \membershipTestRequired{} is twofold:
 % (\emph{a}) in case the present module predicts that some point in the data of a call to the \inst{ECPAIRING} precompile is not on $G_2$ the \membershipTestRequired{} flag selects that point, see section~(\ref{prc: ec data: successful pairing: setting G2 non membership})
 % (\emph{b}) in case the present module predicts that all points in the data of the same call are on $G_2$ the \membershipTestRequired{} flag selects for every pair of points $(P,Q)$ those $Q$ whose accompanying $P$ is the point at infinity, see section~(\ref{prc: ec data: successful pairing: setting membershipTestRequired}).
-
 We now define the behaviour of the various circuit selectors.
 \begin{description}
     \item[Circuit selector for the \inst{PointEvaluation} circuit:]
@@ -74,71 +67,71 @@ We now define the behaviour of the various circuit selectors.
     \item[Circuit selector for the \inst{G2MSM} circuit:]
         $\csGTwoMsm_{i} = \locIsBlsGTwoMsm_{i} \cdot \wellformedDataNontrivial_{i}$
     \item[Circuit selector for the \inst{PAIRING\_CHECK} circuit:]
-    we introduce the following shorthands:
-    \[
-        \begin{array}{lcl}
-            \locCsGOnePairingMalformed_{i} & \define &
-            \left[ \begin{array}{clcr}
-                \cdot & \locIsBlsPairingCheck_{i}                        \\
-                \cdot & \malformedDataExternalBit_{i}                            \\
-                \cdot & \isFirstInput_{i}                                \\
-            \end{array} \right] \vspace{2mm}                             \\
+        we introduce the following shorthands:
+        \[
+            \begin{array}{lcl}
+                \locCsGOnePairingMalformed_{i} & \define &
+                \left[ \begin{array}{clcr}
+                    \cdot & \locIsBlsPairingCheck_{i}                        \\
+                    \cdot & \malformedDataExternalBit_{i}                            \\
+                    \cdot & \isFirstInput_{i}                                \\
+                \end{array} \right] \vspace{2mm}                             \\
+                %
+                \locCsGOnePairingWellformed_{i} & \define &
+                \left[ \begin{array}{clcr}
+                    \cdot & \locIsBlsPairingCheck_{i}                        \\
+                    \cdot & \locWellformedData_{i}                           \\
+                    \cdot & \isFirstInput_{i}                                \\
+                    \cdot & (1 - \isInfinity_{i})                            \\
+                    \cdot & (1 - \nontrivialPairOfPoints_{i})                \\
+                \end{array} \right] \vspace{2mm}                             \\
+                %
+                \locCsGOnePairing_{i} & \define &
+                \left[ \begin{array}{clcr}
+                    + & \locCsGOnePairingMalformed_{i}                       \\
+                    + & \locCsGOnePairingWellformed_{i}                      \\
+                \end{array} \right] \vspace{2mm}                             \\
+                %
+                \locCsGTwoPairingMalformed_{i} & \define &
+                \left[ \begin{array}{clcr}
+                    \cdot & \locIsBlsPairingCheck_{i}                        \\
+                    \cdot & \malformedDataExternalBit_{i}                            \\
+                    \cdot & \isSecondInput_{i}                                \\
+                \end{array} \right] \vspace{2mm}                             \\
+                %
+                \locCsGTwoPairingWellformed_{i} & \define &
+                \left[ \begin{array}{clcr}
+                    \cdot & \locIsBlsPairingCheck_{i}                        \\
+                    \cdot & \locWellformedData_{i}                           \\
+                    \cdot & \isSecondInput_{i}                                \\
+                    \cdot & (1 - \isInfinity_{i})                            \\
+                    \cdot & (1 - \nontrivialPairOfPoints_{i})                \\
+                \end{array} \right] \vspace{2mm}                             \\
+                %
+                \locCsGTwoPairing_{i} & \define &
+                \left[ \begin{array}{clcr}
+                    + & \locCsGTwoPairingMalformed_{i}                       \\
+                    + & \locCsGTwoPairingWellformed_{i}                      \\
+                \end{array} \right] \vspace{2mm}                             \\
+            \end{array}
+        \]
 
-            \locCsGOnePairingWellformed_{i} & \define &
-            \left[ \begin{array}{clcr}
-                \cdot & \locIsBlsPairingCheck_{i}                        \\
-                \cdot & \locWellformedData_{i}                           \\
-                \cdot & \isFirstInput_{i}                                \\
-                \cdot & (1 - \isInfinity_{i})                            \\
-                \cdot & \pairOfPointsContainsInfinity_{i}                \\
-            \end{array} \right] \vspace{2mm}                             \\
-
-            \locCsGOnePairing_{i} & \define &
-            \left[ \begin{array}{clcr}
-                + & \locCsGOnePairingMalformed_{i}                       \\
-                + & \locCsGOnePairingWellformed_{i}                      \\
-            \end{array} \right] \vspace{2mm}                             \\
-
-            \locCsGTwoPairingMalformed_{i} & \define &
-            \left[ \begin{array}{clcr}
-                \cdot & \locIsBlsPairingCheck_{i}                        \\
-                \cdot & \malformedDataExternalBit_{i}                            \\
-                \cdot & \isSecondInput_{i}                                \\
-            \end{array} \right] \vspace{2mm}                             \\
-
-            \locCsGTwoPairingWellformed_{i} & \define &
-            \left[ \begin{array}{clcr}
-                \cdot & \locIsBlsPairingCheck_{i}                        \\
-                \cdot & \locWellformedData_{i}                           \\
-                \cdot & \isSecondInput_{i}                                \\
-                \cdot & (1 - \isInfinity_{i})                            \\
-                \cdot & \pairOfPointsContainsInfinity_{i}                \\
-            \end{array} \right] \vspace{2mm}                             \\
-
-            \locCsGTwoPairing_{i} & \define &
-            \left[ \begin{array}{clcr}
-                + & \locCsGTwoPairingMalformed_{i}                       \\
-                + & \locCsGTwoPairingWellformed_{i}                      \\
-            \end{array} \right] \vspace{2mm}                             \\
-        \end{array}
-    \]
-
-    we impose the following constraints:
+        we impose the following constraints:
         \begin {enumerate}
-            \item 
-                \[
-                    \begin{array}{lcl}
-                        \csPairing_{i} & = & \isBlsPairingCheckData_{i} \cdot \wellformedDataNontrivial_{i} \cdot (1 - \pairOfPointsContainsInfinity_{i})  \\
-                        & & + \isBlsPairingCheckResult_{i} \cdot \wellformedDataNontrivial_{i} \\
-                    \end{array}
-                \]
-            \item \If $\locIsBlsPairingCheck_{i} = 0$ \Then
-                \[
-                    \begin{array}{lcl}
-                        \csPairing_{i} & = & 0
-                    \end{array}
-                \]
-        \end{enumerate}
+    \item 
+        \[
+            \begin{array}{lcl}
+                \csPairing_{i} & = & \isBlsPairingCheckData_{i} \cdot \wellformedDataNontrivial_{i} \cdot \nontrivialPairOfPoints_{i} \\
+                               &   & + \isBlsPairingCheckResult_{i} \cdot \wellformedDataNontrivial_{i}                               \\
+            \end{array}
+        \]
+    \item \If $\locIsBlsPairingCheck_{i} = 0$ \Then
+        \[
+            \begin{array}{lcl}
+                \csPairing_{i} & = & 0
+            \end{array}
+        \]
+\end{enumerate}
     \item[Circuit selector for the \inst{C1\_MEMBERSHIP\_TEST} circuit:]
         $\csCOne_{i} = \cOneMembershipTestRequired_{i}$
     \item[Circuit selector for the \inst{C2\_MEMBERSHIP\_TEST} circuit:]

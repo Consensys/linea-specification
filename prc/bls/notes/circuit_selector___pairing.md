@@ -155,7 +155,7 @@ malformedDataInternalJustification
 nontrivialPairOfPointsAcc
 wellformedDataTrivial
 wellformedDataNontrivial
-pairOfPointsContainsInfinity
+nontrivialPairOfPoints
 malformedDataExternalBit
 malformedDataExternalAcc
 malformedDataExternalJustification
