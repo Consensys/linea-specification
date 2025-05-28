@@ -1,0 +1,46 @@
+
+We enforce the following constraints:
+\begin{enumerate}
+    \item \nontrivialPairOfPointsAcc{} is \textbf{pair-of-points-constant}, \textbf{binary} \quad (\trash)
+    \item \If $\isBlsPairingCheckData _{i} = 0$ \Then $\nontrivialPairOfPointsAcc _{i} = 0$
+    \item \If $\isBlsPairingCheckData _{i - 1} = 0$ \et $\isBlsPairingCheckData _{i} = 1$ \Then $\nontrivialPairOfPointsAcc _{i} = \nontrivialPairOfPoints _{i}$
+    \item
+        \label{bls: setting trivial: transition from large to small}
+        \If $\locTransitionFromLargeToSmall_{i} = 1$ \Then
+          \begin{enumerate}
+              \item \If $\nontrivialPairOfPointsAcc _{i} = 1$ \Then $\nontrivialPairOfPointsAcc _{i + 1} = 1$
+              \item \If $\nontrivialPairOfPointsAcc _{i} = 0$ \Then $\nontrivialPairOfPointsAcc _{i + 1} = \nontrivialPairOfPoints _{i + 1}$
+          \end{enumerate}
+    \item \If $\locTransitionToResult _{i} = 1$ \Then
+    \begin{enumerate}
+        \item
+            \label{bls: setting trivial: set wellformed data flags}
+            \If $\locWellformedData _{i} = 1$ \Then $\wellformedDataNontrivial _{i} = \nontrivialPairOfPointsAcc _{i}$
+        %\item \If $\wellformedDataNontrivial_{i} = 1$ \Then $\nontrivialPairOfPointsAcc_{i} = 0$
+    \end{enumerate}
+\end{enumerate}
+\saNote{} The above means that \nontrivialPairOfPointsAcc{} records whether or not the pairing data contains at least one point, either small or large, that isn't the point at infinity.
+
+\saNote{} The constraints of case (\ref{bls: setting trivial: transition from large to small}) and (\ref{bls: setting trivial: transition from small to large}) can be merged in the implementation.
+
+\saNote{} The value of $\wellformedDataNontrivial_{i}$ is implicitly set by flag exclusivity in constraint (\ref{bls: setting trivial: set wellformed data flags}).
+
+We use the \nontrivialPairOfPointsAcc{} flag to set the result of unexceptional yet trivial pairings:
+\begin{enumerate}[resume]
+    \item we impose that
+          \[
+              \If
+              \left\{ \begin{array}{lcl}
+                  \locTransitionToResult _{i} & = & 1 \\
+                  \wellformedDataTrivial _{i} & = & 1 \\
+              \end{array} \right.
+              \Then
+              \left\{ \begin{array}{lcl}
+                  \locPairingsResultHi  & \define & \blsLimb _{i + 1} \\
+                  \locPairingsResultLo  & \define & \blsLimb _{i + 2} \\
+                  \locPairingsResultHi  & =       & 0                 \\
+                  \locPairingsResultLo  & =       & 1
+              \end{array} \right.
+          \]
+\end{enumerate}
+

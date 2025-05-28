@@ -152,9 +152,9 @@ notOnGXAccMax
 ## Macros added
 
 malformedDataInternalJustification
-trivialAcc
+nontrivialPairOfPointsAcc
 wellformedDataTrivial
-wellformedDataNonTrivial
+wellformedDataNontrivial
 pairOfPointsContainsInfinity
 malformedDataExternalBit
 malformedDataExternalAcc
