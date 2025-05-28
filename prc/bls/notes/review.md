@@ -16,3 +16,8 @@
 - define is_variable_size_data inside ACCP section
 - G1MTR,G2... IS_FIRST_INPUT remove from multiplication
 - MALFORMED_DATA, MALFORMED_DATA_ACC, MALFORMED_DATA_ACC_MAX instead of NOT_ON...
+
+
+# 28/5 review
+
+- Split utils wellformed + infinity;
