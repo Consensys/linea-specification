@@ -218,9 +218,20 @@ Let $\mathbb{G}_1$ be $\mathbb{C}_1$ subgroup and $\mathbb{G}_2$ be $\mathbb{C}_
     - BLS
         - coordinate encoding, which in this case means:
         ```
-        z, y < BLS_PRIME
-        where BLS_PRIME = 73EDA753299D7D483339D80809A1D80553BDA402FFFE5BFEFFFFFFFF00000001
+        z, y < POINTEVALUATION_PRIME
+        where POINTEVALUATION_PRIME = 73EDA753299D7D483339D80809A1D80553BDA402FFFE5BFEFFFFFFFF00000001
         ```
+
+OOB check [for call data size == 192] ∧ [sufficient gas]
+MINT  = [y not BLS field element] ∨ [z not BLS field element]
+MEXT  = everything that can go wrong on the commitment / kzg side of things, see [execution spec](https://github.com/ethereum/execution-specs/blob/69b1c586f74f76c14d0de77de499a9606d3e30e9/src/ethereum/cancun/vm/precompiled_contracts/point_evaluation.py#L55C1-L65C28)
+        MEXT_BIT / MEXT_ACC should agree with MEXT
+WTRIV = 0 by fiat
+WNTRV = all other cases
+
+SUCCESS = WTRIV + WNTRV
+μ_s'[0] = SUCCESS
+return_data = ∅ if no success, other wise it's 64 bytes
 
 
 Note that addition operations do not require subgroup membership checks. 
