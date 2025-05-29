@@ -1,9 +1,9 @@
 # OOB
 
-- Formatting
+- Formatting;
 
 # BLS
 
-- Split utils wellformed + infinity;
-- Update tables
-- Remove PART_CHECKS
+- Split utils wellformed + infinity; Ok, modulo formatting
+- Update tables;
+- Remove PART_CHECKS;

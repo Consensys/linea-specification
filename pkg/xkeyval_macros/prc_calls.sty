@@ -22,6 +22,8 @@
 \define@cmdkey [PRC] {var} {argTwoOne}    {}
 \define@cmdkey [PRC] {var} {argTwoZero}   {}
 
+\define@cmdkey [PRC] {var} {coordinatesSum}{} 
+
 % the above defines macros à la "\cmdPRC@var@anchorRow"
 
 % DEFAULT VALUES
@@ -44,6 +46,7 @@
 	argTwoTwo   = \missingParameter,
 	argTwoOne   = \missingParameter,
 	argTwoZero  = \missingParameter,
+	coordinatesSum = \missingParameter
 }{}
 
 
@@ -91,5 +94,15 @@
 			\utt{Second argument 2:} & \cmdPRC@var@argTwoTwo    \\
 			\utt{Second argument 1:} & \cmdPRC@var@argTwoOne    \\
 			\utt{Second argument 0:} & \cmdPRC@var@argTwoZero   \\
+		\end{array} \right]
+}
+
+\newcommand{\callToIsInfinityName} {\texttt{isInfinity}}
+\newcommand{\callToIsInfinity} [1] {
+	\setkeys[PRC]{var}{#1}
+	\callToIsInfinityName _{\cmdPRC@var@anchorRow}
+	\left[ \begin{array}{ll}
+			\utt{Rel. row offset:} & \cmdPRC@var@relOffset    \\
+			\utt{Coord. sum:} & \cmdPRC@var@coordinatesSum
 		\end{array} \right]
 }
