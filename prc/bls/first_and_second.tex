@@ -1,8 +1,36 @@
 The present section provides constraints for
 \isFirstInput{} and \isSecondInput{}.
-We now move on to the \textbf{transitions} of $\isFirstInput$ and $\isSecondInput$.
-The first constraint below imposes that \isFirstInput{} appears before \isSecondInput{},
-while the second constraint imposes that these flags ``alternate.''
+We introduce the following shorthands 
+\[
+    \left\{ \begin{array}{lcl}
+        \locIsVariableSizeData _{i} & \define &  
+        \left[ \begin{array}{cl}
+            + & \isBlsGOneMsmData      _{i} \\
+            + & \isBlsGTwoMsmData      _{i} \\
+            + & \isBlsPairingCheckData _{i} \\
+        \end{array} \right]
+        \vspace{2mm}
+        \\
+        \locPrecompileWithTwoInputTypes _{i} & \define &
+        \left[ \begin{array}{cl}
+            + & \isBlsGOneAddData      _{i} \\
+            + & \isBlsGOneMsmData      _{i} \\
+            + & \isBlsGTwoAddData      _{i} \\
+            + & \isBlsGTwoMsmData      _{i} \\
+            + & \isBlsPairingCheckData _{i} \\
+        \end{array} \right]
+        \vspace{2mm}
+        \\
+        \locPrecompileWithOneInputTypes _{i} & \define &
+        \left[ \begin{array}{cl}
+            + & \isPointEvaluationData   _{i} \\
+            + & \isBlsMapFpToGOneData    _{i} \\
+            + & \isBlsMapFpTwoToGTwoData _{i} \\
+        \end{array} \right]
+        \\
+    \end{array} \right.
+\]
+We impose that
 \begin{enumerate}
     \item $\isFirstInput$ and $\isSecondInput$ are binary, counter-constant \quad (\trash)
     \item $\locIsData                      _{i} = \isFirstInput _{i} + \isSecondInput _{i}$
