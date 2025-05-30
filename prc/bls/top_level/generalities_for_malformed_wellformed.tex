@@ -40,6 +40,12 @@ and that every precompile call carries precisely one of these labels.
                 \label{bls: generalities for malformed and wellformed: set wellformed data flags}
                 \If $\locWellformedData _{i} = 1$ \Then $\wellformedDataNontrivial _{i} = \nontrivialPairOfPointsAcc _{i}$
         \end{enumerate}
+    \item 
+        \label{bls: top level: msm g1 cannot raise mint bit}  
+        \If $\isBlsGOneMsmData _{i} = 1$ \et $\isSecondInput _{i} = 1$ \Then $\malformedDataInternalBit _{i} = 0$
+    \item 
+        \label{bls: top level: msm g2 cannot raise mint bit}
+        \If $\isBlsGTwoMsmData _{i} = 1$ \et $\isSecondInput _{i} = 0$ \Then $\malformedDataInternalBit _{i} = 0$
 \end{enumerate}
 \saNote{}
 The first few points, that is
@@ -54,6 +60,11 @@ Clearly constraints
 can be implemented as one single constraint.
 
 \saNote{} The value of $\wellformedDataTrivial_{i}$ is implicitly set by flag exclusivity in constraint (\ref{bls: generalities for malformed and wellformed: set wellformed data flags}).
+
+\saNote{} The last constraints, that is 
+(\ref{bls: top level: msm g1 cannot raise mint bit}) and
+(\ref{bls: top level: msm g2 cannot raise mint bit})
+enforce that scalars cannot raise \malformedDataInternalBit{} to 1.
 
 \noindent We further use these columns to define the success of the precompile call:
 \begin{enumerate}[resume]
