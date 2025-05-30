@@ -1,0 +1,147 @@
+We define the usual shorthands
+\[
+	\left\{ \begin{array}{lcl}
+		\locIsPointEvaluation_{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \isPointEvaluationData   _{i} \\
+			+ & \isPointEvaluationResult _{i} \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\locIsBlsGOneAdd_{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \isBlsGOneAddData   _{i} \\
+			+ & \isBlsGOneAddResult _{i} \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\locIsBlsGOneMsm_{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \isBlsGOneMsmData   _{i} \\
+			+ & \isBlsGOneMsmResult _{i} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locIsBlsGTwoAdd_{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \isBlsGTwoAddData   _{i} \\
+			+ & \isBlsGTwoAddResult _{i} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locIsBlsGTwoMsm_{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \isBlsGTwoMsmData   _{i} \\
+			+ & \isBlsGTwoMsmResult _{i} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locIsBlsPairingCheck_{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \isBlsPairingCheckData   _{i} \\
+			+ & \isBlsPairingCheckResult _{i} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locIsBlsMapFpToGOne_{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \isBlsMapFpToGOneData   _{i} \\
+			+ & \isBlsMapFpToGOneResult _{i} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locIsBlsMapFpTwoToGTwo_{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \isBlsMapFpTwoToGTwoData   _{i} \\
+			+ & \isBlsMapFpTwoToGTwoResult _{i} \\
+		\end{array} \right]
+		\\
+	\end{array} \right.
+\]
+and 
+\[
+	\left\{ \begin{array}{lcl}
+		\locFlagSum_{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \locIsPointEvaluation _{i} \\
+			+ & \locIsBlsGOneAdd      _{i} \\
+			+ & \locIsBlsGOneMsm      _{i} \\
+			+ & \locIsBlsGTwoAdd      _{i} \\
+			+ & \locIsBlsGTwoMsm      _{i} \\
+			+ & \locIsBlsPairingCheck _{i} \\
+			+ & \locIsBlsMapFpToGOne  _{i} \\
+			+ & \locIsBlsMapFpTwoToGTwo_{i} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locAddressSum_{i} & \define &
+		\left[ \begin{array}{crcl}
+			+ & 10 & \!\!\!\cdot\!\!\! & \locIsPointEvaluation _{i} \\
+			+ & 11 & \!\!\!\cdot\!\!\! & \locIsBlsGOneAdd  _{i} \\
+			+ & 12 & \!\!\!\cdot\!\!\! & \locIsBlsGOneMsm  _{i} \\
+			+ & 13 & \!\!\!\cdot\!\!\! & \locIsBlsGTwoAdd  _{i} \\
+			+ & 14 & \!\!\!\cdot\!\!\! & \locIsBlsGTwoMsm  _{i} \\
+			+ & 15 & \!\!\!\cdot\!\!\! & \locIsBlsPairingCheck  _{i} \\
+			+ & 16 & \!\!\!\cdot\!\!\! & \locIsBlsMapFpToGOne  _{i} \\
+			+ & 17 & \!\!\!\cdot\!\!\! & \locIsBlsMapFpTwoToGTwo_{i} \\
+		\end{array} \right]
+		\\
+	\end{array} \right.
+\]
+and we further define the following shorthands
+\[
+	\left\{ \begin{array}{lcl}
+		\locIsData_{i} & \define &  
+		\left[ \begin{array}{cl}
+			+ & \isPointEvaluationData  _{i}   \\
+            + & \isBlsGOneAddData  _{i}        \\
+			+ & \isBlsGOneMsmData  _{i}        \\
+			+ & \isBlsGTwoAddData  _{i}        \\
+			+ & \isBlsGTwoMsmData  _{i}        \\
+			+ & \isBlsPairingCheckData  _{i}   \\
+			+ & \isBlsMapFpToGOneData  _{i}    \\
+			+ & \isBlsMapFpTwoToGTwoData  _{i} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locIsResult_{i} & \define &  
+		\left[ \begin{array}{cl}
+			+ & \isPointEvaluationResult  _{i}   \\
+			+ & \isBlsGOneAddResult  _{i}        \\
+			+ & \isBlsGOneMsmResult  _{i}        \\
+			+ & \isBlsGTwoAddResult  _{i}        \\
+			+ & \isBlsGTwoMsmResult  _{i}        \\
+			+ & \isBlsPairingCheckResult  _{i}   \\
+			+ & \isBlsMapFpToGOneResult  _{i}    \\
+			+ & \isBlsMapFpTwoToGTwoResult  _{i} \\
+		\end{array} \right] \\
+	\end{array} \right.
+\]
+and
+\[
+        \left\{ \begin{array}{lcrcl}
+                \locTransitionToData   _{i} & \define & (1 - \locIsData   _{i}) & \cdot & \locIsData   _{i + 1} \\
+                \locTransitionToResult _{i} & \define & (1 - \locIsResult _{i}) & \cdot & \locIsResult _{i + 1} \vspace{2mm} \\
+                \locTransitionBit      _{i} & \define &
+                \multicolumn{3}{l}{
+			\left[ \begin{array}{cl}
+				+ & \locTransitionToData   _{i} \\
+				+ & \locTransitionToResult _{i} \\
+			\end{array} \right]}
+				\vspace{2mm}
+				\\				
+				\locNewFirstInput  _{i} & \define & (1 - \isFirstInput  _{i - 1}) & \cdot & \isFirstInput  _{i} \\
+				\locNewSecondInput _{i} & \define & (1 - \isSecondInput _{i - 1}) & \cdot & \isSecondInput _{i} \\
+				\locNewInput       _{i} & \define &
+				\multicolumn{3}{l}{
+				\left[ \begin{array}{crcl}
+					+ & \locNewFirstInput _{i}   \\
+					+ & \locNewSecondInput _{i}  \\
+				\end{array} \right]}
+        \end{array} \right.
+\]
+\saNote{} The quantity $\locTransitionBit$ is indeed a bit.
+\saNote{} \label{bls: shorthands: everything is binary}
+All shorthands defined in the above, with the exception of $\locAddressSum$, are binary.
+This follows from the binarity of the various data and result flags, 
+see section~(\ref{bls: binary})
+and their exclusivity, 
+see section~(\ref{bls: flag sum}).

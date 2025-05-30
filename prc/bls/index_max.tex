@@ -40,26 +40,20 @@ and define the following shorthand
             + & \indexMaxBlsMapFpTwoToGTwoResult & \!\!\!\cdot\!\!\! & \isBlsMapFpTwoToGTwoResult _{i}    \\
 		\end{array} \right]
 \]
-We then impose the following constraint
-\[
-	\llarge \cdot \indexMax_{i}
-	=
-	\left[ \begin{array}{crcl}
-			+ & \llarge                    & \!\!\!\cdot\!\!\! & \locIndexMaxSum_{i}                        \\
-            + & \isBlsGOneMsmData_{i}      & \!\!\!\cdot\!\!\! & \Big[ \ecdataTotalSize_{i} - \llarge \Big] \vspace{2mm} \\
-            + & \isBlsGTwoMsmData_{i}      & \!\!\!\cdot\!\!\! & \Big[ \ecdataTotalSize_{i} - \llarge \Big] \vspace{2mm} \\
-			+ & \isBlsPairingCheckData_{i} & \!\!\!\cdot\!\!\! & \Big[ \ecdataTotalSize_{i} - \llarge \Big] \\
-		\end{array} \right]
-\]
-The above constraint can be rewritten as
-\[
-	\indexMax_{i}
-	=
-	\left[ \begin{array}{crcl}
-			+ &                              &                   & \locIndexMaxSum_{i}                                                          \\
-            + & \isBlsGOneMsmData_       {i} & \!\!\!\cdot\!\!\! & \Big[ (\indexMaxBlsGOneMsmDataMin + 1) \cdot \totalInputs_{i} - 1 \Big]    \vspace{2mm} \\
-            + & \isBlsGTwoMsmData_       {i} & \!\!\!\cdot\!\!\! & \Big[ (\indexMaxBlsGTwoMsmDataMin + 1) \cdot \totalInputs_{i} - 1 \Big]     \vspace{2mm} \\
-			+ & \isBlsPairingCheckData_ {i}  & \!\!\!\cdot\!\!\! & \Big[ (\indexMaxBlsPairingCheckDataMin + 1) \cdot \totalInputs_{i} - 1 \Big] \\
-		\end{array} \right]
-\]
-\saNote{} The (input) data size of a call to \inst{G1MSM}, \inst{G2MSM} and \inst{PAIRING\_CHECK} precompile, given that it makes its way into the present module, are always a \textbf{nonzero multiple of 160, 288 and 384} respectively. Contrary to other precompile calls dealt with by the present module its size (and hence the associated \indexMax{} value) isn't a fixed constant.
+We then impose the following constraints
+\begin{enumerate}
+    \item $\indexMax$ is \blsIndex-constant \quad (\sanityCheck)
+    \item We set its value
+            \[
+            \llarge \cdot \indexMax_{i}
+            =
+            \left[ \begin{array}{crcl}
+                    + & \llarge                    & \!\!\!\cdot\!\!\! & \locIndexMaxSum_{i}                        \\
+                    + & \isBlsGOneMsmData_{i}      & \!\!\!\cdot\!\!\! & \Big[ \ecdataTotalSize_{i} - \llarge \Big] \vspace{2mm} \\
+                    + & \isBlsGTwoMsmData_{i}      & \!\!\!\cdot\!\!\! & \Big[ \ecdataTotalSize_{i} - \llarge \Big] \vspace{2mm} \\
+                    + & \isBlsPairingCheckData_{i} & \!\!\!\cdot\!\!\! & \Big[ \ecdataTotalSize_{i} - \llarge \Big] \\
+                \end{array} \right]
+            \]
+\end{enumerate}
+\saNote{}
+The (input) data size of a call to \inst{G1MSM}, \inst{G2MSM} and \inst{PAIRING\_CHECK} precompile, given that it makes its way into the present module, are always a \textbf{nonzero multiple of 160, 288 and 384} respectively. Contrary to other precompile calls dealt with by the present module its size (and hence the associated \indexMax{} value) isn't a fixed constant.
