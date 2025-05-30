@@ -1,9 +1,38 @@
-\begin{figure}[h!]
-    \begin{adjustwidth}{-2cm}{-2cm}
-        \resizebox{13cm}{!}{%
-        \centering
-        \[
-            \renewcommand{\arraystretch}{1.5}
+% !TeX TS-program = lualatex
+% \documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+\documentclass[tikz, border = 1cm]{standalone}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{fontawesome}
+\usepackage{amsmath}
+\usepackage{../../../pkg/draculatheme}
+\usepackage{../../../pkg/common}
+\usepackage{../../../pkg/std}
+\usepackage{../../../pkg/env}
+\usepackage{../../../pkg/precompiles}
+\usepackage{../../../pkg/ram}
+\usepackage{../../../pkg/rom}
+\usepackage{../../../pkg/flags_stamps_selectors}
+\usepackage{../../../pkg/colors}
+
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NL Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\begin{document}
+\input{../../_local}
+\input{_local}
+\begin{tikzpicture}
+    \draw (0,0) node {
+    $
+    \renewcommand{\arraystretch}{1.5}
             \begin{array}{|c|c|c|c|c|c|c|c|c|}
                 \hline
                 \rotatebox{90}{\blsId} & \rotatebox{90}{\isBlsGOneMsmData \quad} & \rotatebox{90}{\isBlsGOneMsmResult \quad} & \rotatebox{90}{\index} & \rotatebox{90}{\ct} & \rotatebox{90}{\isFirstInput} & \rotatebox{90}{\isSecondInput } & \limb       & 1 - \malformedDataInternalBit                                                                                                                                                    \\ \hline
@@ -37,8 +66,8 @@
                                9       &                                         & \oneCell                                  & 6                      & 6                   &                               &                                 & \locCYOne   &                                                                                                                                                                   \\ \hline
                                9       &                                         & \oneCell                                  & \redm{7}               & \redm{7}            &                               &                                 & \locCYZero  &                                                                                                                                                                   \\ \hline
             \end{array}
-        \]
-        }
-    \end{adjustwidth}
-    \caption{Behaviour of 1 - \malformedDataInternalBit~ in the context of a call to \inst{G1MSM}, with 2 pairs of inputs.}
-\end{figure}
+    $
+};
+\end{tikzpicture}
+\end{document}
+% \caption{Behaviour of 1 - \malformedDataInternalBit~ in the context of a call to \inst{G1MSM}, with 2 pairs of inputs.}

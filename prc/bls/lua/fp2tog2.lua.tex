@@ -1,8 +1,38 @@
-\begin{figure}[h!]
-    \begin{adjustwidth}{-2cm}{-2cm}
-        \resizebox{12cm}{!}{%
-            \centering
-            \[
+% !TeX TS-program = lualatex
+% \documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+\documentclass[tikz, border = 1cm]{standalone}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{fontawesome}
+\usepackage{amsmath}
+\usepackage{../../../pkg/draculatheme}
+\usepackage{../../../pkg/common}
+\usepackage{../../../pkg/std}
+\usepackage{../../../pkg/env}
+\usepackage{../../../pkg/precompiles}
+\usepackage{../../../pkg/ram}
+\usepackage{../../../pkg/rom}
+\usepackage{../../../pkg/flags_stamps_selectors}
+\usepackage{../../../pkg/colors}
+
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NL Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\begin{document}
+\input{../../_local}
+\input{_local}
+\begin{tikzpicture}
+    \draw (0,0) node {
+    $
+    \renewcommand{\arraystretch}{1.5}
                 \begin{array}{|c|c|c|c|c|c|c|}
                     \hline
                     \rotatebox{90}{\blsId} & \rotatebox{90}{\isBlsMapFpTwoToGTwoData \quad} & \rotatebox{90}{\isBlsMapFpTwoToGTwoResult \quad} & \rotatebox{90}{\index} & \limb & 1 - \malformedDataInternalBit                                                                                                                       \\ \hline
@@ -32,8 +62,8 @@
                     9 & 0      & 1      & 14          & \locCYReOne               & \hdots                                                                                                                        \\ \hline
                     9 & 0      & 1      & \redm{15}   & \locCYReZero              & \hdots                                                                                                                        \\ \hline
                 \end{array}
-            \]
-            }
-    \end{adjustwidth}
-    \caption{Behaviour of 1 - \malformedDataInternalBit~ in the context of a call to \inst{MAP\_FP2\_TO\_G2}.}
-\end{figure}
+    $
+};
+\end{tikzpicture}
+\end{document}
+% \caption{Behaviour of 1 - \malformedDataInternalBit~ in the context of a call to \inst{MAP\_FP2\_TO\_G2}.}
