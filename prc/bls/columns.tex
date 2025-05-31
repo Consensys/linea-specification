@@ -2,17 +2,37 @@ The first set of columns arrives to the present module from the \mmioMod{} modul
 \begin{enumerate}
     \item
         \blsStamp{}:
-        module stamp; has simple $0/1$ increments;
+        module stamp;
+        has $0/1$ increments;
     \item
         \blsId{}:
         unique identifier of a precompile \inst{CALL} triggering the present module;
         contains a context number derived from the \hubStamp{};
     \item
+        \blsTotalSize{}:
+        total size of input or output;
+        especially relevant for variable input size \inst{BLS}-precompiles, i.e.
+        \inst{G1MSM},
+        \inst{G2MSM} and
+        \inst{PAIRING\_CHECK};
+    \item
         \blsIndex{}:
         data limb index;
     \item
+        \indexMax{}:
+        maximum value of \blsIndex{} for a given phase;
+    \item
         \blsLimb{}:
         data limb; either input or output;
+    \item
+        \blsPhase{}:
+        phase identifying which precompile is being called and whether the data represents inputs or outputs;
+    \item
+        \blsSuccessBit{} \hubMmuMmioBlsPrediction{} \markAsPartiallyJustifiedHere{}:
+        success bit of the operation;
+\end{enumerate}
+The following columns help define the ``heartbeat'' of the present module. 
+\begin{enumerate}[resume]
     \item
         \ct:
         counter column;
@@ -21,42 +41,32 @@ The first set of columns arrives to the present module from the \mmioMod{} modul
         \maxCt:
         counter-constant column;
         the maximum value $\ct$ should count to;
-    \item
-        \blsTotalSize{}:
-        total size of input or output; Especially relevant for \inst{G1MSM}, \inst{G2MSM} and \inst{PAIRING\_CHECK} which have variable size inputs;
-    \item
-        \blsPhase{}:
-        phase identifying which precompile is being called and whether the data represents inputs or outputs;
-    \item
-        \indexMax{}:
-        maximum value of \blsIndex{} for a given phase;
-    \item
-        \blsSuccessBit{} \hubMmuMmioBlsPrediction{} \markAsPartiallyJustifiedHere{}:
-        success bit of the operation;
 \end{enumerate}
 The following columns partake in the ``instruction decoding'' of the above:
 \begin{multicols}{2}
     \begin{enumerate}
+        \setcounter{enumi}{10}
         \item \isPointEvaluationData{}
-        \item \isPointEvaluationResult{}
         \item \isBlsGOneAddData{}
-        \item \isBlsGOneAddResult{}
         \item \isBlsGOneMsmData{}
-        \item \isBlsGOneMsmResult{}
         \item \isBlsGTwoAddData{}
-        \item \isBlsGTwoAddResult{}
         \item \isBlsGTwoMsmData{}
-        \item \isBlsGTwoMsmResult{}
         \item \isBlsPairingCheckData{}
-        \item \isBlsPairingCheckResult{}
         \item \isBlsMapFpToGOneData{}
-        \item \isBlsMapFpToGOneResult{}
         \item \isBlsMapFpTwoToGTwoData{}
+        \item \isPointEvaluationResult{}
+        \item \isBlsGOneAddResult{}
+        \item \isBlsGOneMsmResult{}
+        \item \isBlsGTwoAddResult{}
+        \item \isBlsGTwoMsmResult{}
+        \item \isBlsPairingCheckResult{}
+        \item \isBlsMapFpToGOneResult{}
         \item \isBlsMapFpTwoToGTwoResult{}
     \end{enumerate}
 \end{multicols}
-We further define:
+\noindent We further define:
 \begin{enumerate}[resume]
+        \setcounter{enumi}{26}
     \item
         \accInputs:
         In the context of \inst{G1MSM}, \inst{G2MSM} and \inst{PAIRING\_CHECK}, counts the inputs starting from 1. It is equal to 0 otherwise.
