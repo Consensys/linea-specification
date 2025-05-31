@@ -1,0 +1,95 @@
+We define \callToWellFormedCoordinatesBlsTwoName{} like so:
+\[
+    \callToWellFormedCoordinatesBlsTwo {
+        anchorRow = i               ,
+        relOffset = \relof          ,
+        argOneSeven = \locPXImThree ,
+        argOneSix   = \locPXImTwo   ,
+        argOneFive  = \locPXImOne   ,
+        argOneFour  = \locPXImZero  ,
+        argOneThree = \locPXReThree ,
+        argOneTwo   = \locPXReTwo   ,
+        argOneOne   = \locPXReOne   ,
+        argOneZero  = \locPXReZero  ,
+        argTwoSeven = \locPYImThree ,
+        argTwoSix   = \locPYImTwo   ,
+        argTwoFive  = \locPYImOne   ,
+        argTwoFour  = \locPYImZero  ,
+        argTwoThree = \locPYReThree ,
+        argTwoTwo   = \locPYReTwo   ,
+        argTwoOne   = \locPYReOne   ,
+        argTwoZero  = \locPYReZero  ,
+    }
+    \qquad \qquad \iff
+\]
+
+\[
+    \left\{ \begin{array}{l}
+        \wcpGeneralizedCallToLt {
+            anchorRow   = i              ,
+            relOffset   = \relof         ,
+            argOneThree = \locPXImThree  ,
+            argOneTwo   = \locPXImTwo    ,
+            argOneOne   = \locPXImOne    ,
+            argOneZero  = \locPXImZero   ,
+            argTwoThree = \blsPrimeThree ,
+            argTwoTwo   = \blsPrimeTwo   ,
+            argTwoOne   = \blsPrimeOne   ,
+            argTwoZero  = \blsPrimeZero  ,
+        } \\ 
+        \locPXImIsInRange \define \wcpRes_{i+\relof} \\
+        \wcpGeneralizedCallToLt {
+            anchorRow   = i              ,
+            relOffset   = \relof + 4     ,
+            argOneThree = \locPXReThree  ,
+            argOneTwo   = \locPXReTwo    ,
+            argOneOne   = \locPXReOne    ,
+            argOneZero  = \locPXReZero   ,
+            argTwoThree = \blsPrimeThree ,
+            argTwoTwo   = \blsPrimeTwo   ,
+            argTwoOne   = \blsPrimeOne   ,
+            argTwoZero  = \blsPrimeZero  ,
+        } \\ 
+        \locPXReIsInRange \define \wcpRes_{i+\relof+4} \\
+        \wcpGeneralizedCallToLt {
+            anchorRow   = i              ,
+            relOffset   = \relof + 8     ,
+            argOneThree = \locPYImThree  ,
+            argOneTwo   = \locPYImTwo    ,
+            argOneOne   = \locPYImOne    ,
+            argOneZero  = \locPYImZero   ,
+            argTwoThree = \blsPrimeThree ,
+            argTwoTwo   = \blsPrimeTwo   ,
+            argTwoOne   = \blsPrimeOne   ,
+            argTwoZero  = \blsPrimeZero  ,
+        } \\ 
+        \locPYImIsInRange \define \wcpRes_{i+\relof+8} \\
+        \wcpGeneralizedCallToLt {
+            anchorRow   = i              ,
+            relOffset   = \relof + 12    ,
+            argOneThree = \locPYReThree  ,
+            argOneTwo   = \locPYReTwo    ,
+            argOneOne   = \locPYReOne    ,
+            argOneZero  = \locPYReZero   ,
+            argTwoThree = \blsPrimeThree ,
+            argTwoTwo   = \blsPrimeTwo   ,
+            argTwoOne   = \blsPrimeOne   ,
+            argTwoZero  = \blsPrimeZero  ,
+        } \\ 
+        \locPYReIsInRange \define \wcpRes_{i + \relof + 12} \\
+        \locWellFormedCoordinates \define 1 - \malformedDataInternalBit _{i} \\
+        \locPXIsInRange \define \locPXImIsInRange \cdot \locPXReIsInRange \\
+        \locPYIsInRange \define \locPYImIsInRange \cdot \locPYReIsInRange \\
+        \locWellFormedCoordinates = \locPXIsInRange \cdot \locPYIsInRange         \\
+        \callToIsInfinity {
+            anchorRow = i                          ,
+            relOffset = \relof                     ,
+            coordinatesSum = \left[ \begin{array}{r}
+                + \locPXImThree + \locPXImTwo + \locPXImOne + \locPXImZero \\
+                + \locPXReThree + \locPXReTwo + \locPXReOne + \locPXReZero \\
+                + \locPYImThree + \locPYImTwo + \locPYImOne + \locPYImZero \\
+                + \locPYReThree + \locPYReTwo + \locPYReOne + \locPYReZero \\
+            \end{array} \right]    ,
+        }
+    \end{array} \right.
+    \]
