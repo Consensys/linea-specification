@@ -1,0 +1,49 @@
+We start by defining the following module constants
+\[
+    \left\{ \begin{array}{lcr}
+        \ctMaxPointEvaluation & \define & \redm{12} - 1 \\
+        \ctMaxSmallPoint      & \define & \redm{8}  - 1 \\
+        \ctMaxLargePoint      & \define & \redm{16} - 1 \\
+        \ctMaxScalar          & \define & \redm{2}  - 1 \\
+        \ctMaxFpToGOne        & \define & \redm{4}  - 1 \\
+        \ctMaxFpTwoToGTwo     & \define & \redm{8}  - 1 \\
+    \end{array} \right.
+\]
+from there we set
+\[
+    \left\{ \begin{array}{lcl}
+        \locCtMaxFirstInput_{i} & \define &  
+        \left[ \begin{array}{clcl}
+            + & \ctMaxPointEvaluation & \cdot & \isPointEvaluationData   _{i} \\
+            + & \ctMaxSmallPoint      & \cdot & \isBlsGOneAddData        _{i} \\
+            + & \ctMaxSmallPoint      & \cdot & \isBlsGOneMsmData        _{i} \\
+            + & \ctMaxLargePoint      & \cdot & \isBlsGTwoAddData        _{i} \\
+            + & \ctMaxLargePoint      & \cdot & \isBlsGTwoMsmData        _{i} \\
+            + & \ctMaxSmallPoint      & \cdot & \isBlsPairingCheckData   _{i} \\
+            + & \ctMaxFpToGOne        & \cdot & \isBlsMapFpToGOneData    _{i} \\
+            + & \ctMaxFpTwoToGTwo     & \cdot & \isBlsMapFpTwoToGTwoData _{i} \\
+        \end{array} \right] \vspace{2mm} \\
+        \locCtMaxSecondInput _{i} & \define &  
+        \left[ \begin{array}{clcl}
+            + & \ctMaxSmallPoint & \cdot & \isBlsGOneAddData      _{i} \\
+            + & \ctMaxScalar     & \cdot & \isBlsGOneMsmData      _{i} \\
+            + & \ctMaxLargePoint & \cdot & \isBlsGTwoAddData      _{i} \\
+            + & \ctMaxScalar     & \cdot & \isBlsGTwoMsmData      _{i} \\
+            + & \ctMaxLargePoint & \cdot & \isBlsPairingCheckData _{i} \\
+        \end{array} \right] \vspace{2mm} \\
+    \end{array} \right.
+\]
+We unconditionally impose that
+\[
+    \begin{array}{l}
+        \maxCt _{i} =
+        \left[ \begin{array}{clcl}
+            + & \locCtMaxFirstInput  _{i} & \cdot & \isFirstInput  _{i} \\
+            + & \locCtMaxSecondInput _{i} & \cdot & \isSecondInput _{i} \\
+            + & \indexMax            _{i} & \cdot & \locIsResult   _{i} \\
+        \end{array} \right] \\
+    \end{array}
+\]
+\saNote{}
+$\maxCt$ is counter-constant.
+

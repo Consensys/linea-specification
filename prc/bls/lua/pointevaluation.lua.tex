@@ -1,0 +1,61 @@
+% !TeX TS-program = lualatex
+% \documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+\documentclass[tikz, border = 1cm]{standalone}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{fontawesome}
+\usepackage{amsmath}
+\usepackage{../../../pkg/draculatheme}
+\usepackage{../../../pkg/common}
+\usepackage{../../../pkg/std}
+\usepackage{../../../pkg/env}
+\usepackage{../../../pkg/precompiles}
+\usepackage{../../../pkg/ram}
+\usepackage{../../../pkg/rom}
+\usepackage{../../../pkg/flags_stamps_selectors}
+\usepackage{../../../pkg/colors}
+
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NL Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\begin{document}
+\input{../../_local}
+\input{_local}
+\begin{tikzpicture}
+    \draw (0,0) node {
+    $
+    \renewcommand{\arraystretch}{1.5}
+            \begin{array}{|c|c|c|c|c|c|c|c|c|c|}
+                \hline
+                \rotatebox{90}{\blsId} & \rotatebox{90}{\isPointEvaluationData \quad} & \rotatebox{90}{\isPointEvaluationResult \quad} & \rotatebox{90}{\index} & \rotatebox{90}{\ct} & \rotatebox{90}{\isFirstInput} & \rotatebox{90}{\isSecondInput} & \limb         & 1 - \malformedDataInternalBit       \\ \hline
+                7                      & \hdots                                       & \hdots                                         & \hdots                 & \hdots              & \hdots                        & \hdots                         & \hdots        & \hdots                              \\ \hline
+                9                      & \oneCell                                     &                                                & 0                      & 0                   & \oneCell                      &                                & \locVerHashHi & \locZIsInRange \cdot \locYIsInRange \\ \hline
+                9                      & \oneCell                                     &                                                & 1                      & 1                   & \oneCell                      &                                & \locVerHashLo & \multirow{12}{*}{\sameCell}          \\ \cline{1-8}
+                9                      & \oneCell                                     &                                                & 2                      & 2                   & \oneCell                      &                                & \locZHi       &                                     \\ \cline{1-8}
+                9                      & \oneCell                                     &                                                & 3                      & 3                   & \oneCell                      &                                & \locZLo       &                                     \\ \cline{1-8}
+                9                      & \oneCell                                     &                                                & 4                      & 4                   & \oneCell                      &                                & \locYHi       &                                     \\ \cline{1-8}
+                9                      & \oneCell                                     &                                                & 5                      & 5                   & \oneCell                      &                                & \locYLo       &                                     \\ \cline{1-8}
+                9                      & \oneCell                                     &                                                & 6                      & 6                   & \oneCell                      &                                & \locComTwo    &                                     \\ \cline{1-8}
+                9                      & \oneCell                                     &                                                & 7                      & 7                   & \oneCell                      &                                & \locComOne    &                                     \\ \cline{1-8}
+                9                      & \oneCell                                     &                                                & 8                      & 8                   & \oneCell                      &                                & \locComZero   &                                     \\ \cline{1-8}
+                9                      & \oneCell                                     &                                                & 9                      & 9                   & \oneCell                      &                                & \locProofTwo  &                                     \\ \cline{1-8}
+                9                      & \oneCell                                     &                                                & 10                     & 10                  & \oneCell                      &                                & \locProofOne  &                                     \\ \cline{1-8}
+                9                      & \oneCell                                     &                                                & \redm{11}              & \redm{11}           & \oneCell                      &                                & \locProofZero &                                     \\ \hline \noalign{\vskip 0.5ex} \cline{1-8}
+                9                      &                                              & \oneCell                                       & 0                      & 0                   &                               &                                & \locFEPBHi                                          \\ \cline{1-8}
+                9                      &                                              & \oneCell                                       & 1                      & 1                   &                               &                                & \locFEPBLo                                          \\ \cline{1-8}
+                9                      &                                              & \oneCell                                       & 2                      & 2                   &                               &                                & \locBlsModHi                                        \\ \cline{1-8}
+                9                      &                                              & \oneCell                                       & \redm{3}               & \redm{3}            &                               &                                & \locBlsModLo                                        \\ \cline{1-8}
+            \end{array}
+    $
+};
+\end{tikzpicture}
+\end{document}
+% \caption{Behaviour of 1 - \malformedDataInternalBit~ in the context of a call to \inst{POINT\_EVALUATION}.}

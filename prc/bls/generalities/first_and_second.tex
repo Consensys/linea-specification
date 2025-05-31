@@ -1,0 +1,73 @@
+The present section provides constraints for
+\isFirstInput{} and \isSecondInput{}.
+We introduce the following shorthands 
+\[
+    \left\{ \begin{array}{lcl}
+        \locIsVariableSizeData _{i} & \define &  
+        \left[ \begin{array}{cl}
+            + & \isBlsGOneMsmData      _{i} \\
+            + & \isBlsGTwoMsmData      _{i} \\
+            + & \isBlsPairingCheckData _{i} \\
+        \end{array} \right]
+        \vspace{2mm}
+        \\
+        \locPrecompileWithTwoInputTypes _{i} & \define &
+        \left[ \begin{array}{cl}
+            + & \isBlsGOneAddData      _{i} \\
+            + & \isBlsGOneMsmData      _{i} \\
+            + & \isBlsGTwoAddData      _{i} \\
+            + & \isBlsGTwoMsmData      _{i} \\
+            + & \isBlsPairingCheckData _{i} \\
+        \end{array} \right]
+        \vspace{2mm}
+        \\
+        \locPrecompileWithOneInputTypes _{i} & \define &
+        \left[ \begin{array}{cl}
+            + & \isPointEvaluationData   _{i} \\
+            + & \isBlsMapFpToGOneData    _{i} \\
+            + & \isBlsMapFpTwoToGTwoData _{i} \\
+        \end{array} \right]
+        \\
+    \end{array} \right.
+\]
+We impose that
+\begin{enumerate}
+    \item $\isFirstInput$ and $\isSecondInput$ are binary, counter-constant \quad (\trash)
+    \item $\locIsData                      _{i} = \isFirstInput _{i} + \isSecondInput _{i}$
+    \item $\locPrecompileWithOneInputTypes _{i} = \isFirstInput _{i}$
+    \item $\locPrecompileWithTwoInputTypes _{i} = \isFirstInput _{i} + \isSecondInput _{i}$ \quad (\sanityCheck)
+    \item \If $\locIsData _{i} = 0$ \Then $\isFirstInput_{i + 1} = \locIsData _{i + 1}$
+    \item \If $\locPrecompileWithTwoInputTypes_{i} = 1$ \et $\locPrecompileWithTwoInputTypes_{i+1} = 1$ \Then
+        \begin{enumerate}
+            \item \If $\ct_{i} \neq \maxCt_{i}$ \Then
+                \[
+                    \left[ \begin{array}{cr}
+                        + & \locTransitionFromFirstToSecond _{i} \\
+                        + & \locTransitionFromSecondToFirst _{i} \\
+                    \end{array} \right]
+                    = 0 \quad (\trash)
+                \]
+            \item \If $\ct_{i} =    \maxCt_{i}$ \Then
+                \[
+                    \left[ \begin{array}{cr}
+                        + & \locTransitionFromFirstToSecond _{i} \\
+                        + & \locTransitionFromSecondToFirst _{i} \\
+                    \end{array} \right]
+                    = 1
+                \]
+        \end{enumerate}
+        where we use the following shorthands
+        \[
+            \left\{ \begin{array}{lcl}
+                \locTransitionFromFirstToSecond _{i} & \define & \isFirstInput  _{i} \cdot \isSecondInput _{i + 1} \\
+                \locTransitionFromSecondToFirst _{i} & \define & \isSecondInput _{i} \cdot \isFirstInput  _{i + 1} \\
+            \end{array} \right.
+        \]
+        \saNote{} The ``$\ct _{i} \neq \maxCt _{i}$'' case is redundant by counter-constancy of $\isFirstInput$ and $\isSecondInput$,
+        whence the (\trash) symbol.
+\end{enumerate}
+\saNote{}
+$\isFirstInput$ and $\isSecondInput$ are \textbf{exclusive binary flags}.
+
+\saNote{} Counter-constancy of \maxCt{} and exclusive binaryness of $\isFirstInput$ and $\isSecondInput$ implicitly imposes counter-constancy of $\isFirstInput$ and $\isSecondInput$,
+whence the (\trash) symbol.
