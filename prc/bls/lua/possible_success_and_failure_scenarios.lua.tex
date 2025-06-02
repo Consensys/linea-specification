@@ -66,8 +66,7 @@
 | G1MSM           |   ✓  |   ✓  |      |   ✓  | MINT: any of the "curve points" fails to have its coordinates in Fp (i.e. < BLS_PRIME)                                 |
 |                 |      |      |      |      | MEXT: any of the "curve points" fails to belong to G1                                                                  |
 |-----------------+------+------+------+------+------------------------------------------------------------------------------------------------------------------------|
-| G2ADD           |   ✓  |   ✓  |      |   ✓  | MINT: any of the 4 = 2 + 2 "Fp2" coordinates fails to define a valid Fp2 scalar                                        |
-|                 |      |      |      |      | .     any of the 8 = 4 + 4 "Fp"  coordinates fails to define a valid Fp  scalar                                        |
+| G2ADD           |   ✓  |   ✓  |      |   ✓  | MINT: any of the 8 = 4 + 4 coordinates are ≥ than the BLS_PRIME                                                        |
 |                 |      |      |      |      | MEXT: any of the 2 points fails to belong to the curve C2                                                              |
 |-----------------+------+------+------+------+------------------------------------------------------------------------------------------------------------------------|
 | G2MSM           |   ✓  |   ✓  |      |   ✓  | MINT: any of the "curve points" fails to have its coordinates in Fp2                                                   |
@@ -94,9 +93,9 @@ NOTE. Recall the definition shorthand
 The intent is that `wellformed_data = 1` is equivalent to the success of the precompile
 as measured by pushing a 1 onto the stack following the CALL-type instruction, i.e.
 
-    wellformed_data ≡ true ⇔ μ_s'|0] = 1
+    wellformed_data ≡ true ⇔ μ_s'[0] = 1
 
-The only precompile which may use both WTRV and WNON is BLS_PAIRING_CHECK.
+The only precompile which may use both WTRV is BLS_PAIRING_CHECK.
 
 NOTE. There are two distinct primes:
 
@@ -107,7 +106,7 @@ NOTE. There are two distinct primes:
                                64774b84f38512bf6730d2a0f6b0f624...
                                1eabfffeb153ffffb9feffffffffaaab
 
-NOTE. When raising MEXT we always flag the first occurrence of any (applicable) exception (depending on the underlying precompile.)
+NOTE. When raising MEXT we always flag the first occurrence of any (applicable) exception (depending on the underlying precompile).
 
 \end{verbatim}
 \end{document}
