@@ -38,29 +38,30 @@ We impose that
     \item $\locPrecompileWithTwoInputTypes _{i} = \isFirstInput _{i} + \isSecondInput _{i}$ \quad (\sanityCheck)
     \item \If $\locIsData _{i} = 0$ \Then $\isFirstInput_{i + 1} = \locIsData _{i + 1}$
     \item \If $\locPrecompileWithTwoInputTypes_{i} = 1$ \et $\locPrecompileWithTwoInputTypes_{i+1} = 1$ \Then
+    \item \If $\locPrecompileWithTwoInputTypes _{i} = 1$ \Then
         \begin{enumerate}
             \item \If $\ct_{i} \neq \maxCt_{i}$ \Then
                 \[
                     \left[ \begin{array}{cr}
-                        + & \locTransitionFromFirstToSecond _{i} \\
-                        + & \locTransitionFromSecondToFirst _{i} \\
+                        + & \locWillSwitchFromFirstToSecond _{i} \\
+                        + & \locWillSwitchFromSecondToFirst _{i} \\
                     \end{array} \right]
                     = 0 \quad (\trash)
                 \]
             \item \If $\ct_{i} =    \maxCt_{i}$ \Then
                 \[
                     \left[ \begin{array}{cr}
-                        + & \locTransitionFromFirstToSecond _{i} \\
-                        + & \locTransitionFromSecondToFirst _{i} \\
+                        + & \locWillSwitchFromFirstToSecond _{i} \\
+                        + & \locWillSwitchFromSecondToFirst _{i} \\
                     \end{array} \right]
-                    = 1
+                    = \locPrecompileWithTwoInputTypes _{i + 1}
                 \]
         \end{enumerate}
         where we use the following shorthands
         \[
             \left\{ \begin{array}{lcl}
-                \locTransitionFromFirstToSecond _{i} & \define & \isFirstInput  _{i} \cdot \isSecondInput _{i + 1} \\
-                \locTransitionFromSecondToFirst _{i} & \define & \isSecondInput _{i} \cdot \isFirstInput  _{i + 1} \\
+                \locWillSwitchFromFirstToSecond _{i} & \define & \isFirstInput  _{i} \cdot \isSecondInput _{i + 1} \\
+                \locWillSwitchFromSecondToFirst _{i} & \define & \isSecondInput _{i} \cdot \isFirstInput  _{i + 1} \\
             \end{array} \right.
         \]
         \saNote{} The ``$\ct _{i} \neq \maxCt _{i}$'' case is redundant by counter-constancy of $\isFirstInput$ and $\isSecondInput$,
