@@ -20,12 +20,12 @@
 \newcommand{\indexMaxEcmulResult}            {\numConst{index\_max\_ecmul\_result}}
 \newcommand{\indexMaxEcpairingResult}        {\numConst{index\_max\_ecpairing\_result}}
 %
-\newcommand{\ctMaxPointEvaluation }  {\numConst{ct\_max\_point\_evaluation}}
-\newcommand{\ctMaxSmallPoint      }  {\numConst{ct\_max\_small\_point}}
-\newcommand{\ctMaxLargePoint      }  {\numConst{ct\_max\_large\_point}}
-\newcommand{\ctMaxScalar          }  {\numConst{ct\_max\_scalar}}
-\newcommand{\ctMaxFpToGOne        }  {\numConst{ct\_max\_map\_fp\_to\_g1}}
-\newcommand{\ctMaxFpTwoToGTwo     }  {\numConst{ct\_max\_map\_fp2\_to\_g2}}
+\newcommand{\ctMaxPointEvaluation }  {\ctMaxConst{point\_evaluation}}
+\newcommand{\ctMaxSmallPoint      }  {\ctMaxConst{small\_point}}
+\newcommand{\ctMaxLargePoint      }  {\ctMaxConst{large\_point}}
+\newcommand{\ctMaxScalar          }  {\ctMaxConst{scalar}}
+\newcommand{\ctMaxFpToGOne        }  {\ctMaxConst{map\_fp\_to\_g1}}
+\newcommand{\ctMaxFpTwoToGTwo     }  {\ctMaxConst{map\_fp2\_to\_g2}}
 
 
 \newcommand{\totalSizeEcrecoverData}    {\numConst{total\_size\_ecrecover\_data}}
@@ -43,7 +43,6 @@
 \newcommand{\ecAdd}                     {\col{ECADD}\flag}
 \newcommand{\ecMul}                     {\col{ECMUL}\flag}
 \newcommand{\ecPairing}                 {\col{ECPAIRING}\flag}
-
 \newcommand{\isEcrecoverData}           {\col{IS\_ECRECOVER\_DATA}\flag}
 \newcommand{\isEcrecoverResult}         {\col{IS\_ECRECOVER\_RESULT}\flag}
 \newcommand{\isEcaddData}               {\col{IS\_ECADD\_DATA}\flag}
@@ -205,7 +204,6 @@
 
 \newcommand{\ttx}                 {\texttt{x}}
 \newcommand{\tty}                 {\texttt{y}}
-
 \newcommand{\PRECOMPILESUCCEDES}              {\col{PRECOMPILE\_SUCCEDES}}
 \newcommand{\precompileSuccedes}              {\col{PREC\_SUCC}}
 \newcommand{\PRECOMPILEPROVIDESRETURNDATA}    {\col{PRECOMPILE\_PROVIDES\_RETURNDATA}}
@@ -339,46 +337,41 @@
 \newcommand{\blsSuccessBit}                       {\col{SUCCESS\_BIT}}
 
 \newcommand{\dataFlagColumn   } [1] {\col{DATA\_#1\flag}}
-\newcommand{\resultFlagColumn } [1] {\col{RSLT\_#1\flag}}
    
-\newcommand{\isBlsGOneAddData}                    {\dataFlagColumn   {G1\_ADD}}
-\newcommand{\isBlsGOneAddResult}                  {\resultFlagColumn {G1\_ADD}}
-
-\newcommand{\isBlsGOneMsmData}                    {\dataFlagColumn   {G1\_MSM}}
-\newcommand{\isBlsGOneMsmResult}                  {\resultFlagColumn {G1\_MSM}}
-
-\newcommand{\isBlsGTwoAddData}                    {\dataFlagColumn   {G2\_ADD}}
-\newcommand{\isBlsGTwoAddResult}                  {\resultFlagColumn {G2\_ADD}}
-
-\newcommand{\isBlsGTwoMsmData}                    {\dataFlagColumn   {G2\_MSM}}
-\newcommand{\isBlsGTwoMsmResult}                  {\resultFlagColumn {G2\_MSM}}
-
-\newcommand{\isBlsPairingCheckData}               {\dataFlagColumn   {PAIRING\_CHECK}}
-\newcommand{\isBlsPairingCheckResult}             {\resultFlagColumn {PAIRING\_CHECK}}
-
-\newcommand{\isBlsMapFpToGOneData}                {\dataFlagColumn   {MAP\_FP\_TO\_G1}}
-\newcommand{\isBlsMapFpToGOneResult}              {\resultFlagColumn {MAP\_FP\_TO\_G1}}
-
-\newcommand{\isBlsMapFpTwoToGTwoData}             {\dataFlagColumn   {MAP\_FP2\_TO\_G2}}
-\newcommand{\isBlsMapFpTwoToGTwoResult}           {\resultFlagColumn {MAP\_FP2\_TO\_G2}}
-
 \newcommand{\isPointEvaluationData}               {\dataFlagColumn   {POINT\_EVALUATION}}
+\newcommand{\isBlsGOneAddData}                    {\dataFlagColumn   {G1\_ADD}}
+\newcommand{\isBlsGOneMsmData}                    {\dataFlagColumn   {G1\_MSM}}
+\newcommand{\isBlsGTwoAddData}                    {\dataFlagColumn   {G2\_ADD}}
+\newcommand{\isBlsGTwoMsmData}                    {\dataFlagColumn   {G2\_MSM}}
+\newcommand{\isBlsPairingCheckData}               {\dataFlagColumn   {PAIRING\_CHECK}}
+\newcommand{\isBlsMapFpToGOneData}                {\dataFlagColumn   {MAP\_FP\_TO\_G1}}
+\newcommand{\isBlsMapFpTwoToGTwoData}             {\dataFlagColumn   {MAP\_FP2\_TO\_G2}}
+
+\newcommand{\resultFlagColumn } [1] {\col{RSLT\_#1\flag}}
+
 \newcommand{\isPointEvaluationResult}             {\resultFlagColumn {POINT\_EVALUATION}}
+\newcommand{\isBlsGOneAddResult}                  {\resultFlagColumn {G1\_ADD}}
+\newcommand{\isBlsGOneMsmResult}                  {\resultFlagColumn {G1\_MSM}}
+\newcommand{\isBlsGTwoAddResult}                  {\resultFlagColumn {G2\_ADD}}
+\newcommand{\isBlsGTwoMsmResult}                  {\resultFlagColumn {G2\_MSM}}
+\newcommand{\isBlsPairingCheckResult}             {\resultFlagColumn {PAIRING\_CHECK}}
+\newcommand{\isBlsMapFpToGOneResult}              {\resultFlagColumn {MAP\_FP\_TO\_G1}}
+\newcommand{\isBlsMapFpTwoToGTwoResult}           {\resultFlagColumn {MAP\_FP2\_TO\_G2}}
 
 \newcommand{\totalInputs}                         {\col{TOTAL\_INPUTS}}
 \newcommand{\accInputs}                           {\col{ACC\_INPUTS}}
 
-\newcol{\csCOne}                             {CS\_C1\_MEMBERSHIP}{CIRCUIT\_SELECTOR\_C1\_MEMBERSHIP}
-\newcol{\csGOne}                             {CS\_G1\_MEMBERSHIP}{CIRCUIT\_SELECTOR\_G1\_MEMBERSHIP}
-\newcol{\csCTwo}                             {CS\_C2\_MEMBERSHIP}{CIRCUIT\_SELECTOR\_C2\_MEMBERSHIP}
-\newcol{\csPairing}                          {CS\_PAIRING}{CIRCUIT\_SELECTOR\_PAIRING}
-\newcol{\csGOneAdd}                          {CS\_G1\_ADD}{CIRCUIT\_SELECTOR\_G1\_ADD}
-\newcol{\csGTwoAdd}                          {CS\_G2\_ADD}{CIRCUIT\_SELECTOR\_G2\_ADD}
-\newcol{\csGOneMsm}                          {CS\_G1\_MSM}{CIRCUIT\_SELECTOR\_G1\_MSM}
-\newcol{\csGTwoMsm}                          {CS\_G2\_MSM}{CIRCUIT\_SELECTOR\_G2\_MSM}
-\newcol{\csMapFpToGOne}                      {CS\_MAP\_FP\_TO\_G1}{CIRCUIT\_SELECTOR\_MAP\_FP\_TO\_G1}
-\newcol{\csMapFpTwoToGTwo}                   {CS\_MAP\_FP2\_TO\_G2}{CIRCUIT\_SELECTOR\_MAP\_FP2\_TO\_G2}
-\newcol{\csPointEvaluation}                  {CS\_POINT\_EVALUATION}{CIRCUIT\_SELECTOR\_POINT\_EVALUATION}
+\newcol{\csCOne}                             {CS\_C1\_MEMBERSHIP} {CIRCUIT\_SELECTOR\_C1\_MEMBERSHIP}
+\newcol{\csGOne}                             {CS\_G1\_MEMBERSHIP} {CIRCUIT\_SELECTOR\_G1\_MEMBERSHIP}
+\newcol{\csCTwo}                             {CS\_C2\_MEMBERSHIP} {CIRCUIT\_SELECTOR\_C2\_MEMBERSHIP}
+\newcol{\csPairing}                          {CS\_PAIRING} {CIRCUIT\_SELECTOR\_PAIRING}
+\newcol{\csGOneAdd}                          {CS\_G1\_ADD} {CIRCUIT\_SELECTOR\_G1\_ADD}
+\newcol{\csGTwoAdd}                          {CS\_G2\_ADD} {CIRCUIT\_SELECTOR\_G2\_ADD}
+\newcol{\csGOneMsm}                          {CS\_G1\_MSM} {CIRCUIT\_SELECTOR\_G1\_MSM}
+\newcol{\csGTwoMsm}                          {CS\_G2\_MSM} {CIRCUIT\_SELECTOR\_G2\_MSM}
+\newcol{\csMapFpToGOne}                      {CS\_MAP\_FP\_TO\_G1} {CIRCUIT\_SELECTOR\_MAP\_FP\_TO\_G1}
+\newcol{\csMapFpTwoToGTwo}                   {CS\_MAP\_FP2\_TO\_G2} {CIRCUIT\_SELECTOR\_MAP\_FP2\_TO\_G2}
+\newcol{\csPointEvaluation}                  {CS\_POINT\_EVALUATION} {CIRCUIT\_SELECTOR\_POINT\_EVALUATION}
 
 \newcommand{\isFirstInput}                    {\col{IS\_FIRST\_INPUT}}
 \newcommand{\isSecondInput}                   {\col{IS\_SECOND\_INPUT}}
