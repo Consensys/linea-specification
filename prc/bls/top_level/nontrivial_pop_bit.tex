@@ -1,0 +1,21 @@
+We enforce the following constraints:
+\begin{enumerate}
+    \item \nontrivialPairOfPointsBit{} is \textbf{pair-of-points-constant}, \textbf{binary} \quad (\trash)
+    \item \If $\isBlsPairingCheckData _{i} = 0$ \Then $\nontrivialPairOfPointsBit         _{i} = 0$
+    \item \If $\isBlsPairingCheckData _{i} = 1$ \et   $\locWillSwitchFromFirstToSecond _{i} = 1$ \Then
+        \[
+            \nontrivialPairOfPointsBit _{i} = \locSmallPointNontrivial \cdot \locLargePointNontrivial
+        \]
+        where we define the following shorthands:
+        \[
+            \left\{ \begin{array}{lclr}
+                \locSmallPointNontrivial & \define & 1 - \isInfinity _{i}     \\
+                \locLargePointNontrivial & \define & 1 - \isInfinity _{i + 1} \\
+            \end{array} \right.
+        \]
+\end{enumerate}
+\saNote{}
+The value of the \isInfinity{} flag for \inst{PAIRING\_CHECK} is set
+in sections~(\ref{bls: specialized: pairingcheck first}) and~(\ref{bls: specialized: pairingcheck second}),
+using the constraint system from
+section~(\ref{bls: utilities: call to is infinity}).

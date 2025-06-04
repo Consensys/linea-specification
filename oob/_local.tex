@@ -13,17 +13,20 @@
 \def\locAdd                             {\redm{1}}
 \def\locMod                             {\redm{2}}
 \def\locWcp                             {\redm{3}}
+\def\locBlsRefTable                     {\redm{4}}
 
 % arguments for specialized constraints
 \def\locArgOneHi                        {\loc{arg\_1\_hi}}
 \def\locArgOneLo                        {\loc{arg\_1\_lo}}
 \def\locArgTwoHi                        {\loc{arg\_2\_hi}}
 \def\locArgTwoLo                        {\loc{arg\_2\_lo}}
+\def\locPrcName                         {\loc{prc\_name}}
+\def\locNumInp                          {\loc{num\_inputs}}
 %
 \def\locPrecompileCost                  {\loc{precompile\_cost}}
 \def\locRemainingGas                    {\loc{remaining\_gas}}
 \def\locCdsIsZero                       {\loc{cds\_is\_zero}}
-\def\locCdsIsNonZero                    {\loc{cds\_nonzero}}
+\def\locCdsIsNonZero                    {\loc{cds\_is\_nonzero}}
 \def\locReturnAtCapacity                {\loc{return\_at\_capacity}}
 \def\locRac                             {\loc{r@c}}
 \def\locRacIsZero                       {\loc{r@c\_is\_zero}}
@@ -31,6 +34,13 @@
 \def\locCeil                            {\loc{ceil}}
 \def\locRemainder                       {\loc{remainder}}
 \def\locPairingSizeIsMultiple           {\loc{is\_multiple\_of\_192}}
+\def\locMinMsmSize                      {\loc{min\_msm\_size}}
+\def\locCdsIsMultipleOfMinMsmSize       {\loc{cds\_is\_multiple\_of\_min\_msm\_size}}
+\def\locCdsIsMultipleOfMinBlsPairingCheckSize
+                                        {\loc{cds\_is\_multiple\_of\_min\_bls\_pairing\_check\_size}}
+\def\locNumberOfInputs                  {\loc{num\_inputs}}
+\def\locNumberOfMsmInputsGtThreshold    {\locNumberOfInputs\loc{\_gt\_128}}
+\def\locNumberOfMsmInputsLeqThreshold   {\locNumberOfInputs\loc{\_leq\_128}}
 \def\locSufficientGas                   {\loc{sufficient\_gas}}
 \def\locInsufficientGas                 {\loc{insufficient\_gas}}
 % JUMP / JUMPI
@@ -192,13 +202,14 @@
 \def\locCodeSizeLo                      {\loc{code\_size\_lo}}
 \def\locMaxCodeSizeException            {\loc{max\_code\_size\_exception}}
 % lookup shorthands
-\def\locLookupSum                       {\loc{lookup\_sum}}
-\def\locWeightedLookupSum               {\loc{wght\_lookup\_sum}}
+\def\locLookupFlagSum                   {\loc{lookup\_flag\_sum}}
+\def\locLookupWeightedSum               {\loc{lookup\_wght\_sum}}
 \def\locInstFlagSum                     {\loc{flag\_sum\_inst}}
 \def\locPrcFlagSum                      {\loc{flag\_sum\_prc}}
 \def\locPrcFlagSumCommon                {\locPrcFlagSum\loc{\_common}}
 \def\locPrcFlagSumBlake                 {\locPrcFlagSum\loc{\_blake}}
 \def\locPrcFlagSumModexp                {\locPrcFlagSum\loc{\_modexp}}
+\def\locPrcFlagSumBls                   {\locPrcFlagSum\loc{\_bls}}
 
 % common precompile shorthands
 % \def\locCalleeGas                       {\loc{callee\_gas}}
@@ -228,3 +239,11 @@
 
 % BLAKE2f
 \def\locValidCdsBlake                   {\loc{valid\_cds}}
+
+% BLS
+\def\locValidCds                        {\loc{valid\_cds}}
+\def\locFixedCds                        {\loc{fixed\_cds}}
+\def\locFixedGasCost                    {\loc{fixed\_gas\_cost}}                       
+\def\locDiscount                        {\loc{discount}}
+\def\locMaxDiscount                     {\loc{max\_discount}}
+\def\locMsmMultiplicationCost           {\loc{msm\_multiplication\_cost}}

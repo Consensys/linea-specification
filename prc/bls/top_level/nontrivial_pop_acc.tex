@@ -1,0 +1,15 @@
+
+We enforce the following constraints:
+\begin{enumerate}
+    \item \nontrivialPairOfPointsAcc{} is \textbf{pair-of-points-constant}, \textbf{binary} \quad (\trash)
+    \item \If $\isBlsPairingCheckData _{i} = 0$ \Then $\nontrivialPairOfPointsAcc _{i} = 0$
+    \item \If $\isBlsPairingCheckData _{i - 1} = 0$ \et $\isBlsPairingCheckData _{i} = 1$ \Then $\nontrivialPairOfPointsAcc _{i} = \nontrivialPairOfPointsBit _{i}$
+    \item
+        \label{bls: setting trivial: transition from large to small}
+        \If $\locWillSwitchFromSecondToFirst _{i} = 1$ \Then
+          \begin{enumerate}
+              \item \If $\nontrivialPairOfPointsAcc _{i} = 1$ \Then $\nontrivialPairOfPointsAcc _{i + 1} = 1$
+              \item \If $\nontrivialPairOfPointsAcc _{i} = 0$ \Then $\nontrivialPairOfPointsAcc _{i + 1} = \nontrivialPairOfPointsBit _{i + 1}$
+          \end{enumerate}
+\end{enumerate}
+\saNote{} The above means that \nontrivialPairOfPointsAcc{} records whether or not, up to the present row, the pairing data contained at least one pair of points such that none of them is the point at infinity.

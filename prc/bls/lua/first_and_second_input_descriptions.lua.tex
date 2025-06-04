@@ -1,0 +1,164 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NL Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\usepackage{../../../pkg/draculatheme}
+
+
+\begin{document}
+\begin{verbatim}
+
+████████\ ██\                       ██\                                     ██\                                                               ██\
+██  _____|\__|                      ██ |                                    ██ |                                                              ██ |
+██ |      ██\  ██████\   ███████\ ██████\          ██████\  ███████\   ███████ |       ███████\  ██████\   ███████\  ██████\  ███████\   ███████ |
+█████\    ██ |██  __██\ ██  _____|\_██  _|         \____██\ ██  __██\ ██  __██ |      ██  _____|██  __██\ ██  _____|██  __██\ ██  __██\ ██  __██ |
+██  __|   ██ |██ |  \__|\██████\    ██ |           ███████ |██ |  ██ |██ /  ██ |      \██████\  ████████ |██ /      ██ /  ██ |██ |  ██ |██ /  ██ |
+██ |      ██ |██ |       \____██\   ██ |██\       ██  __██ |██ |  ██ |██ |  ██ |       \____██\ ██   ____|██ |      ██ |  ██ |██ |  ██ |██ |  ██ |
+██ |      ██ |██ |      ███████  |  \████  |      \███████ |██ |  ██ |\███████ |      ███████  |\███████\ \███████\ \██████  |██ |  ██ |\███████ |
+\__|      \__|\__|      \_______/    \____/        \_______|\__|  \__| \_______|      \_______/  \_______| \_______| \______/ \__|  \__| \_______|
+
+
+
+██\                                 ██\                 ██\                                         ██\            ██\     ██\
+\__|                                ██ |                ██ |                                        \__|           ██ |    \__|
+██\ ███████\   ██████\  ██\   ██\ ██████\          ███████ | ██████\   ███████\  ███████\  ██████\  ██\  ██████\ ██████\   ██\  ██████\  ███████\   ███████\
+██ |██  __██\ ██  __██\ ██ |  ██ |\_██  _|        ██  __██ |██  __██\ ██  _____|██  _____|██  __██\ ██ |██  __██\\_██  _|  ██ |██  __██\ ██  __██\ ██  _____|
+██ |██ |  ██ |██ /  ██ |██ |  ██ |  ██ |          ██ /  ██ |████████ |\██████\  ██ /      ██ |  \__|██ |██ /  ██ | ██ |    ██ |██ /  ██ |██ |  ██ |\██████\
+██ |██ |  ██ |██ |  ██ |██ |  ██ |  ██ |██\       ██ |  ██ |██   ____| \____██\ ██ |      ██ |      ██ |██ |  ██ | ██ |██\ ██ |██ |  ██ |██ |  ██ | \____██\
+██ |██ |  ██ |███████  |\██████  |  \████  |      \███████ |\███████\ ███████  |\███████\ ██ |      ██ |███████  | \████  |██ |\██████  |██ |  ██ |███████  |
+\__|\__|  \__|██  ____/  \______/    \____/        \_______| \_______|\_______/  \_______|\__|      \__|██  ____/   \____/ \__| \______/ \__|  \__|\_______/
+              ██ |                                                                                      ██ |
+              ██ |                                                                                      ██ |
+              \__|                                                                                      \__|
+
+
+
+|-----------------+----------------------------------------------+-------------------------------------------------+----------------------------------------------------------------|
+| Precompile      | FIRST_INPUT Description                      | SECOND_INPUT Description                        | Notes                                                          |
+|-----------------+:---------------------------------------------+:------------------------------------------------+----------------------------------------------------------------|
+| POINTEVALUATION | 12 rows of limbs, containing:                | ∅                                               |                                                                |
+|                 |                                              |                                                 |                                                                |
+|                 | * ver_hash ≡ data[0:32]     (2 limbs)        |                                                 |                                                                |
+|                 | * z        ≡ data[32:64]    (2 limbs)        |                                                 | module checks for   [0 ≤ z < POINT_EVALUATION_PRIME]           |
+|                 | * y        ≡ data[64:96]    (2 limbs)        |                                                 | .                 ∧ [0 ≤ y < POINT_EVALUATION_PRIME]           |
+|                 | * com      ≡ data[96:144]   (3 limbs)        |                                                 |                                                                |
+|                 | * proof    ≡ data[144:192]  (3 limbs)        |                                                 |                                                                |
+|                 |                                              |                                                 |                                                                |
+|                 |                                              |                                                 | Note:                                                          |
+|                 |                                              |                                                 | .   * MINT = 1 ⇔ any of the above fails                        |
+|                 |                                              |                                                 | .   * MEXT = 1 ⇔ any of the remaining checks fail              |
+|                 |                                              |                                                 | .   * WNON = 1 ⇔ precompile success                            |
+|                 |                                              |                                                 |                                                                |
+|-----------------+----------------------------------------------+-------------------------------------------------+----------------------------------------------------------------|
+| G1ADD           | * A ≡ data[0:128] (8 limbs)                  |                                                 | module checks for   [0 ≤ A_x < BLS_PRIME]                      |
+|                 | .     (first point)                          |                                                 | .                 ∧ [0 ≤ A_y < BLS_PRIME]                      |
+|                 |                                              |                                                 |                                                                |
+|                 |                                              | * B ≡ data[128:256] (8 limbs)                   | module checks for   [0 ≤ B_x < BLS_PRIME]                      |
+|                 |                                              | .     (second point)                            | .                 ∧ [0 ≤ B_y < BLS_PRIME]                      |
+|                 |                                              |                                                 |                                                                |
+|                 |                                              |                                                 | Note:                                                          |
+|                 |                                              |                                                 | .   * MINT = 1 ⇔ any of the range checks fails                 |
+|                 |                                              |                                                 | .   * MEXT = 1 ⇔ coordinates in range                          |
+|                 |                                              |                                                 | .                but one or both C1 curve memberships fails    |
+|                 |                                              |                                                 | .   * WNON = 1 ⇔ precompile success                            |
+|                 |                                              |                                                 |                                                                |
+|-----------------+----------------------------------------------+-------------------------------------------------+----------------------------------------------------------------|
+| G1_MSM          | * A ≡ data[160*k + 0: 160*k + 128] (8 limbs) |                                                 | module checks for   [0 ≤ A_x < BLS_PRIME]                      |
+|                 | .     (first point)                          |                                                 | .                 ∧ [0 ≤ A_y < BLS_PRIME]                      |
+|                 |                                              |                                                 |                                                                |
+|                 |                                              | * n ≡ data[160*k + 128: 160*k + 160] (2 limbs)  |                                                                |
+|                 |                                              | .     (32B scalar)                              |                                                                |
+|                 |                                              |                                                 |                                                                |
+|                 |                                              |                                                 | Note:                                                          |
+|                 |                                              |                                                 | .   * MINT = 1 ⇔ any of the range checks fails                 |
+|                 |                                              |                                                 | .   * MEXT = 1 ⇔ coordinates in range                          |
+|                 |                                              |                                                 | .                but one or more G1 subgroup memberships fails |
+|                 |                                              |                                                 | .   * WNON = 1 ⇔ precompile success                            |
+|                 |                                              |                                                 | .   * the scalar n is unconstrained                            |
+|                 |                                              |                                                 |                                                                |
+|-----------------+----------------------------------------------+-------------------------------------------------+----------------------------------------------------------------|
+| G2ADD           | * A ≡ data[0:256] (16 limbs)                 |                                                 | module checks for   [0 ≤ A_x_Im < BLS_PRIME]                   |
+|                 | .     (first point)                          |                                                 | .                 ∧ [0 ≤ A_x_Re < BLS_PRIME]                   |
+|                 |                                              |                                                 | .                 ∧ [0 ≤ A_y_Im < BLS_PRIME]                   |
+|                 |                                              |                                                 | .                 ∧ [0 ≤ A_y_Re < BLS_PRIME]                   |
+|                 |                                              |                                                 |                                                                |
+|                 |                                              | * B ≡ data[256:512] (16 limbs)                  | module checks for   [0 ≤ B_x_Im < BLS_PRIME]                   |
+|                 |                                              | .     (second point)                            | .                 ∧ [0 ≤ B_x_Re < BLS_PRIME]                   |
+|                 |                                              |                                                 | .                 ∧ [0 ≤ B_y_Im < BLS_PRIME]                   |
+|                 |                                              |                                                 | .                 ∧ [0 ≤ B_y_Re < BLS_PRIME]                   |
+|                 |                                              |                                                 |                                                                |
+|                 |                                              |                                                 | Note:                                                          |
+|                 |                                              |                                                 | .   * MINT = 1 ⇔ any of the range checks fails                 |
+|                 |                                              |                                                 | .   * MEXT = 1 ⇔ coordinates in range                          |
+|                 |                                              |                                                 | .                but one or both C2 curve memberships fails    |
+|                 |                                              |                                                 | .   * WNON = 1 ⇔ precompile success                            |
+|                 |                                              |                                                 |                                                                |
+|-----------------+----------------------------------------------+-------------------------------------------------+----------------------------------------------------------------|
+| G2_MSM          | * A ≡ data[288*k + 0: 288*k + 256] (8 limbs) |                                                 | module checks for   [0 ≤ A_x_Im < BLS_PRIME]                   |
+|                 | .     (first point)                          |                                                 | .                 ∧ [0 ≤ A_x_Re < BLS_PRIME]                   |
+|                 |                                              |                                                 | .                 ∧ [0 ≤ A_y_Im < BLS_PRIME]                   |
+|                 |                                              |                                                 | .                 ∧ [0 ≤ A_y_Re < BLS_PRIME]                   |
+|                 |                                              |                                                 |                                                                |
+|                 |                                              | * n ≡ data[288*k + 256: 288*k + 288] (2 limbs)  |                                                                |
+|                 |                                              | .     (32B scalar)                              |                                                                |
+|                 |                                              |                                                 |                                                                |
+|                 |                                              |                                                 | Note:                                                          |
+|                 |                                              |                                                 | .   * MINT = 1 ⇔ any of the range checks fails                 |
+|                 |                                              |                                                 | .   * MEXT = 1 ⇔ coordinates in range                          |
+|                 |                                              |                                                 | .                but one or more G2 subgroup memberships fails |
+|                 |                                              |                                                 | .   * WNON = 1 ⇔ precompile success                            |
+|                 |                                              |                                                 | .   * no constraints apply to the scalar n                     |
+|                 |                                              |                                                 |                                                                |
+|-----------------+----------------------------------------------+-------------------------------------------------+----------------------------------------------------------------|
+| PAIRING_CHECK   | * A ≡ data[384*k + 0: 384*k + 128] (8 limbs) |                                                 | module checks for   [0 ≤ A_x < BLS_PRIME]                      |
+|                 | .     (first point)                          |                                                 | .                 ∧ [0 ≤ A_y < BLS_PRIME]                      |
+|                 |                                              |                                                 |                                                                |
+|                 |                                              | * B ≡ data[384*k + 128: 384*k + 384] (16 limbs) | module checks for   [0 ≤ B_x_Im < BLS_PRIME]                   |
+|                 |                                              | .     (second point)                            | .                 ∧ [0 ≤ B_x_Re < BLS_PRIME]                   |
+|                 |                                              |                                                 | .                 ∧ [0 ≤ B_y_Im < BLS_PRIME]                   |
+|                 |                                              |                                                 | .                 ∧ [0 ≤ B_y_Re < BLS_PRIME]                   |
+|                 |                                              |                                                 |                                                                |
+|                 |                                              |                                                 | Note:                                                          |
+|                 |                                              |                                                 | .   * MINT = 1 ⇔ any of the range checks fails                 |
+|                 |                                              |                                                 | .   * MEXT = 1 ⇔ coordinates in range                          |
+|                 |                                              |                                                 | .                but one or more G1 or G2                      |
+|                 |                                              |                                                 | .                subgroup memberships fails                    |
+|                 |                                              |                                                 | .   * WTRV = 1 ⇔ every pair of points contains ∞               |
+|                 |                                              |                                                 | .   * WNON = 1 ⇔ at least one pair of points doesn't contain ∞ |
+|                 |                                              |                                                 |                                                                |
+|-----------------+----------------------------------------------+-------------------------------------------------+----------------------------------------------------------------|
+| MAP_FP_TO_G1    | * e ≡ data[0:64] (4 limbs)                   | ∅                                               | module checks for [0 ≤ e < BLS_PRIME]                          |
+|                 |                                              |                                                 |                                                                |
+|                 |                                              |                                                 | Note:                                                          |
+|                 |                                              |                                                 | .   * MINT = 1 ⇔ any of the range checks fails                 |
+|                 |                                              |                                                 | .   * MEXT = 0 : CANNOT fail externally                        |
+|                 |                                              |                                                 | .   * WNON = 1 ⇔ precompile success                            |
+|                 |                                              |                                                 |                                                                |
+|-----------------+----------------------------------------------+-------------------------------------------------+----------------------------------------------------------------|
+| MAP_FP2_TO_G2   | * e ≡ data[0:128] (8 limbs)                  | ∅                                               | module checks for   [0 ≤ e_Im < BLS_PRIME]                     |
+|                 |                                              |                                                 | .                 ∧ [0 ≤ e_Re < BLS_PRIME]                     |
+|                 |                                              |                                                 |                                                                |
+|                 |                                              |                                                 | Note:                                                          |
+|                 |                                              |                                                 | .   * MINT = 1 ⇔ any of the range checks fails                 |
+|                 |                                              |                                                 | .   * MEXT = 0 : CANNOT fail externally                        |
+|                 |                                              |                                                 | .   * WNON = 1 ⇔ precompile success                            |
+|                 |                                              |                                                 |                                                                |
+|-----------------+----------------------------------------------+-------------------------------------------------+----------------------------------------------------------------|
+
+NOTE. For variable size precompiles (that is: PAIRING_CHECK, G1_MSM and G2_MSM) we have noted k ≡ ACC_INPUTS - 1.
+
+NOTE. WTRV ≡ 0 for all precompiles except for PAIRING_CHECK.
+
+\end{verbatim}
+\end{document}
