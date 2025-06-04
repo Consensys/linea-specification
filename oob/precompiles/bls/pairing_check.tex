@@ -45,13 +45,16 @@ We impose the following constraints:
 					}
 				\]
 				where we use the following shorthand
-				\begin{align*}
-					\locPrecompileCost \define \Big[ \gasConstBlsPairingCheck + \\
-					\gasConstBlsPairingCheckPair \cdot \big( \frac{\locCds}{\prcBlsPairingCheckSize} \big) \Big]
-				\end{align*}
+				\begin{IEEEeqnarray*}{LCL}
+					\locPrecompileCost & \define & + \gasConstBlsPairingCheck \\
+                                                           &         & + \gasConstBlsPairingCheckPair \cdot \left( \frac{\locCds}{\prcBlsPairingCheckSize} \right)
+				\end{IEEEeqnarray*}
 				we further introduce the following shorthand
 				\[
-					\locInsufficientGas \define \outgoingResLo_{i + 4}
+					\left\{ \begin{array}{lcl}
+						\locInsufficientGas & \define & \outgoingResLo_{i + 4}  \\
+						\locSufficientGas   & \define & 1 - \locInsufficientGas \\
+					\end{array} \right.
 				\]
 				It follows that $\locCalleeGas < \locPrecompileCost \iff \locInsufficientGas = 1$.
 		\end{enumerate}
@@ -61,9 +64,9 @@ We impose the following constraints:
 		\[
 			\locHubSuccess \define
 			\left[  \begin{array}{cl}
-				\cdot & (1 - \locCdsIsZero)          \\
+				\cdot & \locCdsIsNonZero                          \\
 				\cdot & \locCdsIsMultipleOfMinBlsPairingCheckSize \\
-				\cdot & (1 - \locInsufficientGas)    \\
+				\cdot & \locSufficientGas                         \\
 			\end{array} \right]
 		\]
 		we further impose that

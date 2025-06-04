@@ -4,7 +4,7 @@
 	}
 \]
 The present section describes some common constraints to the processing of all \oobMod{} instructions related to the following precompiles:
-\begin{multicols}{3}
+\begin{multicols}{2}
 	\begin{itemize}
 		\item \inst{ECRECOVER}
 		\item \inst{ECADD}
@@ -13,14 +13,15 @@ The present section describes some common constraints to the processing of all \
 		\item \inst{RIPEMD-160}
 		\item \inst{IDENTITY}
 		\item \inst{ECPAIRING}.
-		\item \inst{BLS\_G1ADD}
-        \item \inst{BLS\_G1MSM}
-        \item \inst{BLS\_G2ADD}
-        \item \inst{BLS\_G2MSM}
-        \item \inst{BLS\_PAIRING\_CHECK}
-        \item \inst{BLS\_MAP\_FP\_TO\_G1}
-        \item \inst{BLS\_MAP\_FP2\_TO\_G2}
 		\item[\vspace{\fill}]
+		\item \inst{POINT\_EVALUATION}
+		\item \inst{BLS\_G1ADD}
+		\item \inst{BLS\_G1MSM}
+		\item \inst{BLS\_G2ADD}
+		\item \inst{BLS\_G2MSM}
+		\item \inst{BLS\_PAIRING\_CHECK}
+		\item \inst{BLS\_MAP\_FP\_TO\_G1}
+		\item \inst{BLS\_MAP\_FP2\_TO\_G2}
 	\end{itemize}
 \end{multicols}
 \noindent What these precompiles have in common is
@@ -38,7 +39,13 @@ We impose the following constraints:
 				argOneLo  = \locCds ,
 			}
 		\]
-		and we define the shorthand $\locCdsIsZero \define \outgoingResLo_{i}$
+		and we define the shorthand
+		\[
+			\left\{ \begin{array}{lcl}
+			        \locCdsIsZero    & \define & \outgoingResLo_{i} \\
+			        \locCdsIsNonZero & \define & 1 - \locCdsIsZero  \\
+			\end{array} \right.
+		\]
 	\item[\underline{Row n°$(i + 1)$:}] we impose the following:
 		\[
 			\wcpCallToIszero {

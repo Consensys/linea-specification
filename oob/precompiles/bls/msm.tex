@@ -110,7 +110,10 @@ We impose the following constraints:
 				\]
 				we further introduce the following shorthand
 				\[
-					\locInsufficientGas \define \outgoingResLo_{i + 6}
+					\left\{ \begin{array}{lcl}
+						\locInsufficientGas & \define & \outgoingResLo_{i + 6}  \\
+						\locSufficientGas   & \define & 1 - \locInsufficientGas \\
+					\end{array} \right.
 				\]
 				It follows that $\locCalleeGas < \locPrecompileCost \iff \locInsufficientGas = 1$.
 		\end{enumerate}
@@ -120,9 +123,9 @@ We impose the following constraints:
 		\[
 			\locHubSuccess \define
 			\left[  \begin{array}{cl}
-				\cdot & (1 - \locCdsIsZero)           \\
+				\cdot & \locCdsIsNonZero              \\
 				\cdot & \locCdsIsMultipleOfMinMsmSize \\
-				\cdot & (1 - \locInsufficientGas)     \\
+				\cdot & \locSufficientGas             \\
 			\end{array} \right]
 		\]
 		we further impose that
