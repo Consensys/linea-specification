@@ -12,13 +12,13 @@
 \newcommand{\createeWillSelfRevert}                                {\col{\_FAILURE}}
 \newcommand{\precompileFailure}                                    {\col{PRC\_FAILURE}}
 \newcommand{\precompileSuccess}                                    {\col{PRC\_SUCCESS}}
-\newcommand{\insufficientGas}                                      {\col{insufficient\_gas}}
+\newcommand{\insufficientGas}                                      {\loc{insufficient\_gas}}
 \newcommand{\Success}                                              {\green {\col{success}}}
 \newcommand{\Failure}                                              {\orange{\col{failure}}}
-\newcommand{\ssum}                                                 {\col{sum}}
-\newcommand{\wsum}                                                 {\col{weighted\_sum}}
+\newcommand{\ssum}                                                 {\loc{sum}}
+\newcommand{\wsum}                                                 {\loc{weighted\_sum}}
 % precompile macros
-\newcommand{\macroSomePrecompile}                                  {\col{<some\_precompile\_flag>}}
+\newcommand{\macroSomePrecompile}                                  {\loc{<some\_precompile\_flag>}}
 \newcommand{\macroEcrecover}                                       {\col{ECRECOVER}}
 \newcommand{\macroShaTwo}                                          {\col{SHA2-256}}
 \newcommand{\macroRipemd}                                          {\col{RIPEMD-160}}
@@ -29,14 +29,14 @@
 \newcommand{\macroEcpairing}                                       {\col{ECPAIRING}}
 \newcommand{\macroBlake}                                           {\col{BLAKE2f}}
 % BLS precompile macros
-\newcommand{\macroPointEvaluation}                                 {\col{POINT\_EVALUATION}    }
-\newcommand{\macroBlsGoneAdd}                                      {\col{BLS\_G1\_ADD}         }
-\newcommand{\macroBlsGoneMsm}                                      {\col{BLS\_G1\_MSM}         }
-\newcommand{\macroBlsGtwoAdd}                                      {\col{BLS\_G2\_ADD}         }
-\newcommand{\macroBlsGtwoMsm}                                      {\col{BLS\_G2\_MSM}         }
-\newcommand{\macroBlsPairingCheck}                                 {\col{BLS\_PAIRING\_CHECK}  }
-\newcommand{\macroBlsMapFpToGone}                                  {\col{BLS\_MAP\_FP\_TO\_G1} }
-\newcommand{\macroBlsMapFpToGtwo}                                  {\col{BLS\_MAP\_FP\_TO\_G2} }
+\newcommand{\macroPointEvaluation}                                 {\col{POINT\_EVALUATION}}
+\newcommand{\macroBlsGoneAdd}                                      {\col{BLS\_G1\_ADD}}
+\newcommand{\macroBlsGoneMsm}                                      {\col{BLS\_G1\_MSM}}
+\newcommand{\macroBlsGtwoAdd}                                      {\col{BLS\_G2\_ADD}}
+\newcommand{\macroBlsGtwoMsm}                                      {\col{BLS\_G2\_MSM}}
+\newcommand{\macroBlsPairingCheck}                                 {\col{BLS\_PAIRING\_CHECK}}
+\newcommand{\macroBlsMapFpToGone}                                  {\col{BLS\_MAP\_FP\_TO\_G1}}
+\newcommand{\macroBlsMapFpTwoToGtwo}                               {\col{BLS\_MAP\_FP2\_TO\_G2}}
 % narratives
 %
 % \newcommand{\scenCodeDeposit}                                      {\scenarioSignifier\col{CODEDEPOSIT}}
@@ -49,24 +49,29 @@
 \newcommand{\scenReturnFromDeploymentEmptyByteCodeWontRevert}      {\scenReturn\separator\col{FROM\_DEPLOYMENT\_EMPTY\_CODE\_WONT\_REVERT}}
 \newcommand{\scenReturnFromDeploymentNonemptyByteCodeWillRevert}   {\scenReturn\separator\col{FROM\_DEPLOYMENT\_NONEMPTY\_CODE\_WILL\_REVERT}}
 \newcommand{\scenReturnFromDeploymentNonemptyByteCodeWontRevert}   {\scenReturn\separator\col{FROM\_DEPLOYMENT\_NONEMPTY\_CODE\_WONT\_REVERT}}
+
 % RETURN related shorthands 
-\newcommand{\scenReturnSum}                                        {\scenReturn\separator\ssum}
-\newcommand{\scenReturnRaisesNoException}                          {\scenReturn\separator\col{unexceptional}}
-\newcommand{\scenReturnFromDeployment}                             {\scenReturn\separator\col{deployment}}
-\newcommand{\scenReturnNonemptyDeployment}                         {\scenReturn\separator\col{nonempty\_deployment}}
-\newcommand{\scenReturnEmptyDeployment}                            {\scenReturn\separator\col{empty\_deployment}}
-\newcommand{\scenReturnFromMessageCall}                            {\scenReturn\separator\col{message\_call}}
-\newcommand{\scenReturnDeploymentWillRevert}                       {\scenReturn\separator\col{deployment\_will\_revert}}
-%
+\newcommand{\scenReturnCol}                     [1]                {\scenReturn\separator\col{#1}}
+\newcommand{\scenReturnLoc}                     [1]                {\scenReturn\separator\loc{#1}}
+\newcommand{\scenReturnSum}                                        {\scenReturnLoc{\ssum}}
+\newcommand{\scenReturnRaisesNoException}                          {\scenReturnLoc{unexceptional}}
+\newcommand{\scenReturnFromDeployment}                             {\scenReturnLoc{deployment}}
+\newcommand{\scenReturnNonemptyDeployment}                         {\scenReturnLoc{nonempty\_deployment}}
+\newcommand{\scenReturnEmptyDeployment}                            {\scenReturnLoc{empty\_deployment}}
+\newcommand{\scenReturnFromMessageCall}                            {\scenReturnLoc{message\_call}}
+\newcommand{\scenReturnDeploymentWillRevert}                       {\scenReturnLoc{deployment\_will\_revert}}
+
+% SELFDESTRUCT related columns and shorthands
 \newcommand{\scenSelfdestruct}                                     {\scenarioSignifier\col{SELFDESTRUCT}}
 \newcommand{\scenSelfdestructCol}               [1]                {\scenSelfdestruct\separator\col{#1}}
+\newcommand{\scenSelfdestructLoc}               [1]                {\scenSelfdestruct\separator\loc{#1}}
 \newcommand{\scenSelfdestructException}                            {\scenSelfdestructCol{EXCEPTION}}
 \newcommand{\scenSelfdestructWillRevert}                           {\scenSelfdestructCol{WILL\_REVERT}}
 \newcommand{\scenSelfdestructWontRevertAlreadyMarked}              {\scenSelfdestructCol{WONT\_REVERT\_ALREADY\_MARKED}}
 \newcommand{\scenSelfdestructWontRevertNotYetMarked}               {\scenSelfdestructCol{WONT\_REVERT\_NOT\_YET\_MARKED}}
-\newcommand{\scenSelfdestructSum}                                  {\scenSelfdestructCol{sum}}
-\newcommand{\scenSelfdestructUnexceptional}                        {\scenSelfdestructCol{unexceptional}}
-\newcommand{\scenSelfdestructWontRevert}                           {\scenSelfdestructCol{wont\_revert}}
+\newcommand{\scenSelfdestructSum}                                  {\scenSelfdestructLoc{sum}}
+\newcommand{\scenSelfdestructUnexceptional}                        {\scenSelfdestructLoc{unexceptional}}
+\newcommand{\scenSelfdestructWontRevert}                           {\scenSelfdestructLoc{wont\_revert}}
 
 % subscenarios flags:
 \newcommand{\scenario} [1]                                         {\scenarioSignifier\col{SCN\_#1}}
@@ -81,46 +86,48 @@
 %
 %
 \newcommand{\scenCall}                                             {\scenarioSignifier\col{CALL}}
-\newcommand{\scenCallException}                                    {\scenCall\separator\col{EXCEPTION}}
-\newcommand{\scenCallAbortWillRevert}                              {\scenCall\separator\col{ABORT\_WILL\_REVERT}}
-\newcommand{\scenCallAbortWontRevert}                              {\scenCall\separator\col{ABORT\_WONT\_REVERT}}
-\newcommand{\scenCallToPrecompileSuccess}                          {\scenCall\separator\col{precompile\_success}}
-\newcommand{\scenCallEoaSuccessWillRevert}                         {\scenCall\separator\col{EOA\_SUCCESS\_WILL\_REVERT}}
-\newcommand{\scenCallEoaSuccessWontRevert}                         {\scenCall\separator\col{EOA\_SUCCESS\_WONT\_REVERT}}
-\newcommand{\scenCallSmcFailureWillRevert}                         {\scenCall\separator\col{SMC\_FAILURE\_WILL\_REVERT}}
-\newcommand{\scenCallSmcFailureWontRevert}                         {\scenCall\separator\col{SMC\_FAILURE\_WONT\_REVERT}}
-\newcommand{\scenCallSmcSuccessWillRevert}                         {\scenCall\separator\col{SMC\_SUCCESS\_WILL\_REVERT}}
-\newcommand{\scenCallSmcSuccessWontRevert}                         {\scenCall\separator\col{SMC\_SUCCESS\_WONT\_REVERT}}
-\newcommand{\scenCallPrcFailure}                                   {\scenCall\separator\precompileFailure}
-\newcommand{\scenCallPrcSuccessWillRevert}                         {\scenCall\separator\precompileSuccess\col{\_WILL\_REVERT}}
-\newcommand{\scenCallPrcSuccessWontRevert}                         {\scenCall\separator\precompileSuccess\col{\_WONT\_REVERT}}
-%
-\newcommand{\scenCallEoa}                                          {\scenCall\separator\col{externally\_owned\_account}}
-\newcommand{\scenCallSmc}                                          {\scenCall\separator\col{smart\_contract}}
-\newcommand{\scenCallPrc}                                          {\scenCall\separator\col{precompile}}
-\newcommand{\scenCallNoPrc}                                        {\scenCall\separator\col{no\_precompile}}
-\newcommand{\scenCallAbort}                                        {\scenCall\separator\col{abort}}
-\newcommand{\scenCallNoAbort}                                      {\scenCall\separator\col{no\_abort}}
-\newcommand{\scenCallEntry}                                        {\scenCall\separator\col{entry}}
-\newcommand{\scenCallSum}                                          {\scenCall\separator\ssum}
-\newcommand{\scenCallUnexceptional}                                {\scenCall\separator\col{unexceptional}}
-\newcommand{\scenCallPrecompileSuccess}                            {\scenCall\separator\col{precompile\_success}}
-\newcommand{\scenCallEntryKnownWillRevert}                         {\scenCall\separator\col{execution\_known\_to\_revert}}
-\newcommand{\scenCallEntryKnownWontRevert}                         {\scenCall\separator\col{execution\_known\_to\_not\_revert}}
-\newcommand{\scenCallSuccess}                                      {\scenCall\separator\col{success}}
-\newcommand{\scenCallSmcSuccess}                                   {\scenCall\separator\col{smc\_success}}
-\newcommand{\scenCallSmcFailure}                                   {\scenCall\separator\col{smc\_failure}}
-\newcommand{\scenCallFailure}                                      {\scenCall\separator\col{failure}}
-\newcommand{\scenCallNoContextChange}                              {\scenCall\separator\col{no\_context\_change}}
-\newcommand{\scenCallRequiresBothAccountsTwice}                    {\scenCall\separator\col{requires\_both\_accounts\_twice}}
-%
-\newcommand{\scenCallCalleeWarmthUpdateNotRequired}                {\scenCall\separator\col{callee\_warmth\_update\_not\_required}}
-\newcommand{\scenCallCalleeWarmthUpdateRequired}                   {\scenCall\separator\col{callee\_warmth\_update\_required}}
-\newcommand{\scenCallBalanceUpdateNotRequired}                     {\scenCall\separator\col{balance\_update\_not\_required}}
-\newcommand{\scenCallBalanceUpdateRequired}                        {\scenCall\separator\col{balance\_update\_required}}
-\newcommand{\scenCallBalanceUpdateUndoneWithCalleeFailure}         {\scenCall\separator\col{balance\_update\_undone\_with\_callee\_failure}}
-\newcommand{\scenCallBalanceUpdateUndoneWithCallerRevert}          {\scenCall\separator\col{balance\_update\_undone\_with\_caller\_revert}}
-%
+\newcommand{\scenCallCol}                       [1]                {\scenCall\separator\col{#1}}
+\newcommand{\scenCallLoc}                       [1]                {\scenCall\separator\loc{#1}}
+\newcommand{\scenCallException}                                    {\scenCallCol{EXCEPTION}}
+\newcommand{\scenCallAbortWillRevert}                              {\scenCallCol{ABORT\_WILL\_REVERT}}
+\newcommand{\scenCallAbortWontRevert}                              {\scenCallCol{ABORT\_WONT\_REVERT}}
+\newcommand{\scenCallToPrecompileSuccess}                          {\scenCallLoc{precompile\_success}}
+\newcommand{\scenCallEoaSuccessWillRevert}                         {\scenCallCol{EOA\_SUCCESS\_WILL\_REVERT}}
+\newcommand{\scenCallEoaSuccessWontRevert}                         {\scenCallCol{EOA\_SUCCESS\_WONT\_REVERT}}
+\newcommand{\scenCallSmcFailureWillRevert}                         {\scenCallCol{SMC\_FAILURE\_WILL\_REVERT}}
+\newcommand{\scenCallSmcFailureWontRevert}                         {\scenCallCol{SMC\_FAILURE\_WONT\_REVERT}}
+\newcommand{\scenCallSmcSuccessWillRevert}                         {\scenCallCol{SMC\_SUCCESS\_WILL\_REVERT}}
+\newcommand{\scenCallSmcSuccessWontRevert}                         {\scenCallCol{SMC\_SUCCESS\_WONT\_REVERT}}
+\newcommand{\scenCallPrcFailure}                                   {\scenCallCol{\precompileFailure}}
+\newcommand{\scenCallPrcSuccessWillRevert}                         {\scenCallCol{\precompileSuccess\col{\_WILL\_REVERT}}}
+\newcommand{\scenCallPrcSuccessWontRevert}                         {\scenCallCol{\precompileSuccess\col{\_WONT\_REVERT}}}
+
+\newcommand{\scenCallEoa}                                          {\scenCallLoc{externally\_owned\_account}}
+\newcommand{\scenCallSmc}                                          {\scenCallLoc{smart\_contract}}
+\newcommand{\scenCallPrc}                                          {\scenCallLoc{precompile}}
+\newcommand{\scenCallNoPrc}                                        {\scenCallLoc{no\_precompile}}
+\newcommand{\scenCallAbort}                                        {\scenCallLoc{abort}}
+\newcommand{\scenCallNoAbort}                                      {\scenCallLoc{no\_abort}}
+\newcommand{\scenCallEntry}                                        {\scenCallLoc{entry}}
+\newcommand{\scenCallSum}                                          {\scenCallLoc{\ssum}}
+\newcommand{\scenCallUnexceptional}                                {\scenCallLoc{unexceptional}}
+\newcommand{\scenCallPrecompileSuccess}                            {\scenCallLoc{precompile\_success}}
+\newcommand{\scenCallEntryKnownWillRevert}                         {\scenCallLoc{execution\_known\_to\_revert}}
+\newcommand{\scenCallEntryKnownWontRevert}                         {\scenCallLoc{execution\_known\_to\_not\_revert}}
+\newcommand{\scenCallSuccess}                                      {\scenCallLoc{success}}
+\newcommand{\scenCallSmcSuccess}                                   {\scenCallLoc{smc\_success}}
+\newcommand{\scenCallSmcFailure}                                   {\scenCallLoc{smc\_failure}}
+\newcommand{\scenCallFailure}                                      {\scenCallLoc{failure}}
+\newcommand{\scenCallNoContextChange}                              {\scenCallLoc{no\_context\_change}}
+\newcommand{\scenCallRequiresBothAccountsTwice}                    {\scenCallLoc{requires\_both\_accounts\_twice}}
+
+\newcommand{\scenCallCalleeWarmthUpdateNotRequired}                {\scenCallLoc{callee\_warmth\_update\_not\_required}}
+\newcommand{\scenCallCalleeWarmthUpdateRequired}                   {\scenCallLoc{callee\_warmth\_update\_required}}
+\newcommand{\scenCallBalanceUpdateNotRequired}                     {\scenCallLoc{balance\_update\_not\_required}}
+\newcommand{\scenCallBalanceUpdateRequired}                        {\scenCallLoc{balance\_update\_required}}
+\newcommand{\scenCallBalanceUpdateUndoneWithCalleeFailure}         {\scenCallLoc{balance\_update\_undone\_with\_callee\_failure}}
+\newcommand{\scenCallBalanceUpdateUndoneWithCallerRevert}          {\scenCallLoc{balance\_update\_undone\_with\_caller\_revert}}
+
 \newcommand{\relofPrcFailure          }{\redm{\relof[\inst{PRC}]                 ^  \text{fail}}}
 \newcommand{\relofPrcSuccessWillRevert}{\redm{\relof[\inst{PRC}]_{\text{rev}}    ^  \text{succ}}}
 \newcommand{\relofPrcSuccessWontRevert}{\redm{\relof[\inst{PRC}]_{\text{norev}}  ^  \text{succ}}}
@@ -129,74 +136,74 @@
 \newcommand{\relofSmcSuccessWillRevert}{\redm{\relof[\inst{SMC}]_{\text{rev}}    ^  \text{succ}}}
 \newcommand{\relofSmcSuccessWontRevert}{\redm{\relof[\inst{SMC}]_{\text{norev}}  ^  \text{succ}}}
 
-
+\newcommand{\scenCallerWillRevert}                                 {\scenCallLoc{caller\_will\_revert}}
+\newcommand{\scenCallToEoa}                                        {\scenCallLoc{externally\_owned\_account}}
+\newcommand{\scenCallToPrecompile}                                 {\scenCallLoc{precompile}}
+\newcommand{\scenCallToSmartContract}                              {\scenCallLoc{smart\_contract}}
+\newcommand{\scenCallNoValueTransfer}                              {\scenCallLoc{no\_value\_transfer}}
+\newcommand{\scenCallValueTransferAndWarmth}                       {\scenCallLoc{value\_transfer\_and\_warmth}}
+\newcommand{\scenCallUndoValueTransfer}                            {\scenCallLoc{undo\_value\_transfer}}
+\newcommand{\scenCallUndoWithCaller}                               {\scenCallLoc{undo\_with\_caller}}
+\newcommand{\scenCallUndoWithCallee}                               {\scenCallLoc{undo\_with\_callee}}
 %
-%
-\newcommand{\scenCallColumn}                   [1]                 {\scenCall\separator\col{#1}}
-\newcommand{\scenCallerWillRevert}                                 {\scenCallColumn{caller\_will\_revert}}
-\newcommand{\scenCallToEoa}                                        {\scenCallColumn{externally\_owned\_account}}
-\newcommand{\scenCallToPrecompile}                                 {\scenCallColumn{precompile}}
-\newcommand{\scenCallToSmartContract}                              {\scenCallColumn{smart\_contract}}
-\newcommand{\scenCallNoValueTransfer}                              {\scenCallColumn{no\_value\_transfer}}
-\newcommand{\scenCallValueTransferAndWarmth}                       {\scenCallColumn{value\_transfer\_and\_warmth}}
-\newcommand{\scenCallUndoValueTransfer}                            {\scenCallColumn{undo\_value\_transfer}}
-\newcommand{\scenCallUndoWithCaller}                               {\scenCallColumn{undo\_with\_caller}}
-\newcommand{\scenCallUndoWithCallee}                               {\scenCallColumn{undo\_with\_callee}}
-%
-\newcommand{\scenPrecompileColumn}                   [1]           {\scenPrecompile\separator\col{#1}}
 \newcommand{\scenPrecompile}                                       {\scenarioSignifier\col{PRC}}
-\newcommand{\scenPrecompileSum}                                    {\scenPrecompileColumn{\ssum}}
-\newcommand{\scenPrecompileWeightedSum}                            {\scenPrecompileColumn{\wsum}}
-\newcommand{\scenSomePrecompile}                                   {\scenPrecompileColumn{\macroSomePrecompile}}
-\newcommand{\scenPrecompileCommonNotIdentity}                      {\scenPrecompileColumn{common\_except\_identity}}
-\newcommand{\scenPrecompileCommonBls}                              {\scenPrecompileColumn{common\_bls}}
-\newcommand{\scenPrecompileCommon}                                 {\scenPrecompileColumn{common}}
-\newcommand{\scenPrecompileMayOnlyFailInHub}                       {\scenPrecompileColumn{may\_only\_fail\_in\_HUB}}
-\newcommand{\scenPrecompileMayOnlyFailInRam}                       {\scenPrecompileColumn{may\_only\_fail\_in\_RAM}}
-\newcommand{\scenEcrecover}                                        {\scenPrecompileColumn{\macroEcrecover}}
-\newcommand{\scenShaTwo}                                           {\scenPrecompileColumn{\macroShaTwo}}
-\newcommand{\scenRipemd}                                           {\scenPrecompileColumn{\macroRipemd}}
-\newcommand{\scenIdentity}                                         {\scenPrecompileColumn{\macroIdentity}}
-\newcommand{\scenModexp}                                           {\scenPrecompileColumn{\macroModexp}}
-\newcommand{\scenEcadd}                                            {\scenPrecompileColumn{\macroEcadd}}
-\newcommand{\scenEcmul}                                            {\scenPrecompileColumn{\macroEcmul}}
-\newcommand{\scenEcpairing}                                        {\scenPrecompileColumn{\macroEcpairing}}
-\newcommand{\scenBlake}                                            {\scenPrecompileColumn{\macroBlake}}
+\newcommand{\scenPrecompileCol}                      [1]           {\scenPrecompile\separator\col{#1}}
+\newcommand{\scenPrecompileLoc}                      [1]           {\scenPrecompile\separator\loc{#1}}
+\newcommand{\scenPrecompileSum}                                    {\scenPrecompileLoc{\ssum}}
+\newcommand{\scenPrecompileWeightedSum}                            {\scenPrecompileLoc{\wsum}}
+\newcommand{\scenSomePrecompile}                                   {\scenPrecompileLoc{\macroSomePrecompile}}
+\newcommand{\scenPrecompileCommonNotIdentity}                      {\scenPrecompileLoc{common\_except\_identity}}
+\newcommand{\scenPrecompileCommonBls}                              {\scenPrecompileLoc{common\_bls}}
+\newcommand{\scenPrecompileCommon}                                 {\scenPrecompileLoc{common}}
+\newcommand{\scenPrecompileMayOnlyFailInHub}                       {\scenPrecompileLoc{may\_only\_fail\_in\_HUB}}
+\newcommand{\scenPrecompileMayOnlyFailInRam}                       {\scenPrecompileLoc{may\_only\_fail\_in\_RAM}}
 
-\newcommand{\scenPointEvaluation }                                 {\scenPrecompileColumn{\macroPointEvaluation } }
-\newcommand{\scenBlsGoneAdd      }                                 {\scenPrecompileColumn{\macroBlsGoneAdd      } }
-\newcommand{\scenBlsGoneMsm      }                                 {\scenPrecompileColumn{\macroBlsGoneMsm      } }
-\newcommand{\scenBlsGtwoAdd      }                                 {\scenPrecompileColumn{\macroBlsGtwoAdd      } }
-\newcommand{\scenBlsGtwoMsm      }                                 {\scenPrecompileColumn{\macroBlsGtwoMsm      } }
-\newcommand{\scenBlsPairingCheck }                                 {\scenPrecompileColumn{\macroBlsPairingCheck } }
-\newcommand{\scenBlsMapFpToGone  }                                 {\scenPrecompileColumn{\macroBlsMapFpToGone  } }
-\newcommand{\scenBlsMapFpToGtwo  }                                 {\scenPrecompileColumn{\macroBlsMapFpToGtwo  } }
+\newcommand{\scenEcrecover          }                                 {\scenPrecompileCol{\macroEcrecover          } }
+\newcommand{\scenShaTwo             }                                 {\scenPrecompileCol{\macroShaTwo             } }
+\newcommand{\scenRipemd             }                                 {\scenPrecompileCol{\macroRipemd             } }
+\newcommand{\scenIdentity           }                                 {\scenPrecompileCol{\macroIdentity           } }
+\newcommand{\scenModexp             }                                 {\scenPrecompileCol{\macroModexp             } }
+\newcommand{\scenEcadd              }                                 {\scenPrecompileCol{\macroEcadd              } }
+\newcommand{\scenEcmul              }                                 {\scenPrecompileCol{\macroEcmul              } }
+\newcommand{\scenEcpairing          }                                 {\scenPrecompileCol{\macroEcpairing          } }
+\newcommand{\scenBlake              }                                 {\scenPrecompileCol{\macroBlake              } }
 
-\newcommand{\scenPrcCurrentlyValidCallerGas     }                  {\scenPrecompileColumn{CALLER\_GAS}}
-\newcommand{\scenPrcGasAllowance                }                  {\scenPrecompileColumn{CALLEE\_GAS}}
-\newcommand{\scenPrcGasOwedToCaller             }                  {\scenPrecompileColumn{RETURN\_GAS}}
-\newcommand{\scenPrcCdo                         }                  {\scenPrecompileColumn{CDO}}
-\newcommand{\scenPrcCds                         }                  {\scenPrecompileColumn{CDS}}
-\newcommand{\scenPrcRao                         }                  {\scenPrecompileColumn{RAO}}
-\newcommand{\scenPrcRac                         }                  {\scenPrecompileColumn{RAC}}
-\newcommand{\scenPrcFailureKnownToHub           }                  {\scenPrecompileColumn{FAILURE\_KNOWN\_TO\_HUB}}
-\newcommand{\scenPrcFailureKnownToRam           }                  {\scenPrecompileColumn{FAILURE\_KNOWN\_TO\_RAM}}
-\newcommand{\scenPrcSuccessWillRevert           }                  {\scenPrecompileColumn{SUCCESS\_WILL\_REVERT}}
-\newcommand{\scenPrcSuccessWontRevert           }                  {\scenPrecompileColumn{SUCCESS\_WONT\_REVERT}}
-\newcommand{\scenPrcSuccess                     }                  {\scenPrecompileColumn{success}}
-\newcommand{\scenPrcFailure                     }                  {\scenPrecompileColumn{failure}}
-\newcommand{\scenPrcScenarioSum                 }                  {\scenPrecompileColumn{scenario\_sum}}
-%
-\newcommand{\scenPrecompileNsrPreamble}                            {\scenarioSignifier\col{precompile\_nsr\_preamble}}    
-\newcommand{\scenEcrecoverNsrEpilogue}                             {\scenEcrecover\separator\col{nsr\_epilogue}}
-\newcommand{\scenShaTwoNsrEpilogue}                                {\scenShaTwo\separator\col{nsr\_epilogue}}
-\newcommand{\scenRipemdNsrEpilogue}                                {\scenRipemd\separator\col{nsr\_epilogue}}
-\newcommand{\scenIdentityNsrEpilogue}                              {\scenIdentity\separator\col{nsr\_epilogue}}
-\newcommand{\scenModexpNsrEpilogue}                                {\scenModexp\separator\col{nsr\_epilogue}}
-\newcommand{\scenEcaddNsrEpilogue}                                 {\scenEcadd\separator\col{nsr\_epilogue}}
-\newcommand{\scenEcmulNsrEpilogue}                                 {\scenEcmul\separator\col{nsr\_epilogue}}
-\newcommand{\scenEcpairingNsrEpilogue}                             {\scenEcpairing\separator\col{nsr\_epilogue}}
-\newcommand{\scenBlakeNsrEpilogue}                                 {\scenBlake\separator\col{nsr\_epilogue}}
+\newcommand{\scenPointEvaluation    }                                 {\scenPrecompileCol{\macroPointEvaluation    } }
+\newcommand{\scenBlsGoneAdd         }                                 {\scenPrecompileCol{\macroBlsGoneAdd         } }
+\newcommand{\scenBlsGoneMsm         }                                 {\scenPrecompileCol{\macroBlsGoneMsm         } }
+\newcommand{\scenBlsGtwoAdd         }                                 {\scenPrecompileCol{\macroBlsGtwoAdd         } }
+\newcommand{\scenBlsGtwoMsm         }                                 {\scenPrecompileCol{\macroBlsGtwoMsm         } }
+\newcommand{\scenBlsPairingCheck    }                                 {\scenPrecompileCol{\macroBlsPairingCheck    } }
+\newcommand{\scenBlsMapFpToGone     }                                 {\scenPrecompileCol{\macroBlsMapFpToGone     } }
+\newcommand{\scenBlsMapFpTwoToGtwo  }                                 {\scenPrecompileCol{\macroBlsMapFpTwoToGtwo  } }
+
+\newcommand{\scenPrcCurrentlyValidCallerGas     }                  {\scenPrecompileCol{CALLER\_GAS}}
+\newcommand{\scenPrcGasAllowance                }                  {\scenPrecompileCol{CALLEE\_GAS}}
+\newcommand{\scenPrcGasOwedToCaller             }                  {\scenPrecompileCol{RETURN\_GAS}}
+\newcommand{\scenPrcCdo                         }                  {\scenPrecompileCol{CDO}}
+\newcommand{\scenPrcCds                         }                  {\scenPrecompileCol{CDS}}
+\newcommand{\scenPrcRao                         }                  {\scenPrecompileCol{RAO}}
+\newcommand{\scenPrcRac                         }                  {\scenPrecompileCol{RAC}}
+\newcommand{\scenPrcFailureKnownToHub           }                  {\scenPrecompileCol{FAILURE\_KNOWN\_TO\_HUB}}
+\newcommand{\scenPrcFailureKnownToRam           }                  {\scenPrecompileCol{FAILURE\_KNOWN\_TO\_RAM}}
+\newcommand{\scenPrcSuccessWillRevert           }                  {\scenPrecompileCol{SUCCESS\_WILL\_REVERT}}
+\newcommand{\scenPrcSuccessWontRevert           }                  {\scenPrecompileCol{SUCCESS\_WONT\_REVERT}}
+\newcommand{\scenPrcSuccess                     }                  {\scenPrecompileLoc{success}}
+\newcommand{\scenPrcFailure                     }                  {\scenPrecompileLoc{failure}}
+\newcommand{\scenPrcScenarioSum                 }                  {\scenPrecompileLoc{scenario\_sum}}
+
+\newcommand{\scenNsrEpilogue}                                      {\loc{nsr\_epilogue}}
+\newcommand{\scenNsrPreamble}                                      {\loc{precompile\_nsr\_preamble}}
+\newcommand{\scenPrecompileNsrPreamble}                            {\scenarioSignifier\scenNsrPreamble}
+\newcommand{\scenEcrecoverNsrEpilogue}                             {\scenEcrecover\separator\scenNsrEpilogue}
+\newcommand{\scenShaTwoNsrEpilogue}                                {\scenShaTwo\separator\scenNsrEpilogue}
+\newcommand{\scenRipemdNsrEpilogue}                                {\scenRipemd\separator\scenNsrEpilogue}
+\newcommand{\scenIdentityNsrEpilogue}                              {\scenIdentity\separator\scenNsrEpilogue}
+\newcommand{\scenModexpNsrEpilogue}                                {\scenModexp\separator\scenNsrEpilogue}
+\newcommand{\scenEcaddNsrEpilogue}                                 {\scenEcadd\separator\scenNsrEpilogue}
+\newcommand{\scenEcmulNsrEpilogue}                                 {\scenEcmul\separator\scenNsrEpilogue}
+\newcommand{\scenEcpairingNsrEpilogue}                             {\scenEcpairing\separator\scenNsrEpilogue}
+\newcommand{\scenBlakeNsrEpilogue}                                 {\scenBlake\separator\scenNsrEpilogue}
 %
 %
 %
@@ -206,37 +213,38 @@
 %
 %
 \newcommand{\scenCreate}                                           {\scenarioSignifier\col{CREATE}}
-\newcommand{\scenCreateColumn}                   [1]               {\scenCreate\separator\col{#1}}
-\newcommand{\scenCreateException}                                  {\scenCreateColumn{EXCEPTION}}                               % SCN_4
-\newcommand{\scenCreateAbort}                                      {\scenCreateColumn{ABORT}}                                   % SCN_4
-\newcommand{\scenCreateFCondWontRevert}                            {\scenCreateColumn{FAILURE\_CONDITION}\creatorWontRevert}                      % SCN_1
-\newcommand{\scenCreateFCondWillRevert}                            {\scenCreateColumn{FAILURE\_CONDITION}\creatorWillRevert}                      % SCN_1
-\newcommand{\scenCreateNonEmptyInitCodeFailureWontRevert}          {\scenCreateColumn{NONEMPTY\_INIT\_CODE\_FAILURE\_WONT\_REVERT}}        % SCN_5
-\newcommand{\scenCreateNonEmptyInitCodeSuccessWontRevert}          {\scenCreateColumn{NONEMPTY\_INIT\_CODE\_SUCCESS\_WONT\_REVERT}}        % SCN_6
-\newcommand{\scenCreateNonEmptyInitCodeFailureWillRevert}          {\scenCreateColumn{NONEMPTY\_INIT\_CODE\_FAILURE\_WILL\_REVERT}}        % SCN_7
-\newcommand{\scenCreateNonEmptyInitCodeSuccessWillRevert}          {\scenCreateColumn{NONEMPTY\_INIT\_CODE\_SUCCESS\_WILL\_REVERT}}        % SCN_8
-\newcommand{\scenCreateEmptyInitCodeWontRevert}                    {\scenCreateColumn{EMPTY\_INIT\_CODE\_WONT\_REVERT}}                 % SCN_9
-\newcommand{\scenCreateEmptyInitCodeWillRevert}                    {\scenCreateColumn{EMPTY\_INIT\_CODE\_WILL\_REVERT}}                 % SCN_10
+\newcommand{\scenCreateCol}                      [1]               {\scenCreate\separator\col{#1}}
+\newcommand{\scenCreateLoc}                      [1]               {\scenCreate\separator\loc{#1}}
+\newcommand{\scenCreateException}                                  {\scenCreateCol{EXCEPTION}}                               % SCN_4
+\newcommand{\scenCreateAbort}                                      {\scenCreateCol{ABORT}}                                   % SCN_4
+\newcommand{\scenCreateFCondWontRevert}                            {\scenCreateCol{FAILURE\_CONDITION}\creatorWontRevert}                      % SCN_1
+\newcommand{\scenCreateFCondWillRevert}                            {\scenCreateCol{FAILURE\_CONDITION}\creatorWillRevert}                      % SCN_1
+\newcommand{\scenCreateNonEmptyInitCodeFailureWontRevert}          {\scenCreateCol{NONEMPTY\_INIT\_CODE\_FAILURE\_WONT\_REVERT}}        % SCN_5
+\newcommand{\scenCreateNonEmptyInitCodeSuccessWontRevert}          {\scenCreateCol{NONEMPTY\_INIT\_CODE\_SUCCESS\_WONT\_REVERT}}        % SCN_6
+\newcommand{\scenCreateNonEmptyInitCodeFailureWillRevert}          {\scenCreateCol{NONEMPTY\_INIT\_CODE\_FAILURE\_WILL\_REVERT}}        % SCN_7
+\newcommand{\scenCreateNonEmptyInitCodeSuccessWillRevert}          {\scenCreateCol{NONEMPTY\_INIT\_CODE\_SUCCESS\_WILL\_REVERT}}        % SCN_8
+\newcommand{\scenCreateEmptyInitCodeWontRevert}                    {\scenCreateCol{EMPTY\_INIT\_CODE\_WONT\_REVERT}}                 % SCN_9
+\newcommand{\scenCreateEmptyInitCodeWillRevert}                    {\scenCreateCol{EMPTY\_INIT\_CODE\_WILL\_REVERT}}                 % SCN_10
 %
-\newcommand{\scenCreateSum}                                        {\scenCreateColumn{\ssum}}
-\newcommand{\scenCreateNoContextChange}                            {\scenCreateColumn{no\_context\_change}}
-\newcommand{\scenCreateUnexceptional}                              {\scenCreateColumn{unexceptional}}
-\newcommand{\scenCreateComputeAddress}                             {\scenCreateColumn{compute\_deployment\_address}}
-\newcommand{\scenCreateLoadCreatee}                                {\scenCreateColumn{load\_createe\_account}}
-\newcommand{\scenCreateFCond}                                      {\scenCreateColumn{failure\_condition}}
-\newcommand{\scenCreateWillRevert}                                 {\scenCreateColumn{will\_revert}}
-\newcommand{\scenCreateNoCreatorStateChange}                       {\scenCreateColumn{no\_creator\_state\_change}}
-\newcommand{\scenCreateCreatorStateChange}                         {\scenCreateColumn{creator\_state\_change}}
-\newcommand{\scenCreateCreatorStateChangeWillRevert}               {\scenCreateColumn{creator\_state\_change\_will\_revert}}
-\newcommand{\scenCreateCreatorStateChangeWontRevert}               {\scenCreateColumn{creator\_state\_change\_wont\_revert}}
-\newcommand{\scenCreateRebuffed}                                   {\scenCreateColumn{rebuffed}}
-\newcommand{\scenCreateNotRebuffed}                                {\scenCreateColumn{not\_rebuffed}}
-\newcommand{\scenCreateExecution}                                  {\scenCreateColumn{not\_rebuffed}}
-\newcommand{\scenCreateExecutionEmptyInitCode}                     {\scenCreateColumn{not\_rebuffed\_empty\_init\_code}}
-\newcommand{\scenCreateExecutionNonEmptyInitCode}                  {\scenCreateColumn{not\_rebuffed\_nonempty\_init\_code}}
-\newcommand{\scenCreateSimpleRevert}                               {\scenCreateColumn{simple\_revert}}
-\newcommand{\scenCreateSuccess}                                    {\scenCreateColumn{deployment\_success}}
-\newcommand{\scenCreateFailure}                                    {\scenCreateColumn{deployment\_failure}}
+\newcommand{\scenCreateSum}                                        {\scenCreateLoc{\ssum}}
+\newcommand{\scenCreateNoContextChange}                            {\scenCreateLoc{no\_context\_change}}
+\newcommand{\scenCreateUnexceptional}                              {\scenCreateLoc{unexceptional}}
+\newcommand{\scenCreateComputeAddress}                             {\scenCreateLoc{compute\_deployment\_address}}
+\newcommand{\scenCreateLoadCreatee}                                {\scenCreateLoc{load\_createe\_account}}
+\newcommand{\scenCreateFCond}                                      {\scenCreateLoc{failure\_condition}}
+\newcommand{\scenCreateWillRevert}                                 {\scenCreateLoc{will\_revert}}
+\newcommand{\scenCreateNoCreatorStateChange}                       {\scenCreateLoc{no\_creator\_state\_change}}
+\newcommand{\scenCreateCreatorStateChange}                         {\scenCreateLoc{creator\_state\_change}}
+\newcommand{\scenCreateCreatorStateChangeWillRevert}               {\scenCreateLoc{creator\_state\_change\_will\_revert}}
+\newcommand{\scenCreateCreatorStateChangeWontRevert}               {\scenCreateLoc{creator\_state\_change\_wont\_revert}}
+\newcommand{\scenCreateRebuffed}                                   {\scenCreateLoc{rebuffed}}
+\newcommand{\scenCreateNotRebuffed}                                {\scenCreateLoc{not\_rebuffed}}
+\newcommand{\scenCreateExecution}                                  {\scenCreateLoc{not\_rebuffed}}
+\newcommand{\scenCreateExecutionEmptyInitCode}                     {\scenCreateLoc{not\_rebuffed\_empty\_init\_code}}
+\newcommand{\scenCreateExecutionNonEmptyInitCode}                  {\scenCreateLoc{not\_rebuffed\_nonempty\_init\_code}}
+\newcommand{\scenCreateSimpleRevert}                               {\scenCreateLoc{simple\_revert}}
+\newcommand{\scenCreateSuccess}                                    {\scenCreateLoc{deployment\_success}}
+\newcommand{\scenCreateFailure}                                    {\scenCreateLoc{deployment\_failure}}
 %
 %
 %
@@ -254,38 +262,38 @@
 \newcommand{\scenEcrecoverSum}                                              {\scenEcrecover\separator\ssum}
 \newcommand{\scenEcrecoverSuccess}                                          {\scenEcrecover\separator\Success}
 \newcommand{\scenEcrecoverFailure}                                          {\scenEcrecover\separator\Failure}
-\newcommand{\scenEcrecoverInsufficientGas}                                  {\scenEcrecover\separator\Failure\col{\_}\insufficientGas}
-\newcommand{\scenEcrecoverSufficientGasSansCallData}                        {\scenEcrecover\separator\Failure\col{\_sans\_call\_data}}
-\newcommand{\scenEcrecoverSufficientGasWithMalformedCallData}               {\scenEcrecover\separator\Failure\col{\_with\_call\_data\_malformed}}
-\newcommand{\scenEcrecoverSufficientGasWithUnrecoverableCallData}           {\scenEcrecover\separator\Failure\col{\_with\_call\_data\_unrecoverable}}
-\newcommand{\scenEcrecoverSufficientGasWithCallDataSansReturnAtCapacity}    {\scenEcrecover\separator\Success\col{\_sans\_}\retAtCap}
-\newcommand{\scenEcrecoverSufficientGasWithCallDataWithReturnAtCapacity}    {\scenEcrecover\separator\Success\col{\_with\_}\retAtCap}
+\newcommand{\scenEcrecoverInsufficientGas}                                  {\scenEcrecover\separator\Failure\loc{\_\insufficientGas}}
+\newcommand{\scenEcrecoverSufficientGasSansCallData}                        {\scenEcrecover\separator\Failure\loc{\_sans\_call\_data}}
+\newcommand{\scenEcrecoverSufficientGasWithMalformedCallData}               {\scenEcrecover\separator\Failure\loc{\_with\_call\_data\_malformed}}
+\newcommand{\scenEcrecoverSufficientGasWithUnrecoverableCallData}           {\scenEcrecover\separator\Failure\loc{\_with\_call\_data\_unrecoverable}}
+\newcommand{\scenEcrecoverSufficientGasWithCallDataSansReturnAtCapacity}    {\scenEcrecover\separator\Success\loc{\_sans\_\retAtCap}}
+\newcommand{\scenEcrecoverSufficientGasWithCallDataWithReturnAtCapacity}    {\scenEcrecover\separator\Success\loc{\_with\_\retAtCap}}
 % SHA2-256
 \newcommand{\scenShaTwoSum}                                                 {\scenShaTwo\separator\ssum}
 \newcommand{\scenShaTwoSuccess}                                             {\scenShaTwo\separator\Success}
 \newcommand{\scenShaTwoFailure}                                             {\scenShaTwo\separator\Failure}
-\newcommand{\scenShaTwoInsufficientGas}                                     {\scenShaTwo\separator\Failure\col{\_}\insufficientGas}
-\newcommand{\scenShaTwoSufficientGasSansCallDataSansReturnAtCapacity}       {\scenShaTwo\separator\Success\col{\_sans\_call\_data\_sans\_}\retAtCap}
-\newcommand{\scenShaTwoSufficientGasSansCallDataWithReturnAtCapacity}       {\scenShaTwo\separator\Success\col{\_sans\_call\_data\_with\_}\retAtCap}
-\newcommand{\scenShaTwoSufficientGasWithCallDataSansReturnAtCapacity}       {\scenShaTwo\separator\Success\col{\_with\_call\_data\_sans\_}\retAtCap}
-\newcommand{\scenShaTwoSufficientGasWithCallDataWithReturnAtCapacity}       {\scenShaTwo\separator\Success\col{\_with\_call\_data\_with\_}\retAtCap}
+\newcommand{\scenShaTwoInsufficientGas}                                     {\scenShaTwo\separator\Failure\loc{\_\insufficientGas}}
+\newcommand{\scenShaTwoSufficientGasSansCallDataSansReturnAtCapacity}       {\scenShaTwo\separator\Success\loc{\_sans\_call\_data\_sans\_\retAtCap}}
+\newcommand{\scenShaTwoSufficientGasSansCallDataWithReturnAtCapacity}       {\scenShaTwo\separator\Success\loc{\_sans\_call\_data\_with\_\retAtCap}}
+\newcommand{\scenShaTwoSufficientGasWithCallDataSansReturnAtCapacity}       {\scenShaTwo\separator\Success\loc{\_with\_call\_data\_sans\_\retAtCap}}
+\newcommand{\scenShaTwoSufficientGasWithCallDataWithReturnAtCapacity}       {\scenShaTwo\separator\Success\loc{\_with\_call\_data\_with\_\retAtCap}}
 % RIPEMD-160
 \newcommand{\scenRipemdSum}                                                 {\scenRipemd\separator\ssum}
 \newcommand{\scenRipemdSuccess}                                             {\scenRipemd\separator\Success}
 \newcommand{\scenRipemdFailure}                                             {\scenRipemd\separator\Failure}
-\newcommand{\scenRipemdInsufficientGas}                                     {\scenRipemd\separator\Failure\col{\_}\insufficientGas}
-\newcommand{\scenRipemdSufficientGasSansCallDataSansReturnAtCapacity}       {\scenRipemd\separator\Success\col{\_sans\_call\_data\_sans\_}\retAtCap}
-\newcommand{\scenRipemdSufficientGasSansCallDataWithReturnAtCapacity}       {\scenRipemd\separator\Success\col{\_sans\_call\_data\_with\_}\retAtCap}
-\newcommand{\scenRipemdSufficientGasWithCallDataSansReturnAtCapacity}       {\scenRipemd\separator\Success\col{\_with\_call\_data\_sans\_}\retAtCap}
-\newcommand{\scenRipemdSufficientGasWithCallDataWithReturnAtCapacity}       {\scenRipemd\separator\Success\col{\_with\_call\_data\_with\_}\retAtCap}
+\newcommand{\scenRipemdInsufficientGas}                                     {\scenRipemd\separator\Failure\loc{\_\insufficientGas}}
+\newcommand{\scenRipemdSufficientGasSansCallDataSansReturnAtCapacity}       {\scenRipemd\separator\Success\loc{\_sans\_call\_data\_sans\_\retAtCap}}
+\newcommand{\scenRipemdSufficientGasSansCallDataWithReturnAtCapacity}       {\scenRipemd\separator\Success\loc{\_sans\_call\_data\_with\_\retAtCap}}
+\newcommand{\scenRipemdSufficientGasWithCallDataSansReturnAtCapacity}       {\scenRipemd\separator\Success\loc{\_with\_call\_data\_sans\_\retAtCap}}
+\newcommand{\scenRipemdSufficientGasWithCallDataWithReturnAtCapacity}       {\scenRipemd\separator\Success\loc{\_with\_call\_data\_with\_\retAtCap}}
 % IDENTITY
 \newcommand{\scenIdentitySum}                                               {\scenIdentity\separator\ssum}
 \newcommand{\scenIdentitySuccess}                                           {\scenIdentity\separator\Success}
 \newcommand{\scenIdentityFailure}                                           {\scenIdentity\separator\Failure}
-\newcommand{\scenIdentityInsufficientGas}                                   {\scenIdentity\separator\Failure\col{\_}\insufficientGas}
-\newcommand{\scenIdentitySufficientGasSansCallData}                         {\scenIdentity\separator\Success\col{\_sans\_call\_data}}
-\newcommand{\scenIdentitySufficientGasWithCallDataSansReturnAtCapacity}     {\scenIdentity\separator\Success\col{\_with\_call\_data\_sans\_}\retAtCap}
-\newcommand{\scenIdentitySufficientGasWithCallDataWithReturnAtCapacity}     {\scenIdentity\separator\Success\col{\_with\_call\_data\_with\_}\retAtCap}
+\newcommand{\scenIdentityInsufficientGas}                                   {\scenIdentity\separator\Failure\loc{\_\insufficientGas}}
+\newcommand{\scenIdentitySufficientGasSansCallData}                         {\scenIdentity\separator\Success\loc{\_sans\_call\_data}}
+\newcommand{\scenIdentitySufficientGasWithCallDataSansReturnAtCapacity}     {\scenIdentity\separator\Success\loc{\_with\_call\_data\_sans\_\retAtCap}}
+\newcommand{\scenIdentitySufficientGasWithCallDataWithReturnAtCapacity}     {\scenIdentity\separator\Success\loc{\_with\_call\_data\_with\_\retAtCap}}
 % MODEXP TODO!!!
 \newcommand{\scenModexpSum}                                                 {\scenModexp\separator\ssum}
 \newcommand{\scenModexpSuccess}                                             {\scenModexp\separator\Success}
@@ -294,39 +302,49 @@
 \newcommand{\scenEcaddSum}                                                  {\scenEcadd\separator\ssum}
 \newcommand{\scenEcaddSuccess}                                              {\scenEcadd\separator\Success}
 \newcommand{\scenEcaddFailure}                                              {\scenEcadd\separator\Failure}
-\newcommand{\scenEcaddInsufficientGas}                                      {\scenEcadd\separator\Failure\col{\_}\insufficientGas}
-\newcommand{\scenEcaddSufficientGasWithMalformedCallData}                   {\scenEcadd\separator\Failure\col{\_with\_call\_data\_malformed}}
-\newcommand{\scenEcaddSufficientGasSansCallDataSansReturnAtCapacity}        {\scenEcadd\separator\Success\col{\_sans\_call\_data\_sans\_}\retAtCap}       % then everything is the point at infinity
-\newcommand{\scenEcaddSufficientGasSansCallDataWithReturnAtCapacity}        {\scenEcadd\separator\Success\col{\_sans\_call\_data\_with\_}\retAtCap}       % then everything is the point at infinity
-\newcommand{\scenEcaddSufficientGasWithCallDataSansReturnAtCapacity}        {\scenEcadd\separator\Success\col{\_with\_call\_data\_sans\_}\retAtCap}
-\newcommand{\scenEcaddSufficientGasWithCallDataWithReturnAtCapacity}        {\scenEcadd\separator\Success\col{\_with\_call\_data\_with\_}\retAtCap}
+\newcommand{\scenEcaddInsufficientGas}                                      {\scenEcadd\separator\Failure\loc{\_\insufficientGas}}
+\newcommand{\scenEcaddSufficientGasWithMalformedCallData}                   {\scenEcadd\separator\Failure\loc{\_with\_call\_data\_malformed}}
+\newcommand{\scenEcaddSufficientGasSansCallDataSansReturnAtCapacity}        {\scenEcadd\separator\Success\loc{\_sans\_call\_data\_sans\_\retAtCap}}       % then everything is the point at infinity
+\newcommand{\scenEcaddSufficientGasSansCallDataWithReturnAtCapacity}        {\scenEcadd\separator\Success\loc{\_sans\_call\_data\_with\_\retAtCap}}       % then everything is the point at infinity
+\newcommand{\scenEcaddSufficientGasWithCallDataSansReturnAtCapacity}        {\scenEcadd\separator\Success\loc{\_with\_call\_data\_sans\_\retAtCap}}
+\newcommand{\scenEcaddSufficientGasWithCallDataWithReturnAtCapacity}        {\scenEcadd\separator\Success\loc{\_with\_call\_data\_with\_\retAtCap}}
 % ECMUL
 \newcommand{\scenEcmulSum}                                                  {\scenEcmul\separator\ssum}
 \newcommand{\scenEcmulSuccess}                                              {\scenEcmul\separator\Success}
 \newcommand{\scenEcmulFailure}                                              {\scenEcmul\separator\Failure}
-\newcommand{\scenEcmulInsufficientGas}                                      {\scenEcmul\separator\Failure\col{\_}\insufficientGas}
-\newcommand{\scenEcmulSufficientGasWithMalformedCallData}                   {\scenEcmul\separator\Failure\col{\_with\_call\_data\_malformed}}
-\newcommand{\scenEcmulSufficientGasSansCallDataSansReturnAtCapacity}        {\scenEcmul\separator\Success\col{\_sans\_call\_data\_sans\_}\retAtCap}       % then everything is the point at infinity
-\newcommand{\scenEcmulSufficientGasSansCallDataWithReturnAtCapacity}        {\scenEcmul\separator\Success\col{\_sans\_call\_data\_with\_}\retAtCap}       % then everything is the point at infinity
-\newcommand{\scenEcmulSufficientGasWithCallDataSansReturnAtCapacity}        {\scenEcmul\separator\Success\col{\_with\_call\_data\_sans\_}\retAtCap}
-\newcommand{\scenEcmulSufficientGasWithCallDataWithReturnAtCapacity}        {\scenEcmul\separator\Success\col{\_with\_call\_data\_with\_}\retAtCap}
+\newcommand{\scenEcmulInsufficientGas}                                      {\scenEcmul\separator\Failure\loc{\_\insufficientGas}}
+\newcommand{\scenEcmulSufficientGasWithMalformedCallData}                   {\scenEcmul\separator\Failure\loc{\_with\_call\_data\_malformed}}
+\newcommand{\scenEcmulSufficientGasSansCallDataSansReturnAtCapacity}        {\scenEcmul\separator\Success\loc{\_sans\_call\_data\_sans\_\retAtCap}}       % then everything is the point at infinity
+\newcommand{\scenEcmulSufficientGasSansCallDataWithReturnAtCapacity}        {\scenEcmul\separator\Success\loc{\_sans\_call\_data\_with\_\retAtCap}}       % then everything is the point at infinity
+\newcommand{\scenEcmulSufficientGasWithCallDataSansReturnAtCapacity}        {\scenEcmul\separator\Success\loc{\_with\_call\_data\_sans\_\retAtCap}}
+\newcommand{\scenEcmulSufficientGasWithCallDataWithReturnAtCapacity}        {\scenEcmul\separator\Success\loc{\_with\_call\_data\_with\_\retAtCap}}
 % ECPAIRING
 \newcommand{\scenEcpairingSum}                                              {\scenEcpairing\separator\ssum}
 \newcommand{\scenEcpairingSuccess}                                          {\scenEcpairing\separator\Success}
 \newcommand{\scenEcpairingFailure}                                          {\scenEcpairing\separator\Failure}
-\newcommand{\scenEcpairingImpossibleSize}                                   {\scenEcpairing\separator\Failure\col{\_size\_not\_multiple\_of\_192}}
-\newcommand{\scenEcpairingInsufficientGas}                                  {\scenEcpairing\separator\Failure\col{\_}\insufficientGas}
-\newcommand{\scenEcpairingSufficientGasWithMalformedCallData}               {\scenEcpairing\separator\Failure\col{\_with\_call\_data\_malformed}}
-\newcommand{\scenEcpairingSufficientGasSansCallDataSansReturnAtCapacity}    {\scenEcpairing\separator\Success\col{\_sans\_call\_data\_sans\_}\retAtCap}       % then everything is the point at infinity
-\newcommand{\scenEcpairingSufficientGasSansCallDataWithReturnAtCapacity}    {\scenEcpairing\separator\Success\col{\_sans\_call\_data\_with\_}\retAtCap}       % then everything is the point at infinity
-\newcommand{\scenEcpairingSufficientGasWithCallDataSansReturnAtCapacity}    {\scenEcpairing\separator\Success\col{\_with\_call\_data\_sans\_}\retAtCap}
-\newcommand{\scenEcpairingSufficientGasWithCallDataWithReturnAtCapacity}    {\scenEcpairing\separator\Success\col{\_with\_call\_data\_with\_}\retAtCap}
+\newcommand{\scenEcpairingImpossibleSize}                                   {\scenEcpairing\separator\Failure\loc{\_size\_not\_multiple\_of\_192}}
+\newcommand{\scenEcpairingInsufficientGas}                                  {\scenEcpairing\separator\Failure\loc{\_\insufficientGas}}
+\newcommand{\scenEcpairingSufficientGasWithMalformedCallData}               {\scenEcpairing\separator\Failure\loc{\_with\_call\_data\_malformed}}
+\newcommand{\scenEcpairingSufficientGasSansCallDataSansReturnAtCapacity}    {\scenEcpairing\separator\Success\loc{\_sans\_call\_data\_sans\_\retAtCap}}       % then everything is the point at infinity
+\newcommand{\scenEcpairingSufficientGasSansCallDataWithReturnAtCapacity}    {\scenEcpairing\separator\Success\loc{\_sans\_call\_data\_with\_\retAtCap}}       % then everything is the point at infinity
+\newcommand{\scenEcpairingSufficientGasWithCallDataSansReturnAtCapacity}    {\scenEcpairing\separator\Success\loc{\_with\_call\_data\_sans\_\retAtCap}}
+\newcommand{\scenEcpairingSufficientGasWithCallDataWithReturnAtCapacity}    {\scenEcpairing\separator\Success\loc{\_with\_call\_data\_with\_\retAtCap}}
 % BLAKE2f
 \newcommand{\scenBlakeSum}                                                  {\scenBlake\separator\ssum}
 \newcommand{\scenBlakeSuccess}                                              {\scenBlake\separator\Success}
 \newcommand{\scenBlakeFailure}                                              {\scenBlake\separator\Failure}
-\newcommand{\scenBlakeInsufficientGas}                                      {\scenBlake\separator\Failure\col{\_}\insufficientGas}                      % requires access to RAM !!!
-\newcommand{\scenBlakeImpossibleSize}                                       {\scenBlake\separator\Failure\col{\_size\_not\_213}}
-\newcommand{\scenBlakeFNotABit}                                             {\scenBlake\separator\Failure\col{\_f\_not\_a\_bit}}                  % requires access to RAM !!!
-\newcommand{\scenBlakeSufficientGasWithCallDataSansReturnAtCapacity}        {\scenBlake\separator\Success\col{\_sans\_}\retAtCap}
-\newcommand{\scenBlakeSufficientGasWithCallDataWithReturnAtCapacity}        {\scenBlake\separator\Success\col{\_with\_}\retAtCap}
+\newcommand{\scenBlakeInsufficientGas}                                      {\scenBlake\separator\Failure\loc{\_\insufficientGas}}                      % requires access to RAM !!!
+\newcommand{\scenBlakeImpossibleSize}                                       {\scenBlake\separator\Failure\loc{\_size\_not\_213}}
+\newcommand{\scenBlakeFNotABit}                                             {\scenBlake\separator\Failure\loc{\_f\_not\_a\_bit}}                  % requires access to RAM !!!
+\newcommand{\scenBlakeSufficientGasWithCallDataSansReturnAtCapacity}        {\scenBlake\separator\Success\loc{\_sans\_\retAtCap}}
+\newcommand{\scenBlakeSufficientGasWithCallDataWithReturnAtCapacity}        {\scenBlake\separator\Success\loc{\_with\_\retAtCap}}
+% POINTEVALUATION
+% \newcommand{\scenPointEvaluationSum}                                                  {\scenPointEvaluation\separator\ssum}
+% \newcommand{\scenPointEvaluationSuccess}                                              {\scenPointEvaluation\separator\Success}
+% \newcommand{\scenPointEvaluationFailure}                                              {\scenPointEvaluation\separator\Failure}
+% \newcommand{\scenPointEvaluationInsufficientGas}                                      {\scenPointEvaluation\separator\Failure\loc{\_\insufficientGas}}
+% \newcommand{\scenPointEvaluationSufficientGasWithMalformedCallData}                   {\scenPointEvaluation\separator\Failure\loc{\_with\_call\_data\_malformed}}
+% \newcommand{\scenPointEvaluationSufficientGasSansCallDataSansReturnAtCapacity}        {\scenPointEvaluation\separator\Success\loc{\_sans\_call\_data\_sans\_\retAtCap}}       % then everything is the point at infinity
+% \newcommand{\scenPointEvaluationSufficientGasSansCallDataWithReturnAtCapacity}        {\scenPointEvaluation\separator\Success\loc{\_sans\_call\_data\_with\_\retAtCap}}       % then everything is the point at infinity
+% \newcommand{\scenPointEvaluationSufficientGasWithCallDataSansReturnAtCapacity}        {\scenPointEvaluation\separator\Success\loc{\_with\_call\_data\_sans\_\retAtCap}}
+% \newcommand{\scenPointEvaluationSufficientGasWithCallDataWithReturnAtCapacity}        {\scenPointEvaluation\separator\Success\loc{\_with\_call\_data\_with\_\retAtCap}}
