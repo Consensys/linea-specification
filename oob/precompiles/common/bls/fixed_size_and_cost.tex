@@ -20,15 +20,24 @@ We impose the following constraints:
 		we impose the following:
 		\[
 			\left\{ \begin{array}{l}
-				\oobCallToEq
-				{i}{2}
-				{0}{\locCds}
-				{0}{\locFixedCds}
-				\vspace{2mm} \\
-                \oobCallToLt
-                {i}{3}
-                {0}{\locCalleeGas}
-                {0}{\locPrecompileCost} 
+				\wcpCallToEq  {
+					anchorRow = i            ,
+					relOffset = 2            ,
+					argOneHi  = 0            ,
+					argOneLo  = \locCds      ,
+					argTwoHi  = 0            ,
+					argTwoLo  = \locFixedCds ,
+				}
+				\vspace{2mm}
+				\\
+				\wcpCallToLt  {
+					anchorRow = i                  ,
+					relOffset = 3                  ,
+					argOneHi  = 0                  ,
+					argOneLo  = \locCalleeGas      ,
+					argTwoHi  = 0                  ,
+					argTwoLo  = \locPrecompileCost ,
+				}
 				\\
 			\end{array} \right.
 		\]

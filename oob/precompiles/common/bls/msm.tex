@@ -27,9 +27,14 @@ We impose the following constraints:
 	\item[\underline{Row n°$(i + 3)$:}]
 		we impose that
 		\[
-			\oobCallToIszero
-			{i}{3}
-			{0}{\locRemainder}
+			\wcpCallToIszero {
+				anchorRow = i             ,
+				relOffset = \nRows        ,
+				argOneHi  = i             ,
+				argOneLo  = 3             ,
+				argTwoHi  = 0             ,
+				argTwoLo  = \locRemainder ,
+			}
 		\]
 		and we define the following shorthand
 		\[
@@ -45,17 +50,21 @@ We impose the following constraints:
 			\item \If $\locMsmSizeIsMultiple = 0$ \Then we impose $\oobNoCall{i}{4}$.
 			\item \If $\locMsmSizeIsMultiple = 1$ \Then we impose that
 				\[
-					\oobCallToGt
-					{i}{4}
-					{0}{\locNumberOfInputs}
-					{0}{128}
+					\wcpCallToGt {
+						anchorRow = i                  ,
+						relOffset = 4                  ,
+						argOneHi  = 0                  ,
+						argOneLo  = \locNumberOfInputs ,
+						argTwoHi  = 0                  ,
+						argTwoLo  = 128                ,
+					}
 				\]
 				and we define the following shorthand
 				\[
 					\left\{ \begin{array}{lcl}
-	                	\locNumberOfMsmInputsGtThreshold  & \define & \outgoingResLo_{i + 4} \\
+						\locNumberOfMsmInputsGtThreshold  & \define & \outgoingResLo_{i + 4} \\
 						\locNumberOfMsmInputsLeqThreshold & \define & 1 - \locNumberOfMsmInputsGtThreshold \\
-				 	\end{array} \right.
+					\end{array} \right.
 				\]
 		\end{enumerate}
 	\item[\underline{Row n°$(i + 5)$:}]
@@ -74,13 +83,13 @@ We impose the following constraints:
 						\[
 							\locDiscount \define \outgoingResLo_{i + 5}
 						\]
-				    \item \If $\locNumberOfMsmInputsLeqThreshold = 0$ \Then we impose $\oobNoCall{i}{5}$
+					\item \If $\locNumberOfMsmInputsLeqThreshold = 0$ \Then we impose $\oobNoCall{i}{5}$
 						and we define the following shorthand
 						\[
 							\locDiscount \define \locMaxDiscount
 						\]
 				\end{enumerate}
-				
+
 		\end{enumerate}
 	\item[\underline{Row n°$(i + 6)$:}]
 		we impose that
@@ -88,10 +97,14 @@ We impose the following constraints:
 			\item \If $\locMsmSizeIsMultiple = 0$ \Then we impose $\oobNoCall{i}{6}$.
 			\item \If $\locMsmSizeIsMultiple = 1$ \Then we impose that
 				\[
-					\oobCallToLt
-					{i}{6}
-					{0}{\locCalleeGas}
-					{0}{\locPrecompileCost}
+					\wcpCallToLt  {
+						anchorRow = i                  ,
+						relOffset = 6                  ,
+						argOneHi  = 0                  ,
+						argOneLo  = \locCalleeGas      ,
+						argTwoHi  = 0                  ,
+						argTwoLo  = \locPrecompileCost ,
+					}
 				\]
 				where we use the following shorthand
 				\[
