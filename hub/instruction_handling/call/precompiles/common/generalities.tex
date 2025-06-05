@@ -15,21 +15,35 @@ We are thus assuming that the present row is the first of the second phase of de
 \inst{ECADD},
 \inst{ECMUL} or
 \inst{ECPAIRING}
-precompiles.
-We know that the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcCommonMiscRowOffset)$.
+precompiles or with the ``\blsMod{}'' precompiles i.e.
+\inst{POINT\_EVALUATION},
+\inst{BLS\_G1ADD},
+\inst{BLS\_G1MSM},
+\inst{BLS\_G2ADD},
+\inst{BLS\_G2MSM},
+\inst{BLS\_PAIRING\_CHECK},
+\inst{BLS\_MAP\_FP\_TO\_G1} or
+\inst{BLS\_MAP\_FP2\_TO\_G2}.
+As previously remarked,
+see note~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr II: the prc scenario row is followed by a misc row}),
+the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcCommonMiscRowOffset)$.
 \begin{description}
-	\item[\underline{Miscellaneous row $n^°(i + \prcCommonMiscRowOffset)$:}] we impose
+	\item[\underline{\underline{Miscellaneous row $n^°(i + \prcCommonMiscRowOffset)$:}}]
+		we impose
 		\begin{description}
 			\item[\underline{Setting lookup flags:}]
 				we impose that
 				\[
-					\weightedMiscFlagSum
-					{i}{\prcCommonMiscRowOffset}
-					=
-					\left[ \begin{array}{clcl}
-						+ & \miscMmuWeight & \cdot & \locOobResultExtractCallData \\
-						+ & \miscOobWeight \\
-					\end{array} \right]
+					\left\{ \begin{array}{lcl}
+						\miscOobFlag _{i + \prcCommonMiscRowOffset} & = & 1 \\
+						\weightedMiscFlagSum
+						{i}{\prcCommonMiscRowOffset}
+                                                & = &
+						\left[ \begin{array}{clcl}
+							+ & \miscMmuWeight & \cdot & \locOobResultExtractCallData \\
+							+ & \miscOobWeight \\
+						\end{array} \right] \\
+					\end{array} \right.
 				\]
 				in other words
 				\[
@@ -37,36 +51,51 @@ We know that the current scenario-row $i$ will be followed by a miscellaneous-ro
 						\miscExpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       & (\trash) \\
 						\miscMmuFlag _{i + \prcCommonMiscRowOffset} & = & \locOobResultExtractCallData & (\trash) \\
 						\miscMxpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       & (\trash) \\
-						\miscOobFlag _{i + \prcCommonMiscRowOffset} & = & \one                         & (\trash) \\
+						\miscOobFlag _{i + \prcCommonMiscRowOffset} & = & \one                         &          \\
 						\miscStpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       & (\trash) \\
 					\end{array} \right.
 				\]
 				\saNote{}
 				The shorthand \locOobResultExtractCallData{} will be defined shortly.
 				It is gleaned from one of the outputs of the call to the \oobMod{} module (which is systematically triggered given the above.)
+
+				\saNote{}
+				We explicitly constrain $\miscOobFlag _{i + \prcCommonMiscRowOffset} = \one$
+				so as to guarantee the expected \oobMod{} module call.
+				Binarity of the underlying expression of $\locOobResultExtractCallData$
+				is guaranteed provided that the requisite \oobMod{} module call was performed.
 			\item[\underline{Setting \oobMod{} instruction:}] 
 				we populate the \oobMod{} columns:
 				\[
 					\setOobInstructionCommon {
-						anchorRow          = i,
-						relOffset          = \prcCommonMiscRowOffset,
-						oobInstruction     = \locOobInst,
-						calleeGas          = \locCalleeGas,
-						callDataSize       = \locPrcCds,
-						returnAtCapacity   = \locPrcRac,
+						anchorRow        = i                       ,
+						relOffset        = \prcCommonMiscRowOffset ,
+						oobInstruction   = \locOobInst             ,
+						calleeGas        = \locCalleeGas           ,
+						callDataSize     = \locPrcCds              ,
+						returnAtCapacity = \locPrcRac              ,
 					}
 				\]
 				where
 				\[
 					\locOobInst \define
 					\left[ \begin{array}{crcl}
-						+ & \oobInstEcrecover & \cdot & \scenEcrecover     _{i} \\ 
-						+ & \oobInstShaTwo    & \cdot & \scenShaTwo        _{i} \\ 
-						+ & \oobInstRipemd    & \cdot & \scenRipemd        _{i} \\ 
-						+ & \oobInstIdentity  & \cdot & \scenIdentity      _{i} \\ 
-						+ & \oobInstEcadd     & \cdot & \scenEcadd         _{i} \\ 
-						+ & \oobInstEcmul     & \cdot & \scenEcmul         _{i} \\ 
-						+ & \oobInstEcpairing & \cdot & \scenEcpairing     _{i} \\ 
+						+ & \oobInstEcrecover         & \cdot & \scenEcrecover         _{i} \\
+						+ & \oobInstShaTwo            & \cdot & \scenShaTwo            _{i} \\
+						+ & \oobInstRipemd            & \cdot & \scenRipemd            _{i} \\
+						+ & \oobInstIdentity          & \cdot & \scenIdentity          _{i} \\
+						+ & \oobInstEcadd             & \cdot & \scenEcadd             _{i} \\
+						+ & \oobInstEcmul             & \cdot & \scenEcmul             _{i} \\
+						+ & \oobInstEcpairing         & \cdot & \scenEcpairing         _{i} \\
+						+ & \oobInstPointEvaluation   & \cdot & \scenPointEvaluation   _{i} \\
+						+ & \oobInstBlsGOneAdd        & \cdot & \scenBlsGOneAdd        _{i} \\
+						+ & \oobInstBlsGOneMsm        & \cdot & \scenBlsGOneMsm        _{i} \\
+						+ & \oobInstBlsGTwoAdd        & \cdot & \scenBlsGTwoAdd        _{i} \\
+						+ & \oobInstBlsGTwoMsm        & \cdot & \scenBlsGTwoMsm        _{i} \\
+						+ & \oobInstBlsPairingCheck   & \cdot & \scenBlsPairingCheck   _{i} \\
+						+ & \oobInstBlsMapFpToGOne    & \cdot & \scenBlsMapFpToGOne    _{i} \\
+						+ & \oobInstBlsMapFpTwoToGTwo & \cdot & \scenBlsMapFpTwoToGTwo _{i} \\
+
 					\end{array} \right]
 				\]
 			\item[\underline{Defining \oobMod{} shorthands:}] 
