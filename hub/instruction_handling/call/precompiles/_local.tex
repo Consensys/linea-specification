@@ -1,3 +1,4 @@
+\def\locFlagSum                     {\loc{flag\_sum}}
 \def\locPrcCallerGas                {\loc{dup\_caller\_gas}}
 \def\locPrcCallGas                  {\loc{dup\_call\_gas}}
 \def\locPrcCdo                      {\loc{dup\_cdo}}
@@ -6,22 +7,23 @@
 \def\locPrcRac                      {\loc{dup\_r@c}}
 \def\locPrcReturnGas                {\loc{prd\_return\_gas}}
 \def\locNsr                         {\loc{nsr}}
-\def\secondHalf                     {\loc{\_second\_half}}
+\def\firstHalf                      {\loc{\_[1/2]}}
+\def\secondHalf                     {\loc{\_[2/2]}}
+\def\locFirstPhaseNsr               {\locNsr\firstHalf}
 \def\locSecondPhaseNsr              {\locNsr\secondHalf}
-\def\locFirstPhaseNsr               {\locNsr\loc{\_first\_half}}
 \def\locStandardFailure             {\loc{\_std\_fail}}
 \def\locStandardSuccess             {\loc{\_std\_succ}}
-\def\locStandardFailureFlagSum      {\flagSum\locStandardFailure}
-\def\locStandardSuccessFlagSum      {\flagSum\locStandardSuccess}
-\def\locIdentitySuccessFlagSum      {\flagSum\loc{\_identity\_succ}}
-\def\locModexpFailureFlagSum        {\flagSum\loc{\_modexp\_fail}}
-\def\locModexpSuccessFlagSum        {\flagSum\loc{\_modexp\_succ}}
+\def\locStandardFailureFlagSum      {\locFlagSum\locStandardFailure}
+\def\locStandardSuccessFlagSum      {\locFlagSum\locStandardSuccess}
+\def\locIdentitySuccessFlagSum      {\locFlagSum\loc{\_identity\_succ}}
+\def\locModexpFailureFlagSum        {\locFlagSum\loc{\_modexp\_fail}}
+\def\locModexpSuccessFlagSum        {\locFlagSum\loc{\_modexp\_succ}}
 \def\locStandardFailureNsr          {\locNsr\locStandardFailure}
 \def\locStandardSuccessNsr          {\locNsr\locStandardSuccess}
 \def\locIdentitySuccessNsr          {\locNsr\loc{\_identity\_succ}}
 \def\locModexpFailureNsr            {\locNsr\loc{\_modexp\_fail}}
 \def\locModexpSuccessNsr            {\locNsr\loc{\_modexp\_succ}}
-\def\locFlagSumPrecompilesSH        {\flagSum\secondHalf}
+\def\locFlagSumPrecompilesSH        {\locFlagSum\secondHalf}
 \def\locNsrPrecompilesSH            {\locNsr\secondHalf}
 \def\locOobInst                     {\loc{oob\_inst}}
 \def\locTriggerMmu                  {\loc{trigger\_MMU}}
@@ -57,102 +59,110 @@
 
 % generic
 %%%%%%%%%
-\def\locFlagSumXxx                               { \flagSum\loc{\_xxx}\secondHalf}
-\def\locFlagSumXxxSuccess                        { \flagSum\loc{\_xxx\_success}}
-\def\locFlagSumXxxFKTH                           { \flagSum\loc{\_xxx\_FKTH}}
-\def\locFlagSumXxxFKTR                           { \flagSum\loc{\_xxx\_FKTR}}
-\def\locNsrXxx                                   {  \locNsr\loc{\_xxx}\secondHalf}
+\def\locFlagSumXxx                               { \locFlagSum\secondHalf\loc{\_xxx}}
+\def\locFlagSumXxxSuccess                        { \locFlagSum\loc{\_xxx\_success}}
+\def\locFlagSumXxxFKTH                           { \locFlagSum\loc{\_xxx\_FKTH}}
+\def\locFlagSumXxxFKTR                           { \locFlagSum\loc{\_xxx\_FKTR}}
+\def\locNsrXxx                                   {  \locNsr\secondHalf\loc{\_xxx}}
 \def\locNsrXxxSuccess                            {  \locNsr\loc{\_xxx\_success}}
 \def\locNsrXxxFKTH                               {  \locNsr\loc{\_xxx\_FKTH}}
 \def\locNsrXxxFKTR                               {  \locNsr\loc{\_xxx\_FKTR}}
+
 % ECRECOVER
 %%%%%%%%%%%
-\def\locFlagSumEcrecover                         { \flagSum\loc{\_ecrecover}\secondHalf}
-\def\locFlagSumEcrecoverSuccess                  { \flagSum\loc{\_ecrecover\_success}}
-\def\locFlagSumEcrecoverFKTH                     { \flagSum\loc{\_ecrecover\_FKTH}}
-\def\locFlagSumEcrecoverFKTR                     { \flagSum\loc{\_ecrecover\_FKTR}}
-\def\locNsrEcrecover                             {  \locNsr\loc{\_ecrecover}\secondHalf}
+\def\locFlagSumEcrecover                         { \locFlagSum\secondHalf\loc{\_ecrecover}}
+\def\locFlagSumEcrecoverSuccess                  { \locFlagSum\loc{\_ecrecover\_success}}
+\def\locFlagSumEcrecoverFKTH                     { \locFlagSum\loc{\_ecrecover\_FKTH}}
+\def\locFlagSumEcrecoverFKTR                     { \locFlagSum\loc{\_ecrecover\_FKTR}}
+\def\locNsrEcrecover                             {  \locNsr\secondHalf\loc{\_ecrecover}}
 \def\locNsrEcrecoverSuccess                      {  \locNsr\loc{\_ecrecover\_success}}
 \def\locNsrEcrecoverFKTH                         {  \locNsr\loc{\_ecrecover\_FKTH}}
 \def\locNsrEcrecoverFKTR                         {  \locNsr\loc{\_ecrecover\_FKTR}}
+
 % SAH2-256
 %%%%%%%%%%
-\def\locFlagSumShaTwo                            { \flagSum\loc{\_sha2}\secondHalf}
-\def\locFlagSumShaTwoSuccess                     { \flagSum\loc{\_sha2\_success}}
-\def\locFlagSumShaTwoFKTH                        { \flagSum\loc{\_sha2\_FKTH}}
-\def\locFlagSumShaTwoFKTR                        { \flagSum\loc{\_sha2\_FKTR}}
-\def\locNsrShaTwo                                {  \locNsr\loc{\_sha2}\secondHalf}
+\def\locFlagSumShaTwo                            { \locFlagSum\secondHalf\loc{\_sha2}}
+\def\locFlagSumShaTwoSuccess                     { \locFlagSum\loc{\_sha2\_success}}
+\def\locFlagSumShaTwoFKTH                        { \locFlagSum\loc{\_sha2\_FKTH}}
+\def\locFlagSumShaTwoFKTR                        { \locFlagSum\loc{\_sha2\_FKTR}}
+\def\locNsrShaTwo                                {  \locNsr\secondHalf\loc{\_sha2}}
 \def\locNsrShaTwoSuccess                         {  \locNsr\loc{\_sha2\_success}}
 \def\locNsrShaTwoFKTH                            {  \locNsr\loc{\_sha2\_FKTH}}
 \def\locNsrShaTwoFKTR                            {  \locNsr\loc{\_sha2\_FKTR}}
+
 % RIPEMD-160
 %%%%%%%%%%%%
-\def\locFlagSumRipemd                            { \flagSum\loc{\_ripemd}\secondHalf}
-\def\locFlagSumRipemdSuccess                     { \flagSum\loc{\_ripemd\_success}}
-\def\locFlagSumRipemdFKTH                        { \flagSum\loc{\_ripemd\_FKTH}}
-\def\locFlagSumRipemdFKTR                        { \flagSum\loc{\_ripemd\_FKTR}}
-\def\locNsrRipemd                                {  \locNsr\loc{\_ripemd}\secondHalf}
+\def\locFlagSumRipemd                            { \locFlagSum\secondHalf\loc{\_ripemd}}
+\def\locFlagSumRipemdSuccess                     { \locFlagSum\loc{\_ripemd\_success}}
+\def\locFlagSumRipemdFKTH                        { \locFlagSum\loc{\_ripemd\_FKTH}}
+\def\locFlagSumRipemdFKTR                        { \locFlagSum\loc{\_ripemd\_FKTR}}
+\def\locNsrRipemd                                {  \locNsr\secondHalf\loc{\_ripemd}}
 \def\locNsrRipemdSuccess                         {  \locNsr\loc{\_ripemd\_success}}
 \def\locNsrRipemdFKTH                            {  \locNsr\loc{\_ripemd\_FKTH}}
 \def\locNsrRipemdFKTR                            {  \locNsr\loc{\_ripemd\_FKTR}}
+
 % IDENTITY
 %%%%%%%%%%
-\def\locFlagSumIdentity                          { \flagSum\loc{\_identity}\secondHalf}
-\def\locFlagSumIdentitySuccess                   { \flagSum\loc{\_identity\_success}}
-\def\locFlagSumIdentityFKTH                      { \flagSum\loc{\_identity\_FKTH}}
-\def\locFlagSumIdentityFKTR                      { \flagSum\loc{\_identity\_FKTR}}
-\def\locNsrIdentity                              {  \locNsr\loc{\_identity}\secondHalf}
+\def\locFlagSumIdentity                          { \locFlagSum\secondHalf\loc{\_identity}}
+\def\locFlagSumIdentitySuccess                   { \locFlagSum\loc{\_identity\_success}}
+\def\locFlagSumIdentityFKTH                      { \locFlagSum\loc{\_identity\_FKTH}}
+\def\locFlagSumIdentityFKTR                      { \locFlagSum\loc{\_identity\_FKTR}}
+\def\locNsrIdentity                              {  \locNsr\secondHalf\loc{\_identity}}
 \def\locNsrIdentitySuccess                       {  \locNsr\loc{\_identity\_success}}
 \def\locNsrIdentityFKTH                          {  \locNsr\loc{\_identity\_FKTH}}
 \def\locNsrIdentityFKTR                          {  \locNsr\loc{\_identity\_FKTR}}
+
 % MODEXP
 %%%%%%%%
-\def\locFlagSumModexp                            { \flagSum\loc{\_modexp}\secondHalf}
-\def\locFlagSumModexpSuccess                     { \flagSum\loc{\_modexp\_success}}
-\def\locFlagSumModexpFKTH                        { \flagSum\loc{\_modexp\_FKTH}}
-\def\locFlagSumModexpFKTR                        { \flagSum\loc{\_modexp\_FKTR}}
-\def\locNsrModexp                                {  \locNsr\loc{\_modexp}\secondHalf}
+\def\locFlagSumModexp                            { \locFlagSum\secondHalf\loc{\_modexp}}
+\def\locFlagSumModexpSuccess                     { \locFlagSum\loc{\_modexp\_success}}
+\def\locFlagSumModexpFKTH                        { \locFlagSum\loc{\_modexp\_FKTH}}
+\def\locFlagSumModexpFKTR                        { \locFlagSum\loc{\_modexp\_FKTR}}
+\def\locNsrModexp                                {  \locNsr\secondHalf\loc{\_modexp}}
 \def\locNsrModexpSuccess                         {  \locNsr\loc{\_modexp\_success}}
 \def\locNsrModexpFKTH                            {  \locNsr\loc{\_modexp\_FKTH}}
 \def\locNsrModexpFKTR                            {  \locNsr\loc{\_modexp\_FKTR}}
+
 % ECADD
 %%%%%%%
-\def\locFlagSumEcadd                             { \flagSum\loc{\_ecadd}\secondHalf}
-\def\locFlagSumEcaddSuccess                      { \flagSum\loc{\_ecadd\_success}}
-\def\locFlagSumEcaddFKTH                         { \flagSum\loc{\_ecadd\_FKTH}}
-\def\locFlagSumEcaddFKTR                         { \flagSum\loc{\_ecadd\_FKTR}}
-\def\locNsrEcadd                                 {  \locNsr\loc{\_ecadd}\secondHalf}
+\def\locFlagSumEcadd                             { \locFlagSum\secondHalf\loc{\_ecadd}}
+\def\locFlagSumEcaddSuccess                      { \locFlagSum\loc{\_ecadd\_success}}
+\def\locFlagSumEcaddFKTH                         { \locFlagSum\loc{\_ecadd\_FKTH}}
+\def\locFlagSumEcaddFKTR                         { \locFlagSum\loc{\_ecadd\_FKTR}}
+\def\locNsrEcadd                                 {  \locNsr\secondHalf\loc{\_ecadd}}
 \def\locNsrEcaddSuccess                          {  \locNsr\loc{\_ecadd\_success}}
 \def\locNsrEcaddFKTH                             {  \locNsr\loc{\_ecadd\_FKTH}}
 \def\locNsrEcaddFKTR                             {  \locNsr\loc{\_ecadd\_FKTR}}
+
 % ECMUL
 %%%%%%%
-\def\locFlagSumEcmul                             { \flagSum\loc{\_ecmul}\secondHalf}
-\def\locFlagSumEcmulSuccess                      { \flagSum\loc{\_ecmul\_success}}
-\def\locFlagSumEcmulFKTH                         { \flagSum\loc{\_ecmul\_FKTH}}
-\def\locFlagSumEcmulFKTR                         { \flagSum\loc{\_ecmul\_FKTR}}
-\def\locNsrEcmul                                 {  \locNsr\loc{\_ecmul}\secondHalf}
+\def\locFlagSumEcmul                             { \locFlagSum\secondHalf\loc{\_ecmul}}
+\def\locFlagSumEcmulSuccess                      { \locFlagSum\loc{\_ecmul\_success}}
+\def\locFlagSumEcmulFKTH                         { \locFlagSum\loc{\_ecmul\_FKTH}}
+\def\locFlagSumEcmulFKTR                         { \locFlagSum\loc{\_ecmul\_FKTR}}
+\def\locNsrEcmul                                 {  \locNsr\secondHalf\loc{\_ecmul}}
 \def\locNsrEcmulSuccess                          {  \locNsr\loc{\_ecmul\_success}}
 \def\locNsrEcmulFKTH                             {  \locNsr\loc{\_ecmul\_FKTH}}
 \def\locNsrEcmulFKTR                             {  \locNsr\loc{\_ecmul\_FKTR}}
+
 % ECPAIRING
 %%%%%%%%%%%
-\def\locFlagSumEcpairing                         { \flagSum\loc{\_ecpairing}\secondHalf}
-\def\locFlagSumEcpairingSuccess                  { \flagSum\loc{\_ecpairing\_success}}
-\def\locFlagSumEcpairingFKTH                     { \flagSum\loc{\_ecpairing\_FKTH}}
-\def\locFlagSumEcpairingFKTR                     { \flagSum\loc{\_ecpairing\_FKTR}}
-\def\locNsrEcpairing                             {  \locNsr\loc{\_ecpairing}\secondHalf}
+\def\locFlagSumEcpairing                         { \locFlagSum\secondHalf\loc{\_ecpairing}}
+\def\locFlagSumEcpairingSuccess                  { \locFlagSum\loc{\_ecpairing\_success}}
+\def\locFlagSumEcpairingFKTH                     { \locFlagSum\loc{\_ecpairing\_FKTH}}
+\def\locFlagSumEcpairingFKTR                     { \locFlagSum\loc{\_ecpairing\_FKTR}}
+\def\locNsrEcpairing                             {  \locNsr\secondHalf\loc{\_ecpairing}}
 \def\locNsrEcpairingSuccess                      {  \locNsr\loc{\_ecpairing\_success}}
 \def\locNsrEcpairingFKTH                         {  \locNsr\loc{\_ecpairing\_FKTH}}
 \def\locNsrEcpairingFKTR                         {  \locNsr\loc{\_ecpairing\_FKTR}}
 
 % BLAKE
 %%%%%%%
-\def\locFlagSumBlake                             { \flagSum\loc{\_blake}\secondHalf}
-\def\locFlagSumBlakeSuccess                      { \flagSum\loc{\_blake\_success}}
-\def\locFlagSumBlakeFKTH                         { \flagSum\loc{\_blake\_FKTH}}
-\def\locFlagSumBlakeFKTR                         { \flagSum\loc{\_blake\_FKTR}}
-\def\locNsrBlake                                 {  \locNsr\loc{\_blake}\secondHalf}
+\def\locFlagSumBlake                             { \locFlagSum\secondHalf\loc{\_blake}}
+\def\locFlagSumBlakeSuccess                      { \locFlagSum\loc{\_blake\_success}}
+\def\locFlagSumBlakeFKTH                         { \locFlagSum\loc{\_blake\_FKTH}}
+\def\locFlagSumBlakeFKTR                         { \locFlagSum\loc{\_blake\_FKTR}}
+\def\locNsrBlake                                 {  \locNsr\secondHalf\loc{\_blake}}
 \def\locNsrBlakeSuccess                          {  \locNsr\loc{\_blake\_success}}
 \def\locNsrBlakeFKTH                             {  \locNsr\loc{\_blake\_FKTH}}
 \def\locNsrBlakeFKTR                             {  \locNsr\loc{\_blake\_FKTR}}
@@ -160,6 +170,94 @@
 \def\locBlakeCallDataSize                        {\redm{213}}
 \def\locBlakeRparamSize                          {\redm{4}}
 \def\locBlakeFparamSize                          {\redm{1}}
+
+% POINT_EVALUATION
+%%%%%%%%%%%%%%%%%%
+\def\locFlagSumPointEvaluation                         { \locFlagSum\secondHalf\loc{\_point\_evaluation}}
+\def\locFlagSumPointEvaluationSuccess                  { \locFlagSum\loc{\_point\_evaluation\_success}}
+\def\locFlagSumPointEvaluationFKTH                     { \locFlagSum\loc{\_point\_evaluation\_FKTH}}
+\def\locFlagSumPointEvaluationFKTR                     { \locFlagSum\loc{\_point\_evaluation\_FKTR}}
+\def\locNsrPointEvaluation                             {  \locNsr\secondHalf\loc{\_point\_evaluation}}
+\def\locNsrPointEvaluationSuccess                      {  \locNsr\loc{\_point\_evaluation\_success}}
+\def\locNsrPointEvaluationFKTH                         {  \locNsr\loc{\_point\_evaluation\_FKTH}}
+\def\locNsrPointEvaluationFKTR                         {  \locNsr\loc{\_point\_evaluation\_FKTR}}
+
+% BLS_G1ADD
+%%%%%%%%%%%
+\def\locFlagSumBlsGoneAdd                         { \locFlagSum\secondHalf\loc{\_bls\_g1add}}
+\def\locFlagSumBlsGoneAddSuccess                  { \locFlagSum\loc{\_bls\_g1add\_success}}
+\def\locFlagSumBlsGoneAddFKTH                     { \locFlagSum\loc{\_bls\_g1add\_FKTH}}
+\def\locFlagSumBlsGoneAddFKTR                     { \locFlagSum\loc{\_bls\_g1add\_FKTR}}
+\def\locNsrBlsGoneAdd                             {  \locNsr\secondHalf\loc{\_bls\_g1add}}
+\def\locNsrBlsGoneAddSuccess                      {  \locNsr\loc{\_bls\_g1add\_success}}
+\def\locNsrBlsGoneAddFKTH                         {  \locNsr\loc{\_bls\_g1add\_FKTH}}
+\def\locNsrBlsGoneAddFKTR                         {  \locNsr\loc{\_bls\_g1add\_FKTR}}
+
+% BLS_G1MSM
+%%%%%%%%%%%
+\def\locFlagSumBlsGoneMsm                         { \locFlagSum\secondHalf\loc{\_bls\_g1msm}}
+\def\locFlagSumBlsGoneMsmSuccess                  { \locFlagSum\loc{\_bls\_g1msm\_success}}
+\def\locFlagSumBlsGoneMsmFKTH                     { \locFlagSum\loc{\_bls\_g1msm\_FKTH}}
+\def\locFlagSumBlsGoneMsmFKTR                     { \locFlagSum\loc{\_bls\_g1msm\_FKTR}}
+\def\locNsrBlsGoneMsm                             {  \locNsr\secondHalf\loc{\_bls\_g1msm}}
+\def\locNsrBlsGoneMsmSuccess                      {  \locNsr\loc{\_bls\_g1msm\_success}}
+\def\locNsrBlsGoneMsmFKTH                         {  \locNsr\loc{\_bls\_g1msm\_FKTH}}
+\def\locNsrBlsGoneMsmFKTR                         {  \locNsr\loc{\_bls\_g1msm\_FKTR}}
+
+% BLS_G2ADD
+%%%%%%%%%%%
+\def\locFlagSumBlsGtwoAdd                         { \locFlagSum\secondHalf\loc{\_bls\_g2add}}
+\def\locFlagSumBlsGtwoAddSuccess                  { \locFlagSum\loc{\_bls\_g2add\_success}}
+\def\locFlagSumBlsGtwoAddFKTH                     { \locFlagSum\loc{\_bls\_g2add\_FKTH}}
+\def\locFlagSumBlsGtwoAddFKTR                     { \locFlagSum\loc{\_bls\_g2add\_FKTR}}
+\def\locNsrBlsGtwoAdd                             {  \locNsr\secondHalf\loc{\_bls\_g2add}}
+\def\locNsrBlsGtwoAddSuccess                      {  \locNsr\loc{\_bls\_g2add\_success}}
+\def\locNsrBlsGtwoAddFKTH                         {  \locNsr\loc{\_bls\_g2add\_FKTH}}
+\def\locNsrBlsGtwoAddFKTR                         {  \locNsr\loc{\_bls\_g2add\_FKTR}}
+
+% BLS_G2MSM
+%%%%%%%%%%%
+\def\locFlagSumBlsGtwoMsm                         { \locFlagSum\secondHalf\loc{\_bls\_g2msm}}
+\def\locFlagSumBlsGtwoMsmSuccess                  { \locFlagSum\loc{\_bls\_g2msm\_success}}
+\def\locFlagSumBlsGtwoMsmFKTH                     { \locFlagSum\loc{\_bls\_g2msm\_FKTH}}
+\def\locFlagSumBlsGtwoMsmFKTR                     { \locFlagSum\loc{\_bls\_g2msm\_FKTR}}
+\def\locNsrBlsGtwoMsm                             {  \locNsr\secondHalf\loc{\_bls\_g2msm}}
+\def\locNsrBlsGtwoMsmSuccess                      {  \locNsr\loc{\_bls\_g2msm\_success}}
+\def\locNsrBlsGtwoMsmFKTH                         {  \locNsr\loc{\_bls\_g2msm\_FKTH}}
+\def\locNsrBlsGtwoMsmFKTR                         {  \locNsr\loc{\_bls\_g2msm\_FKTR}}
+
+% BLS_PAIRING_CHECK
+%%%%%%%%%%%
+\def\locFlagSumBlsPairingCheck                         { \locFlagSum\secondHalf\loc{\_bls\_pairing\_check}}
+\def\locFlagSumBlsPairingCheckSuccess                  { \locFlagSum\loc{\_bls\_pairing\_check\_success}}
+\def\locFlagSumBlsPairingCheckFKTH                     { \locFlagSum\loc{\_bls\_pairing\_check\_FKTH}}
+\def\locFlagSumBlsPairingCheckFKTR                     { \locFlagSum\loc{\_bls\_pairing\_check\_FKTR}}
+\def\locNsrBlsPairingCheck                             {  \locNsr\secondHalf\loc{\_bls\_pairing\_check}}
+\def\locNsrBlsPairingCheckSuccess                      {  \locNsr\loc{\_bls\_pairing\_check\_success}}
+\def\locNsrBlsPairingCheckFKTH                         {  \locNsr\loc{\_bls\_pairing\_check\_FKTH}}
+\def\locNsrBlsPairingCheckFKTR                         {  \locNsr\loc{\_bls\_pairing\_check\_FKTR}}
+
+% BLS_MAP_FP_TO_G1
+%%%%%%%%%%%
+\def\locFlagSumBlsMapFpToGone                         { \locFlagSum\secondHalf\loc{\_map\_fp\_to\_g1}}
+\def\locFlagSumBlsMapFpToGoneSuccess                  { \locFlagSum\loc{\_map\_fp\_to\_g1\_success}}
+\def\locFlagSumBlsMapFpToGoneFKTH                     { \locFlagSum\loc{\_map\_fp\_to\_g1\_FKTH}}
+\def\locFlagSumBlsMapFpToGoneFKTR                     { \locFlagSum\loc{\_map\_fp\_to\_g1\_FKTR}}
+\def\locNsrBlsMapFpToGone                             {  \locNsr\secondHalf\loc{\_map\_fp\_to\_g1}}
+\def\locNsrBlsMapFpToGoneSuccess                      {  \locNsr\loc{\_map\_fp\_to\_g1\_success}}
+\def\locNsrBlsMapFpToGoneFKTH                         {  \locNsr\loc{\_map\_fp\_to\_g1\_FKTH}}
+\def\locNsrBlsMapFpToGoneFKTR                         {  \locNsr\loc{\_map\_fp\_to\_g1\_FKTR}}
+
+% BLS_MAP_FP2_TO_G2
+%%%%%%%%%%%
+\def\locFlagSumBlsMapFpTwoToGtwo                         { \locFlagSum\secondHalf\loc{\_map\_fp2\_to\_g2}}
+\def\locFlagSumBlsMapFpTwoToGtwoSuccess                  { \locFlagSum\loc{\_map\_fp2\_to\_g2\_success}}
+\def\locFlagSumBlsMapFpTwoToGtwoFKTH                     { \locFlagSum\loc{\_map\_fp2\_to\_g2\_FKTH}}
+\def\locFlagSumBlsMapFpTwoToGtwoFKTR                     { \locFlagSum\loc{\_map\_fp2\_to\_g2\_FKTR}}
+\def\locNsrBlsMapFpTwoToGtwo                             {  \locNsr\secondHalf\loc{\_map\_fp2\_to\_g2}}
+\def\locNsrBlsMapFpTwoToGtwoSuccess                      {  \locNsr\loc{\_map\_fp2\_to\_g2\_success}}
+\def\locNsrBlsMapFpTwoToGtwoFKTH                         {  \locNsr\loc{\_map\_fp2\_to\_g2\_FKTH}}
+\def\locNsrBlsMapFpTwoToGtwoFKTR                         {  \locNsr\loc{\_map\_fp2\_to\_g2\_FKTR}}
 
 \def\nsrPrcFailureKnownToTheHub                  {\redm{\locm{nsr\_failure}}}
 \def\nsrPrcSuccessWillRevertStandard             {\redm{\locm{nsr\_success\_will\_revert}}}
@@ -221,3 +319,12 @@
 \def\prcModexpSuccessTransferResultRowOffset       {\roffConstYellow{10}}
 \def\prcModexpSuccessPartialCopyOfResultsRowOffset {\roffConstYellow{11}}
 \def\prcModexpSuccessUpdatingCallerReturnData      {\roffConstYellow{12}}
+
+\def\locImposedCallDataSizeForBlsPrecompiles        {\loc{imposed\_cds}}
+\def\locCallDataSizeModulusForBlsPrecompiles        {\loc{cds\_modulus}}
+
+\def\locBlsPrecompileFailureReasonGas               {({\color{draculaorange}\texttt{gas}})}
+\def\locBlsPrecompileFailureReasonEmpty             {({\color{draculaorange}\texttt{empty}})}
+\def\locBlsPrecompileFailureReasonSize              {({\color{draculaorange}\texttt{size}})}
+\def\locBlsPrecompileFailureReasonMod               {({\color{draculaorange}\texttt{mod}})}
+\def\locBlsPrecompileFailureReasonData              {({\color{draculared}\texttt{data}})}

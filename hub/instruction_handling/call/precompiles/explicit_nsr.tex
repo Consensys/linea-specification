@@ -2,22 +2,34 @@ The table below contains the summary of what will be imposed by means of the pre
 The numerical values that are found in that table are the values of \nonStackRows{} associated with the various execution scenarios of the various precompiled contracts.
 It is a concretization of 
 the setting of \nonStackRows{} in section~(\ref{hub: instruction handling: call: precompiles: generalities}),
-the definition of \locFirstPhaseNsr{} in the section~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr})
-as well as the definitions of the various \locNsrXxx{} in section~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr}).
+the definition of \locFirstPhaseNsr{} in
+section~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr I}) and
+section~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr II})
+as well as the definitions of the various \locNsrXxx{} in
+section~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr I}) and
+section~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr II}) and
 \begin{figure}[!h]
 	\centering
 
 	\begin{tabular}{|l||c|c|c|c|} \hline
-		\textsc{Precompile} & \locFkth         & \locFktr         & \locSwill            & \locSwont            \\ \hline \hline
-		\inst{ECRECOVER}    & \locStandardFail & \johnSnow        & \locStandardSuccWill & \locStandardSuccWont \\ \hline
-		\inst{SHA2-256}     & \locStandardFail & \johnSnow        & \locStandardSuccWill & \locStandardSuccWont \\ \hline
-		\inst{RIPEMD-160}   & \locStandardFail & \johnSnow        & \locStandardSuccWill & \locStandardSuccWont \\ \hline
-		\inst{IDENTITY}     & \locStandardFail & \johnSnow        & \locIdentitySuccWill & \locIdentitySuccWont \\ \hline
-		\inst{MODEXP}       & \johnSnow        & \locModexpFKTR   & \locModexpSuccWill   & \locModexpSuccWont   \\ \hline
-		\inst{ECADD}        & \locStandardFail & \locStandardFail & \locStandardSuccWill & \locStandardSuccWont \\ \hline
-		\inst{ECMUL}        & \locStandardFail & \locStandardFail & \locStandardSuccWill & \locStandardSuccWont \\ \hline
-		\inst{ECPAIRING}    & \locStandardFail & \locStandardFail & \locStandardSuccWill & \locStandardSuccWont \\ \hline
-		\inst{BLAKE2f}      & \locBlakeFKTH    & \locBlakeFKTR    & \locBlakeSuccWill    & \locBlakeSuccWont    \\ \hline
+		\textsc{Precompile}          & \locFkth                          & \locFktr                          & \locSwill                             & \locSwont                             \\ \hline \hline
+		\inst{ECRECOVER}             & \multirow{3}{*}{\locStandardFail} & \multirow{3}{*}{\johnSnow}        & \multirow{3}{*}{\locStandardSuccWill} & \multirow{3}{*}{\locStandardSuccWont} \\ \cline{1-1}
+		\inst{SHA2-256}              &                                   &                                   &                                       &                                       \\ \cline{1-1}
+		\inst{RIPEMD-160}            &                                   &                                   &                                       &                                       \\ \hline \hline
+		\inst{IDENTITY}              & \locStandardFail                  & \johnSnow                         & \locIdentitySuccWill                  & \locIdentitySuccWont                  \\ \hline \hline
+		\inst{MODEXP}                & \johnSnow                         & \locModexpFKTR                    & \locModexpSuccWill                    & \locModexpSuccWont                    \\ \hline \hline
+		\inst{ECADD}                 & \multirow{3}{*}{\locStandardFail} & \multirow{3}{*}{\locStandardFail} & \multirow{3}{*}{\locStandardSuccWill} & \multirow{3}{*}{\locStandardSuccWont} \\ \cline{1-1}
+		\inst{ECMUL}                 &                                   &                                   &                                       &                                       \\ \cline{1-1}
+		\inst{ECPAIRING}             &                                   &                                   &                                       &                                       \\ \hline \hline
+		\inst{BLAKE2f}               & \locBlakeFKTH                     & \locBlakeFKTR                     & \locBlakeSuccWill                     & \locBlakeSuccWont                     \\ \hline \hline
+		\inst{POINT\_EVALUATION}     & \multirow{8}{*}{\locStandardFail} & \multirow{8}{*}{\locStandardFail} & \multirow{8}{*}{\locStandardSuccWill} & \multirow{8}{*}{\locStandardSuccWont} \\ \cline{1-1}
+		\inst{BLS\_G1ADD}            &                                   &                                   &                                       &                                       \\ \cline{1-1}
+		\inst{BLS\_G1MSM}            &                                   &                                   &                                       &                                       \\ \cline{1-1}
+		\inst{BLS\_G2ADD}            &                                   &                                   &                                       &                                       \\ \cline{1-1}
+		\inst{BLS\_G2MSM}            &                                   &                                   &                                       &                                       \\ \cline{1-1}
+		\inst{BLS\_PAIRING\_CHECK}   &                                   &                                   &                                       &                                       \\ \cline{1-1}
+		\inst{BLS\_MAP\_FP\_TO\_G1}  &                                   &                                   &                                       &                                       \\ \cline{1-1}
+		\inst{BLS\_MAP\_FP2\_TO\_G2} &                                   &                                   &                                       &                                       \\ \hline
 	\end{tabular}
 
 	\label{hub: instruction handling: call: precompiles: table of non stack-rows classifying failures known to the HUB vs. to RAM}
@@ -32,5 +44,5 @@ as well as the definitions of the various \locNsrXxx{} in section~(\ref{hub: ins
 	\end{tabular}
 	} 
 \end{figure}
-
-
+% \multirow{7}{*}{\locStandardFail} & \multirow{7}{*}{\johnSnow} & \multirow{7}{*}{\locStandardSuccWill} & \multirow{7}{*}{\locStandardSuccWont}
+% \noalign{\vskip 1ex}

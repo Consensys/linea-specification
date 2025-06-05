@@ -1,0 +1,134 @@
+The purpose of this section is to define the shorthands that were used in section~(\ref{hub: instruction handling: call: precompiles: generalities}), that is:
+\begin{multicols}{3}
+	\begin{enumerate}
+		\item \locFirstPhaseNsr{}
+		\item \locFlagSumPrecompilesSH{}
+		\item \locNsrPrecompilesSH{}
+	\end{enumerate}
+\end{multicols}
+\noindent We provide an explicit definition for \locFirstPhaseNsr{} first:
+\[
+	\locFirstPhaseNsr
+	\define
+	\left[ \begin{array}{lrcl}
+		+ & \callPrcFailureSecondScenarioRowOffset           & \cdot & \scenPrcFailure_{i}       \\
+		+ & \callPrcSuccessWillRevertSecondScenarioRowOffset & \cdot & \scenPrcSuccessWillRevert_{i}       \\
+		+ & \callPrcSuccessWontRevertSecondScenarioRowOffset & \cdot & \scenPrcSuccessWontRevert_{i} \\
+	\end{array} \right]
+\]
+The definitions of \locFlagSumPrecompilesSH{} and \locNsrPrecompilesSH{} are more involved.
+The are precompile specific and depend on precompile \scenPrcSuccess{} / failure as well as the type of failure i.e.
+\scenPrcFailureKnownToHub{} vs.
+\scenPrcFailureKnownToRam{}.
+The following will be made explicit shortly: 
+\[
+	\left\{ \begin{array}{lcl}
+		\locNsrPrecompilesSH     & \define & \displaystyle \sum _{\loc{xxx} \in \locPrecompileNames} \locNsrXxx     \cdot \scenPrcXxx \vspace{2mm} \\
+		\locFlagSumPrecompilesSH & \define & \displaystyle \sum _{\loc{xxx} \in \locPrecompileNames} \locFlagSumXxx \cdot \scenPrcXxx \\
+	\end{array} \right.
+\]
+% \[
+% 	\locNsrPrecompilesSH \define
+% 	\left[ \begin{array}{lcl}
+% 		\locNsrEcrecover         & \cdot & \scenEcrecover         _{i} \\
+% 		\locNsrShaTwo            & \cdot & \scenShaTwo            _{i} \\
+% 		\locNsrRipemd            & \cdot & \scenRipemd            _{i} \\
+% 		\locNsrIdentity          & \cdot & \scenIdentity          _{i} \\
+% 		\locNsrModexp            & \cdot & \scenModexp            _{i} \\
+% 		\locNsrEcadd             & \cdot & \scenEcadd             _{i} \\
+% 		\locNsrEcmul             & \cdot & \scenEcmul             _{i} \\
+% 		\locNsrEcpairing         & \cdot & \scenEcpairing         _{i} \\
+% 		\locNsrBlake             & \cdot & \scenBlake             _{i} \\
+% 		\locNsrPointEvaluation   & \cdot & \scenPointEvaluation   _{i} \\
+% 		\locNsrBlsGoneAdd        & \cdot & \scenBlsGoneAdd        _{i} \\
+% 		\locNsrBlsGoneMsm        & \cdot & \scenBlsGoneMsm        _{i} \\
+% 		\locNsrBlsGtwoAdd        & \cdot & \scenBlsGtwoAdd        _{i} \\
+% 		\locNsrBlsGtwoMsm        & \cdot & \scenBlsGtwoMsm        _{i} \\
+% 		\locNsrBlsPairingCheck   & \cdot & \scenBlsPairingCheck   _{i} \\
+% 		\locNsrBlsMapFpToGone    & \cdot & \scenBlsMapFpToGone    _{i} \\
+% 		\locNsrBlsMapFpTwoToGtwo & \cdot & \scenBlsMapFpTwoToGtwo _{i} \\
+% 	\end{array} \right]
+% \]
+% and
+% \[
+% 	\hspace*{-2cm}
+% 	\locFlagSumPrecompilesSH \define
+% 	\left[ \begin{array}{lcl}
+% 		\locFlagSumEcrecover         & \cdot & \scenEcrecover         _{i} \\
+% 		\locFlagSumShaTwo            & \cdot & \scenShaTwo            _{i} \\
+% 		\locFlagSumRipemd            & \cdot & \scenRipemd            _{i} \\
+% 		\locFlagSumIdentity          & \cdot & \scenIdentity          _{i} \\
+% 		\locFlagSumModexp            & \cdot & \scenModexp            _{i} \\
+% 		\locFlagSumEcadd             & \cdot & \scenEcadd             _{i} \\
+% 		\locFlagSumEcmul             & \cdot & \scenEcmul             _{i} \\
+% 		\locFlagSumEcpairing         & \cdot & \scenEcpairing         _{i} \\
+% 		\locFlagSumBlake             & \cdot & \scenBlake             _{i} \\
+% 		\locFlagSumPointEvaluation   & \cdot & \scenPointEvaluation   _{i} \\
+% 		\locFlagSumBlsGoneAdd        & \cdot & \scenBlsGoneAdd        _{i} \\
+% 		\locFlagSumBlsGoneMsm        & \cdot & \scenBlsGoneMsm        _{i} \\
+% 		\locFlagSumBlsGtwoAdd        & \cdot & \scenBlsGtwoAdd        _{i} \\
+% 		\locFlagSumBlsGtwoMsm        & \cdot & \scenBlsGtwoMsm        _{i} \\
+% 		\locFlagSumBlsPairingCheck   & \cdot & \scenBlsPairingCheck   _{i} \\
+% 		\locFlagSumBlsMapFpToGone    & \cdot & \scenBlsMapFpToGone    _{i} \\
+% 		\locFlagSumBlsMapFpTwoToGtwo & \cdot & \scenBlsMapFpTwoToGtwo _{i} \\
+% 	\end{array} \right]
+% \]
+The above is incomplete as we didn't specify the various
+\locFlagSumXxx{} and \locNsrXxx{},
+where
+\[
+	\loc{xxx} \in \locPrecompileNames \define 
+	\left\{ \begin{array}{r}
+		\loc{ecrecover}, ~
+		\loc{sha2}, ~
+		\loc{ripemd}, ~
+		\loc{identity}, \\
+		\loc{modexp}, ~
+		\loc{ecadd}, ~
+		\loc{ecmul}, ~
+		\loc{ecpairing}, ~
+		\loc{blake}, \\
+		\loc{point\_evaluation}, ~
+		\loc{bls\_g1add}, ~
+		\loc{bls\_g1msm}, \\
+		\loc{bls\_g2add}, ~
+		\loc{bls\_g2msm}, ~
+		\loc{bls\_pairing\_check}, \\
+		\loc{bls\_map\_fp\_to\_g1}, ~
+		\loc{bls\_map\_fp2\_to\_g2} \\
+	\end{array} \right\}
+\]
+These quantities will all be defined according to the following recipe:
+\[
+	\left\{ \begin{array}{lcl}
+		\locNsrXxx       & \define & 
+		\left[ \begin{array}{lcl}
+			\locNsrXxxFKTH    & \cdot & \scenPrcFailureKnownToHub _{i} \\
+			\locNsrXxxFKTR    & \cdot & \scenPrcFailureKnownToRam _{i} \\
+			\locNsrXxxSuccess & \cdot & \scenPrcSuccess           _{i} \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\locFlagSumXxx   & \define &
+		\left[ \begin{array}{lcl}
+			\locFlagSumXxxFKTH    & \cdot & \scenPrcFailureKnownToHub _{i} \\
+			\locFlagSumXxxFKTR    & \cdot & \scenPrcFailureKnownToRam _{i} \\
+			\locFlagSumXxxSuccess & \cdot & \scenPrcSuccess           _{i} \\
+		\end{array} \right]
+		\\
+	\end{array} \right.
+\]
+Thus, to finish what we have set out to do we only require defining all the various
+``\col{flag sums}'' and ``\col{nsr's}'' i.e. the various
+\begin{multicols}{2}
+	\begin{itemize}
+		\item \locFlagSumXxxFKTH{}
+		\item \locFlagSumXxxFKTR{}
+		\item \locFlagSumXxxSuccess{}
+		\item \locNsrXxxFKTH{}
+		\item \locNsrXxxFKTR{}
+		\item \locNsrXxxSuccess{}
+	\end{itemize}
+\end{multicols}
+where $\loc{xxx}$ ranges over $\locPrecompileNames$.
+All of the above are defined in
+section~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr II}).

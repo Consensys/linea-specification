@@ -105,3 +105,92 @@ In particular we explain which precompiles may raise the $\scenPrcFailureKnownTo
 		in order to address points (\emph{b}) and (\emph{c}) the arithmetization has to extract certain parameters from \textsc{ram} ($r$ and $f$ in \cite{EYP-London} notation);
 		these conditions are thus detected by \scenPrcFailureKnownToRam{};
 \end{description}
+The following precompiles have a common structure.
+Failures are due to a combination of \emph{some} the following failure conditions:
+\begin{description}
+	\item[\underline{Recorded in \scenPrcFailureKnownToHub{}:}] ---
+		\begin{itemize}
+			\item
+				\locBlsPrecompileFailureReasonGas{}
+				insufficient gas
+			\item
+				\locBlsPrecompileFailureReasonEmpty{}
+				empty call data i.e. $\CDS =\cds = 0$
+			\item
+				\locBlsPrecompileFailureReasonSize{}
+				\cds{} differs from some precompile specific reference size i.e. $\cds \neq \locImposedCallDataSizeForBlsPrecompiles$
+			\item
+				\locBlsPrecompileFailureReasonMod{}
+				failure of a precompile specific congruence relation i.e. $\cds \not \equiv 0 \mod \locCallDataSizeModulusForBlsPrecompiles$
+		\end{itemize}
+	\item[\underline{Recorded in \scenPrcFailureKnownToRam{}:}] ---
+		\begin{itemize}
+			\item
+				\locBlsPrecompileFailureReasonData{}
+				malformed call data;
+		\end{itemize}
+\end{description}
+Conditions
+\locBlsPrecompileFailureReasonGas,
+\locBlsPrecompileFailureReasonEmpty,
+\locBlsPrecompileFailureReasonSize, and
+\locBlsPrecompileFailureReasonMod,
+can be detected with data available in the \hubMod{} module and without touching \textsc{ram};
+the \oobMod{} module carries out these preliminary checks and \scenPrcFailureKnownToHub{} records the outcome.
+Condition
+\locBlsPrecompileFailureReasonData,
+on the other hand,
+requires retrieving the call data from \textsc{ram};
+the data is analyzed in a precompile specific manner in the \blsMod{} module,
+with some ``data malformation'' detection steps delegated to outside circuits;
+the failure of this condition is recorded in \scenPrcFailureKnownToRam{}.
+
+The next precompile was introduced in the \textsc{Cancun} hardfork, specifically with \cite{EIP-4788};
+\begin{description}
+	\item[\inst{POINT\_EVALUATION}:]
+		can fail due to:
+		\locBlsPrecompileFailureReasonGas,
+		\locBlsPrecompileFailureReasonSize, with $\locImposedCallDataSizeForBlsPrecompiles \equiv 192$,
+		\locBlsPrecompileFailureReasonData;
+\end{description}
+The next precompiles were introduced in the \textsc{Prague} hardfork, specifically with \cite{EIP-2537}:
+\begin{description}
+	\item[\inst{BLS\_G1ADD}:]
+		can fail due to:
+		\locBlsPrecompileFailureReasonGas,
+		\locBlsPrecompileFailureReasonSize, with $\locImposedCallDataSizeForBlsPrecompiles \equiv 256$,
+		\locBlsPrecompileFailureReasonData;
+	\item[\inst{BLS\_G2ADD}:]
+		can fail due to:
+		\locBlsPrecompileFailureReasonGas,
+		\locBlsPrecompileFailureReasonSize, with $\locImposedCallDataSizeForBlsPrecompiles \equiv 512$,
+		\locBlsPrecompileFailureReasonData;
+	\item[\inst{BLS\_G1MSM}:]
+		can fail due to:
+		\locBlsPrecompileFailureReasonGas,
+		\locBlsPrecompileFailureReasonEmpty,
+		\locBlsPrecompileFailureReasonMod, with $\locCallDataSizeModulusForBlsPrecompiles \equiv 160$,
+		\locBlsPrecompileFailureReasonData;
+	\item[\inst{BLS\_G2MSM}:]
+		can fail due to:
+		\locBlsPrecompileFailureReasonGas,
+		\locBlsPrecompileFailureReasonEmpty,
+		\locBlsPrecompileFailureReasonMod, with $\locCallDataSizeModulusForBlsPrecompiles \equiv 288$,
+		\locBlsPrecompileFailureReasonData;
+	\item[\inst{BLS\_PAIRING\_CHECK}:]
+		can fail due to:
+		\locBlsPrecompileFailureReasonGas,
+		\locBlsPrecompileFailureReasonEmpty,
+		\locBlsPrecompileFailureReasonMod, with $\locCallDataSizeModulusForBlsPrecompiles \equiv 384$,
+		\locBlsPrecompileFailureReasonData;
+	\item[\inst{BLS\_MAP\_FP\_TO\_G1}:]
+		can fail due to:
+		\locBlsPrecompileFailureReasonGas,
+		\locBlsPrecompileFailureReasonSize, with $\locImposedCallDataSizeForBlsPrecompiles \equiv 64$,
+		\locBlsPrecompileFailureReasonData;
+	\item[\inst{BLS\_MAP\_FP2\_TO\_G2}:]
+		can fail due to:
+		\locBlsPrecompileFailureReasonGas,
+		\locBlsPrecompileFailureReasonSize, with $\locImposedCallDataSizeForBlsPrecompiles \equiv 128$,
+		\locBlsPrecompileFailureReasonData;
+\end{description}
