@@ -1,5 +1,18 @@
 In this section we describe the desired behaviour of \instEcadd{}, \instEcmul{} and \instEcpairing{} which \textbf{don't fail in the \hubMod{} but are provided with empty call data}.
-In the \hubMod{} this is measured \emph{exactly} by
+
+\saNote{}
+Recall that ``\inst{BLS}'' precompiles\footnote{i.e.
+\instPointEvaluation{},
+\instBlsGOneAdd{},
+\instBlsGOneMsm{},
+\instBlsGTwoAdd{},
+\instBlsGTwoMsm{},
+\instBlsPairingCheck{},
+\instBlsMapFpToGOne{} and
+\instBlsMapFpTwoToGTwo{}}
+\emph{actively disallow} empty call data.
+
+\noindent In the \hubMod{} a (common) precompile call being provided with empty call data is measured \emph{precisely} by
 \[
 	\locOobResultEmptyCallData \equiv 1
 \]
@@ -9,7 +22,7 @@ section~(\ref{oob: precompiles: common precompiles: one row precompiles})
 in the \oobMod{} module documentation.
 Recall that in case of a call with \textbf{zero call data size} the callee's call data is the
 ``infinite\footnote{Or nearly so: it remains addressable with offsets and sizes that are in the range $\mathbb{N}_{256}$.}
-slice of 0 bytes''
+slice of $0$ bytes''
 $I_\textbf{d} \equiv [\utt{00}, \utt{00}, \utt{00}, \dots]$;
 
 We claim that such calls are necessarily successful (and thus don't fail in \textsc{ram}.)
@@ -78,8 +91,4 @@ $\utt{00} \;
 \utt{01} \in \mathbb{B}_{\evmWordSize}$;
 and in particular \textbf{nonzero} it must be transferred to its dedicated \textsc{ram} context.
 The arithmetization sets this value ``by hand'' i.e. without interacting with the \ecDataMod{} module.
-This the \zkEvm{} does through a dedicated \mmuInstMstore{} instruction, see section~(\ref{hub: instruction handling: call: precompiles: ecadd, ecmul, ecpairing and bls: success}).
-
-\saNote{}
-Recall that ``\inst{BLS}'' precompiles, i.e.
-
+This the \zkEvm{} does through a dedicated \mmuInstMstore{} instruction, see section~(\ref{hub: instruction handling: call: precompiles: ecadd ecmul ecpairing and bls: success}).

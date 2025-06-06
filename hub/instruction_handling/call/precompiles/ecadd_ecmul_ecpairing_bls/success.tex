@@ -4,9 +4,10 @@
 		\left\{ \begin{array}{lcl}
 			\peekScenario     _{i}      & = & 1 \\
 			\left[ \begin{array}{cr}
-				+ & \scenEcadd        _{i} \\
-				+ & \scenEcmul        _{i} \\
-				+ & \scenEcpairing    _{i} \\
+				+ & \scenEcadd               _{i} \\
+				+ & \scenEcmul               _{i} \\
+				+ & \scenEcpairing           _{i} \\
+				+ & \scenPrecompileCommonBls _{i} \\
 			\end{array} \right]
 			& = & 1 \\
 			\scenPrcSuccess   _{i}      & = & 1 \\
@@ -56,69 +57,67 @@ We remind the reader that success of any of the \instEcadd{}, \instEcmul{}, \ins
 		\[
 			\locTriggerMmu \define
 			\left[ \begin{array}{cl}
-				+ & \locNontrivialAdd     \\
-				+ & \locNontrivialMul     \\
-				+ & \locNontrivialPairing \\
-				+ & \locTrivialPairing    \\
-				% + & \locOobResultExtractCallData & \cdot & \scenEcadd     _{i} \\
-				% + & \locOobResultExtractCallData & \cdot & \scenEcmul     _{i} \\
-				% + &                              &       & \scenEcpairing _{i} \\
+				+ & \locNontrivialAdd             \\
+				+ & \locNontrivialMul             \\
+				+ & \locNontrivialPairing         \\
+				+ & \locTrivialPairing            \\
+				+ & \scenPrecompileCommonBls _{i} \\
 			\end{array} \right]
 		\]
+		\saNote{}
+		\locTriggerMmu{} is indeed binary.
 \end{description}
 \saNote{} In other words we trigger the \mmuMod{} module \emph{iff}
 \begin{center}
+	\renewcommand{\arraystretch}{1.5}
 	\begin{tabular}{|ll|}
 		\hline
-		\underline{\instEcadd{} case:}     & the precompile was provided with nonempty call data \\
-		\underline{\instEcmul{} case:}     & the precompile was provided with nonempty call data \\
-		\underline{\instEcpairing{} case:} & in \textbf{all} cases                               \\ \hline
+		\underline{\instEcadd{}     case:} & the precompile was provided with nonempty call data \\
+		\underline{\instEcmul{}     case:} & the precompile was provided with nonempty call data \\
+		\underline{\instEcpairing{} case:} & in \textbf{all} cases                               \\
+		\underline{\blsMod{}-precompiles:} & in \textbf{all} cases                               \\ \hline
 	\end{tabular}
 \end{center}
 We remind the reader that calling \instEcpairing{} with empty call data is a success case for that precompile.
-In particular return data is $\textbf{o} =
-\utt{00}\,
-\utt{00}\, \cdots \,
-\utt{01}
-\in \mathbb{B}_{\evmWordSize}$ as already pointed out in
+In particular return data is
+$\textbf{o} = \utt{00}\, \utt{00}\, \cdots \, \utt{01} \in \mathbb{B}_{\evmWordSize}$
+as already pointed out in
 section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 \begin{description}
 	\item[\underline{\underline{Setting the \mmuMod{} instruction:}}]
 		we begin with the description of the ``trivial pairing'' case and then move onto the remaining case;
 		\begin{description}
 			\item[\underline{``Trivial pairing'' full return data transfer:}]
-				\If $\locTrivialPairing = 1$ \Then we impose that
-				% \[
-				% 	\scenEcpairing _{i} = 1$ \et $\locOobResultEmptyCallData = 1
-				% \]
-				% \Then
+				\If $\locTrivialPairing = 1$ \Then we impose
 				\[
 					\setMmuInstructionParametersMstore {
-						anchorRow      = i                                      ,
-						relOffset      = \prcStandardSuccessSecondMiscRowOffset ,
-						targetId       = 1 + \hubStamp_{i}                      ,
-						targetOffsetLo = 0                                      ,
-						limbOne        = 0                                      ,
-						limbTwo        = 1                                      ,
+						anchorRow      = i                                        ,
+						relOffset      = \prcStandardSuccessSecondMiscRowOffset   ,
+						targetId       = 1 + \hubStamp _{i}                       ,
+						targetOffsetLo = 0                                        ,
+						limbOne        = \texttt{0x\,00} \; \cdots \; \texttt{00} ,
+						limbTwo        = \texttt{0x\,00} \; \cdots \; \texttt{01} ,
 					}
 				\]
+				\saNote{}
+				The integers
+				$\texttt{0x\,00} \; \cdots \; \texttt{00} \in \mathbb{B}_{\llarge}$ and
+				$\texttt{0x\,00} \; \cdots \; \texttt{01} \in \mathbb{B}_{\llarge}$
+				represent the high and low parts of the aforementioned output
+				\textbf{o} of a ``empty call data'' \instEcpairing{}.
 			\item[\underline{``Nontrivial case'' full return data transfer:}]
 				we impose that
 				\If 
 				\[
 					\left[ \begin{array}{cl}
-						+ & \locNontrivialAdd     \\
-						+ & \locNontrivialMul     \\
-						+ & \locNontrivialPairing \\
-						% + & \scenEcadd _{i}       \\
-						% + & \scenEcmul _{i}       \\
-						% + & \locNontrivialPairing \\
-						% + & \scenEcpairing _{i}  & \cdot & \locOobResultExtractCallData \\
+						+ & \locNontrivialAdd             \\
+						+ & \locNontrivialMul             \\
+						+ & \locNontrivialPairing         \\
+						+ & \scenPrecompileCommonBls _{i} \\
 					\end{array} \right]
 					= 1
 				\]
 				\Then
-				% $\miscMmuFlag_{i + \prcStandardSuccessSecondMiscRowOffset} = 1$ \Then we impose
 				\[
 					\setMmuInstructionParametersExoToRamTransplants {
 						anchorRow = i                                      ,
@@ -126,119 +125,74 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 						sourceId  = 1 + \hubStamp_{i}                      ,
 						targetId  = 1 + \hubStamp_{i}                      ,
 						size      = \undefinedStar \quad \locMmuSize       ,
-						exoSum    = \exoWeightEcdata                       ,
+						exoSum    = \undefinedStar \quad \locMmuExoSum     ,
 						phase     = \undefinedStar \quad \locMmuPhase      ,
 						}
-					% \left\{ \begin{array}{lcl}
-					% 	\miscMmuInst        _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locMmuInst   \\
-					% 	\miscMmuSrcId       _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locMmuSrcId  \\
-					% 	\miscMmuTgtId       _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locMmuTgtId  \\
-					% 	\miscMmuAuxId       _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \nothing      \\
-					% 	\miscMmuSrcOffsetHi _{i + \prcStandardSuccessSecondMiscRowOffset} & = & 0             \\
-					% 	\miscMmuSrcOffsetLo _{i + \prcStandardSuccessSecondMiscRowOffset} & = & 0             \\
-					% 	\miscMmuTgtOffsetLo _{i + \prcStandardSuccessSecondMiscRowOffset} & = & 0             \\
-					% 	\miscMmuSize        _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locMmuSize   \\
-					% 	\miscMmuRefOffset   _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \nothing      \\
-					% 	\miscMmuRefSize     _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \nothing      \\
-					% 	\miscMmuSuccessBit  _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \nothing      \\
-					% 	\miscMmuLimbOne     _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locLimbOne   \\
-					% 	\miscMmuLimbTwo     _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locLimbTwo   \\
-					% 	\miscMmuExoSum      _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locMmuExoSum \\
-					% 	\miscMmuPhase       _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locMmuPhase  \\
-					% \end{array} \right.
 				\]
-				where the shorthands marked with $\undefinedStar$ are as of yet undefined shorthands which we define as follows:
-				% where
-				% \[
-				% 	% \hspace*{-4cm}
-				% 	\locMmuInst \define
-				% 	\left[ \begin{array}{crclcl}
-				% 		+ & \mmuInstExoToRamTransplants & \!\!\!\cdot\!\!\! & \scenEcadd     _{i} \\
-				% 		+ & \mmuInstExoToRamTransplants & \!\!\!\cdot\!\!\! & \scenEcmul     _{i} \\
-				% 		+ & \mmuInstExoToRamTransplants & \!\!\!\cdot\!\!\! & \scenEcpairing _{i}  & \!\!\!\cdot\!\!\!\! & \locOobResultExtractCallData \\
-				% 		+ & \mmuInstMstore              & \!\!\!\cdot\!\!\! & \scenEcpairing _{i}  & \!\!\!\cdot\!\!\!\! & \locOobResultEmptyCallData   \\
-				% 	\end{array} \right]
-				% \]
-				% and
-				% \[
-				% 	\left\{ \begin{array}{lcl}
-				% 		\locMmuSrcId & \define & (1 + \hubStamp_{i}) \cdot
-				% 		\left[ \begin{array}{crcl}
-				% 			+ & \scenEcadd     _{i} \\
-				% 			+ & \scenEcmul     _{i} \\
-				% 			+ & \scenEcpairing _{i} & \!\!\!\cdot\!\!\!\! & \locOobResultExtractCallData  \\
-				% 		\end{array} \right] \\
-				% 		\locMmuTgtId & \define & (1 + \hubStamp_{i}) \\
-				% 	\end{array} \right.
-				% \]
-				and
+				where the shorthands marked with $\undefinedStar$ are as of yet undefined shorthands which we now define;
+				\locMmuSize{} contains the ``return data size'' of the present precompile call and is defined as
 				\[
-					% \hspace*{-4cm}
 					\locMmuSize \define
 					\left[ \begin{array}{crcl}
-						+ & \smallCurvePointSize & \!\!\!\cdot\!\!\! & \locNontrivialAdd     \\
-						+ & \smallCurvePointSize & \!\!\!\cdot\!\!\! & \locNontrivialMul     \\
-						+ & \evmWordSize         & \!\!\!\cdot\!\!\! & \locNontrivialPairing \\
-						% + & \redm{64}                       & \!\!\!\cdot\!\!\! & \scenEcadd         _{i}  \\
-						% + & \redm{64}                       & \!\!\!\cdot\!\!\! & \scenEcmul         _{i}  \\
-						% + & \redm{32}                       & \!\!\!\cdot\!\!\! & \scenEcpairing     _{i}  & \!\!\!\cdot\!\!\!\! & \locOobResultExtractCallData  \\
-						% + & \gZero                          & \!\!\!\cdot\!\!\! & \scenEcpairing     _{i}  & \!\!\!\cdot\!\!\!\! & \locOobResultEmptyCallData    \\
+						+ & \resultSizeInBytesEcadd             & \!\!\!\cdot\!\!\! & \locNontrivialAdd            \\
+						+ & \resultSizeInBytesEcmul             & \!\!\!\cdot\!\!\! & \locNontrivialMul            \\
+						+ & \resultSizeInBytesEcpairing         & \!\!\!\cdot\!\!\! & \locNontrivialPairing        \\
+						+ & \resultSizeInBytesPointEvaluation   & \!\!\!\cdot\!\!\! & \scenPointEvaluation    _{i} \\
+						+ & \resultSizeInBytesBlsGOneAdd        & \!\!\!\cdot\!\!\! & \scenBlsGOneAdd         _{i} \\
+						+ & \resultSizeInBytesBlsGOneMsm        & \!\!\!\cdot\!\!\! & \scenBlsGOneMsm         _{i} \\
+						+ & \resultSizeInBytesBlsGTwoAdd        & \!\!\!\cdot\!\!\! & \scenBlsGTwoAdd         _{i} \\
+						+ & \resultSizeInBytesBlsGTwoMsm        & \!\!\!\cdot\!\!\! & \scenBlsGTwoMsm         _{i} \\
+						+ & \resultSizeInBytesBlsPairingCheck   & \!\!\!\cdot\!\!\! & \scenBlsPairingCheck    _{i} \\
+						+ & \resultSizeInBytesBlsMapFpToGOne    & \!\!\!\cdot\!\!\! & \scenBlsMapFpToGOne     _{i} \\
+						+ & \resultSizeInBytesBlsMapFpTwoToGTwo & \!\!\!\cdot\!\!\! & \scenBlsMapFpTwoToGTwo  _{i} \\
 					\end{array} \right]
 				\]
-				% and
-				% \[
-				% 	\left\{ \begin{array}{lcl}
-				% 		\locLimbOne & \define & 0 \\
-				% 		\locLimbTwo & \define & \scenEcpairing     _{i} \cdot \locOobResultEmptyCallData \\
-				% 	\end{array} \right.
-				% \]
-				% and
-				% \[
-				% 	% \hspace*{-4cm}
-				% 	\locMmuExoSum \define
-				% 	\left[ \begin{array}{crclcl}
-				% 		+ & \exoWeightEcdata  & \!\!\!\cdot\!\!\! & \scenEcadd         _{i}  \\
-				% 		+ & \exoWeightEcdata  & \!\!\!\cdot\!\!\! & \scenEcmul         _{i}  \\
-				% 		+ & \exoWeightEcdata  & \!\!\!\cdot\!\!\! & \scenEcpairing     _{i}  & \!\!\!\cdot\!\!\! & \locOobResultExtractCallData  \\
-				% 		+ & \gZero            & \!\!\!\cdot\!\!\! & \scenEcpairing     _{i}  & \!\!\!\cdot\!\!\! & \locOobResultEmptyCallData    \\
-				% 	\end{array} \right]
-				% \]
-				and
+				\locMmuExoSum{} determines from which ``data'' module to extract return data and is defined as
 				\[
-					% \hspace*{-4cm}
+					\locMmuExoSum \define
+					\left[ \begin{array}{crclcl}
+						+ & \exoWeightEcdata  & \!\!\!\cdot\!\!\! & \locNontrivialAdd             \\
+						+ & \exoWeightEcdata  & \!\!\!\cdot\!\!\! & \locNontrivialMul             \\
+						+ & \exoWeightEcdata  & \!\!\!\cdot\!\!\! & \locNontrivialPairing         \\
+						+ & \exoWeightBlsdata & \!\!\!\cdot\!\!\! & \scenPrecompileCommonBls _{i} \\
+					\end{array} \right]
+				\]
+				\locMmuPhase{} provides extra data to locate the result portion (as opposed to the input portion)
+				of the data in the relevant ``data'' module:
+				\[
 					\locMmuPhase \define
 					\left[ \begin{array}{crclcl}
-						+ & \phaseEcaddResult     & \!\!\!\cdot\!\!\! & \locNontrivialAdd     \\
-						+ & \phaseEcmulResult     & \!\!\!\cdot\!\!\! & \locNontrivialMul     \\
-						+ & \phaseEcpairingResult & \!\!\!\cdot\!\!\! & \locNontrivialPairing \\
-						% + & \gZero                 & \!\!\!\cdot\!\!\! & \scenEcpairing     _{i}  & \!\!\!\cdot\!\!\! & \locOobResultEmptyCallData    \\
+						+ & \phaseEcaddResult             & \!\!\!\cdot\!\!\! & \locNontrivialAdd            \\
+						+ & \phaseEcmulResult             & \!\!\!\cdot\!\!\! & \locNontrivialMul            \\
+						+ & \phaseEcpairingResult         & \!\!\!\cdot\!\!\! & \locNontrivialPairing        \\
+						+ & \phasePointEvaluationResult   & \!\!\!\cdot\!\!\! & \scenPointEvaluation    _{i} \\
+						+ & \phaseBlsGOneAddResult        & \!\!\!\cdot\!\!\! & \scenBlsGOneAdd         _{i} \\
+						+ & \phaseBlsGOneMsmResult        & \!\!\!\cdot\!\!\! & \scenBlsGOneMsm         _{i} \\
+						+ & \phaseBlsGTwoAddResult        & \!\!\!\cdot\!\!\! & \scenBlsGTwoAdd         _{i} \\
+						+ & \phaseBlsGTwoMsmResult        & \!\!\!\cdot\!\!\! & \scenBlsGTwoMsm         _{i} \\
+						+ & \phaseBlsPairingCheckResult   & \!\!\!\cdot\!\!\! & \scenBlsPairingCheck    _{i} \\
+						+ & \phaseBlsMapFpToGOneResult    & \!\!\!\cdot\!\!\! & \scenBlsMapFpToGOne     _{i} \\
+						+ & \phaseBlsMapFpTwoToGTwoResult & \!\!\!\cdot\!\!\! & \scenBlsMapFpTwoToGTwo  _{i} \\
 					\end{array} \right]
 				\]
-				\saNote{} Observe that we \textbf{don't} use
-				$\locOobResultExtractCallData \cdot \scenEcadd _{i}$ or
-				$\locOobResultExtractCallData \cdot \scenEcmul _{i}$
-				when defining the shorthands 
-				\locMmuInst{},
-				\locMmuSize{},
-				\locMmuExoSum{} and
-				\locMmuPhase{} while we \textbf{do} in order to define the \locTriggerMmu{} shorthand.
-				This is due to the fact that the above constraints won't trigger for \instEcadd{} / \instEcmul{} unless $\locOobResultExtractCallData \equiv 1$ by virtue of the precondition
-				``\If $\miscMmuFlag_{i + \prcStandardSuccessSecondMiscRowOffset} = 1$.''
+				\saNote{}
+				Recall that the return data \textbf{o} of a successful call to the
+				\instEcrecover{}
+				precompile which successfully recovers an address
+				is a $\redm{32}$ byte string $\textbf{o} \in \mathbb{B}_{32}$
+				composed of 12 (leading) zero bytes followed by 20 bytes making up the recovered Ethereum public address.
+				\specTodo{} move this to some \instEcrecover{} section.
 
-				\saNote{} The shorthands we provide are very granular and more ``precise'' than what is actually needed.
-				For instance we could simply have defined ``$\locMmuSrcId \define 1 + \hubStamp_{i}$'' rather than do a case analysis.
-				Indeed the case that our case analysis sets to $0$ (i.e. \instEcpairing{}'s with empty call data) uses a \mmuMod{}-instruction, \mmuInstMstore{}, that simply ``ignores'' the \miscMmuSrcId{} altogether. Similar remarks apply to other shorthands.
-
-				\saNote{} Recall that the return data \textbf{o} of a successful call to the \instEcadd{}, \instEcmul{}, \instEcpairing{} precompile which successfully recovers an address is a $\redm{32}$ byte string $\textbf{o} \in \mathbb{B}_{32}$ is a string of composed of 12 (leading) zero bytes followed by 20 bytes making up the recovered Ethereum public address.
-
-				\saNote{} We remind the reader that \textsc{ram} segments (associated to a nonzero context number) are initialized as \textbf{empty}.
+				\saNote{} \label{hub: instruction handling: call: precompiles: ecadd ecmul ecpairing and bls: success: no data extraction for ecadd ecmul if empty call data}
+				We remind the reader that \textsc{ram} segments (associated to a nonzero context number) are initialized as \textbf{empty}.
 				Since the case of \textbf{empty call data} yields the zero string in
-				$\mathbb{B}_{64}$ and
-				$\mathbb{B}_{32}$
+				$\mathbb{B}_{\phaseEcaddResult}$ and
+				$\mathbb{B}_{\phaseEcmulResult}$
 				for
 				\instEcadd{} and
-				\instEcmul{} respectively,
-				there is no reason for us to set the result in either of those cases.
+				\instEcmul{} respectively.
+				It follows that
+				\textbf{there is no reason for us to set the result in either of those cases}.
 			\end{description}
 		\item[\underline{\underline{Miscellaneous-row $n^°(i + \prcStandardSuccessThirdMiscRowOffset)$:}}]
 			row $n^°(i + \prcStandardSuccessThirdMiscRowOffset)$ serves to copy over a portion of the return data to the current execution context's \textsc{ram}.
@@ -277,37 +231,29 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 							referenceOffset = \locPrcRao                            ,
 							referenceSize   = \locPrcRac                            ,
 						}
-						% \left\{ \begin{array}{lcl}
-						% 	\miscMmuInst        _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \mmuInstRamToRamSansPadding \\
-						% 	\miscMmuSrcId       _{i + \prcStandardSuccessThirdMiscRowOffset} & = & 1 + \hubStamp_{i} \\
-						% 	\miscMmuTgtId       _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \cn_{i} \\
-						% 	\miscMmuAuxId       _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \nothing \\
-						% 	\miscMmuSrcOffsetHi _{i + \prcStandardSuccessThirdMiscRowOffset} & = & 0 \\
-						% 	\miscMmuSrcOffsetLo _{i + \prcStandardSuccessThirdMiscRowOffset} & = & 0 \\
-						% 	\miscMmuTgtOffsetLo _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \locPrcRao \\
-						% 	\miscMmuSize        _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \locPrcRac \\
-						% 	\miscMmuRefOffset   _{i + \prcStandardSuccessThirdMiscRowOffset} & = & 0 \\
-						% 	\miscMmuRefSize     _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \locMmuRefSize \\
-						% 	\miscMmuSuccessBit  _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \nothing \\
-						% 	\miscMmuLimbOne     _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \nothing \\
-						% 	\miscMmuLimbTwo     _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \nothing \\
-						% 	\miscMmuExoSum      _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \nothing \\
-						% 	\miscMmuPhase       _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \nothing \\
-						% \end{array} \right.
 					\]
 					where 
 					\[
 						\locMmuRefSize \define
 						\left[ \begin{array}{crclcl}
-							+ & \smallCurvePointSize & \!\!\!\cdot\!\!\! & \scenEcadd     _{i} \\
-							+ & \smallCurvePointSize & \!\!\!\cdot\!\!\! & \scenEcmul     _{i} \\
-							+ & \evmWordSize         & \!\!\!\cdot\!\!\! & \scenEcpairing _{i} \\
+							+ & \resultSizeInBytesEcadd              & \!\!\!\cdot\!\!\! & \scenEcadd             _{i} \\
+							+ & \resultSizeInBytesEcmul              & \!\!\!\cdot\!\!\! & \scenEcmul             _{i} \\
+							+ & \resultSizeInBytesEcpairing          & \!\!\!\cdot\!\!\! & \scenEcpairing         _{i} \\
+							+ & \resultSizeInBytesPointEvaluation    & \!\!\!\cdot\!\!\! & \scenPointEvaluation   _{i} \\
+							+ & \resultSizeInBytesBlsGOneAdd         & \!\!\!\cdot\!\!\! & \scenBlsGOneAdd        _{i} \\
+							+ & \resultSizeInBytesBlsGOneMsm         & \!\!\!\cdot\!\!\! & \scenBlsGOneMsm        _{i} \\
+							+ & \resultSizeInBytesBlsGTwoAdd         & \!\!\!\cdot\!\!\! & \scenBlsGTwoAdd        _{i} \\
+							+ & \resultSizeInBytesBlsGTwoMsm         & \!\!\!\cdot\!\!\! & \scenBlsGTwoMsm        _{i} \\
+							+ & \resultSizeInBytesBlsPairingCheck    & \!\!\!\cdot\!\!\! & \scenBlsPairingCheck   _{i} \\
+							+ & \resultSizeInBytesBlsMapFpToGOne     & \!\!\!\cdot\!\!\! & \scenBlsMapFpToGOne    _{i} \\
+							+ & \resultSizeInBytesBlsMapFpTwoToGTwo  & \!\!\!\cdot\!\!\! & \scenBlsMapFpTwoToGTwo _{i} \\
 						\end{array} \right]
 					\]
 					\saNote{}
-					The above holds for all successful calls to of a successful call to either of \instEcadd{}, \instEcmul{}, \instEcpairing{}.
-					That is: as long as the precompile is successful \textbf{o} is a byte string of size 
-					precompile which successfully recovers an address is a $\redm{32}$ byte string $\textbf{o} \in \mathbb{B}_{32}$ is a string of composed of 12 (leading) zero bytes followed by 20 bytes making up the recovered Ethereum public address.
+					The above holds for all (successful) calls to either of \instEcadd{}, \instEcmul{},
+					i.e. not just for the ``nontrivial'' ones,
+					as well to all (successful) \instEcpairing{} calls and
+					to all (successful) \blsMod{}-precompile calls.
 			\end{description}
 		\item[\underline{Context-row $n^°(i + \prcStandardSuccessCallerContextRowRowOffset)$:}] 
 			we impose
@@ -320,12 +266,6 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 					returnDataOffset   = 0                                            ,
 					returnDataSize     = \locMmuRefSize                               ,
 				}
-				% \provideReturnData
-				% {i}{4} 
-				% {\cn_{i}          }         % Return data receiver
-				% {1 + \hubStamp_{i}}         % Return data provider
-				% {0                }         % Return data offset
-				% {\locMmuRefSize   }         % Return data size 
 			\]
 	\end{description}
 
