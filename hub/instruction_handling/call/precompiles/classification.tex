@@ -7,38 +7,38 @@ In particular we explain which precompiles may raise the $\scenPrcFailureKnownTo
 	\centering
 	\begin{tabular}{|l||l|c|l|c|} \hline
 		\textsc{Precompile}               & \multicolumn{2}{c|}{\scenPrcFailureKnownToHub} & \scenPrcFailureKnownToRam & \textsc{Notes}                                                   \\ \hline \noalign{\vskip 0.5ex} \cline{1-4}
-		\inst{ECRECOVER}                  & insufficient gas                               & \toOob                    & $\nothing$                                                       \\ \cline{1-4}
-		\inst{SHA2-256}                   & insufficient gas                               & \toOob                    & $\nothing$                                                       \\ \cline{1-4}
-		\inst{RIPEMD-160}                 & insufficient gas                               & \toOob                    & $\nothing$                                                       \\ \cline{1-4}
-		\inst{IDENTITY}                   & insufficient gas                               & \toOob                    & $\nothing$                                                       \\ \cline{1-4}
-		\multirow{2}{*}{\inst{MODEXP}}    & \multirow{2}{*}{$\nothing$}                    &                           & insufficient gas                                                 \\
+		\instEcrecover{}                  & insufficient gas                               & \toOob                    & $\nothing$                                                       \\ \cline{1-4}
+		\instShaTwo{}                     & insufficient gas                               & \toOob                    & $\nothing$                                                       \\ \cline{1-4}
+		\instRipemd{}                     & insufficient gas                               & \toOob                    & $\nothing$                                                       \\ \cline{1-4}
+		\instIdentity{}                   & insufficient gas                               & \toOob                    & $\nothing$                                                       \\ \cline{1-4}
+		\multirow{2}{*}{\instModexp{}}    & \multirow{2}{*}{$\nothing$}                    &                           & insufficient gas                                                 \\
                                                   &                                                &                           & extracting $\ell_B,\ell_E,\ell_M,\ell_E'$                        \\ \cline{1-4}
-		\multirow{2}{*}{\inst{ECADD}}     & \multirow{2}{*}{insufficient gas}              & \multirow{2}{*}{\toOob}   & malformed data:                                                  \\
+		\multirow{2}{*}{\instEcadd{}}     & \multirow{2}{*}{insufficient gas}              & \multirow{2}{*}{\toOob}   & malformed data:                                                  \\
                                                   &                                                &                           & $x = \varnothing \vee y = \varnothing$                           \\ \cline{1-4}
-		\multirow{2}{*}{\inst{ECMUL}}     & \multirow{2}{*}{insufficient gas}              & \multirow{2}{*}{\toOob}   & malformed data:                                                  \\
+		\multirow{2}{*}{\instEcmul{}}     & \multirow{2}{*}{insufficient gas}              & \multirow{2}{*}{\toOob}   & malformed data:                                                  \\
                                                   &                                                &                           & $x = \varnothing$                                                \\ \cline{1-4}
-		\multirow{2}{*}{\inst{ECPAIRING}} & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data:                                                  \\
+		\multirow{2}{*}{\instEcpairing{}} & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data:                                                  \\
                                                   & $\vee~\cds\not\equiv0\mod192$                  &                           & $\exists j$ such that $a_j = \varnothing \vee b_j = \varnothing$ \\ \cline{1-4}
-		\multirow{2}{*}{\inst{BLAKE2f}}   & \multirow{2}{*}{$\cds\neq213$}                 & \multirow{2}{*}{\toOob}   & $r$ (gas cost) too high                                          \\
+		\multirow{2}{*}{\instBlake{}}     & \multirow{2}{*}{$\cds\neq213$}                 & \multirow{2}{*}{\toOob}   & $r$ (gas cost) too high                                          \\
                                                   &                                                &                           & $f$ is not a bit                                                 \\ \cline{1-4} \noalign{\vskip 0.5ex} \hline
-		\inst{POINT\_EVALUATION}          & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                    & \multirow{2}{*}{\text{\cite{EIP-4788}, Cancun}}  \\
+		\instPointEvaluation{}            & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                    & \multirow{2}{*}{\text{\cite{EIP-4788}, Cancun}}  \\
                                                   & $\vee~\cds \neq 192$                           &                           &                                                                   &                                                  \\ \hline \hline
-		\inst{BLS\_G1ADD}                 & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                    & \multirow{17}{*}{\text{\cite{EIP-2537}, Prague}} \\
+		\instBlsGOneAdd{}                 & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                    & \multirow{17}{*}{\text{\cite{EIP-2537}, Prague}} \\
                                                   & $\vee~\cds \neq 256$                           &                           &                                                                   &                                                  \\ \cline{1-4}
-		\inst{BLS\_G1MSM}                 & insufficient gas                               & \multirow{3}{*}{\toOob}   & malformed data                                                    &                                                  \\
+		\instBlsGOneMsm{}                 & insufficient gas                               & \multirow{3}{*}{\toOob}   & malformed data                                                    &                                                  \\
                                                   & $\vee~\cds = 0$                                &                           &                                                                   &                                                  \\
                                                   & $\vee~\cds \not \equiv 0 \mod 160$             &                           &                                                                   &                                                  \\ \cline{1-4}
-		\inst{BLS\_G2ADD}                 & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                    &                                                  \\
+		\instBlsGTwoAdd{}                 & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                    &                                                  \\
                                                   & $\vee~\cds \neq 512$                           &                           &                                                                   &                                                  \\ \cline{1-4}
-		\inst{BLS\_G2MSM}                 & insufficient gas                               & \multirow{3}{*}{\toOob}   & malformed data                                                    &                                                  \\
+		\instBlsGTwoMsm{}                 & insufficient gas                               & \multirow{3}{*}{\toOob}   & malformed data                                                    &                                                  \\
                                                   & $\vee~\cds = 0$                                &                           &                                                                   &                                                  \\
                                                   & $\vee~\cds \not \equiv 0 \mod 288$             &                           &                                                                   &                                                  \\ \cline{1-4}
-		\inst{BLS\_PAIRING\_CHECK}        & insufficient gas                               & \multirow{3}{*}{\toOob}   & malformed data                                                    &                                                  \\
+		\instBlsPairingCheck{}            & insufficient gas                               & \multirow{3}{*}{\toOob}   & malformed data                                                    &                                                  \\
                                                   & $\vee~\cds = 0$                                &                           &                                                                   &                                                  \\
                                                   & $\vee~\cds \not \equiv 0 \mod 384$             &                           &                                                                   &                                                  \\ \cline{1-4}
-		\inst{BLS\_MAP\_FP\_TO\_G1}       & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                    &                                                  \\
+		\instBlsMapFpToGOne{}             & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                    &                                                  \\
                                                   & $\vee~\cds \neq  64$                           &                           &                                                                   &                                                  \\ \cline{1-4}
-		\inst{BLS\_MAP\_FP2\_TO\_G2}      & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                    &                                                  \\
+		\instBlsMapFpTwoToGTwo{}          & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                    &                                                  \\
                                                   & $\vee~\cds \neq 128$                           &                           &                                                                   &                                                  \\ \hline
 	\end{tabular}
 	\label{hub: instruction handling: call: precompiles: table classifying failures known to the HUB vs. to RAM}
@@ -47,17 +47,17 @@ In particular we explain which precompiles may raise the $\scenPrcFailureKnownTo
 
 \noindent We now give full details. 
 \begin{description}
-	\item[\inst{ECRECOVER}:]
+	\item[\instEcrecover{}:]
 		failure is entirely detectable using \hubMod{} data; 
 		failure can only be due to insufficient gas;
 		gas cost is fixed;
 		the precompile may however return either $()$ if data is malformed or no public address is recoverable;
 		otherwise it returns $\textbf{o} \in \mathbb{B}_{32}$ a $32$ byte slice containing a $20$ byte address. 
-	\item[\inst{SHA2-256}, \inst{RIPEMD-160} and \inst{IDENTITY}:]
+	\item[\instShaTwo{}, \instRipemd{} and \instIdentity{}:]
 		failure is entirely detectable using \hubMod{} data; 
 		failure can only be due to insufficient gas;
 		computing the gas cost can be done entirely in terms of the underlying \inst{CALL}-type instruction's \CDS{} which is a stack argument (and is available in the scenario row by virtue of the constraints in section~(\ref{hub: instruction handling: call: finishing: cases: prc}));
-	\item[\inst{MODEXP}:]
+	\item[\instModexp{}:]
 		this is by far the most complex precompile from the point of view of the arithmetization of \inst{CALL}-type instructions in the \hubMod{} module;
 		this holds true on all levels: \hubMod{} general workflow, \oobMod{}, \expMod{}, \mmuMod{} and \textsc{ram} interaction;
 		failure can only be due to insufficient gas;
@@ -72,7 +72,7 @@ In particular we explain which precompiles may raise the $\scenPrcFailureKnownTo
 		one half of this computation (i.e. computing the $\lfloor \log_2(\cdots) \rfloor$ of the leading bytes of the exponent $\text{E}$) is done by the \expMod{} module;
 		return data is also a complex matter as it is \textbf{variable size};
 		indeed return data is a slice $\textbf{o} \in \mathbb{B}^*$ of length $\locModulus$;
-	\item[\inst{ECADD} and \inst{ECMUL}:]
+	\item[\instEcadd{} and \instEcmul{}:]
 		these can fail for several independent reasons, some known to the \hubMod{}, others known to the \mmuMod{}:
 		(\emph{a}) insufficient gas (which triggers the \scenPrcFailureKnownToHub{})
 		(\emph{b}) sufficient gas but malformed call data (which triggers the \scenPrcFailureKnownToRam{});
@@ -96,7 +96,7 @@ In particular we explain which precompiles may raise the $\scenPrcFailureKnownTo
 		\utt{00}\,
 		\utt{00} \cdots
 		\utt{01} \in \mathbb{B}_{32}$.
-	\item[\inst{BLAKE2f}:]
+	\item[\instBlake{}:]
 		this can fail for several independent reasons;
 		(\emph{a}) whenever $\CDS \neq 213$
 		(\emph{b}) insufficient gas
@@ -147,7 +147,7 @@ the failure of this condition is recorded in \scenPrcFailureKnownToRam{}.
 
 The next precompile was introduced in the \textsc{Cancun} hardfork, specifically with \cite{EIP-4788};
 \begin{description}
-	\item[\inst{POINT\_EVALUATION}:]
+	\item[\instPointEvaluation:]
 		can fail due to:
 		\locBlsPrecompileFailureReasonGas,
 		\locBlsPrecompileFailureReasonSize, with $\locImposedCallDataSizeForBlsPrecompiles \equiv 192$,
@@ -155,40 +155,40 @@ The next precompile was introduced in the \textsc{Cancun} hardfork, specifically
 \end{description}
 The next precompiles were introduced in the \textsc{Prague} hardfork, specifically with \cite{EIP-2537}:
 \begin{description}
-	\item[\inst{BLS\_G1ADD}:]
+	\item[\instBlsGOneAdd{}:]
 		can fail due to:
 		\locBlsPrecompileFailureReasonGas,
 		\locBlsPrecompileFailureReasonSize, with $\locImposedCallDataSizeForBlsPrecompiles \equiv 256$,
 		\locBlsPrecompileFailureReasonData;
-	\item[\inst{BLS\_G2ADD}:]
+	\item[\instBlsGTwoAdd{}:]
 		can fail due to:
 		\locBlsPrecompileFailureReasonGas,
 		\locBlsPrecompileFailureReasonSize, with $\locImposedCallDataSizeForBlsPrecompiles \equiv 512$,
 		\locBlsPrecompileFailureReasonData;
-	\item[\inst{BLS\_G1MSM}:]
+	\item[\instBlsGOneMsm{}:]
 		can fail due to:
 		\locBlsPrecompileFailureReasonGas,
 		\locBlsPrecompileFailureReasonEmpty,
 		\locBlsPrecompileFailureReasonMod, with $\locCallDataSizeModulusForBlsPrecompiles \equiv 160$,
 		\locBlsPrecompileFailureReasonData;
-	\item[\inst{BLS\_G2MSM}:]
+	\item[\instBlsGTwoMsm{}:]
 		can fail due to:
 		\locBlsPrecompileFailureReasonGas,
 		\locBlsPrecompileFailureReasonEmpty,
 		\locBlsPrecompileFailureReasonMod, with $\locCallDataSizeModulusForBlsPrecompiles \equiv 288$,
 		\locBlsPrecompileFailureReasonData;
-	\item[\inst{BLS\_PAIRING\_CHECK}:]
+	\item[\instBlsPairingCheck{}:]
 		can fail due to:
 		\locBlsPrecompileFailureReasonGas,
 		\locBlsPrecompileFailureReasonEmpty,
 		\locBlsPrecompileFailureReasonMod, with $\locCallDataSizeModulusForBlsPrecompiles \equiv 384$,
 		\locBlsPrecompileFailureReasonData;
-	\item[\inst{BLS\_MAP\_FP\_TO\_G1}:]
+	\item[\instBlsMapFpToGOne{}:]
 		can fail due to:
 		\locBlsPrecompileFailureReasonGas,
 		\locBlsPrecompileFailureReasonSize, with $\locImposedCallDataSizeForBlsPrecompiles \equiv 64$,
 		\locBlsPrecompileFailureReasonData;
-	\item[\inst{BLS\_MAP\_FP2\_TO\_G2}:]
+	\item[\instBlsMapFpTwoToGTwo{}:]
 		can fail due to:
 		\locBlsPrecompileFailureReasonGas,
 		\locBlsPrecompileFailureReasonSize, with $\locImposedCallDataSizeForBlsPrecompiles \equiv 128$,

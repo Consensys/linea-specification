@@ -21,7 +21,7 @@ A lot of them are the same. We thus introduce some high level shorthands first
 \]
 We now tackle the case of interest: 
 \begin{description}
-	\item[\underline{\underline{Shorthands for \inst{ECRECOVER}, \inst{SHA2-256} and \inst{RIPEMD}:}}]
+	\item[\underline{\underline{Shorthands for \instEcrecover{}, \instShaTwo{} and \instRipemd{}:}}]
 		for
 		\[
 			\loc{xxx} \in \left\{ \loc{ecrecover}, ~ \loc{sha2}, ~ \loc{ripemd} \right\}
@@ -39,9 +39,9 @@ We now tackle the case of interest:
 		\]
 \end{description}
 \saNote{}
-There are actually two fundamentally distinct ``success'' scenarios for \inst{ECRECOVER}.
-Recall that ``success'' (i.e. $\scenPrcSuccess \equiv 1$) for \inst{ECRECOVER} simply means that the precompile is provided with sufficient gas.
-A successfull call to the \inst{ECRECOVER} precompile may yet lead to two very distinct scenarios:
+There are actually two fundamentally distinct ``success'' scenarios for \instEcrecover{}.
+Recall that ``success'' (i.e. $\scenPrcSuccess \equiv 1$) for \instEcrecover{} simply means that the precompile is provided with sufficient gas.
+A successfull call to the \instEcrecover{} precompile may yet lead to two very distinct scenarios:
 \begin{itemize}
 	\item $\locMmuRecoverSuccess \equiv 0$ i.e. \textbf{address recovery fails}    and $\textbf{o} = ()$;
 	\item $\locMmuRecoverSuccess \equiv 1$ i.e. \textbf{address recovery succeeds} and $\textbf{o} \in \mathbb{B}_{32}$;
@@ -53,7 +53,7 @@ Indeed, the output of the precompile  is known to be empty and we \emph{could} s
 We have chosen \textbf{not} to go for this optimization as it would complexify the computation of \nonStackRows{}. 
 The above definitions for flag sums and \col{nsr}'s are therefore somewhat wasteful.
 \begin{description}
-	\item[\underline{\underline{Shorthands for \inst{IDENTITY}:}}] the \inst{IDENTITY} precompile requires special care:
+	\item[\underline{\underline{Shorthands for \instIdentity{}:}}] the \instIdentity{} precompile requires special care:
 		\[
 			\left\{ \begin{array}{lcl}
 				\locFlagSumIdentityFKTH    & \define & \locStandardFailureFlagSum \\
@@ -72,8 +72,8 @@ The above definitions for flag sums and \col{nsr}'s are therefore somewhat waste
 		\]
 \end{description}
 \saNote{}
-Several precompiles (elliptic curve precompiles \inst{ECRECOVER}, \inst{ECADD}, \inst{ECMUL}, \inst{ECPAIRING}
-and some hashing precompiles \inst{SHA2-256} and \inst{RIPEMD-160})
+Several precompiles (elliptic curve precompiles \instEcrecover{}, \instEcadd{}, \instEcmul{}, \instEcpairing{}
+and some hashing precompiles \instShaTwo{} and \instRipemd{})
 are dealt with as follows:
 \begin{enumerate}
 	\item copying call data to the relevant exogenous data module;
@@ -81,7 +81,7 @@ are dealt with as follows:
 	\item (potentially) transferring parts of that return data to the current execution context's \textsc{ram};
 \end{enumerate}
 The above chain of events requires up to \textbf{three} accesses to \textsc{ram} and as such \textbf{three} individual miscellaneous rows.
-The \inst{IDENTITY} precompile, on the other hand, happens in \textbf{two stages}:
+The \instIdentity{} precompile, on the other hand, happens in \textbf{two stages}:
 \begin{enumerate}
 	\item copying call data to a dedicated execution context's \textsc{ram} where it will serve as source of return data;
 	\item (potentially) transferring parts of that call data to the current execution context's \textsc{ram};
@@ -89,7 +89,7 @@ The \inst{IDENTITY} precompile, on the other hand, happens in \textbf{two stages
 In order to achieve the above \textbf{two} miscellaneous-rows are sufficient.
 The above explains the special value attributed to \locFlagSumIdentitySuccess{} compared to other similar flag sums.
 \begin{description}
-	\item[\underline{\underline{Shorthands for \inst{MODEXP}:}}] the \inst{MODEXP} precompile requires special care:
+	\item[\underline{\underline{Shorthands for \instModexp{}:}}] the \instModexp{} precompile requires special care:
 		\[
 			\left\{ \begin{array}{lcl}
 				\locFlagSumModexpFKTH & \equiv  & \leftUndefined \\
@@ -133,7 +133,7 @@ The above explains the special value attributed to \locFlagSumIdentitySuccess{} 
 		\locBbs{},
 		\locEbs{}
 		and \locMbs{}.)
-	\item[\underline{\underline{Shorthands for \inst{ECADD}, \inst{ECMUL} and \inst{ECPAIRING}:}}]
+	\item[\underline{\underline{Shorthands for \instEcadd{}, \instEcmul{} and \instEcpairing{}:}}]
 		for
 		\[
 			\loc{xxx} \in \left\{ \loc{ecadd}, ~ \loc{ecmul}, ~ \loc{ecpairing} \right\}
@@ -149,7 +149,7 @@ The above explains the special value attributed to \locFlagSumIdentitySuccess{} 
 				\locNsrXxxSuccess     & \define & \locStandardSuccessNsr     \\
 			\end{array} \right.
 		\]
-	\item[\underline{\underline{Shorthands for \inst{BLAKE2f}:}}] the \inst{BLAKE2f} precompile requires special care:
+	\item[\underline{\underline{Shorthands for \instBlake{}:}}] the \instBlake{} precompile requires special care:
 		\[
 			\left\{ \begin{array}{lcl}
 				\locFlagSumBlakeFKTH        & \define & \locStandardFailureFlagSum \\

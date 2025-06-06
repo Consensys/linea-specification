@@ -13,12 +13,12 @@
 		\end{array} \right.
 		}
 \end{center}
-We are thus assuming that the present row is the first of the second phase of dealing with one of the following precompiles: \inst{ECADD}, \inst{ECMUL} or \inst{ECPAIRING}.
+We are thus assuming that the present row is the first of the second phase of dealing with one of the following precompiles: \instEcadd{}, \instEcmul{} or \instEcpairing{}.
 We are also assuming that $\scenPrcSuccess \equiv 1$.
-We remind the reader that success of any of the \inst{ECADD}, \inst{ECMUL}, \inst{ECPAIRING} precompiles means that the precompile was
+We remind the reader that success of any of the \instEcadd{}, \instEcmul{}, \instEcpairing{} precompiles means that the precompile was
 (\emph{a}) provided with sufficient gas
-(\emph{b}) in the case of \inst{ECPAIRING} was provided with call data satisfying $\cds \equiv 0 \mod 192$
-(\emph{c}) the call data is well formed in the sense that it represents point(s) on the right curve (or sugroup of a curve in the case of \inst{ECPAIRING}.)
+(\emph{b}) in the case of \instEcpairing{} was provided with call data satisfying $\cds \equiv 0 \mod 192$
+(\emph{c}) the call data is well formed in the sense that it represents point(s) on the right curve (or sugroup of a curve in the case of \instEcpairing{}.)
 \begin{description}
 	\item[\underline{\underline{Shorthands:}}]
 		to streamline the upcoming constraints we introduce some shorthands
@@ -70,12 +70,12 @@ We remind the reader that success of any of the \inst{ECADD}, \inst{ECMUL}, \ins
 \begin{center}
 	\begin{tabular}{|ll|}
 		\hline
-		\underline{\inst{ECADD} case:}     & the precompile was provided with nonempty call data \\
-		\underline{\inst{ECMUL} case:}     & the precompile was provided with nonempty call data \\
-		\underline{\inst{ECPAIRING} case:} & in \textbf{all} cases                               \\ \hline
+		\underline{\instEcadd{} case:}     & the precompile was provided with nonempty call data \\
+		\underline{\instEcmul{} case:}     & the precompile was provided with nonempty call data \\
+		\underline{\instEcpairing{} case:} & in \textbf{all} cases                               \\ \hline
 	\end{tabular}
 \end{center}
-We remind the reader that calling \inst{ECPAIRING} with empty call data is a success case for that precompile.
+We remind the reader that calling \instEcpairing{} with empty call data is a success case for that precompile.
 In particular return data is $\textbf{o} =
 \utt{00}\,
 \utt{00}\, \cdots \,
@@ -222,22 +222,22 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 				\locMmuSize{},
 				\locMmuExoSum{} and
 				\locMmuPhase{} while we \textbf{do} in order to define the \locTriggerMmu{} shorthand.
-				This is due to the fact that the above constraints won't trigger for \inst{ECADD} / \inst{ECMUL} unless $\locOobResultExtractCallData \equiv 1$ by virtue of the precondition
+				This is due to the fact that the above constraints won't trigger for \instEcadd{} / \instEcmul{} unless $\locOobResultExtractCallData \equiv 1$ by virtue of the precondition
 				``\If $\miscMmuFlag_{i + \prcStandardSuccessSecondMiscRowOffset} = 1$.''
 
 				\saNote{} The shorthands we provide are very granular and more ``precise'' than what is actually needed.
 				For instance we could simply have defined ``$\locMmuSrcId \define 1 + \hubStamp_{i}$'' rather than do a case analysis.
-				Indeed the case that our case analysis sets to $0$ (i.e. \inst{ECPAIRING}'s with empty call data) uses a \mmuMod{}-instruction, \mmuInstMstore{}, that simply ``ignores'' the \miscMmuSrcId{} altogether. Similar remarks apply to other shorthands.
+				Indeed the case that our case analysis sets to $0$ (i.e. \instEcpairing{}'s with empty call data) uses a \mmuMod{}-instruction, \mmuInstMstore{}, that simply ``ignores'' the \miscMmuSrcId{} altogether. Similar remarks apply to other shorthands.
 
-				\saNote{} Recall that the return data \textbf{o} of a successful call to the \inst{ECADD}, \inst{ECMUL}, \inst{ECPAIRING} precompile which successfully recovers an address is a $\redm{32}$ byte string $\textbf{o} \in \mathbb{B}_{32}$ is a string of composed of 12 (leading) zero bytes followed by 20 bytes making up the recovered Ethereum public address.
+				\saNote{} Recall that the return data \textbf{o} of a successful call to the \instEcadd{}, \instEcmul{}, \instEcpairing{} precompile which successfully recovers an address is a $\redm{32}$ byte string $\textbf{o} \in \mathbb{B}_{32}$ is a string of composed of 12 (leading) zero bytes followed by 20 bytes making up the recovered Ethereum public address.
 
 				\saNote{} We remind the reader that \textsc{ram} segments (associated to a nonzero context number) are initialized as \textbf{empty}.
 				Since the case of \textbf{empty call data} yields the zero string in
 				$\mathbb{B}_{64}$ and
 				$\mathbb{B}_{32}$
 				for
-				\inst{ECADD} and
-				\inst{ECMUL} respectively,
+				\instEcadd{} and
+				\instEcmul{} respectively,
 				there is no reason for us to set the result in either of those cases.
 			\end{description}
 		\item[\underline{\underline{Miscellaneous-row $n^°(i + \prcStandardSuccessThirdMiscRowOffset)$:}}]
@@ -262,7 +262,7 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 						\end{array} \right.
 					\]
 			\end{description}
-			\saNote{} In other words the ``result transfer'' step of a call to the \inst{ECADD}, \inst{ECMUL}, \inst{ECPAIRING} is only required if the \inst{CALL} is provided with nonzero \RAC{}.
+			\saNote{} In other words the ``result transfer'' step of a call to the \instEcadd{}, \instEcmul{}, \instEcpairing{} is only required if the \inst{CALL} is provided with nonzero \RAC{}.
 			\begin{description}
 				\item[\underline{Setting the \mmuMod{} instruction for partial return data copy:}]
 					\If $\miscMmuFlag_{i + \prcStandardSuccessThirdMiscRowOffset} = 1$ \Then we impose
@@ -305,7 +305,7 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 						\end{array} \right]
 					\]
 					\saNote{}
-					The above holds for all successful calls to of a successful call to either of \inst{ECADD}, \inst{ECMUL}, \inst{ECPAIRING}.
+					The above holds for all successful calls to of a successful call to either of \instEcadd{}, \instEcmul{}, \instEcpairing{}.
 					That is: as long as the precompile is successful \textbf{o} is a byte string of size 
 					precompile which successfully recovers an address is a $\redm{32}$ byte string $\textbf{o} \in \mathbb{B}_{32}$ is a string of composed of 12 (leading) zero bytes followed by 20 bytes making up the recovered Ethereum public address.
 			\end{description}

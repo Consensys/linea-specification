@@ -1,4 +1,4 @@
-In this section we describe the desired behaviour of \inst{ECADD}, \inst{ECMUL} and \inst{ECPAIRING} which \textbf{don't fail in the \hubMod{} but are provided with empty call data}.
+In this section we describe the desired behaviour of \instEcadd{}, \instEcmul{} and \instEcpairing{} which \textbf{don't fail in the \hubMod{} but are provided with empty call data}.
 In the \hubMod{} this is measured \emph{exactly} by
 \[
 	\locOobResultEmptyCallData \equiv 1
@@ -7,14 +7,15 @@ see
 section~(\ref{oob: precompiles: common precompiles: generalities}) and
 section~(\ref{oob: precompiles: common precompiles: one row precompiles})
 in the \oobMod{} module documentation.
-Recall that in case of a call with \textbf{zero call data size} the callee's call data is the ``infinite\footnote{Or nearly so: it remains addressable with offsets and sizes that are in the range $\mathbb{N}_{256}$.} slice of 0 bytes'' $I_\textbf{d} \equiv [\utt{00},
-\utt{00},
-\utt{00}, \dots]$;
+Recall that in case of a call with \textbf{zero call data size} the callee's call data is the
+``infinite\footnote{Or nearly so: it remains addressable with offsets and sizes that are in the range $\mathbb{N}_{256}$.}
+slice of 0 bytes''
+$I_\textbf{d} \equiv [\utt{00}, \utt{00}, \utt{00}, \dots]$;
 
 We claim that such calls are necessarily successful (and thus don't fail in \textsc{ram}.)
 Indeed
 \begin{description}
-	\item[The \inst{ECADD} case:] 
+	\item[The \instEcadd{} case:] 
 		the precompile extracts from $I_\textbf{d}$ two inputs
 		\begin{enumerate}
 		        \item $
@@ -34,7 +35,7 @@ Indeed
 		\utt{00} \;
 		\utt{00} \; \cdots \;
 		\utt{00} \in \mathbb{B}_{\smallCurvePointSize}$;
-	\item[The \inst{ECMUL} case:] 
+	\item[The \instEcmul{} case:] 
 		the precompile extracts from $I_\textbf{d}$ two inputs
 		\begin{enumerate}
 		        \item $
@@ -55,7 +56,7 @@ Indeed
 		\utt{00} \;
 		\utt{00} \; \cdots \;
 		\utt{00} \in \mathbb{B}_{\smallCurvePointSize}$;
-	\item[The \inst{ECPAIRING} case:]
+	\item[The \instEcpairing{} case:]
 		empty call data leads to the ``empty pairing'' which, in accordance with \evm{} specification and standard mathematical practice, evaluates to ``\texttt{true}'';
 		as such the return data is
 		$
@@ -64,13 +65,13 @@ Indeed
 		\utt{01} \in \mathbb{B}_{\evmWordSize}$;
 \end{description}
 \saNote{}
-For both \inst{ECADD} and \inst{ECMUL} return data in the empty call data case is 
+For both \instEcadd{} and \instEcmul{} return data in the empty call data case is 
 $\utt{00} \;
 \utt{00} \; \cdots \;
 \utt{00} \in \mathbb{B}_{\smallCurvePointSize}$.
 Since \textsc{ram} is initialized as empty in the \mmuMod{} module there is no requirement for us to transfer this return data to its dedicated execution context.
 That execution context already contains it by default.
-For \inst{ECPAIRING} things are different.
+For \instEcpairing{} things are different.
 Since return data is nontrivial
 $\utt{00} \;
 \utt{00} \; \cdots \;
@@ -78,4 +79,7 @@ $\utt{00} \;
 and in particular \textbf{nonzero} it must be transferred to its dedicated \textsc{ram} context.
 The arithmetization sets this value ``by hand'' i.e. without interacting with the \ecDataMod{} module.
 This the \zkEvm{} does through a dedicated \mmuInstMstore{} instruction, see section~(\ref{hub: instruction handling: call: precompiles: ecadd, ecmul, ecpairing and bls: success}).
+
+\saNote{}
+Recall that ``\inst{BLS}'' precompiles, i.e.
 
