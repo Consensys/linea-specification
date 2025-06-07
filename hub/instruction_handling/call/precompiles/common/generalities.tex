@@ -8,28 +8,42 @@
 		}
 \end{center}
 We are thus assuming that the present row is the first of the second phase of dealing with the 
-\inst{ECRECOVER},
-\inst{SHA2-256},
-\inst{RIPEMD-160},
-\inst{IDENTITY},
-\inst{ECADD},
-\inst{ECMUL} or
-\inst{ECPAIRING}
-precompiles.
-We know that the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcCommonMiscRowOffset)$.
+\instEcrecover{},
+\instShaTwo{},
+\instRipemd{},
+\instIdentity{},
+\instEcadd{},
+\instEcmul{} or
+\instEcpairing{}
+precompiles or with the ``\blsMod{}'' precompiles i.e.
+\instPointEvaluation{}
+\instBlsGOneAdd{}
+\instBlsGOneMsm{}
+\instBlsGTwoAdd{}
+\instBlsGTwoMsm{}
+\instBlsPairingCheck{}
+\instBlsMapFpToGOne{} or
+\instBlsMapFpTwoToGTwo{}
+As previously remarked,
+see note~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr II: the prc scenario row is followed by a misc row}),
+the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcCommonMiscRowOffset)$.
 \begin{description}
-	\item[\underline{Miscellaneous row $n^°(i + \prcCommonMiscRowOffset)$:}] we impose
+	\item[\underline{\underline{Miscellaneous row $n^°(i + \prcCommonMiscRowOffset)$:}}]
+		we impose
 		\begin{description}
 			\item[\underline{Setting lookup flags:}]
 				we impose that
 				\[
-					\weightedMiscFlagSum
-					{i}{\prcCommonMiscRowOffset}
-					=
-					\left[ \begin{array}{clcl}
-						+ & \miscMmuWeight & \cdot & \locOobResultExtractCallData \\
-						+ & \miscOobWeight \\
-					\end{array} \right]
+					\left\{ \begin{array}{lcl}
+						\miscOobFlag _{i + \prcCommonMiscRowOffset} & = & 1 \\
+						\weightedMiscFlagSum
+						{i}{\prcCommonMiscRowOffset}
+                                                & = &
+						\left[ \begin{array}{clcl}
+							+ & \miscMmuWeight & \cdot & \locOobResultExtractCallData \\
+							+ & \miscOobWeight \\
+						\end{array} \right] \\
+					\end{array} \right.
 				\]
 				in other words
 				\[
@@ -37,36 +51,51 @@ We know that the current scenario-row $i$ will be followed by a miscellaneous-ro
 						\miscExpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       & (\trash) \\
 						\miscMmuFlag _{i + \prcCommonMiscRowOffset} & = & \locOobResultExtractCallData & (\trash) \\
 						\miscMxpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       & (\trash) \\
-						\miscOobFlag _{i + \prcCommonMiscRowOffset} & = & \one                         & (\trash) \\
+						\miscOobFlag _{i + \prcCommonMiscRowOffset} & = & \one                         &          \\
 						\miscStpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       & (\trash) \\
 					\end{array} \right.
 				\]
 				\saNote{}
 				The shorthand \locOobResultExtractCallData{} will be defined shortly.
 				It is gleaned from one of the outputs of the call to the \oobMod{} module (which is systematically triggered given the above.)
+
+				\saNote{}
+				We explicitly constrain $\miscOobFlag _{i + \prcCommonMiscRowOffset} = \one$
+				so as to guarantee the expected \oobMod{} module call.
+				Binarity of the underlying expression of $\locOobResultExtractCallData$
+				is guaranteed provided that the requisite \oobMod{} module call was performed.
 			\item[\underline{Setting \oobMod{} instruction:}] 
 				we populate the \oobMod{} columns:
 				\[
 					\setOobInstructionCommon {
-						anchorRow          = i,
-						relOffset          = \prcCommonMiscRowOffset,
-						oobInstruction     = \locOobInst,
-						calleeGas          = \locCalleeGas,
-						callDataSize       = \locPrcCds,
-						returnAtCapacity   = \locPrcRac,
+						anchorRow        = i                       ,
+						relOffset        = \prcCommonMiscRowOffset ,
+						oobInstruction   = \locOobInst             ,
+						calleeGas        = \locCalleeGas           ,
+						callDataSize     = \locPrcCds              ,
+						returnAtCapacity = \locPrcRac              ,
 					}
 				\]
 				where
 				\[
 					\locOobInst \define
 					\left[ \begin{array}{crcl}
-						+ & \oobInstEcrecover & \cdot & \scenEcrecover     _{i} \\ 
-						+ & \oobInstShaTwo    & \cdot & \scenShaTwo        _{i} \\ 
-						+ & \oobInstRipemd    & \cdot & \scenRipemd        _{i} \\ 
-						+ & \oobInstIdentity  & \cdot & \scenIdentity      _{i} \\ 
-						+ & \oobInstEcadd     & \cdot & \scenEcadd         _{i} \\ 
-						+ & \oobInstEcmul     & \cdot & \scenEcmul         _{i} \\ 
-						+ & \oobInstEcpairing & \cdot & \scenEcpairing     _{i} \\ 
+						+ & \oobInstEcrecover         & \cdot & \scenEcrecover         _{i} \\
+						+ & \oobInstShaTwo            & \cdot & \scenShaTwo            _{i} \\
+						+ & \oobInstRipemd            & \cdot & \scenRipemd            _{i} \\
+						+ & \oobInstIdentity          & \cdot & \scenIdentity          _{i} \\
+						+ & \oobInstEcadd             & \cdot & \scenEcadd             _{i} \\
+						+ & \oobInstEcmul             & \cdot & \scenEcmul             _{i} \\
+						+ & \oobInstEcpairing         & \cdot & \scenEcpairing         _{i} \\
+						+ & \oobInstPointEvaluation   & \cdot & \scenPointEvaluation   _{i} \\
+						+ & \oobInstBlsGOneAdd        & \cdot & \scenBlsGOneAdd        _{i} \\
+						+ & \oobInstBlsGOneMsm        & \cdot & \scenBlsGOneMsm        _{i} \\
+						+ & \oobInstBlsGTwoAdd        & \cdot & \scenBlsGTwoAdd        _{i} \\
+						+ & \oobInstBlsGTwoMsm        & \cdot & \scenBlsGTwoMsm        _{i} \\
+						+ & \oobInstBlsPairingCheck   & \cdot & \scenBlsPairingCheck   _{i} \\
+						+ & \oobInstBlsMapFpToGOne    & \cdot & \scenBlsMapFpToGOne    _{i} \\
+						+ & \oobInstBlsMapFpTwoToGTwo & \cdot & \scenBlsMapFpTwoToGTwo _{i} \\
+
 					\end{array} \right]
 				\]
 			\item[\underline{Defining \oobMod{} shorthands:}] 
@@ -83,10 +112,11 @@ We know that the current scenario-row $i$ will be followed by a miscellaneous-ro
 						\locOobResultNonzeroRac      & \define & \miscOobDataCol{8}_{i + \prcCommonMiscRowOffset} \\
 					\end{array} \right.
 				\]
-				\saNote{} \label{hub: instruction handling: call: precompiles: common: generalities}
+				\saNote{}
 				We refer the reader to the relevant section in the \oobMod{} module, in particular section~(\ref{oob: populating: common precompiles}).
 
-				\saNote{} We have, by construction and by the computation in the \oobMod{} module, the following relations:
+				\saNote{}
+				We have, by construction and by the computation in the \oobMod{} module, the following relations:
 				\[
 					\left\{ \begin{array}{lclr}
 						\locOobResultHubSuccess      & \equiv & \text{binary} & \quad (\trash)              \\
@@ -95,6 +125,13 @@ We know that the current scenario-row $i$ will be followed by a miscellaneous-ro
 						\multicolumn{3}{l}{\locOobResultExtractCallData + \locOobResultEmptyCallData = \locOobResultHubSuccess} & (\trash) \\
 					\end{array} \right.
 				\]
+
+				\saNote{} \label{hub: instruction handling: call: precompiles: common: generalities: sanity checks for BLS precompiles}
+				\If $\scenPrecompileCommonBls _{i} = 1$ \Then one expects
+				\begin{enumerate}
+					\item $\locOobResultExtractCallData = \locOobResultHubSuccess$ \quad (\sanityCheck)
+					\item $\locOobResultEmptyCallData   = 0$ \quad (\sanityCheck)
+				\end{enumerate}
 			\item[\underline{Setting \mmuMod{} instruction:}]
 				\If $\miscMmuFlag_{i + \prcCommonMiscRowOffset} = 1$ \Then we impose that
 				\begin{enumerate}
@@ -132,38 +169,48 @@ We know that the current scenario-row $i$ will be followed by a miscellaneous-ro
 				\[
 					\locMmuRefSize \define
 					\left[ \begin{array}{crcl}
-						+ & \redm{128} & \cdot & \scenEcrecover _{i}  \\
-						+ & \locPrcCds & \cdot & \scenShaTwo    _{i}  \\
-						+ & \locPrcCds & \cdot & \scenRipemd    _{i}  \\
-						+ & \redm{128} & \cdot & \scenEcadd     _{i}  \\
-						+ & \redm{96}  & \cdot & \scenEcmul     _{i}  \\
-						+ & \locPrcCds & \cdot & \scenEcpairing _{i}  \\
+						+ & \redm{128} & \cdot & \scenEcrecover           _{i} \\
+						+ & \locPrcCds & \cdot & \scenShaTwo              _{i} \\
+						+ & \locPrcCds & \cdot & \scenRipemd              _{i} \\
+						+ & \redm{128} & \cdot & \scenEcadd               _{i} \\
+						+ & \redm{96}  & \cdot & \scenEcmul               _{i} \\
+						+ & \locPrcCds & \cdot & \scenEcpairing           _{i} \\
+						+ & \locPrcCds & \cdot & \scenPrecompileCommonBls _{i} \\
 					\end{array} \right]
 				\]
 				and
 				\[
 					\locMmuExoSum \define
 					\left[ \begin{array}{crcl}
-						+ & \exoWeightEcdata & \cdot & \scenEcrecover _{i}  \\
-						+ & \exoWeightRipSha & \cdot & \scenShaTwo    _{i}  \\
-						+ & \exoWeightRipSha & \cdot & \scenRipemd    _{i}  \\
-						% + & \gZero           & \cdot & \scenIdentity  _{i}  \\
-						+ & \exoWeightEcdata & \cdot & \scenEcadd     _{i}  \\
-						+ & \exoWeightEcdata & \cdot & \scenEcmul     _{i}  \\
-						+ & \exoWeightEcdata & \cdot & \scenEcpairing _{i}  \\
+						+ & \exoWeightEcdata  & \cdot & \scenEcrecover           _{i} \\
+						+ & \exoWeightRipSha  & \cdot & \scenShaTwo              _{i} \\
+						+ & \exoWeightRipSha  & \cdot & \scenRipemd              _{i} \\
+						% + & \gZero            & \cdot & \scenIdentity            _{i} \\
+						+ & \exoWeightEcdata  & \cdot & \scenEcadd               _{i} \\
+						+ & \exoWeightEcdata  & \cdot & \scenEcmul               _{i} \\
+						+ & \exoWeightEcdata  & \cdot & \scenEcpairing           _{i} \\
+						+ & \exoWeightBlsdata & \cdot & \scenPrecompileCommonBls _{i} \\
 					\end{array} \right]
 				\]
 				and
 				\[
 					\locMmuPhase \define
 					\left[ \begin{array}{crcl}
-						+ & \phaseEcrecoverData    & \cdot & \scenEcrecover     _{i}  \\
-						+ & \phaseShaTwoData       & \cdot & \scenShaTwo        _{i}  \\
-						+ & \phaseRipemdData       & \cdot & \scenRipemd        _{i}  \\
-						% + & \gZero                 & \cdot & \scenIdentity      _{i}  \\
-						+ & \phaseEcaddData        & \cdot & \scenEcadd         _{i}  \\
-						+ & \phaseEcmulData        & \cdot & \scenEcmul         _{i}  \\
-						+ & \phaseEcpairingData    & \cdot & \scenEcpairing     _{i}  \\
+						+ & \phaseEcrecoverData         & \cdot & \scenEcrecover         _{i} \\
+						+ & \phaseShaTwoData            & \cdot & \scenShaTwo            _{i} \\
+						+ & \phaseRipemdData            & \cdot & \scenRipemd            _{i} \\
+						% + & \gZero                      & \cdot & \scenIdentity          _{i} \\
+						+ & \phaseEcaddData             & \cdot & \scenEcadd             _{i} \\
+						+ & \phaseEcmulData             & \cdot & \scenEcmul             _{i} \\
+						+ & \phaseEcpairingData         & \cdot & \scenEcpairing         _{i} \\
+						+ & \phasePointEvaluationData   & \cdot & \scenPointEvaluation   _{i} \\
+						+ & \phaseBlsGOneAddData        & \cdot & \scenBlsGOneAdd        _{i} \\
+						+ & \phaseBlsGOneMsmData        & \cdot & \scenBlsGOneMsm        _{i} \\
+						+ & \phaseBlsGTwoAddData        & \cdot & \scenBlsGTwoAdd        _{i} \\
+						+ & \phaseBlsGTwoMsmData        & \cdot & \scenBlsGTwoMsm        _{i} \\
+						+ & \phaseBlsPairingCheckData   & \cdot & \scenBlsPairingCheck   _{i} \\
+						+ & \phaseBlsMapFpToGOneData    & \cdot & \scenBlsMapFpToGOne    _{i} \\
+						+ & \phaseBlsMapFpTwoToGTwoData & \cdot & \scenBlsMapFpTwoToGTwo _{i} \\
 					\end{array} \right]
 				\]
 				\saNote{}
@@ -172,7 +219,7 @@ We know that the current scenario-row $i$ will be followed by a miscellaneous-ro
 			\item[\underline{Some shorthands for elliptic curve precompiles:}]
 				we will use the following shorthands
 				\begin{description}
-					\item[\underline{\inst{ECRECOVER} specific:}]
+					\item[\underline{\instEcrecover{} specific:}]
 						we set
 						\[
 							\left\{ \begin{array}{lcl}
@@ -184,14 +231,14 @@ We know that the current scenario-row $i$ will be followed by a miscellaneous-ro
 								\locAddressRecoverySuccess & \define & \locOobResultExtractCallData \cdot \miscMmuSuccessBit_{i + \prcCommonMiscRowOffset} \\
 							\end{array} \right.
 						\]
-						\saNote{} These bits will be used in the processing of \inst{ECRECOVER}.
+						\saNote{} These bits will be used in the processing of \instEcrecover{}.
 						In that context (and given the precompile succedes)
 						\begin{itemize}
 							\item $\locAddressRecoveryFailure \equiv 1$ precisely when return data is empty ($\textbf{o} = ()$)
 							\item $\locAddressRecoverySuccess \equiv 1$ precisely when recovery is successful and return data is nonempty ($\textbf{o} \in \mathbb{B}_{32}$.)
 						\end{itemize}
 
-						\saNote{} We have, by construction, and given that the precompile at hand is \inst{ECRECOVER}, the following relations:
+						\saNote{} We have, by construction, and given that the precompile at hand is \instEcrecover{}, the following relations:
 						\[
 							\left\{ \begin{array}{lclr}
 								\locAddressRecoveryFailure   & \equiv & \text{binary} & \quad (\trash) \\
@@ -202,7 +249,8 @@ We know that the current scenario-row $i$ will be followed by a miscellaneous-ro
 
 						\saNote{} We finish by reminding that from the point of view of the \hubMod{} the bit $\miscMmuSuccessBit_{i + \prcCommonMiscRowOffset}$ is a \textbf{prediction}.
 						This prediction will be borne out in the \ecDataMod{} module.
-					\item[\underline{\inst{ECADD}, \inst{ECMUL} and \inst{ECPAIRING} specific:}]  we set
+					\item[\underline{\instEcadd{}, \instEcmul{} and \instEcpairing{} as well as \inst{BLS}-precompile specific:}]
+						we set
 						\[
 							\left\{ \begin{array}{lcl}
 								\locMalFormedData  & \define & \locOobResultExtractCallData \cdot (1 - \miscMmuSuccessBit_{i + \prcCommonMiscRowOffset}) \\
@@ -213,30 +261,24 @@ We know that the current scenario-row $i$ will be followed by a miscellaneous-ro
 								\end{array} \right] \\
 							\end{array} \right.
 						\]
-						\saNote{} These bits will be used in the processing of \inst{ECADD}, \inst{ECMUL} and \inst{ECPAIRING}.
-						These precompiles have the property that \textbf{empty call data} is acceptable and produces the following outputs:
+						\saNote{}
+						These bits will be used in the processing of \instEcadd{}, \instEcmul{} and \instEcpairing{}
+						as well as the \inst{BLS}-precompiles (i.e. the precompiles whose flags go into the \scenPrecompileCommonBls{} shorthand.)
+
+						\saNote{}
+						The elliptic curve precompiles
+						\instEcadd{}, \instEcmul{} and \instEcpairing{}
+						have the property that \textbf{empty call data} is acceptable and produces the following outputs:
 						\begin{center}
-						\begin{tabular}{|ll|}
-							\hline
-							\underline{\inst{ECADD} case:}
-							& $\textbf{o} =
-							\utt{00}\,
-							\utt{00}\, \cdots \,
-							\utt{00} \in \mathbb{B}_{64}$ \\
-							& representing the point at infinity; \\
-							\underline{\inst{ECMUL} case:}
-							& $\textbf{o} =
-							\utt{00}\,
-							\utt{00}\, \cdots \,
-							\utt{00} \in \mathbb{B}_{64}$ \\
-							& representing the point at infinity; \\
-							\underline{\inst{ECPAIRING} case:}
-							& $\textbf{o} =
-							\utt{00}\,
-							\utt{00}\, \cdots \,
-							\utt{01} \in \mathbb{B}_{32}$ \\
-							& representing $\rOne$. \\ \hline
-						\end{tabular}
+							\begin{tabular}{|ll|}
+								\hline
+								\underline{\instEcadd{} case:}     & $\textbf{o} = \utt{00}\, \utt{00}\, \cdots \, \utt{00} \in \mathbb{B}_{64}$ \\
+                                                                                                   & representing the point at infinity;                                         \\
+								\underline{\instEcmul{} case:}     & $\textbf{o} = \utt{00}\, \utt{00}\, \cdots \, \utt{00} \in \mathbb{B}_{64}$ \\
+                                                                                                   & representing the point at infinity;                                         \\
+								\underline{\instEcpairing{} case:} & $\textbf{o} = \utt{00}\, \utt{00}\, \cdots \, \utt{01} \in \mathbb{B}_{32}$ \\
+                                                                                                   & representing $\rOne$.                                                       \\ \hline
+							\end{tabular}
 						\end{center}
 						\saNote{} We have, by construction, the following relations:
 						\[
@@ -258,14 +300,16 @@ We know that the current scenario-row $i$ will be followed by a miscellaneous-ro
 					= 0 \qquad (\trash)
 				\]
 				The above simply means that $\miscMmuSuccessBit_{i + \prcCommonMiscRowOffset}$ must vanish for the following precompiles:
-				\inst{SHA2-256},
-				\inst{RIPEMD-160}.
+				\instShaTwo{},
+				\instRipemd{}.
 
 				\saNote{} We will come back to the interpretation of both
 				\locMmuRecoverSuccess{} and
 				\locMmuWellFormedData{}.
-				As the names suggest \locMmuRecoverSuccess{} lets the \hubMod{} module know whether recovery of a public address was successful in case of a \inst{CALL} to \inst{ECRECOVER}.
-				As the names suggest \locMmuWellFormedData{} lets the \hubMod{} module know whether the input data to \inst{ECADD}, \inst{ECMUL} or \inst{ECPAIRING} is well formed.
+				As the names suggest \locMmuRecoverSuccess{} lets the \hubMod{} module know whether recovery of a public address was successful in case of a \inst{CALL} to \instEcrecover{}.
+				As the names suggest \locMmuWellFormedData{} lets the \hubMod{} module know whether the input data to \instEcadd{}, \instEcmul{} or \instEcpairing{}
+				as well as the \inst{BLS}-precompiles,
+				is well formed.
 			\item[\underline{Justifying scenario success / failure predictions:}]
 				\scenPrcSuccess{}, \scenPrcFailureKnownToHub{} and \scenPrcFailureKnownToRam{} are, by construction, exclusive binary columns;
 				furthermore we previously imposed that
@@ -291,27 +335,29 @@ We know that the current scenario-row $i$ will be followed by a miscellaneous-ro
 						\end{array} \right] \vspace{2mm} \\
 						+ & \locWellFormedData & \cdot &
 						\left[ \begin{array}{cl}
-							+ & \scenEcadd       _{i} \\
-							+ & \scenEcmul       _{i} \\
-							+ & \scenEcpairing   _{i} \\
+							+ & \scenEcadd               _{i} \\
+							+ & \scenEcmul               _{i} \\
+							+ & \scenEcpairing           _{i} \\
+							+ & \scenPrecompileCommonBls _{i} \\
 						\end{array} \right] \\
 					\end{array} \right]
 				\]
 				and
 				\[
-					\scenPrcFailureKnownToHub_{i} = 
-					\left[ \begin{array}{crcl}
-						+ & (1 - \locOobResultHubSuccess) & \cdot &
-						\left[ \begin{array}{cl}
-							+ & \scenEcrecover   _{i} \\
-							+ & \scenShaTwo      _{i} \\
-							+ & \scenRipemd      _{i} \\
-							+ & \scenIdentity    _{i} \\
-							+ & \scenEcadd       _{i} \\
-							+ & \scenEcmul       _{i} \\
-							+ & \scenEcpairing   _{i} \\
-						\end{array} \right] \\
-					\end{array} \right]
+					\scenPrcFailureKnownToHub_{i} = (1 - \locOobResultHubSuccess)
+					% \left[ \begin{array}{crcl}
+					% 	+ & (1 - \locOobResultHubSuccess) & \cdot &
+					% 	\left[ \begin{array}{cl}
+					% 		+ & \scenEcrecover           _{i} \\
+					% 		+ & \scenShaTwo              _{i} \\
+					% 		+ & \scenRipemd              _{i} \\
+					% 		+ & \scenIdentity            _{i} \\
+					% 		+ & \scenEcadd               _{i} \\
+					% 		+ & \scenEcmul               _{i} \\
+					% 		+ & \scenEcpairing           _{i} \\
+					% 		+ & \scenPrecompileCommonBls _{i} \\
+					% 	\end{array} \right] \\
+					% \end{array} \right]
 				\]
 				and
 				\[
@@ -327,9 +373,10 @@ We know that the current scenario-row $i$ will be followed by a miscellaneous-ro
 						\end{array} \right] \vspace{2mm} \\
 						+ & \locMalFormedData & \cdot &
 						\left[ \begin{array}{cl}
-							+ & \scenEcadd       _{i} \\
-							+ & \scenEcmul       _{i} \\
-							+ & \scenEcpairing   _{i} \\
+							+ & \scenEcadd               _{i} \\
+							+ & \scenEcmul               _{i} \\
+							+ & \scenEcpairing           _{i} \\
+							+ & \scenPrecompileCommonBls _{i} \\
 						\end{array} \right] \\
 					\end{array} \right]
 				\]
