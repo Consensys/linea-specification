@@ -47,26 +47,37 @@ The constraints are as follows:
 			\end{array} \right]
 			= \nonStackRows_{i}
 		\]
-	\item[\underline{Miscellaneous-row $n^°(i + \miscRowOffset)$: flags:}] we impose
-		\[
-			\weightedMiscFlagSum {i}{\miscRowOffset}
-			=
-			\left[ \begin{array}{llcl}
-				+ & \miscMmuWeight & \!\!\!\cdot\!\!\! & \locCallMmu \\
-				+ & \miscMxpWeight  \\
-			\end{array} \right]
-		\]
-		in other words
+	\item[\underline{Miscellaneous-row $n^°(i + \miscRowOffset)$: flags:}]
+		we impose
 		\[
 			\left\{ \begin{array}{lclr}
-				\miscExpFlag          _{i + \miscRowOffset} & = & \gZero      & (\trash) \\
-				\miscMmuFlag          _{i + \miscRowOffset} & = & \locCallMmu & (\trash) \\
-				\miscMxpFlag          _{i + \miscRowOffset} & = & \one        & (\trash) \\
-				\miscOobFlag          _{i + \miscRowOffset} & = & \gZero      & (\trash) \\
-				\miscStpFlag          _{i + \miscRowOffset} & = & \gZero      & (\trash) \\
+				\miscExpFlag _{i + \miscRowOffset} & = & \gZero      \\
+				\miscMmuFlag _{i + \miscRowOffset} & = & \locCallMmu \\
+				\miscMxpFlag _{i + \miscRowOffset} & = & \one        \\
+				\miscOobFlag _{i + \miscRowOffset} & = & \gZero      \\
+				\miscStpFlag _{i + \miscRowOffset} & = & \gZero      \\
 			\end{array} \right.
 		\]
-		\saNote{} The binary flag \locCallMmu{} will be defined below.
+		\saNote{}
+		One may, in the implemementation, compress the above into fewer constraints like so:
+		\[
+			\left\{ \begin{array}{l}
+				\left[ \begin{array}{clcl}
+					+ & \miscExpWeight & \cdot & \miscExpFlag _{i + \relof} \\
+					% + & \miscMmuWeight & \cdot & \miscMmuFlag _{i + \relof} \\
+					+ & \miscMxpWeight & \cdot & \miscMxpFlag _{i + \relof} \\
+					+ & \miscOobWeight & \cdot & \miscOobFlag _{i + \relof} \\
+					+ & \miscStpWeight & \cdot & \miscStpFlag _{i + \relof} \\
+				\end{array} \right]
+                                & = & \miscMxpWeight
+				\vspace{2mm}
+				\\
+				\miscMmuFlag _{i + \locMcopyFrstMiscOffset} & = & \locCallMmu \\
+			\end{array} \right.
+			% OK
+		\]
+		\saNote{}
+		The binary flag \locCallMmu{} will be defined below.
 	\item[\underline{Miscellaneous-row $n^°(i + \miscRowOffset)$: \mxpMod{} data:}]
 		we deal with the memory expansion cost:
 		\[
