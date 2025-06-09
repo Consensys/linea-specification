@@ -1,9 +1,10 @@
 \item[\underline{\underline{Miscellaneous-row n$^°~(\bm{i + \locTxInitRoffMisc})$:}}]
 	we impose the following
 	\[
-		\weightedMiscFlagSum {i}{\locTxInitRoffMisc}
-		=
-		\miscMmuWeight \cdot \txCopyTxcd _{i + \locTxInitRoffTxn}
+		\left\{ \begin{array}{lcl}
+			\weightedMiscFlagSum {i}{\locTxInitRoffMisc} & =      & \miscMmuWeight \cdot \txCopyTxcd _{i + \locTxInitRoffTxn} \vspace{2mm} \\
+			\txCopyTxcd _{i + \locTxInitRoffTxn}         & \equiv & \text{binary} \quad (\sanityCheck)                                     \\
+		\end{array} \right.
 	\]
 	Furthermore, \If $\miscMmuFlag _{i + \locTxInitRoffMisc} = 1$ \Then
 	\[
@@ -38,3 +39,5 @@
 	The \mmuMod{} instruction serves to transfer the transaction's call data to a fresh new \textsc{ram} segment.
 	Future \inst{CALLDATACOPY} and \inst{CALLDATALOAD} instructions executed in the root context will extract their data from that ``execution context's \textsc{ram}'', which contains a full copy of the transaction's call data.
 
+	\saNote{}
+	Recall furthermore that column $\txCopyTxcd$ is binary by definition.
