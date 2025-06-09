@@ -80,7 +80,23 @@
 					\item \If $\locMxpx = 1$ \Then \( \gasCost_{i} = 0 \)
 				\end{enumerate}
 		\end{enumerate}
-	\item[\underline{Miscellaneous-row $n^°(i + \stackramMiscRowOffset)$: flags:}] we impose
+	\item[\underline{Miscellaneous-row $n^°(i + \stackramMiscRowOffset)$: flags:}]
+		we impose
+		\[
+			\left\{ \begin{array}{lclr}
+				\miscExpFlag  _{i + \stackramMiscRowOffset} & = & \gZero         \\
+				\miscMmuFlag  _{i + \stackramMiscRowOffset} & = & \locTriggerMmu \\
+				\miscMxpFlag  _{i + \stackramMiscRowOffset} & = & \locTriggerMxp \\
+				\miscOobFlag  _{i + \stackramMiscRowOffset} & = & \locTriggerOob \\
+				\miscStpFlag  _{i + \stackramMiscRowOffset} & = & \gZero         \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		The binary flags ``\locTriggerXxx{}'' will be defined below.
+		They are indeed provably binary.
+
+		\saNote{} \label{hub: instruction handling: stack ram: constraints: optimized misc flags}
+		Given the binarity of ``\locTriggerXxx{}'' one may slightly reduce the number of constraints above by imposing instead
 		\[
 			\weightedMiscFlagSum {i}{\stackramMiscRowOffset}
 			=
@@ -89,18 +105,8 @@
 				+ & \miscMxpWeight & \!\!\! \cdot \!\!\! & \locTriggerMxp \\
 				+ & \miscOobWeight & \!\!\! \cdot \!\!\! & \locTriggerOob \\
 			\end{array} \right]
+			% OK
 		\]
-		in other words we impose
-		\[
-			\left\{ \begin{array}{lclr}
-				\miscExpFlag  _{i + \stackramMiscRowOffset} & = & \gZero         & (\trash) \\
-				\miscMmuFlag  _{i + \stackramMiscRowOffset} & = & \locTriggerMmu & (\trash) \\
-				\miscMxpFlag  _{i + \stackramMiscRowOffset} & = & \locTriggerMxp & (\trash) \\
-				\miscOobFlag  _{i + \stackramMiscRowOffset} & = & \locTriggerOob & (\trash) \\
-				\miscStpFlag  _{i + \stackramMiscRowOffset} & = & \gZero         & (\trash) \\
-			\end{array} \right.
-		\]
-		\saNote{} The binary flags ``\locTriggerXxx{}'' will be defined below.
 	\item[\underline{Defining \locTriggerMxp{}:}] we define
 		$\locTriggerMxp \define \locIsMSomething$.
 	\item[\underline{Defining \locTriggerOob{}:}] we define
