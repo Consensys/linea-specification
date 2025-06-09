@@ -94,23 +94,33 @@ The present section deals with handling \inst{REVERT} instructions.
 	\item[\underline{The miscellaneous-row $n^°(i + \locRevertMiscRowOffset)$:}]
 		we impose
 		\[
-			\weightedMiscFlagSum {i}{\locRevertMiscRowOffset}
-			=
-			\left[ \begin{array}{crcl}
-				+ & \miscMmuWeight  & \!\!\!\cdot\!\!\! & \locTriggerMmu \\
-				+ & \miscMxpWeight \\
-			\end{array} \right]
-		\]
-		i.e.
-		\[
 			\left\{ \begin{array}{lclr}
-				\miscExpFlag  _{i + \locRevertMiscRowOffset} & = & \gZero         & (\trash) \\
-				\miscMmuFlag  _{i + \locRevertMiscRowOffset} & = & \locTriggerMmu & (\trash) \\
-				\miscMxpFlag  _{i + \locRevertMiscRowOffset} & = & \rOne          & (\trash) \\
-				\miscOobFlag  _{i + \locRevertMiscRowOffset} & = & \gZero         & (\trash) \\
-				\miscStpFlag  _{i + \locRevertMiscRowOffset} & = & \gZero         & (\trash) \\
+				\miscExpFlag _{i + \locRevertMiscRowOffset} & = & \gZero         \\
+				\miscMmuFlag _{i + \locRevertMiscRowOffset} & = & \locTriggerMmu \\
+				\miscMxpFlag _{i + \locRevertMiscRowOffset} & = & \rOne          \\
+				\miscOobFlag _{i + \locRevertMiscRowOffset} & = & \gZero         \\
+				\miscStpFlag _{i + \locRevertMiscRowOffset} & = & \gZero         \\
 			\end{array} \right.
 		\]
+		\saNote{}
+		One may, in the implemementation, compress the above into fewer constraints like so:
+		\[
+			\left\{ \begin{array}{l}
+				\left[ \begin{array}{clcl}
+					+ & \miscExpWeight & \cdot & \miscExpFlag _{i + \locRevertMiscRowOffset} \\
+					% + & \miscMmuWeight & \cdot & \miscMmuFlag _{i + \locRevertMiscRowOffset} \\
+					+ & \miscMxpWeight & \cdot & \miscMxpFlag _{i + \locRevertMiscRowOffset} \\
+					+ & \miscOobWeight & \cdot & \miscOobFlag _{i + \locRevertMiscRowOffset} \\
+					+ & \miscStpWeight & \cdot & \miscStpFlag _{i + \locRevertMiscRowOffset} \\
+				\end{array} \right]
+                                & = & \miscMxpWeight
+				\vspace{2mm}
+				\\
+				\miscMmuFlag _{i + \locRevertMiscRowOffset} & = & \locTriggerMmu \\
+			\end{array} \right.
+			% OK
+		\]
+		i.e.
 	\item[\underline{Setting the \mxpMod{} data:}]
 		we impose
 		\[
