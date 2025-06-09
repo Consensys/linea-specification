@@ -40,7 +40,7 @@ The constraints are as follows:
 			\item[\underline{The \inst{CODECOPY} case:}]
 				\If $\locIsCc    = 1$ \Then $\nonStackRows_{i} = 2 + (1 - \xAhoy_{i})$ furthermore
 				\begin{enumerate}
-					\item \If $\xAhoy_{i} = 1$ \Then 
+					\item \If $\xAhoy_{i} = 1$ \Then
 						\[
 							\left[ \begin{array}{cr}
 								+ & \peekMisc      _{i + \locCopyMiscRowOffset         } \\
@@ -48,7 +48,7 @@ The constraints are as follows:
 							\end{array} \right]
 							= \nonStackRows_{i}
 						\]
-					\item \If $\xAhoy_{i} = 0$ \Then 
+					\item \If $\xAhoy_{i} = 0$ \Then
 						\[
 							\left[ \begin{array}{cr}
 								+ & \peekMisc      _{i + \locCopyMiscRowOffset     } \\
@@ -61,7 +61,7 @@ The constraints are as follows:
 			\item[\underline{The \inst{EXTCODECOPY} case:}]
 				\If $\locIsExtcc = 1$ \Then $\nonStackRows_{i} = 2 + \stackOogx_{i} + (1 - \xAhoy_{i}) \cdot \cnWillRev$ furthermore
 				\begin{enumerate}
-					\item \If $\stackMxpx_{i} = 1$ \Then 
+					\item \If $\stackMxpx_{i} = 1$ \Then
 						\[
 							\left[ \begin{array}{cr}
 								+ & \peekMisc      _{i + \locCopyMiscRowOffset         } \\
@@ -69,7 +69,7 @@ The constraints are as follows:
 							\end{array} \right]
 							= \nonStackRows_{i}
 						\]
-					\item \If $\stackOogx_{i} = 1$ \Then 
+					\item \If $\stackOogx_{i} = 1$ \Then
 						\[
 							\left[ \begin{array}{cr}
 								+ & \peekMisc      _{i + \locCopyMiscRowOffset          } \\
@@ -78,7 +78,7 @@ The constraints are as follows:
 							\end{array} \right]
 							= \nonStackRows_{i}
 						\]
-					\item \If $\xAhoy_{i} = 0$ \et $\cnWillRev_{i} = 1$ \Then 
+					\item \If $\xAhoy_{i} = 0$ \et $\cnWillRev_{i} = 1$ \Then
 						\[
 							\left[ \begin{array}{cr}
 								+ & \peekMisc      _{i + \locCopyMiscRowOffset           } \\
@@ -87,7 +87,7 @@ The constraints are as follows:
 							\end{array} \right]
 							= \nonStackRows_{i}
 						\]
-					\item \If $\xAhoy_{i} = 0$ \et $\cnWillRev_{i} = 0$ \Then 
+					\item \If $\xAhoy_{i} = 0$ \et $\cnWillRev_{i} = 0$ \Then
 						\[
 							\left[ \begin{array}{cr}
 								+ & \peekMisc      _{i + \locCopyMiscRowOffset          } \\
@@ -101,27 +101,44 @@ The constraints are as follows:
 	\item[\underline{\underline{Setting the miscellaneous-row $n^°(i + \locCopyMiscRowOffset)$:}}]
 		observe that every processing path starts with a \textbf{miscellaneous-row}
 		\begin{description}
-			\item[\underline{Setting module flags:}] 
-				\[
-					\weightedMiscFlagSum {i}{\locCopyMiscRowOffset}
-					=
-					\left[ \begin{array}{crcl}
-						+ & \miscMmuWeight & \!\!\! \cdot \!\!\! & \locTriggerMmu \\
-						+ & \miscMxpWeight & \!\!\! \cdot \!\!\! & \locTriggerMxp \\
-						+ & \miscOobWeight & \!\!\! \cdot \!\!\! & \locTriggerOob \\
-					\end{array} \right]
-				\]
-				i.e.
+			\item[\underline{Setting module flags:}]
+				we impose
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag_{i + \locCopyMiscRowOffset} & = & \gZero         & (\trash) \\
-						\miscMmuFlag_{i + \locCopyMiscRowOffset} & = & \locTriggerMmu & (\trash) \\
-						\miscMxpFlag_{i + \locCopyMiscRowOffset} & = & \locTriggerMxp & (\trash) \\
-						\miscOobFlag_{i + \locCopyMiscRowOffset} & = & \locTriggerOob & (\trash) \\
-						\miscStpFlag_{i + \locCopyMiscRowOffset} & = & \gZero         & (\trash) \\
+						\miscExpFlag_{i + \locCopyMiscRowOffset} & = & \gZero         \\
+						\miscMmuFlag_{i + \locCopyMiscRowOffset} & = & \locTriggerMmu \\
+						\miscMxpFlag_{i + \locCopyMiscRowOffset} & = & \locTriggerMxp \\
+						\miscOobFlag_{i + \locCopyMiscRowOffset} & = & \locTriggerOob \\
+						\miscStpFlag_{i + \locCopyMiscRowOffset} & = & \gZero         \\
 					\end{array} \right.
 				\]
-				\saNote{} We will specify \locTriggerMmu{}, \locTriggerMxp{} and \locTriggerOob{} shortly.
+				\saNote{}
+				We will specify \locTriggerMmu{}, \locTriggerMxp{} and \locTriggerOob{} shortly.
+
+				\saNote{} \label{hub: instruction handling: logs: constraints: optimized misc flags}
+				One may slightly reduce the number of constraints above by imposing instead
+				\[
+					\left\{ \begin{array}{lcl}
+						\left[ \begin{array}{clcl}
+							+ & \miscExpWeight & \cdot & \miscExpFlag _{i + \locCopyMiscRowOffset} \\
+							% + & \miscMmuWeight & \cdot & \miscMmuFlag _{i + \locCopyMiscRowOffset} \\
+							+ & \miscMxpWeight & \cdot & \miscMxpFlag _{i + \locCopyMiscRowOffset} \\
+							+ & \miscOobWeight & \cdot & \miscOobFlag _{i + \locCopyMiscRowOffset} \\
+							+ & \miscStpWeight & \cdot & \miscStpFlag _{i + \locCopyMiscRowOffset} \\
+						\end{array} \right]
+						& = &
+						\left[ \begin{array}{clcl}
+							+ & \miscMxpWeight & \cdot & \locTriggerMxp \\
+							+ & \miscOobWeight & \cdot & \locTriggerOob \\
+						\end{array} \right]
+						\vspace{2mm} \\
+						\miscMmuFlag  _{i + \locCopyMiscRowOffset} & = & \locTriggerMmu \\
+					\end{array} \right.
+					% OK
+				\]
+				Indeed, by their very definitions, both
+				\locTriggerMxp{} and \locTriggerOob{}
+				are unconditionally binary.
 			\item[\underline{Specifying \locTriggerOob{}:}]
 				\inst{RETURNDATACOPY} is the only instruction in the \inst{COPY}-family that requires the \oobMod{} module;
 				indeed the \oobMod{} detects \rdcxSH{}'s;
@@ -133,7 +150,7 @@ The constraints are as follows:
 				we technically don't have to call the \mxpMod{} module in case of \inst{RETURNDATACOPY} instructions raising the \rdcxSH{};
 				this exception is enough to justify the exceptional halting condition; this behaviour is reflected in the assignment of the \miscMxpFlag{} since we impose
 				\[
-					\locTriggerMxp = \one - \stackRdcx_{i}
+					\locTriggerMxp = \one - \stackRdcx _{i}
 				\]
 			\item[\underline{Specifying \locTriggerMmu{}:}]
 				\label{hub: instruction handling: copy: trigger MMU}
@@ -159,7 +176,7 @@ The constraints are as follows:
 				we impose
 				\begin{enumerate}
 					\item $\miscOobFlag _{i + \locCopyMiscRowOffset} = 0$ \Then $\stackRdcx_{i} = 0$ \quad (\trash)
-				        \item $\miscOobFlag _{i + \locCopyMiscRowOffset} = 1$ \Then $\stackRdcx_{i} = \locOobRdcx$
+					\item $\miscOobFlag _{i + \locCopyMiscRowOffset} = 1$ \Then $\stackRdcx_{i} = \locOobRdcx$
 				\end{enumerate}
 			\item[\underline{Setting \mxpMod{} data:}]
 				\If $\miscMxpFlag _{i + \locCopyMiscRowOffset} = 1$ \Then we impose
@@ -180,12 +197,12 @@ The constraints are as follows:
 				we impose
 				\begin{enumerate}
 					\item \If $\miscMxpFlag _{i + \locCopyMiscRowOffset} = 0$ \Then we impose $\stackMxpx_{i} = 0$ \quad (\trash)
-				        \item \If $\miscMxpFlag _{i + \locCopyMiscRowOffset} = 1$ \Then we impose $\stackMxpx_{i} = \locMxpMxpx$
+					\item \If $\miscMxpFlag _{i + \locCopyMiscRowOffset} = 1$ \Then we impose $\stackMxpx_{i} = \locMxpMxpx$
 				\end{enumerate}
 				\saNote{}
 				The (\trash) constraint follows from exception flag exclusivity,
 				see section~(\ref{hub: generalities: exceptions: the stack's exception are exclusive binary flags}).
-				For $\miscMxpFlag _{i + \locCopyMiscRowOffset} = \locTriggerMxp$ to vanish one must have $\stackRdcx_{i} = 1$. 
+				For $\miscMxpFlag _{i + \locCopyMiscRowOffset} = \locTriggerMxp$ to vanish one must have $\stackRdcx_{i} = 1$.
 				But then no other exception flag may be set.
 			\item[\underline{Setting \mmuMod{} data:}]
 				\If $\miscMmuFlag _{i + \locCopyMiscRowOffset} = 1$ \Then we impose
@@ -207,7 +224,7 @@ The constraints are as follows:
 				\]
 				where the fields labeled with $(\bigstar)$ are (currently undefined) shorthands for which we now produce definitions
 				\begin{description}
-					\item[The \inst{CALLDATACOPY} case:] 
+					\item[The \inst{CALLDATACOPY} case:]
 						\If $\locIsCdc = 1$ \Then
 						we impose
 						\[
@@ -218,7 +235,7 @@ The constraints are as follows:
 								\locExoSum          & \define & 0                   \\
 							\end{array} \right.
 						\]
-					\item[The \inst{RETURNDATACOPY} case:] 
+					\item[The \inst{RETURNDATACOPY} case:]
 						\If $\locIsRdc = 1$ \Then
 						we impose
 						\[
@@ -229,7 +246,7 @@ The constraints are as follows:
 								\locExoSum          & \define & 0                     \\
 							\end{array} \right.
 						\]
-					\item[The \inst{CODECOPY} case:] 
+					\item[The \inst{CODECOPY} case:]
 						\If $\locIsCc = 1$ \Then
 						we impose
 						\[
@@ -240,7 +257,7 @@ The constraints are as follows:
 								\locExoSum          & \define & \exoWeightRom       \\
 							\end{array} \right.
 						\]
-					\item[The \inst{EXTCODECOPY} case:] 
+					\item[The \inst{EXTCODECOPY} case:]
 						\If $\locIsExtcc = 1$ \Then
 						we impose
 						\[
