@@ -97,26 +97,36 @@ We impose the following constraints:
 	\item[\underline{Setting miscellaneous module flags:}]
 		\If $\stackStaticx_{i} = 0$ \Then
 		\[
-			\weightedMiscFlagSum {i}{\locLogMiscRowOffset}
-			=
-			\left[ \begin{array}{crcl}
-				+ & \miscMmuWeight & \cdot & \locTriggerMmu \\
-				+ & \miscMxpWeight \\
-			\end{array} \right]
-		\]
-		In other words we impose
-		\[
 			\left\{ \begin{array}{lclr}
-				\miscExpFlag_{i + \locLogMiscRowOffset}          & = & \gZero         & (\trash) \\
-				\miscMmuFlag_{i + \locLogMiscRowOffset}          & = & \locTriggerMmu & (\trash) \\
-				\miscMxpFlag_{i + \locLogMiscRowOffset}          & = & \rOne          & (\trash) \\
-				\miscOobFlag_{i + \locLogMiscRowOffset}          & = & \gZero         & (\trash) \\
-				\miscStpFlag_{i + \locLogMiscRowOffset}          & = & \gZero         & (\trash) \\
+				\miscExpFlag_{i + \locLogMiscRowOffset} & = & \gZero         \\
+				\miscMmuFlag_{i + \locLogMiscRowOffset} & = & \locTriggerMmu \\
+				\miscMxpFlag_{i + \locLogMiscRowOffset} & = & \rOne          \\
+				\miscOobFlag_{i + \locLogMiscRowOffset} & = & \gZero         \\
+				\miscStpFlag_{i + \locLogMiscRowOffset} & = & \gZero         \\
 			\end{array} \right.
 		\]
-		We further impose the contents of the lookup to the \mxpMod{} module:
+		\saNote{}
+		\locTriggerMmu{} will be constrained below.
 
-		\saNote{} \locTriggerMmu{} will be constrained below.
+		\saNote{}
+		One may, in the implemementation, compress the above into fewer constraints like so:
+		\If $\stackStaticx_{i} = 0$ \Then
+		\[
+			\left\{ \begin{array}{l}
+				\left[ \begin{array}{clcl}
+					+ & \miscExpWeight & \cdot & \miscExpFlag _{i + \locLogMiscRowOffset} \\
+					% + & \miscMmuWeight & \cdot & \miscMmuFlag _{i + \locLogMiscRowOffset} \\
+					+ & \miscMxpWeight & \cdot & \miscMxpFlag _{i + \locLogMiscRowOffset} \\
+					+ & \miscOobWeight & \cdot & \miscOobFlag _{i + \locLogMiscRowOffset} \\
+					+ & \miscStpWeight & \cdot & \miscStpFlag _{i + \locLogMiscRowOffset} \\
+				\end{array} \right]
+                                & = & \miscMxpWeight
+				\vspace{2mm}
+				\\
+				\miscMmuFlag _{i + \locLogMiscRowOffset} & = & \locTriggerMmu \\
+			\end{array} \right.
+			% OK
+		\]
 	\item[\underline{Miscellaneous-row $n^°(i + \locLogMiscRowOffset)$: \mxpMod{} data:}]
 		\If $\stackStaticx_{i} = 0$ \Then
 		\[
