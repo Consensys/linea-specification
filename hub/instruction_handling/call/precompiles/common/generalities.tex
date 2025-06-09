@@ -23,27 +23,33 @@ We know that the current scenario-row $i$ will be followed by a miscellaneous-ro
 			\item[\underline{Setting lookup flags:}]
 				we impose that
 				\[
-					\weightedMiscFlagSum
-					{i}{\prcCommonMiscRowOffset}
-					=
-					\left[ \begin{array}{clcl}
-						+ & \miscMmuWeight & \cdot & \locOobResultExtractCallData \\
-						+ & \miscOobWeight \\
-					\end{array} \right]
-				\]
-				in other words
-				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       & (\trash) \\
-						\miscMmuFlag _{i + \prcCommonMiscRowOffset} & = & \locOobResultExtractCallData & (\trash) \\
-						\miscMxpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       & (\trash) \\
-						\miscOobFlag _{i + \prcCommonMiscRowOffset} & = & \one                         & (\trash) \\
-						\miscStpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       & (\trash) \\
+						\miscExpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcCommonMiscRowOffset} & = & \locOobResultExtractCallData & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcCommonMiscRowOffset} & = & \one                         & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       & (\sanityCheck) \\
 					\end{array} \right.
 				\]
 				\saNote{}
 				The shorthand \locOobResultExtractCallData{} will be defined shortly.
 				It is gleaned from one of the outputs of the call to the \oobMod{} module (which is systematically triggered given the above.)
+
+				\saNote{}
+				One may, in the implemementation, compress the above into fewer constraints like so:
+				\[
+					\left\{ \begin{array}{lclr}
+						\left[ \begin{array}{clcl}
+							+ & \miscExpWeight & \!\!\! \cdot \!\!\! & \miscExpFlag _{i + \prcCommonMiscRowOffset} \\
+							% + & \miscMmuWeight & \!\!\! \cdot \!\!\! & \miscMmuFlag _{i + \prcCommonMiscRowOffset} \\
+							+ & \miscMxpWeight & \!\!\! \cdot \!\!\! & \miscMxpFlag _{i + \prcCommonMiscRowOffset} \\
+							+ & \miscOobWeight & \!\!\! \cdot \!\!\! & \miscOobFlag _{i + \prcCommonMiscRowOffset} \\
+							+ & \miscStpWeight & \!\!\! \cdot \!\!\! & \miscStpFlag _{i + \prcCommonMiscRowOffset} \\
+						\end{array} \right]
+						& = & \miscOobWeight & (\sanityCheck) \vspace{2mm} \\
+						\miscMmuFlag _{i + \prcCommonMiscRowOffset} & = & \undefinedStar \quad \locOobResultExtractCallData & (\sanityCheck) \\
+					\end{array} \right.
+				\]
 			\item[\underline{Setting \oobMod{} instruction:}] 
 				we populate the \oobMod{} columns:
 				\[

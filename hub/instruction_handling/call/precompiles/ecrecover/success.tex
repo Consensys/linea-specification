@@ -17,21 +17,23 @@ We remind the reader that success of the \inst{ECRECOVER} precompile only means 
 			\item[\underline{Setting lookup flags:}]
 				we impose
 				\[
-					\weightedMiscFlagSum
-					{i}{\prcStandardSuccessSecondMiscRowOffset}
+					\weightedMiscFlagSum {i}{\prcStandardSuccessSecondMiscRowOffset}
 					=
 					\miscMmuWeight \cdot \locAddressRecoverySuccess
+					% OK
 				\]
 				in other words
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\trash) \\
-						\miscMmuFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locAddressRecoverySuccess & (\trash) \\
-						\miscMxpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\trash) \\
-						\miscOobFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\trash) \\
-						\miscStpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\trash) \\
+						\miscExpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locAddressRecoverySuccess & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\sanityCheck) \\
 					\end{array} \right.
 				\]
+				\saNote{}
+				\locAddressRecoverySuccess{} is provably binary.
 		\end{description}
 		\saNote{} In other words the ``result transfer'' step of a call to the \inst{ECRECOVER} only required if the call is
 		(\emph{a}) is successful (i.e. is given sufficient gas) and
@@ -57,8 +59,7 @@ We remind the reader that success of the \inst{ECRECOVER} precompile only means 
 			\item[\underline{Setting lookup flags:}]
 				we impose
 				\[
-					\weightedMiscFlagSum
-					{i}{\prcStandardSuccessThirdMiscRowOffset}
+					\weightedMiscFlagSum {i}{\prcStandardSuccessThirdMiscRowOffset}
 					=
 					\miscMmuWeight
 					\cdot
@@ -66,6 +67,7 @@ We remind the reader that success of the \inst{ECRECOVER} precompile only means 
 						\cdot \; \locAddressRecoverySuccess   \\
 						\cdot \; \locOobResultNonzeroRac      \\
 					\end{array} \right]
+					% OK
 				\]
 				in other words
 				\[
@@ -77,6 +79,8 @@ We remind the reader that success of the \inst{ECRECOVER} precompile only means 
 						\miscStpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                                                   & (\trash) \\
 					\end{array} \right.
 				\]
+				\saNote{}
+				\locAddressRecoverySuccess{} and \locOobResultNonzeroRac{} are provably binary, and so is their product.
 		\end{description}
 		\saNote{} In other words the ``result transfer'' step of a call to the \inst{ECRECOVER} only required if the call is
 		(\emph{a}) is successful (i.e. is given sufficient gas) and
@@ -102,18 +106,12 @@ We remind the reader that success of the \inst{ECRECOVER} precompile only means 
 		we impose
 		\[
 			\provideReturnData {
-				anchorRow          = i                                            ,
-				relOffset          = \prcStandardSuccessCallerContextRowRowOffset ,
-				returnDataReceiver = \cn_{i}                                      ,
-				returnDataProvider = 1 + \hubStamp_{i}                            ,
-				returnDataOffset   = 0                                            ,
-				returnDataSize     = \evmWordSize \cdot \locAddressRecoverySuccess   ,
+				anchorRow          = i                                             ,
+				relOffset          = \prcStandardSuccessCallerContextRowRowOffset  ,
+				returnDataReceiver = \cn_{i}                                       ,
+				returnDataProvider = 1 + \hubStamp_{i}                             ,
+				returnDataOffset   = 0                                             ,
+				returnDataSize     = \evmWordSize \cdot \locAddressRecoverySuccess ,
 			}
-			% \provideReturnData
-			% {i}{4} 
-			% {\cn_{i}                                   }         % Return data receiver
-			% {1 + \hubStamp_{i}                         }         % Return data provider
-			% {0                                         }         % Return data offset
-			% {\evmWordSize \cdot \locAddressRecoverySuccess}         % Return data size 
 		\]
 \end{description}

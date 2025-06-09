@@ -16,59 +16,51 @@ The first row is always a miscellaneous-row.
 			\item[\underline{Setting lookup flags:}]
 				we impose
 				\[
-					\weightedMiscFlagSum {i}{\prcBlakeFirstMiscRowOffset}
-					=
-					\left[ \begin{array}{crcl}
-						+ & \miscMmuWeight  & \!\!\! \cdot \!\!\! & \locOobResultHubSuccess \\
-						+ & \miscOobWeight \\
-					\end{array} \right]
-				\]
-				in other words	
-				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \gZero                                       & (\trash) \\
-						\miscMmuFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \undefinedStar \quad \locOobResultHubSuccess & (\trash) \\
-						\miscMxpFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \rZero                                       & (\trash) \\
-						\miscOobFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \one                                         & (\trash) \\
-						\miscStpFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \gZero                                       & (\trash) \\
+						\miscExpFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \gZero                                       \\
+						\miscMmuFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \undefinedStar \quad \locOobResultHubSuccess \\
+						\miscMxpFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \rZero                                       \\
+						\miscOobFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \one                                         \\
+						\miscStpFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \gZero                                       \\
 					\end{array} \right.
 				\]
-				We are thus always calling the \oobMod{} and only calling the \mmuMod{} if the call to the \oobMod{} 
+				We are thus always calling the \oobMod{} and only calling the \mmuMod{} if the call to the \oobMod{} suggests it.
 
-				\saNote{} The shorthand \locOobResultHubSuccess{} which we label with $\undefinedStar$ will be set below.
+				\saNote{} \label{hub: instruction handling: call: precompiles: blake: generalities: optimized misc flags}
+				One may, in the implemementation, compress the above into fewer constraints like so:
+				\[
+					\left\{ \begin{array}{lcl}
+						\left[ \begin{array}{clcl}
+							+ & \miscExpWeight & \!\!\! \cdot \!\!\! & \miscExpFlag _{i + \prcBlakeFirstMiscRowOffset} \\
+							% + & \miscMmuWeight & \!\!\! \cdot \!\!\! & \miscMmuFlag _{i + \prcBlakeFirstMiscRowOffset} \\
+							+ & \miscMxpWeight & \!\!\! \cdot \!\!\! & \miscMxpFlag _{i + \prcBlakeFirstMiscRowOffset} \\
+							+ & \miscOobWeight & \!\!\! \cdot \!\!\! & \miscOobFlag _{i + \prcBlakeFirstMiscRowOffset} \\
+							+ & \miscStpWeight & \!\!\! \cdot \!\!\! & \miscStpFlag _{i + \prcBlakeFirstMiscRowOffset} \\
+						\end{array} \right]
+						& = & \miscOobWeight
+						\vspace{2mm} \\
+						\miscMmuFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \undefinedStar \quad \locOobResultHubSuccess \\
+					\end{array} \right.
+					% OK
+				\]
+
+				\saNote{}
+				The shorthand \locOobResultHubSuccess{} which we label with $\undefinedStar$ will be set below.
 			\item[\underline{Setting the \oobMod{} instruction and shorthands:}] 
 				we impose the following constraints
 				\[
+					\label{hub: instruction handling: call: precompiles: blake: hub success call}
 					\setOobInstructionBlakeCds {
 						anchorRow        = i                           ,
 						relOffset        = \prcBlakeFirstMiscRowOffset ,
 						callDataSize     = \locPrcCds                  ,
 						returnAtCapacity = \locPrcRac                  ,
 					}
-					\label{hub: instruction handling: call: precompiles: blake: hub success call}
-					% \left\{ \begin{array}{lcl} \label{hub: instruction handling: call: precompiles: blake: hub success call}
-					% 	\miscOobInst       _{i + \prcBlakeFirstMiscRowOffset} & = & \oobInstBlakeCds \vspace{2mm} \\
-					% 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-					% 	\miscOobDataCol{1} _{i + \prcBlakeFirstMiscRowOffset} & = & \nothing \\
-					% 	\miscOobDataCol{2} _{i + \prcBlakeFirstMiscRowOffset} & = & \locPrcCds \\
-					% 	\miscOobDataCol{3} _{i + \prcBlakeFirstMiscRowOffset} & = & \locPrcRac \\
-					% 	\miscOobDataCol{4} _{i + \prcBlakeFirstMiscRowOffset} & = & \relevantValue \\
-					% 	\miscOobDataCol{5} _{i + \prcBlakeFirstMiscRowOffset} & = & \nothing \\
-					% 	\miscOobDataCol{6} _{i + \prcBlakeFirstMiscRowOffset} & = & \nothing \\
-					% 	\miscOobDataCol{7} _{i + \prcBlakeFirstMiscRowOffset} & = & \nothing \\
-					% 	\miscOobDataCol{8} _{i + \prcBlakeFirstMiscRowOffset} & = & \relevantValue \\
-					% \end{array} \right.
 				\]
 				We introduce the following shorthands:
 				\[
 					\left\{ \begin{array}{lcl} \label{hub: instruction handling: call: precompiles: blake: shorthands}
-						% & \define & \miscOobDataCol{1}_{i + \prcBlakeFirstMiscRowOffset} \\
-						% & \define & \miscOobDataCol{2}_{i + \prcBlakeFirstMiscRowOffset} \\
-						% & \define & \miscOobDataCol{3}_{i + \prcBlakeFirstMiscRowOffset} \\
 						\locOobResultHubSuccess      & \define & \miscOobDataCol{4}_{i + \prcBlakeFirstMiscRowOffset} \\
-						% & \define & \miscOobDataCol{5}_{i + \prcBlakeFirstMiscRowOffset} \\
-						% & \define & \miscOobDataCol{6}_{i + \prcBlakeFirstMiscRowOffset} \\
-						% & \define & \miscOobDataCol{7}_{i + \prcBlakeFirstMiscRowOffset} \\
 						\locOobResultNonzeroRac      & \define & \miscOobDataCol{8}_{i + \prcBlakeFirstMiscRowOffset} \\
 					\end{array} \right.
 				\]

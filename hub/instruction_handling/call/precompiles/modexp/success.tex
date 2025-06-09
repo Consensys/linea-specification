@@ -38,25 +38,35 @@ At this point the \inst{MODEXP} call is known to be successful and it remains to
 			\item[\underline{Setting lookup flags:}]
 				we impose
 				\[
-					\weightedMiscFlagSum
-					{i}{\prcModexpSuccessExtractBaseRowOffset}
-					=
-					\left[ \begin{array}{crcl}
-						\miscMmuWeight  & \cdot & \locExtractModulus \\
-					        \miscOobWeight \\
-					\end{array} \right]
-				\]
-				in other words
-				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \gZero                                  & (\trash) \\
-						\miscMmuFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \undefinedStar \quad \locExtractModulus & (\trash) \\
-						\miscMxpFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \rZero                                  & (\trash) \\
-						\miscOobFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \one                                    & (\trash) \\
-						\miscStpFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \gZero                                  & (\trash) \\
+						\miscExpFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \gZero                                  \\
+						\miscMmuFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \undefinedStar \quad \locExtractModulus \\
+						\miscMxpFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \rZero                                  \\
+						\miscOobFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \one                                    \\
+						\miscStpFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \gZero                                  \\
 					\end{array} \right.
 				\]
-				\saNote{} The $\locExtractModulus$ shorthand marked with $\undefinedStar$ will be defined below.
+				\saNote{}
+				The $\locExtractModulus$ shorthand marked with $\undefinedStar$ will be defined below.
+
+				\saNote{}
+				One may, in the implemementation, compress the above into fewer constraints like so:
+				\[
+					\left\{ \begin{array}{lcl}
+						\left[ \begin{array}{cl}
+							+ & \miscExpWeight & \!\!\!\cdot\!\!\! & \miscExpFlag _{i + \prcModexpSuccessExtractBaseRowOffset} \\
+							% + & \miscMmuWeight & \!\!\!\cdot\!\!\! & \miscMmuFlag _{i + \prcModexpSuccessExtractBaseRowOffset} \\
+							+ & \miscMxpWeight & \!\!\!\cdot\!\!\! & \miscMxpFlag _{i + \prcModexpSuccessExtractBaseRowOffset} \\
+							+ & \miscOobWeight & \!\!\!\cdot\!\!\! & \miscOobFlag _{i + \prcModexpSuccessExtractBaseRowOffset} \\
+							+ & \miscStpWeight & \!\!\!\cdot\!\!\! & \miscStpFlag _{i + \prcModexpSuccessExtractBaseRowOffset} \\
+						\end{array} \right]
+						& = & \miscOobWeight
+						\vspace{2mm} \\
+						\miscMmuFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \undefinedStar \quad \locExtractModulus \\
+					\end{array} \right.
+				\]
+				\saNote{}
+				\locExtractModulus{} is provably binary once it is known that the \oobMod{} was triggered.
 			\item[\underline{Setting the \oobMod{} instruction:}] 
 				we impose
 				\[
@@ -116,21 +126,23 @@ At this point the \inst{MODEXP} call is known to be successful and it remains to
 			\item[\underline{Setting lookup flags:}]
 				we impose
 				\[
-					\weightedMiscFlagSum
-					{i}{\prcModexpSuccessExtractExponentRowOffset}
+					\weightedMiscFlagSum {i}{\prcModexpSuccessExtractExponentRowOffset}
 					=
 					\miscMmuWeight \cdot \locExtractModulus
+					% OK
 				\]
 				in other words
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag  _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \gZero             & (\trash) \\
-						\miscMmuFlag  _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \locExtractModulus & (\trash) \\
-						\miscMxpFlag  _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \rZero             & (\trash) \\
-						\miscOobFlag  _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \gZero             & (\trash) \\
-						\miscStpFlag  _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \gZero             & (\trash) \\
+						\miscExpFlag  _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \gZero             & (\sanityCheck) \\
+						\miscMmuFlag  _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \locExtractModulus & (\sanityCheck) \\
+						\miscMxpFlag  _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \rZero             & (\sanityCheck) \\
+						\miscOobFlag  _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \gZero             & (\sanityCheck) \\
+						\miscStpFlag  _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \gZero             & (\sanityCheck) \\
 					\end{array} \right.
 				\]
+				\saNote{}
+				\locExtractModulus{} is provably binary.
 			\item[\underline{Setting the \mmuMod{} instruction:}] 
 				\If $\miscMmuFlag_{i + \prcModexpSuccessExtractExponentRowOffset} = 1$ \Then we impose
 				\begin{enumerate}
@@ -158,7 +170,8 @@ At this point the \inst{MODEXP} call is known to be successful and it remains to
 							}
 						\]
 				\end{enumerate}
-				\saNote{} Some of the above constraints are independent of the value of $\locExtractExponent$ and may be ``merged into one'' in the implementation.
+				\saNote{}
+				Some of the above constraints are independent of the value of $\locExtractExponent$ and may be ``merged into one'' in the implementation.
 		\end{description}
 \end{description}
 The above thus either extracts some data from \textsc{ram} and serves it to the \modexpMod{} module as the``exponent'' argument or sets its ``exponent'' to zero.
@@ -168,21 +181,23 @@ The above thus either extracts some data from \textsc{ram} and serves it to the 
 			\item[\underline{Setting lookup flags:}]
 				we impose
 				\[
-					\weightedMiscFlagSum
-					{i}{\prcModexpSuccessExtractModulusRowOffset}
+					\weightedMiscFlagSum {i}{\prcModexpSuccessExtractModulusRowOffset}
 					=
 					\miscMmuWeight \cdot \locExtractModulus
+					% OK
 				\]
 				in other words
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + \prcModexpSuccessExtractModulusRowOffset} & = & \gZero             & (\trash) \\
-						\miscMmuFlag _{i + \prcModexpSuccessExtractModulusRowOffset} & = & \locExtractModulus & (\trash) \\
-						\miscMxpFlag _{i + \prcModexpSuccessExtractModulusRowOffset} & = & \rZero             & (\trash) \\
-						\miscOobFlag _{i + \prcModexpSuccessExtractModulusRowOffset} & = & \gZero             & (\trash) \\
-						\miscStpFlag _{i + \prcModexpSuccessExtractModulusRowOffset} & = & \gZero             & (\trash) \\
+						\miscExpFlag _{i + \prcModexpSuccessExtractModulusRowOffset} & = & \gZero             & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcModexpSuccessExtractModulusRowOffset} & = & \locExtractModulus & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcModexpSuccessExtractModulusRowOffset} & = & \rZero             & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcModexpSuccessExtractModulusRowOffset} & = & \gZero             & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcModexpSuccessExtractModulusRowOffset} & = & \gZero             & (\sanityCheck) \\
 					\end{array} \right.
 				\]
+				\saNote{}
+				\locExtractModulus{} is provably binary.
 			\item[\underline{Setting the \mmuMod{} instruction:}] 
 				\If $\miscMmuFlag_{i + \prcModexpSuccessExtractModulusRowOffset} = 1$ \Then we impose
 				\[
@@ -208,19 +223,19 @@ The above thus either extracts some data from \textsc{ram} and serves it to the 
 			\item[\underline{Setting lookup flags:}]
 				we impose
 				\[
-					\weightedMiscFlagSum
-					{i}{\prcModexpSuccessTransferResultRowOffset}
+					\weightedMiscFlagSum {i}{\prcModexpSuccessTransferResultRowOffset}
 					=
 					\miscMmuWeight \cdot \locExtractModulus
+					% OK
 				\]
 				in other words
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + \prcModexpSuccessTransferResultRowOffset} & = & \gZero             & (\trash) \\
-						\miscMmuFlag _{i + \prcModexpSuccessTransferResultRowOffset} & = & \locExtractModulus & (\trash) \\
-						\miscMxpFlag _{i + \prcModexpSuccessTransferResultRowOffset} & = & \rZero             & (\trash) \\
-						\miscOobFlag _{i + \prcModexpSuccessTransferResultRowOffset} & = & \gZero             & (\trash) \\
-						\miscStpFlag _{i + \prcModexpSuccessTransferResultRowOffset} & = & \gZero             & (\trash) \\
+						\miscExpFlag _{i + \prcModexpSuccessTransferResultRowOffset} & = & \gZero             & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcModexpSuccessTransferResultRowOffset} & = & \locExtractModulus & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcModexpSuccessTransferResultRowOffset} & = & \rZero             & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcModexpSuccessTransferResultRowOffset} & = & \gZero             & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcModexpSuccessTransferResultRowOffset} & = & \gZero             & (\sanityCheck) \\
 					\end{array} \right.
 				\]
 			\item[\underline{Setting the \mmuMod{} instruction:}] 
@@ -243,25 +258,27 @@ The above thus either extracts some data from \textsc{ram} and serves it to the 
 			\item[\underline{Setting lookup flags:}]
 				we impose
 				\[
-					\weightedMiscFlagSum
-					{i}{\prcModexpSuccessPartialCopyOfResultsRowOffset}
+					\weightedMiscFlagSum {i}{\prcModexpSuccessPartialCopyOfResultsRowOffset}
 					=
 					\miscMmuWeight \cdot
 					\left[ \begin{array}{l}
 						\cdot \, \locMbsIsNonzero \\
 						\cdot \, \locRacIsNonzero \\
 					\end{array} \right]
+					% OK
 				\]
 				in other words
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + \prcModexpSuccessPartialCopyOfResultsRowOffset} & = & \gZero                                  & (\trash) \\
-						\miscMmuFlag _{i + \prcModexpSuccessPartialCopyOfResultsRowOffset} & = & \locMbsIsNonzero \cdot \locRacIsNonzero & (\trash) \\
-						\miscMxpFlag _{i + \prcModexpSuccessPartialCopyOfResultsRowOffset} & = & \rZero                                  & (\trash) \\
-						\miscOobFlag _{i + \prcModexpSuccessPartialCopyOfResultsRowOffset} & = & \gZero                                  & (\trash) \\
-						\miscStpFlag _{i + \prcModexpSuccessPartialCopyOfResultsRowOffset} & = & \gZero                                  & (\trash) \\
+						\miscExpFlag _{i + \prcModexpSuccessPartialCopyOfResultsRowOffset} & = & \gZero                                  & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcModexpSuccessPartialCopyOfResultsRowOffset} & = & \locMbsIsNonzero \cdot \locRacIsNonzero & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcModexpSuccessPartialCopyOfResultsRowOffset} & = & \rZero                                  & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcModexpSuccessPartialCopyOfResultsRowOffset} & = & \gZero                                  & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcModexpSuccessPartialCopyOfResultsRowOffset} & = & \gZero                                  & (\sanityCheck) \\
 					\end{array} \right.
 				\]
+				\saNote{}
+				Both \locMbsIsNonzero{} and \locRacIsNonzero{} are known to be binary.
 			\item[\underline{Setting the \mmuMod{} instruction:}] 
 				\If $\miscMmuFlag_{i + \prcModexpSuccessPartialCopyOfResultsRowOffset} = 1$ \Then we impose
 				\[

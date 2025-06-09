@@ -39,6 +39,7 @@ We remind the reader that success of any of the \inst{ECADD}, \inst{ECMUL}, \ins
 					\weightedMiscFlagSum {i}{\prcStandardSuccessSecondMiscRowOffset}
 					=
 					\miscMmuWeight \cdot \locTriggerMmu
+					% OK
 				\]
 				in other words
 				\[
@@ -250,17 +251,20 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 						\weightedMiscFlagSum {i}{\prcStandardSuccessThirdMiscRowOffset}
 						=
 						\miscMmuWeight \cdot \locOobResultNonzeroRac
+						% OK
 					\]
 					in other words
 					\[
 						\left\{ \begin{array}{lclr}
-							\miscExpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\trash) \\
-							\miscMmuFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \locOobResultNonzeroRac & (\trash) \\
-							\miscMxpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\trash) \\
-							\miscOobFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\trash) \\
-							\miscStpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\trash) \\
+							\miscExpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\sanityCheck) \\
+							\miscMmuFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \locOobResultNonzeroRac & (\sanityCheck) \\
+							\miscMxpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\sanityCheck) \\
+							\miscOobFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\sanityCheck) \\
+							\miscStpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\sanityCheck) \\
 						\end{array} \right.
 					\]
+					\saNote{}
+					\locOobResultNonzeroRac{} is provably binary.
 			\end{description}
 			\saNote{} In other words the ``result transfer'' step of a call to the \inst{ECADD}, \inst{ECMUL}, \inst{ECPAIRING} is only required if the \inst{CALL} is provided with nonzero \RAC{}.
 			\begin{description}
