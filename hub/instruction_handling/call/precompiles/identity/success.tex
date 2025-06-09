@@ -17,8 +17,7 @@ However, this time we are also assuming that $\scenPrcSuccess \equiv 1$.
 			\item[\underline{Setting lookup flags:}]
 				we impose
 				\[
-					\weightedMiscFlagSum
-					{i}{\prcStandardSuccessSecondMiscRowOffset}
+					\weightedMiscFlagSum {i}{\prcStandardSuccessSecondMiscRowOffset}
 					=
 					\miscMmuWeight
 					\cdot
@@ -30,18 +29,22 @@ However, this time we are also assuming that $\scenPrcSuccess \equiv 1$.
 				in other words:
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                                                     & (\trash) \\
-						\miscMmuFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locOobResultExtractCallData \cdot \locOobResultNonzeroRac & (\trash) \\
-						\miscMxpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \rZero                                                     & (\trash) \\
-						\miscOobFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                                                     & (\trash) \\
-						\miscStpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                                                     & (\trash) \\
+						\miscExpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                                                     & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locOobResultExtractCallData \cdot \locOobResultNonzeroRac & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \rZero                                                     & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                                                     & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                                                     & (\sanityCheck) \\
 					\end{array} \right.
 				\]
-				\saNote{} In other words the ``partial data copy'' step of a call to the \inst{IDENTITY} is only required if the call is
+				\saNote{}
+				In other words the ``partial data copy'' step of a call to the \inst{IDENTITY} is only required if the call is
 				(\emph{a}) successful (i.e. is given sufficient gas)
 				(\emph{b}) provided with nonempty call data
 				(\emph{c}) provided with nonzero \rac{}.
 				Recall that the first two points are equivalent to $\locOobResultExtractCallData \equiv 1$.
+
+				\saNote{}
+				Both $\locOobResultExtractCallData$ and $\locOobResultNonzeroRac$ are provably binary.
 			\item[\underline{\mmuMod{} data:}]
 				\If $\miscMmuFlag_{i + \prcStandardSuccessSecondMiscRowOffset} = 1$ \Then we impose
 				\[
