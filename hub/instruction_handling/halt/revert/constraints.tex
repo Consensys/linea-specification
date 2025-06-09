@@ -105,7 +105,7 @@ The present section deals with handling \inst{REVERT} instructions.
 		\saNote{}
 		One may, in the implemementation, compress the above into fewer constraints like so:
 		\[
-			\left\{ \begin{array}{l}
+			\left\{ \begin{array}{lclr}
 				\left[ \begin{array}{clcl}
 					+ & \miscExpWeight & \cdot & \miscExpFlag _{i + \locRevertMiscRowOffset} \\
 					% + & \miscMmuWeight & \cdot & \miscMmuFlag _{i + \locRevertMiscRowOffset} \\
@@ -113,10 +113,8 @@ The present section deals with handling \inst{REVERT} instructions.
 					+ & \miscOobWeight & \cdot & \miscOobFlag _{i + \locRevertMiscRowOffset} \\
 					+ & \miscStpWeight & \cdot & \miscStpFlag _{i + \locRevertMiscRowOffset} \\
 				\end{array} \right]
-                                & = & \miscMxpWeight
-				\vspace{2mm}
-				\\
-				\miscMmuFlag _{i + \locRevertMiscRowOffset} & = & \locTriggerMmu \\
+                                                                            & = & \miscMxpWeight & (\sanityCheck) \vspace{2mm} \\
+				\miscMmuFlag _{i + \locRevertMiscRowOffset} & = & \locTriggerMmu & (\sanityCheck)              \\
 			\end{array} \right.
 			% OK
 		\]
