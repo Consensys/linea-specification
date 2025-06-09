@@ -42,20 +42,20 @@ With the present instruction we begin by specifying a single miscellaneous-row w
 		the underlying \inst{MCOPY} instruction is unexceptional ($\xAhoy \equiv 0$)
 		and its size parameter is nonzero ($\locMcopyMxpSizeOneNonZeroNoMxpx \equiv 1$.)
 		\[
-			\left\{ \begin{array}{lcl}
-				\locTriggerMxp & \define & 1                                                        \\
-				\locTriggerMmu & \define & (1 - \xAhoy _{i}) \cdot \locMcopyMxpSizeOneNonZeroNoMxpx \\
-			\end{array} \right.
+			\locTriggerMmu \define (1 - \xAhoy _{i}) \cdot \locMcopyMxpSizeOneNonZeroNoMxpx
 		\]
 		In other words
 		\begin{enumerate}
-			\item \If $\xAhoy_{i} = 1$ \Then $\locTriggerMmu = 0$ \quad (\trash)
-			\item \If $\xAhoy_{i} = 0$ \Then 
+			\item \If $\xAhoy _{i} = 1$ \Then $\locTriggerMmu = 0$ \quad (\sanityCheck)
+			\item \If $\xAhoy _{i} = 0$ \Then
 				\begin{enumerate}
-					\item \If $\locSizeLo =    0$ \Then $\locTriggerMmu = 0$ \quad (\trash)
-					\item \If $\locSizeLo \neq 0$ \Then $\locTriggerMmu = 1$ \quad (\trash)
+					\item \If $\locSizeLo =    0$ \Then $\locTriggerMmu = 0$ \quad (\sanityCheck)
+					\item \If $\locSizeLo \neq 0$ \Then $\locTriggerMmu = 1$ \quad (\sanityCheck)
 				\end{enumerate}
 		\end{enumerate}
+		\saNote{} \label{hub: instruction handling: mcopy: trigger MMU is indeed binary}
+		The expression defining $\locTriggerMmu$ is indeed binary \emph{provided that} the \mxpMod{} indeed gets triggered.
+		A previous constraint ensures us of this.
 \end{description}
 We are now in a position to specify the peeking flags.
 \begin{description}
@@ -100,7 +100,7 @@ We are now in a position to specify the peeking flags.
 			\locMcopyMxpMxpx
 		\]
 	\item[\underline{Setting the gas cost:}]
-		we impose that 
+		we impose that
 		\begin{enumerate}
 			\item \If $\stackMxpx _{i} = 0$ \Then \( \gasCost_{i} = \stackStaticGas _{i} + \locMcopyMxpGas \)
 			\item \If $\stackMxpx _{i} = 1$ \Then \( \gasCost_{i} = 0 \)
@@ -108,51 +108,62 @@ We are now in a position to specify the peeking flags.
 	\item[\underline{Miscellaneous-row $n^°(i + \locMcopyFrstMiscOffset)$: flags:}]
 		we impose that
 		\[
-			\weightedMiscFlagSum {i}{\locMcopyFrstMiscOffset}
-			=
-			\left[ \begin{array}{llcl}
-				+ & \miscMmuWeight & \!\!\!\cdot\!\!\! & \locCallMmu \\
-				+ & \miscMxpWeight  \\
-			\end{array} \right]
-		\]
-		in other words
-		\[
 			\left\{ \begin{array}{lclr}
-				\miscExpFlag  _{i + \locMcopyFrstMiscOffset} & = & \gZero      & (\trash) \\
-				\miscMmuFlag  _{i + \locMcopyFrstMiscOffset} & = & \locCallMmu & (\trash) \\
-				\miscMxpFlag  _{i + \locMcopyFrstMiscOffset} & = & \one        & (\trash) \\
-				\miscOobFlag  _{i + \locMcopyFrstMiscOffset} & = & \gZero      & (\trash) \\
-				\miscStpFlag  _{i + \locMcopyFrstMiscOffset} & = & \gZero      & (\trash) \\
+				\miscExpFlag _{i + \locMcopyFrstMiscOffset} & = & \gZero         \\
+				\miscMmuFlag _{i + \locMcopyFrstMiscOffset} & = & \locTriggerMmu \\
+				\miscMxpFlag _{i + \locMcopyFrstMiscOffset} & = & \one           \\
+				\miscOobFlag _{i + \locMcopyFrstMiscOffset} & = & \gZero         \\
+				\miscStpFlag _{i + \locMcopyFrstMiscOffset} & = & \gZero         \\
 			\end{array} \right.
 		\]
+		\saNote{}
+		One may, in the implemementation, compress the above into fewer constraints like so:
+		\[
+			\left\{ \begin{array}{l}
+				\left[ \begin{array}{clcl}
+					+ & \miscExpWeight & \cdot & \miscExpFlag _{i + \relof} \\
+					% + & \miscMmuWeight & \cdot & \miscMmuFlag _{i + \relof} \\
+					+ & \miscMxpWeight & \cdot & \miscMxpFlag _{i + \relof} \\
+					+ & \miscOobWeight & \cdot & \miscOobFlag _{i + \relof} \\
+					+ & \miscStpWeight & \cdot & \miscStpFlag _{i + \relof} \\
+				\end{array} \right]
+                                & = & \miscMxpWeight
+				\vspace{2mm}
+				\\
+				\miscMmuFlag _{i + \locMcopyFrstMiscOffset} & = & \locTriggerMmu \\
+			\end{array} \right.
+			% OK
+		\]
+		\saNote{}
+		Recall note~(\ref{hub: instruction handling: mcopy: trigger MMU is indeed binary}).
 	\item[\underline{Miscellaneous-row $n^°(i + \locMcopyScndMiscOffset)$: flags:}]
 		\If $\locTriggerMmu = 1$ \Then we impose that
 		\[
 			\weightedMiscFlagSum {i}{\locMcopyScndMiscOffset}
 			=
 			\miscMmuWeight
+			% OK
 		\]
 		in other words
 		\[
 			\left\{ \begin{array}{lclr}
-				\miscExpFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\trash) \\
-				\miscMmuFlag  _{i + \locMcopyScndMiscOffset} & = & \one    & (\trash) \\
-				\miscMxpFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\trash) \\
-				\miscOobFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\trash) \\
-				\miscStpFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\trash) \\
+				\miscExpFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\sanityCheck) \\
+				\miscMmuFlag  _{i + \locMcopyScndMiscOffset} & = & \one    & (\sanityCheck) \\
+				\miscMxpFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\sanityCheck) \\
+				\miscOobFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\sanityCheck) \\
+				\miscStpFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\sanityCheck) \\
 			\end{array} \right.
 		\]
-		\saNote{} The binary flag \locCallMmu{} will be defined below.
 \end{description}
 The \zkEvm{} carries out the \inst{MCOPY} instruction in two steps,
 similarly to how it deals with the \inst{IDENTITY} precompile,
 see section~(\ref{hub: instruction handling: call: precompiles: identity}).
-The first step is to carry out a full copy of the specified (\emph{nonempty}) source memory span into a new,
-hitherto untouched, memory span with fresh (and as of yet, unclaimed) identifier $1 + \hubStamp_{i}$.
-The second step is to copy the contents over from that new memory span to the target memory span.
-In the above the source memory span starts at offset $\locSrcOffsetLo$ an occupies $\locSizeLo$ many bytes, and
-the target memory span starts at offset $\locTgtOffsetLo$ an (also) occupies $\locSizeLo$ many bytes.
-Both have identifier $\cn _{i}$.
+The first step is a full copy of the (\emph{nonempty}) source memory span
+(with identifier $\cn _{i}$, starting offset $\locSrcOffsetLo$ and size in bytes $\locSizeLo \neq 0$),
+into a new, hitherto untouched, memory span
+(with fresh, and as of yet, unclaimed, identifier $1 + \hubStamp_{i}$, starting offset $0$ and size in bytes $\locSizeLo$.)
+The second step is to copy the contents over from that new memory span to the target memory span
+(with identifier $\cn _{i}$, starting offset $\locTgtOffsetLo$ and size in bytes $\locSizeLo$.)
 
 This approach avoids difficulties related to
 (\emph{a}) overlapping source and target memory spans
@@ -203,5 +214,5 @@ This approach avoids difficulties related to
 			}
 		\]
 		\saNote{}
-		The current context and caller context (which may own the call data) are provided by the lookup. 
+		The current context and caller context (which may own the call data) are provided by the lookup.
 \end{description}
