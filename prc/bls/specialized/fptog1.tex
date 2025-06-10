@@ -1,0 +1,49 @@
+\[
+    \boxed{\text{All constraints in this subsection assume }
+        \left\{ \begin{array}{lcl}
+            \isBlsMapFpToGOneData _{i}  & =    & 1            \\
+            \locNewFirstInput     _{i} & =    & 1            \\
+        \end{array} \right.
+    }
+\]
+We introduce the following (local) shorthands:
+\[
+    \left\{ \begin{array}{lclr}
+        \locEThree & \define & \blsLimb_{i}      \\
+        \locETwo   & \define & \blsLimb_{i + 1}  \\
+        \locEOne   & \define & \blsLimb_{i + 2}  \\
+        \locEZero  & \define & \blsLimb_{i + 3}  \\
+    \end{array} \right.
+\]
+We set the following constraints:
+\begin{description}
+    \item[\underline{Row $n^°(i)$:}]
+        we impose
+            \[
+                \wcpGeneralizedCallToLt {
+                    anchorRow = i             ,
+                    relOffset = 0             ,
+                    argOneThree = \locEThree  ,
+                    argOneTwo   = \locETwo    ,
+                    argOneOne   = \locEOne    ,
+                    argOneZero  = \locEZero   ,
+                    argTwoThree = \blsPrimeThree ,
+                    argTwoTwo   = \blsPrimeTwo   ,
+                    argTwoOne   = \blsPrimeOne   ,
+                    argTwoZero  = \blsPrimeZero  ,
+               }         
+            \]
+        as well as define the shorthand
+            \[
+                \locEIsInRange \define \wcpRes_{i}
+            \]
+    \item[\underline{Setting \malformedDataInternalBit{}:}]
+          we define the following shorthand
+          \[
+              \locInternalChecksPassed \define 1 - \malformedDataInternalBit _{i} 
+          \]
+          and impose the following constraints
+          \[
+            \locInternalChecksPassed = \locEIsInRange
+          \]
+\end{description}

@@ -1,168 +1,418 @@
-\def\locStampIncrement                {\col{stamp\_increment}}
-\def\locTransitionBit                 {\col{transition\_bit}}
-\def\locIndexResetBit                 {\col{index\_reset\_bit}}
-\def\locLegalTransitionsBit           {\col{legal\_transitions\_bit}}
-\def\locShakiraIsKeccak               {\col{is\_keccak}}
-\def\locShakiraIsShaTwo               {\col{is\_sha2}}
-\def\locShakiraIsRipemd               {\col{is\_ripemd}}
-\def\locShakiraIsResult               {\col{is\_result}}
-\def\locIsData                        {\col{is\_data}}
-\def\locIsResult                      {\col{is\_result}}
-\def\locIsFinalDataRow                {\col{is\_final\_data\_row}}
-\def\locIsFirstDataRow                {\col{is\_first\_data\_row}}
+\def\locStampIncrement                 {\loc{stamp\_increment}}
+\def\locTransitionBit                  {\loc{transition\_bit}}
+\def\locIndexResetBit                  {\loc{index\_reset\_bit}}
+\def\locLegalTransitionsBit            {\loc{legal\_transitions\_bit}}
+\def\locShakiraIsKeccak                {\loc{is\_keccak}}
+\def\locShakiraIsShaTwo                {\loc{is\_sha2}}
+\def\locShakiraIsRipemd                {\loc{is\_ripemd}}
+\def\locShakiraIsResult                {\loc{is\_result}}
+\def\locIsData                         {\loc{is\_data}}
+\def\locIsResult                       {\loc{is\_result}}
+\def\locIsFinalDataRow                 {\loc{is\_final\_data\_row}}
+\def\locIsFirstDataRow                 {\loc{is\_first\_data\_row}}
 
 
+\def\locIsEcrecover                          {\loc{is\_ecrecover}}
+\def\locIsEcadd                              {\loc{is\_ecadd}}
+\def\locIsEcmul                              {\loc{is\_ecmul}}
+\def\locIsEcpairing                          {\loc{is\_ecpairing}}
+\def\locIsBlsGOneAdd                         {\loc{is\_g1\_add}}
+\def\locIsBlsGOneMsm                         {\loc{is\_g1\_msm}}
+\def\locIsBlsGOneMsm                         {\loc{is\_g1\_msm}}
+\def\locIsBlsGTwoAdd                         {\loc{is\_g2\_add}}
+\def\locIsBlsGTwoMsm                         {\loc{is\_g2\_msm}}
+\def\locIsBlsPairingCheck                    {\loc{is\_pairing\_check}}
+\def\locIsBlsMapFpToGOne                     {\loc{is\_map\_fp\_to\_g1}}
+\def\locIsBlsMapFpTwoToGTwo                  {\loc{is\_map\_fp2\_to\_g2}}
+\def\locIsPointEvaluation                    {\loc{is\_point\_evaluation}}
+\def\locIsBlsIsNontrivialPairingDataOrResult {\loc{is\_nontrivial\_pairing\_data\_or\_result}}
 
 
-%\newcommand{\myCds}[1][\empty]{\ifx\empty#1 \col{CDS} \else \col{CALL\_DATA\_SIZE} \fi}
-%\myCds
-%\myCds[]
+\def\isInRange                         {\loc{\_is\_in\_range}}
 
-\def\isInRange                        {\col{\_is\_in\_range}}
 
 % ecadd
-\def\locP                     {\col{P}}
-\def\locPX                    {\locP\col{\_x}}
-\def\locPY                    {\locP\col{\_y}}
+\def\locP                              {\loc{P}}
+\def\locPX                             {\locP\loc{\_x}}
+\def\locPY                             {\locP\loc{\_y}}
+\def\locPXIm                           {\locPX\loc{\_Im}}
+\def\locPXRe                           {\locPX\loc{\_Re}}
+\def\locPYIm                           {\locPY\loc{\_Im}}
+\def\locPYRe                           {\locPY\loc{\_Re}}
 
-\def\locPXHi                  {\locPX\col{\_hi}}
-\def\locPXLo                  {\locPX\col{\_lo}}
-\def\locPYHi                  {\locPY\col{\_hi}}
-\def\locPYLo                  {\locPY\col{\_lo}}
+\def\locPXHi                           {\locPX\loc{\_hi}}
+\def\locPXLo                           {\locPX\loc{\_lo}}
+\def\locPYHi                           {\locPY\loc{\_hi}}
+\def\locPYLo                           {\locPY\loc{\_lo}}
 
-\def\locQ                     {\col{Q}}
-\def\locQX                    {\locQ\col{\_x}}
-\def\locQY                    {\locQ\col{\_y}}
+\def\locQ                              {\loc{Q}}
+\def\locQX                             {\locQ\loc{\_x}}
+\def\locQY                             {\locQ\loc{\_y}}
 
-\def\locQXHi                  {\locQX\col{\_hi}}
-\def\locQXLo                  {\locQX\col{\_lo}}
-\def\locQYHi                  {\locQY\col{\_hi}}
-\def\locQYLo                  {\locQY\col{\_lo}}
+\def\locQXHi                           {\locQX\loc{\_hi}}
+\def\locQXLo                           {\locQX\loc{\_lo}}
+\def\locQYHi                           {\locQY\loc{\_hi}}
+\def\locQYLo                           {\locQY\loc{\_lo}}
 
-\def\locPXIsInRange                  {\locPX\isInRange}
-\def\locPYIsInRange                  {\locPY\isInRange}
-\def\locPIsInRange                   {\locP\isInRange}
-\def\locPXIsZero                     {\locPX\col{\_is\_zero}}
-\def\locPYIsZero                     {\locPY\col{\_is\_zero}}
+\def\locPXIsInRange                    {\locPX\isInRange}
+\def\locPYIsInRange                    {\locPY\isInRange}
+\def\locPIsInRange                     {\locP\isInRange}
 
-\def\locLargeSum                     {\col{large\_sum}}
-\def\locPXxYIsInfinity               {\locP\col{\_is\_point\_at\_infinity}}
+\def\locPXImIsInRange                  {\locPXIm\isInRange}
+\def\locPXReIsInRange                  {\locPXRe\isInRange}
+\def\locPYImIsInRange                  {\locPYIm\isInRange}
+\def\locPYReIsInRange                  {\locPYRe\isInRange}
 
-\def\locPYSquare                     {\locPY\col{\_square}}
-\def\locPYSquareHi                   {\locPYSquare\col{\_hi}}
-\def\locPYSquareLo                   {\locPYSquare\col{\_lo}}
-\def\locPXSquare                     {\locPX\col{\_square}}
-\def\locPXSquareHi                   {\locPXSquare\col{\_hi}}
-\def\locPXSquareLo                   {\locPXSquare\col{\_lo}}
-\def\locPXCube                       {\locPX\col{\_cube}}
-\def\locPXCubeHi                     {\locPXCube\col{\_hi}}
-\def\locPXCubeLo                     {\locPXCube\col{\_lo}}
-\def\locPXCubePlusThree              {\locPXCube\col{\_plus\_three}}
-\def\locPXCubePlusThreeHi            {\locPXCubePlusThree\col{\_hi}}
-\def\locPXCubePlusThreeLo            {\locPXCubePlusThree\col{\_lo}}
+\def\locPXIsZero                       {\locPX\loc{\_is\_zero}}
+\def\locPYIsZero                       {\locPY\loc{\_is\_zero}}
 
-\def\locPSatisfiesCubic              {\locP\col{\_satisfies\_cubic}}
+\def\locLargeSum                       {\loc{large\_sum}}
+\def\locPXpYIsInfinity                 {\locP\loc{\_is\_point\_at\_infinity}}
 
-\def\locResult                     {\col{RES}}
-\def\locResultX                    {\locResult\col{\_x}}
-\def\locResultY                    {\locResult\col{\_y}}
+\def\locPYSquare                       {\locPY\loc{\_square}}
+\def\locPYSquareHi                     {\locPYSquare\loc{\_hi}}
+\def\locPYSquareLo                     {\locPYSquare\loc{\_lo}}
+\def\locPXSquare                       {\locPX\loc{\_square}}
+\def\locPXSquareHi                     {\locPXSquare\loc{\_hi}}
+\def\locPXSquareLo                     {\locPXSquare\loc{\_lo}}
+\def\locPXCube                         {\locPX\loc{\_cube}}
+\def\locPXCubeHi                       {\locPXCube\loc{\_hi}}
+\def\locPXCubeLo                       {\locPXCube\loc{\_lo}}
+\def\locPXCubePlusThree                {\locPXCube\loc{\_plus\_three}}
+\def\locPXCubePlusThreeHi              {\locPXCubePlusThree\loc{\_hi}}
+\def\locPXCubePlusThreeLo              {\locPXCubePlusThree\loc{\_lo}}
 
-\def\locResultXHi                  {\locResultX\col{\_hi}}
-\def\locResultXLo                  {\locResultX\col{\_lo}}
-\def\locResultYHi                  {\locResultY\col{\_hi}}
-\def\locResultYLo                  {\locResultY\col{\_lo}}
+\def\locPSatisfiesCubic                {\locP\loc{\_satisfies\_cubic}}
+
+\def\locResult                         {\loc{RES}}
+\def\locResultX                        {\locResult\loc{\_x}}
+\def\locResultY                        {\locResult\loc{\_y}}
+
+\def\locResultXHi                      {\locResultX\loc{\_hi}}
+\def\locResultXLo                      {\locResultX\loc{\_lo}}
+\def\locResultYHi                      {\locResultY\loc{\_hi}}
+\def\locResultYLo                      {\locResultY\loc{\_lo}}
+
 
 % ecmul
+\def\locN                              {\loc{n}}
 
-\def\locN                    {\col{n}}
+\def\locNHi                            {\locN\loc{\_hi}}
+\def\locNLo                            {\locN\loc{\_lo}}
 
-\def\locNHi                  {\locN\col{\_hi}}
-\def\locNLo                  {\locN\col{\_lo}}
 
 % ecrecovering
-\def\locH             {\col{h}}
-\def\locHHi           {\locH\col{\_hi}}
-\def\locHLo           {\locH\col{\_lo}}
+\def\locH                              {\loc{h}}
+\def\locHHi                            {\locH\loc{\_hi}}
+\def\locHLo                            {\locH\loc{\_lo}}
 
-\def\locV             {\col{v}}
-\def\locVHi           {\locV\col{\_hi}}
-\def\locVLo           {\locV\col{\_lo}}
+\def\locV                              {\loc{v}}
+\def\locVHi                            {\locV\loc{\_hi}}
+\def\locVLo                            {\locV\loc{\_lo}}
 
-\def\locR             {\col{r}}
-\def\locRHi           {\locR\col{\_hi}}
-\def\locRLo           {\locR\col{\_lo}}
+\def\locR                              {\loc{r}}
+\def\locRHi                            {\locR\loc{\_hi}}
+\def\locRLo                            {\locR\loc{\_lo}}
 
-\def\locS             {\col{s}}
-\def\locSHi           {\locS\col{\_hi}}
-\def\locSLo           {\locS\col{\_lo}}
+\def\locS                              {\loc{s}}
+\def\locSHi                            {\locS\loc{\_hi}}
+\def\locSLo                            {\locS\loc{\_lo}}
 
-\def\locRIsInRange       {\locR\isInRange}
-\def\locSIsInRange       {\locS\isInRange}
-\def\locRIsPositive    {\locR\col{\_is\_positive}}
-\def\locSIsPositive    {\locS\col{\_is\_positive}}
-\def\locVIsTwentyseven {\locV\col{\_is\_27}}
-\def\locVIsTwentyeight {\locV\col{\_is\_28}}
+\def\locRIsInRange                     {\locR\isInRange}
+\def\locSIsInRange                     {\locS\isInRange}
+\def\locRIsPositive                    {\locR\loc{\_is\_positive}}
+\def\locSIsPositive                    {\locS\loc{\_is\_positive}}
+\def\locVIsTwentyseven                 {\locV\loc{\_is\_27}}
+\def\locVIsTwentyeight                 {\locV\loc{\_is\_28}}
 
-\def\locRecoveredAddress      {\col{recovered\_address}}
-\def\locRecoveredAddressHi    {\locRecoveredAddress\col{\_hi}}
-\def\locRecoveredAddressLo    {\locRecoveredAddress\col{\_lo}}
+\def\locRecoveredAddress               {\loc{recovered\_address}}
+\def\locRecoveredAddressHi             {\locRecoveredAddress\loc{\_hi}}
+\def\locRecoveredAddressLo             {\locRecoveredAddress\loc{\_lo}}
 
-% ecpairing
-\def\locA                     {\col{A}}
-\def\locAX                    {\locA\col{\_x}}
-\def\locAY                    {\locA\col{\_y}}
 
-\def\locAXHi                  {\locAX\col{\_hi}}
-\def\locAXLo                  {\locAX\col{\_lo}}
-\def\locAYHi                  {\locAY\col{\_hi}}
-\def\locAYLo                  {\locAY\col{\_lo}}
+% points
+\def\locA                              {\loc{A}}
+\def\locAX                             {\locA\loc{\_x}}
+\def\locAY                             {\locA\loc{\_y}}
+\def\locAXIm                           {\locAX\loc{\_Im}}
+\def\locAXRe                           {\locAX\loc{\_Re}}
+\def\locAYIm                           {\locAY\loc{\_Im}}
+\def\locAYRe                           {\locAY\loc{\_Re}}
 
-\def\locB                     {\col{B}}
-\def\locBX                    {\locB\col{\_x}}
-\def\locBY                    {\locB\col{\_y}}
-\def\locBXIm                  {\locBX\col{\_Im}}
-\def\locBXRe                  {\locBX\col{\_Re}}
-\def\locBYIm                  {\locBY\col{\_Im}}
-\def\locBYRe                  {\locBY\col{\_Re}}
+\def\locAXHi                           {\locAX\loc{\_hi}}
+\def\locAXLo                           {\locAX\loc{\_lo}}
+\def\locAYHi                           {\locAY\loc{\_hi}}
+\def\locAYLo                           {\locAY\loc{\_lo}}
 
-\def\locBXImHi                {\locBXIm\col{\_hi}}
-\def\locBXImLo                {\locBXIm\col{\_lo}}
-\def\locBXReHi                {\locBXRe\col{\_hi}}
-\def\locBXReLo                {\locBXRe\col{\_lo}}
-\def\locBYImHi                {\locBYIm\col{\_hi}}
-\def\locBYImLo                {\locBYIm\col{\_lo}}
-\def\locBYReHi                {\locBYRe\col{\_hi}}
-\def\locBYReLo                {\locBYRe\col{\_lo}}
+\def\locB                              {\loc{B}}
+\def\locBX                             {\locB\loc{\_x}}
+\def\locBY                             {\locB\loc{\_y}}
+\def\locBXIm                           {\locBX\loc{\_Im}}
+\def\locBXRe                           {\locBX\loc{\_Re}}
+\def\locBYIm                           {\locBY\loc{\_Im}}
+\def\locBYRe                           {\locBY\loc{\_Re}}
 
-\def\locBXImIsInRange           {\locBXIm\isInRange}
-\def\locBXReIsInRange           {\locBXRe\isInRange}
-\def\locBYImIsInRange           {\locBYIm\isInRange}
-\def\locBYReIsInRange           {\locBYRe\isInRange}
+\def\locBXImHi                         {\locBXIm\loc{\_hi}}
+\def\locBXImLo                         {\locBXIm\loc{\_lo}}
+\def\locBXReHi                         {\locBXRe\loc{\_hi}}
+\def\locBXReLo                         {\locBXRe\loc{\_lo}}
+\def\locBYImHi                         {\locBYIm\loc{\_hi}}
+\def\locBYImLo                         {\locBYIm\loc{\_lo}}
+\def\locBYReHi                         {\locBYRe\loc{\_hi}}
+\def\locBYReLo                         {\locBYRe\loc{\_lo}}
 
-% \def\locBIsInRange            {\locB\isInRange}
-\def\locBXIsInRange           {\locBX\isInRange}
-\def\locBYIsInRange           {\locBY\isInRange}
 
-\def\locVeryLargeSum          {\col{very\_large\_sum}}
-\def\locBXbYIsInfinity        {\locB\col{\_is\_point\_at\_infinity}}
+\def\locAXIsInRange                    {\locAX\isInRange}
+\def\locAXImIsInRange                  {\locAXIm\isInRange}
+\def\locAXReIsInRange                  {\locAXRe\isInRange}
 
-\def\locSmallPointInfinity        {\col{small\_point\_is\_at\_infinity}}
-\def\locLargePointInfinity        {\col{large\_point\_is\_at\_infinity}}
+\def\locAYIsInRange                    {\locAY\isInRange}
+\def\locAYImIsInRange                  {\locAYIm\isInRange}
+\def\locAYReIsInRange                  {\locAYRe\isInRange}
 
-\def\locCOneMembership               {\col{C1\_membership}}
-\def\locCOneMembershipFirstPoint     {\col{C1\_membership\_first\_point}}
-\def\locCOneMembershipSecondPoint    {\col{C1\_membership\_second\_point}}
-\def\locWellFormedCoordinates        {\col{well\_formed\_coordinates}}
+\def\locBXIsInRange                    {\locBX\isInRange}
+\def\locBXImIsInRange                  {\locBXIm\isInRange}
+\def\locBXReIsInRange                  {\locBXRe\isInRange}
 
-\def\locInternalChecksPassed         {\col{internal\_checks\_passed}}
-\def\locPreviousInternalChecksPassed {\col{prev\_}\locInternalChecksPassed}
+\def\locBYIsInRange                    {\locBY\isInRange}
+\def\locBYImIsInRange                  {\locBYIm\isInRange}
+\def\locBYReIsInRange                  {\locBYRe\isInRange}
 
-\def\locPairingsResult      {\col{pairings\_result}}
-\def\locPairingsResultHi    {\locPairingsResult\col{\_hi}}
-\def\locPairingsResultLo    {\locPairingsResult\col{\_lo}}
+\def\locBXIsInRange                    {\locBX\isInRange}
+\def\locBYIsInRange                    {\locBY\isInRange}
 
-\def\locTransitionFromSmallToLarge {\col{transition\_from\_small\_to\_large}}
-\def\locTransitionFromLargeToSmall {\col{transition\_from\_large\_to\_small}}
+\def\locVeryLargeSum                   {\loc{very\_large\_sum}}
+\def\locBXbYIsInfinity                 {\locB\loc{\_is\_point\_at\_infinity}}
 
-\def\locExceptionalPairingSum        {\col{exceptional\_pairing\_sum}}
-\def\locExceptionalPairingFlag       {\col{exceptional\_pairing\_flag}}
+\def\locSmallPointNontrivial           {\loc{small\_point\_is\_nontrivial}}
+\def\locLargePointNontrivial           {\loc{large\_point\_is\_nontrivial}}
+\def\locSmallPointInfinity             {\loc{small\_point\_is\_at\_infinity}}
+\def\locLargePointInfinity             {\loc{large\_point\_is\_at\_infinity}}
+\def\locSmallPointIsNotAtInfinity      {\loc{small\_point\_is\_not\_at\_infinity}}
+\def\locLargePointIsNotAtInfinity      {\loc{large\_point\_is\_not\_at\_infinity}}
+\def\locAtLeastOnePointIsNotAtInfinity {\loc{at\_least\_one\_point\_is\_not\_at\_infinity}}
+
+\def\locCOneMembership                 {\loc{C1\_membership}}
+\def\locCOneMembershipFirstPoint       {\loc{C1\_membership\_first\_point}}
+\def\locCOneMembershipSecondPoint      {\loc{C1\_membership\_second\_point}}
+\def\locWellFormedCoordinates          {\loc{well\_formed\_coordinates}}
+
+\def\locInternalChecksPassed           {\loc{internal\_checks\_passed}}
+\def\locPreviousInternalChecksPassed   {\loc{prev\_}\locInternalChecksPassed}
+\def\locInternalChecksFailed           {\loc{internal\_checks\_failed}}
+
+\def\locPairingsResult                 {\loc{pairings\_result}}
+\def\locPairingsResultHi               {\locPairingsResult\loc{\_hi}}
+\def\locPairingsResultLo               {\locPairingsResult\loc{\_lo}}
+
+\def\locTransitionFromSmallToLarge     {\loc{transition\_from\_small\_to\_large}}
+\def\locTransitionFromLargeToSmall     {\loc{transition\_from\_large\_to\_small}}
+\def\locWillSwitchFromFirstToSecond    {\loc{will\_switch\_from\_first\_to\_second}}
+\def\locWillSwitchFromSecondToFirst    {\loc{will\_switch\_from\_second\_to\_first}}
+
+\def\locExceptionalPairingSum          {\loc{exceptional\_pairing\_sum}}
+\def\locExceptionalPairingFlag         {\loc{exceptional\_pairing\_flag}}
+
+\def\locCtMaxFirstInput                {\loc{ct\_max\_first\_input}}
+\def\locCtMaxSecondInput               {\loc{ct\_max\_second\_input}}
+\def\locIsVariableSizeData             {\loc{is\_variable\_size\_data}}
+\def\locPrecompileWithOneInputTypes    {\loc{1\_input\_type\_prc\_data}}
+\def\locPrecompileWithTwoInputTypes    {\loc{2\_input\_type\_prc\_data}}
+
+% point evaluation
+\def\locVerHashHi                      {\loc{ver\_hash\_hi}}
+\def\locVerHashLo                      {\loc{ver\_hash\_lo}}
+\def\locZHi                            {\loc{z\_hi}}
+\def\locZLo                            {\loc{z\_lo}}
+\def\locYHi                            {\loc{y\_hi}}
+\def\locYLo                            {\loc{y\_lo}}
+\def\locComTwo                         {\loc{com2}}
+\def\locComOne                         {\loc{com1}}
+\def\locComZero                        {\loc{com0}}
+\def\locProofTwo                       {\loc{proof2}}
+\def\locProofOne                       {\loc{proof1}}
+\def\locProofZero                      {\loc{proof0}}
+\def\locFEPBHi                         {\loc{fields\_el\_per\_blob\_hi}}
+\def\locFEPBLo                         {\loc{fields\_el\_per\_blob\_lo}}
+\def\locBlsModHi                       {\loc{bls\_mod\_hi}}
+\def\locBlsModLo                       {\loc{bls\_mod\_lo}}
+\def\locZIsInRange                     {\loc{z\_is\_in\_range}}
+\def\locYIsInRange                     {\loc{y\_is\_in\_range}}
+
+
+% g1add, g2add
+\def\locAXThree                        {\loc{A\_x\_3}}
+\def\locAXTwo                          {\loc{A\_x\_2}}
+\def\locAXOne                          {\loc{A\_x\_1}}
+\def\locAXZero                         {\loc{A\_x\_0}}
+
+\def\locAYThree                        {\loc{A\_y\_3}}
+\def\locAYTwo                          {\loc{A\_y\_2}}
+\def\locAYOne                          {\loc{A\_y\_1}}
+\def\locAYZero                         {\loc{A\_y\_0}}
+
+\def\locBXThree                        {\loc{B\_x\_3}}
+\def\locBXTwo                          {\loc{B\_x\_2}}
+\def\locBXOne                          {\loc{B\_x\_1}}
+\def\locBXZero                         {\loc{B\_x\_0}}
+
+\def\locBYThree                        {\loc{B\_y\_3}}
+\def\locBYTwo                          {\loc{B\_y\_2}}
+\def\locBYOne                          {\loc{B\_y\_1}}
+\def\locBYZero                         {\loc{B\_y\_0}}
+
+\def\locCXThree                        {\loc{C\_x\_3}}
+\def\locCXTwo                          {\loc{C\_x\_2}}
+\def\locCXOne                          {\loc{C\_x\_1}}
+\def\locCXZero                         {\loc{C\_x\_0}}
+
+\def\locCYThree                        {\loc{C\_y\_3}}
+\def\locCYTwo                          {\loc{C\_y\_2}}
+\def\locCYOne                          {\loc{C\_y\_1}}
+\def\locCYZero                         {\loc{C\_y\_0}}
+
+\def\locPXThree                        {\loc{P\_x\_3}}
+\def\locPXTwo                          {\loc{P\_x\_2}}
+\def\locPXOne                          {\loc{P\_x\_1}}
+\def\locPXZero                         {\loc{P\_x\_0}}
+
+\def\locPYThree                        {\loc{P\_y\_3}}
+\def\locPYTwo                          {\loc{P\_y\_2}}
+\def\locPYOne                          {\loc{P\_y\_1}}
+\def\locPYZero                         {\loc{P\_y\_0}}
+
+% 
+
+\def\locAXImThree                      {\loc{A\_x\_Im\_3}}
+\def\locAXImTwo                        {\loc{A\_x\_Im\_2}}
+\def\locAXImOne                        {\loc{A\_x\_Im\_1}}
+\def\locAXImZero                       {\loc{A\_x\_Im\_0}}
+
+\def\locAXReThree                      {\loc{A\_x\_Re\_3}}
+\def\locAXReTwo                        {\loc{A\_x\_Re\_2}}
+\def\locAXReOne                        {\loc{A\_x\_Re\_1}}
+\def\locAXReZero                       {\loc{A\_x\_Re\_0}}
+
+\def\locAYImThree                      {\loc{A\_y\_Im\_3}}
+\def\locAYImTwo                        {\loc{A\_y\_Im\_2}}
+\def\locAYImOne                        {\loc{A\_y\_Im\_1}}
+\def\locAYImZero                       {\loc{A\_y\_Im\_0}}
+
+\def\locAYReThree                      {\loc{A\_y\_Re\_3}}
+\def\locAYReTwo                        {\loc{A\_y\_Re\_2}}
+\def\locAYReOne                        {\loc{A\_y\_Re\_1}}
+\def\locAYReZero                       {\loc{A\_y\_Re\_0}}
+
+\def\locBXImThree                      {\loc{B\_x\_Im\_3}}
+\def\locBXImTwo                        {\loc{B\_x\_Im\_2}}
+\def\locBXImOne                        {\loc{B\_x\_Im\_1}}
+\def\locBXImZero                       {\loc{B\_x\_Im\_0}}
+
+\def\locBXReThree                      {\loc{B\_x\_Re\_3}}
+\def\locBXReTwo                        {\loc{B\_x\_Re\_2}}
+\def\locBXReOne                        {\loc{B\_x\_Re\_1}}
+\def\locBXReZero                       {\loc{B\_x\_Re\_0}}
+
+\def\locBYImThree                      {\loc{B\_y\_Im\_3}}
+\def\locBYImTwo                        {\loc{B\_y\_Im\_2}}
+\def\locBYImOne                        {\loc{B\_y\_Im\_1}}
+\def\locBYImZero                       {\loc{B\_y\_Im\_0}}
+
+\def\locBYReThree                      {\loc{B\_y\_Re\_3}}
+\def\locBYReTwo                        {\loc{B\_y\_Re\_2}}
+\def\locBYReOne                        {\loc{B\_y\_Re\_1}}
+\def\locBYReZero                       {\loc{B\_y\_Re\_0}}
+
+\def\locCXImThree                      {\loc{C\_x\_Im\_3}}
+\def\locCXImTwo                        {\loc{C\_x\_Im\_2}}
+\def\locCXImOne                        {\loc{C\_x\_Im\_1}}
+\def\locCXImZero                       {\loc{C\_x\_Im\_0}}
+
+\def\locCXReThree                      {\loc{C\_x\_Re\_3}}
+\def\locCXReTwo                        {\loc{C\_x\_Re\_2}}
+\def\locCXReOne                        {\loc{C\_x\_Re\_1}}
+\def\locCXReZero                       {\loc{C\_x\_Re\_0}}
+
+\def\locCYImThree                      {\loc{C\_y\_Im\_3}}
+\def\locCYImTwo                        {\loc{C\_y\_Im\_2}}
+\def\locCYImOne                        {\loc{C\_y\_Im\_1}}
+\def\locCYImZero                       {\loc{C\_y\_Im\_0}}
+
+\def\locCYReThree                      {\loc{C\_y\_Re\_3}}
+\def\locCYReTwo                        {\loc{C\_y\_Re\_2}}
+\def\locCYReOne                        {\loc{C\_y\_Re\_1}}
+\def\locCYReZero                       {\loc{C\_y\_Re\_0}}
+
+\def\locPXImThree                      {\loc{P\_x\_Im\_3}}
+\def\locPXImTwo                        {\loc{P\_x\_Im\_2}}
+\def\locPXImOne                        {\loc{P\_x\_Im\_1}}
+\def\locPXImZero                       {\loc{P\_x\_Im\_0}}
+
+\def\locPXReThree                      {\loc{P\_x\_Re\_3}}
+\def\locPXReTwo                        {\loc{P\_x\_Re\_2}}
+\def\locPXReOne                        {\loc{P\_x\_Re\_1}}
+\def\locPXReZero                       {\loc{P\_x\_Re\_0}}
+
+\def\locPYImThree                      {\loc{P\_y\_Im\_3}}
+\def\locPYImTwo                        {\loc{P\_y\_Im\_2}}
+\def\locPYImOne                        {\loc{P\_y\_Im\_1}}
+\def\locPYImZero                       {\loc{P\_y\_Im\_0}}
+
+\def\locPYReThree                      {\loc{P\_y\_Re\_3}}
+\def\locPYReTwo                        {\loc{P\_y\_Re\_2}}
+\def\locPYReOne                        {\loc{P\_y\_Re\_1}}
+\def\locPYReZero                       {\loc{P\_y\_Re\_0}}
+
+
+%
+\def\locAIsWellFormed                  {\loc{A\_is\_well\_formed}}
+\def\locBIsWellFormed                  {\loc{B\_is\_well\_formed}}
+
+\def\locEThree                         {\loc{e\_3}}
+\def\locETwo                           {\loc{e\_2}}
+\def\locEOne                           {\loc{e\_1}}
+\def\locEZero                          {\loc{e\_0}}
+
+\def\locEAThree                        {\loc{e\_Im\_3}}
+\def\locEATwo                          {\loc{e\_Im\_2}}
+\def\locEAOne                          {\loc{e\_Im\_1}}
+\def\locEAZero                         {\loc{e\_Im\_0}}
+\def\locEBThree                        {\loc{e\_Re\_3}}
+\def\locEBTwo                          {\loc{e\_Re\_2}}
+\def\locEBOne                          {\loc{e\_Re\_1}}
+\def\locEBZero                         {\loc{e\_Re\_0}}
+
+\def\locEIsInRange                     {\loc{e\_is\_in\_range}}
+\def\locEAIsInRange                    {\loc{e\_Im\_is\_in\_range}}
+\def\locEBIsInRange                    {\loc{e\_Re\_is\_in\_range}}
+
+\def\locNonTrivial                     {\loc{non\_trivial}}
+
+\def\locSamePrcDataToData                  {\loc{same\_data\_to\_data}}
+\def\locSamePrcDataToResult                {\loc{same\_data\_to\_result}}
+\def\locSamePrcResultToResult              {\loc{same\_result\_to\_result}}
+
+\def\locNewInput                       {\loc{first\_row\_of\_new\_input}}
+\def\locNewFirstInput                  {\loc{first\_row\_of\_new\_first\_input}}
+\def\locNewSecondInput                 {\loc{first\_row\_of\_new\_second\_input}}
+
+\def\locWellformedData                 {\loc{wellformed\_data}}
+\def\locMalformedData                  {\loc{malformed\_data}}
+
+\def\locCaseDataSum                    {\loc{case\_data\_sum}}
+
+\def\locCsGOne                         {\loc{cs\_G1MT}}
+\def\locCsGOneForPairing               {\locCsGOne\loc{\_for\_pairing}}
+\def\locCsGOneForPairingMalformed      {\locCsGOneForPairing\loc{\_malformed}}
+\def\locCsGOneForPairingWellformed     {\locCsGOneForPairing\loc{\_wellformed}}
+\def\locCsGOneForMsm                   {\locCsGOne\loc{\_for\_g1\_msm}}
+
+\def\locCsGTwo                         {\loc{cs\_G2MT}}
+\def\locCsGTwoForPairing               {\locCsGTwo\loc{\_for\_pairing}}
+\def\locCsGTwoForPairingMalformed      {\locCsGTwoForPairing\loc{\_malformed}}
+\def\locCsGTwoForPairingWellformed     {\locCsGTwoForPairing\loc{\_wellformed}}
+\def\locCsGTwoForMsm                   {\locCsGTwo\loc{\_for\_g2\_msm}}
+
+\def\locCoordinateSum                  {\loc{coordinate\_sum}}
+
+\def\locTopLevelFlags                  {\malformedDataInternalTot{}, \malformedDataExternalTot{}, \wellformedDataTrivial{}, \wellformedDataNontrivial{}}

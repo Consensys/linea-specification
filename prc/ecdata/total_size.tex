@@ -1,6 +1,6 @@
 The $\ecdataTotalSize$ varies depending on the precompile, if data or results are considered and whether the call is successful (if it fails, $\ecdataTotalSize = 0$). In the case of $\inst{ECPAIRING}$, the total size is influenced by the number of pairings.
 
-We define the following module constants
+We define the following module constants:
 \[
     \left\{ \begin{array}{lcl}
         \totalSizeEcrecoverData    & \!\!\! \define \!\!\! & \redm{128} \\
@@ -28,19 +28,6 @@ Thus we impose the following constraints:
         + & \isEcpairingResult _{i} & \cdot & \totalSizeEcpairingResult   & \cdot & \ecdataSuccessBit _{i} \\
     \end{array} \right]
 \]
-
-\saNote{} The above translates to the following:
-\begin{enumerate}
-    \item \If $\isEcrecoverData$   \Then $\ecdataTotalSize = \totalSizeEcrecoverData$
-    \item \If $\isEcaddData$       \Then $\ecdataTotalSize = \totalSizeEcaddData$
-    \item \If $\isEcmulData$       \Then $\ecdataTotalSize = \totalSizeEcmulData$
-    \item \If $\isEcpairingData$   \Then $\ecdataTotalSize = \totalSizeEcpairingDataMin \cdot \totalPairings$    % we provide it ... it's a little strange
-    \item \If $\isEcrecoverResult$ \Then $\ecdataTotalSize = \totalSizeEcrecoverResult \cdot \ecdataSuccessBit$
-    \item \If $\isEcaddResult$     \Then $\ecdataTotalSize = \totalSizeEcaddResult     \cdot \ecdataSuccessBit$
-    \item \If $\isEcmulResult$     \Then $\ecdataTotalSize = \totalSizeEcmulResult     \cdot \ecdataSuccessBit$
-    \item \If $\isEcpairingResult$ \Then $\ecdataTotalSize = \totalSizeEcpairingResult \cdot \ecdataSuccessBit$
-\end{enumerate}
-
 \saNote{} We use the name $\totalSizeEcpairingDataMin$ for homogeneity reasons, but it is important to note that:
 \begin{itemize}
     \item

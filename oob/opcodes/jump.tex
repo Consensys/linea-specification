@@ -8,24 +8,28 @@ We remind the reader that the objective of the \oobMod{} module in this particul
 \noindent We introduce the following shorthands:
 \[
 	\left\{ \begin{array}{lclr}
-		\locPcNewHi                 & \define & \oobDataCol{1}   _{i} \\
-		\locPcNewLo                 & \define & \oobDataCol{2}   _{i} \\
-		%                           & \define & \oobDataCol{3}   _{i} \\
-		%                           & \define & \oobDataCol{4}   _{i} \\
-		\locCodeSize                & \define & \oobDataCol{5}   _{i} \\
-		%                           & \define & \oobDataCol{6}   _{i} \\
-		\locJumpGuaranteedException & \define & \oobDataCol{7}_{i}     & \prediction \\
-		\locJumpMustBeAttempted     & \define & \oobDataCol{8}_{i}     & \prediction \\
+		\locPcNewHi                 & \define & \oobDataCol{1} _{i} \\
+		\locPcNewLo                 & \define & \oobDataCol{2} _{i} \\
+		%                           & \define & \oobDataCol{3} _{i} \\
+		%                           & \define & \oobDataCol{4} _{i} \\
+		\locCodeSize                & \define & \oobDataCol{5} _{i} \\
+		%                           & \define & \oobDataCol{6} _{i} \\
+		\locJumpGuaranteedException & \define & \oobDataCol{7} _{i} & \prediction \\
+		\locJumpMustBeAttempted     & \define & \oobDataCol{8} _{i} & \prediction \\
 	\end{array} \right.
 \]
 We impose the following constraints:
 \begin{description}
 	\item[\underline{Row n°$(i)$:}] we impose the following:
 		\[
-			\oobCallToLt
-			{i}{0}
-			{\col{pc\_new\_hi}}{\col{pc\_new\_lo}}
-			{0}{\col{codesize}}
+			\wcpCallToLt {
+				anchorRow = i            ,
+				relOffset = 0            ,
+				argOneHi  = \locPcNewHi  ,
+				argOneLo  = \locPcNewLo  ,
+				argTwoHi  = 0            ,
+				argTwoLo  = \locCodeSize ,
+			}
 		\]
 		we also define the shorthand
 		\[
