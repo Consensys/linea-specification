@@ -157,29 +157,29 @@
 	\item[\underline{Miscellaneous-row $n^°(i + \stackramMiscRowOffset)$: \mxpMod{} data:}]
 		\If $\miscMxpFlag _{i + \stackramMiscRowOffset} = 1$
 		\Then we compute memory expansion cost:
-		\begin{enumerate}
-			\item
-				\If $\locIsMload + \locIsMstore = 1$ \Then
-				\[
-					\setMxpInstructionTypeTwo{
-						anchorRow   = i                      ,
-						relOffset   = \stackramMiscRowOffset ,
-						instruction = \locInst               ,
-						offsetHi    = \locOffsetHi           ,
-						offsetLo    = \locOffsetLo           ,
-					}
-				\]
-			\item
-				\If $\locIsMstoreEight = 1$ \Then
-				\[
-					\setMxpInstructionTypeThree{
-						anchorRow = i                      ,
-						relOffset = \stackramMiscRowOffset ,
-						offsetHi  = \locOffsetHi           ,
-						offsetLo  = \locOffsetLo           ,
-					}
-				\]
-		\end{enumerate}
+		\[
+			\setMxpInstructionOneOffset
+			{
+				anchorRow   = i                      ,
+				relOffset   = \stackramMiscRowOffset ,
+				instruction = \locInst               ,
+				deploys     = \nothing               ,
+				offsetHi    = \locOffsetHi           ,
+				offsetLo    = \locOffsetLo           ,
+				sizeHi      = 0                      ,
+				sizeLo      = \locFixedSize          ,
+			}
+		\]
+		where
+		\[
+			\locFixedSize
+			\define
+			\left[ \begin{array}{crcl}
+				+ & \redm{32} & \!\!\!\cdot\!\!\! & \locIsMload       \\
+				+ & \redm{32} & \!\!\!\cdot\!\!\! & \locIsMstore      \\
+				+ & \redm{ 1} & \!\!\!\cdot\!\!\! & \locIsMstoreEight \\
+			\end{array} \right]
+		\]
 	\item[\underline{Miscellaneous-row $n^°(i + \stackramMiscRowOffset)$: \mmuMod{} data:}]
 		\If $\miscMmuFlag _{i + \stackramMiscRowOffset} = 1$ \Then
 		we impose

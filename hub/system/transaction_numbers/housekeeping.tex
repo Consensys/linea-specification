@@ -1,0 +1,71 @@
+\epigraph{
+	“What we call the beginning is often the end \\
+	And to make an end is to make a beginning.   \\
+	The end is where we start from\dots{}}
+{T. S. Eliot, \textit{Little Gidding}}
+
+\noindent Recall that \totalTransactionNumber{} has $0/1$-increments, and increments (by one) \emph{precisely} at \transactionStart{},
+see note~(\ref{hub: system: transaction numbers: transaction numbers}).
+Thus, when it comes to transactions, ``every beginning has a start''.
+To prevent two \transactionStart{}'s in succession without the first one running into \transactionEnd{},
+we impose extra constraints.
+These make sure that, conversely,
+``every new beginning comes from some other beginning's end.''
+While we're at it we describe the final context-row of every transaction,
+see constraint~(\ref{hub: system: transaction numbers: every transaction must end on a context row}),
+and ensure that traces themselves finish on a $\transactionEnd$.
+\begin{description}
+	\item[\underline{``What we call the beginning is often the end''}]
+		\label{hub: system: transaction numbers: housekeeping: transactions must end}
+		\If $\totalTransactionNumber _{i} \neq 0$ \Then
+		\[
+			\totalTransactionNumber _{i + 1} = \totalTransactionNumber _{i} +  \transactionEnd _{i}
+		\]
+	\item[\underline{``And to make an end is to make a beginning''}]
+		\label{hub: system: transaction numbers: housekeeping: transactions must start}
+		we unconditionally require that
+		\[
+			\totalTransactionNumber _{i} = \totalTransactionNumber _{i - 1} + \transactionStart _{i}
+			\quad (\sanityCheck)
+		\]
+		\saNote{}
+		This constraint was already mentioned as a formal consequence of others in
+		section~(\ref{hub: system: transaction numbers: transaction numbers}).
+	\item[\underline{``The end is [\textbf{not}] where we start from''}]
+		\label{hub: system: transaction numbers: housekeeping: transactions don't start and end at the same time}
+		we unconditionally impose that
+		\[
+			\transactionStart _{i} \cdot \transactionEnd _{i} = 0 (\sanityCheck)
+		\]
+		\saNote{}
+		The above will follow from other constraints related to
+		the allowable perspectives during the pre-warming phase of access-list transactions
+		and exclusivity constraints for perspectives in general.
+		\specTodo{}
+	\item[\underline{The final context-row of every transaction:}]
+		\label{hub: system: transaction numbers: housekeeping: transactions end by loading the zero context}
+		the final row of any transaction is always the same:
+		\[
+			\If \transactionEnd _{i} = 1
+			~ \Then \readContextData {i}{0}{\zeroContext}
+		\]
+		where we have used the following shorthand
+		\[
+			\zeroContext \define 0.
+		\]
+		\saNote{}
+		The above thus enforces that the final row of any transaction,
+		whether it's a \textsc{system transaction} or a \textsc{user transaction},
+		consists in loading the ``\zeroContext{}.''
+		This execution context is entirely fictious and corresponds to no real execution.
+		Recall further that the ``\zeroContext{}'' remains unconstrained in consistency arguments,
+		see section~(\ref{hub: consistencies: context}).
+	\item[\underline{The final row of every trace:}]
+		\label{hub: system: transaction numbers: housekeeping: finalization constraint of trace}
+		we impose the following finalization constraints
+		\begin{enumerate}
+			\item $\sysf           _{N} = 1$
+			\item $\transactionEnd _{N} = 1$
+		\end{enumerate}
+\end{description}
+We include some depictions of the life-cycle of transactions for concreteness:

@@ -1,0 +1,57 @@
+We define \callToWellFormedCoordinatesBlsName{} like so:
+\[
+    \left\{ \begin{array}{l}
+        \callToWellFormedCoordinatesBls {
+            anchorRow = i             ,
+            relOffset = \relof        ,
+            argOneThree = \locPXThree ,
+            argOneTwo   = \locPXTwo   ,
+            argOneOne   = \locPXOne   ,
+            argOneZero  = \locPXZero  ,
+            argTwoThree = \locPYThree ,
+            argTwoTwo   = \locPYTwo   ,
+            argTwoOne   = \locPYOne   ,
+            argTwoZero  = \locPYZero  ,
+        }       
+        \vspace{4mm} \\
+        \qquad \qquad \iff
+        \left\{ \begin{array}{l}
+            \wcpGeneralizedCallToLt {
+                anchorRow = i             ,
+                relOffset = \relof        ,
+                argOneThree = \locPXThree ,
+                argOneTwo   = \locPXTwo   ,
+                argOneOne   = \locPXOne   ,
+                argOneZero  = \locPXZero  ,
+                argTwoThree = \blsPrimeThree ,
+                argTwoTwo   = \blsPrimeTwo   ,
+                argTwoOne   = \blsPrimeOne   ,
+                argTwoZero  = \blsPrimeZero  ,
+            } \\ 
+            \locPXIsInRange \define \wcpRes_{i+\relof} \\
+            \wcpGeneralizedCallToLt {
+                anchorRow = i             ,
+                relOffset = \relof + 4    ,
+                argOneThree = \locPYThree ,
+                argOneTwo   = \locPYTwo   ,
+                argOneOne   = \locPYOne   ,
+                argOneZero  = \locPYZero  ,
+                argTwoThree = \blsPrimeThree ,
+                argTwoTwo   = \blsPrimeTwo   ,
+                argTwoOne   = \blsPrimeOne   ,
+                argTwoZero  = \blsPrimeZero  ,
+            } \\ 
+            \locPYIsInRange \define \wcpRes_{i+\relof+4} \\
+            \locWellFormedCoordinates \define 1 - \malformedDataInternalBit _{i} \\
+            \locWellFormedCoordinates = \locPXIsInRange \cdot \locPYIsInRange             \\
+            \callToIsInfinity {
+                anchorRow = i                          ,
+                relOffset = \relof                     ,
+                coordinateSum = \left[ \begin{array}{r}
+                    + \locPXThree + \locPXTwo + \locPXOne + \locPXZero  \\
+                    + \locPYThree + \locPYTwo + \locPYOne + \locPYZero  \\
+                \end{array} \right]    ,
+            }
+        \end{array} \right.
+    \end{array} \right.
+\]
