@@ -1,7 +1,11 @@
-The first few columns pertain to block and transaction accounting.
+The \txnDataMod{} module uses several of the \hubMod{}-module's columns, in particular
+the \totalTransactionNumber{}, \userTransactionNumber{} columns and transaction flags \sysi{}, \user{} and \sysf{}.
 We refer to the \hubMod{}'s column descriptions,
 specifically section~(\ref{}),
 for the relevant interpretation.
+There are few constraints related to these columns.
+They are extracted from the \hubMod{} by means of lookup
+and one only needs to ensure sequential processing.
 \begin{multicols}{3}
 	\begin{enumerate}
 		\item \blockNumber
@@ -24,7 +28,7 @@ section~(\ref{user txn data: lookups: into the hub}) and particularly
 note~(\ref{user txn data: lookups: into hub: purpose and consequences})
 for a discussion of the implicit constraints that apply to the above columns.
 
-The following rows are the \userTxnDataMod{}'s ``perspectives.''
+\noindent The following rows are the \txnDataMod{}'s ``perspective'' columns
 \begin{enumerate}\setcounter{enumi}{6}
 	\item
 		$\isUserTxnComputation$:
@@ -36,7 +40,7 @@ The following rows are the \userTxnDataMod{}'s ``perspectives.''
 		$\isUserTxnRlpView$:
 		binary column which lights up on \textbf{rlp-view-rows};
 \end{enumerate}
-The following columns will be used to set the present module's heartbeat.
+\noindent The following columns will be used to set the present module's heartbeat.
 \begin{enumerate}[resume]
 	\item $\ct$:
 		counter column;

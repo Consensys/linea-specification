@@ -1,15 +1,12 @@
-The \textbf{transaction data} module \userTxnDataMod{} is overall a simple module which serves several important and essentially independent functions.
+The \textbf{transaction data} module \txnDataMod{} module serves several important and essentially independent functions.
 For one it is the \textbf{main entry point for transaction data} contained in the \rlpTxnMod{} module into the ``execution environment" which is the \hubMod{} module.
-Direct, un-intermediated, communication between these modules is awkward (if not impossible.)
-Indeed the \rlpTxnMod{} module provides transaction data \emph{in column form} while the \hubMod{} module accepts transaction data \emph{in row form}.
-The present module thus performs a simple data reformatting step ``\textbf{horizontalization}'', see section~(\ref{user txn data: constraints: horizontalization rlpTxn}).
+The \txnDataMod{} also performs simple computations which occur before transaction execution proper.
+These include computing the upfront gas cost of transaction,
+ensuring that the gas limit covers that cost,
+and ensuring that the underlying account has sufficient balance to cover both for gas cost and value transfer.
+It also computes the effective gas price (for transactions implementing \cite{EIP-1559} gas semantics)
+and the effective ``fee rate'' (i.e. the rate at which the \inst{COINBASE} address collects fees.)
 
-The \userTxnDataMod{} also performs simple computations which occur before transaction execution proper.
-These include computing the upfront gas cost of transaction, ensuring that the gas limit covers that cost and ensuring that the underlying account has sufficient balance to cover both for gas and value transfer.
-It also computes the effective gas price (for \textbf{type 2} transactions) and the effective ``fee rate'' (i.e. the rate at which the \inst{COINBASE} address collects fees.)
-
-It is also responsible for constructing the $\ABSTXNUM$ which other modules, in particular the \hubMod{}, rely on (typically under the moniker \absTxNum{}.)
-This number serves as a unique identifier for the transactions found within a conflation.
 
 The present module also collects select execution data, in particular as seen at the end of transaction processing.
 This includes e.g. (and using notations from the \cite{EYP-London}):
