@@ -95,30 +95,25 @@ The present section deals with handling \inst{REVERT} instructions.
 		we impose
 		\[
 			\left\{ \begin{array}{lclr}
-				\miscExpFlag _{i + \locRevertMiscRowOffset} & = & \gZero         \\
-				\miscMmuFlag _{i + \locRevertMiscRowOffset} & = & \locTriggerMmu \\
-				\miscMxpFlag _{i + \locRevertMiscRowOffset} & = & \rOne          \\
-				\miscOobFlag _{i + \locRevertMiscRowOffset} & = & \gZero         \\
-				\miscStpFlag _{i + \locRevertMiscRowOffset} & = & \gZero         \\
-			\end{array} \right.
-		\]
-		\saNote{}
-		One may, in the implemementation, compress the above into fewer constraints like so:
-		\[
-			\left\{ \begin{array}{lclr}
-				\left[ \begin{array}{clcl}
-					+ & \miscExpWeight & \cdot & \miscExpFlag _{i + \locRevertMiscRowOffset} \\
-					% + & \miscMmuWeight & \cdot & \miscMmuFlag _{i + \locRevertMiscRowOffset} \\
-					+ & \miscMxpWeight & \cdot & \miscMxpFlag _{i + \locRevertMiscRowOffset} \\
-					+ & \miscOobWeight & \cdot & \miscOobFlag _{i + \locRevertMiscRowOffset} \\
-					+ & \miscStpWeight & \cdot & \miscStpFlag _{i + \locRevertMiscRowOffset} \\
-				\end{array} \right]
-                                                                            & = & \miscMxpWeight & (\sanityCheck) \vspace{2mm} \\
-				\miscMmuFlag _{i + \locRevertMiscRowOffset} & = & \locTriggerMmu & (\sanityCheck)              \\
+				\weightedMiscFlagSumSansMmu {
+					anchorRow = i                       ,
+					relOffset = \locRevertMiscRowOffset ,
+				}
+                                                                            & = & \miscMxpWeight \vspace{2mm} \\
+				\miscMmuFlag _{i + \locRevertMiscRowOffset} & = & \locTriggerMmu              \\
 			\end{array} \right.
 			% OK
 		\]
-		i.e.
+		in other words
+		\[
+			\left\{ \begin{array}{lclr}
+				\miscExpFlag _{i + \locRevertMiscRowOffset} & = & \gZero         & (\sanityCheck) \\
+				\miscMmuFlag _{i + \locRevertMiscRowOffset} & = & \locTriggerMmu & (\sanityCheck) \\
+				\miscMxpFlag _{i + \locRevertMiscRowOffset} & = & \rOne          & (\sanityCheck) \\
+				\miscOobFlag _{i + \locRevertMiscRowOffset} & = & \gZero         & (\sanityCheck) \\
+				\miscStpFlag _{i + \locRevertMiscRowOffset} & = & \gZero         & (\sanityCheck) \\
+			\end{array} \right.
+		\]
 	\item[\underline{Setting the \mxpMod{} data:}]
 		we impose
 		\[
