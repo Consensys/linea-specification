@@ -44,8 +44,9 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 				\]
 				\saNote{}
 				One may, in the implemementation, compress the above into fewer constraints like so:
-					\left\{ \begin{array}{lcl}
-						\left[ \begin{array}{clcl}
+				\[
+					\left\{ \begin{array}{lclr}
+						\left[ \begin{array}{crclcl}
 							+ & \miscMmuWeight & \!\!\!\cdot\!\!\! & \miscExpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       \\
 							% + & \miscMmuWeight & \!\!\!\cdot\!\!\! & \miscMmuFlag _{i + \prcCommonMiscRowOffset} & = & \locOobResultExtractCallData \\
 							+ & \miscMmuWeight & \!\!\!\cdot\!\!\! & \miscMxpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       \\
@@ -59,6 +60,8 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 				\saNote{}
 				The shorthand \locOobResultExtractCallData{} will be defined shortly.
 				It is gleaned from one of the outputs of the call to the \oobMod{} module (which is systematically triggered given the above.)
+				It is \textbf{provably binary} conditional to the fact that the \oobMod{} module was indeed called,
+				see note~(\ref{hub: instruction handling: call: precompiles: common: generalities: oob shorthands are provably binary}).
 			\item[\underline{Setting \oobMod{} instruction:}] 
 				we populate the \oobMod{} columns:
 				\[
@@ -110,16 +113,19 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 				\saNote{}
 				We refer the reader to the relevant section in the \oobMod{} module, in particular section~(\ref{oob: populating: common precompiles}).
 
-				\saNote{}
+				\saNote{} \label{hub: instruction handling: call: precompiles: common: generalities: oob shorthands are provably binary}
 				We have, by construction and by the computation in the \oobMod{} module, the following relations:
 				\[
 					\left\{ \begin{array}{lclr}
-						\locOobResultHubSuccess      & \equiv & \text{binary} & \quad (\trash)              \\
-						\locOobResultExtractCallData & \equiv & \text{binary} & \quad (\trash)              \\
-						\locOobResultEmptyCallData   & \equiv & \text{binary} & \quad (\trash) \vspace{2mm} \\
+						\locOobResultHubSuccess      & \equiv & \text{provably binary} \\
+						\locOobResultReturnGas       & \equiv & \text{provably binary} \\
+						\locOobResultExtractCallData & \equiv & \text{provably binary} \\
+						\locOobResultEmptyCallData   & \equiv & \text{provably binary} \\
+						\locOobResultNonzeroRac      & \equiv & \text{provably binary} \vspace{2mm} \\
 						\multicolumn{3}{l}{\locOobResultExtractCallData + \locOobResultEmptyCallData = \locOobResultHubSuccess} & (\trash) \\
 					\end{array} \right.
 				\]
+				See section~(\ref{oob: populating: common precompiles}) for more details.
 
 				\saNote{} \label{hub: instruction handling: call: precompiles: common: generalities: sanity checks for BLS precompiles}
 				\If $\scenPrecompileCommonBls _{i} = 1$ \Then one expects
