@@ -17,10 +17,11 @@ The typical \emph{modus operandi} is to specify peeking flags and then to fill t
 With the present instruction we begin by specifying a single miscellaneous-row which is unconditionally present.
 \begin{description}
 	\item[\underline{The first row must be a miscellaneous-row:}]
-		we unconditionally impose that $\peekMisc _{i + \locMcopyFrstMiscOffset} = 1$;
+		we unconditionally impose that
+		$\peekMisc _{i + \locMcopyFrstMiscOffset} = \one$;
 	\item[\underline{Calling the \mxpMod{}-module:}]
 		we unconditionally call the \mxpMod{} module
-		$\miscMxpFlag _{i + \locMcopyFrstMiscOffset} = 1$;
+		$\miscMxpFlag _{i + \locMcopyFrstMiscOffset} = \one$;
 	\item[\underline{Defining the \mxpMod{}-instruction:}]
 		we impose
 		\[
@@ -54,7 +55,8 @@ With the present instruction we begin by specifying a single miscellaneous-row w
 				\end{enumerate}
 		\end{enumerate}
 		\saNote{} \label{hub: instruction handling: mcopy: trigger MMU is indeed binary}
-		The expression defining $\locTriggerMmu$ is indeed binary \emph{provided that} the \mxpMod{} indeed gets triggered.
+		The expression defining $\locTriggerMmu$ is \textbf{provably binary}
+		provided that the \mxpMod{} indeed gets triggered.
 		A previous constraint ensures us of this.
 \end{description}
 We are now in a position to specify the peeking flags.
@@ -106,31 +108,27 @@ We are now in a position to specify the peeking flags.
 			\item \If $\stackMxpx _{i} = 1$ \Then \( \gasCost_{i} = 0 \)
 		\end{enumerate}
 	\item[\underline{Miscellaneous-row $n^°(i + \locMcopyFrstMiscOffset)$: flags:}]
-		we impose that
+		we finish defining the module flags
 		\[
-			\left\{ \begin{array}{lclr}
-				\miscExpFlag _{i + \locMcopyFrstMiscOffset} & = & \gZero         \\
-				\miscMmuFlag _{i + \locMcopyFrstMiscOffset} & = & \locTriggerMmu \\
-				\miscMxpFlag _{i + \locMcopyFrstMiscOffset} & = & \one           \\
-				\miscOobFlag _{i + \locMcopyFrstMiscOffset} & = & \gZero         \\
-				\miscStpFlag _{i + \locMcopyFrstMiscOffset} & = & \gZero         \\
-			\end{array} \right.
+			\weightedMiscFlagSum {
+				anchorRow = i                       ,
+				relOffset = \locMcopyFrstMiscOffset ,
+			}
+			=
+			\left[ \begin{array}{crcl}
+					+ & \miscMmuWeight  & \cdot & \locTriggerMmu \\
+					+ & \miscMxpWeight \\
+			\end{array} \right]
 		\]
-		\saNote{}
-		One may, in the implemementation, compress the above into fewer constraints like so:
+		in other words
 		\[
 			\left\{ \begin{array}{lclr}
-				\left[ \begin{array}{clcl}
-					+ & \miscExpWeight & \cdot & \miscExpFlag _{i + \locMcopyFrstMiscOffset} \\
-					% + & \miscMmuWeight & \cdot & \miscMmuFlag _{i + \locMcopyFrstMiscOffset} \\
-					+ & \miscMxpWeight & \cdot & \miscMxpFlag _{i + \locMcopyFrstMiscOffset} \\
-					+ & \miscOobWeight & \cdot & \miscOobFlag _{i + \locMcopyFrstMiscOffset} \\
-					+ & \miscStpWeight & \cdot & \miscStpFlag _{i + \locMcopyFrstMiscOffset} \\
-				\end{array} \right]
-                                                                            & = & \miscMxpWeight & (\sanityCheck) \vspace{2mm} \\
-				\miscMmuFlag _{i + \locMcopyFrstMiscOffset} & = & \locTriggerMmu & (\sanityCheck)              \\
+				\miscExpFlag _{i + \locMcopyFrstMiscOffset} & = & \gZero         & (\sanityCheck) \\
+				\miscMmuFlag _{i + \locMcopyFrstMiscOffset} & = & \locTriggerMmu & (\sanityCheck) \\
+				\miscMxpFlag _{i + \locMcopyFrstMiscOffset} & = & \one           & (\sanityCheck) \\
+				\miscOobFlag _{i + \locMcopyFrstMiscOffset} & = & \gZero         & (\sanityCheck) \\
+				\miscStpFlag _{i + \locMcopyFrstMiscOffset} & = & \gZero         & (\sanityCheck) \\
 			\end{array} \right.
-			% OK
 		\]
 		\saNote{}
 		Recall note~(\ref{hub: instruction handling: mcopy: trigger MMU is indeed binary}).
@@ -148,11 +146,11 @@ We are now in a position to specify the peeking flags.
 		in other words
 		\[
 			\left\{ \begin{array}{lclr}
-				\miscExpFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\sanityCheck) \\
-				\miscMmuFlag  _{i + \locMcopyScndMiscOffset} & = & \one    & (\sanityCheck) \\
-				\miscMxpFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\sanityCheck) \\
-				\miscOobFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\sanityCheck) \\
-				\miscStpFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\sanityCheck) \\
+				\miscExpFlag _{i + \locMcopyScndMiscOffset} & = & \gZero & (\sanityCheck) \\
+				\miscMmuFlag _{i + \locMcopyScndMiscOffset} & = & \one   & (\sanityCheck) \\
+				\miscMxpFlag _{i + \locMcopyScndMiscOffset} & = & \gZero & (\sanityCheck) \\
+				\miscOobFlag _{i + \locMcopyScndMiscOffset} & = & \gZero & (\sanityCheck) \\
+				\miscStpFlag _{i + \locMcopyScndMiscOffset} & = & \gZero & (\sanityCheck) \\
 			\end{array} \right.
 		\]
 \end{description}
