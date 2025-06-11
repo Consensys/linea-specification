@@ -51,31 +51,27 @@ The constraints are as follows:
 		we impose
 		\[
 			\left\{ \begin{array}{lclr}
-				\miscExpFlag _{i + \miscRowOffset} & = & \gZero      \\
-				\miscMmuFlag _{i + \miscRowOffset} & = & \locCallMmu \\
-				\miscMxpFlag _{i + \miscRowOffset} & = & \one        \\
-				\miscOobFlag _{i + \miscRowOffset} & = & \gZero      \\
-				\miscStpFlag _{i + \miscRowOffset} & = & \gZero      \\
-			\end{array} \right.
-		\]
-		\saNote{}
-		One may, in the implemementation, compress the above into fewer constraints like so:
-		\[
-			\left\{ \begin{array}{lclr}
-				\left[ \begin{array}{clcl}
-					+ & \miscExpWeight & \cdot & \miscExpFlag _{i + \miscRowOffset} \\
-					% + & \miscMmuWeight & \cdot & \miscMmuFlag _{i + \miscRowOffset} \\
-					+ & \miscMxpWeight & \cdot & \miscMxpFlag _{i + \miscRowOffset} \\
-					+ & \miscOobWeight & \cdot & \miscOobFlag _{i + \miscRowOffset} \\
-					+ & \miscStpWeight & \cdot & \miscStpFlag _{i + \miscRowOffset} \\
-				\end{array} \right]
+				\weightedMiscFlagSumSansMmu {
+					anchorRow = i              ,
+					relOffset = \miscRowOffset ,
+				}
                                                                    & = & \miscMxpWeight & (\sanityCheck) \vspace{2mm} \\
-				\miscMmuFlag _{i + \miscRowOffset} & = & \locCallMmu    & (\sanityCheck)              \\
+				\miscMmuFlag _{i + \miscRowOffset} & = & \locTriggerMmu & (\sanityCheck)              \\
 			\end{array} \right.
 			% OK
 		\]
+		in other words
+		\[
+			\left\{ \begin{array}{lclr}
+				\miscExpFlag _{i + \miscRowOffset} & = & \gZero         & (\sanityCheck) \\
+				\miscMmuFlag _{i + \miscRowOffset} & = & \locTriggerMmu & (\sanityCheck) \\
+				\miscMxpFlag _{i + \miscRowOffset} & = & \one           & (\sanityCheck) \\
+				\miscOobFlag _{i + \miscRowOffset} & = & \gZero         & (\sanityCheck) \\
+				\miscStpFlag _{i + \miscRowOffset} & = & \gZero         & (\sanityCheck) \\
+			\end{array} \right.
+		\]
 		\saNote{}
-		The binary flag \locCallMmu{} will be defined below.
+		The binary flag \locTriggerMmu{} will be defined below.
 	\item[\underline{Miscellaneous-row $n^°(i + \miscRowOffset)$: \mxpMod{} data:}]
 		we deal with the memory expansion cost:
 		\[
@@ -91,19 +87,19 @@ The constraints are as follows:
 				sizeLo      = \locSizeLo     ,
 			}
 		\]
-	\item[\underline{Defining \locCallMmu{}:}] we define it as follows
+	\item[\underline{Defining \locTriggerMmu{}:}] we define it as follows
 		\[
-			\locCallMmu
+			\locTriggerMmu
 			\define
 			(1 - \xAhoy_{i}) \cdot \miscMxpSizeOneNonzeroNoMxpx _{i + \miscRowOffset}
 		\]
 		in other words
 		\begin{enumerate}
-			\item \If $\xAhoy_{i} = 1$ \Then $\locCallMmu = 0$ \quad (\trash)
+			\item \If $\xAhoy_{i} = 1$ \Then $\locTriggerMmu = 0$ \quad (\trash)
 			\item \If $\xAhoy_{i} = 0$ \Then 
 				\begin{enumerate}
-					\item \If $\locSizeLo =    0$ \Then $\locCallMmu = 0$ \quad (\trash)
-					\item \If $\locSizeLo \neq 0$ \Then $\locCallMmu = 1$ \quad (\trash)
+					\item \If $\locSizeLo =    0$ \Then $\locTriggerMmu = 0$ \quad (\trash)
+					\item \If $\locSizeLo \neq 0$ \Then $\locTriggerMmu = 1$ \quad (\trash)
 				\end{enumerate}
 		\end{enumerate}
 	\item[\underline{Miscellaneous-row $n^°(i + \miscRowOffset)$: \mmuMod{} data:}]
@@ -136,18 +132,19 @@ The constraints are as follows:
 			\item \If $\locMxpx = 0$ \Then \( \gasCost_{i} = \stackStaticGas _{i} + \locMxpGas \)
 			\item \If $\locMxpx = 1$ \Then \( \gasCost_{i} = 0 \)
 		\end{enumerate}
-	\item[\underline{Constraining \stackHashInfoFlag{}:}] we impose $\stackHashInfoFlag_{i} = \locCallMmu$;
+	\item[\underline{Constraining \stackHashInfoFlag{}:}]
+		we impose $\stackHashInfoFlag_{i} = \locTriggerMmu$;
 	\item[\underline{Value constraints:}]
 		\If $\xAhoy_{i} = 0$ \et  \Then
 		\begin{enumerate}
-			\item \If $\locCallMmu = 0$ \Then
+			\item \If $\locTriggerMmu = 0$ \Then
 				\[
 					\begin{cases}
 						\locKeccakHi = \emptyKeccakHi \\
 						\locKeccakLo = \emptyKeccakLo \\
 					\end{cases}
 				\]
-			\item \If $\locCallMmu = 1$ \Then 
+			\item \If $\locTriggerMmu = 1$ \Then 
 				\[
 					\left\{ \begin{array}{lclr}
 						\locKeccakHi & = & \stackHashInfoValHi_{i} \\
