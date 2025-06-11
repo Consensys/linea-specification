@@ -39,33 +39,29 @@ At this point the \instModexp{} call is known to be successful and it remains to
 				we impose
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \gZero                                  \\
-						\miscMmuFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \undefinedStar \quad \locExtractModulus \\
-						\miscMxpFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \rZero                                  \\
-						\miscOobFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \one                                    \\
-						\miscStpFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \gZero                                  \\
+						\weightedMiscFlagSumSansMmu {
+							anchorRow = i                                     ,
+							relOffset = \prcModexpSuccessExtractBaseRowOffset ,
+						}
+                                                                                                          & = & \miscOobWeight                          \vspace{2mm} \\
+						\miscMmuFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \undefinedStar \quad \locExtractModulus              \\
+					\end{array} \right.
+				\]
+				in other words
+				\[
+					\left\{ \begin{array}{lclr}
+						\miscExpFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \gZero                                  & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \undefinedStar \quad \locExtractModulus & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \rZero                                  & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \one                                    & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \gZero                                  & (\sanityCheck) \\
 					\end{array} \right.
 				\]
 				\saNote{}
 				The $\locExtractModulus$ shorthand marked with $\undefinedStar$ will be defined below.
 
 				\saNote{}
-				One may, in the implemementation, compress the above into fewer constraints like so:
-				\[
-					\left\{ \begin{array}{lclr}
-						\left[ \begin{array}{crcl}
-							+ & \miscExpWeight & \!\!\!\cdot\!\!\! & \miscExpFlag _{i + \prcModexpSuccessExtractBaseRowOffset} \\
-							% + & \miscMmuWeight & \!\!\!\cdot\!\!\! & \miscMmuFlag _{i + \prcModexpSuccessExtractBaseRowOffset} \\
-							+ & \miscMxpWeight & \!\!\!\cdot\!\!\! & \miscMxpFlag _{i + \prcModexpSuccessExtractBaseRowOffset} \\
-							+ & \miscOobWeight & \!\!\!\cdot\!\!\! & \miscOobFlag _{i + \prcModexpSuccessExtractBaseRowOffset} \\
-							+ & \miscStpWeight & \!\!\!\cdot\!\!\! & \miscStpFlag _{i + \prcModexpSuccessExtractBaseRowOffset} \\
-						\end{array} \right]
-                                                                                                          & = & \miscOobWeight                          & (\sanityCheck) \vspace{2mm} \\
-						\miscMmuFlag _{i + \prcModexpSuccessExtractBaseRowOffset} & = & \undefinedStar \quad \locExtractModulus & (\sanityCheck)              \\
-					\end{array} \right.
-				\]
-				\saNote{}
-				\locExtractModulus{} is provably binary once it is known that the \oobMod{} was triggered.
+				\locExtractModulus{} is \textbf{provably binary} once it is known that the \oobMod{} was triggered.
 			\item[\underline{Setting the \oobMod{} instruction:}] 
 				we impose
 				\[
@@ -87,6 +83,14 @@ At this point the \instModexp{} call is known to be successful and it remains to
 						\locExtractModulus  & \define & \miscOobDataCol{8} _{i + \prcModexpSuccessExtractBaseRowOffset} \\
 					\end{array} \right.
 				\]
+				\saNote{}
+				All of
+				\locExtractBase{},
+				\locExtractExponent{},
+				\locExtractModulus{}
+				are \textbf{provably binary}
+				conditional to the fact that the \oobMod{} module was called,
+				which previous constraints enforce.
 			\item[\underline{Setting the \mmuMod{} instruction:}] 
 				\If $\miscMmuFlag_{i + \prcModexpSuccessExtractBaseRowOffset} = 1$ \Then we impose
 				\begin{enumerate}
@@ -136,11 +140,11 @@ At this point the \instModexp{} call is known to be successful and it remains to
 				in other words
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag  _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \gZero             & (\sanityCheck) \\
-						\miscMmuFlag  _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \locExtractModulus & (\sanityCheck) \\
-						\miscMxpFlag  _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \rZero             & (\sanityCheck) \\
-						\miscOobFlag  _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \gZero             & (\sanityCheck) \\
-						\miscStpFlag  _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \gZero             & (\sanityCheck) \\
+						\miscExpFlag _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \gZero             & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \locExtractModulus & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \rZero             & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \gZero             & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcModexpSuccessExtractExponentRowOffset} & = & \gZero             & (\sanityCheck) \\
 					\end{array} \right.
 				\]
 				\saNote{}
@@ -289,7 +293,7 @@ The above thus either extracts some data from \textsc{ram} and serves it to the 
 					\end{array} \right.
 				\]
 				\saNote{}
-				Both \locMbsIsNonzero{} and \locRacIsNonzero{} are known to be binary.
+				Both \locMbsIsNonzero{} and \locRacIsNonzero{} are known to be \textbf{provably binary}.
 			\item[\underline{Setting the \mmuMod{} instruction:}] 
 				\If $\miscMmuFlag_{i + \prcModexpSuccessPartialCopyOfResultsRowOffset} = 1$ \Then we impose
 				\[
