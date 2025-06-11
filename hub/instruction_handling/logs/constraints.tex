@@ -98,33 +98,28 @@ We impose the following constraints:
 		\If $\stackStaticx_{i} = 0$ \Then
 		\[
 			\left\{ \begin{array}{lclr}
-				\miscExpFlag_{i + \locLogMiscRowOffset} & = & \gZero         \\
-				\miscMmuFlag_{i + \locLogMiscRowOffset} & = & \locTriggerMmu \\
-				\miscMxpFlag_{i + \locLogMiscRowOffset} & = & \rOne          \\
-				\miscOobFlag_{i + \locLogMiscRowOffset} & = & \gZero         \\
-				\miscStpFlag_{i + \locLogMiscRowOffset} & = & \gZero         \\
-			\end{array} \right.
-		\]
-		\saNote{}
-		\locTriggerMmu{} will be constrained below.
-
-		\saNote{}
-		One may, in the implemementation, compress the above into fewer constraints like so:
-		\If $\stackStaticx_{i} = 0$ \Then
-		\[
-			\left\{ \begin{array}{lclr}
-				\left[ \begin{array}{clcl}
-					+ & \miscExpWeight & \cdot & \miscExpFlag _{i + \locLogMiscRowOffset} \\
-					% + & \miscMmuWeight & \cdot & \miscMmuFlag _{i + \locLogMiscRowOffset} \\
-					+ & \miscMxpWeight & \cdot & \miscMxpFlag _{i + \locLogMiscRowOffset} \\
-					+ & \miscOobWeight & \cdot & \miscOobFlag _{i + \locLogMiscRowOffset} \\
-					+ & \miscStpWeight & \cdot & \miscStpFlag _{i + \locLogMiscRowOffset} \\
-				\end{array} \right]
-                                                                         & = & \miscMxpWeight & (\sanityCheck) \vspace{2mm} \\
-				\miscMmuFlag _{i + \locLogMiscRowOffset} & = & \locTriggerMmu & (\sanityCheck)              \\
+				\weightedMiscFlagSumSansMmu {
+					anchorRow = i                    ,
+					relOffset = \locLogMiscRowOffset ,
+				}
+                                                                         & = & \miscMxpWeight \vspace{2mm} \\
+				\miscMmuFlag _{i + \locLogMiscRowOffset} & = & \locTriggerMmu              \\
 			\end{array} \right.
 			% OK
 		\]
+		in other words
+		\[
+			\left\{ \begin{array}{lclr}
+				\miscExpFlag_{i + \locLogMiscRowOffset} & = & \gZero         & (\sanityCheck) \\
+				\miscMmuFlag_{i + \locLogMiscRowOffset} & = & \locTriggerMmu & (\sanityCheck) \\
+				\miscMxpFlag_{i + \locLogMiscRowOffset} & = & \rOne          & (\sanityCheck) \\
+				\miscOobFlag_{i + \locLogMiscRowOffset} & = & \gZero         & (\sanityCheck) \\
+				\miscStpFlag_{i + \locLogMiscRowOffset} & = & \gZero         & (\sanityCheck) \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		\locTriggerMmu{} will be constrained below and is \textbf{provably binary}
+		conditional to the fact that the \mxpMod{} module was called.
 	\item[\underline{Miscellaneous-row $n^°(i + \locLogMiscRowOffset)$: \mxpMod{} data:}]
 		\If $\stackStaticx_{i} = 0$ \Then
 		\[
