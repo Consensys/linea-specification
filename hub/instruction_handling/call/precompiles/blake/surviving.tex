@@ -18,16 +18,15 @@ We fix the behaviour of the next row, i.e. row $n^°(i + \prcBlakeSecondMiscRowO
 		\begin{description}
 			\item[\underline{Setting lookup flags:}]
 				we impose
+				One may, in the implemementation, compress the above into fewer constraints like so:
 				\[
-					\weightedMiscFlagSum {
-						anchorRow = i                            ,
-						relOffset = \prcBlakeSecondMiscRowOffset ,
-					}
-					=
-					\left[ \begin{array}{crcl}
-						+ & \miscMmuWeight  & \!\!\! \cdot \!\!\! & \locOobResultRamSuccess \\
-						+ & \miscOobWeight \\
-					\end{array} \right]
+					\left\{ \begin{array}{lclr}
+						\weightedMiscFlagSumSansMmu {
+							anchorRow = i                            ,
+							relOffset = \prcBlakeSecondMiscRowOffset ,
+						}                                                & = & \miscOobWeight                               \vspace{2mm} \\
+						\miscMmuFlag _{i + \prcBlakeSecondMiscRowOffset} & = & \undefinedStar \quad \locOobResultRamSuccess              \\
+					\end{array} \right.
 				\]
 				in other words
 				\[
@@ -41,7 +40,8 @@ We fix the behaviour of the next row, i.e. row $n^°(i + \prcBlakeSecondMiscRowO
 				\]
 				We are thus always calling the \oobMod{} and only calling the \mmuMod{} if the call to the \oobMod{} 
 
-				\saNote{} The shorthand \locOobResultRamSuccess{} which we label with $\undefinedStar$ will be set below.
+				\saNote{}
+				The shorthand \locOobResultRamSuccess{} which we label with $\undefinedStar$ will be set below.
 			\item[\underline{Setting \oobMod{} values and shorthands:}] 
 				we impose the following constraints
 				\[
@@ -67,10 +67,12 @@ We fix the behaviour of the next row, i.e. row $n^°(i + \prcBlakeSecondMiscRowO
 						% \locOobResultNonzeroRac      & \define & \miscOobDataCol{8}_{i + \prcBlakeSecondMiscRowOffset} \\
 					\end{array} \right.
 				\]
-				\saNote{} We have, by construction and by the computation in the \oobMod{} module, the following relations:
+				\saNote{}
+				We have, by construction and by the computation in the \oobMod{} module, the following relations:
 				\[
-					\locOobResultRamSuccess \equiv \text{binary} 
+					\locOobResultRamSuccess \equiv \text{provably binary} 
 				\]
+				conditional to the fact that the \oobMod{} call was indeed triggered.
 			\item[\underline{Setting \mmuMod{} values:}]
 				\If $\miscMmuFlag_{i + \prcBlakeSecondMiscRowOffset} = 1$ \Then
 				\[

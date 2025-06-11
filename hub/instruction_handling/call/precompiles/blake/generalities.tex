@@ -17,32 +17,26 @@ The first row is always a miscellaneous-row.
 				we impose
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \gZero                                       \\
-						\miscMmuFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \undefinedStar \quad \locOobResultHubSuccess \\
-						\miscMxpFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \rZero                                       \\
-						\miscOobFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \one                                         \\
-						\miscStpFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \gZero                                       \\
-					\end{array} \right.
-				\]
-				We are thus always calling the \oobMod{} and only calling the \mmuMod{} if the call to the \oobMod{} suggests it.
-
-				\saNote{} \label{hub: instruction handling: call: precompiles: blake: generalities: optimized misc flags}
-				One may, in the implemementation, compress the above into fewer constraints like so:
-				\[
-					\left\{ \begin{array}{lcl}
-						\left[ \begin{array}{clcl}
-							+ & \miscExpWeight & \!\!\! \cdot \!\!\! & \miscExpFlag _{i + \prcBlakeFirstMiscRowOffset} \\
-							% + & \miscMmuWeight & \!\!\! \cdot \!\!\! & \miscMmuFlag _{i + \prcBlakeFirstMiscRowOffset} \\
-							+ & \miscMxpWeight & \!\!\! \cdot \!\!\! & \miscMxpFlag _{i + \prcBlakeFirstMiscRowOffset} \\
-							+ & \miscOobWeight & \!\!\! \cdot \!\!\! & \miscOobFlag _{i + \prcBlakeFirstMiscRowOffset} \\
-							+ & \miscStpWeight & \!\!\! \cdot \!\!\! & \miscStpFlag _{i + \prcBlakeFirstMiscRowOffset} \\
-						\end{array} \right]
-						& = & \miscOobWeight
-						\vspace{2mm} \\
-						\miscMmuFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \undefinedStar \quad \locOobResultHubSuccess \\
+						\weightedMiscFlagSumSansMmu {
+							anchorRow = i                           ,
+							relOffset = \prcBlakeFirstMiscRowOffset ,
+						}                                               & = & \miscOobWeight                               \vspace{2mm} \\
+						\miscMmuFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \undefinedStar \quad \locOobResultHubSuccess              \\
 					\end{array} \right.
 					% OK
 				\]
+				in other words
+				\[
+					\left\{ \begin{array}{lclr}
+						\miscExpFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \gZero                                       & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \undefinedStar \quad \locOobResultHubSuccess & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \rZero                                       & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \one                                         & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcBlakeFirstMiscRowOffset} & = & \gZero                                       & (\sanityCheck) \\
+					\end{array} \right.
+				\]
+				\saNote{}
+				We are thus \textbf{always} calling the \oobMod{} and only calling the \mmuMod{} if the call to the \oobMod{} suggests it.
 
 				\saNote{}
 				The shorthand \locOobResultHubSuccess{} which we label with $\undefinedStar$ will be set below.
