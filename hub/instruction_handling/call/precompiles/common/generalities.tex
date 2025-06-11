@@ -35,26 +35,22 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 				we impose that
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       &                \\
-						\miscMmuFlag _{i + \prcCommonMiscRowOffset} & = & \locOobResultExtractCallData & \undefinedStar \\
-						\miscMxpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       &                \\
-						\miscOobFlag _{i + \prcCommonMiscRowOffset} & = & \one                         &                \\
-						\miscStpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       &                \\
+						\weightedMiscFlagSumSansMmu {
+							anchorRow = i                       ,
+							relOffset = \prcCommonMiscRowOffset ,
+						}
+                                                                                            & = & \miscOobWeight               \vspace{2mm}   \\
+						\miscMmuFlag _{i + \prcCommonMiscRowOffset} & = & \undefinedStar \locOobResultExtractCallData \\
 					\end{array} \right.
 				\]
-				\saNote{}
-				One may, in the implemementation, compress the above into fewer constraints like so:
+				in other words
 				\[
 					\left\{ \begin{array}{lclr}
-						\left[ \begin{array}{crclcl}
-							+ & \miscMmuWeight & \!\!\!\cdot\!\!\! & \miscExpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       \\
-							% + & \miscMmuWeight & \!\!\!\cdot\!\!\! & \miscMmuFlag _{i + \prcCommonMiscRowOffset} & = & \locOobResultExtractCallData \\
-							+ & \miscMmuWeight & \!\!\!\cdot\!\!\! & \miscMxpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       \\
-							+ & \miscMmuWeight & \!\!\!\cdot\!\!\! & \miscOobFlag _{i + \prcCommonMiscRowOffset} & = & \one                         \\
-							+ & \miscMmuWeight & \!\!\!\cdot\!\!\! & \miscStpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       \\
-						\end{array} \right]
-                                                                                            & = & \miscMmuWeight               \vspace{2mm} \\
-						\miscMmuFlag _{i + \prcCommonMiscRowOffset} & = & \locOobResultExtractCallData              \\
+						\miscExpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                                      & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcCommonMiscRowOffset} & = & \undefinedStar \locOobResultExtractCallData & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                                      & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcCommonMiscRowOffset} & = & \one                                        & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                                      & (\sanityCheck) \\
 					\end{array} \right.
 				\]
 				\saNote{}
