@@ -104,28 +104,11 @@ The constraints are as follows:
 			\item[\underline{Setting module flags:}]
 				we impose
 				\[
-					\left\{ \begin{array}{lclr}
-						\miscExpFlag_{i + \locCopyMiscRowOffset} & = & \gZero         \\
-						\miscMmuFlag_{i + \locCopyMiscRowOffset} & = & \locTriggerMmu \\
-						\miscMxpFlag_{i + \locCopyMiscRowOffset} & = & \locTriggerMxp \\
-						\miscOobFlag_{i + \locCopyMiscRowOffset} & = & \locTriggerOob \\
-						\miscStpFlag_{i + \locCopyMiscRowOffset} & = & \gZero         \\
-					\end{array} \right.
-				\]
-				\saNote{}
-				We will specify \locTriggerMmu{}, \locTriggerMxp{} and \locTriggerOob{} shortly.
-
-				\saNote{} \label{hub: instruction handling: logs: constraints: optimized misc flags}
-				One may slightly reduce the number of constraints above by imposing instead
-				\[
 					\left\{ \begin{array}{lcl}
-						\left[ \begin{array}{clcl}
-							+ & \miscExpWeight & \cdot & \miscExpFlag _{i + \locCopyMiscRowOffset} \\
-							% + & \miscMmuWeight & \cdot & \miscMmuFlag _{i + \locCopyMiscRowOffset} \\
-							+ & \miscMxpWeight & \cdot & \miscMxpFlag _{i + \locCopyMiscRowOffset} \\
-							+ & \miscOobWeight & \cdot & \miscOobFlag _{i + \locCopyMiscRowOffset} \\
-							+ & \miscStpWeight & \cdot & \miscStpFlag _{i + \locCopyMiscRowOffset} \\
-						\end{array} \right]
+						\weightedMiscFlagSumSansMmu {
+							anchorRow = i                     ,
+							relOffset = \locCopyMiscRowOffset ,
+						}
 						& = &
 						\left[ \begin{array}{clcl}
 							+ & \miscMxpWeight & \cdot & \locTriggerMxp \\
@@ -136,9 +119,23 @@ The constraints are as follows:
 					\end{array} \right.
 					% OK
 				\]
-				Indeed, by their very definitions, both
+				in other words
+				\[
+					\left\{ \begin{array}{lclr}
+						\miscExpFlag_{i + \locCopyMiscRowOffset} & = & \gZero         & (\sanityCheck) \\
+						\miscMmuFlag_{i + \locCopyMiscRowOffset} & = & \locTriggerMmu & (\sanityCheck) \\
+						\miscMxpFlag_{i + \locCopyMiscRowOffset} & = & \locTriggerMxp & (\sanityCheck) \\
+						\miscOobFlag_{i + \locCopyMiscRowOffset} & = & \locTriggerOob & (\sanityCheck) \\
+						\miscStpFlag_{i + \locCopyMiscRowOffset} & = & \gZero         & (\sanityCheck) \\
+					\end{array} \right.
+				\]
+				\saNote{}
+				We will specify \locTriggerMmu{}, \locTriggerMxp{} and \locTriggerOob{} shortly.
+				They are all binary by construction.
+				Furthermore, by their very definitions, both
 				\locTriggerMxp{} and \locTriggerOob{}
 				are unconditionally binary.
+				See below.
 			\item[\underline{Specifying \locTriggerOob{}:}]
 				\inst{RETURNDATACOPY} is the only instruction in the \inst{COPY}-family that requires the \oobMod{} module;
 				indeed the \oobMod{} detects \rdcxSH{}'s;
@@ -146,12 +143,16 @@ The constraints are as follows:
 				\[
 					\locTriggerOob = \locIsRdc
 				\]
+				\saNote{}
+				The shorthand \locTriggerOob{} is \textbf{unconditionally binary}.
 			\item[\underline{Specifying \locTriggerMxp{}:}]
 				we technically don't have to call the \mxpMod{} module in case of \inst{RETURNDATACOPY} instructions raising the \rdcxSH{};
 				this exception is enough to justify the exceptional halting condition; this behaviour is reflected in the assignment of the \miscMxpFlag{} since we impose
 				\[
 					\locTriggerMxp = \one - \stackRdcx _{i}
 				\]
+				\saNote{}
+				The shorthand \locTriggerMxp{} is \textbf{unconditionally binary}.
 			\item[\underline{Specifying \locTriggerMmu{}:}]
 				\label{hub: instruction handling: copy: trigger MMU}
 				for a \inst{COPY}-type instruction to trigger the \mmuMod{} is is necessary and sufficient that the instruction raise no exception and be provided with a nonzero size parameter;
@@ -160,6 +161,9 @@ The constraints are as follows:
 					\item \If $\xAhoy _{i} = 1$ \Then $\locTriggerMmu = 0$
 					\item \If $\xAhoy _{i} = 0$ \Then $\locTriggerMmu = \miscMxpSizeOneNonzeroNoMxpx _{i + \locCopyMiscRowOffset}$
 				\end{enumerate}
+				\saNote{}
+				The shorthand \locTriggerMmu{} is \textbf{provably binary}
+				provided that the \mxpMod{} module was indeed called.
 			\item[\underline{Setting \oobMod{} data:}]
 				\If $\miscOobFlag _{i + \locCopyMiscRowOffset} = 1$ \Then we impose
 				\[
