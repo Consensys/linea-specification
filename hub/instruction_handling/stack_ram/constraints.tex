@@ -98,19 +98,34 @@
 		\saNote{} \label{hub: instruction handling: stack ram: constraints: optimized misc flags}
 		Given the binarity of ``\locTriggerXxx{}'' one may slightly reduce the number of constraints above by imposing instead
 		\[
-			\weightedMiscFlagSum {i}{\stackramMiscRowOffset}
-			=
-			\left[ \begin{array}{crcl}
-				+ & \miscMmuWeight & \!\!\! \cdot \!\!\! & \locTriggerMmu \\
-				+ & \miscMxpWeight & \!\!\! \cdot \!\!\! & \locTriggerMxp \\
-				+ & \miscOobWeight & \!\!\! \cdot \!\!\! & \locTriggerOob \\
-			\end{array} \right]
+			\left\{ \begin{array}{lclr}
+				\left[ \begin{array}{clcl}
+					+   & \miscExpWeight & \!\!\!\cdot\!\!\! & \miscExpFlag _{i + \stackramMiscRowOffset} \\
+					% + & \miscMmuWeight & \!\!\!\cdot\!\!\! & \miscMmuFlag _{i + \stackramMiscRowOffset} \\
+					+   & \miscMxpWeight & \!\!\!\cdot\!\!\! & \miscMxpFlag _{i + \stackramMiscRowOffset} \\
+					+   & \miscOobWeight & \!\!\!\cdot\!\!\! & \miscOobFlag _{i + \stackramMiscRowOffset} \\
+					+   & \miscStpWeight & \!\!\!\cdot\!\!\! & \miscStpFlag _{i + \stackramMiscRowOffset} \\
+				\end{array} \right]
+				& = &
+				\left[ \begin{array}{clcl}
+					+ & \miscMxpWeight & \!\!\!\cdot\!\!\! & \locTriggerMxp \\
+					+ & \miscOobWeight & \!\!\!\cdot\!\!\! & \locTriggerOob \\
+				\end{array} \right]
+				& (\sanityCheck) \vspace{2mm} \\
+				\miscMmuFlag _{i + \stackramMiscRowOffset} & = & \locTriggerMmu & (\sanityCheck)              \\
+			\end{array} \right.
 			% OK
 		\]
 	\item[\underline{Defining \locTriggerMxp{}:}] we define
 		$\locTriggerMxp \define \locIsMSomething$.
+
+		\saNote{}
+		\locTriggerMxp{} is unconditionally binary.
 	\item[\underline{Defining \locTriggerOob{}:}] we define
 		$\locTriggerOob \define \locIsCallDataLoad$.
+
+		\saNote{}
+		\locTriggerOob{} is unconditionally binary.
 	\item[\underline{Defining \locTriggerMmu{}:}] we define \locTriggerMmu{} as follows:
 		\begin{enumerate}
 			\item \If $\locIsCallDataLoad = 1$ \Then
@@ -130,6 +145,9 @@
 		Therefore, in case of a \inst{CALLDATALOAD} instruction,
 		the \zkEvm{} activates the \mmuMod{} \emph{if and only if}
 		the instruction is unexceptional and the instruction's offset does not land within the ``$0$-padding'' of call data.
+
+		\saNote{}
+		\locTriggerMmu{} is provably binary \emph{given that} the \oobMod{} module was called.
 	\item[\underline{Miscellaneous-row $n°(i + \stackramMiscRowOffset)$: \oobMod{} data:}]
 		\If $\miscOobFlag _{i + \stackramMiscRowOffset} = 1$ \Then we impose
 		\[
