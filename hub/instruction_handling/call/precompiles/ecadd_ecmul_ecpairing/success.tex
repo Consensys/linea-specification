@@ -90,10 +90,6 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 		\begin{description}
 			\item[\underline{``Trivial pairing'' full return data transfer:}]
 				\If $\locTrivialPairing = 1$ \Then we impose that
-				% \[
-				% 	\scenEcpairing _{i} = 1$ \et $\locOobResultEmptyCallData = 1
-				% \]
-				% \Then
 				\[
 					\setMmuInstructionParametersMstore {
 						anchorRow      = i                                      ,
@@ -120,7 +116,6 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 					= 1
 				\]
 				\Then
-				% $\miscMmuFlag_{i + \prcStandardSuccessSecondMiscRowOffset} = 1$ \Then we impose
 				\[
 					\setMmuInstructionParametersExoToRamTransplants {
 						anchorRow = i                                      ,
@@ -131,48 +126,8 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 						exoSum    = \exoWeightEcdata                       ,
 						phase     = \undefinedStar \quad \locMmuPhase      ,
 						}
-					% \left\{ \begin{array}{lcl}
-					% 	\miscMmuInst        _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locMmuInst   \\
-					% 	\miscMmuSrcId       _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locMmuSrcId  \\
-					% 	\miscMmuTgtId       _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locMmuTgtId  \\
-					% 	\miscMmuAuxId       _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \nothing      \\
-					% 	\miscMmuSrcOffsetHi _{i + \prcStandardSuccessSecondMiscRowOffset} & = & 0             \\
-					% 	\miscMmuSrcOffsetLo _{i + \prcStandardSuccessSecondMiscRowOffset} & = & 0             \\
-					% 	\miscMmuTgtOffsetLo _{i + \prcStandardSuccessSecondMiscRowOffset} & = & 0             \\
-					% 	\miscMmuSize        _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locMmuSize   \\
-					% 	\miscMmuRefOffset   _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \nothing      \\
-					% 	\miscMmuRefSize     _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \nothing      \\
-					% 	\miscMmuSuccessBit  _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \nothing      \\
-					% 	\miscMmuLimbOne     _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locLimbOne   \\
-					% 	\miscMmuLimbTwo     _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locLimbTwo   \\
-					% 	\miscMmuExoSum      _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locMmuExoSum \\
-					% 	\miscMmuPhase       _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locMmuPhase  \\
-					% \end{array} \right.
 				\]
 				where the shorthands marked with $\undefinedStar$ are as of yet undefined shorthands which we define as follows:
-				% where
-				% \[
-				% 	% \hspace*{-4cm}
-				% 	\locMmuInst \define
-				% 	\left[ \begin{array}{crclcl}
-				% 		+ & \mmuInstExoToRamTransplants & \!\!\!\cdot\!\!\! & \scenEcadd     _{i} \\
-				% 		+ & \mmuInstExoToRamTransplants & \!\!\!\cdot\!\!\! & \scenEcmul     _{i} \\
-				% 		+ & \mmuInstExoToRamTransplants & \!\!\!\cdot\!\!\! & \scenEcpairing _{i}  & \!\!\!\cdot\!\!\!\! & \locOobResultExtractCallData \\
-				% 		+ & \mmuInstMstore              & \!\!\!\cdot\!\!\! & \scenEcpairing _{i}  & \!\!\!\cdot\!\!\!\! & \locOobResultEmptyCallData   \\
-				% 	\end{array} \right]
-				% \]
-				% and
-				% \[
-				% 	\left\{ \begin{array}{lcl}
-				% 		\locMmuSrcId & \define & (1 + \hubStamp_{i}) \cdot
-				% 		\left[ \begin{array}{crcl}
-				% 			+ & \scenEcadd     _{i} \\
-				% 			+ & \scenEcmul     _{i} \\
-				% 			+ & \scenEcpairing _{i} & \!\!\!\cdot\!\!\!\! & \locOobResultExtractCallData  \\
-				% 		\end{array} \right] \\
-				% 		\locMmuTgtId & \define & (1 + \hubStamp_{i}) \\
-				% 	\end{array} \right.
-				% \]
 				and
 				\[
 					% \hspace*{-4cm}
@@ -187,24 +142,6 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 						% + & \gZero                          & \!\!\!\cdot\!\!\! & \scenEcpairing     _{i}  & \!\!\!\cdot\!\!\!\! & \locOobResultEmptyCallData    \\
 					\end{array} \right]
 				\]
-				% and
-				% \[
-				% 	\left\{ \begin{array}{lcl}
-				% 		\locLimbOne & \define & 0 \\
-				% 		\locLimbTwo & \define & \scenEcpairing     _{i} \cdot \locOobResultEmptyCallData \\
-				% 	\end{array} \right.
-				% \]
-				% and
-				% \[
-				% 	% \hspace*{-4cm}
-				% 	\locMmuExoSum \define
-				% 	\left[ \begin{array}{crclcl}
-				% 		+ & \exoWeightEcdata  & \!\!\!\cdot\!\!\! & \scenEcadd         _{i}  \\
-				% 		+ & \exoWeightEcdata  & \!\!\!\cdot\!\!\! & \scenEcmul         _{i}  \\
-				% 		+ & \exoWeightEcdata  & \!\!\!\cdot\!\!\! & \scenEcpairing     _{i}  & \!\!\!\cdot\!\!\! & \locOobResultExtractCallData  \\
-				% 		+ & \gZero            & \!\!\!\cdot\!\!\! & \scenEcpairing     _{i}  & \!\!\!\cdot\!\!\! & \locOobResultEmptyCallData    \\
-				% 	\end{array} \right]
-				% \]
 				and
 				\[
 					% \hspace*{-4cm}
@@ -281,23 +218,6 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 							referenceOffset = \locPrcRao                            ,
 							referenceSize   = \locPrcRac                            ,
 						}
-						% \left\{ \begin{array}{lcl}
-						% 	\miscMmuInst        _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \mmuInstRamToRamSansPadding \\
-						% 	\miscMmuSrcId       _{i + \prcStandardSuccessThirdMiscRowOffset} & = & 1 + \hubStamp_{i} \\
-						% 	\miscMmuTgtId       _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \cn_{i} \\
-						% 	\miscMmuAuxId       _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \nothing \\
-						% 	\miscMmuSrcOffsetHi _{i + \prcStandardSuccessThirdMiscRowOffset} & = & 0 \\
-						% 	\miscMmuSrcOffsetLo _{i + \prcStandardSuccessThirdMiscRowOffset} & = & 0 \\
-						% 	\miscMmuTgtOffsetLo _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \locPrcRao \\
-						% 	\miscMmuSize        _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \locPrcRac \\
-						% 	\miscMmuRefOffset   _{i + \prcStandardSuccessThirdMiscRowOffset} & = & 0 \\
-						% 	\miscMmuRefSize     _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \locMmuRefSize \\
-						% 	\miscMmuSuccessBit  _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \nothing \\
-						% 	\miscMmuLimbOne     _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \nothing \\
-						% 	\miscMmuLimbTwo     _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \nothing \\
-						% 	\miscMmuExoSum      _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \nothing \\
-						% 	\miscMmuPhase       _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \nothing \\
-						% \end{array} \right.
 					\]
 					where 
 					\[
@@ -324,12 +244,6 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 					returnDataOffset   = 0                                            ,
 					returnDataSize     = \locMmuRefSize                               ,
 				}
-				% \provideReturnData
-				% {i}{4} 
-				% {\cn_{i}          }         % Return data receiver
-				% {1 + \hubStamp_{i}}         % Return data provider
-				% {0                }         % Return data offset
-				% {\locMmuRefSize   }         % Return data size 
 			\]
 	\end{description}
 
