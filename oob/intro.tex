@@ -11,9 +11,9 @@ What follows is the list of tasks in which the present module helps the \hubMod{
 		(for \inst{RETURNDATACOPY} instructions) perform the following addition and comparison: 
 		\[
 			\begin{cases}
-				\text{is either \col{offset} or \col{size} grossly out of bounds ?} \\
-				\text{compute the sum \col{offset} + \col{size}}                    \\
-				\text{determine whether $\col{offset} + \col{size} > \RDS$}         \\
+				\text{is either \loc{offset} or \loc{size} grossly out of bounds ?} \\
+				\text{compute the sum \loc{offset} + \loc{size}}                    \\
+				\text{determine whether $\loc{offset} + \loc{size} > \RDS$}         \\
 			\end{cases}
 		\]
 		or not;
@@ -21,59 +21,102 @@ What follows is the list of tasks in which the present module helps the \hubMod{
 	\item[\underline{Trivial \inst{CALLDATALOAD} detection:}]
 		(for \inst{CALLDATACOPY} instructions) perform the comparison
 		\[
-			\col{offset} \geq \CDS
+			\loc{offset} \geq \CDS
 		\]
 		(in which case \inst{CALLDATALOAD} must put $0$ on the stack);
 		see section~(\ref{oob: populating: cdl});
 	\item[\underline{Exceptional \inst{CALL}'s:}]
-		detect whether $\col{value} \neq 0$;
+		detect whether $\loc{value} \neq 0$;
 	\item[\underline{\inst{CALL}-type abort detection:}]
-		detect $\col{value} > \col{balance}$, $\col{callstackdepth} \ge 1024$, $\col{value} \neq 0$;
+		detect $\loc{value} > \loc{balance}$, $\loc{callstackdepth} \ge 1024$, $\loc{value} \neq 0$;
 		see section~(\ref{oob: populating: call});
+	\item[\underline{Exceptional \inst{CREATE}'s:}]
+		determine if a \inst{CREATE(2)} instruction's init code is too long (i.e. $(\loc{initcodesize} > \maxInitCodeSizeValue$);
 	\item[\underline{\inst{CREATE}-type abort detection:}]
-		detect $\col{value} > \col{balance}$, $\col{callstackdepth} \ge 1024$, $\locNonce \neq 0$ and $\locCreatorNonce \geq \maxNonce$;
+		detect $\loc{value} > \loc{balance}$, $\loc{callstackdepth} \ge 1024$, $\locNonce \neq 0$ and $\locCreatorNonce \geq \maxNonce$;
 		see section~(\ref{oob: populating: create});
 	\item[\underline{\sstorexSH{} detection:}]
-		determine if $\col{gas} \leq G_\text{callstipend} = 2300$;
+		determine if $\loc{gas} \leq G_\text{callstipend} = 2300$;
 		see section~(\ref{oob: populating: sstore});
 	\item[\underline{\maxcsxSH{} detection:}]
-		determine if a \inst{RETURN} in a deployment context returns code that is too big (i.e. $(\col{codesize} > 24576$);
+		determine if a \inst{RETURN} in a deployment context returns code that is too long (i.e. $(\loc{codesize} > \maxCodeSizeValue$);
 		see section~(\ref{oob: populating: return});
 \end{description}
 We furthermore use the \oobMod{} for the pricing of certain precompiles and the testing of certain conditions pertaining to some of the underlying \inst{CALL}'s parameters
 \CDS{} (recall its abbreviation \cds{}) and
 \RAC{} (recall its abbreviation \rac{}.)
-\saNote{} Below we use the \cite{EYP}'s notation $I_\textbf{d}$ for call data.
+\saNote{} Below we use the \cite{EYP-London}'s notation $I_\textbf{d}$ for call data.
 \begin{description}
-	\item[\underline{\inst{ECRECOVER}, \inst{SHA2-256}, \inst{RIPEMD-160}, \inst{IDENTITY}, \inst{ECADD}, \inst{ECMUL}, \inst{ECPAIRING} parameters:}]
+	\item[\underline{\instEcrecover{},
+		\instShaTwo{},
+		\instRipemd{},
+		\instIdentity{},
+		\instEcadd{},
+		\instEcmul{},
+		\instEcpairing{},
+		\instPointEvaluation{},
+		\instBlsGOneAdd{},
+		\instBlsGTwoAdd{},
+		\instBlsMapFpToGOne{},
+		\instBlsMapFpTwoToGTwo{}:}]
 		detect both $\cds \equiv 0$ and $\rac \equiv 0$; 
-	\item[\underline{\inst{ECRECOVER}, \inst{ECADD} and \inst{ECMUL} pricing:}]
+	\item[\underline{\instEcrecover{},
+		\instEcadd{},
+		\instEcmul{} and
+		\instPointEvaluation{} pricing:}]
 		performs the comparison
 		\[
 			\left\{ \begin{array}{llcrcl}
-				\text{for }\inst{ECRECOVER}   : & \locCalleeGas \leq g_\text{r} & := & 3000 \\
-				\text{for }\inst{ECADD}       : & \locCalleeGas \leq g_\text{r} & := &  150 \\
-				\text{for }\inst{ECMUL}       : & \locCalleeGas \leq g_\text{r} & := & 6000 \\
+				\text{for }\instEcrecover{}       : & \locCalleeGas \leq g_\text{r} & := &  3000 \\
+				\text{for }\instEcadd{}           : & \locCalleeGas \leq g_\text{r} & := &   150 \\
+				\text{for }\instEcmul{}           : & \locCalleeGas \leq g_\text{r} & := &  6000 \\
+				\text{for }\instPointEvaluation{} : & \locCalleeGas \leq g_\text{r} & := & 50000 \\
 			\end{array} \right.
 		\]
-	\item[\underline{\inst{SHA2-256}, \inst{RIPEMD-160} and \inst{IDENTITY} pricing:}]
+	\item[\underline{\instBlsGOneAdd{},
+		\instBlsGTwoAdd{},
+		\instBlsMapFpToGOne{}, and
+		\instBlsMapFpTwoToGTwo{}:}]
+		verifies that $\| I_\textbf{d} \| = \locFixedCds$ and performs the comparisons
+		\[
+			\left\{ \begin{array}{llcrcl}
+				\text{for }\instBlsGOneAdd{}        : & \locCalleeGas \leq g_\text{r} & := &   375 \\
+				\text{for }\instBlsGTwoAdd{}        : & \locCalleeGas \leq g_\text{r} & := &   600 \\
+				\text{for }\instBlsMapFpToGOne{}    : & \locCalleeGas \leq g_\text{r} & := &  5500 \\
+				\text{for }\instBlsMapFpTwoToGTwo{} : & \locCalleeGas \leq g_\text{r} & := & 23800 \\
+			\end{array} \right.
+		\]
+		See section~(\ref{oob: shorthands}) for the definition of \locFixedCds{}.	
+	\item[\underline{\instShaTwo{},
+		\instRipemd{} and
+		\instIdentity{}:}]
 		compute the ceiling
-		\[ \col{ceil} := \left \lceil \frac{\| I_\textbf{d} \|}{32} \right \rceil \]
+		\[
+			\loc{ceil} := \left \lceil \frac{\| I_\textbf{d} \|}{32} \right \rceil
+		\]
 		and respectively perform the comparisons
 		\[
 			\left\{ \begin{array}{llcrcr}
-				\text{for }\inst{SHA2-256}   : & \locCalleeGas \leq g_\text{r} & := & 60  & + & 12  \cdot \locCeil  \\
-				\text{for }\inst{RIPEMD-160} : & \locCalleeGas \leq g_\text{r} & := & 600 & + & 120 \cdot \locCeil  \\
-				\text{for }\inst{IDENTITY}   : & \locCalleeGas \leq g_\text{r} & := & 15  & + & 3   \cdot \locCeil  \\
+				\text{for }\instShaTwo{}   : & \locCalleeGas \leq g_\text{r} & := & 60  & + & 12  \cdot \locCeil  \\
+				\text{for }\instRipemd{}   : & \locCalleeGas \leq g_\text{r} & := & 600 & + & 120 \cdot \locCeil  \\
+				\text{for }\instIdentity{} : & \locCalleeGas \leq g_\text{r} & := & 15  & + & 3   \cdot \locCeil  \\
 			\end{array} \right.
 		\]
-	\item[\underline{\inst{ECPAIRING} pricing:}]
+	\item[\underline{\inst{BLS\_G1MSM} and \inst{BLS\_G2MSM}:}]
+		verifies that $\| I_\textbf{d} \| \equiv 0 \mod \locMinMsmSize$ and performs the comparison 
+		\[ \locCalleeGas \leq g_\text{r} := \frac{\| I_\textbf{d} \|}{\locMinMsmSize} \cdot \locMsmMultiplicationCost \cdot \frac{\locDiscount}{\prcBlsMultiplicationMultiplier} \]
+		See section~(\ref{oob: shorthands}) for the definition of \locMinMsmSize{}, \locMsmMultiplicationCost{} and \prcBlsMultiplicationMultiplier{} and section~(\ref{oob: precompiles: bls: msm}) for the definition of \locDiscount{}.
+	\item[\underline{\instEcpairing{}:}]
 		verifies that $\| I_\textbf{d} \| \equiv 0 \mod 192$ and performs the comparison 
 		\[ \locCalleeGas \leq g_\text{r} := 34000 \cdot \frac{\| I_\textbf{d} \|}{192} + 45000 \]
+	\item[\underline{\inst{BLS\_PAIRING\_CHECK}:}]
+		verifies that $\| I_\textbf{d} \| \equiv 0 \mod 384$ and performs the comparison 
+		\[ \locCalleeGas \leq g_\text{r} := 32600 \cdot \frac{\| I_\textbf{d} \|}{384} + 37700 \]
 \end{description}
 
 \saNote{}
-\inst{ECRECOVER}, \inst{ECADD}, \inst{ECMUL} and \inst{ECPAIRING} can throw other exceptions besides ``insufficient gas''.
+\instEcrecover, \instEcadd{}, \instEcmul{} and \instEcpairing{} can throw other exceptions besides ``insufficient gas''.
 The present module is only a preliminary step toward detecting exceptions related to those precompiles.
 
-\saNote{} The pricing of \inst{MODEXP} and \inst{BLAKE2f} requires excavating values stored in \texttt{ram}. Their pricing is \emph{not} dealt with in the present module. 
+\saNote{}
+The pricing of \instModexp{} and \instBlake{} requires excavating values stored in \texttt{ram}. Their pricing is \emph{not} dealt with in the present module. 

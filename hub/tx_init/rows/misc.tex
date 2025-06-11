@@ -1,39 +1,40 @@
-we impose the following
-\[
-	\weightedMiscFlagSum {i}{\locTxInitRoffMisc}
-	=
-	\miscMmuWeight \cdot \txCopyTxcd _{i + \locTxInitRoffTxn}
-\]
-Furthermore, \If $\miscMmuFlag _{i + \locTxInitRoffMisc} = 1$ \Then
-\[
-	\setMmuInstructionParametersExoToRamTransplants {
-		anchorRow = i                                        ,
-		relOffset = \locTxInitRoffMisc                       ,
-		sourceId  = \absTxNum_{i}                            ,
-		targetId  = \locTxInitCallDataContextNumber          ,
-		size      = \txCallDataSize _{i + \locTxInitRoffTxn} ,
-		exoSum    = \exoWeightRlpTxn                         ,
-		phase     = \phaseTransactionCallData                ,
-	}
-\]
-where we have set
-\[
-	\locTxInitCallDataContextNumber \define \txCopyTxcd _{i + \locTxInitRoffTxn} \cdot \hubStamp_{i}
-\]
-\saNote{} In other words
-\[
-	\left\{ \begin{array}{lclr}
-		\miscExpFlag _{i + \locTxInitRoffMisc} & = & \gZero                               & (\trash) \\
-		\miscMmuFlag _{i + \locTxInitRoffMisc} & = & \txCopyTxcd _{i + \locTxInitRoffTxn} & (\trash) \\
-		\miscMxpFlag _{i + \locTxInitRoffMisc} & = & \rZero                               & (\trash) \\
-		\miscOobFlag _{i + \locTxInitRoffMisc} & = & \gZero                               & (\trash) \\
-		\miscStpFlag _{i + \locTxInitRoffMisc} & = & \gZero                               & (\trash) \\
-	\end{array} \right.
-\]
-\saNote{}
-\label{hub: initialization phase: transaction call data copy}
-The $\txCopyTxcd$ flag is set in the \txnDataMod{} module as the conjunction of a transaction requiring \evm{} execution and being provided with nonempty call data,
-see section~(\ref{txn_data: constraints: comparisons}).
-The \mmuMod{} instruction serves to transfer the transaction's call data to a fresh new \textsc{ram} segment.
-Future \inst{CALLDATACOPY} and \inst{CALLDATALOAD} instructions executed in the root context will extract their data from that ``execution context's \textsc{ram}'', which contains a full copy of the transaction's call data.
+\item[\underline{\underline{Miscellaneous-row n$^°~(\bm{i + \locTxInitRoffMisc})$:}}]
+	we impose the following
+	\[
+		\weightedMiscFlagSum {i}{\locTxInitRoffMisc}
+		=
+		\miscMmuWeight \cdot \txCopyTxcd _{i + \locTxInitRoffTxn}
+	\]
+	Furthermore, \If $\miscMmuFlag _{i + \locTxInitRoffMisc} = 1$ \Then
+	\[
+		\setMmuInstructionParametersExoToRamTransplants {
+			anchorRow = i                                        ,
+			relOffset = \locTxInitRoffMisc                       ,
+			sourceId  = \totalTransactionNumber_{i}              ,
+			targetId  = \locTxInitCallDataContextNumber          ,
+			size      = \txCallDataSize _{i + \locTxInitRoffTxn} ,
+			exoSum    = \exoWeightRlpTxn                         ,
+			phase     = \phaseTransactionCallData                ,
+		}
+	\]
+	where we have set
+	\[
+		\locTxInitCallDataContextNumber \define \txCopyTxcd _{i + \locTxInitRoffTxn} \cdot \hubStamp_{i}
+	\]
+	\saNote{} In other words
+	\[
+		\left\{ \begin{array}{lclr}
+			\miscExpFlag _{i + \locTxInitRoffMisc} & = & \gZero                               & (\trash) \\
+			\miscMmuFlag _{i + \locTxInitRoffMisc} & = & \txCopyTxcd _{i + \locTxInitRoffTxn} & (\trash) \\
+			\miscMxpFlag _{i + \locTxInitRoffMisc} & = & \rZero                               & (\trash) \\
+			\miscOobFlag _{i + \locTxInitRoffMisc} & = & \gZero                               & (\trash) \\
+			\miscStpFlag _{i + \locTxInitRoffMisc} & = & \gZero                               & (\trash) \\
+		\end{array} \right.
+	\]
+	\saNote{}
+	\label{hub: initialization phase: transaction call data copy}
+	The $\txCopyTxcd$ flag is set in the \userTxnDataMod{} module as the conjunction of a transaction requiring \evm{} execution and being provided with nonempty call data,
+	see section~(\ref{user txn data: constraints: comparisons}).
+	The \mmuMod{} instruction serves to transfer the transaction's call data to a fresh new \textsc{ram} segment.
+	Future \inst{CALLDATACOPY} and \inst{CALLDATALOAD} instructions executed in the root context will extract their data from that ``execution context's \textsc{ram}'', which contains a full copy of the transaction's call data.
 

@@ -1,0 +1,39 @@
+\begin{center}
+	\boxed{\text{%
+        The following constraints assume that
+	$\left\{ \begin{array}{lcl}
+		\isPrevRandao _{i - 1} & = & 0 \\
+		\isPrevRandao _{i}     & = & 1 \\
+	\end{array} \right.$}}
+\end{center}
+We use the following shorthand
+\[
+	\left\{ \begin{array}{lcl}
+		\currPrevRandaoHi & \define & \currDataHi \\
+		\currPrevRandaoLo & \define & \currDataLo \\
+	\end{array} \right.
+\]
+And we impose the following constraints
+\begin{description}
+	\item[\underline{\underline{Setting \inst{PREVRANDAO}:}}]
+		we cannot \emph{a priori} constrain \inst{PREVRANDAO};
+
+		\saNote{}
+		Implementations may impose the value returned by the \inst{PREVRANDAO} opcode to some network constant,
+		e.g. $\lineaPrevRandao= 2$.
+	\item[\underline{\underline{\inst{PREVRANDAO} bound:}}]
+		\def\rowOffset{\yellowm{0}}
+		we impose
+		\[
+			\wcpCallToGeq{
+				anchorRow = i                 ,
+				relOffset = \rowOffset        ,
+				argOneHi  = \currPrevRandaoHi ,
+				argOneLo  = \currPrevRandaoLo ,
+				argTwoHi  = 0                 ,
+				argTwoLo  = 0                 ,
+			}
+		\]
+		\saNote{}
+		The above ensures that $\inst{PREVRANDAO} \geq 0$ is well formed (in terms of its high and low parts being $\llarge$-byte integers.)
+\end{description}

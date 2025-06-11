@@ -1,0 +1,49 @@
+We impose limitations on which ``transaction phase'' flags may be active at any point in time.
+\begin{enumerate}
+        \item
+                \label{hub: system: hub stamp: SYSI transactions are always SKIP}
+                \If $\sysi _{i} = 1$ \Then
+                \[
+                        \txSkip _{i} = 1
+                        % \left[ \begin{array}{cl}
+                        %         + & \txSkip _{i} \\
+                        %         + & \txWarm _{i} \\
+                        %         + & \txInit _{i} \\
+                        %         + & \txExec _{i} \\
+                        %         + & \txFinl _{i} \\
+                        % \end{array} \right]
+                \]
+        \item
+                \If $\user _{i} = 1$ \Then
+                \[
+                        \left[ \begin{array}{cl}
+                                + & \txSkip _{i} \\
+                                + & \txWarm _{i} \\
+                                + & \txInit _{i} \\
+                                + & \txExec _{i} \\
+                                + & \txFinl _{i} \\
+                        \end{array} \right]
+                        = 1 ~ (\sanityCheck)
+                \]
+        \item
+                \label{hub: system: hub stamp: SYSF transactions are always SKIP}
+                \If $\sysf _{i} = 1$ \Then
+                \[
+                        \txSkip _{i} = 1
+                        % \left[ \begin{array}{cl}
+                        %         + & \txSkip _{i} \\
+                        %         + & \txWarm _{i} \\
+                        %         + & \txInit _{i} \\
+                        %         + & \txExec _{i} \\
+                        %         + & \txFinl _{i} \\
+                        % \end{array} \right]
+                \]
+\end{enumerate}
+\saNote{}
+Constraints (\ref{hub: system: hub stamp: SYSI transactions are always SKIP})
+and         (\ref{hub: system: hub stamp: SYSF transactions are always SKIP})
+reflect the fact that the only system transactions supported on \linea{} as of the \textsc{Prague} release
+are those of
+\cite{EIP-4788} and
+\cite{EIP-2935},
+both of which can be dealt with while by-passing \evm{} execution.

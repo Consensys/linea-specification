@@ -3,32 +3,21 @@
 \end{center}
 We deal with setting the contents of the various peeking rows.
 \begin{description}
-	\item[\underline{\underline{Miscellaneous-row n$^°~(\bm{i + \locTxInitRoffMisc})$:}}]
-		\input{tx_init/rows/misc}
-	\item[\underline{\underline{Transaction-row n$^°~(\bm{i + \locTxInitRoffTxn})$:}}]
 		\input{tx_init/rows/txn}
-	\item[\underline{\underline{Coinbase-row n$^°~(\bm{i + \locTxInitWarmCoinbase})$:}}]
+		\input{tx_init/rows/misc}
 		\input{tx_init/rows/acc_coinbase_warm}
-	\item[\underline{\underline{Sender account-row n$^°\bm{(i + \locTxInitRoffAccDoingSndPayGas)}$:}}]
 		\input{tx_init/rows/acc_sender_gas}
-	\item[\underline{\underline{Sender account-row n$^°\bm{(i + \locTxInitRoffAccDoingSenderValueTransfer)}$:}}]
 		\input{tx_init/rows/acc_sender_value}
-	\item[\underline{\underline{Recipient account-row n$^°\bm{(i + \locTxInitRoffAccDoingRecipientValueReception)}$:}}]
 		\input{tx_init/rows/acc_recipient_value}
 \end{description}
 The following constraints undo the value transfer in case the transaction is predicted to be rolled back.
 Furthermore it undoes the changes applied to the recipient account in case of a deployment transaction (in that same roll back scenario.)
 \begin{description}
-	\item[\underline{\underline{Sender account-undoing-row n$^°\bm{(i + \locTxInitRoffAccUndoingSenderValueTransfer)}$:}}]
 		\input{tx_init/rows/acc_sender_undoing}
-	\item[\underline{\underline{Recipient account-undoing-row n$^°\bm{(i + \locTxInitRoffAccUndoingRecipientValueReception)}$:}}]
 		\input{tx_init/rows/acc_recipient_undoing}
 \end{description}
 Finally we must define the execution context data of the root context:
 \begin{description}
-	\item[\underline{\underline{Initializing the root context:}}]
 		\input{tx_init/rows/con}
-	\item[\underline{\underline{Setting certain context variables for the first execution row:}}]
-		\label{hub: initialization phase: common constraints: initializing some context variables}
 		\input{tx_init/rows/first_execution_row}
 \end{description}

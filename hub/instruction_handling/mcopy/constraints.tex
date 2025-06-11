@@ -1,0 +1,207 @@
+\begin{center}
+	\boxed{%
+		\text{The stack constraints presented below assume }
+		\begin{cases}
+			\peekStack                 _{i} = 1 \\
+			\stackDecMcopyFlag         _{i} = 1 \\
+			\stackSux _{i} + \stackSox _{i} = 0 \\
+		\end{cases}}
+\end{center}
+The constraints are as follows:
+\begin{description}
+	\item[\underline{Setting the stack pattern:}]
+		we impose $\threeZeroSP_{i}$;
+\end{description}
+We deal with the \inst{MCOPY} instruction slightly differently from other instructions.
+The typical \emph{modus operandi} is to specify peeking flags and then to fill the relevant lookups etc\dots{}
+With the present instruction we begin by specifying a single miscellaneous-row which is unconditionally present.
+\begin{description}
+	\item[\underline{The first row must be a miscellaneous-row:}]
+		we unconditionally impose that $\peekMisc _{i + \locMcopyFrstMiscOffset} = 1$;
+	\item[\underline{Calling the \mxpMod{}-module:}]
+		we unconditionally call the \mxpMod{} module
+		$\miscMxpFlag _{i + \locMcopyFrstMiscOffset} = 1$;
+	\item[\underline{Defining the \mxpMod{}-instruction:}]
+		we impose
+		\[
+			\setMxpInstructionMcopy {
+				anchorRow      = i                       ,
+				relOffset      = \locMcopyFrstMiscOffset ,
+				targetOffsetHi = \locTgtOffsetHi         ,
+				targetOffsetLo = \locTgtOffsetLo         ,
+				sourceOffsetHi = \locSrcOffsetHi         ,
+				sourceOffsetLo = \locSrcOffsetLo         ,
+				sizeHi         = \locSizeHi              ,
+				sizeLo         = \locSizeLo              ,
+			}
+		\]
+	\item[\underline{Defining module triggers:}]
+		the module triggers will be used to
+		unconditionally call the \mxpMod{} module
+		and call the \mmuMod{} module \emph{iff}
+		the underlying \inst{MCOPY} instruction is unexceptional ($\xAhoy \equiv 0$)
+		and its size parameter is nonzero ($\locMcopyMxpSizeOneNonZeroNoMxpx \equiv 1$.)
+		\[
+			\left\{ \begin{array}{lcl}
+				\locTriggerMxp & \define & 1                                                        \\
+				\locTriggerMmu & \define & (1 - \xAhoy _{i}) \cdot \locMcopyMxpSizeOneNonZeroNoMxpx \\
+			\end{array} \right.
+		\]
+		In other words
+		\begin{enumerate}
+			\item \If $\xAhoy_{i} = 1$ \Then $\locTriggerMmu = 0$ \quad (\trash)
+			\item \If $\xAhoy_{i} = 0$ \Then 
+				\begin{enumerate}
+					\item \If $\locSizeLo =    0$ \Then $\locTriggerMmu = 0$ \quad (\trash)
+					\item \If $\locSizeLo \neq 0$ \Then $\locTriggerMmu = 1$ \quad (\trash)
+				\end{enumerate}
+		\end{enumerate}
+\end{description}
+We are now in a position to specify the peeking flags.
+\begin{description}
+	\item[\underline{Setting $\nonStackRows$ and peeking flags:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\xAhoy _{i} = 1$ \Then $\nonStackRows_{i} = 2$.
+			\item \If $\xAhoy _{i} = 0$ \Then $\nonStackRows_{i} = 1 + \locTriggerMmu$.
+		\end{enumerate}
+	\item[\underline{Setting the peeking flags:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\xAhoy _{i} = 1$ \Then $\nonStackRows_{i} = 2$ and
+				\[
+					\left[ \begin{array}{r}
+						+ \peekMisc     _{i + \locMcopyFrstMiscOffset}           \\
+						+ \peekContext  _{i + \locMcopyExceptionalContextOffset} \\
+					\end{array} \right]
+					= \nonStackRows_{i}
+				\]
+				\saNote{}
+				We don't need to (and won't) specify the contents of the final context row in the case that $\xAhoy \equiv 1$.
+				This is already implicitly taken care of with
+				section~(\ref{hub: generalities: context: exceptions lead to providing empty return data}).
+
+				\saNote{}
+				For instructions raising the $\stackDecMcopyFlag$ one has $\cmc \equiv \xAhoy$.
+			\item \If $\xAhoy _{i} = 0$ \Then $\nonStackRows_{i} = 1 + \locTriggerMmu$ and
+				\[
+					\left[ \begin{array}{cr}
+						+ & \peekMisc                       _{i + \locMcopyFrstMiscOffset} \\
+						+ & \locTriggerMmu \cdot \peekMisc  _{i + \locMcopyScndMiscOffset} \\
+					\end{array} \right]
+					= \nonStackRows_{i}
+				\]
+		\end{enumerate}
+	\item[\underline{Justiyfing the \stackMxpx{} flag:}]
+		we impose that
+		\[
+			\stackMxpx _{i}
+			=
+			\locMcopyMxpMxpx
+		\]
+	\item[\underline{Setting the gas cost:}]
+		we impose that 
+		\begin{enumerate}
+			\item \If $\stackMxpx _{i} = 0$ \Then \( \gasCost_{i} = \stackStaticGas _{i} + \locMcopyMxpGas \)
+			\item \If $\stackMxpx _{i} = 1$ \Then \( \gasCost_{i} = 0 \)
+		\end{enumerate}
+	\item[\underline{Miscellaneous-row $n^°(i + \locMcopyFrstMiscOffset)$: flags:}]
+		we impose that
+		\[
+			\weightedMiscFlagSum {i}{\locMcopyFrstMiscOffset}
+			=
+			\left[ \begin{array}{llcl}
+				+ & \miscMmuWeight & \!\!\!\cdot\!\!\! & \locCallMmu \\
+				+ & \miscMxpWeight  \\
+			\end{array} \right]
+		\]
+		in other words
+		\[
+			\left\{ \begin{array}{lclr}
+				\miscExpFlag  _{i + \locMcopyFrstMiscOffset} & = & \gZero      & (\trash) \\
+				\miscMmuFlag  _{i + \locMcopyFrstMiscOffset} & = & \locCallMmu & (\trash) \\
+				\miscMxpFlag  _{i + \locMcopyFrstMiscOffset} & = & \one        & (\trash) \\
+				\miscOobFlag  _{i + \locMcopyFrstMiscOffset} & = & \gZero      & (\trash) \\
+				\miscStpFlag  _{i + \locMcopyFrstMiscOffset} & = & \gZero      & (\trash) \\
+			\end{array} \right.
+		\]
+	\item[\underline{Miscellaneous-row $n^°(i + \locMcopyScndMiscOffset)$: flags:}]
+		\If $\locTriggerMmu = 1$ \Then we impose that
+		\[
+			\weightedMiscFlagSum {i}{\locMcopyScndMiscOffset}
+			=
+			\miscMmuWeight
+		\]
+		in other words
+		\[
+			\left\{ \begin{array}{lclr}
+				\miscExpFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\trash) \\
+				\miscMmuFlag  _{i + \locMcopyScndMiscOffset} & = & \one    & (\trash) \\
+				\miscMxpFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\trash) \\
+				\miscOobFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\trash) \\
+				\miscStpFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\trash) \\
+			\end{array} \right.
+		\]
+		\saNote{} The binary flag \locCallMmu{} will be defined below.
+\end{description}
+The \zkEvm{} carries out the \inst{MCOPY} instruction in two steps,
+similarly to how it deals with the \instIdentity{} precompile,
+see section~(\ref{hub: instruction handling: call: precompiles: identity}).
+The first step is to carry out a full copy of the specified (\emph{nonempty}) source memory span into a new,
+hitherto untouched, memory span with fresh (and as of yet, unclaimed) identifier $1 + \hubStamp_{i}$.
+The second step is to copy the contents over from that new memory span to the target memory span.
+In the above the source memory span starts at offset $\locSrcOffsetLo$ an occupies $\locSizeLo$ many bytes, and
+the target memory span starts at offset $\locTgtOffsetLo$ an (also) occupies $\locSizeLo$ many bytes.
+Both have identifier $\cn _{i}$.
+
+This approach avoids difficulties related to
+(\emph{a}) overlapping source and target memory spans
+(\emph{b}) relative position of the source and target spans (source on the left of target and \emph{vice versa}.)
+\begin{description}
+	\item[\underline{Miscellaneous-row $n^°(i + \locMcopyFrstMiscOffset)$: \mmuMod{} data:}]
+		\If $\locTriggerMmu = 1$ \Then
+		\[
+			\setMmuInstructionParametersRamToRamSansPadding {
+				anchorRow         = i                       ,
+				relOffset         = \locMcopyFrstMiscOffset ,
+				sourceId          = \cn_{i}                 ,
+				targetId          = 1 + \hubStamp_{i}       ,
+				% auxiliaryId       = 1 + \hubStamp_{i}     ,
+				% sourceOffsetHi  = \col{src\_offset\_hi}   ,
+				sourceOffsetLo    = \locSrcOffsetLo         ,
+				% targetOffsetLo  = \locTgtOffsetLo         ,
+				size              = \locSizeLo              ,
+				referenceOffset   = 0                       ,
+				referenceSize     = \locSizeLo              ,
+				% successBit      = \nothing                ,
+				% limbOne         = \col{limb\_1}           ,
+				% limbTwo         = \col{limb\_2}           ,
+				% exoSum          = \exoWeightKec           ,
+				% phase           = \nothing                ,
+			}
+		\]
+	\item[\underline{Miscellaneous-row $n^°(i + \locMcopyScndMiscOffset)$: \mmuMod{} data:}]
+		\If $\locTriggerMmu = 1$ \Then
+		\[
+			\setMmuInstructionParametersRamToRamSansPadding {
+				anchorRow         = i                       ,
+				relOffset         = \locMcopyScndMiscOffset ,
+				sourceId          = 1 + \hubStamp_{i}       ,
+				targetId          = \cn_{i}                 ,
+				% auxiliaryId     = \nothing                ,
+				% sourceOffsetHi  = \col{src\_offset\_hi}   ,
+				sourceOffsetLo    = 0                       ,
+				% targetOffsetLo  = \locTgtOffsetLo         ,
+				size              = \locSizeLo              ,
+				referenceOffset   = \locTgtOffsetLo         ,
+				referenceSize     = \locSizeLo              ,
+				% successBit      = \nothing                ,
+				% limbOne         = \col{limb\_1}           ,
+				% limbTwo         = \col{limb\_2}           ,
+				% exoSum          = \exoWeightKec           ,
+				% phase           = \nothing                ,
+			}
+		\]
+		\saNote{}
+		The current context and caller context (which may own the call data) are provided by the lookup. 
+\end{description}

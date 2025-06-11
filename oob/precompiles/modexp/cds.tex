@@ -7,11 +7,11 @@ The present instruction aims to provide the \hubMod{} module with the following 
 \green{(\emph{c})} whether $64 < \locCds$.
 
 Comparisons of the form ``$32\cdot n < \locCds$'' allow the \hubMod{} module to know when extraction of a \textbf{byte size parameter} from \textsc{ram} is necessary.
-Recall that the first 96 (padded) bytes of call data of a \inst{CALL} to the \inst{MODEXP} precompiles are to be interpreted as the
+Recall that the first 96 (padded) bytes of call data of a \inst{CALL} to the \instModexp{} precompiles are to be interpreted as the
 the base byte size \locBbs,
 the exponent byte size \locEbs,
 the modulus byte size \locMbs{} respectively,
-alternatively, using notations from the \cite{EYP},
+alternatively, using notations from the \cite{EYP-London},
 $\locBase$, $\locExponent$ and $\locModulus$ respectively.
 
 \noindent We use the shorthands defined below:
@@ -30,20 +30,32 @@ We impose the following constraints:
 	\item[\underline{Rows n°$(i)$, $n^\circ(i + 1)$ and $n^\circ(i + 2)$:}] we impose
 		\[
 			\left\{ \begin{array}{l}
-				\oobCallToLt
-				{i}{0}
-				{0}{0}
-				{0}{\locCds}
+				\wcpCallToLt {
+					anchorRow = i       ,
+					relOffset = 0       ,
+					argOneHi  = 0       ,
+					argOneLo  = 0       ,
+					argTwoHi  = 0       ,
+					argTwoLo  = \locCds ,
+				}
 				\vspace{2mm} \\
-				\oobCallToLt
-				{i}{1}
-				{0}{32}
-				{0}{\locCds}
+				\wcpCallToLt {
+					anchorRow = i       ,
+					relOffset = 1       ,
+					argOneHi  = 0       ,
+					argOneLo  = 32      ,
+					argTwoHi  = 0       ,
+					argTwoLo  = \locCds ,
+				}
 				\vspace{2mm} \\
-				\oobCallToLt
-				{i}{2}
-				{0}{64}
-				{0}{\locCds}
+				\wcpCallToLt {
+					anchorRow = i       ,
+					relOffset = 2       ,
+					argOneHi  = 0       ,
+					argOneLo  = 64      ,
+					argTwoHi  = 0       ,
+					argTwoLo  = \locCds ,
+				}
 				\\
 			\end{array} \right.
 		\]

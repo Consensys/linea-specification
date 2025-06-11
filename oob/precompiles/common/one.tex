@@ -1,4 +1,7 @@
-The present section describes the remaining computations required for dealing with \inst{ECRECOVER}, \inst{ECADD} and \inst{ECMUL}.
+The present section describes the remaining computations required for dealing with
+\instEcrecover{},
+\instEcadd{} and
+\instEcmul{}.
 As such:
 \[
 	\boxed{\text{All constraints in this subsection further assume }
@@ -14,19 +17,23 @@ We impose that
 \begin{description}
 	\item[\underline{Row n°$(i + 2)$:}] we impose the following:
 		\[
-			\oobCallToLt
-			{i}{2}
-			{0}{\locCalleeGas}
-			{0}{\locPrecompileCost}
+			\wcpCallToLt {
+				anchorRow = i                  ,
+				relOffset = 2                  ,
+				argOneHi  = 0                  ,
+				argOneLo  = \locCalleeGas      ,
+				argTwoHi  = 0                  ,
+				argTwoLo  = \locPrecompileCost ,
+			}
 		\]
 		where
 		\[
 			\locPrecompileCost
 			\define
 			\left[ \begin{array}{crcl}
-				+ & 3000 & \cdot & \oobInstIsEcrecover_{i} \\
-				+ & 150  & \cdot & \oobInstIsEcadd_{i}     \\
-				+ & 6000 & \cdot & \oobInstIsEcmul_{i}     \\
+				+ & 3000 & \cdot & \oobInstIsEcrecover _{i} \\
+				+ & 150  & \cdot & \oobInstIsEcadd     _{i} \\
+				+ & 6000 & \cdot & \oobInstIsEcmul     _{i} \\
 			\end{array} \right]
 		\]
 		we further introduce the following shorthand

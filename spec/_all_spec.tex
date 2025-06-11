@@ -15,6 +15,7 @@
 \usepackage{../pkg/xkeyval_macros/wcp_calls}
 \usepackage{../pkg/xkeyval_macros/ext_calls}
 \usepackage{../pkg/xkeyval_macros/euc_calls}
+\usepackage{../pkg/xkeyval_macros/prc_calls}
 \usepackage{../pkg/flags_stamps_selectors}
 \usepackage{../pkg/instruction_flags}
 \usepackage{../pkg/IEEEtrantools}
@@ -25,6 +26,7 @@
 \usepackage{../pkg/call_stack}
 \usepackage{../pkg/comparisons}
 \usepackage{../pkg/exceptions}
+\usepackage{../pkg/instruction_decoder}
 \usepackage{../pkg/expansion}
 \usepackage{../pkg/exponent}
 \usepackage{../pkg/gas}
@@ -65,6 +67,10 @@
 \usepackage{../pkg/mmio_instructions}
 \usepackage{../pkg/common_shorthands}
 \usepackage{../pkg/prc}
+\usepackage{../pkg/system_txn_data}
+\usepackage{../pkg/system}
+\usepackage{../pkg/hlabel}
+\usepackage{epigraph}
 \usepackage{subfiles}
 \usepackage{multirow}
 \usepackage{hhline}
@@ -77,6 +83,7 @@
 \usepackage[nohints]{minitoc}
 
 \usepackage{../pkg/draculatheme}
+\usepackage{../pkg/colors}
 
 \usepackage{tocloft}
 \addtolength{\cftsecnumwidth}{5pt}
@@ -85,8 +92,11 @@
 
 \newcounter{alu_ext_counter}
 
-\usepackage[sorting=none, backend=bibtex]{biblatex}
-\addbibresource{references.bib}
+\usepackage[sorting=nty, backend=bibtex, backend=biber,style=authoryear]{biblatex}
+\bibliography{../references.bib}
+
+% Customize the citation format to include square brackets around shorthand names
+\DeclareFieldFormat{shorthand}{\texttt{[#1]}}
 
 \title{A \textsc{zk-evm} specification}
 \author{%
@@ -111,10 +121,10 @@ Nicolas Liochon
 \chapter{The \hubMod{} module}                       \label{chap: hub}             \minitoc    \subfile{../hub/_inputs}
 \chapter{The \mmuMod{} module}                       \label{chap: mmu}             \minitoc    \subfile{../mmu/_inputs}
 \chapter{The \mmioMod{} module}                      \label{chap: ram}             \minitoc    \subfile{../mmio/_inputs}
-\chapter{The \romMod{} module}                       \label{chap: rom}             \minitoc    \subfile{../rom/_inputs}
+\chapter{The \romMod{} module}                       \label{chap: rom}             \minitoc    \subfile{../rom_v3/_inputs}
 \chapter{The \romLexMod{} module}                    \label{chap: rom lex}         \minitoc    \subfile{../rom_lex/_inputs}
 \chapter{The \oobMod{} module}                       \label{chap: oob}             \minitoc    \subfile{../oob/_inputs}
-\chapter{The \mxpMod{} module}                       \label{chap: mxp}             \minitoc    \subfile{../mxp/_inputs}
+\chapter{The \mxpMod{} module}                       \label{chap: mxp}             \minitoc    \subfile{../mxp_v3/_inputs}
 \chapter{The \stpMod{} module}                       \label{chap: stp}             \minitoc    \subfile{../stp/_inputs}
 \chapter{The \expMod{} module}                       \label{chap: exp}             \minitoc    \subfile{../exp/_inputs}
 \chapter{The \gasMod{} module}                       \label{chap: gas}             \minitoc    \subfile{../gas/_inputs}
@@ -127,7 +137,8 @@ Nicolas Liochon
 \chapter{The \btcMod{} module}                       \label{chap: block data}      \minitoc    \subfile{../block_data/_inputs}
 \chapter{The \blockHashMod{} module}                 \label{chap: block hash}      \minitoc    \subfile{../block_hash/_inputs}
 \chapter{The \rlpTxnMod{} module}                    \label{chap: txn rlp}         \minitoc    \subfile{../rlp_txn/_inputs}
-\chapter{The \txnDataMod{} module}                   \label{chap: txn data}        \minitoc    \subfile{../txn_data/_inputs}
+\chapter{The \userTxnDataMod{} module}               \label{chap: user txn data}   \minitoc    \subfile{../txn_data_user/_inputs}
+\chapter{The \systTxnDataMod{} module}               \label{chap: system txn data} \minitoc    \subfile{../txn_data_system/_inputs}
 \chapter{The \rlpAddrMod{} module}                   \label{chap: addr rlp}        \minitoc    \subfile{../rlp_addr/_inputs}
 \chapter{The \rlpTxnRcptMod{} module}                \label{chap: log rlp}         \minitoc    \subfile{../rlp_txnrcpt/_inputs}
 \chapter{The \logInfoMod{} module}                   \label{chap: log info}        \minitoc    \subfile{../log_info/_inputs}
@@ -139,6 +150,9 @@ Nicolas Liochon
 \chapter{RLP patterns}                               \label{chap: RLP patterns}    \minitoc    \subfile{../rlp_patterns/_inputs}
 \chapter{Generic data module}                        \label{chap: generic data}    \minitoc    \subfile{../generic/data/_inputs}
 \chapter{Generic info module}                        \label{chap: generic info}    \minitoc    \subfile{../generic/info/_inputs}
-\printbibliography
+
+\nocite{*}
+
+\printbibliography % Print the bibliography
 
 \end{document}

@@ -1,0 +1,37 @@
+\begin{figure}[!h]
+        \centering
+        \begin{tikzpicture}[node distance={4cm}, thick, main/.style={rectangle, thick, draw, rounded corners = 3pt, inner sep = 6pt, outer sep = 4pt}]
+                \node[main, color = draculagreen]  (warm) 	   			{$\txWarm$};
+                \node[main, color = draculagreen]  (init) [right of=warm]		{$\txInit$};
+                \node[main, color = yellow!70]     (exec) [right of=init]		{$\txExec$};
+                \node[main, color = orange!70]     (finl) [below of=warm]		{$\txFinl$};
+                \node[main, color = orange!70]     (skip) [above left of=warm]	{$\txSkip$};
+                \draw[-latex] (warm) -- (init);
+                \draw[-latex] (init) -- (exec);
+                \draw[-latex] (exec) -- (finl);
+                \draw[-latex, dashed, color = solarized-blue] (finl) -- (warm);
+                \draw[-latex, dashed, color = solarized-blue] (finl) -- (init);
+                \draw (finl) edge [-latex , out=135  , in=-90 , dashed       ,    color   =                  solarized-blue] (skip);
+                \draw (warm) edge [-latex , out=135  , in=45  , looseness=5] node [above] {$(\star)$}        (warm);
+                \draw (init) edge [-latex , out=135  , in=45  , looseness=5] node [above] {$\deterministic$} (init);
+                \draw (exec) edge [-latex , out=135  , in=45  , looseness=5] node [above] {$(\star)$}        (exec);
+                \draw (finl) edge [-latex , out=-135 , in=-45 , looseness=5] node [below] {$\deterministic$} (finl);
+                \draw (skip) edge [-latex , out=135  , in=45  , looseness=5] node [above] {$\deterministic$} (skip);
+                \draw (skip) edge [-latex, dashed, color = solarized-blue, out=245,in=155,looseness=5] (skip);
+                \draw (skip.315) edge [-latex, dashed, color = solarized-blue] (warm.155);
+                \draw (skip) edge [-latex, dashed, out = -10, in = 135, color = solarized-blue] (init.155);
+        \end{tikzpicture}
+        \label{hub: system: phase flags: transaction phase transition graph}
+        \caption{%
+                The above is the transition graph of the boolean flags $\txSkip$, $\txWarm$, $\txInit$, $\txExec$ and $\txFinl$.
+                To occupy a node in this graph at row index $i$ is to have the associated boolean flag $=1$ on that row.
+                Every non-padding row $i$ occupies a single vertex of the above graph.
+                To move along an oriented edge is to have the source node's boolean flag $=1$ at time $i$ and have the target node's boolean flag $=1$ at time $i+1$.
+                \vspace{1mm} \\
+                %
+                The label $\deterministic$ above certain nodes indicates that the number of rows in that transaction processing phase is \textbf{deterministic}.
+                On the contrary, nodes which have the $(\star)$ label may appear an arbitrary number of times without transitioning to a different transaction phase.
+                Transitioning along one of the dashed blue edges ${\color{solarized-blue}\dashrightarrow}$ indicates a change in the underlying transaction,
+                and thus in the $\totalTransactionNumber$.
+                }
+\end{figure}

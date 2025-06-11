@@ -1,0 +1,209 @@
+The first set of columns arrives to the present module from the \mmioMod{} module:
+\begin{enumerate}
+    \item
+        \blsStamp{}:
+        module stamp;
+        has $0/1$ increments;
+    \item
+        \hubMmuMmioBlsInput{}
+        \blsId{}:
+        unique identifier of a precompile \inst{CALL} triggering the present module;
+        contains a context number derived from the \hubStamp{};
+    \item
+        \hubMmuMmioBlsInput{}
+        \blsTotalSize{}:
+        total size of input or output;
+        especially relevant for variable input size \inst{BLS}-precompiles, i.e.
+        \inst{G1MSM},
+        \inst{G2MSM} and
+        \inst{PAIRING\_CHECK};
+    \item
+        \hubMmuMmioBlsInput{}
+        \blsIndex{}:
+        data limb index;
+    \item
+        \indexMax{}:
+        maximum value of \blsIndex{} for a given phase;
+    \item
+        \hubMmuMmioBlsInput{}
+        \blsLimb{}:
+        data limb; either input or output;
+    \item
+        \hubMmuMmioBlsInput{}
+        \blsPhase{}:
+        phase identifying which precompile is being called and whether the data represents inputs or outputs;
+    \item
+        \hubMmuMmioBlsPrediction{}
+        \blsSuccessBit{}:
+        success bit of the operation;
+\end{enumerate}
+The following columns help define the ``heartbeat'' of the present module. 
+\begin{enumerate}[resume]
+    \item
+        \ct:
+        counter column;
+        counts continuously from $0$ to \maxCt{} then resets to $0$;
+    \item
+        \maxCt:
+        counter-constant column;
+        the maximum value $\ct$ should count to;
+\end{enumerate}
+The following columns partake in the ``instruction decoding'' of the above:
+\begin{multicols}{2}
+    \begin{enumerate}
+        \setcounter{enumi}{10}
+        \item \isPointEvaluationData{}
+        \item \isBlsGOneAddData{}
+        \item \isBlsGOneMsmData{}
+        \item \isBlsGTwoAddData{}
+        \item \isBlsGTwoMsmData{}
+        \item \isBlsPairingCheckData{}
+        \item \isBlsMapFpToGOneData{}
+        \item \isBlsMapFpTwoToGTwoData{}
+        \item \isPointEvaluationResult{}
+        \item \isBlsGOneAddResult{}
+        \item \isBlsGOneMsmResult{}
+        \item \isBlsGTwoAddResult{}
+        \item \isBlsGTwoMsmResult{}
+        \item \isBlsPairingCheckResult{}
+        \item \isBlsMapFpToGOneResult{}
+        \item \isBlsMapFpTwoToGTwoResult{}
+    \end{enumerate}
+\end{multicols}
+\noindent We further define:
+\begin{enumerate}[resume]
+        \setcounter{enumi}{26}
+    \item
+        \accInputs:
+        In the context of \inst{G1MSM}, \inst{G2MSM} and \inst{PAIRING\_CHECK}, counts the inputs starting from 1. It is equal to 0 otherwise.
+    \item
+        $\byteCol{$\Delta$}$:
+        byte column; used to justify that \blsId{} increments;
+\end{enumerate}
+The \blsMod{} module splits (\inst{BLS}-)precompile calls into 4 categories:
+(\emph{a}) those raising \malformedDataInternalTot{}, which are those precompile calls whose call data, while having the right size, has malformed inputs, in the sense that one or more slices of bytes representing integers modulo a prime, do not satisfy the relevant smallness condition;
+(\emph{b}) those raising \malformedDataExternalTot{}, which are those precompiles calls which do not raise the previous issue, but fail on other counts e.g., do not represent points on the relevant curve or subgroup;
+(\emph{c}) those raising \wellformedDataTrivial{}, which are \inst{PAIRING\_CHECK}-calls such that every pair of points is wellformed and containts at least one point at infinity;
+(\emph{d}) those raising \wellformedDataNontrivial{}, which are the remaining cases.
+
+Properties which can be checked within the present module are labeled as \textbf{internal}, while those which require specialized circuits are labeled as \textbf{external}. Range proofs are \textbf{internal}, but curve membership, subgroup membership and point evaluation input validity checks are \textbf{external}.
+\begin{enumerate}[resume]
+    \item
+        \both{\malformedDataInternalBit}:
+        \ccbc{};
+        may light up on data rows when a data malformation was detected in module;
+    \item
+        \both{\malformedDataInternalAcc}:
+        \ccbc{};
+        accumulates the values of \malformedDataInternalBit{} over the course of a \blsId{};
+    \item
+        \both{\malformedDataInternalTot}:
+        binary column, constant for a given \blsId{},
+        which lights up when the data is malformed and it can be justified internally;
+    \item
+        \blsPrediction{}
+        \both{\malformedDataExternalBit}:
+        \ccbc{};
+        lights up along malformed curve or subgroup points or externally invalid \inst{POINT\_EVALUATION} input rows;
+    \item
+        \both{\malformedDataExternalAcc}:
+        \ccbc{};
+        lights up when \malformedDataExternalBit{} equals $1$;
+    \item
+        \both{\malformedDataExternalTot}:
+        binary column, constant for a given \blsId, which lights up when the data is malformed and it needs to be justified extenrally;
+    \item
+        \both{\wellformedDataTrivial}:
+        binary column, constant for a given \blsId, which lights up when the data is well formed in the case of \inst{PAIRING\_CHECK}-calls known to be trivial;
+    \item
+        \both{\wellformedDataNontrivial}:
+        binary column, constant for  given \blsId, which lights up when the data is well formed and non trivial;
+\end{enumerate}
+The following columns help us distinguish between qualitatively different data segments.
+They are used by the
+\inst{G1ADD},
+\inst{G1MSM},
+\inst{G2ADD},
+\inst{G2MSM},
+\inst{PAIRING\_CHECK}
+precompiles.
+\begin{enumerate}[resume]
+    \item
+        \isFirstInput:
+        counter-constant binary column;
+        lights up when the input is the first;
+    \item
+        \isSecondInput:
+        counter-constant binary column;
+        lights up when the input is the second;
+\end{enumerate}
+We refer the reader to section~(\ref{bls: top level flags: setting diagrams}) for the interpteration of the inputs.
+\begin{enumerate}[resume]
+    \item
+        \isInfinity:
+        counter-constant binary column;
+        may only light along rows containing (supposedly) curve points;
+        lights up precisely if all coordinates vanish;
+    \item
+        \both{\nontrivialPairOfPointsBit}:
+        pair-of-points-constant binary column;
+        may only light up for data rows of the \inst{PAIRING\_CHECK} precompile (i.e. when $\isBlsPairingCheckData \equiv 1$);
+        lights up precisely when neither point of the pair of points is the point at infinity;
+    \item
+        \both{\nontrivialPairOfPointsAcc}:
+        pair-of-points-constant binary column;
+        accumulates \nontrivialPairOfPointsBit{};
+        used to set \wellformedDataNontrivial{};
+\end{enumerate}
+The following columns defines the external circuits interface:
+\begin{enumerate}[resume]
+    \item
+        \both{\csPointEvaluation}:
+        indicates if inputs should be sent to the circuit for \inst{POINT\_EVALUATION};
+    \item
+        \both{\csCOne}:
+        indicates if inputs should be sent to the circuit for $C_1$ membership test;
+    \item
+        \both{\csGOne}:
+        indicates if inputs should be sent to the circuit for $G_1$ membership test;
+    \item
+        \both{\csCTwo}:
+        indicates if inputs should be sent to the circuit for $C_2$ membership test;
+    \item
+        \both{\csGTwo}:
+        indicates if inputs should be sent to the circuit for $G_2$ membership test;
+    \item
+        \both{\csPairing}:
+        indicates if inputs should be sent to the circuit for \inst{PAIRING\_CHECK};
+    \item
+        \both{\csGOneAdd}:
+        indicates if inputs should be sent to the circuit for \inst{G1ADD};
+    \item
+        \both{\csGTwoAdd}:
+        indicates if inputs should be sent to the circuit for \inst{G2ADD};
+    \item
+        \both{\csGOneMsm}:
+        indicates if inputs should be sent to the circuit for \inst{G1MSM};
+    \item
+        \both{\csGTwoMsm}:
+        indicates if inputs should be sent to the circuit for \inst{G2MSM};
+    \item
+        \both{\csMapFpToGOne}:
+        indicates if inputs should be sent to the circuit for \inst{MAP\_FP\_TO\_G1};
+    \item
+        \both{\csMapFpTwoToGTwo}:
+        indicates if inputs should be sent to the circuit for \inst{MAP\_FP2\_TO\_G2};
+\end{enumerate}
+The following columns are used for the $\wcpMod$ lookup
+\begin{multicols}{2}
+    \begin{enumerate}[resume]
+        \item \wcpFlag
+        \item \wcpArgOneHi
+        \item \wcpArgOneLo
+        \item \wcpArgTwoHi
+        \item \wcpArgTwoLo
+        \item \wcpRes
+        \item \wcpInst
+        \item[\vspace{\fill}]
+    \end{enumerate}
+\end{multicols}

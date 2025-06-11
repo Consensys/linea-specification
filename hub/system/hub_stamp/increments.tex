@@ -1,0 +1,38 @@
+We finish the specification of the \hubStamp{} column.
+The missing piece pertains to its increments.
+\begin{enumerate}
+	\item the following specifies its increments:
+		\begin{enumerate}
+			\item \label{hub: system: hub stamp: increments: at block number increment} \If $\blockNumber _{i + 1} \neq \blockNumber _{i}$ \Then $\hubStamp _{i + 1} =  \hubStamp _{i} + 1$
+			\item \label{hub: system: hub stamp: increments: SKIP case} \If $\txSkip _{i} = 1$ \Then $\hubStamp _{i + 1} = \hubStamp _{i} + \peekContext _{i}$
+		        \item \label{hub: system: hub stamp: increments: WARM case} \If $\txWarm _{i} = 1$ \Then $\hubStamp _{i + 1} = \hubStamp _{i} + 1$
+		        \item \label{hub: system: hub stamp: increments: INIT case} \If $\txInit _{i} = 1$ \Then $\hubStamp _{i + 1} = \hubStamp _{i} + \peekContext _{i}$
+		        \item \label{hub: system: hub stamp: increments: FINL case} \If $\txFinl _{i} = 1$ \Then $\hubStamp _{i + 1} = \hubStamp _{i} + \peekContext _{i}$
+		        \item \label{hub: system: hub stamp: increments: EXEC case} \If $\txExec _{i} = 1$ \Then
+				\[
+					\left\{ \begin{array}{ll}
+						\If \tliCounter          _{i} \neq \tli          _{i} & \Then \hubStamp _{i + 1} = \hubStamp _{i} \\
+						\If \nonStackRowsCounter _{i} \neq \nonStackRows _{i} & \Then \hubStamp _{i + 1} = \hubStamp _{i} \\
+						\If
+						\left\{ \begin{array}{lcl}
+							\tliCounter          _{i}  & = & \tli          _{i} \\
+							~ \et                     \\
+							\nonStackRowsCounter _{i}  & = & \nonStackRows _{i} \\
+						\end{array} \right\}
+						& \Then \hubStamp _{i + 1} = \hubStamp _{i} + 1 \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+\end{enumerate}
+\saNote{} \label{hub: system: hub stamp: why we specify the hub stamp increment at block boundaries}
+We include a constraint specifying \hubStamp-incrementation at block boundaries,
+constraint~(\ref{hub: system: hub stamp: increments: at block number increment}),
+in order to ensure that the \hubStamp{} will increment when transitioning from padding-rows to non-padding-rows.
+Note that,
+if we were to prescribe $\hubStamp$ to have $0/1$-increments
+(i.e. remove the (\sanityCheck) from constraint~(\ref{hub: system: hub stamp: 0/1 increments})),
+this constraint would formally follows from
+section~(\ref{hub: system: hub stamp: generalities}),
+where we impose that $\hubStamp \equiv 0 \iff \flagSum \equiv 0$,
+and section~(\ref{hub: system: block number: block number})
+where we enforces that $\flagSum \equiv 0 \iff \blockNumber \equiv 0$.

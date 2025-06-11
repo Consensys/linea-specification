@@ -17,7 +17,7 @@ We use the shorthands defined below:
 \saNote{} The decorator `` $\prediction{}$ '' stands for ``\hubMod{} prediction.''
 
 \saNote{}
-The intended interpretation is that $\locExponentLog$ contain $\locExponentLogEYP$ as defined in the \cite{EYP}.
+The intended interpretation is that $\locExponentLog$ contain $\locExponentLogEYP$ as defined in the \cite{EYP-London}.
 The value of \locExponentLog{} will be computed in the \expMod{} module using a specialized instruction.
 
 We impose the following:
@@ -26,13 +26,19 @@ We impose the following:
 	      we impose that
 	      \[
 		      \left\{ \begin{array}{l}
-			      \oobCallToIszero
-			      {i}{0}
-			      {0}{\locRac}
+			      \wcpCallToIszero {
+				      anchorRow = i       ,
+				      relOffset = 0       ,
+				      argOneHi  = 0       ,
+				      argOneLo  = \locRac ,
+			      }
 			      \vspace{2mm} \\
-			      \oobCallToIszero
-			      {i}{1}
-			      {0}{\locExponentLog}
+			      \wcpCallToIszero {
+				      anchorRow = i               ,
+				      relOffset = 1               ,
+				      argOneHi  = 0               ,
+				      argOneLo  = \locExponentLog ,
+			      }
 			      \vspace{2mm} \\
 			      \oobCallToDiv
 			      {i}{2}
@@ -71,7 +77,7 @@ We impose the following:
 			\end{array} \right.
 		\]
 \end{description}
-\saNote{} Thus $\locProduct$ computes, in the notations of the \cite{EYP}, $\displaystyle f\big(\max(\locBase, \locModulus)\big) \cdot \max(\locExponentLogEYP, 1)$.
+\saNote{} Thus $\locProduct$ computes, in the notations of the \cite{EYP-London}, $\displaystyle f\big(\max(\locBase, \locModulus)\big) \cdot \max(\locExponentLogEYP, 1)$.
 It follows that $\locBigQuotient$ computes
 \[
 	\left\lfloor\frac{f\big(\max(\locBase, \locModulus)\big) \cdot \max(\locExponentLogEYP, 1)}{G_\text{quaddivisor}}\right\rfloor.
@@ -81,15 +87,23 @@ It follows that $\locBigQuotient$ computes
 	      we impose that
 	      \[
 		      \left\{ \begin{array}{l}
-			      \oobCallToLt
-			      {i}{4}
-			      {0}{\locBigQuotient}
-			      {0}{200}
+			      \wcpCallToLt {
+				      anchorRow = i               ,
+				      relOffset = 4               ,
+				      argOneHi  = 0               ,
+				      argOneLo  = \locBigQuotient ,
+				      argTwoHi  = 0               ,
+				      argTwoLo  = 200             ,
+			      }
 			      \vspace{2mm} \\
-			      \oobCallToLt
-			      {i}{5}
-			      {0}{\locCalleeGas}
-			      {0}{\locPrecompileCost}
+			      \wcpCallToLt {
+				      anchorRow = i                  ,
+				      relOffset = 5                  ,
+				      argOneHi  = 0                  ,
+				      argOneLo  = \locCalleeGas      ,
+				      argTwoHi  = 0                  ,
+				      argTwoLo  = \locPrecompileCost ,
+			      }
 			      \\
 		      \end{array} \right.
 	      \]

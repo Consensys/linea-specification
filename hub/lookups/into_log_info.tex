@@ -1,51 +1,54 @@
 The present section describes the lookup between the \hubMod{} and the \logInfoMod{} module. 
 \begin{description}
-	\item[Selector column:] we use the following selector: $\col{sel}_{i} \define \peekStack_{i} \cdot \stackLogFlag_{i} \cdot (1 - \ct_{i})$
+	\item[Selector column:] we use the following selector: $\col{sel}_{i} \define \peekStack_{i} \cdot \stackLogFlag_{i} \cdot (1 - \tliCounter_{i})$
 	\item[Source columns:] ---
 		\begin{multicols}{3}
 			\begin{enumerate}
-				\item $\absTxNum_{i}$
-				\item $\logStamp_{i}$
-				\item $\stackInst_{i}$
-				\item $\cnAccountAddress\high_{i + 2}$
-				\item $\cnAccountAddress\low _{i + 2}$
-				\item $\stackItemValHi{1}_{i + 1}$
-				\item $\stackItemValLo{1}_{i + 1}$
-				\item $\stackItemValHi{2}_{i + 1}$
-				\item $\stackItemValLo{2}_{i + 1}$
-				\item $\stackItemValHi{3}_{i + 1}$
-				\item $\stackItemValLo{3}_{i + 1}$
-				\item $\stackItemValHi{4}_{i + 1}$
-				\item $\stackItemValLo{4}_{i + 1}$
-				\item $\stackItemValLo{2}_{i}$
+				\item $\userTransactionNumber _{i}$
+				\item $\logStamp              _{i}$
+				\item $\stackInst             _{i}$
+				\item $\cnAccountAddress\high _{i + 2}$
+				\item $\cnAccountAddress\low  _{i + 2}$
+				\item $\stackItemValHi{1}     _{i + 1}$
+				\item $\stackItemValLo{1}     _{i + 1}$
+				\item $\stackItemValHi{2}     _{i + 1}$
+				\item $\stackItemValLo{2}     _{i + 1}$
+				\item $\stackItemValHi{3}     _{i + 1}$
+				\item $\stackItemValLo{3}     _{i + 1}$
+				\item $\stackItemValHi{4}     _{i + 1}$
+				\item $\stackItemValLo{4}     _{i + 1}$
+				\item $\stackItemValLo{2}     _{i}$
 				\item[\vspace{\fill}]
 			\end{enumerate}
 		\end{multicols}
 	\item[Target columns:] ---
 		\begin{multicols}{3}
 			\begin{enumerate}
-				\item $\absTxNum_{i}$
-				\item $\absLogNum_{j}$
-				\item $\INST_{j}$
-				\item $\addrHi_{j}$
-				\item $\addrLo_{j}$
-				\item $\topicHi{1}_{j}$
-				\item $\topicLo{1}_{j}$
-				\item $\topicHi{2}_{j}$
-				\item $\topicLo{2}_{j}$
-				\item $\topicHi{3}_{j}$
-				\item $\topicLo{3}_{j}$
-				\item $\topicHi{4}_{j}$
-				\item $\topicLo{4}_{j}$
-				\item $\logDataSize_{j}$
+				\item $\absTxNum    _{i}$
+				\item $\absLogNum   _{j}$
+				\item $\INST        _{j}$
+				\item $\addrHi      _{j}$
+				\item $\addrLo      _{j}$
+				\item $\topicHi{1}  _{j}$
+				\item $\topicLo{1}  _{j}$
+				\item $\topicHi{2}  _{j}$
+				\item $\topicLo{2}  _{j}$
+				\item $\topicHi{3}  _{j}$
+				\item $\topicLo{3}  _{j}$
+				\item $\topicHi{4}  _{j}$
+				\item $\topicLo{4}  _{j}$
+				\item $\logDataSize _{j}$
 				\item[\vspace{\fill}]
 			\end{enumerate}
 		\end{multicols}
 \end{description}
-\saNote{} The chosen selector flag thus selects the first ($\ct \equiv 0$) stack row ($\peekStack \equiv 1$) of an unexceptional, unreverted \inst{LOG}-type instruction ($\stackLogFlag \equiv 1$.)
+\saNote{} The chosen selector flag thus selects the first ($\tliCounter \equiv 0$) stack row ($\peekStack \equiv 1$) of an unexceptional, unreverted \inst{LOG}-type instruction ($\stackLogFlag \equiv 1$.)
 
-\saNote{} \ob{TODO: are we getting the \logDataSize{} from the correct stack item ?} 
+\saNote{}
+\ob{TODO: are we getting the \logDataSize{} from the correct stack item ?} 
 
-\saNote{} \ob{TODO: are we getting the right address ? Yes: it's $I_\text{a}$ in the spec, that is $\cnAccountAddress$ for us.} 
+\saNote{}
+\ob{TODO: are we getting the right address ? Yes: it's $I_\text{a}$ in the spec, that is $\cnAccountAddress$ for us.} 
 
-\saNote{} \ob{TODO: the \logInfoMod{} expects more data ! Where should we get \absLogNumMax{} from ? What about $\absTxNumMax$ ? The latter is likely available in the \hubMod{} ?}
+\saNote{}
+\ob{TODO: the \logInfoMod{} expects more data ! Where should we get \absLogNumMax{} from ? What about $\absTxNumMax$ ? The latter is likely available in the \hubMod{} ?}

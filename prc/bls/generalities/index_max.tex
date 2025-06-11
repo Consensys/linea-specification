@@ -1,0 +1,62 @@
+We define the following module constants
+
+\[
+        \hspace*{-0.5cm}
+	\left\{ \begin{array}{lcl}
+                \indexMaxPointEvaluationData        & \!\!\! \define \!\!\! & \redm{11}  \\ 
+                \indexMaxBlsGOneAddData             & \!\!\! \define \!\!\! & \redm{15}  \\            
+                \indexMaxBlsGOneMsmDataMin          & \!\!\! \define \!\!\! & \redm{9}   \\ 
+                \indexMaxBlsGTwoAddData             & \!\!\! \define \!\!\! & \redm{31}  \\
+                \indexMaxBlsGTwoMsmDataMin          & \!\!\! \define \!\!\! & \redm{17}  \\ 
+                \indexMaxBlsPairingCheckDataMin     & \!\!\! \define \!\!\! & \redm{23}  \\ 
+                \indexMaxBlsMapFpToGOneData         & \!\!\! \define \!\!\! & \redm{3}   \\ 
+                \indexMaxBlsMapFpTwoToGTwoData      & \!\!\! \define \!\!\! & \redm{7}   \\ 
+	\end{array} \right.
+        \quad\text{and}\quad
+        \left\{ \begin{array}{lcl}
+                \indexMaxPointEvaluationResult      & \!\!\! \define \!\!\! & \redm{3}   \\
+                \indexMaxBlsGOneAddResult           & \!\!\! \define \!\!\! & \redm{7}   \\ 
+                \indexMaxBlsGOneMsmResult           & \!\!\! \define \!\!\! & \redm{7}   \\ 
+                \indexMaxBlsGTwoAddResult           & \!\!\! \define \!\!\! & \redm{15}  \\ 
+                \indexMaxBlsGTwoMsmResult           & \!\!\! \define \!\!\! & \redm{15}  \\ 
+                \indexMaxBlsPairingCheckResult      & \!\!\! \define \!\!\! & \redm{1}   \\ 
+                \indexMaxBlsMapFpToGOneResult       & \!\!\! \define \!\!\! & \redm{7}   \\ 
+                \indexMaxBlsMapFpTwoToGTwoResult    & \!\!\! \define \!\!\! & \redm{15}  \\     
+        \end{array} \right.
+\]
+and define the following shorthand
+\[
+	\locIndexMaxSum _{i} \define
+	\left[ \begin{array}{crcl}
+            + & \indexMaxPointEvaluationData     & \!\!\!\cdot\!\!\! & \isPointEvaluationData     _{i} \\
+            + & \indexMaxBlsGOneAddData          & \!\!\!\cdot\!\!\! & \isBlsGOneAddData          _{i} \\
+            + & \indexMaxBlsGTwoAddData          & \!\!\!\cdot\!\!\! & \isBlsGTwoAddData          _{i} \\
+            + & \indexMaxBlsMapFpToGOneData      & \!\!\!\cdot\!\!\! & \isBlsMapFpToGOneData      _{i} \\
+            + & \indexMaxBlsMapFpTwoToGTwoData   & \!\!\!\cdot\!\!\! & \isBlsMapFpTwoToGTwoData   _{i} \vspace{2mm} \\
+            + & \indexMaxPointEvaluationResult   & \!\!\!\cdot\!\!\! & \isPointEvaluationResult   _{i} \\
+            + & \indexMaxBlsGOneAddResult        & \!\!\!\cdot\!\!\! & \isBlsGOneAddResult        _{i} \\
+            + & \indexMaxBlsGOneMsmResult        & \!\!\!\cdot\!\!\! & \isBlsGOneMsmResult        _{i} \\
+            + & \indexMaxBlsGTwoAddResult        & \!\!\!\cdot\!\!\! & \isBlsGTwoAddResult        _{i} \\
+            + & \indexMaxBlsGTwoMsmResult        & \!\!\!\cdot\!\!\! & \isBlsGTwoMsmResult        _{i} \\
+            + & \indexMaxBlsPairingCheckResult   & \!\!\!\cdot\!\!\! & \isBlsPairingCheckResult   _{i} \\
+            + & \indexMaxBlsMapFpToGOneResult    & \!\!\!\cdot\!\!\! & \isBlsMapFpToGOneResult    _{i} \\
+            + & \indexMaxBlsMapFpTwoToGTwoResult & \!\!\!\cdot\!\!\! & \isBlsMapFpTwoToGTwoResult _{i} \\
+		\end{array} \right]
+\]
+We then impose the following constraints
+\begin{enumerate}
+    \item $\indexMax$ is \blsIndex-constant \quad (\sanityCheck)
+    \item We set its value
+            \[
+            \llarge \cdot \indexMax_{i}
+            =
+            \left[ \begin{array}{crcl}
+                    + & \llarge                    & \!\!\!\cdot\!\!\! & \locIndexMaxSum_{i}                        \\
+                    + & \isBlsGOneMsmData_{i}      & \!\!\!\cdot\!\!\! & \Big[ \ecdataTotalSize_{i} - \llarge \Big] \vspace{2mm} \\
+                    + & \isBlsGTwoMsmData_{i}      & \!\!\!\cdot\!\!\! & \Big[ \ecdataTotalSize_{i} - \llarge \Big] \vspace{2mm} \\
+                    + & \isBlsPairingCheckData_{i} & \!\!\!\cdot\!\!\! & \Big[ \ecdataTotalSize_{i} - \llarge \Big] \\
+                \end{array} \right]
+            \]
+\end{enumerate}
+\saNote{}
+The (input) data size of a call to \inst{G1MSM}, \inst{G2MSM} and \inst{PAIRING\_CHECK} precompile, given that it makes its way into the present module, are always a \textbf{nonzero multiple of 160, 288 and 384} respectively. Contrary to other precompile calls dealt with by the present module its size (and hence the associated \indexMax{} value) isn't a fixed constant.

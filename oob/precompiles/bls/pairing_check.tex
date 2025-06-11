@@ -1,0 +1,87 @@
+\[
+	\boxed{\text{All constraints in this subsection further assume }  \oobInstIsBlsPairingCheck = 1}
+\]
+We use the following constants:
+\[
+	\begin{array}{ll}
+		\left\{ \begin{array}{lcl}
+			\prcBlsPairingCheckSize      & \define & 384 \vspace{2mm} \\
+			\gasConstBlsPairingCheck     & \define & 37700            \\
+			\gasConstBlsPairingCheckPair & \define & 32600            \\
+		\end{array} \right.
+	\end{array}
+\]
+We impose the following constraints:
+\begin{description}
+	\item[\underline{Row n°$(i + 2)$:}]
+		we impose that
+		\[
+			\oobCallToMod
+			{i}{2}
+			{0}{\locCds}
+			{0}{\prcBlsPairingCheckSize}
+		\]
+		and we define the following shorthand
+		\[
+			\locRemainder \define \outgoingResLo_{i + 2}
+		\]
+	\item[\underline{Row n°$(i + 3)$:}]
+		we impose that
+		\[
+			\wcpCallToIszero {
+				anchorRow = i             ,
+				relOffset = 3             ,
+				argOneHi  = 0             ,
+				argOneLo  = \locRemainder ,
+			}
+		\]
+		and we define the following shorthand
+		\[
+			\locCdsIsMultipleOfMinBlsPairingCheckSize \define \outgoingResLo_{i + 3}
+		\]
+	\item[\underline{Row n°$(i + 4)$:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\locCdsIsMultipleOfMinBlsPairingCheckSize = 0$ \Then we impose $\oobNoCall{i}{4}$.
+			\item \If $\locCdsIsMultipleOfMinBlsPairingCheckSize = 1$ \Then we impose that
+				\[
+					\wcpCallToLt  {
+						anchorRow = i                  ,
+						relOffset = 4                  ,
+						argOneHi  = 0                  ,
+						argOneLo  = \locCalleeGas      ,
+						argTwoHi  = 0                  ,
+						argTwoLo  = \locPrecompileCost ,
+					}
+				\]
+				where we use the following shorthand
+				\begin{IEEEeqnarray*}{LCL}
+					\locPrecompileCost & \define & + \gasConstBlsPairingCheck \\
+					&         & + \gasConstBlsPairingCheckPair \cdot \left( \frac{\locCds}{\prcBlsPairingCheckSize} \right)
+				\end{IEEEeqnarray*}
+				we further introduce the following shorthand
+				\[
+					\left\{ \begin{array}{lcl}
+						\locInsufficientGas & \define & \outgoingResLo_{i + 4}  \\
+						\locSufficientGas   & \define & 1 - \locInsufficientGas \\
+					\end{array} \right.
+				\]
+				It follows that $\locCalleeGas < \locPrecompileCost \iff \locInsufficientGas = 1$.
+		\end{enumerate}
+		\saNote{} The shorthand \locPrecompileCost{} was defined using a division by \prcBlsPairingCheckSize{}. Whenever this shorthand is used in the constraints, we can replace the division by \prcBlsPairingCheckSize{} with a multiplication by the same number through same basic algebra. This is the approach taken in the implementation to avoid division.
+	\item[\underline{Justifying the remaining \hubMod{} predictions:}]
+		we impose that
+		\[
+			\locHubSuccess \define
+			\left[  \begin{array}{cl}
+				\cdot & \locCdsIsNonZero                          \\
+				\cdot & \locCdsIsMultipleOfMinBlsPairingCheckSize \\
+				\cdot & \locSufficientGas                         \\
+			\end{array} \right]
+		\]
+		we further impose that
+		\begin{enumerate}
+			\item \If $\locHubSuccess = 0$ \Then $\locReturnGas = 0$
+			\item \If $\locHubSuccess = 1$ \Then $\locReturnGas = \locCalleeGas - \locPrecompileCost$
+		\end{enumerate}
+\end{description}
