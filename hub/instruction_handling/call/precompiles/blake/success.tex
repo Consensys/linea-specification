@@ -25,11 +25,11 @@ We still need to copy the result of the precompile over to a designated \textsc{
 				in other words
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + 3} & = & \gZero & (\sanityCheck) \\
-						\miscMmuFlag _{i + 3} & = & \one   & (\sanityCheck) \\
-						\miscMxpFlag _{i + 3} & = & \gZero & (\sanityCheck) \\
-						\miscOobFlag _{i + 3} & = & \gZero & (\sanityCheck) \\
-						\miscStpFlag _{i + 3} & = & \gZero & (\sanityCheck) \\
+						\miscExpFlag _{i + \prcBlakeThirdMiscRowOffset} & = & \gZero & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcBlakeThirdMiscRowOffset} & = & \one   & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcBlakeThirdMiscRowOffset} & = & \gZero & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcBlakeThirdMiscRowOffset} & = & \gZero & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcBlakeThirdMiscRowOffset} & = & \gZero & (\sanityCheck) \\
 					\end{array} \right.
 				\]
 			\item[\underline{Setting the \mmuMod{} instruction:}]
@@ -44,23 +44,6 @@ We still need to copy the result of the precompile over to a designated \textsc{
 						exoSum    = \exoWeightBlakeModexp       ,
 						phase     = \phaseBlakeResult           ,
 						}
-					% \left\{ \begin{array}{lcl}
-					% 	\miscMmuInst          _{i + 3} & = & \mmuInstExoToRamTransplants \\
-					% 	\miscMmuSrcId         _{i + 3} & = & 1 + \hubStamp_{i}           \\
-					% 	\miscMmuTgtId         _{i + 3} & = & 1 + \hubStamp_{i}           \\
-					% 	\miscMmuAuxId         _{i + 3} & = & \nothing                    \\
-					% 	\miscMmuSrcOffsetHi   _{i + 3} & = & \nothing                    \\
-					% 	\miscMmuSrcOffsetLo   _{i + 3} & = & \nothing                    \\
-					% 	\miscMmuTgtOffsetLo   _{i + 3} & = & 0                           \\
-					% 	\miscMmuSize          _{i + 3} & = & \redm{64}                   \\
-					% 	\miscMmuRefOffset     _{i + 3} & = & \nothing                    \\
-					% 	\miscMmuRefSize       _{i + 3} & = & \nothing                    \\
-					% 	\miscMmuSuccessBit    _{i + 3} & = & \nothing                    \\
-					% 	\miscMmuLimbOne       _{i + 3} & = & \nothing                    \\
-					% 	\miscMmuLimbTwo       _{i + 3} & = & \nothing                    \\
-					% 	\miscMmuExoSum        _{i + 3} & = & \exoWeightBlakeModexp       \\
-					% 	\miscMmuPhase         _{i + 3} & = & \phaseBlakeResult           \\
-					% \end{array} \right.
 				\]
 				\saNote{} The output of a successful call to the \instBlake{} precompile has length $\blakeReturnDataSize$ bytes.
 		\end{description}
@@ -86,6 +69,9 @@ We still need to copy the result of the precompile over to a designated \textsc{
 						\miscStpFlag _{i + \prcBlakeFourthMiscRowOffset} & = & \gZero                  & (\sanityCheck) \\
 					\end{array} \right.
 				\]
+				\saNote{}
+				Recall that \locOobResultNonzeroRac{} is provably binary,
+				see note~(\ref{hub: instruction handling: call: precompiles: blake: generalities: oob shorthands are provably binary}).
 			\item[\underline{\mmuMod{} data:}]
 				\If $\miscMmuFlag_{i + \prcBlakeFourthMiscRowOffset} = 1$ \Then we impose
 				\[
@@ -112,11 +98,5 @@ We still need to copy the result of the precompile over to a designated \textsc{
 				returnDataOffset   = 0                                      ,
 				returnDataSize     = \blakeReturnDataSize                   ,
 			}
-			% \provideReturnData
-			% {i}{4} 
-			% {\cn_{i}          }         % Return data receiver
-			% {1 + \hubStamp_{i}}         % Return data provider
-			% {0                }         % Return data offset
-			% {\redm{64}        }         % Return data size 
 		\]
 \end{description}
