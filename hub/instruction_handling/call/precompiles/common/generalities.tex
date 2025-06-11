@@ -231,23 +231,26 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 								\locAddressRecoverySuccess & \define & \locOobResultExtractCallData \cdot \miscMmuSuccessBit_{i + \prcCommonMiscRowOffset} \\
 							\end{array} \right.
 						\]
-						\saNote{} These bits will be used in the processing of \instEcrecover{}.
+						\saNote{} \label{hub: instruction handling: call: precompiles: common: generalities: ecrecover recovery success failure flags are provably binary}
+						These bits will be used in the processing of \instEcrecover{}.
 						In that context (and given the precompile succedes)
 						\begin{itemize}
 							\item $\locAddressRecoveryFailure \equiv 1$ precisely when return data is empty ($\textbf{o} = ()$)
 							\item $\locAddressRecoverySuccess \equiv 1$ precisely when recovery is successful and return data is nonempty ($\textbf{o} \in \mathbb{B}_{32}$.)
 						\end{itemize}
 
-						\saNote{} We have, by construction, and given that the precompile at hand is \instEcrecover{}, the following relations:
+						\saNote{}
+						We have, by construction, and given that the precompile at hand is \instEcrecover{}, the following relations:
 						\[
 							\left\{ \begin{array}{lclr}
-								\locAddressRecoveryFailure   & \equiv & \text{binary} & \quad (\trash) \\
-								\locAddressRecoverySuccess   & \equiv & \text{binary} & \quad (\trash) \vspace{2mm} \\
+								\locAddressRecoveryFailure   & \equiv & \text{provably binary} & \quad (\trash) \\
+								\locAddressRecoverySuccess   & \equiv & \text{provably binary} & \quad (\trash) \vspace{2mm} \\
 								\multicolumn{3}{l}{\locAddressRecoveryFailure + \locAddressRecoverySuccess = \locOobResultHubSuccess} & \quad (\trash) \\
 							\end{array} \right.
 						\]
 
-						\saNote{} We finish by reminding that from the point of view of the \hubMod{} the bit $\miscMmuSuccessBit_{i + \prcCommonMiscRowOffset}$ is a \textbf{prediction}.
+						\saNote{}
+						We finish by reminding that from the point of view of the \hubMod{} the bit $\miscMmuSuccessBit_{i + \prcCommonMiscRowOffset}$ is a \textbf{prediction}.
 						This prediction will be borne out in the \ecDataMod{} module.
 					\item[\underline{\instEcadd{}, \instEcmul{} and \instEcpairing{} as well as \inst{BLS}-precompile specific:}]
 						we set
