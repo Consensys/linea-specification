@@ -19,9 +19,33 @@ With the present instruction we begin by specifying a single miscellaneous-row w
 	\item[\underline{The first row must be a miscellaneous-row:}]
 		we unconditionally impose that
 		$\peekMisc _{i + \locMcopyFrstMiscOffset} = \one$;
-	\item[\underline{Calling the \mxpMod{}-module:}]
-		we unconditionally call the \mxpMod{} module
-		$\miscMxpFlag _{i + \locMcopyFrstMiscOffset} = \one$;
+	\item[\underline{Setting the peeking flags:}]
+		we unconditionally impose that
+		\[
+			\left\{ \begin{array}{lclr}
+				\weightedMiscFlagSumSansMmu {
+					anchorRow = i                       ,
+					relOffset = \locMcopyFrstMiscOffset ,
+				}
+                                                                            & = & \miscMxpWeight \vspace{2mm} \\
+				\miscMmuFlag _{i + \locMcopyFrstMiscOffset} & = & \locTriggerMmu              \\
+			\end{array} \right.
+			% OK
+		\]
+		in other words
+		\[
+			\left\{ \begin{array}{lclr}
+				\miscExpFlag_{i + \locMcopyFrstMiscOffset} & = & \gZero         & (\sanityCheck) \\
+				\miscMmuFlag_{i + \locMcopyFrstMiscOffset} & = & \locTriggerMmu & (\sanityCheck) \\
+				\miscMxpFlag_{i + \locMcopyFrstMiscOffset} & = & \rOne          & (\sanityCheck) \\
+				\miscOobFlag_{i + \locMcopyFrstMiscOffset} & = & \gZero         & (\sanityCheck) \\
+				\miscStpFlag_{i + \locMcopyFrstMiscOffset} & = & \gZero         & (\sanityCheck) \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		The \locTriggerMmu{} shorthand will be defined below.
+		It is \textbf{provably binary},
+		given that the \mxpMod{} module was called.
 	\item[\underline{Defining the \mxpMod{}-instruction:}]
 		we impose
 		\[
@@ -107,31 +131,6 @@ We are now in a position to specify the peeking flags.
 			\item \If $\stackMxpx _{i} = 0$ \Then \( \gasCost_{i} = \stackStaticGas _{i} + \locMcopyMxpGas \)
 			\item \If $\stackMxpx _{i} = 1$ \Then \( \gasCost_{i} = 0 \)
 		\end{enumerate}
-	\item[\underline{Miscellaneous-row $n^°(i + \locMcopyFrstMiscOffset)$: flags:}]
-		we finish defining the module flags
-		\[
-			\weightedMiscFlagSum {
-				anchorRow = i                       ,
-				relOffset = \locMcopyFrstMiscOffset ,
-			}
-			=
-			\left[ \begin{array}{crcl}
-					+ & \miscMmuWeight  & \cdot & \locTriggerMmu \\
-					+ & \miscMxpWeight \\
-			\end{array} \right]
-		\]
-		in other words
-		\[
-			\left\{ \begin{array}{lclr}
-				\miscExpFlag _{i + \locMcopyFrstMiscOffset} & = & \gZero         & (\sanityCheck) \\
-				\miscMmuFlag _{i + \locMcopyFrstMiscOffset} & = & \locTriggerMmu & (\sanityCheck) \\
-				\miscMxpFlag _{i + \locMcopyFrstMiscOffset} & = & \one           & (\sanityCheck) \\
-				\miscOobFlag _{i + \locMcopyFrstMiscOffset} & = & \gZero         & (\sanityCheck) \\
-				\miscStpFlag _{i + \locMcopyFrstMiscOffset} & = & \gZero         & (\sanityCheck) \\
-			\end{array} \right.
-		\]
-		\saNote{}
-		Recall note~(\ref{hub: instruction handling: mcopy: trigger MMU is indeed binary}).
 	\item[\underline{Miscellaneous-row $n^°(i + \locMcopyScndMiscOffset)$: flags:}]
 		\If $\locTriggerMmu = 1$ \Then we impose that
 		\[
