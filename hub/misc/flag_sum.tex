@@ -10,7 +10,10 @@ We introduce some numerical constants and constraints.
 \]
 and we define the following shorthand (which assumes that $i$ is the row-index of a miscellaneous-row)
 \[
-	\weightedMiscFlagSum {i}{\relof}
+	\weightedMiscFlagSum {
+		anchorRow = i      ,
+		relOffset = \relof ,
+	}
 	\define
 	\left[ \begin{array}{clcl}
 		+ & \miscExpWeight & \cdot & \miscExpFlag _{i + \relof} \\
@@ -18,5 +21,20 @@ and we define the following shorthand (which assumes that $i$ is the row-index o
 		+ & \miscMxpWeight & \cdot & \miscMxpFlag _{i + \relof} \\
 		+ & \miscOobWeight & \cdot & \miscOobFlag _{i + \relof} \\
 		+ & \miscStpWeight & \cdot & \miscStpFlag _{i + \relof} \\
+	\end{array} \right]
+\]
+and also
+\[
+	\weightedMiscFlagSumExceptMmu {
+		anchorRow = i      ,
+		relOffset = \relof ,
+	}
+	\define
+	\left[ \begin{array}{clcl}
+		+   & \miscExpWeight & \cdot & \miscExpFlag _{i + \relof} \\
+		% + & \miscMmuWeight & \cdot & \miscMmuFlag _{i + \relof} \\
+		+   & \miscMxpWeight & \cdot & \miscMxpFlag _{i + \relof} \\
+		+   & \miscOobWeight & \cdot & \miscOobFlag _{i + \relof} \\
+		+   & \miscStpWeight & \cdot & \miscStpFlag _{i + \relof} \\
 	\end{array} \right]
 \]

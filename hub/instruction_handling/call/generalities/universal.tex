@@ -67,7 +67,10 @@ We impose the following constraints:
 		\saNote{} \label{hub: instruction handling: call: generalities: universal: optimized misc flags}
 		One may slightly reduce the number of constraints above by imposing instead
 		\[
-			\weightedMiscFlagSum {i}{\callMiscRowOffset}
+			\weightedMiscFlagSum {
+				anchorRow = i                  ,
+				relOffset = \callMiscRowOffset ,
+			}
 			=
 			\left[ \begin{array}{lrcl}
 				+ & \miscMxpWeight & \cdot & \locCallTriggersMxp \\
@@ -80,7 +83,7 @@ We impose the following constraints:
 		section~(\ref{hub: instruction handling: call: trigger: mxp}),
 		section~(\ref{hub: instruction handling: call: trigger: oob}) and
 		section~(\ref{hub: instruction handling: call: trigger: mmu})
-		all relevant trigger columns unconditionally binary.
+		all relevant trigger columns \textbf{unconditionally binary}.
 	\item[\underline{Setting \oobMod{} instruction parameters:}]
 		\If $\miscOobFlag_{i + \callMiscRowOffset} = 1$ \Then
 		we impose that 
