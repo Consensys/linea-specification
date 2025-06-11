@@ -1,0 +1,54 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{../../pkg/draculatheme}
+
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NL Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\usepackage{../../pkg/draculatheme}
+
+\begin{document}
+\begin{verbatim}
+
+|----------------------------+-----------+----------------------------+--------+--------------|
+| In RLP_TXN                 | direction | In HUB                     | In BTC | notes        |
+|:---------------------------+:---------:+:---------------------------+--------+--------------|
+|                            |    ==>    |                            |        | simple reads |
+|:---------------------------+:---------:+:---------------------------+--------+--------------|
+| rlp/IS_DEPLOYMENT          |    ==>    | hub/IS_DEPLOYMENT          |        |              |
+| rlp/VALUE                  |    ==>    | hub/VALUE                  |        |              |
+| rlp/NONCE                  |    ==>    | hub/NONCE                  |        |              |
+| rlp/GAS_LIMIT              |    ==>    | hub/GAS_LIMIT              |        |              |
+|:---------------------------+:---------:+:---------------------------+--------+--------------|
+|                            |    -->    |                            |        | computed     |
+|----------------------------+-----------+----------------------------+--------+--------------|
+| various                    |    -->    | hub/CALL_DATA_SIZE         |        |              |
+|                            |    -->    | hub/INIT_CODE_SIZE         |        |              |
+| various                    |    -->    | hub/GAS_PRICE              |        |              |
+| various                    |    -->    | hub/TO_ADDRESS_HI          |        |              |
+| various                    |    -->    | hub/TO_ADDRESS_HI          |        |              |
+|----------------------------+-----------+----------------------------+--------+--------------|
+|                            |           | hub/FROM_ADDRESS_HI        |        |              |
+|                            |           | hub/FROM_ADDRESS_HI        |        |              |
+|----------------------------+-----------+----------------------------+--------+--------------|
+|                            |    <==    |                            |        | simple reads |
+|----------------------------+-----------+----------------------------+--------+--------------|
+| rlp/CFI                    |    <==    | hub/CFI                    |        |              |
+|----------------------------+-----------+----------------------------+--------+--------------|
+|                            |    <--    |                            |        | computed     |
+|----------------------------+-----------+----------------------------+--------+--------------|
+| rlp/REQUIRES_EVM_EXECUTION |    <--    | hub/REQUIRES_EVM_EXECUTION |        |              |
+|----------------------------+-----------+----------------------------+--------+--------------|
+
+\end{verbatim}
+\end{document}
