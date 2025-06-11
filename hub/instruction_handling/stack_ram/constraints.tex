@@ -83,39 +83,32 @@
 	\item[\underline{Miscellaneous-row $n^°(i + \stackramMiscRowOffset)$: flags:}]
 		we impose
 		\[
-			\left\{ \begin{array}{lclr}
-				\miscExpFlag  _{i + \stackramMiscRowOffset} & = & \gZero         \\
-				\miscMmuFlag  _{i + \stackramMiscRowOffset} & = & \locTriggerMmu \\
-				\miscMxpFlag  _{i + \stackramMiscRowOffset} & = & \locTriggerMxp \\
-				\miscOobFlag  _{i + \stackramMiscRowOffset} & = & \locTriggerOob \\
-				\miscStpFlag  _{i + \stackramMiscRowOffset} & = & \gZero         \\
+			\left\{ \begin{array}{lcl}
+				\weightedMiscFlagSumSansMmu {
+					anchorRow = i                      ,
+					relOffset = \stackramMiscRowOffset ,
+				}
+				& = &
+				\left[ \begin{array}{crcl}
+					+ & \miscMxpWeight & \!\!\! \cdot \!\!\! & \locTriggerMxp \\
+					+ & \miscOobWeight & \!\!\! \cdot \!\!\! & \locTriggerOob \\
+				\end{array} \right] \vspace{2mm} \\
+				\miscMmuFlag _{i + \stackramMiscRowOffset} & = & \locTriggerMmu \\
+			\end{array} \right.
+		\]
+		in other words
+		\[
+			\left\{ \begin{array}{lcl}
+				\miscExpFlag _{i + \stackramMiscRowOffset} & = & \gZero         & (\sanityCheck) \\
+				\miscMmuFlag _{i + \stackramMiscRowOffset} & = & \locTriggerMmu & (\sanityCheck) \\
+				\miscMxpFlag _{i + \stackramMiscRowOffset} & = & \locTriggerMxp & (\sanityCheck) \\
+				\miscOobFlag _{i + \stackramMiscRowOffset} & = & \locTriggerOob & (\sanityCheck) \\
+				\miscStpFlag _{i + \stackramMiscRowOffset} & = & \gZero         & (\sanityCheck) \\
 			\end{array} \right.
 		\]
 		\saNote{}
 		The binary flags ``\locTriggerXxx{}'' will be defined below.
 		They are indeed provably binary.
-
-		\saNote{} \label{hub: instruction handling: stack ram: constraints: optimized misc flags}
-		Given the binarity of ``\locTriggerXxx{}'' one may slightly reduce the number of constraints above by imposing instead
-		\[
-			\left\{ \begin{array}{lclr}
-				\left[ \begin{array}{clcl}
-					+   & \miscExpWeight & \!\!\!\cdot\!\!\! & \miscExpFlag _{i + \stackramMiscRowOffset} \\
-					% + & \miscMmuWeight & \!\!\!\cdot\!\!\! & \miscMmuFlag _{i + \stackramMiscRowOffset} \\
-					+   & \miscMxpWeight & \!\!\!\cdot\!\!\! & \miscMxpFlag _{i + \stackramMiscRowOffset} \\
-					+   & \miscOobWeight & \!\!\!\cdot\!\!\! & \miscOobFlag _{i + \stackramMiscRowOffset} \\
-					+   & \miscStpWeight & \!\!\!\cdot\!\!\! & \miscStpFlag _{i + \stackramMiscRowOffset} \\
-				\end{array} \right]
-				& = &
-				\left[ \begin{array}{clcl}
-					+ & \miscMxpWeight & \!\!\!\cdot\!\!\! & \locTriggerMxp \\
-					+ & \miscOobWeight & \!\!\!\cdot\!\!\! & \locTriggerOob \\
-				\end{array} \right]
-				& (\sanityCheck) \vspace{2mm} \\
-				\miscMmuFlag _{i + \stackramMiscRowOffset} & = & \locTriggerMmu & (\sanityCheck)              \\
-			\end{array} \right.
-			% OK
-		\]
 	\item[\underline{Defining \locTriggerMxp{}:}]
 		we define
 		$\locTriggerMxp \define \locIsMSomething$.
