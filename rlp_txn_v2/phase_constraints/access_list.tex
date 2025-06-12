@@ -34,7 +34,7 @@ We first determine the RLP prefix of the data on the first row:
 \begin{enumerate}[resume]
 	\item \If $\isTxn_{i-1}=1$ \Then
 		\begin{enumerate}
-			\item $\isprefix _{i} = 1$
+			\item $\isPrefix _{i} = 1$
 			\item $\isAddr   _{i} = 0$
 			\item $\isSto    _{i} = 0$
 			\item $\inputColumn{1}_{i} = \locPhaseSize_{i}$
@@ -63,7 +63,7 @@ We first determine the RLP prefix of the data on the first row:
 			\item $\phasend_{i} = \resultColumn{3}_{i}$
 			\item \If $\phasend_{i} =0$ \Then:
 				\begin{enumerate}
-					\item $\isprefix _{i+1} = 1$
+					\item $\isPrefix _{i+1} = 1$
 					\item $\isAddr   _{i+1} = 1$
 					\item $\isSto    _{i+1} = 0$
 				\end{enumerate}
@@ -72,7 +72,7 @@ We first determine the RLP prefix of the data on the first row:
 
 An access list tuple always starts with the rlp prefix of the tuple, followed by the RLP of an address:
 \begin{enumerate}[resume]
-	\item \If $\isprefix_{i} = 1$ \et $\isAddr_{i} = 1$ \et $\isSto_{i} = 0$ Then:
+	\item \If $\isPrefix_{i} = 1$ \et $\isAddr_{i} = 1$ \et $\isSto_{i} = 0$ Then:
 		\begin{enumerate}
 			\item $\inputColumn{1}_{i} = \locAccessListTupleSize_{i}$
 			\item $\inputColumn{3}_{i} = 1$ 
@@ -97,7 +97,7 @@ An access list tuple always starts with the rlp prefix of the tuple, followed by
 					\end{array}
 					\right)
 				\]
-			\item $\isprefix _{i+1} = 0$
+			\item $\isPrefix _{i+1} = 0$
 			\item $\isAddr   _{i+1} = 1$
 			\item $\isSto    _{i+1} = 0$	
 			\item 
@@ -120,9 +120,9 @@ An access list tuple always starts with the rlp prefix of the tuple, followed by
 
 		After the RLP of an address, we have the RLP of the list of the (possibly empty) list of storage keys: 
 		\begin{enumerate}[resume]
-			\item \If $\isprefix_{i-1} = 0$ \et $\isAddr_{i-1} = 1$ \et $\isSto_{i-1} = 0$ \et $\done_{i-1} =1$ Then:
+			\item \If $\isPrefix_{i-1} = 0$ \et $\isAddr_{i-1} = 1$ \et $\isSto_{i-1} = 0$ \et $\done_{i-1} =1$ Then:
 				\begin{enumerate}
-					\item $\isprefix _{i} = 1$
+					\item $\isPrefix _{i} = 1$
 					\item $\isAddr   _{i} = 0$
 					\item $\isSto    _{i} = 1$
 					\item $\inputColumn{1}_{i} = 33 \cdot \locTotStorageForThisAddress_{i}$
@@ -150,14 +150,14 @@ An access list tuple always starts with the rlp prefix of the tuple, followed by
 
 					\item \If $\resultColumn{3}_{i} = 1$ \Then:
 						\begin{enumerate}
-							\item $\isprefix _{i+1} = 0$
+							\item $\isPrefix _{i+1} = 0$
 							\item $\isAddr   _{i+1} = 0$
 							\item $\isSto    _{i+1} = 1$
 						\end{enumerate}
 
 					\item \If $\resultColumn{3}_{i} = 0$ \et $\locTotNbOfAddress_{i} \neq 0$ \Then:
 						\begin{enumerate}
-							\item $\isprefix _{i+1} = 1$
+							\item $\isPrefix _{i+1} = 1$
 							\item $\isAddr   _{i+1} = 1$
 							\item $\isSto    _{i+1} = 0$
 						\end{enumerate}
@@ -171,7 +171,7 @@ An access list tuple always starts with the rlp prefix of the tuple, followed by
 
 		Here we constraint what happens when we have to do the RLP of a storage key: 
 		\begin{enumerate}[resume]
-			\item \If $\isprefix_{i-1} = 0$ \et $\isAddr_{i-1} = 0$ \et $\isSto_{i-1} = 1$ \et $\done_{i-1} =1$ Then:
+			\item \If $\isPrefix_{i-1} = 0$ \et $\isAddr_{i-1} = 0$ \et $\isSto_{i-1} = 1$ \et $\done_{i-1} =1$ Then:
 				\begin{enumerate}
 					\item $\inputColumn{1}_{i} = \inputColumn{1}_{i+1} = \inputColumn{1}_{i+2}$
 					\item $\inputColumn{2}_{i} = \inputColumn{2}_{i+1} = \inputColumn{2}_{i+2}$
@@ -195,13 +195,13 @@ An access list tuple always starts with the rlp prefix of the tuple, followed by
 		\end{enumerate}
 		And the possibilities after the RLP of a storage key:
 		\begin{enumerate}[resume]
-			\item \If $\isprefix_{i} = 0$ \et $\isAddr_{i} = 0$ \et $\isSto_{i} = 1$ \et $\done_{i} =1$ \Then:
+			\item \If $\isPrefix_{i} = 0$ \et $\isAddr_{i} = 0$ \et $\isSto_{i} = 1$ \et $\done_{i} =1$ \Then:
 				\begin{enumerate}
-					\item \If $\locTotStorageForThisAddress_{i} \neq 0$ \Then: $\isprefix_{i+1} = 0$ \et $\isAddr_{i+1} = 0$ \et $\isSto_{i+1} = 1$
+					\item \If $\locTotStorageForThisAddress_{i} \neq 0$ \Then: $\isPrefix_{i+1} = 0$ \et $\isAddr_{i+1} = 0$ \et $\isSto_{i+1} = 1$
 					\item \If $\locTotStorageForThisAddress_{i} = 0$ \Then: 
 						\begin{enumerate}
 							\item $\locAccessListTupleSize_{i} = 0$
-							\item \If $\locTotNbOfAddress_{i} \neq 0$ \Then: $\isprefix_{i+1} = 1$ \et $\isAddr_{i+1} = 1$ \et $\isSto_{i+1} = 0$
+							\item \If $\locTotNbOfAddress_{i} \neq 0$ \Then: $\isPrefix_{i+1} = 1$ \et $\isAddr_{i+1} = 1$ \et $\isSto_{i+1} = 0$
 							\item \If $\locTotNbOfAddress_{i} = 0$ \Then: $\phasend_{i} =1$
 						\end{enumerate}
 				\end{enumerate}
@@ -220,14 +220,14 @@ An access list tuple always starts with the rlp prefix of the tuple, followed by
 		And some constancies properties:
 		\begin{enumerate}
 			\item $\locPhaseSize_{i} = \locPhaseSize_{i-1} - \lc_{i} \cdot \limbsize_{i}$
-			\item \If $\isSto_{i} =1$ \Or ($\isAddr_{i} =1$ \et $\isprefix_{i} =0$) \Then: $\locAccessListTupleSize_{i} = \locAccessListTupleSize_{i-1} - \lc_{i} \cdot \limbsize_{i}$
-			\item $\locTotNbOfAddress_{i} = \locTotNbOfAddress_{i-1} - \isprefix_{i} \cdot \isAddr_{i}$
+			\item \If $\isSto_{i} =1$ \Or ($\isAddr_{i} =1$ \et $\isPrefix_{i} =0$) \Then: $\locAccessListTupleSize_{i} = \locAccessListTupleSize_{i-1} - \lc_{i} \cdot \limbsize_{i}$
+			\item $\locTotNbOfAddress_{i} = \locTotNbOfAddress_{i-1} - \isPrefix_{i} \cdot \isAddr_{i}$
 			\item \If $\isAddr_{i} =1$ \et $\isSto_{i}=1$ \et $\locTotNbOfAddress_{i} = \locTotNbOfAddress_{i+1}$ \Then: 
 				\begin{enumerate}
 					\item $\locAddressHi_{i} = \locAddressHi_{i+1}$
 					\item $\locAddressLo_{i} = \locAddressLo_{i+1}$
 				\end{enumerate}
-			\item $\locTotNbOfStorage_{i} = \locTotNbOfStorage_{i} - \done_{i+2} \cdot \isSto_{i+2} \cdot (1 - \isprefix_{i+2})$
-			\item \If ($\isprefix_{i} =1$ \et $\isAddr_{i} =1$) \Then: $\locTotStorageForThisAddress_{i} = \locTotStorageForThisAddress_{i} - \done_{i+2} \cdot \isSto_{i+2} \cdot (1 - \isprefix_{i+2})$
+			\item $\locTotNbOfStorage_{i} = \locTotNbOfStorage_{i} - \done_{i+2} \cdot \isSto_{i+2} \cdot (1 - \isPrefix_{i+2})$
+			\item \If ($\isPrefix_{i} =1$ \et $\isAddr_{i} =1$) \Then: $\locTotStorageForThisAddress_{i} = \locTotStorageForThisAddress_{i} - \done_{i+2} \cdot \isSto_{i+2} \cdot (1 - \isPrefix_{i+2})$
 		\end{enumerate}
 

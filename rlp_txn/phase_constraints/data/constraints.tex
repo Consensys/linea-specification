@@ -2,19 +2,19 @@
 \boxed{\text{In all this section, it is assumed that $\phaseData_{i}=1$.}}
 \end{center}
 
-We remind the reader that $\ispadding$ is $\ct$-constant, and $\isprefix$ is $\ct$-constant and \phaseData{}-decrementing(see \ref{constancy_constraints}).
+We remind the reader that $\ispadding$ is $\ct$-constant, and $\isPrefix$ is $\ct$-constant and \phaseData{}-decrementing(see \ref{constancy_constraints}).
 \begin{enumerate}
-    \item \If $\isprefix_{i}=1$ \Then $\indexData_{i}=0$
-    \item \If $\isprefix_{i}=0$ \Then: 
+    \item \If $\isPrefix_{i}=1$ \Then $\indexData_{i}=0$
+    \item \If $\isPrefix_{i}=0$ \Then: 
     \begin{enumerate}
-        \item \If ($\isprefix_{i-1}=0$ \et ($\lc_{i-1}=1$ or $\ispadding_{i-1}=1$)) \Then $\indexData_{i}=\indexData_{i-1} + 1$
+        \item \If ($\isPrefix_{i-1}=0$ \et ($\lc_{i-1}=1$ or $\ispadding_{i-1}=1$)) \Then $\indexData_{i}=\indexData_{i-1} + 1$
         \item \Else $\indexData_{i}=\indexData_{i-1}$
     \end{enumerate}
 \end{enumerate}
-In other words, $\indexData$ starts at 0 and increases by one after a $\limb$ is constructed during the data concatenation phase or after a padding row. %It is equivalent to $\indexData_{i} = (1 - \isprefix_{i}) \cdot (\indexData_{i-1} + (1 - \isprefix_{i-1}) \cdot \lc_{i-1} + \ispadding_{i-1})$. Note that this column is useful only to reconstruct the data.
+In other words, $\indexData$ starts at 0 and increases by one after a $\limb$ is constructed during the data concatenation phase or after a padding row. %It is equivalent to $\indexData_{i} = (1 - \isPrefix_{i}) \cdot (\indexData_{i-1} + (1 - \isPrefix_{i-1}) \cdot \lc_{i-1} + \ispadding_{i-1})$. Note that this column is useful only to reconstruct the data.
 \begin{enumerate}[resume]
-    \item \If $\ispadding_{i} = 0$ \Or $\isprefix_{i}=1$ \Then $\phasend_{i}=0$. In other words we prevent a phase transition before the padding rows.
-    \item \If ($\isprefix_{i}=0$ \et $\ispadding_{i} = 1$ \et $\done_{i}=1$) \Then $\phasend_{i}=1$
+    \item \If $\ispadding_{i} = 0$ \Or $\isPrefix_{i}=1$ \Then $\phasend_{i}=0$. In other words we prevent a phase transition before the padding rows.
+    \item \If ($\isPrefix_{i}=0$ \et $\ispadding_{i} = 1$ \et $\done_{i}=1$) \Then $\phasend_{i}=1$
     \item \If $\phaseData_{i-1}=0$ \Then:
     Constraint on $\outgoingDataSymb$ as DataSize and DataCost are initialised at the begining of the phase:
     \begin{enumerate}
@@ -23,19 +23,19 @@ In other words, $\indexData$ starts at 0 and increases by one after a $\limb$ is
     \end{enumerate} 
     We define the trivial case with no data:
     \begin{enumerate}[resume]
-        \item $\isprefix_{i}=1$
+        \item $\isPrefix_{i}=1$
         \item \If $\phasesize_{i}=0$ \Then $\nbstep_{i}=1$
         \item \If $\phasesize_{i} \neq 0$ \Then $\nbstep_{i}=8$ 
     \end{enumerate}
 \end{enumerate}
 We constrain the trivial case:
 \begin{enumerate}[resume] 
-    \item \If ($\isprefix_{i} \neq 0$ \et $\nbstep_{i} \neq 8$) \Then:
+    \item \If ($\isPrefix_{i} \neq 0$ \et $\nbstep_{i} \neq 8$) \Then:
     \begin{enumerate}
         \item $\limb_{i}=\rlprefixShortInt \cdot 256 ^{\llargeMO}$
         \item $\limbsize_{i}=1$
         \item $\ispadding_{i} =0$
-        \item $\isprefix_{i+1}=0$
+        \item $\isPrefix_{i+1}=0$
         \item $\ispadding_{i+1}=1$
         \item $\nbstep_{i+1}=1$
         \saNote{} We remind the reader that, as $\nbstep_{i+1}=1$, then $\done_{i+1}=1$ and then $\phasend_{i+1}=1$.
@@ -43,7 +43,7 @@ We constrain the trivial case:
 \end{enumerate}
 We constrain the general case, we first compute the RLP prefix:
 \begin{enumerate}[resume] 
-    \item \If ($\isprefix_{i} \neq 0$ \et $\nbstep_{i} \neq 1$) \Then
+    \item \If ($\isPrefix_{i} \neq 0$ \et $\nbstep_{i} \neq 1$) \Then
         \begin{enumerate}
             \item $\phasesize_{i} = \phasesize_{i+1}$
             \item $\dataGasCost_{i} = \dataGasCost_{i+1}$
@@ -102,11 +102,11 @@ We constrain the general case, we first compute the RLP prefix:
             \end{enumerate}
             \item \If $\done_{i}=1$ \Then 
             \begin{itemize}
-                \item $\isprefix_{i+1}=0$
+                \item $\isPrefix_{i+1}=0$
                 \item $\ispadding_{i+1}=0$
             \end{itemize}
         \end{enumerate}
-        \item \If ($\isprefix_{i}=0$ \et $\ispadding_{i}=0$ \Then
+        \item \If ($\isPrefix_{i}=0$ \et $\ispadding_{i}=0$ \Then
         \begin{enumerate}
             \item $\nbstep_{i}=\llarge$
             \item \If $\phasesize_{i} \neq 0$ \Then:

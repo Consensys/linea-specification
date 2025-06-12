@@ -7,7 +7,7 @@ We constrain those columns to be binary:
     \item \phasend{} \quad (\trash)
     \item \done{} \quad (\trash)
     \item \col{BIT}
-    \item \isprefix{} \quad (\trash)
+    \item \isPrefix{} \quad (\trash)
     \item \ispadding{}
     \item \Depth{1} \quad (\trash)
     \item \isOt{} \quad (\trash)
@@ -36,13 +36,13 @@ We define that a column \col{X} is
 We constrain: 
 \begin{enumerate}
     \item $\absTxNumInfty$ and $\absLogNumMax$ to be block-constant;
-    \item $\Input k$ (for $k= 2, 3, 4$), $\nbstep$, $\isprefix$, $\Depth 1$, $\isOt$, $\isOd$  are counter-constant;
-    \item \If ($\phase 5_{i} \neq 1$ \Or $\Depth1_{i} \neq 1$ \Or $\isprefix_{i} \neq 0$ \Or $\isOd_{i} \neq 1$) \Then $\Input 1$ is counter-constant;
+    \item $\Input k$ (for $k= 2, 3, 4$), $\nbstep$, $\isPrefix$, $\Depth 1$, $\isOt$, $\isOd$  are counter-constant;
+    \item \If ($\phase 5_{i} \neq 1$ \Or $\Depth1_{i} \neq 1$ \Or $\isPrefix_{i} \neq 0$ \Or $\isOd_{i} \neq 1$) \Then $\Input 1$ is counter-constant;
     \saNote{} We impose the counter constancy of $\Input 1$ on all the trace but when dealing with $O_{\textbf{d}}$.
 
     \item $\ispadding$ is counter-incrementing;
-    \item \If ($\isprefix_{i}=0$ \Or $\isOd_{i}=0$) \Then $\lc$ is counter-incrementing;
-    \item $\isprefix$ is $\phase 4$-decrementing;
+    \item \If ($\isPrefix_{i}=0$ \Or $\isOd_{i}=0$) \Then $\lc$ is counter-incrementing;
+    \item $\isPrefix$ is $\phase 4$-decrementing;
     \item $\Depth 1$ is $\phase 5$-incrementing;
     \item $\indexlocal$ is $\isOt$-incrementing;
     \item $\logsize$ is $\phase{1}$-constant.
@@ -61,18 +61,18 @@ In other words padding rows have all phase flags turned off while every non padd
 \end{enumerate}
 Constraint on \Phase{}:
 \begin{enumerate}
-    \item $\Phase_{i} = \sum_{k=1}^{5} k \cdot \phase{k}_{i} + \subPhaseIdWeightIsPrefix \cdot \isprefix_{i} + \subPhaseIdWeightIsOt \cdot \isOt_{i} + \subPhaseIdWeightIsOd \cdot \isOd_{i} + \subPhaseIdWeightDepth \cdot \Depth1_{i} + \subPhaseIdWeightIndexLocal \cdot \isOt_{i} \cdot \indexlocal_{i}$ \label{RlpTxrcpt: subPhaseId} 
+    \item $\Phase_{i} = \sum_{k=1}^{5} k \cdot \phase{k}_{i} + \subPhaseIdWeightisPrefix \cdot \isPrefix_{i} + \subPhaseIdWeightIsOt \cdot \isOt_{i} + \subPhaseIdWeightIsOd \cdot \isOd_{i} + \subPhaseIdWeightDepth \cdot \Depth1_{i} + \subPhaseIdWeightIndexLocal \cdot \isOt_{i} \cdot \indexlocal_{i}$ \label{RlpTxrcpt: subPhaseId} 
 \end{enumerate}
 Explanation
 \begin{enumerate}
     \item $\phase{k}$ are exclusive binary column;
-    \item $\isprefix$, $\isOt$ and $\isOd$ are binary columns;
+    \item $\isPrefix$, $\isOt$ and $\isOd$ are binary columns;
     \item When $\isOt_{i} = 1$, we store in $\indexlocal$ the number of the current topic (between 0 and 4) for this logentry;
 \end{enumerate}
 Constraints on $\absLogNum$
 \begin{enumerate}
     \item $\absLogNum_{0}=0$
-    \item \If ($\phase{5}_{i}=1$ \et $\Depth 1_{i}=1$ \et $\isprefix_{i}=1$ \et $\isOt_{i}=0$ \et $\isOd_{i}=0$ \et $\ct_{i}=0$) 
+    \item \If ($\phase{5}_{i}=1$ \et $\Depth 1_{i}=1$ \et $\isPrefix_{i}=1$ \et $\isOt_{i}=0$ \et $\isOd_{i}=0$ \et $\ct_{i}=0$) 
     \begin{enumerate}
         \item \Then $\absLogNum_{i}=\absLogNum_{i-1}+1$
         \item \Else $\absLogNum_{i}=\absLogNum_{i-1}$
@@ -172,7 +172,7 @@ We build some blind byte and bit accumulators. There are more constaints when th
         \end{enumerate}
     \item[{Updating $\phasesize$:}] the only phases that require the \phasesize{} columnms are phase 4 and phase 5. We leave the column unconstrained outside of these: 
         \begin{enumerate}
-            \item \If \Big($(\phase{4}_{i}=1 \et \isprefix_{i}=0)$ \Or $(\phase{5}_{i}=1 \et \Depth 1 _{i}=1)$\Big) \Then 
+            \item \If \Big($(\phase{4}_{i}=1 \et \isPrefix_{i}=0)$ \Or $(\phase{5}_{i}=1 \et \Depth 1 _{i}=1)$\Big) \Then 
                 \[ \phasesize_{i} = \phasesize_{i-1} - \lc_{i} \cdot \limbsize_{i} \]
         \end{enumerate}
 \end{description}
