@@ -2,7 +2,7 @@ The present describes a contraint system that writes the \rlp{}-ization of a sto
 
 We shall assume the following: we are provided with columns
 \begin{itemize}
-    \item $\col{input 1}$ and $\col{input 2}$: two 16 bytes columns;
+    \item $\col{input1}$ and $\col{input2}$: two $\llarge$-byte columns;
     \item $\col{ct}$: a counter;
     \item $\col{ctMax}$: a column which specifies the size of the ct-loop;
     \item $\col{wcpFlag}$: a flag column;
@@ -14,33 +14,35 @@ We shall assume the following: we are provided with columns
 
 \noindent We subsume under the short hand
 \[
-    \rlpStorageKey_{i}
-    \left(
+    \begin{array}{l}
+	\rlpStorageKey _{i}
+	\left(
 	\begin{array}{r}
-    \col{input1},
-    \col{input2},
-    \col{ct},
-    \col{ctMax}; \\
-    \col{rlpUtilsFlag},
-    \col{inst}; \\
-    \col{limb},
-    \col{lc},
-    \col{nBytes}; \\
+	    \col{input1},
+	    \col{input2},
+	    \col{ct},
+	    \col{ctMax}; \\
+	    \col{rlpUtilsFlag},
+	    \col{inst}; \\
+	    \col{limb},
+	    \col{lc},
+	    \col{nBytes}; \\
+	\end{array}
+	\right) \vspace{2mm} \\
+	\qquad \define 
+	\left\{ \begin{array}{lcl}
+	    \col{ctMax} _{i}        & = & 2                                         \\
+	    \col{rlpUtilsFlag} _{i} & = & 1                                         \\
+	    \col{inst} _{i}         & = & \inst{BYTES32}                            \\
+	    \col{lc} _{i}           & = & 1                                         \\
+	    \col{limb} _{i}         & = & \rlprefixStorage \cdot (256 ^{\llargeMO}) \\
+	    \col{nBytes} _{i}       & = & 1                                         \\
+	    \col{lc} _{i + 1}       & = & 1                                         \\
+	    \col{limb} _{i + 1}     & = & \col{input1} _{i}                         \\
+	    \col{nBytes} _{i + 1}   & = & \llarge                                   \\
+	    \col{lc} _{i + 2}       & = & 1                                         \\
+	    \col{limb} _{i + 2}     & = & \col{input2} _{i}                         \\
+	    \col{nBytes} _{i + 2}   & = & \llarge                                   \\
+	\end{array} \right.
     \end{array}
-	\right)
 \]
-
-\begin{enumerate}
-    \item $\col{ctMax}_{i} = 2$
-    \item $\col{rlpUtilsFlag}_{i} = 1$
-    \item $\col{inst}_{i} = \inst{BYTES32}$
-    \item $\col{lc}_{i} = 1$
-    \item $\col{limb}_{i}=\rlprefixStorage \cdot (256 ^{\llargeMO})$
-    \item $\col{nBytes}_{i} = 1$
-    \item $\col{lc}_{i+1} = 1$
-    \item $\col{limb}_{i+1}=\col{input1}_{i}$
-    \item $\col{nBytes}_{i+1} = \llarge $
-    \item $\col{lc}_{i+2} = 1$
-    \item $\col{limb}_{i+2}=\col{input2}_{i}$
-    \item $\col{nBytes}_{i+2} = \llarge $
-\end{enumerate}
