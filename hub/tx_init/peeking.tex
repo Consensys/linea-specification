@@ -6,14 +6,22 @@ We unconditionally impose the following
 \begin{enumerate}
 	\item 
 		\label{hub: initialization phase: the first rows are misc and transaction rows}
-		$\peekMisc _{i + \locTxInitRoffMisc} + \peekTransaction _{i + \locTxInitRoffTxn} + \peekAccount _{i + \locTxInitWarmCoinbase} = 3$
+		the first few peeking flags must satisfy:
+		\[
+			\left[ \begin{array}{cl}
+				+ & \peekTransaction _{i + \locTxInitRoffTxn}      \\
+				+ & \peekMisc        _{i + \locTxInitRoffMisc}     \\
+				+ & \peekAccount     _{i + \locTxInitWarmCoinbase} \\
+			\end{array} \right]
+			= 3
+		\]
 \end{enumerate}
 Given peeking flag exclusivity,
 see section~(\ref{hub: heartbeat: peeking flag exclusivity}),
 the above translates precisely to
 \begin{enumerate}[resume]
-	\item $\peekMisc        _{i + \locTxInitRoffMisc}     = 1$ ~ (\trash)
 	\item $\peekTransaction _{i + \locTxInitRoffTxn}      = 1$ ~ (\trash)
+	\item $\peekMisc        _{i + \locTxInitRoffMisc}     = 1$ ~ (\trash)
 	\item $\peekAccount     _{i + \locTxInitWarmCoinbase} = 1$ ~ (\trash)
 \end{enumerate}
 \begin{enumerate}[resume]
@@ -29,15 +37,15 @@ the above translates precisely to
 			\item we set the peeking flags
 				\[
 					\left[ \begin{array}{cl} 
-						+ & \peekMisc        _{i + \locTxInitRoffMisc                           } \\
-						+ & \peekTransaction _{i + \locTxInitRoffTxn                            } \\
-						+ & \peekAccount     _{i + \locTxInitWarmCoinbase                       } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccDoingSndPayGas              } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccDoingSenderValueTransfer            } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccDoingRecipientValueReception            } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccUndoingSenderValueTransfer          } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccUndoingRecipientValueReception          } \\
-						+ & \peekContext     _{i + \locTxInitRoffConExceptionalContextRowOffset } \\
+						+ & \peekTransaction _{i + \locTxInitRoffTxn                               } \\
+						+ & \peekMisc        _{i + \locTxInitRoffMisc                              } \\
+						+ & \peekAccount     _{i + \locTxInitWarmCoinbase                          } \\
+						+ & \peekAccount     _{i + \locTxInitRoffAccDoingSndPayGas                 } \\
+						+ & \peekAccount     _{i + \locTxInitRoffAccDoingSenderValueTransfer       } \\
+						+ & \peekAccount     _{i + \locTxInitRoffAccDoingRecipientValueReception   } \\
+						+ & \peekAccount     _{i + \locTxInitRoffAccUndoingSenderValueTransfer     } \\
+						+ & \peekAccount     _{i + \locTxInitRoffAccUndoingRecipientValueReception } \\
+						+ & \peekContext     _{i + \locTxInitRoffConExceptionalContextRowOffset    } \\
 					\end{array} \right] =
 					\nsrTxInitWillRevert
 				\]
@@ -54,12 +62,12 @@ the above translates precisely to
 			\item we set the peeking flags
 				\[
 					\left[ \begin{array}{cl} 
-						+ & \peekMisc        _{i + \locTxInitRoffMisc                             } \\
 						+ & \peekTransaction _{i + \locTxInitRoffTxn                              } \\
-						+ & \peekAccount     _{i + \locTxInitWarmCoinbase                       } \\
+						+ & \peekMisc        _{i + \locTxInitRoffMisc                             } \\
+						+ & \peekAccount     _{i + \locTxInitWarmCoinbase                         } \\
 						+ & \peekAccount     _{i + \locTxInitRoffAccDoingSndPayGas                } \\
 						+ & \peekAccount     _{i + \locTxInitRoffAccDoingSenderValueTransfer      } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccDoingRecipientValueReception   } \\
+						+ & \peekAccount     _{i + \locTxInitRoffAccDoingRecipientValueReception  } \\
 						+ & \peekContext     _{i + \locTxInitRoffConUnexceptionalContextRowOffset } \\
 					\end{array} \right] =
 					\nsrTxInitWontRevert

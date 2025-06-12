@@ -1,20 +1,21 @@
-we must justify certain predictions made by the \txnDataMod{} module:
-\begin{description}
-	\item[\underline{(Partially) justifying \txRequiresEvmExecution{}:}]
-		we impose the following
-		\begin{enumerate}
-			\item $\txRequiresEvmExecution_{i + \locTxInitRoffTxn} = \rOne$;
-			\item \If $\locTxInitIsMessageCall = 1$ \Then $\accHasCode     _{i + \locTxInitRoffAccDoingRecipientValueReception}  =    1$
-			\item \If $\locTxInitIsDeployment  = 1$ \Then $\txInitCodeSize _{i + \locTxInitRoffTxn}       \neq 0$ (\trash)
-		\end{enumerate}
-	\item[\underline{Justifying $\txFinalRefundCounter$:}]
-		cannot be set at the moment;
-	\item[\underline{Justifying $\txInitialBalance$:}]
-		we impose that $\txInitialBalance _{i + \locTxInitRoffTxn} = \accBalance _{i + \locTxInitRoffAccDoingSndPayGas}$
-	\item[\underline{Justifying \txStatusCode{}:}]
-		cannot be set at the moment\footnote{We \textbf{could} actually set the status code of the transaction at the present time as it coincides with  \locTransactionWontRevert{}.};
-	\item[\underline{Justifying \txNonce{}:}]
-		we impose $\txNonce_{i + \locTxInitRoffTxn} = \accNonce_{i + \locTxInitRoffAccDoingSndPayGas}$;
-	\item[\underline{Justifying $\txLeftoverGas$:}]
-		cannot be set at the moment;
-\end{description}
+\item[\underline{\underline{Transaction-row n$^°~(\bm{i + \locTxInitRoffTxn})$:}}]
+	we must justify certain predictions made by the \userTxnDataMod{} module:
+	\begin{description}
+		\item[\underline{(Partially) justifying \txRequiresEvmExecution{}:}]
+			we impose the following
+			\begin{enumerate}
+				\item $\txRequiresEvmExecution_{i + \locTxInitRoffTxn} = \rOne$;
+				\item \If $\locTxInitIsMessageCall = 1$ \Then $\accHasCode     _{i + \locTxInitRoffAccDoingRecipientValueReception}  =    1$
+				\item \If $\locTxInitIsDeployment  = 1$ \Then $\txInitCodeSize _{i + \locTxInitRoffTxn}       \neq 0$ (\trash)
+			\end{enumerate}
+		\item[\underline{Justifying $\txFinalRefundCounter$:}]
+			cannot be set at the moment;
+		\item[\underline{Justifying $\txInitialBalance$:}]
+			we impose that $\txInitialBalance _{i + \locTxInitRoffTxn} = \accBalance _{i + \locTxInitRoffAccDoingSndPayGas}$
+		\item[\underline{Justifying \txStatusCode{}:}]
+			cannot be set at the moment\footnote{We \textbf{could} actually set the status code of the transaction at the present time as it coincides with  \locTransactionWontRevert{}.};
+		\item[\underline{Justifying \txNonce{}:}]
+			we impose $\txNonce_{i + \locTxInitRoffTxn} = \accNonce_{i + \locTxInitRoffAccDoingSndPayGas}$;
+		\item[\underline{Justifying $\txLeftoverGas$:}]
+			cannot be set at the moment;
+	\end{description}

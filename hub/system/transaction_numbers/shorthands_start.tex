@@ -1,0 +1,38 @@
+We define the following shorthands
+\[
+	\left\{ \begin{array}{lcl}
+		\sysiTransactionStart _{i} & \define & \sysi _{i} \cdot \txSkip _{i} \cdot \peekTransaction _{i} \\
+		\sysfTransactionStart _{i} & \define & \sysf _{i} \cdot \txSkip _{i} \cdot \peekTransaction _{i} \\
+		\userTransactionStart _{i} & \define &
+		\user _{i} \cdot
+		\left[ \begin{array}{crcrclr}
+			+ &                        &                   & \txSkip _{i}           & \!\!\!\cdot\!\!\! & \peekTransaction _{i} \\
+			+ &                        &                   & (1 - \txWarm _{i - 1}) & \!\!\!\cdot\!\!\! & \txWarm          _{i} \\
+			+ & (1 - \txWarm _{i - 1}) & \!\!\!\cdot\!\!\! & (1 - \txInit _{i - 1}) & \!\!\!\cdot\!\!\! & \txInit          _{i} & \undefinedStar \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\transactionStart _{i} & \define &
+		\left[ \begin{array}{rrcl}
+			+ & \sysiTransactionStart _{i} \\
+			+ & \userTransactionStart _{i} \\
+			+ & \sysfTransactionStart _{i} \\
+		\end{array} \right]
+	\end{array} \right.
+\]
+\saNote{}
+The above expressions always take on binary values.
+
+\saNote{}
+According to our definition of $\userTransactionStart$, \user{}-transactions may start in any of the following ways:
+(\emph{a}) as a \txSkip{} transaction, necessarily starting with a $\peekTransaction$-row
+(\emph{b}) as the first pre-warming-row of an access-list transaction with nonempty access-list
+(\emph{c}) as the first initialization-row of a transaction with empty access-list.
+
+\saNote{}
+The expression labelled with a $\undefinedStar$ may be replaced, under transaction processing flag exclusivity,
+see section~(\ref{}),
+with
+\[
+	\Big(1 - (\txWarm _{i - 1} + \txInit _{i - 1}) \Big) \cdot \txInit _{i}
+\]

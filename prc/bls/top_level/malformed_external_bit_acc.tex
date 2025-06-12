@@ -1,0 +1,83 @@
+We require external checks for malformed data only if no internal malformations were detected.
+Furthermore only ``data-rows'' may be tagged as ``malformed-data-rows.''
+As such we impose the following constraints:
+\begin{enumerate}
+    \item \If $\malformedDataInternalTot _{i} = 1$ \Then
+        \[
+            \left\{ \begin{array}{lclr}
+                \malformedDataExternalBit _{i} & = & 0 \\
+                \malformedDataExternalAcc _{i} & = & 0 & (\sanityCheck) \\
+                \malformedDataExternalTot _{i} & = & 0 & (\sanityCheck) \\
+            \end{array} \right.
+        \]
+    \item \If $\locIsData _{i} = 0$ \Then
+        \[
+            \left\{ \begin{array}{lclr}
+                \malformedDataExternalBit _{i} & = & 0 \\
+                \malformedDataExternalAcc _{i} & = & 0 \\
+            \end{array} \right.
+        \]
+\end{enumerate}
+Furthermore, echoing
+section~(\ref{bls: top level flags: generalities for malformed and wellformed}),
+not all precompiles require $\malformedDataExternalBit$:
+\begin{enumerate}[resume]
+    \item \If $\locIsBlsMapFpToGOne    _{i} = 1$ \Then
+        \[
+            \left\{ \begin{array}{lclr}
+                \malformedDataExternalBit _{i} & = & 0 \\
+                \malformedDataExternalAcc _{i} & = & 0 & (\sanityCheck) \\
+                \malformedDataExternalTot _{i} & = & 0 & (\sanityCheck) \\
+            \end{array} \right.
+        \]
+    \item \If $\locIsBlsMapFpTwoToGTwo _{i} = 1$ \Then
+        \[
+            \left\{ \begin{array}{lclr}
+                \malformedDataExternalBit _{i} & = & 0 \\
+                \malformedDataExternalAcc _{i} & = & 0 & (\sanityCheck) \\
+                \malformedDataExternalTot _{i} & = & 0 & (\sanityCheck) \\
+            \end{array} \right.
+        \]
+\end{enumerate}
+The following are general constraints for both the ``\col{BIT}'' and ``\col{ACC}'' column:
+\begin{enumerate}[resume]
+    \item \malformedDataExternalBit{} is binary and counter-constant \quad (\trash)
+    \item \malformedDataExternalAcc{} is binary and counter-constant \quad (\trash)
+\end{enumerate}
+We now specify the associated accumulator column:
+\begin{enumerate}[resume]
+    \item \If
+        \[
+            \left[ \begin{array}{cl}
+                + & \locTransitionToData            _{i} \\
+                + & \locWillSwitchFromFirstToSecond _{i} \\
+                + & \locWillSwitchFromSecondToFirst _{i} \\
+            \end{array} \right]
+            \neq 0
+        \]
+        \Then
+        \[
+            \malformedDataExternalAcc _{i + 1} =
+            \left[ \begin{array}{cl}
+                + & \malformedDataExternalAcc _{i}     \\
+                + & \malformedDataExternalBit _{i + 1} \\
+            \end{array} \right]
+        \]
+        \saNote{}
+        Binarity and counter-constancy of \malformedDataExternalAcc{}
+        plus the above ``transition constraint''
+        have the following implicit consequence:
+        \textbf{at most one} point pertaining to a particular \blsId{} may be be tagged as ``\malformedDataExternalBit.''
+
+        \saNote{}
+        There is no issue with ``undefined $\malformedDataExternalAcc$'' in case of $\locTransitionToData \equiv 1$
+        as in that case on has $\malformedDataExternalAcc \equiv 0$.
+\end{enumerate}
+We finish this section by constraining the \malformedDataExternalTot{} column:
+\begin{enumerate}[resume]
+    \item \malformedDataExternalTot{} is \textbf{binary} and \textbf{stamp-constant} \quad (\trash)
+    \item \If $\locTransitionToResult_{i} = 1$ \Then
+        \[
+            \malformedDataExternalTot_{i} = \malformedDataExternalAcc _{i}
+        \]
+\end{enumerate}

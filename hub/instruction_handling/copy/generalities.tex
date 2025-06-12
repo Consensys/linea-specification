@@ -136,17 +136,13 @@ The constraints are as follows:
 					\locTriggerMxp = \one - \stackRdcx_{i}
 				\]
 			\item[\underline{Specifying \locTriggerMmu{}:}]
-				\label{locTriggerMmu for the copy family}
+				\label{hub: instruction handling: copy: trigger MMU}
 				for a \inst{COPY}-type instruction to trigger the \mmuMod{} is is necessary and sufficient that the instruction raise no exception and be provided with a nonzero size parameter;
 				as such we set
 				\begin{enumerate}
 					\item \If $\xAhoy _{i} = 1$ \Then $\locTriggerMmu = 0$
-					\item \If $\xAhoy _{i} = 0$ \Then $\locTriggerMmu = \miscMxpTypeFourInstMayTriggerMmu _{i + \locCopyMiscRowOffset}$
+					\item \If $\xAhoy _{i} = 0$ \Then $\locTriggerMmu = \miscMxpSizeOneNonzeroNoMxpx _{i + \locCopyMiscRowOffset}$
 				\end{enumerate}
-				\saNote{}
-				Recall the specification of \miscMxpTypeFourInstMayTriggerMmu{} in the \mxpMod{}, section~(\ref{mxp: may trigger non trivial operation}).
-				This flag vanishes for instructions that aren't ``\textbf{type 4}'' as well as whenever the \mxpx{} flag is raised.
-				In all other cases this flag is $0$ \textbf{iff} the size parameter \locSizeLo{} is zero.
 			\item[\underline{Setting \oobMod{} data:}]
 				\If $\miscOobFlag _{i + \locCopyMiscRowOffset} = 1$ \Then we impose
 				\[
@@ -168,7 +164,7 @@ The constraints are as follows:
 			\item[\underline{Setting \mxpMod{} data:}]
 				\If $\miscMxpFlag _{i + \locCopyMiscRowOffset} = 1$ \Then we impose
 				\[
-					\setMxpInstructionTypeFour
+					\setMxpInstructionOneOffset
 					{
 						anchorRow     = i                     ,
 						relOffset     = \locCopyMiscRowOffset ,

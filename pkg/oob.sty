@@ -72,7 +72,14 @@
 \newcommand{\oobInstIsModexpLead         }         {\oobInstructionFlag{MODEXP\_LEAD}}
 \newcommand{\oobInstIsModexpPricing      }         {\oobInstructionFlag{MODEXP\_PRICING}}
 \newcommand{\oobInstIsModexpExtract      }         {\oobInstructionFlag{MODEXP\_EXTRACT}}
-
+\newcommand{\oobInstIsPointEvaluation    }         {\oobInstructionFlag{POINT\_EVALUATION}}
+\newcommand{\oobInstIsBlsGOneAdd         }         {\oobInstructionFlag{BLS\_G1ADD}}
+\newcommand{\oobInstIsBlsGTwoAdd         }         {\oobInstructionFlag{BLS\_G2ADD}}
+\newcommand{\oobInstIsBlsGOneMsm         }         {\oobInstructionFlag{BLS\_G1MSM}}
+\newcommand{\oobInstIsBlsGTwoMsm         }         {\oobInstructionFlag{BLS\_G2MSM}}
+\newcommand{\oobInstIsBlsPairingCheck    }         {\oobInstructionFlag{BLS\_PAIRING\_CHECK}}
+\newcommand{\oobInstIsBlsMapFpToGOne     }         {\oobInstructionFlag{BLS\_MAP\_FP\_TO\_G1}}
+\newcommand{\oobInstIsBlsMapFpTwoToGTwo  }         {\oobInstructionFlag{BLS\_MAP\_FP2\_TO\_G2}}
 \newcommand{\oobInstruction}                       {\col{OOB\_INST}}
 
 \newcommand{\oobInst}                        [1]   {\red{[\![\inst{OOB\_INST\_#1}]\!]}}
@@ -87,7 +94,7 @@
 \newcommand{\oobInstCreate               }         {\oobInst{CREATE}                 }
 \newcommand{\oobInstSstore               }         {\oobInst{SSTORE}                 }
 \newcommand{\oobInstDeployment           }         {\oobInst{DEPLOYMENT}             }
-%
+
 \newcommand{\oobInstEcrecover            }         {\oobInst{ECRECOVER}              }
 \newcommand{\oobInstShaTwo               }         {\oobInst{SHA2}                   }
 \newcommand{\oobInstRipemd               }         {\oobInst{RIPEMD}                 }
@@ -95,15 +102,24 @@
 \newcommand{\oobInstEcadd                }         {\oobInst{ECADD}                  }
 \newcommand{\oobInstEcmul                }         {\oobInst{ECMUL}                  }
 \newcommand{\oobInstEcpairing            }         {\oobInst{ECPAIRING}              }
-%
+
 \newcommand{\oobInstBlakeCds             }         {\oobInst{BLAKE\_CDS}             }
 \newcommand{\oobInstBlakeParams          }         {\oobInst{BLAKE\_PARAMS}          }
-%
+
 \newcommand{\oobInstModexpCds            }         {\oobInst{MODEXP\_CDS}            }
 \newcommand{\oobInstModexpXbs            }         {\oobInst{MODEXP\_XBS}            }
 \newcommand{\oobInstModexpLead           }         {\oobInst{MODEXP\_LEAD}           }
 \newcommand{\oobInstModexpPricing        }         {\oobInst{MODEXP\_PRICING}        }
 \newcommand{\oobInstModexpExtract        }         {\oobInst{MODEXP\_EXTRACT}        }
+
+\newcommand{\oobInstPointEvaluation     }         {\oobInst{POINT\_EVALUATION}    }
+\newcommand{\oobInstBlsGOneAdd          }         {\oobInst{BLS\_G1ADD}           }
+\newcommand{\oobInstBlsGOneMsm          }         {\oobInst{BLS\_G1MSM}           }
+\newcommand{\oobInstBlsGTwoAdd          }         {\oobInst{BLS\_G2ADD}           }
+\newcommand{\oobInstBlsGTwoMsm          }         {\oobInst{BLS\_G2MSM}           }
+\newcommand{\oobInstBlsPairingCheck     }         {\oobInst{BLS\_PAIRING\_CHECK}  }
+\newcommand{\oobInstBlsMapFpToGOne      }         {\oobInst{BLS\_MAP\_FP\_TO\_G1} }
+\newcommand{\oobInstBlsMapFpTwoToGTwo   }         {\oobInst{BLS\_MAP\_FP2\_TO\_G2}}
 
 %
 \newcommand{\oxConst                }  [1]   {\red{\texttt{0x\,#1}}}
@@ -118,6 +134,13 @@
 \newcommand{\oxModexpLead           }        {\oxConst{MODEXP\_LEAD}}
 \newcommand{\oxModexpPricing        }        {\oxConst{MODEXP\_PRICING}}
 \newcommand{\oxModexpExtract        }        {\oxConst{MODEXP\_EXTRACT}}
+\newcommand{\oxBlsGOneAdd          }        {\oxConst{BLS\_G1ADD}}
+\newcommand{\oxBlsGOneMsm          }        {\oxConst{BLS\_G1MSM}}
+\newcommand{\oxBlsGTwoAdd          }        {\oxConst{BLS\_G2ADD}}
+\newcommand{\oxBlsGTwoMsm          }        {\oxConst{BLS\_G2MSM}}
+\newcommand{\oxBlsPairingCheck     }        {\oxConst{BLS\_PAIRING\_CHECK}}
+\newcommand{\oxBlsMapFpToGOne      }        {\oxConst{BLS\_MAP\_FP\_TO\_G1}}
+\newcommand{\oxBlsMapFpTwoToGTwo   }        {\oxConst{BLS\_MAP\_FP2\_TO\_G2}}
 %
 
 \newcommand{\oxEcrecover}         {\red{\texttt{0x\,ERCV}}}
@@ -127,30 +150,64 @@
 \newcommand{\oxEcadd}             {\red{\texttt{0x\,EADD}}}
 \newcommand{\oxEcmul}             {\red{\texttt{0x\,EMUL}}}
 \newcommand{\oxEcpairing}         {\red{\texttt{0x\,PAIR}}}
+\newcommand{\oxPointEvaluation}   {\red{\texttt{0x\,POEV}}}
 
-\newcommand{\oobCtMaxJump}         {\texttt{CT\_MAX\_JUMP}}
-\newcommand{\oobCtMaxJumpI}        {\texttt{CT\_MAX\_JUMPI}}
-\newcommand{\oobCtMaxRdc}          {\texttt{CT\_MAX\_RDC}}
-\newcommand{\oobCtMaxCdl}          {\texttt{CT\_MAX\_CDL}}
-\newcommand{\oobCtMaxXcall}        {\texttt{CT\_MAX\_XCALL}}
-\newcommand{\oobCtMaxCall}         {\texttt{CT\_MAX\_CALL}}
-\newcommand{\oobCtMaxXcreate}      {\texttt{CT\_MAX\_XCREATE}}
-\newcommand{\oobCtMaxCreate}       {\texttt{CT\_MAX\_CREATE}}
-\newcommand{\oobCtMaxSstore}       {\texttt{CT\_MAX\_SSTORE}}
-\newcommand{\oobCtMaxDeployment}   {\texttt{CT\_MAX\_DEPLOYMENT}}
+\newcommand{\oobCtMaxJump}         {\ctMaxConst{jump}}
+\newcommand{\oobCtMaxJumpI}        {\ctMaxConst{jumpi}}
+\newcommand{\oobCtMaxRdc}          {\ctMaxConst{rdc}}
+\newcommand{\oobCtMaxCdl}          {\ctMaxConst{cdl}}
+\newcommand{\oobCtMaxXcall}        {\ctMaxConst{xcall}}
+\newcommand{\oobCtMaxCall}         {\ctMaxConst{call}}
+\newcommand{\oobCtMaxXcreate}      {\ctMaxConst{xcreate}}
+\newcommand{\oobCtMaxCreate}       {\ctMaxConst{create}}
+\newcommand{\oobCtMaxSstore}       {\ctMaxConst{sstore}}
+\newcommand{\oobCtMaxDeployment}   {\ctMaxConst{deployment}}
 
-\newcommand{\oobCtMaxEcrecover}    {\texttt{CT\_MAX\_ECRECOVER}}
-\newcommand{\oobCtMaxShaTwo}       {\texttt{CT\_MAX\_SHA2-256}}
-\newcommand{\oobCtMaxRipemd}       {\texttt{CT\_MAX\_RIPEMD-160}}
-\newcommand{\oobCtMaxIdentity}     {\texttt{CT\_MAX\_IDENTITY}}
-\newcommand{\oobCtMaxEcadd}        {\texttt{CT\_MAX\_ECADD}}
-\newcommand{\oobCtMaxEcmul}        {\texttt{CT\_MAX\_ECMUL}}
-\newcommand{\oobCtMaxEcpairing}    {\texttt{CT\_MAX\_ECPAIRING}}
-\newcommand{\oobCtMaxBlakeCds }    {\texttt{CT\_MAX\_BLAKE2F\_CDS}}
-\newcommand{\oobCtMaxBlakeParams}  {\texttt{CT\_MAX\_BLAKE2F\_PARAMS}}
+\newcommand{\oobCtMaxEcrecover}        {\ctMaxConst{ecrecover}}
+\newcommand{\oobCtMaxShaTwo}           {\ctMaxConst{sha2-256}}
+\newcommand{\oobCtMaxRipemd}           {\ctMaxConst{ripemd-160}}
+\newcommand{\oobCtMaxIdentity}         {\ctMaxConst{identity}}
+\newcommand{\oobCtMaxEcadd}            {\ctMaxConst{ecadd}}
+\newcommand{\oobCtMaxEcmul}            {\ctMaxConst{ecmul}}
+\newcommand{\oobCtMaxEcpairing}        {\ctMaxConst{ecpairing}}
+\newcommand{\oobCtMaxBlakeCds}         {\ctMaxConst{blake2f\_cds}}
+\newcommand{\oobCtMaxBlakeParams}      {\ctMaxConst{blake2f\_params}}
+\newcommand{\oobCtMaxPointEvaluation}  {\ctMaxConst{point\_evaluation}}
 
-\newcommand{\oobCtMaxModexpCds             }   {\texttt{CT\_MAX\_MODEXP\_CDS}}
-\newcommand{\oobCtMaxModexpXbs             }   {\texttt{CT\_MAX\_MODEXP\_XBS}}
-\newcommand{\oobCtMaxModexpLead            }   {\texttt{CT\_MAX\_MODEXP\_LEAD}}
-\newcommand{\oobCtMaxModexpPricing         }   {\texttt{CT\_MAX\_MODEXP\_PRICING}}
-\newcommand{\oobCtMaxModexpExtract         }   {\texttt{CT\_MAX\_MODEXP\_EXTRACT}}
+\newcommand{\oobCtMaxModexpCds             }   {\ctMaxConst{modexp\_cds}}
+\newcommand{\oobCtMaxModexpXbs             }   {\ctMaxConst{modexp\_xbs}}
+\newcommand{\oobCtMaxModexpLead            }   {\ctMaxConst{modexp\_lead}}
+\newcommand{\oobCtMaxModexpPricing         }   {\ctMaxConst{modexp\_pricing}}
+\newcommand{\oobCtMaxModexpExtract         }   {\ctMaxConst{modexp\_extract}}
+
+\newcommand{\oobCtMaxBlsGOneAdd           }   {\ctMaxConst{bls\_g1add}}
+\newcommand{\oobCtMaxBlsGOneMsm           }   {\ctMaxConst{bls\_g1msm}}
+\newcommand{\oobCtMaxBlsGTwoAdd           }   {\ctMaxConst{bls\_g2add}}
+\newcommand{\oobCtMaxBlsGTwoMsm           }   {\ctMaxConst{bls\_g2msm}}
+\newcommand{\oobCtMaxBlsPairingCheck      }   {\ctMaxConst{bls\_pairing\_check}}
+\newcommand{\oobCtMaxBlsMapFpToGOne       }   {\ctMaxConst{bls\_map\_fp\_to\_g1}}
+\newcommand{\oobCtMaxBlsMapFpTwoToGTwo    }   {\ctMaxConst{bls\_map\_fp2\_to\_g2}}
+
+\newcommand{\prcPointEvaluationSize       }   {\numConst{prc\_point\_evaluation\_size}}
+\newcommand{\prcBlsGOneAddSize            }   {\numConst{prc\_bls\_g1add\_size}}
+\newcommand{\prcBlsGOneMsmSize            }   {\numConst{prc\_bls\_g1msm\_size\_min}}
+\newcommand{\prcBlsGTwoAddSize            }   {\numConst{prc\_bls\_g2add\_size}}
+\newcommand{\prcBlsGTwoMsmSize            }   {\numConst{prc\_bls\_g2msm\_size\_min}}
+\newcommand{\prcBlsPairingCheckSize       }   {\numConst{prc\_bls\_pairing\_check\_size\_min}}
+\newcommand{\prcBlsMapFpToGOneSize        }   {\numConst{prc\_bls\_map\_fp\_to\_g1\_size}}
+\newcommand{\prcBlsMapFpTwoToGTwoSize     }   {\numConst{prc\_bls\_map\_fp2\_to\_g2\_size}}
+
+\newcommand{\gasConstPointEvaluation         }   {\numConst{gas\_const\_point\_evaluation}}
+\newcommand{\gasConstBlsGOneAdd              }   {\numConst{gas\_const\_bls\_g1add}}
+%\newcommand{\gasConstBlsGOneMsm             }   {\numConst{gas\_const\_bls\_g1msm}}
+\newcommand{\gasConstBlsGTwoAdd              }   {\numConst{gas\_const\_bls\_g2add}}
+%\newcommand{\gasConstBlsGTwoMsm             }   {\numConst{gas\_const\_bls\_g2msm}}
+\newcommand{\gasConstBlsPairingCheck         }   {\numConst{gas\_const\_bls\_pairing\_check}}
+\newcommand{\gasConstBlsPairingCheckPair     }   {\numConst{gas\_const\_bls\_pairing\_check\_pair}}
+\newcommand{\gasConstBlsMapFpToGOne          }   {\numConst{gas\_const\_bls\_map\_fp\_to\_g1}}
+\newcommand{\gasConstBlsMapFpTwoToGTwo       }   {\numConst{gas\_const\_bls\_map\_fp2\_to\_g2}}
+\newcommand{\prcBlsGOneMsmMaxDiscount        }   {\numConst{prc\_bls\_g1msm\_max\_discount}}
+\newcommand{\prcBlsGTwoMsmMaxDiscount        }   {\numConst{prc\_bls\_g2msm\_max\_discount}}
+\newcommand{\prcBlsMultiplicationMultiplier  }   {\numConst{prc\_bls\_multiplication\_multiplier}}
+\newcommand{\prcBlsGOneMsmMultiplicationCost }   {\numConst{prc\_bls\_g1msm\_multiplication\_cost}}
+\newcommand{\prcBlsGTwoMsmMultiplicationCost }   {\numConst{prc\_bls\_g2msm\_multiplication\_cost}}

@@ -7,6 +7,16 @@
 \define@cmdkey [WCP] {var} {argOneLo}  {}
 \define@cmdkey [WCP] {var} {argTwoHi}  {}
 \define@cmdkey [WCP] {var} {argTwoLo}  {}
+
+\define@cmdkey [WCP] {var} {argOneThree}  {}
+\define@cmdkey [WCP] {var} {argOneTwo}    {}
+\define@cmdkey [WCP] {var} {argOneOne}    {}
+\define@cmdkey [WCP] {var} {argOneZero}   {}
+\define@cmdkey [WCP] {var} {argTwoThree}  {}
+\define@cmdkey [WCP] {var} {argTwoTwo}    {}
+\define@cmdkey [WCP] {var} {argTwoOne}    {}
+\define@cmdkey [WCP] {var} {argTwoZero}   {}
+
 % the above defines macros à la "\cmdWCP@var@anchorRow"
 
 % DEFAULT VALUES
@@ -17,6 +27,14 @@
 	argOneLo  = \missingParameter,
 	argTwoHi  = \missingParameter,
 	argTwoLo  = \missingParameter,
+	argOneThree = \missingParameter,
+	argOneTwo   = \missingParameter,
+	argOneOne   = \missingParameter,
+	argOneZero  = \missingParameter,
+	argTwoThree = \missingParameter,
+	argTwoTwo   = \missingParameter,
+	argTwoOne   = \missingParameter,
+	argTwoZero  = \missingParameter,
 }{}
 
 % "call to LEQ" macro
@@ -61,6 +79,23 @@
 		\end{array} \right]
 }
 
+\newcommand{\wcpGeneralizedCallToLtName} {\texttt{wcpGeneralizedCallToLT}}
+\newcommand{\wcpGeneralizedCallToLt} [1] {
+	\setkeys[WCP]{var}{#1}
+	\wcpGeneralizedCallToLtName _{\cmdWCP@var@anchorRow}
+	\left[ \begin{array}{ll}
+			\utt{Rel. row offset:}  & \cmdWCP@var@relOffset    \\
+			\utt{First argument 3:} & \cmdWCP@var@argOneThree  \\
+			\utt{First argument 2:} & \cmdWCP@var@argOneTwo    \\
+			\utt{First argument 1:} & \cmdWCP@var@argOneOne    \\
+			\utt{First argument 0:} & \cmdWCP@var@argOneZero   \\
+			\utt{Second argument 3:} & \cmdWCP@var@argTwoThree  \\
+			\utt{Second argument 2:} & \cmdWCP@var@argTwoTwo    \\
+			\utt{Second argument 1:} & \cmdWCP@var@argTwoOne    \\
+			\utt{Second argument 0:} & \cmdWCP@var@argTwoZero   \\
+		\end{array} \right]
+}
+
 % "call to GT" macro
 \newcommand{\wcpCallToGtName} {\texttt{wcpCallToGT}}
 \newcommand{\wcpCallToGt} [1] {
@@ -101,6 +136,19 @@
 		\end{array} \right]
 }
 
+\newcommand{\wcpGeneralizedCallToIszeroName} {\texttt{wcpGeneralizedCallToISZERO}}
+\newcommand{\wcpGeneralizedCallToIszero} [1] {
+	\setkeys[WCP]{var}{#1}
+	\wcpGeneralizedCallToIszeroName _{\cmdWCP@var@anchorRow}
+	\left[ \begin{array}{ll}
+			\utt{Rel. row offset:}  & \cmdWCP@var@relOffset    \\
+			\utt{First argument 3:} & \cmdWCP@var@argOneThree  \\
+			\utt{First argument 2:} & \cmdWCP@var@argOneTwo    \\
+			\utt{First argument 1:} & \cmdWCP@var@argOneOne    \\
+			\utt{First argument 0:} & \cmdWCP@var@argOneZero   \\
+		\end{array} \right]
+}
+
 \newcommand{\resultMustBeFalseName}   {\texttt{resultMustBeFalse}}
 \newcommand{\resultMustBeFalse}  [1]  {
 	\setkeys[WCP]{var}{#1}
@@ -112,5 +160,39 @@
 	\setkeys[WCP]{var}{#1}
 	\resultMustBeTrueName _{\cmdWCP@var@anchorRow}
 	\big[ \, \cmdWCP@var@relOffset \, \big]}
+
+
+\newcommand{\smallCallToLtName}     {\texttt{smallCallToLT}}
+\newcommand{\smallCallToLeqName}    {\texttt{smallCallToLEQ}}
+\newcommand{\smallCallToIszeroName} {\texttt{smallCallToISZERO}}
+
+\newcommand{\smallCallToLt}  [1]  {
+	\setkeys[WCP]{var}{#1}
+        \smallCallToLtName _{\cmdWCP@var@anchorRow}
+        \left[ \begin{array}{ll}
+                \utt{Row offset:} & \cmdWCP@var@relOffset \\
+                \utt{Argument 1:} & \cmdWCP@var@argOneLo  \\
+                \utt{Argument 2:} & \cmdWCP@var@argTwoLo  \\
+        \end{array} \right]
+}
+
+\newcommand{\smallCallToLeq}  [1]  {
+	\setkeys[WCP]{var}{#1}
+        \smallCallToLeqName _{\cmdWCP@var@anchorRow}
+        \left[ \begin{array}{ll}
+                \utt{Row offset:} & \cmdWCP@var@relOffset \\
+                \utt{Argument 1:} & \cmdWCP@var@argOneLo  \\
+                \utt{Argument 2:} & \cmdWCP@var@argTwoLo  \\
+        \end{array} \right]
+}
+
+\newcommand{\smallCallToIszero}  [1]  {
+	\setkeys[WCP]{var}{#1}
+        \smallCallToIszeroName _{\cmdWCP@var@anchorRow}
+        \left[ \begin{array}{ll}
+                \utt{Row offset:} & \cmdWCP@var@relOffset \\
+                \utt{Argument 1:} & \cmdWCP@var@argOneLo  \\
+        \end{array} \right]
+}
 
 \makeatother

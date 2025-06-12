@@ -4,14 +4,15 @@ The \zkEvm{} follows a modular archicture. Modules are given short acronyms / id
 		this module receives the raw \textsc{rlp}-encoded transactions;
 		its purpose is to re-construct said \textsc{rlp} using the fields of a transaction used by the \zkEvm{} (as well as the signature of the transaction);
 		it further constructs the \textsc{rlp} encoding of the transaction stripped of its signature;
-		this string (along with the transaction signature) provides the input for the \texttt{KEC} constraint system and \texttt{ECRECOVER}y which vet said transaction;
+		this string (along with the transaction signature) provides the input for the \texttt{KEC} constraint system and \instEcrecover{} which vet said transaction;
 		see chapter~\ref{chap: txn rlp};
 		%%%
-	\item $\txnDataMod{}$:
+	\item $\userTxnDataMod{}$:
 		this module corrals the (\textsc{evm}-relevant) transaction data contained in the transaction \textsc{rlp};
 		it provides that data in an easily accessible and exportable format;
-		see chapter~\ref{chap: txn data};
-		\saNote{} the \btcMod{} module is used to off-load computations performed on transaction data (such as determining the \inst{GASPRICE} of \textsc{eip1559} transactions); see chapter~\ref{chap: txn comp}.
+		see chapter~\ref{chap: user txn data};
+		\saNote{} the \btcMod{} module is used to off-load computations performed on transaction data (such as determining the \inst{GASPRICE} of \cite{EIP-1559} transactions);
+		see chapter~\ref{chap: txn comp}.
 		%%%
 	\item $\btcMod{}$:
 		this module corrals some (\textsc{evm}-relevant) block data (such as \inst{COINBASE}, \inst{TIMESTAMP}, \dots);
@@ -92,20 +93,30 @@ The \zkEvm{} follows a modular archicture. Modules are given short acronyms / id
 The following are a few very small modules that either perform a very specific task or are used for reference for the prover
 \begin{enumerate}[resume]
 	\item $\shakiraMod$:
-		recipient of data extracted from \textsc{ram} and provided to the \texttt{KECCAK}, \texttt{SHA2-256} and the \texttt{RIPEMD-160} circuits;
+		recipient of data extracted from \textsc{ram} and provided to the
+		\inst{KECCAK},
+		\instShaTwo{} and the
+		\instRipemd{} circuits;
 		also contains the output of said hash functions;
 	\item $\ecDataMod$:
-		recipient of data extracted from \textsc{ram} and provided to specialized circuits computing elliptic curve precompiles (e.g. \texttt{ECRECOVER}, \texttt{ECADD}, \texttt{ECMUL}, \texttt{ECPAIRING})
+		recipient of data extracted from \textsc{ram} and provided to specialized circuits computing elliptic curve precompiles
+		(e.g.
+		\instEcrecover{},
+		\instEcadd{},
+		\instEcmul{},
+		\instEcpairing{})
 		also contains the output of said elliptic curve precompiles;
 	\item $\blkMdxMod$:
-		recipient of data extracted from \textsc{ram} and provided to the \texttt{MODEXP} and the \texttt{BLAKE2f} circuits;
+		recipient of data extracted from \textsc{ram} and provided to the
+		\instModexp{} and the
+		\instBlake{} circuits;
 		also contains the output of said precompiles;
 	\item $\logMod{}$:
 		same idea for logs;
 		the information module extracts the log parameter ($\in\{09,1,2,3,4\}$), logger address and size in bytes;
 		the second module serves as a data store for the log message;
 	\item $\expMod{}$:
-		computes the dynamic gas cost of the \inst{EXP} instruction and a portion of the cost of \inst{MODEXP};
+		computes the dynamic gas cost of the \inst{EXP} instruction and a portion of the cost of \instModexp{};
 		see chapter~\ref{chap: exp};
 
 		\saNote{} Despite its name the \expMod{} module \emph{actually computes logarithms}, either in base $256$ or in base $2$;
