@@ -1,80 +1,82 @@
 \begin{center}
-\boxed{\text{In all this section, it is assumed that $\phaseBeta_{i}=1$.}}
+    \boxed{\text{In all this section, it is assumed that $\phaseBeta_{i}=1$.}}
 \end{center}
 
 We first compute $\mathtt{RLP}(w)$ which is in $\widetilde{L}_{\mathrm{T}}(T)$ only:
 
 \begin{enumerate}
     \item \If $\isTxn_{i-1} =1$ \Then:
-    \begin{enumerate}
-    	\item $\lt_{i} =1$
-    	\item $\lx_{i} =0$
-        \item $\inputColumn{1}_{i} = 0$
-        \item
-            \rlpInteger_{i}
-            \left(
-            \begin{array}{r}
-            \inputColumn{1},
-            \inputColumn{2},
-            \ct,
-            \maxCt; \\
-            \rlpUtilsFlag,
-            \INST,
-            \item \resultColumn{1},
-            \item \resultColumn{2},
-            \item \resultColumn{3},
-            \item \resultColumn{4},
-            \item \resultColumn{5}; \\
-            \limb,
-            \lc,
-            \limbsize; \\
-            \end{array}
-            \right)
-            \]
-        \item \If $\inputColumn{2}_{i} = \unprotectedV $ \Or $\inputColumn{2}_{i} = \unprotectedVPO$ 
-        \item \If $\inputColumn{2}_{i} \neq \unprotectedV$ \et $\inputColumn{2}_{i} \neq \unprotectedVPO$ \Then:
         \begin{enumerate}
-		    \item $\phasend_{i+\rlpIntegerInstCtMax}=0$
-		    \item $\inputColumn{2}_{i} = 2 \cdot\inputColumn{2}_{i+\rlpIntegerInstNbRows} + \protectedBaseV$ \Or $\inputColumn{2}_{i} = 2 \cdot \inputColumn{2}_{i+\rlpIntegerInstNbRows} + \protectedBaseVPO$ 
-		\end{enumerate}
-    \end{enumerate}
+            \item $\lt_{i} =1$
+            \item $\lx_{i} =0$
+            \item $\inputColumn{1}_{i} = 0$
+            \item
+                \[
+                    \rlpInteger_{i}
+                    \left(
+                    \begin{array}{r}
+                        \inputColumn{1},
+                        \inputColumn{2},
+                        \ct,
+                        \maxCt; \\
+                        \rlpUtilsFlag,
+                        \INST,
+                        \resultColumn{1},
+                        \resultColumn{2},
+                        \resultColumn{3},
+                        \resultColumn{4},
+                        \resultColumn{5}; \\
+                        \limb,
+                        \lc,
+                        \limbsize; \\
+                    \end{array}
+                    \right)
+                \]
+            \item \If $\inputColumn{2}_{i} = \unprotectedV $ \Or $\inputColumn{2}_{i} = \unprotectedVPO$ 
+            \item \If $\inputColumn{2}_{i} \neq \unprotectedV$ \et $\inputColumn{2}_{i} \neq \unprotectedVPO$ \Then:
+                \begin{enumerate}
+                    \item $\phasend_{i+\rlpIntegerInstCtMax}=0$
+                    \item $\inputColumn{2}_{i} = 2 \cdot\inputColumn{2}_{i+\rlpIntegerInstNbRows} + \protectedBaseV$ \Or $\inputColumn{2}_{i} = 2 \cdot \inputColumn{2}_{i+\rlpIntegerInstNbRows} + \protectedBaseVPO$ 
+                \end{enumerate}
+        \end{enumerate}
 \end{enumerate}
 
 
 We now compute the postfix of $\widetilde{L}_{\mathrm{X}}(T)$ which is $\mathtt{RLP}(\beta) \cdot \mathtt{RLP}(\varnothing) \cdot \mathtt{RLP}(\varnothing)$  when $\beta = ChainId$ is specified (equivalently $w \notin \{\unprotectedV , \unprotectedVPO \}$.)
 \begin{enumerate}[resume]
     \item $\isTxn_{i-(1+\rlpIntegerInstNbRows)} =1$ \et $\phaseBeta_{i-(1+\rlpIntegerInstNbRows)}=1$ \Then:
-	\begin{enumerate}
-		\item $\lt_{i} =0$
-    	\item $\lx_{i} =1$
-   		\item $\inputColumn{1}_{i} = 0$
-	    \item
-            \rlpInteger_{i}
-            \left(
-            \begin{array}{r}
-            \inputColumn{1},
-            \inputColumn{2},
-            \ct,
-            \maxCt; \\
-            \rlpUtilsFlag,
-            \INST,
-            \item \resultColumn{1},
-            \item \resultColumn{2},
-            \item \resultColumn{3},
-            \item \resultColumn{4},
-            \item \resultColumn{5}; \\
-            \limb,
-            \lc,
-            \limbsize; \\
-            \end{array}
-            \right)
-            \]
-		    \item $\phasend  _{i + \rlpIntegerInstCtMax } = 0$
-		    \item $\lt       _{i + \rlpIntegerInstNbRows} = 0$
-    		\item $\lx       _{i + \rlpIntegerInstNbRows} = 1$
-		    \item $\limb     _{i + \rlpIntegerInstNbRows} = \rlprefixShortInt \cdot 256^{15} + \rlprefixShortInt \cdot 256^{14}$
-		    \item $\limbsize _{i + \rlpIntegerInstNbRows} = 2$ 
-		    \item $\phasend  _{i + \rlpIntegerInstNbRows} = 1$ 
-		\end{enumerate}
-	\end{enumerate}
+        \begin{enumerate}
+            \item $\lt_{i} =0$
+            \item $\lx_{i} =1$
+            \item $\inputColumn{1}_{i} = 0$
+            \item
+                \[
+                    \rlpInteger_{i}
+                    \left(
+                    \begin{array}{r}
+                        \inputColumn{1},
+                        \inputColumn{2},
+                        \ct,
+                        \maxCt; \\
+                        \rlpUtilsFlag,
+                        \INST,
+                        \resultColumn{1},
+                        \resultColumn{2},
+                        \resultColumn{3},
+                        \resultColumn{4},
+                        \resultColumn{5}; \\
+                        \limb,
+                        \lc,
+                        \limbsize; \\
+                    \end{array}
+                    \right)
+                \]
+            \item $\phasend  _{i + \rlpIntegerInstCtMax } = 0$
+            \item $\lt       _{i + \rlpIntegerInstNbRows} = 0$
+            \item $\lx       _{i + \rlpIntegerInstNbRows} = 1$
+            \item $\limb     _{i + \rlpIntegerInstNbRows} = \rlprefixShortInt \cdot 256^{15} + \rlprefixShortInt \cdot 256^{14}$
+            \item $\limbsize _{i + \rlpIntegerInstNbRows} = 2$ 
+            \item $\phasend  _{i + \rlpIntegerInstNbRows} = 1$ 
+        \end{enumerate}
+\end{enumerate}
 \end{enumerate}
