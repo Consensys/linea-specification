@@ -1,5 +1,9 @@
 # Notes
 
+## columns
+
+- make the number of columns named constants for input/result/tmp
+
 ## Beta phase
 
 - when the transaction provides a CHAIN_ID we must compare it to the one in the BTC module
@@ -15,3 +19,6 @@
     - rlp/NUMBER_OF_NONZERO_BYTES
     and no longer the DATA_COST / DATA_SIZE
 
+## LOG_INFO / LOG_DATA / RLP_TXNRCPT
+
+Separate issue, see [issue 188](https://github.com/Consensys/linea-specification/issues/188)
