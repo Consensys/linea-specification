@@ -1,0 +1,69 @@
+The \rlpUtilsMod{} module 
+\begin{description}
+	\item[\inst{INTEGER}:]
+		takes as inputs the high and low parts \loc{integer\_hi} and \loc{integer\_lo} of an integer \loc{integer}
+		and returns
+		\begin{itemize}
+			\item
+				a bit $\loc{has\_rlp\_prefix?}$ which is \texttt{true} if and only if the \rlp{}-ization of the underlying integer produces a byte as a prefix;
+				thus $\loc{has\_rlp\_prefix?} = 1 \iff$ the underlying integer is $\loc{integer} > 128$ or $\loc{integer} = 0$;
+			\item
+				a small (up to 3 bytes) integer \loc{rlp\_prefix};
+				the associated \rlp{}-prefix (in case $\loc{has\_rlp\_prefix?} = 1$);
+			\item
+				a bit $\loc{has\_nonzero\_hi\_part}$ equivalent to $[\loc{integer\_hi} \neq 0]$;
+			\item
+				a left aligned (on the $\llarge$-th byte) $\llarge$-byte integer which is equal to either
+				the left shift of $\loc{integer\_hi}$ in case $\loc{has\_nonzero\_hi\_part} \equiv \texttt{true}$ or
+				the left shift of $\loc{integer\_lo}$ in case $\loc{has\_nonzero\_hi\_part} \equiv \texttt{false}$;
+			\item 
+				an integer \loc{n\_bytes} in the range $[1..\llarge]$;
+				the number of significant bytes of either the high part or low part depending on $\loc{has\_nonzero\_hi\_part}$;
+		\end{itemize}
+	\item[\inst{BYTESTRING}:]
+		takes as input
+		\begin{itemize}
+		        \item
+				an $\llarge$-byte integer \loc{byte\_string\_length}; in practice, an \texttt{uint32};
+				representing the size in bytes of an underlying byte string;
+		        \item
+				a \texttt{byte} \loc{first\_byte};
+				the first byte of said byte string;
+		        \item
+				a bit \loc{is\_list?}
+				with the obvious interpretation;
+		\end{itemize}
+		and produces the following outputs
+		\begin{itemize}
+			\item
+				a bit \loc{has\_rlp\_prefix};
+				the interpretation is the sam as previously;
+		        \item
+				a small (up to 3 bytes) integer \loc{rlp\_prefix};
+				the interpretation is the sam as previously;
+		        \item
+				a bit \loc{is\_nonempty};
+				equivalent to $[\loc{byte\_string\_length} \neq 0]$;
+		        \item
+				an integer \loc{n\_bytes} in the range $[1..\llarge]$;
+				represents the number of bytes in the \rlp{} prefix;
+		\end{itemize}
+	\item[\inst{BYTES32}:]
+		checks that a pair \loc{data\_hi}, \loc{data\_lo} is well-formed in the sense that both fit into $\llarge{}$-byte integers;
+	\item[\inst{DATA\_PRICING}:]
+		takes as inputs
+		\begin{itemize}
+			\item a limb \loc{limb}
+			\item an integer \loc{nBytes} representing the number of significant bytes in that limb \loc{nBytes};
+		\end{itemize}
+		it returns a pair of small integers
+		\begin{itemize}
+			\item \loc{num\_zero\_bytes}
+			\item \loc{num\_nonzero\_bytes}
+		\end{itemize}
+		representing respectively the number of zero and nonzero bytes in the relevant bytes of the limb;
+\end{description}
+
+
+
+
