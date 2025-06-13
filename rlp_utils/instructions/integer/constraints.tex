@@ -4,8 +4,8 @@
 We use the following shorthands:
 \[
     \left\{ \begin{array}{lcl}
-        \integerHi & \define & \inputColumn {1} _{i} \\
-        \integerLo & \define & \inputColumn {2} _{i} \\
+        \locInputIntegerHi & \define & \inputColumn {1} _{i} \\
+        \locInputIntegerLo & \define & \inputColumn {2} _{i} \\
     \end{array} \right.
     \quad\text{and}\quad
     \left\{ \begin{array}{lcl}
@@ -23,8 +23,8 @@ We use the following shorthands:
             \wcpCallToIszero {
                 anchorRow = i                     ,
                 relOffset = \rowOffsetIntegerZero ,
-                argOneHi  = \integerHi            ,
-                argOneLo  = \integerLo            ,
+                argOneHi  = \locInputIntegerHi            ,
+                argOneLo  = \locInputIntegerLo            ,
             }
         \]
         and we derive the following shorthand
@@ -47,7 +47,7 @@ We use the following shorthands:
         This finishes the computation phase for this particular subcase.
     \item[\underline{\underline{The ``nonzero'' case:}}]
         \If $\locIntIsZero = 0$ \Then we impose that
-        \begin{description}       
+        \begin{description}
             \item[\underline{Setting \maxCt:}]
                 we impose $\maxCt_{i + 1} = \integerCtMax$.
             \item[\underline{Processing row $n^\circ(\rowOffsetHighZero)$:} \underline{Detecting null high part:}]
@@ -57,7 +57,7 @@ We use the following shorthands:
                         anchorRow = i                  ,
                         relOffset = \rowOffsetHighZero ,
                         argOneHi  = 0                  ,
-                        argOneLo  = \integerHi         ,
+                        argOneLo  = \locInputIntegerHi      ,
                         argTwoLo  = 0                  ,
                     }
                 \]
@@ -75,7 +75,7 @@ We use the following shorthands:
                         anchorRow = i                  ,
                         relOffset = \rowOffsetSmallInt ,
                         argOneHi  = 0                  ,
-                        argOneLo  = \integerLo         ,
+                        argOneLo  = \locInputIntegerLo      ,
                         argTwoLo  = \oneTwoEight       ,
                     }
                 \]
@@ -84,7 +84,7 @@ We use the following shorthands:
                     \left\{ \begin{array}{lcl}
                         \locSmallInt     & \define & (1 - \locBigInt) \cdot \res_{i + \rowOffsetSmallInt} \\
                         \locNBytesLoPart & \define & 1 + \wcpCtMax _{i + \rowOffsetSmallInt}              \\
-                        \locTotalSize & \define & 
+                        \locTotalSize & \define &
                         \left[ \begin{array}{crcl}
                             + & \locBigInt       & \cdot & (\llarge + \locNBytesHiPart) \\
                             + & (1 - \locBigInt) & \cdot & \locNBytesLoPart             \\
@@ -102,20 +102,20 @@ We use the following shorthands:
                     \left\{ \begin{array}{lcl}
                         \shfFlag          _{i + \rowOffsetSmallInt} & = & 1                                 \\
                         \shfArg           _{i + \rowOffsetSmallInt} & = & \llarge - \locNBytes              \\
-                        \locOutHasRlpPrefix                            & = & 1 - \locSmallInt                  \\
-                        \locOutRlpPrefix                               & = & \rlprefixShortInt + \locTotalSize \\
-                        \locOutHasNonzeroHiPart                        & = & \locBigInt                        \\
-                        \locOutLeftShiftedInput                        & = & \locPaddedLimb                    \\
-                        \locOutNBytes                                  & = & \locNBytes                        \\
+                        \locOutHasRlpPrefix                         & = & 1 - \locSmallInt                  \\
+                        \locOutRlpPrefix                            & = & \rlprefixShortInt + \locTotalSize \\
+                        \locOutHasNonzeroHiPart                     & = & \locBigInt                        \\
+                        \locOutLeftShiftedInput                     & = & \locPaddedLimb                    \\
+                        \locOutNBytes                               & = & \locNBytes                        \\
                     \end{array} \right.
                 \]
                 where we used the following shorthand
                 \[
                         \locPaddedLimb \define \shfPower _{i + \rowOffsetSmallInt} \cdot
                         \left[ \begin{array}{clcl}
-                            + & \locBigInt       & \cdot & \integerHi \\
-                            + & (1 - \locBigInt) & \cdot & \integerLo \\
+                            + & \locBigInt       & \cdot & \locInputIntegerHi \\
+                            + & (1 - \locBigInt) & \cdot & \locInputIntegerLo \\
                         \end{array} \right]
                 \]
         \end{description}
-\end{description} 
+\end{description}
