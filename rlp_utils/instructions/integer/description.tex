@@ -1,0 +1,25 @@
+\begin{description}
+    \item[\rlpUtilsInstInteger{}:]
+        takes as inputs the high and low parts
+        \locInputIntegerHi{} and
+        \locInputIntegerLo{}
+        of an integer \locInputInteger{};
+        it returns
+        \begin{itemize}
+            \item
+                a bit $\locOutHasRlpPrefix$ which is \texttt{true} if and only if the \rlp{}-ization of the underlying integer produces a byte as a prefix;
+                thus $\locOutHasRlpPrefix$ must be logically equivalent to $[\locInputInteger > 128] \, \vee \, [\locInputInteger = 0]$;
+            \item
+                a small (up to 3 bytes) integer $\locOutRlpPrefix$;
+                if $\locOutHasRlpPrefix = 1$ this contains the associated \rlp{}-prefix;
+            \item
+                a bit $\locOutHasNonzeroHiPart$ which is logically equivalent to $[\locInputIntegerHi \neq 0]$;
+            \item
+                a left aligned (on the $\llarge$-th byte) $\llarge$-byte integer which is equal to either
+                the left shift of $\locInputIntegerHi$ in case $\locOutHasNonzeroHiPart \equiv \texttt{true}$ or
+                the left shift of $\locInputIntegerLo$ in case $\locOutHasNonzeroHiPart \equiv \texttt{false}$;
+            \item
+                an integer $\locOutNBytes$ in the range $[1..\llarge]$;
+                the number of significant bytes of either the high part or low part depending on $\locOutHasNonzeroHiPart$;
+        \end{itemize}
+\end{description}
