@@ -8,16 +8,54 @@ We introduce some numerical constants and constraints.
 		\miscStpWeight & \define & 2^{4} \\
 	\end{array} \right.
 \]
-and we define the following shorthand (which assumes that $i$ is the row-index of a miscellaneous-row)
+and we define the following shorthand (which assumes that $i + \relof$ is the row-index of a miscellaneous-row)
 \[
-	\weightedMiscFlagSum
-	{i}{\relof}
+	\weightedMiscFlagSum {
+		anchorRow = i      ,
+		relOffset = \relof ,
+	}
 	\define
-	\left[ \begin{array}{lcl}
-		\miscExpWeight & \cdot & \miscExpFlag _{i + \relof} \\
-		\miscMmuWeight & \cdot & \miscMmuFlag _{i + \relof} \\
-		\miscMxpWeight & \cdot & \miscMxpFlag _{i + \relof} \\
-		\miscOobWeight & \cdot & \miscOobFlag _{i + \relof} \\
-		\miscStpWeight & \cdot & \miscStpFlag _{i + \relof} \\
+	\left[ \begin{array}{clcl}
+		+ & \miscExpWeight & \cdot & \miscExpFlag _{i + \relof} \\
+		+ & \miscMmuWeight & \cdot & \miscMmuFlag _{i + \relof} \\
+		+ & \miscMxpWeight & \cdot & \miscMxpFlag _{i + \relof} \\
+		+ & \miscOobWeight & \cdot & \miscOobFlag _{i + \relof} \\
+		+ & \miscStpWeight & \cdot & \miscStpFlag _{i + \relof} \\
 	\end{array} \right]
 \]
+\saNote{}
+We will frequently encounter the scenario where all ``miscellaneous flags''
+are known and expressible as \textbf{provably binary} local expressions.
+Constraining the value of the
+$\weightedMiscFlagSum {
+	anchorRow = i      ,
+	relOffset = \relof ,
+}$
+subsumes all ``miscellaneous flags assignment constraints'' into one.
+
+We also introduce the following shorthand (with similar assumptions)
+\[
+	\weightedMiscFlagSumSansMmu {
+		anchorRow = i      ,
+		relOffset = \relof ,
+	}
+	\define
+	\left[ \begin{array}{clcl}
+		+   & \miscExpWeight & \cdot & \miscExpFlag _{i + \relof} \\
+		% + & \miscMmuWeight & \cdot & \miscMmuFlag _{i + \relof} \\
+		+   & \miscMxpWeight & \cdot & \miscMxpFlag _{i + \relof} \\
+		+   & \miscOobWeight & \cdot & \miscOobFlag _{i + \relof} \\
+		+   & \miscStpWeight & \cdot & \miscStpFlag _{i + \relof} \\
+	\end{array} \right]
+\]
+\saNote{}
+At times all ``miscellaneous flags'' except for that of the \mmuMod{}
+are known and expressible as \textbf{provably binary} local expressions.
+Constraining the value of the
+$\weightedMiscFlagSumSansMmu {
+	anchorRow = i      ,
+	relOffset = \relof ,
+}$
+subsumes all ``miscellaneous flags assignment constraints'' into one,
+save of course that of the \miscMmuFlag{} flag which
+\textbf{must be dealt with in a separate assignment constraint}.

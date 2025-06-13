@@ -97,26 +97,29 @@ We impose the following constraints:
 	\item[\underline{Setting miscellaneous module flags:}]
 		\If $\stackStaticx_{i} = 0$ \Then
 		\[
-			\weightedMiscFlagSum {i}{\locLogMiscRowOffset}
-			=
-			\left[ \begin{array}{crcl}
-				+ & \miscMmuWeight & \cdot & \locTriggerMmu \\
-				+ & \miscMxpWeight \\
-			\end{array} \right]
+			\left\{ \begin{array}{lclr}
+				\weightedMiscFlagSumSansMmu {
+					anchorRow = i                    ,
+					relOffset = \locLogMiscRowOffset ,
+				}
+                                                                         & = & \miscMxpWeight \vspace{2mm}         \\
+				\miscMmuFlag _{i + \locLogMiscRowOffset} & = & \undefinedStar \quad \locTriggerMmu \\
+			\end{array} \right.
+			% OK
 		\]
-		In other words we impose
+		in other words
 		\[
 			\left\{ \begin{array}{lclr}
-				\miscExpFlag_{i + \locLogMiscRowOffset}          & = & \gZero         & (\trash) \\
-				\miscMmuFlag_{i + \locLogMiscRowOffset}          & = & \locTriggerMmu & (\trash) \\
-				\miscMxpFlag_{i + \locLogMiscRowOffset}          & = & \rOne          & (\trash) \\
-				\miscOobFlag_{i + \locLogMiscRowOffset}          & = & \gZero         & (\trash) \\
-				\miscStpFlag_{i + \locLogMiscRowOffset}          & = & \gZero         & (\trash) \\
+				\miscExpFlag_{i + \locLogMiscRowOffset} & = & \gZero         & (\sanityCheck) \\
+				\miscMmuFlag_{i + \locLogMiscRowOffset} & = & \locTriggerMmu & (\sanityCheck) \\
+				\miscMxpFlag_{i + \locLogMiscRowOffset} & = & \rOne          & (\sanityCheck) \\
+				\miscOobFlag_{i + \locLogMiscRowOffset} & = & \gZero         & (\sanityCheck) \\
+				\miscStpFlag_{i + \locLogMiscRowOffset} & = & \gZero         & (\sanityCheck) \\
 			\end{array} \right.
 		\]
-		We further impose the contents of the lookup to the \mxpMod{} module:
-
-		\saNote{} \locTriggerMmu{} will be constrained below.
+		\saNote{}
+		\locTriggerMmu{} will be constrained below and is \textbf{provably binary}
+		conditional to the fact that the \mxpMod{} module was called.
 	\item[\underline{Miscellaneous-row $n^°(i + \locLogMiscRowOffset)$: \mxpMod{} data:}]
 		\If $\stackStaticx_{i} = 0$ \Then
 		\[
