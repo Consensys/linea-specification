@@ -1,21 +1,24 @@
 The heartbeat of the address trimming module is very simple: the \ct{} column counts from $0$ to $\maxCt$ unless $\iomf$ is zero, in which case it hovers at $0$.
 \begin{enumerate}
-    \item $\iomf_{0} = 0$
-    \item $\iomf_{i + 1} \in \{ \iomf_{i}, 1 + \iomf_{i} \}$
-    \item \If $\iomf_{i} = \isRlpUtilsMacro_{i} + \isRlpUtilsCompt_{i}$
-    \item \If $\iomf_{i} = 1$ \Then
-	\begin{enumerate}
-		\item $\isRlpUtilsMacro_{i} =1$ \Then $\maxCt_{i} = 0$
-	    \item \If $\ct_{i} \neq \maxCt_{i}$ \Then 
-	    \begin{enumerate}
-	    	\item $\ct_{i + 1} = 1 + \ct_{i}$
-	    \end{enumerate}
-	    \item \If $\ct_{i} = \maxCt_{i}$ \Then 
-	    \begin{enumerate}
-	    	\item $\ct_{i + 1} = 0$
-	    	\item \If $\isRlpUtilsMacro_{i} =1$ \Then $\isRlpUtilsCompt_{i+1} =1$
-	    	\item \If $\isRlpUtilsCompt_{i} =1$ \Then $\isRlpUtilsMacro_{i+1} =1$
-	    \end{enumerate}
-	\end{enumerate}
-    \item \If $\iomf_{N} = 1$ \Then $\ct_{i} = \maxCt_{i}$ \et $\isRlpUtilsCompt_{i} = 1$
+	\item \iomf{} is binary \quad (\sanityCheck)
+	\item $\iomf _{0} = 0$
+	\item $\iomf _{i + 1} \in \{ \iomf _{i}, 1 + \iomf _{i} \}$
+	\item $\iomf _{i} = \isRlpUtilsMacro _{i} + \isRlpUtilsCompt _{i}$
+	\item \If $\iomf _{i} = 0$ \Then $\iomf _{i + 1} = \isRlpUtilsMacro _{i + 1}$ \quad (\trash)
+	\item $\isRlpUtilsCompt _{i} = 0$ \Then
+		\[
+			\left\{ \begin{array}{lclr}
+				\maxCt _{i}      & = & 0 \\
+				\ct    _{i}      & = & 0 \\
+				\ct    _{i  + 1} & = & 0 & (\sanityCheck) \\
+			\end{array} \right.
+		\]
+	\item \If $\ct _{i} \neq \maxCt _{i}$ \Then $\ct _{i + 1} = 1 + \ct _{i}$
+	\item \If $\ct _{i} = \maxCt _{i}$ \Then 
+		\begin{enumerate}
+			\item $\ct _{i + 1} = 0$
+			\item \If $\isRlpUtilsMacro _{i} =1$ \Then $\isRlpUtilsCompt _{i + 1} = 1$
+			\item \If $\isRlpUtilsCompt _{i} =1$ \Then $\isRlpUtilsMacro _{i + 1} = 1$
+		\end{enumerate}
+	\item \If $\iomf _{N} = 1$ \Then $\ct _{i} = \maxCt _{i}$ \et $\isRlpUtilsCompt _{i} = 1$
 \end{enumerate}

@@ -1,6 +1,8 @@
-The \rlpUtilsMod{} module 
+The \rlpUtilsMod{} module centralizes recurrent computations required by \rlp{}-ization process.
+It serves bot the \rlpTxnMod{} and \rlpTxnRcptMod{} modules.
+We provide a high level description of these computations below:
 \begin{description}
-	\item[\inst{INTEGER}:]
+	\item[\rlpUtilsInstInteger:]
 		takes as inputs the high and low parts \loc{integer\_hi} and \loc{integer\_lo} of an integer \loc{integer}
 		and returns
 		\begin{itemize}
@@ -45,7 +47,7 @@ The \rlpUtilsMod{} module
 				a bit \loc{is\_nonempty};
 				equivalent to $[\loc{byte\_string\_length} \neq 0]$;
 		        \item
-				an integer \loc{n\_bytes} in the range $[1..\llarge]$;
+				an \textbf{nonzero} integer \loc{n\_bytes} in the range $[1..\llarge]$;
 				represents the number of bytes in the \rlp{} prefix;
 		\end{itemize}
 	\item[\inst{BYTES32}:]
@@ -54,7 +56,7 @@ The \rlpUtilsMod{} module
 		takes as inputs
 		\begin{itemize}
 			\item a limb \loc{limb}
-			\item an integer \loc{nBytes} representing the number of significant bytes in that limb \loc{nBytes};
+			\item an \textbf{nonzero} integer \loc{nBytes} representing the number of significant bytes in that limb \loc{nBytes};
 		\end{itemize}
 		it returns a pair of small integers
 		\begin{itemize}
@@ -63,7 +65,3 @@ The \rlpUtilsMod{} module
 		\end{itemize}
 		representing respectively the number of zero and nonzero bytes in the relevant bytes of the limb;
 \end{description}
-
-
-
-

@@ -1,20 +1,30 @@
 \[
-    \boxed{\text{All constraints in this subsection assume } \isRlpUtilsMacro_{i} = 1 \et \INST_{i} = \inst{BYTES32} }
+    \boxed{\text{All constraints in this subsection assume } \isRlpUtilsMacro_{i} = 1 \et \rlpUtilsInstBytesThirtyTwoFlag _{i} = 1 }
 \]
-
-We just have to prove than the input is a 32-bytes:
-
+We prove that the input is a $\evmWordSize$-bytes.
+The constraints are as follows:
 \begin{enumerate}
-    \item $\maxCt_{i+1} = 0$
-    \item \[
-            \wcpCallToLeq {
-                anchorRow = i +1                   ,
-                relOffset = 0                      ,
-                argOneHi  = \inputColumn{1}_{i}    ,
-                argOneLo  = \inputColumn{1}_{i}    ,
-                argTwoHi  = 256^{\llarge} -1       ,
-                argTwoLo  = 256^{\llarge} -1       ,
-            }
+    \item $\maxCt_{i + 1} = 0$
+    \item we impose
+        \[
+            \left\{ \begin{array}{l}
+                \wcpCallToGeq {
+                    anchorRow = i                    ,
+                    relOffset = 1                    ,
+                    argOneHi  = \inputColumn{1} _{i} ,
+                    argOneLo  = \inputColumn{2} _{i} ,
+                    argTwoLo  = 0                    ,
+                }
+                \vspace{2mm} \\
+                \resultMustBeTrue {
+                    anchorRow = i ,
+                    relOffset = 1 ,
+                }
+            \end{array} \right.
         \]
-    \item $\res_{i+1} =1$
 \end{enumerate}
+\saNote{}
+The above thus verifies that both 
+$\inputColumn{1}$ and
+$\inputColumn{2}$
+occupy at most $\llarge$-many bytes.
