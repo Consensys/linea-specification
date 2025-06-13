@@ -12,12 +12,6 @@
         - you can have a bit TRANSACTION_PROVIDES_CHAIN_ID which amounts to [CHAIN_ID ≠ 0] and is used to trigger a BTC lookup
     - or by sending it to TXN_DATA and letting TXN_DATA send it to BTC
 
-## Data phase
-
-- the TXN_DATA requires now
-    - rlp/NUMBER_OF_ZERO_BYTES
-    - rlp/NUMBER_OF_NONZERO_BYTES
-    and no longer the DATA_COST / DATA_SIZE
 
 ## LOG_INFO / LOG_DATA / RLP_TXNRCPT
 
