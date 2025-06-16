@@ -19,26 +19,33 @@
 \begin{document}
 \begin{verbatim}
 
-|--------------++-------------------+------------+----------++-------------+------------+-----------+--------------+------------|
-| Instruction  || Input1            | Input2     | Input3   || Output1     | Output2    | Output3   | Output4      | Output5    |
-|--------------++-------------------+------------+----------++-------------+------------+-----------+--------------+------------|
-| INTEGER      || integer_hi        | integer_lo |          || rlp_prefix? | rlp_prefix | hi_part ? | first_rlp    | nBytes     |
-|--------------++-------------------+------------+----------++-------------+------------+-----------+--------------+------------|
-| BYTESTRING   || bytestring_length | first_byte | is_list? || rlp_prefix? | rlp_prefix | data ?    |              | nBytes     |
-|--------------++-------------------+------------+----------++-------------+------------+-----------+--------------+------------|
-| DATA_PRICING || limb              | nBytes     |          ||             | #of_zeros  |           | #of_nonzeros | first_byte |
-|--------------++-------------------+------------+----------++-------------+------------+-----------+--------------+------------|
-| BYTES32      || data_hi           | data_lo    |          ||             |            |           |              |            |
-|--------------++-------------------+------------+----------++-------------+------------+-----------+--------------+------------|
+|--------------++-------------------+------------+---------++----------------+----------------------+-------------+-------------------------+------------|
+| Instruction  || Input1            | Input2     | Input3  || Output1        | Output2              | Output3     | Output4                 | Output5    |
+|--------------++-------------------+------------+---------++----------------+----------------------+-------------+-------------------------+------------|
+| INTEGER      || integer_hi        | integer_lo |         || has_rlp_prefix | rlp_prefix           | has_hi_part | first_rlp               | nBytes     |
+|--------------++-------------------+------------+---------++----------------+----------------------+-------------+-------------------------+------------|
+| BYTESTRING   || bytestring_length | first_byte | is_list || has_rlp_prefix | rlp_prefix           | is_nonempty |                         | nBytes     |
+|--------------++-------------------+------------+---------++----------------+----------------------+-------------+-------------------------+------------|
+| DATA_PRICING || limb              | nBytes     |         ||                | number_of_zero_bytes |             | number_of_nonzero_bytes | first_byte |
+|--------------++-------------------+------------+---------++----------------+----------------------+-------------+-------------------------+------------|
+| BYTES32      || data_hi           | data_lo    |         ||                |                      |             |                         |            |
+|--------------++-------------------+------------+---------++----------------+----------------------+-------------+-------------------------+------------|
 
 
+Assumptions on INPUTS:
+- is_list: must be a bit
+- first_byte: must be a byte
 
-
-NOTE:
-- is_list?
-  - is a bit
-  - it equals 1 ⇔ if the underlying bytestring (of length bytestring_length) represents a list
-
-
+Properties of successful computations:
+- for INTEGER
+  - 1 ≤ nBytes ≤ 16
+  - has_hi_part is boolean
+- for BYTESTRING
+  - 1 ≤ nBytes ≤ 3
+  - is_nonempty is a boolean
+- for DATA_PRICING
+  - 1 ≤ nBytes ≤ 16
+  - nBytes = number_of_zero_bytes + number_of_nonzero_bytes
+  - first_byte is a byte
 \end{verbatim}
 \end{document}
