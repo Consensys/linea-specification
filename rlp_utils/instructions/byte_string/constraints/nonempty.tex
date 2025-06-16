@@ -1,0 +1,130 @@
+\[
+    \boxed{\text{All constraints in this subsection assume }
+    \left\{ \begin{array}{lcl}
+        \isRlpUtilsMacro            _{i} & = & 1 \\
+        \rlpUtilsInstByteStringFlag _{i} & = & 1 \\
+        \locNonemptyByteString           & = & 1 \\
+    \end{array} \right.
+    }
+\]
+\begin{description}
+    \item[\underline{\underline{Setting \maxCt:}}]
+        we impose $\maxCt _{i + 1} = \bytestringNonEmptyCtMax$
+    \item[\underline{\underline{Processing row $n^\circ(\rowOffsetLengthIsOne)$:}} \underline{Comparing \locInputBytestringLength{} to $1$:}]
+        we impose
+        \[
+            \wcpCallToEq {
+                anchorRow = i                     ,
+                relOffset = \rowOffsetLengthIsOne ,
+                argOneHi  = 0                     ,
+                argOneLo  = \locInputBytestringLength  ,
+                argTwoLo  = 1                     ,
+                % argTwoHi  = 0                    ,
+            }
+        \]
+        and we derive the following shorthand
+        \[
+            \left\{ \begin{array}{lcl}
+                \locLengthIsOne            & \define & \res_{i + \rowOffsetLengthIsOne} \\
+                \locLengthIsGreaterThanOne & \define & 1 - \locLengthIsOne              \\
+            \end{array} \right.
+        \]
+\end{description}
+We must now distinguish between the two associated subcases.
+\begin{description}
+    \item[\underline{\underline{The \locLengthIsOne{} case:}}] ---
+
+        \If $\locLengthIsOne = 1$ \Then
+        \begin{description}
+            \item[\underline{Processing row $n^\circ(\rowOffsetCompareOneTwoEight)$:} \underline{Comparing \locInputFirstByte{} to $\rlprefixShortInt$:}]
+                we impose that
+                \[
+                    \wcpCallToLt {
+                        anchorRow = i                            ,
+                        relOffset = \rowOffsetCompareOneTwoEight ,
+                        argOneHi  = 0                            ,
+                        argOneLo  = \locInputFirstByte           ,
+                        argTwoLo  = \rlprefixShortInt            ,
+                    }
+                \]
+                and we derive the following shorthand
+                \[
+                    \locByteIsLtOneTwoEight \define \res_{i + \rowOffsetCompareOneTwoEight}
+                \]
+                \begin{enumerate}
+                    \item \If $\locByteIsLtOneTwoEight = 1$ we impose
+                        \[
+                            \left\{ \begin{array}{lcl}
+                                \locOutputHasRlpPrefix & = & 0                \\
+                                \locOutputRlpPrefix    & = & 0 \quad (\trash) \\
+                                \locOutputNBytesOfPrefix       & = & 0 \quad (\trash) \\
+                            \end{array} \right.
+                        \]
+                    \item \If $\locByteIsLtOneTwoEight = 0$ we impose
+                        \[
+                            \left\{ \begin{array}{lcl}
+                                \locOutputHasRlpPrefix & = & 1                                                   \\
+                                \locOutputRlpPrefix    & = & (\locBaseRlpPrefixShort + 1) \cdot 256 ^{\llargeMO} \\
+                                \locOutputNBytesOfPrefix       & = & 1                                                   \\
+                            \end{array} \right.
+                        \]
+                \end{enumerate}
+        \end{description}
+\end{description}
+
+\begin{description}
+    \item[\underline{\underline{The \locLengthIsGreaterThanOne{} case:}}] ---
+
+        \If $\locLengthIsGreaterThanOne = 1$ \Then
+        \begin{description}
+            \item[\underline{Processing row $n^\circ(\rowOffsetCompareFiftyFive)$:} \underline{Comparing data length to $\fiftySix$:}]
+                we impose that
+                \[
+                    \wcpCallToLt {
+                        anchorRow = i                          ,
+                        relOffset = \rowOffsetCompareFiftyFive ,
+                        argOneHi  = 0                          ,
+                        argOneLo  = \locInputBytestringLength  ,
+                        argTwoLo  = \fiftySix                  ,
+                    }
+                \]
+                and we derive the following shorthand
+                \[
+                    \left\{ \begin{array}{lcl}
+                        \locLengthLtFiftySix  & \define & \res_{i + \rowOffsetCompareFiftyFive} \\
+                    \end{array} \right.
+                \]
+                \If $\locLengthLtFiftySix = 1$ we impose
+                \[
+                    \left\{ \begin{array}{lcl}
+                        \locOutputHasRlpPrefix & = & 1                                                                               \\
+                        \locOutputRlpPrefix    & = & (\locBaseRlpPrefixShort + \locInputBytestringLength_{i}) \cdot 256 ^{\llargeMO} \\
+                        \locOutputNBytes       & = & 1                                                                               \\
+                    \end{array} \right.
+                \]
+                \If $\locLengthLtFiftySix = 0$ we derive the following shorthand
+                \[
+                    \locbytestringLengthByteSize \define (\wcpCtMax_{i + \rowOffsetCompareFiftyFive} + 1)
+                \]
+                And we impose
+                \[
+                    \left\{ \begin{array}{lcl}
+                        \shfFlag         _{i + \rowOffsetCompareFiftyFive} & = & 1                                                                                              \\
+                        \shfArg          _{i + \rowOffsetCompareFiftyFive} & = & (\llarge - 1) - \locbytestringLengthByteSize                                                   \\
+                        \locOutputHasRlpPrefix                             & = & 1                                                                                              \\
+                        \locOutputRlpPrefix                                & = & (\locBaseRlpPrefixLong + \locbytestringLengthByteSize) \cdot 256 ^{\llargeMO} + \locPaddedLimb \\
+                        \locOutputNBytes                                   & = & 1 + \locbytestringLengthByteSize                                                               \\
+                    \end{array} \right.
+                \]
+                where we used the following shorthand
+                \[
+                    \locPaddedLimb \define \shfPower _{i + \rowOffsetCompareFiftyFive} \cdot \locInputBytestringLength
+                \]
+                \saNote{}
+                The formula defining $\shfArg$ differs from that in
+                section~(\ref{rlp utils: instructions: data pricing: constraints}).
+                The reason for this discrepancy is that the the first (left aligned) byte of the current \rlp{} prefix is already occupied by a byte
+                (which essentially represents the "size in bytes of (the size in bytes of the byte string)").
+                In other words: one byte (of the $\llarge$ available bytes) is already taken up by the size in bytes of the \rlp{} prefix representing the size in bytes of the size in bytes of the byte string \faSmileO{}.
+        \end{description}
+\end{description}
