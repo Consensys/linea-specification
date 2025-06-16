@@ -1,47 +1,81 @@
 \[
     \boxed{\text{All constraints in this subsection assume } \rlpUtilsInstDataPricingFlag _{i} = 1 }
 \]
-In the following, we assume $\isRlpUtilsMacro_{i} = 1$.
-We use the following shorthand:
+We use the following shorthands.
+Note that their interpretation is only valid along
+macro-instruction rows, i.e. provided that $\isRlpUtilsMacro_{i} = 1$.
 \[
     \left\{ \begin{array}{lcl}
-        \locLimb      & \define & \inputColumn{1}_{i}     \\
-        \locCtMax     & \define & \inputColumn{2}_{i} - 1 \\
-        \locFirstByte & \define & \outputColumn{5}_{i}     \\
+        \locLimb   & \define & \inputColumn{1}_{i} \\
+        \locNBytes & \define & \inputColumn{2}_{i} \\
+        \locCtMax  & \define & \locNBytes - 1      \\
+    \end{array} \right.
+    \quad\text{and}\quad
+    \left\{ \begin{array}{lcl}
+        \locNumberOfZeroBytes    & \define & \outputColumn{2} _{i} \\
+        \locNumberOfNonzeroBytes & \define & \outputColumn{4} _{i} \\
+        \locFirstByte            & \define & \outputColumn{5} _{i} \\
     \end{array} \right.
 \]
 \saNote{}
 Recall our assumption that the second argument of a \inst{DATA\_PRICING} instruction is \textbf{nonzero}.
 \begin{enumerate}
-\item \If $\isRlpUtilsMacro_{i} = 1$ \Then:
-    \begin{enumerate}
-        \item $\maxCt          _{i + 1} = \locCtMax$
-        \item $\zeroCounter    _{i}     = \outputColumn{2} _{i}$
-        \item $\nonZeroCounter _{i}     = \outputColumn{4} _{i}$
-        \item $\accumulator    _{i + 1} = \locFirstByte        $
-        \item $\limb           _{i + 1} = \locLimb$
-    \end{enumerate}
+    \item \If $\isRlpUtilsMacro_{i} = 1$ \Then:
+        \begin{enumerate}
+            \item $\maxCt          _{i + 1} = \locCtMax$
+            \item $\zeroCounter    _{i}     = \locNumberOfZeroBytes    $
+            \item $\nonZeroCounter _{i}     = \locNumberOfNonzeroBytes $
+            \item $\accumulator    _{i + 1} = \locFirstByte$
+            \item $\limb           _{i + 1} = \locLimb$
+            \item $\locNBytes = \locNumberOfZeroBytes + \locNumberOfNonzeroBytes$ \quad (\sanityCheck)
+        \end{enumerate}
+    \item \If $\isRlpUtilsCompt_{i} = 1$ \Then:
+        \begin{enumerate}
+            \item we impose byte decomposition constraints:
+                \begin{enumerate}
+                    \item \If $\ct _{i} =    0$ \Then $\accumulator _{i} = \argOneLo _{i}$
+                    \item \If $\ct _{i} \neq 0$ \Then $\accumulator _{i} = 256 \cdot \accumulator _{i - 1} + \argOneLo _{i}$
+                    \item we impose that
+                        \[
+                            \left\{ \begin{array}{l}
+                                \wcpCallToLeq {
+                                    anchorRow = i              ,
+                                    relOffset = 0              ,
+                                    argOneHi  = 0              ,
+                                    argOneLo  = \implicitlySet ,
+                                    argTwoLo  = 255            ,
+                                }
+                                \vspace{2mm} \\
+                                \resultMustBeTrue {
+                                    anchorRow = i ,
+                                    relOffset = 0 ,
+                                }
+                            \end{array} \right.
+                        \]
+                        \saNote{}
+                        The above ensures that $\argOneLo _{i}$ is a byte on every computation row.
+                \end{enumerate}
+            \item we define the following shorthand
+                \begin{enumerate}
+                    \item \If $\argOneLo _{i} =    0$ \Then $\locIsZeroByte _{i} \define 1$
+                    \item \If $\argOneLo _{i} \neq 0$ \Then $\locIsZeroByte _{i} \define 0$
+                \end{enumerate}
+            \item $\zeroCounter    _{i} = \zeroCounter    _{i - 1} - \locIsZeroByte _{i}$
+            \item $\nonZeroCounter _{i} = \nonZeroCounter _{i - 1} - (1 - \locIsZeroByte _{i})$
+            \item \If $\ct_{i} = \maxCt_{i}$ \Then:
+                \begin{enumerate}
+                    \item $\zeroCounter    _{i} = 0$
+                    \item $\nonZeroCounter _{i} = 0$
+                    \item $\shfFlag        _{i} = 1$
+                    \item $\shfArg         _{i} = \llargeMO - \maxCt_{i}$
 
-\item \If $\isRlpUtilsCompt_{i} = 1$ \Then:
-    \begin{enumerate}
-        \item bytedecomposition(\ct, \argOneLo, \accumulator)
-        \item $\argOneHi      _{i} = 0$
-        \item $\INST          _{i} = \inst{IS\_ZERO}$
-        \item $\zeroCounter   _{i} = \zeroCounter   _{i - 1} - \res_{i}$
-        \item $\nonZeroCounter_{i} = \nonZeroCounter_{i - 1} - (1 - \res_{i})$
-        \item \If $\ct_{i} = \maxCt_{i}$ \Then:
-            \begin{enumerate}
-                \item $\zeroCounter      _{i} = 0$
-                \item $\nonZeroCounter   _{i} = 0$
-                \item $\shfFlag          _{i} = 1$
-                \item $\shfArg           _{i} = \llargeMO - \maxCt_{i}$
-
-\saNote{} As the reference table only accepts input ($\shfArg$) ranging from $0$ to $\llargeMO$, the above imposes that $0 \leq \maxCt_{i} \leq \llargeMO$, and thus $1 \leq \inputColumn{2} \leq \llarge$ 
-
-                \item $\locPaddedLimb    _{i} = \limb_{i}$, where we used the following shorthand 
-\[
-        \locPaddedLimb \define \shfPower_{i} \cdot \accumulator _{i} 
-\]
-            \end{enumerate}
+                        \saNote{}
+                        The ``powers of $256$ reference table'' only accepts inputs ($\shfArg$) ranging from $0$ to $\llargeMO$.
+                        The above thus implicitly imposes that $0 \leq \maxCt_{i} \leq \llargeMO$, i.e. $1 \leq \locNBytes \leq \llarge$.
+                    \item $\locPaddedLimb _{i} = \limb_{i}$, where we used the following shorthand
+                        \[
+                            \locPaddedLimb \define \shfPower _{i} \cdot \accumulator _{i} 
+                        \]
+                \end{enumerate}
         \end{enumerate}
 \end{enumerate}
