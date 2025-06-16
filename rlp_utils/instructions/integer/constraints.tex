@@ -9,11 +9,11 @@ We use the following shorthands:
     \end{array} \right.
     \quad\text{and}\quad
     \left\{ \begin{array}{lcl}
-        \locOutHasRlpPrefix     & \define & \outputColumn {1} _{i} \\
-        \locOutRlpPrefix        & \define & \outputColumn {2} _{i} \\
-        \locOutHasNonzeroHiPart & \define & \outputColumn {3} _{i} \\
-        \locOutLeftShiftedInput & \define & \outputColumn {4} _{i} \\
-        \locOutNBytes           & \define & \outputColumn {5} _{i} \\
+        \locOutputHasRlpPrefix     & \define & \outputColumn {1} _{i} \\
+        \locOutputRlpPrefix        & \define & \outputColumn {2} _{i} \\
+        \locOutputHasNonzeroHiPart & \define & \outputColumn {3} _{i} \\
+        \locOutputLeftShiftedInput & \define & \outputColumn {4} _{i} \\
+        \locOutputNBytes           & \define & \outputColumn {5} _{i} \\
     \end{array} \right.
 \]
 \begin{description}
@@ -23,8 +23,8 @@ We use the following shorthands:
             \wcpCallToIszero {
                 anchorRow = i                     ,
                 relOffset = \rowOffsetIntegerZero ,
-                argOneHi  = \locInputIntegerHi            ,
-                argOneLo  = \locInputIntegerLo            ,
+                argOneHi  = \locInputIntegerHi    ,
+                argOneLo  = \locInputIntegerLo    ,
             }
         \]
         and we derive the following shorthand
@@ -35,12 +35,12 @@ We use the following shorthands:
         \If $\locIntIsZero = 1$ \Then:
         \[
             \left\{ \begin{array}{lcl}
-                \maxCt       _{i + 1}   & = & 0                 \\
-                \locOutHasRlpPrefix     & = & \gZero            \\
-                \locOutRlpPrefix        & = & 0                 \\
-                \locOutHasNonzeroHiPart & = & 0                 \\
-                \locOutLeftShiftedInput & = & \rlprefixShortInt \\
-                \locOutNBytes           & = & 1                 \\
+                \maxCt       _{i + 1}      & = & 0                 \\
+                \locOutputHasRlpPrefix     & = & \gZero            \\
+                \locOutputRlpPrefix        & = & 0                 \\
+                \locOutputHasNonzeroHiPart & = & 0                 \\
+                \locOutputLeftShiftedInput & = & \rlprefixShortInt \\
+                \locOutputNBytes           & = & 1                 \\
             \end{array} \right.
         \]
         \saNote{}
@@ -71,11 +71,11 @@ We use the following shorthands:
             \item[\underline{Processing row $n^\circ(\rowOffsetSmallInt)$:} \underline{Detecting small integer:}]
                 we impose that
                 \[
-                    \wcpCallToLeq {
+                    \wcpCallToLt {
                         anchorRow = i                  ,
                         relOffset = \rowOffsetSmallInt ,
                         argOneHi  = 0                  ,
-                        argOneLo  = \locInputIntegerLo      ,
+                        argOneLo  = \locInputIntegerLo ,
                         argTwoLo  = \oneTwoEight       ,
                     }
                 \]
@@ -102,11 +102,11 @@ We use the following shorthands:
                     \left\{ \begin{array}{lcl}
                         \shfFlag          _{i + \rowOffsetSmallInt} & = & 1                                 \\
                         \shfArg           _{i + \rowOffsetSmallInt} & = & \llarge - \locNBytes              \\
-                        \locOutHasRlpPrefix                         & = & 1 - \locSmallInt                  \\
-                        \locOutRlpPrefix                            & = & \rlprefixShortInt + \locTotalSize \\
-                        \locOutHasNonzeroHiPart                     & = & \locBigInt                        \\
-                        \locOutLeftShiftedInput                     & = & \locPaddedLimb                    \\
-                        \locOutNBytes                               & = & \locNBytes                        \\
+                        \locOutputHasRlpPrefix                         & = & 1 - \locSmallInt                  \\
+                        \locOutputRlpPrefix                            & = & \rlprefixShortInt + \locTotalSize \\
+                        \locOutputHasNonzeroHiPart                     & = & \locBigInt                        \\
+                        \locOutputLeftShiftedInput                     & = & \locPaddedLimb                    \\
+                        \locOutputNBytes                               & = & \locNBytes                        \\
                     \end{array} \right.
                 \]
                 where we used the following shorthand
