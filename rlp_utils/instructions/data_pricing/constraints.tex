@@ -1,11 +1,13 @@
 \[
-    \boxed{\text{All constraints in this subsection assume } \isRlpUtilsMacro_{i} = 1 \et \INST_{i} = \inst{DATA\_PRICING} }
+    \boxed{\text{All constraints in this subsection assume } \rlpUtilsInstDataPricingFlag _{i} = 1 }
 \]
+In the following, we assume $\isRlpUtilsMacro_{i} = 1$.
 We use the following shorthand:
 \[
     \left\{ \begin{array}{lcl}
-        \locLimb  & \define & \inputColumn{1}_{i}     \\
-        \locCtMax & \define & \inputColumn{2}_{i} - 1 \\
+        \locLimb      & \define & \inputColumn{1}_{i}     \\
+        \locCtMax     & \define & \inputColumn{2}_{i} - 1 \\
+        \locFirstByte & \define & \inputColumn{5}_{i}     \\
     \end{array} \right.
 \]
 \saNote{}
@@ -16,17 +18,19 @@ We initialize the counter:
 \begin{enumerate}
     \item $\zeroCounter    _{i}     = \resultColumn{2} _{i}$
     \item $\nonZeroCounter _{i}     = \resultColumn{4} _{i}$
-    \item $\accumulator    _{i + 1} = \resultColumn{5} _{i}$
+    \item $\accumulator    _{i + 1} = \locFirstByte        $
     \item $\limb           _{i + 1} = \locLimb$
 \end{enumerate}
+
 In the following, we assume $\isRlpUtilsCompt_{i} = 1$
 
 We inconditionnaly impose:
 \begin{enumerate}
     \item bytedecomposition(\ct, \argOneLo, \accumulator)
+    \item $\argOneHi      _{i} = 0$
     \item $\INST          _{i} = \inst{IS\_ZERO}$
-    \item $\zeroCounter   _{i} = \zeroCounter   _{i - 1} - \res{i}$
-    \item $\nonZeroCounter_{i} = \nonZeroCounter_{i - 1} - (1 - \res{i})$
+    \item $\zeroCounter   _{i} = \zeroCounter   _{i - 1} - \res_{i}$
+    \item $\nonZeroCounter_{i} = \nonZeroCounter_{i - 1} - (1 - \res_{i})$
 \end{enumerate}
 
 \If $\ct_{i} = \maxCt_{i}$ \Then:
@@ -42,6 +46,6 @@ We inconditionnaly impose:
 where we used the following shorthand
 \[
     \left\{ \begin{array}{lcl}
-        \locPaddedLimb  & \define & \res_{i} \cdot \accumulator _{i} \\
+        \locPaddedLimb  & \define & \shfPower_{i} \cdot \accumulator _{i} \\
     \end{array} \right.
 \]
