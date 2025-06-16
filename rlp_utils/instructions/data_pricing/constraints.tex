@@ -6,15 +6,15 @@ Note that their interpretation is only valid along
 macro-instruction rows, i.e. provided that $\isRlpUtilsMacro_{i} = 1$.
 \[
     \left\{ \begin{array}{lcl}
-        \locLimb   & \define & \inputColumn{1}_{i} \\
-        \locNBytes & \define & \inputColumn{2}_{i} \\
-        \locCtMax  & \define & \locNBytes - 1      \\
+        \locInputLimb   & \define & \inputColumn{1} _{i} \\
+        \locInputNBytes & \define & \inputColumn{2} _{i} \\
+        \locCtMax  & \define & \locInputNBytes - 1      \\
     \end{array} \right.
     \quad\text{and}\quad
     \left\{ \begin{array}{lcl}
-        \locNumberOfZeroBytes    & \define & \outputColumn{2} _{i} \\
-        \locNumberOfNonzeroBytes & \define & \outputColumn{4} _{i} \\
-        \locFirstByte            & \define & \outputColumn{5} _{i} \\
+        \locOutputNumberOfZeroBytes    & \define & \outputColumn{2} _{i} \\
+        \locOutputNumberOfNonzeroBytes & \define & \outputColumn{4} _{i} \\
+        \locOutputFirstByte            & \define & \outputColumn{5} _{i} \\
     \end{array} \right.
 \]
 \saNote{}
@@ -23,11 +23,19 @@ Recall our assumption that the second argument of a \inst{DATA\_PRICING} instruc
     \item \If $\isRlpUtilsMacro_{i} = 1$ \Then:
         \begin{enumerate}
             \item $\maxCt          _{i + 1} = \locCtMax$
-            \item $\zeroCounter    _{i}     = \locNumberOfZeroBytes    $
-            \item $\nonZeroCounter _{i}     = \locNumberOfNonzeroBytes $
-            \item $\accumulator    _{i + 1} = \locFirstByte$
-            \item $\limb           _{i + 1} = \locLimb$
-            \item $\locNBytes = \locNumberOfZeroBytes + \locNumberOfNonzeroBytes$ \quad (\sanityCheck)
+            \item $\zeroCounter    _{i}     = \locOutputNumberOfZeroBytes    $
+            \item $\nonZeroCounter _{i}     = \locOutputNumberOfNonzeroBytes $
+            \item $\accumulator    _{i + 1} = \locOutputFirstByte$
+            \item $\limb           _{i + 1} = \locInputLimb$
+            \item we impose the following sanity check constraint:
+                \[
+                    \locInputNBytes =
+                    \left[ \begin{array}{cl}
+                        + & \locOutputNumberOfZeroBytes    \\
+                        + & \locOutputNumberOfNonzeroBytes \\
+                    \end{array} \right]
+                    \quad (\sanityCheck)
+                \]
         \end{enumerate}
     \item \If $\isRlpUtilsCompt_{i} = 1$ \Then:
         \begin{enumerate}
@@ -67,11 +75,11 @@ Recall our assumption that the second argument of a \inst{DATA\_PRICING} instruc
                     \item $\zeroCounter    _{i} = 0$
                     \item $\nonZeroCounter _{i} = 0$
                     \item $\shfFlag        _{i} = 1$
-                    \item $\shfArg         _{i} = \llargeMO - \maxCt_{i}$
+                    \item $\shfArg         _{i} = \llarge - (1 + \maxCt_{i})$
 
                         \saNote{}
                         The ``powers of $256$ reference table'' only accepts inputs ($\shfArg$) ranging from $0$ to $\llargeMO$.
-                        The above thus implicitly imposes that $0 \leq \maxCt_{i} \leq \llargeMO$, i.e. $1 \leq \locNBytes \leq \llarge$.
+                        The above thus implicitly imposes that $0 \leq \maxCt_{i} \leq \llargeMO$, i.e. $1 \leq \locInputNBytes \leq \llarge$.
                     \item $\locPaddedLimb _{i} = \limb_{i}$, where we used the following shorthand
                         \[
                             \locPaddedLimb \define \shfPower _{i} \cdot \accumulator _{i} 
