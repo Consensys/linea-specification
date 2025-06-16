@@ -46,6 +46,7 @@ full_names = {
 	"ecData": "ec Data",
 	"precInfo": "prec Info",
 	"txnData": "transaction Data",
+	"bls": "bls Data",
 	"userTxnData": "user Transaction Data",
 	"systTxnData": "system Transaction Data",
 	"txnComp": "txn Comp",
