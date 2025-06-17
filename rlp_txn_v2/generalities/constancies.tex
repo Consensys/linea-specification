@@ -1,24 +1,44 @@
 The current section defines various constancy conditions for columns.
-We shall say that a column \col{X} is
+Below \col{X} may represent either a column or an algebraic expression derived from columns.
 \begin{description}
-	\item[transaction-constant:]
-		\If $\userTransactionNumber_{i} = \userTransactionNumber_{i - 1}$ \Then $\col{X}_{i} = \col{X}_{i - 1}$
-	\item[counter-constant:]
-		\If $\ct_{i} \neq 0$ \Then $\col{X}_{i} = \col{X}_{i - 1}$
-	\item[$\phase{k}$-constant:]
-		\If   $\phase{k}_{i - 1} \cdot \phase{k}_{i} = 1$
-		\Then $\col{X}_{i} = \col{X}_{i - 1}$.
+	\item[Transaction-constancy:]
+		\col{X} is said to be
+		\textbf{transaction-constant} if it satisfies
+		\[
+			\If \userTransactionNumber _{i} = \userTransactionNumber _{i - 1} ~
+			\Then \col{X} _{i} = \col{X} _{i - 1}
+		\]
+	\item[Counter-constancy:]
+		\col{X} is said to be
+		\textbf{counter-constant} if it satisfies
+		\[
+			\If \ct _{i} \neq 0 ~
+			\Then \col{X} _{i} = \col{X} _{i - 1}
+		\]
+	\item[$\phase{k}$-constancy:]
+		\col{X} is said to be
+		\textbf{phase-k-constant} if it satisfies
+		\[
+			\If   \phase{k} _{i - 1} \cdot \phase{k} _{i} = 1 ~
+			\Then \col{X} _{i} = \col{X} _{i - 1}
+		\]
 	\item[$\phase{k}$-incrementing:]
-		\If   $\phase{k}_{i - 1} \cdot \phase{k}_{i} = 1$
-		\Then $\col{X}_{i} \in \{\col{X}_{i - 1}; \col{X}_{i - 1} + 1 \}$.
-		
-		\saNote{}
-		If \col{X} is a bit column, it implies $\col{X}_{i} \in \{\col{X}_{i - 1}; 1 \}$.
+		\col{X} is said to be
+		\textbf{phase-k-incrementing} if it satisfies
+		\[
+			\If   \phase{k} _{i - 1} \cdot \phase{k} _{i} = 1 ~
+			\Then \col{X} _{i} \in \{\col{X} _{i - 1}; \col{X} _{i - 1} + 1 \}
+		\]
 \end{description}
-
+\saNote{}
+A \textbf{phase-k-incrementing} a binary column (\col{X}) satisfies that,
+along adjacent ``$\phase{k} \equiv 1$'' rows,
+$\col{X} _{i} \in \{\col{X} _{i - 1}; 1 \}$.
+In particular, as soon as it reaches $1$ it stays there
+(at least until ``$\phase{k} \equiv 0$''.)
 
 Given the above definitions we require that
 \begin{enumerate}
-	\item \typeZeroTx{}, \typeOneTx{}, \typeTwoTx{} are transaction-constant. 
-	\item \lt{} and \lx{} are counter-constant. 
+	\item \typeZeroTx{}, \typeOneTx{}, \typeTwoTx{} be transaction-constant
+	\item \lt{} and \lx{} be counter-constant.
 \end{enumerate}
