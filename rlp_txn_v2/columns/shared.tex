@@ -3,36 +3,41 @@
 	transaction number column, starts at 0 and is incremented by one when starting a new transaction.
     \item $\isTxn$:
 	bit column that defines the transaction perspective;
-	\item $\isCmp$:
+    \item $\isCmp$:
 	bit column that defines the computation perspective;
-	\item \col{LIMB\_CONSTRUCTED}:
-    binary column;
-    is equal to $1$ when the $\limb$ is part of either \rlp{} bytestrings $\locLtTilde$ or $\locLxTilde$, otherwise is equal to $0$;
-    abbreviated to $\lc$;
+    \item \col{LIMB\_CONSTRUCTED}:
+	binary column;
+	is equal to $1$ when the $\limb$ is part of either \rlp{} bytestrings $\locLtTilde$ or $\locLxTilde$, otherwise is equal to $0$;
+	abbreviated to $\lc$;
     \item $\indext$:
-    index of the current limb within the current string of $\locLtTilde$. Starts at 0 when starting a new transaction and increments by 1 when $\lc$ and $\lt$ are one; 
+	index of the current limb within the current string of $\locLtTilde$. Starts at 0 when starting a new transaction and increments by 1 when $\lc$ and $\lt$ are one; 
     \item $\indexx$:                                                       
-    index of the current limb within the current string of $\locLxTilde$. Starts at 0 when starting a new transaction and increments by 1 when $\lc$ and $\lx$ are one;
+	index of the current limb within the current string of $\locLxTilde$. Starts at 0 when starting a new transaction and increments by 1 when $\lc$ and $\lx$ are one;
     \item $\rlptsize$:
-    number of bytes of $L_{\mathrm{T}}$ of the current transaction, used in \phaseRlpPrefix{} to verify the RLP prefix. Decreases by $\limbsize$ when $\lc$ and $\lt$ are one, must be 0 at the end of the transaction.
+	number of bytes of $L_{\mathrm{T}}(T)$ of the current transaction ($T$) \emph{minus} a certain number of bytes,
+	see section~(\ref{rlp txn v2: phase constraints: rlp prefix});
+	used in \phaseRlpPrefix{} to compute the global \rlp{} prefix of $L_{\mathrm{T}}(T)$;
+	in futher phases this column simply decreases by $\limbsize$ when $\lc$ and $\lt$ are one;
+	constrained to vanish at the end of the transaction;
     \item $\rlpxsize$:
-    number of bytes of $L_{\mathrm{X}}$ of the current transaction, used in \phaseRlpPrefix{} to verify the RLP prefix. Decreases by $\limbsize$ when $\lc$ and $\lx$ are one, must be 0 at the end of the transaction.
+	same interpretation as \rlptsize{} but for $L_{\mathrm{X}}(T)$
+	(and with $\lt$ swapped for $\lx$);
     \item \toHashByProver{}:
-    binary column; equals $\lc \cdot \lx$; is a selector to extract data for the prover.
+	binary column; equals $\lc \cdot \lx$; is a selector to extract data for the prover.
 \end{enumerate}
 Columns used for heartbeat:
 \begin{enumerate}[resume]
     \item \typeZeroTx{}, \typeOneTx{}, \typeTwoTx{}:
-    exclusive bit columns definibg the type of transaction. The phase heartbeat depends of the \transactionType{} of the transaction.
+	exclusive bit columns definibg the type of transaction. The phase heartbeat depends of the \transactionType{} of the transaction.
     \item \phaseRlpPrefix{}, \phaseChainId{}, \phaseNonce{}, \phaseGasPrice{}, \phaseMaxPriorityFeePerGas{}, \phaseMaxFeePerGas{}, \phaseGasLimit{}, \phaseTo{}, \phaseValue{}, \phaseData{}, \phaseAccessList{}, \phaseBeta{}, \phaseY{}, \phaseR{}, \phaseS{}:
     \item $\phaseEnd$:
-    binary column; equals $1$ on the last row of any phase, $0$ elsewhere;
+	binary column; equals $1$ on the last row of any phase, $0$ elsewhere;
     \item \ct{}:
 	counter column; 
 	either hovers around $0$ or counts continuously up from $0$ to \maxCt{} whereupon it resets;
     \item \maxCt:
 	counter-constant column;
 	indicates the value at which \ct{} must reset;
-	\item $\done$:
-    binary column; equal to $1$ on the final row of every \ct{} cycle; equal to $0$ otherwise;
+    \item $\done$:
+	binary column; equal to $1$ on the final row of every \ct{} cycle; equal to $0$ otherwise;
 \end{enumerate}

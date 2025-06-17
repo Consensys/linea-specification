@@ -1,0 +1,47 @@
+\begin{enumerate}
+    \item \lc{}, \lt{} and \lx{} are binary \quad (\sanityCheck)
+    \item \lt{} and \lx{} are counter-constant \quad (\sanityCheck)
+    \item \If $\isCmp  _{i} = 0$ \Then $\lc _{i} = 0$
+\end{enumerate}
+\saNote{}
+The general idea for setting \lc{}, \lt{} and \lx{} is as follows:
+\begin{itemize}
+    \item
+        most phase flags explicitly dictate whether to set \lt{} (resp. \lx{}) or not;
+        some don't, and setting \lt{} (resp. \lx{}) is a more refined process;
+        see section~(\ref{rlp txn v2: phase constraints: definitions: table})
+        for more details;
+        counter-constancy perpetuates this initial choice for the appropriate duration;
+    \item
+        on particular rows the arithmetization explicitly triggers \lc{};
+\end{itemize}
+
+\noindent We further impose:
+\begin{enumerate}
+    \item \If $\locTransactionStart _{i} = 1$ \Then:
+        \begin{enumerate}
+            \item $\indext _{i} = 0$
+            \item $\indexx _{i} = 0$
+        \end{enumerate}
+    \item \If $\locTransactionStart _{i} = 0$ \Then:
+        \begin{enumerate}
+            \item $\indext _{i} = \indext _{i - 1} + \lc _{i - 1} \cdot \lt _{i - 1}$
+            \item $\indexx _{i} = \indexx _{i - 1} + \lc _{i - 1} \cdot \lx _{i - 1}$
+        \end{enumerate}
+        \saNote{}
+        In other words, $\indext$ resets to $0$ at the begining of a new transaction,
+        and increases by $1$ following any row where $\lc$ and $\lt$ simulatneously light up.
+        $\indexx$ behaves the same with $\lx$.
+    \item \If $\phaseRlpPrefix _{i} = 1$ \Then
+        see section~(\ref{rlp txn v2: phase constraints: rlp prefix}),
+        where \phaseRlpPrefix{} gets initialized;
+    \item \If $\phaseRlpPrefix _{i} = 0$ \Then
+        \begin{enumerate}
+            \item $\rlptsize _{i} = \rlptsize _{i - 1} - \lc _{i} \cdot \lt _{i} \cdot\limbsize _{i}$
+            \item $\rlpxsize _{i} = \rlpxsize _{i - 1} - \lc _{i} \cdot \lx _{i} \cdot\limbsize _{i}$
+        \end{enumerate}
+    \item $\toHashByProver _{i} = \lc _{i} \cdot \lx _{i}$
+\end{enumerate}
+We represent the intent in a diagram below.
+
+\includepdf[fitpaper=true, pages={1}]{lua/lc_lt_lx_etc.pdf}

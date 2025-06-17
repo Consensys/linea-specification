@@ -1,26 +1,45 @@
-Each phase represents an entry of the transaction list to RLPised, as described in the yellow paper. \phaseRlpPrefix{} is the phase where the $\transactionType$ of transaction, concatanated with the RLP prefix of the total list is computed. Not all phases are accessible for any transaction type. On a same phase will occur the same treatment, independently of the transaction type. For the majority of $\col{PHASE}$ we have $\lx = \lt =1$ which means the constructed $\limb$ is both in $\widetilde{L}_{\mathrm{T}}(T)$ and in  $\widetilde{L}_{\mathrm{X}}(T)$. In \phaseRlpPrefix{} and \phaseBeta{}, some $\limb$ are in $\widetilde{L}_{\mathrm{T}}(T)$, some in  $\widetilde{L}_{\mathrm{X}}(T)$, some in both. We write it $\lt (resp. \lt) \in \{0 ; 1\}$ in the next table. In \phaseY{}, \phaseR{} and in \phaseS{}, the $\limb$ is only in $\widetilde{L}_{\mathrm{T}}(T)$. The table \ref{tab:Phase definition} shows accessible phases for every transaction \transactionType. 
+Each phase represents an entry of the transaction list to \rlp{}-ised, as described in the \cite{EYP-London}.
+\phaseRlpPrefix{} is the phase where the $\transactionType$ of transaction,
+concatanated with the \rlp{} prefix of the total list is computed.
+Not all phases are accessible to any transaction type,
+see section~(\ref{rlp txn v2: generalities: PHASE_END constraints}).
+However, the actions performed during a given phase are independent of the underlying transaction type.
 
-{\renewcommand{\arraystretch}{1.5}
+Most phases have $\lx \equiv 1$ \emph{and} $\lt \equiv 1$,
+which means that the $\limb$s constructed during said phase
+are used both in the production of
+$\widetilde{L}_{\mathrm{T}}(T)$ and of
+$\widetilde{L}_{\mathrm{X}}(T)$.
+For \phaseRlpPrefix{} and \phaseBeta{},
+some $\limb$s ``belong'' only to $\widetilde{L}_{\mathrm{T}}(T)$ (as witnessed by $\lt \equiv 1$ and $\lx \equiv 0$),
+others ``belong'' only to $\widetilde{L}_{\mathrm{X}}(T)$ (as witnessed by $\lt \equiv 0$ and $\lx \equiv 1$),
+others yet ``belong'' to both (as witnessed by $\lt \equiv 1$ and $\lx \equiv 1$).
+The phases \phaseY{}, \phaseR{} and \phaseS{} correspond to the \rlp{}-ization of components of the signature.
+They therefore only contribute to limbs belonging to $\widetilde{L}_{\mathrm{T}}(T)$.
+
+The table~(\ref{rlp txn v2: phase constraints: definitions: table}) shows the phase which \textbf{will be executed} depending on the \transactionType. 
 \begin{table}[h]
+    \hspace*{-2.5cm}
+    \renewcommand{\arraystretch}{1.5}
     \centering
-    \begin{tabular}{|c|c|c|c|c|c|c|c|c|} \hline
-        \phase{\#}                        & Description                   & \transactionType=0 & \transactionType=1 & \transactionType=2 & $\lt$     & $\lx$     \\ \hline \hline
-        $\phaseRlpPrefixValue$            & \rlp{} prefix                 & \checkmark         & \checkmark         & \checkmark         & \{0 ; 1\} & \{0 ; 1\} \\ \hline
-        $\phaseChainIdValue$              & \textbf{chainId}              &                    & \checkmark         & \checkmark         & 1         & 1         \\ \hline
-        $\phaseNonceValue$                & \textbf{nonce}                & \checkmark         & \checkmark         & \checkmark         & 1         & 1         \\ \hline
-        $\phaseGasPriceValue$             & \textbf{gasPrice}             & \checkmark         & \checkmark         &                    & 1         & 1         \\ \hline
-        $\phaseMaxPriorityFeePerGasValue$ & \textbf{maxPriorityFeePerGas} &                    &                    & \checkmark         & 1         & 1         \\ \hline
-        $\phaseMaxFeePerGasValue$         & \textbf{maxFeePerGas}         &                    &                    & \checkmark         & 1         & 1         \\ \hline
-        $\phaseGasLimitValue$             & \textbf{gasLimit}             & \checkmark         & \checkmark         & \checkmark         & 1         & 1         \\ \hline
-        $\phaseToValue$                   & \textbf{to}                   & \checkmark         & \checkmark         & \checkmark         & 1         & 1         \\ \hline
-        $\phaseValueValue$                & \textbf{value}                & \checkmark         & \checkmark         & \checkmark         & 1         & 1         \\ \hline
-        $\phaseDataValue$                 & \textbf{data}                 & \checkmark         & \checkmark         & \checkmark         & 1         & 1         \\ \hline
-        $\phaseAccessListValue$           & \textbf{accessList}           &                    & \checkmark         & \checkmark         & 1         & 1         \\ \hline
-        $\phaseBetaValue$                 & $\beta$ or w                  & \checkmark         &                    &                    & \{0 ; 1\} & \{0 ; 1\} \\ \hline
-        $\phaseYValue$                    & \textbf{yParity}              &                    & \checkmark         & \checkmark         & 1         & 0         \\ \hline
-        $\phaseRValue$                    & \textbf{r}                    & \checkmark         & \checkmark         & \checkmark         & 1         & 0         \\ \hline
-        $\phaseSValue$                    & \textbf{s}                    & \checkmark         & \checkmark         & \checkmark         & 1         & 0         \\ \hline
+    \begin{tabular}{|l|l|c|c|c|c|c|c|c|} \hline
+        \textsc{Phase flag}          & Description                   & \transactionType = 0 & \transactionType = 1 & \transactionType = 2 & $\lt$     & $\lx$     \\ \hline \hline
+        $\phaseRlpPrefix$            & ``Global'' \rlp{} prefix      & \checkmark           & \checkmark           & \checkmark           & \{0 ; 1\} & \{0 ; 1\} \\ \hline
+        $\phaseChainId$              & \texttt{chainId}              &                      & \checkmark           & \checkmark           & 1         & 1         \\ \hline
+        $\phaseNonce$                & \texttt{nonce}                & \checkmark           & \checkmark           & \checkmark           & 1         & 1         \\ \hline
+        $\phaseGasPrice$             & \texttt{gasPrice}             & \checkmark           & \checkmark           &                      & 1         & 1         \\ \hline
+        $\phaseMaxPriorityFeePerGas$ & \texttt{maxPriorityFeePerGas} &                      &                      & \checkmark           & 1         & 1         \\ \hline
+        $\phaseMaxFeePerGas$         & \texttt{maxFeePerGas}         &                      &                      & \checkmark           & 1         & 1         \\ \hline
+        $\phaseGasLimit$             & \texttt{gasLimit}             & \checkmark           & \checkmark           & \checkmark           & 1         & 1         \\ \hline
+        $\phaseTo$                   & \texttt{to}                   & \checkmark           & \checkmark           & \checkmark           & 1         & 1         \\ \hline
+        $\phaseValue$                & \texttt{value}                & \checkmark           & \checkmark           & \checkmark           & 1         & 1         \\ \hline
+        $\phaseData$                 & \texttt{data}                 & \checkmark           & \checkmark           & \checkmark           & 1         & 1         \\ \hline
+        $\phaseAccessList$           & \texttt{accessList}           &                      & \checkmark           & \checkmark           & 1         & 1         \\ \hline
+        $\phaseBeta$                 & $\beta$ or w                  & \checkmark           &                      &                      & \{0 ; 1\} & \{0 ; 1\} \\ \hline
+        $\phaseY$                    & \texttt{yParity}              &                      & \checkmark           & \checkmark           & 1         & 0         \\ \hline
+        $\phaseR$                    & \texttt{r}                    & \checkmark           & \checkmark           & \checkmark           & 1         & 0         \\ \hline
+        $\phaseS$                    & \texttt{s}                    & \checkmark           & \checkmark           & \checkmark           & 1         & 0         \\ \hline
     \end{tabular}
     \caption{Phase definition}
-    \label{tab:Phase definition}
-\end{table}}
+    \label{rlp txn v2: phase constraints: definitions: table}
+\end{table}
