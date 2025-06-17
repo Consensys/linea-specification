@@ -4,24 +4,24 @@ We define the following shorthands:
     \begin{array}{l}
         \locValidPhaseTransition _{i} \define \vspace{2mm} \\
         \left[ \begin{array}{clcl}
-            + & \phaseRlpPrefix           _{i} & \cdot \typeZeroTx _{i}                     & \cdot \phaseNonce               _{i + 1} \\
-            + & \phaseRlpPrefix           _{i} & \cdot (\typeOneTx _{i} + \typeTwoTx _{i})  & \cdot \phaseChainId             _{i + 1} \\
-            + & \phaseChainId             _{i} &                                            & \cdot \phaseNonce               _{i + 1} \\
-            + & \phaseNonce               _{i} & \cdot (\typeZeroTx _{i} + \typeOneTx _{i}) & \cdot \phaseGasPrice            _{i + 1} \\
-            + & \phaseNonce               _{i} & \cdot \typeTwoTx _{i}                      & \cdot \phaseMaxPriorityFeePerGas_{i + 1} \\
-            + & \phaseGasPrice            _{i} &                                            & \cdot \phaseGasLimit            _{i + 1} \\
-            + & \phaseMaxPriorityFeePerGas_{i} &                                            & \cdot \phaseMaxFeePerGas        _{i + 1} \\
-            + & \phaseMaxFeePerGas        _{i} &                                            & \cdot \phaseGasLimit            _{i + 1} \\
-            + & \phaseGasLimit            _{i} &                                            & \cdot \phaseTo                  _{i + 1} \\
-            + & \phaseTo                  _{i} &                                            & \cdot \phaseValue               _{i + 1} \\
-            + & \phaseValue               _{i} &                                            & \cdot \phaseData                _{i + 1} \\
-            + & \phaseData                _{i} & \cdot \typeZeroTx _{i}                     & \cdot \phaseBeta                _{i + 1} \\
-            + & \phaseData                _{i} & \cdot (\typeOneTx{} + \typeTwoTx{})        & \cdot \phaseAccessList          _{i + 1} \\
-            + & \phaseAccessList          _{i} &                                            & \cdot \phaseY                   _{i + 1} \\
-            + & \phaseBeta                _{i} &                                            & \cdot \phaseR                   _{i + 1} \\
-            + & \phaseY                   _{i} &                                            & \cdot \phaseR                   _{i + 1} \\
-            + & \phaseR                   _{i} &                                            & \cdot \phaseS                   _{i + 1} \\
-            + & \phaseS                   _{i} &                                            & \cdot \phaseRlpPrefix           _{i + 1} \\
+            + & \phaseRlpPrefix            _{i} & \cdot \typeZeroTx _{i}                     & \cdot \phaseNonce                _{i + 1} \\
+            + & \phaseRlpPrefix            _{i} & \cdot (\typeOneTx _{i} + \typeTwoTx _{i})  & \cdot \phaseChainId              _{i + 1} \\
+            + & \phaseChainId              _{i} &                                            & \cdot \phaseNonce                _{i + 1} \\
+            + & \phaseNonce                _{i} & \cdot (\typeZeroTx _{i} + \typeOneTx _{i}) & \cdot \phaseGasPrice             _{i + 1} \\
+            + & \phaseNonce                _{i} & \cdot \typeTwoTx _{i}                      & \cdot \phaseMaxPriorityFeePerGas _{i + 1} \\
+            + & \phaseGasPrice             _{i} &                                            & \cdot \phaseGasLimit             _{i + 1} \\
+            + & \phaseMaxPriorityFeePerGas _{i} &                                            & \cdot \phaseMaxFeePerGas         _{i + 1} \\
+            + & \phaseMaxFeePerGas         _{i} &                                            & \cdot \phaseGasLimit             _{i + 1} \\
+            + & \phaseGasLimit             _{i} &                                            & \cdot \phaseTo                   _{i + 1} \\
+            + & \phaseTo                   _{i} &                                            & \cdot \phaseValue                _{i + 1} \\
+            + & \phaseValue                _{i} &                                            & \cdot \phaseData                 _{i + 1} \\
+            + & \phaseData                 _{i} & \cdot \typeZeroTx _{i}                     & \cdot \phaseBeta                 _{i + 1} \\
+            + & \phaseData                 _{i} & \cdot (\typeOneTx _{i} + \typeTwoTx _{i})  & \cdot \phaseAccessList           _{i + 1} \\
+            + & \phaseAccessList           _{i} &                                            & \cdot \phaseY                    _{i + 1} \\
+            + & \phaseBeta                 _{i} &                                            & \cdot \phaseR                    _{i + 1} \\
+            + & \phaseY                    _{i} &                                            & \cdot \phaseR                    _{i + 1} \\
+            + & \phaseR                    _{i} &                                            & \cdot \phaseS                    _{i + 1} \\
+            + & \phaseS                    _{i} &                                            & \cdot \phaseRlpPrefix            _{i + 1} \\
         \end{array} \right]
     \end{array}
 \]
@@ -32,12 +32,12 @@ and we impose the following:
     \item \label{rlp txn v2: generalities: PHASE_END constraints}
         $\phaseEnd_{i} = \locValidPhaseTransition_{i}$
 \end{enumerate}
-In other words, a phase transition happens if and only if $\phaseEnd_{i} = 1$ and means $\phase{p}_{i} = 1$ and $\phase{q}_{i + 1} = 1$ with the only given possibility for p and q, depending of $\rlpTxnTransactionColumnTxType$: 
-
 \saNote{}
 The above constraint~(\ref{rlp txn v2: generalities: PHASE_END constraints})
 must be understood as follows: rather than \textbf{constraining} \phaseEnd{},
-the constraints will often times \textbf{set} the value of \phaseEnd{} and thereby forcing a phase transition.
+the constraints will often times \textbf{set} the value of \phaseEnd{} and thereby force a phase transition upon the module.
+
+In other words, a phase transition happens if and only if $\phaseEnd_{i} = 1$ and means $\phase{p}_{i} = 1$ and $\phase{q}_{i + 1} = 1$ with the only given possibility for p and q, depending of $\rlpTxnTransactionColumnTxType$: 
 \begin{table}[h]
     \centering
     \renewcommand{\arraystretch}{1.5}
