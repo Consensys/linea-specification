@@ -1,9 +1,9 @@
 We define the following shorthand:
 \[
-    \locTransactionStart_{i} \define \phaseRlpPrefix_{i} \cdot \isTxn_{i}
+    \locIsFirstRowOfTransaction_{i} \define \phaseRlpPrefix_{i} \cdot \isTxn_{i}
 \]
 \begin{enumerate}
-    \item $\userTransactionNumber_{i} = \userTransactionNumber_{i-1} + \locTransactionStart_{i}$
+    \item $\userTransactionNumber_{i} = \userTransactionNumber_{i-1} + \locIsFirstRowOfTransaction_{i}$
 \end{enumerate}
 In other words $\userTransactionNumber$ is constant except increasing by one when starting a new transaction.
 
@@ -12,7 +12,7 @@ Finalization:
     \item \If $\userTransactionNumber_{N} \neq 0$ \Then
         \begin{enumerate}
             \item $\phaseEnd_{N} = 1$
-            \item $\phaseS_{N} = 1$ 
+            \item $\phaseS_{N} = 1$
         \end{enumerate}
 \end{enumerate}
 In other words, we constrain the last row of the trace to be the end of the last phase of a transaction.
