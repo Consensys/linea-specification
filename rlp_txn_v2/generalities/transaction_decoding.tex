@@ -1,0 +1,35 @@
+We define the following shorthands
+\[
+	\left\{ \begin{array}{lcl}
+		\locTransactionTypeSum _{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \typeZeroTx _{i} \\
+			+ & \typeOneTx  _{i} \\
+			+ & \typeTwoTx  _{i} \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\locWeightedTransactionTypeSum _{i} & \define &
+		\left[ \begin{array}{clcl}
+			+ & 0 & \!\!\!\cdot\!\!\! & \typeZeroTx _{i} \\
+			+ & 1 & \!\!\!\cdot\!\!\! & \typeOneTx  _{i} \\
+			+ & 2 & \!\!\!\cdot\!\!\! & \typeTwoTx  _{i} \\
+		\end{array} \right]
+	\end{array} \right.
+\]
+We impose:
+\begin{enumerate}
+	\item
+		\typeZeroTx{}, \typeOneTx{} and \typeTwoTx{} are \textbf{binary transaction constant} \quad (\sanityCheck)
+	\item
+		we impose that $\locTransactionTypeSum _{i} = \locPhaseFlagSum _{i}$
+	\item
+		\If $\isTxn_{i} = 1$ \Then $\rlpTxnTransactionColumnTxType _{i} = \locWeightedTransactionTypeSum _{i}$
+		% \begin{enumerate}
+		% 	\item $\ct       _{i}   = 0$ (\sanityCheck)
+		% 	\item $\maxCt    _{i}   = 0$ (\sanityCheck)
+		% 	\item $\phaseEnd _{i}   = 0$ (\sanityCheck)
+		% 	\item $\lc       _{i}   = 0$ (\sanityCheck)
+		% \end{enumerate}
+\end{enumerate}
+\saNote{} \label{rlp txn v2: generalities: transaction decoding: flag exclusivity}
+The above implicitly imposes flag exclusivity on the transaction type flag columns.
