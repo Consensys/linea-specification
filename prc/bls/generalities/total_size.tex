@@ -1,15 +1,19 @@
-The $\blsTotalSize$ varies depending on the precompile (through the value of $\indexMax$), if data or results are considered and whether the call is successful (if it fails, then $\blsTotalSize = 0$). 
+The value of $\blsTotalSize$ depends on several factors.
+The first distinction is the precompile itself.
+The second distinction is between data and result phases.
+Along result rows $\blsTotalSize$ is entirely determined by the precompile (and we adopt the convention that $\blsTotalSize \equiv 0$ in case of a failure).
+Along data rows $\blsTotalSize$ is entirely known for precompiles with fixed input size.
+For variable input size precompiles, \inst{\prcNameBlsGOneMsm}, \inst{\prcNameBlsGTwoMsm} and \inst{\prcNameBlsPairingCheck}, we cannot \emph{a priori} constrain either \blsTotalSize{} or \indexMax{}.
+We can only connect $\blsTotalSize$ to $\indexMax$ through the constraint~(\ref{bls: generalities: setting index max: connect total size and index max for variable size data}).
+
 We define the following constraints:
 \begin{enumerate}
-  \item \label{bls: generalities: setting total size: constrain data total size} \If $\locIsData = 1$ \et $\locIsVariableSizeData = 0$ \Then
+  \item \If $\locIsData = 1$ \et $\locIsVariableSizeData = 0$ \Then
     \[
-        \blsTotalSize = (\indexMax + 1) \cdot 16
+        \blsTotalSize _{i} = (\indexMax _{i} + 1) \cdot 16
     \]
   \item \If $\locIsResult = 1$ \Then
     \[
-        \blsTotalSize = (\indexMax + 1) \cdot 16 \cdot \blsSuccessBit
+        \blsTotalSize _{i} = (\indexMax _{i} + 1) \cdot 16 \cdot \blsSuccessBit _{i}
     \]
 \end{enumerate}
-
-\saNote{}
-For variable size data precompiles, \inst{G1\_MSM}, \inst{G2\_MSM} and \inst{PAIRING\_CHECK}, we cannot a priori constrain \blsTotalSize{} and \indexMax{}~(\ref{bls: generalities: setting total size: constrain data total size}). We can only connect them through the constraint~(\ref{bls: generalities: setting index max: connect total size and index max for variable size data}).
