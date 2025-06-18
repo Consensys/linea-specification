@@ -103,7 +103,7 @@ Question:
     - source selector : `hub/TX_DLGT`
     - target filter   : none required
 
-## `RLP_TXN -> HUB` lookup
+## new `RLP_TXN -> HUB` lookup
 
 |-----------------------------|---------------------------------|
 | source column               | target column                   |
@@ -205,7 +205,7 @@ consider the following diagram showing how we want to populate the dummy context
                  <magical_offset>
 ```
 
-## `CODE_HASH` for account delegations
+## `CODE_HASH` computation for account delegations
 
 We will need to send stuff to some hasher. It's easiest to do this for every `TX_DLGT` row. There are various options for where to do this.
 One _could_ insert MISC rows between every account row. I don't like this.
@@ -213,6 +213,20 @@ One _could_ use the lookup to RLP_ADDR which we will also trigger, send the DELE
 following 23 bytes
 
     `0x ef 00 00 <delegated_address>`
+
+## Account consistency changes
+
+I have some questions I need confirmation on
+- if an EOA account self destructs (via delegate code execution) does it maintain its delegation status ? I would imagine: YES but need to make sure
+- are there any interactions with deployment numbers ? likely no
+- the consistency constraints are likely obvious
+
+# `STP` changes
+
+- modification for the CALL instruction
+- we now need two IS_WARM fields to correctly price things
+- therefore potentially one more column
+- and slightly modified total cost computation
 
 # `TXN_DATA` changes
 
