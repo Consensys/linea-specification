@@ -35,12 +35,12 @@ We use the following shorthands:
         \If $\locIntIsZero = 1$ \Then:
         \[
             \left\{ \begin{array}{lcl}
-                \maxCt       _{i + 1}      & = & 0                 \\
-                \locOutputHasRlpPrefix     & = & \gZero            \\
-                \locOutputRlpPrefix        & = & 0                 \\
-                \locOutputHasNonzeroHiPart & = & 0                 \\
-                \locOutputLeftShiftedInput & = & \rlprefixShortInt \\
-                \locOutputNBytes           & = & 1                 \\
+                \maxCt       _{i + 1}      & = & 0                                       \\
+                \locOutputHasRlpPrefix     & = & \gZero                                  \\
+                \locOutputRlpPrefix        & = & 0                                       \\
+                \locOutputHasNonzeroHiPart & = & 0                                       \\
+                \locOutputLeftShiftedInput & = & \rlprefixShortInt \cdot 256^{\llargeMO} \\
+                \locOutputNBytes           & = & 1                                       \\
             \end{array} \right.
         \]
         \saNote{}
@@ -100,13 +100,13 @@ We use the following shorthands:
                 we impose
                 \[
                     \left\{ \begin{array}{lcl}
-                        \shfFlag          _{i + \rowOffsetSmallInt} & = & 1                                 \\
-                        \shfArg           _{i + \rowOffsetSmallInt} & = & \llarge - \locNBytes              \\
-                        \locOutputHasRlpPrefix                         & = & 1 - \locSmallInt                  \\
-                        \locOutputRlpPrefix                            & = & \rlprefixShortInt + \locTotalSize \\
-                        \locOutputHasNonzeroHiPart                     & = & \locBigInt                        \\
-                        \locOutputLeftShiftedInput                     & = & \locPaddedLimb                    \\
-                        \locOutputNBytes                               & = & \locNBytes                        \\
+                        \shfFlag          _{i + \rowOffsetSmallInt} & = & 1                                                            \\
+                        \shfArg           _{i + \rowOffsetSmallInt} & = & \llarge - \locNBytes                                         \\
+                        \locOutputHasRlpPrefix                         & = & 1 - \locSmallInt                                          \\
+                        \locOutputRlpPrefix                            & = & (\rlprefixShortInt + \locTotalSize) \cdot 256^{\llargeMO} \\
+                        \locOutputHasNonzeroHiPart                     & = & \locBigInt                                                \\
+                        \locOutputLeftShiftedInput                     & = & \locPaddedLimb                                            \\
+                        \locOutputNBytes                               & = & \locNBytes                                                \\
                     \end{array} \right.
                 \]
                 where we used the following shorthand
