@@ -1,0 +1,47 @@
+\[
+    \boxed{\text{All constraints in this subsection assume } \isRlpUtilsMacro_{i} = 1 \et \rlpUtilsInstByteStringFlag _{i} = 1 }
+\]
+We use the following shorthand:
+\[
+    \left\{ \begin{array}{lcl}
+        \locInputBytestringLength & \define & \inputColumn{1}_{i} \\
+        \locInputFirstByte        & \define & \inputColumn{2}_{i} \\
+        \locInputIsList           & \define & \inputColumn{3}_{i} \\
+    \end{array} \right.
+    \quad\text{and}\quad
+    \left\{ \begin{array}{lcl}
+        \locOutputHasRlpPrefix & \define & \outputColumn {1} _{i} \\
+        \locOutputRlpPrefix    & \define & \outputColumn {2} _{i} \\
+        \locOutputIsNonempty   & \define & \outputColumn {3} _{i} \\
+        \locOutputNBytesOfPrefix       & \define & \outputColumn {5} _{i} \\
+    \end{array} \right.
+\]
+We further define
+\[
+    \left\{ \begin{array}{lcl}
+        \locBaseRlpPrefixShort & \define & \rlprefixShortInt \cdot (1 - \locInputIsList) + \rlprefixShortList \cdot \locInputIsList \\
+        \locBaseRlpPrefixLong  & \define & \rlprefixLongInt  \cdot (1 - \locInputIsList) + \rlprefixLongList  \cdot \locInputIsList \\
+    \end{array} \right.
+\]
+We impose the following constraints
+\begin{description}
+    \item[\underline{\underline{Processing row $n^\circ(\rowOffsetNullString)$:}} \underline{Detecting the empty byte string:}]
+        we impose that
+        \[
+            \wcpCallToIszero {
+                anchorRow = i                    ,
+                relOffset = \rowOffsetNullString ,
+                argOneHi  = 0                    ,
+                argOneLo  = \locInputBytestringLength ,
+            }
+        \]
+        and we derive the following shorthand
+        \[
+            \left\{ \begin{array}{lcl}
+                \locEmptyByteString    & \define & \res_{i + \rowOffsetNullString} \\
+                \locNonemptyByteString & \define & 1 - \locEmptyByteString         \\
+            \end{array} \right.
+        \]
+    \item[\underline{\underline{Setting \locOutputIsNonempty:}}]
+        we unconditionally impose $\locOutputIsNonempty = 1 - \locEmptyByteString$
+\end{description}
