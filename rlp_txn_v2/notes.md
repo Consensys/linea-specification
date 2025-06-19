@@ -28,10 +28,3 @@ Optionnel: avoir une
     - `possible_phase_transition_4`
     - et leur somme
 
-# RLP_UTILS
-
-## INTEGER instruction
-
-- harmonization
-    - have the same semantics for the ``prefix'' i.e. either always shifted or never shifted.
-    - same for the ``left shifted input'' output
