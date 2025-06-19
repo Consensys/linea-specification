@@ -80,20 +80,27 @@
 		\begin{enumerate}
 			\item we impose that \inst{SSTORE} instructions trigger the \oobMod{}
 				\[
-					\weightedMiscFlagSum {i}{\locMiscRowOffset}
+					\weightedMiscFlagSum {
+						anchorRow = i                 ,
+						relOffset = \locMiscRowOffset ,
+					}
 					=
 					\miscOobWeight \cdot \locIsSstore
+					% OK
 				\]
 				in other words	
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \gZero       & (\trash) \\
-						\miscMmuFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \rZero       & (\trash) \\
-						\miscMxpFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \rZero       & (\trash) \\
-						\miscOobFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \locIsSstore & (\trash) \\
-						\miscStpFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \gZero       & (\trash) \\
+						\miscExpFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \gZero       & (\sanityCheck) \\
+						\miscMmuFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \rZero       & (\sanityCheck) \\
+						\miscMxpFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \rZero       & (\sanityCheck) \\
+						\miscOobFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \locIsSstore & (\sanityCheck) \\
+						\miscStpFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \gZero       & (\sanityCheck) \\
 					\end{array} \right.
 				\]
+				\saNote{}
+				Recall that \locIsSstore{} is provably binary,
+				see note~(\ref{hub: instruction handling: storage: shorthands: provable binary note}).
 			\item \If $\locIsSstore = 1$ \Then we further impose that
 				\[
 					\setOobInstructionSstore {i}{\locMiscRowOffset}

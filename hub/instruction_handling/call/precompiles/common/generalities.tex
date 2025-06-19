@@ -34,36 +34,30 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 			\item[\underline{Setting lookup flags:}]
 				we impose that
 				\[
-					\left\{ \begin{array}{lcl}
-						\miscOobFlag _{i + \prcCommonMiscRowOffset} & = & 1 \\
-						\weightedMiscFlagSum
-						{i}{\prcCommonMiscRowOffset}
-                                                & = &
-						\left[ \begin{array}{clcl}
-							+ & \miscMmuWeight & \cdot & \locOobResultExtractCallData \\
-							+ & \miscOobWeight \\
-						\end{array} \right] \\
+					\left\{ \begin{array}{lclr}
+						\weightedMiscFlagSumSansMmu {
+							anchorRow = i                       ,
+							relOffset = \prcCommonMiscRowOffset ,
+						}
+                                                                                            & = & \miscOobWeight               \vspace{2mm}         \\
+						\miscMmuFlag _{i + \prcCommonMiscRowOffset} & = & \undefinedStar \quad \locOobResultExtractCallData \\
 					\end{array} \right.
 				\]
 				in other words
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       & (\trash) \\
-						\miscMmuFlag _{i + \prcCommonMiscRowOffset} & = & \locOobResultExtractCallData & (\trash) \\
-						\miscMxpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       & (\trash) \\
-						\miscOobFlag _{i + \prcCommonMiscRowOffset} & = & \one                         &          \\
-						\miscStpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                       & (\trash) \\
+						\miscExpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                                            & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcCommonMiscRowOffset} & = & \undefinedStar \quad \locOobResultExtractCallData & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                                            & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcCommonMiscRowOffset} & = & \one                                              & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcCommonMiscRowOffset} & = & \gZero                                            & (\sanityCheck) \\
 					\end{array} \right.
 				\]
 				\saNote{}
 				The shorthand \locOobResultExtractCallData{} will be defined shortly.
 				It is gleaned from one of the outputs of the call to the \oobMod{} module (which is systematically triggered given the above.)
-
-				\saNote{}
-				We explicitly constrain $\miscOobFlag _{i + \prcCommonMiscRowOffset} = \one$
-				so as to guarantee the expected \oobMod{} module call.
-				Binarity of the underlying expression of $\locOobResultExtractCallData$
-				is guaranteed provided that the requisite \oobMod{} module call was performed.
+				It is \textbf{provably binary} conditional to the fact that the \oobMod{} module was indeed called,
+				see note~(\ref{hub: instruction handling: call: precompiles: common: generalities: oob shorthands are provably binary}).
 			\item[\underline{Setting \oobMod{} instruction:}] 
 				we populate the \oobMod{} columns:
 				\[
@@ -115,16 +109,18 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 				\saNote{}
 				We refer the reader to the relevant section in the \oobMod{} module, in particular section~(\ref{oob: populating: common precompiles}).
 
-				\saNote{}
+				\saNote{} \label{hub: instruction handling: call: precompiles: common: generalities: oob shorthands are provably binary}
 				We have, by construction and by the computation in the \oobMod{} module, the following relations:
 				\[
 					\left\{ \begin{array}{lclr}
-						\locOobResultHubSuccess      & \equiv & \text{binary} & \quad (\trash)              \\
-						\locOobResultExtractCallData & \equiv & \text{binary} & \quad (\trash)              \\
-						\locOobResultEmptyCallData   & \equiv & \text{binary} & \quad (\trash) \vspace{2mm} \\
+						\locOobResultHubSuccess      & \equiv & \text{provably binary} \\
+						\locOobResultExtractCallData & \equiv & \text{provably binary} \\
+						\locOobResultEmptyCallData   & \equiv & \text{provably binary} \\
+						\locOobResultNonzeroRac      & \equiv & \text{provably binary} \vspace{2mm} \\
 						\multicolumn{3}{l}{\locOobResultExtractCallData + \locOobResultEmptyCallData = \locOobResultHubSuccess} & (\trash) \\
 					\end{array} \right.
 				\]
+				See section~(\ref{oob: populating: common precompiles}) for more details.
 
 				\saNote{} \label{hub: instruction handling: call: precompiles: common: generalities: sanity checks for BLS precompiles}
 				\If $\scenPrecompileCommonBls _{i} = 1$ \Then one expects
@@ -231,23 +227,26 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 								\locAddressRecoverySuccess & \define & \locOobResultExtractCallData \cdot \miscMmuSuccessBit_{i + \prcCommonMiscRowOffset} \\
 							\end{array} \right.
 						\]
-						\saNote{} These bits will be used in the processing of \instEcrecover{}.
+						\saNote{} \label{hub: instruction handling: call: precompiles: common: generalities: ecrecover recovery success failure flags are provably binary}
+						These bits will be used in the processing of \instEcrecover{}.
 						In that context (and given the precompile succedes)
 						\begin{itemize}
 							\item $\locAddressRecoveryFailure \equiv 1$ precisely when return data is empty ($\textbf{o} = ()$)
 							\item $\locAddressRecoverySuccess \equiv 1$ precisely when recovery is successful and return data is nonempty ($\textbf{o} \in \mathbb{B}_{32}$.)
 						\end{itemize}
 
-						\saNote{} We have, by construction, and given that the precompile at hand is \instEcrecover{}, the following relations:
+						\saNote{}
+						We have, by construction, and given that the precompile at hand is \instEcrecover{}, the following relations:
 						\[
 							\left\{ \begin{array}{lclr}
-								\locAddressRecoveryFailure   & \equiv & \text{binary} & \quad (\trash) \\
-								\locAddressRecoverySuccess   & \equiv & \text{binary} & \quad (\trash) \vspace{2mm} \\
+								\locAddressRecoveryFailure   & \equiv & \text{provably binary} & \quad (\trash) \\
+								\locAddressRecoverySuccess   & \equiv & \text{provably binary} & \quad (\trash) \vspace{2mm} \\
 								\multicolumn{3}{l}{\locAddressRecoveryFailure + \locAddressRecoverySuccess = \locOobResultHubSuccess} & \quad (\trash) \\
 							\end{array} \right.
 						\]
 
-						\saNote{} We finish by reminding that from the point of view of the \hubMod{} the bit $\miscMmuSuccessBit_{i + \prcCommonMiscRowOffset}$ is a \textbf{prediction}.
+						\saNote{}
+						We finish by reminding that from the point of view of the \hubMod{} the bit $\miscMmuSuccessBit_{i + \prcCommonMiscRowOffset}$ is a \textbf{prediction}.
 						This prediction will be borne out in the \ecDataMod{} module.
 					\item[\underline{\instEcadd{}, \instEcmul{} and \instEcpairing{} as well as \inst{BLS}-precompile specific:}]
 						we set

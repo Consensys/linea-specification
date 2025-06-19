@@ -47,26 +47,31 @@ The constraints are as follows:
 			\end{array} \right]
 			= \nonStackRows_{i}
 		\]
-	\item[\underline{Miscellaneous-row $n^°(i + \miscRowOffset)$: flags:}] we impose
+	\item[\underline{Miscellaneous-row $n^°(i + \miscRowOffset)$: flags:}]
+		we impose
 		\[
-			\weightedMiscFlagSum {i}{\miscRowOffset}
-			=
-			\left[ \begin{array}{llcl}
-				+ & \miscMmuWeight & \!\!\!\cdot\!\!\! & \locCallMmu \\
-				+ & \miscMxpWeight  \\
-			\end{array} \right]
+			\left\{ \begin{array}{lclr}
+				\weightedMiscFlagSumSansMmu {
+					anchorRow = i              ,
+					relOffset = \miscRowOffset ,
+				}
+                                                                   & = & \miscMxpWeight                      \vspace{2mm} \\
+				\miscMmuFlag _{i + \miscRowOffset} & = & \undefinedStar \quad \locTriggerMmu              \\
+			\end{array} \right.
+			% OK
 		\]
 		in other words
 		\[
 			\left\{ \begin{array}{lclr}
-				\miscExpFlag          _{i + \miscRowOffset} & = & \gZero      & (\trash) \\
-				\miscMmuFlag          _{i + \miscRowOffset} & = & \locCallMmu & (\trash) \\
-				\miscMxpFlag          _{i + \miscRowOffset} & = & \one        & (\trash) \\
-				\miscOobFlag          _{i + \miscRowOffset} & = & \gZero      & (\trash) \\
-				\miscStpFlag          _{i + \miscRowOffset} & = & \gZero      & (\trash) \\
+				\miscExpFlag _{i + \miscRowOffset} & = & \gZero         & (\sanityCheck) \\
+				\miscMmuFlag _{i + \miscRowOffset} & = & \locTriggerMmu & (\sanityCheck) \\
+				\miscMxpFlag _{i + \miscRowOffset} & = & \one           & (\sanityCheck) \\
+				\miscOobFlag _{i + \miscRowOffset} & = & \gZero         & (\sanityCheck) \\
+				\miscStpFlag _{i + \miscRowOffset} & = & \gZero         & (\sanityCheck) \\
 			\end{array} \right.
 		\]
-		\saNote{} The binary flag \locCallMmu{} will be defined below.
+		\saNote{}
+		The binary flag \locTriggerMmu{} will be defined below.
 	\item[\underline{Miscellaneous-row $n^°(i + \miscRowOffset)$: \mxpMod{} data:}]
 		we deal with the memory expansion cost:
 		\[
@@ -82,19 +87,19 @@ The constraints are as follows:
 				sizeLo      = \locSizeLo     ,
 			}
 		\]
-	\item[\underline{Defining \locCallMmu{}:}] we define it as follows
+	\item[\underline{Defining \locTriggerMmu{}:}] we define it as follows
 		\[
-			\locCallMmu
+			\locTriggerMmu
 			\define
 			(1 - \xAhoy_{i}) \cdot \miscMxpSizeOneNonzeroNoMxpx _{i + \miscRowOffset}
 		\]
 		in other words
 		\begin{enumerate}
-			\item \If $\xAhoy_{i} = 1$ \Then $\locCallMmu = 0$ \quad (\trash)
+			\item \If $\xAhoy_{i} = 1$ \Then $\locTriggerMmu = 0$ \quad (\trash)
 			\item \If $\xAhoy_{i} = 0$ \Then 
 				\begin{enumerate}
-					\item \If $\locSizeLo =    0$ \Then $\locCallMmu = 0$ \quad (\trash)
-					\item \If $\locSizeLo \neq 0$ \Then $\locCallMmu = 1$ \quad (\trash)
+					\item \If $\locSizeLo =    0$ \Then $\locTriggerMmu = 0$ \quad (\trash)
+					\item \If $\locSizeLo \neq 0$ \Then $\locTriggerMmu = 1$ \quad (\trash)
 				\end{enumerate}
 		\end{enumerate}
 	\item[\underline{Miscellaneous-row $n^°(i + \miscRowOffset)$: \mmuMod{} data:}]
@@ -127,18 +132,19 @@ The constraints are as follows:
 			\item \If $\locMxpx = 0$ \Then \( \gasCost_{i} = \stackStaticGas _{i} + \locMxpGas \)
 			\item \If $\locMxpx = 1$ \Then \( \gasCost_{i} = 0 \)
 		\end{enumerate}
-	\item[\underline{Constraining \stackHashInfoFlag{}:}] we impose $\stackHashInfoFlag_{i} = \locCallMmu$;
+	\item[\underline{Constraining \stackHashInfoFlag{}:}]
+		we impose $\stackHashInfoFlag_{i} = \locTriggerMmu$;
 	\item[\underline{Value constraints:}]
 		\If $\xAhoy_{i} = 0$ \et  \Then
 		\begin{enumerate}
-			\item \If $\locCallMmu = 0$ \Then
+			\item \If $\locTriggerMmu = 0$ \Then
 				\[
 					\begin{cases}
 						\locKeccakHi = \emptyKeccakHi \\
 						\locKeccakLo = \emptyKeccakLo \\
 					\end{cases}
 				\]
-			\item \If $\locCallMmu = 1$ \Then 
+			\item \If $\locTriggerMmu = 1$ \Then 
 				\[
 					\left\{ \begin{array}{lclr}
 						\locKeccakHi & = & \stackHashInfoValHi_{i} \\
