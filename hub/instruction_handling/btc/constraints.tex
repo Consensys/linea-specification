@@ -1,0 +1,34 @@
+\begin{center}
+	\boxed{%
+		\text{The stack constraints presented below assume }
+		\begin{cases}
+			\peekStack       _{i}                  = 1 \\
+			\stackDecBtcFlag _{i}                  = 1 \\
+			\stackSux        _{i} + \stackSox _{i} = 0 \\
+		\end{cases}}
+\end{center}
+We impose the following:
+\begin{description}
+	\item[\underline{Setting the stack pattern:}]
+		we impose that
+	\begin{enumerate}
+		\item \If $\decFlag{1} _{i} = 1$ \Then $\oneOneSP  _{i}$
+		\item \If $\decFlag{2} _{i} = 1$ \Then $\zeroOneSP _{i}$
+	\end{enumerate}
+	\item[\underline{Setting $\nonStackRows$:}]
+		we impose $\nonStackRows_{i} = \cmc_{i}$;
+	\item[\underline{Setting the peeking flags:}]
+		we don't need to set any;
+
+		\saNote{}
+		Implicitly of course $\cmc_{i} \cdot \peekContext_{i + 1} = \cmc_{i}$ (\sanityCheck);
+	\item[\underline{Setting the gas cost:}]
+		we impose that $\gasCost_{i} = \decStaticGas_{i}$;
+	\item[\underline{Value constraints:}]
+		the relevant values are obtained by means of a lookup to either the \btcMod{} module or the \blockHashMod{} module,
+		see sections
+		(\ref{hub: lookups: into block data}) and
+		(\ref{hub: lookups: into block hash}) respectively.
+\end{description}
+\saNote{}
+For instructions raising the $\stackDecBtcFlag$ one has $\cmc \equiv \xAhoy$.

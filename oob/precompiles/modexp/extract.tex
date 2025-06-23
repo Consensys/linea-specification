@@ -76,11 +76,11 @@ We use the shorthands defined below:
 
 \saNote{} We provide some explanations.
 The condition ``$\locExtractModulus \equiv 0$'' amounts to either $\locMbs \equiv 0$ or $\locCds \leq 96 + \locBbs + \locEbs$.
-In either case the \textbf{modulus} of the underlying \inst{MODEXP} call is $\bm{0}$ and so is the \textbf{result} (though, importantly, the \RDS{} \emph{post-call} is \locMbs{} which can be anything in the range $\{ 0, 1, \dots, 512 \}$.)
+In either case the \textbf{modulus} of the underlying \instModexp{} call is $\bm{0}$ and so is the \textbf{result} (though, importantly, the \RDS{} \emph{post-call} is \locMbs{} which can be anything in the range $\{ 0, 1, \dots, 512 \}$.)
 In this case there is no reason to extract any of the base, exponent or modulus.
 On the other hand when $\locExtractModulus \equiv 1$ it is necessary to extract base, exponent and modulus.
 It may still happen that $\locBbs \equiv 0$ or $\locEbs \equiv 0$.
 In which case the \hubMod{} will order the \textsc{ram} to send zeros to the \modexpMod{} (rather than potentially left and right padded data from \textsc{ram}.)
 To account for this possibility the $\oobInstModexpExtract$ instruction provides the bits
 \locExtractBase     {} and
-\locExtractExponent {} for exploitation by the \inst{MODEXP} processing in the \hubMod{} module.
+\locExtractExponent {} for exploitation by the \instModexp{} processing in the \hubMod{} module.
