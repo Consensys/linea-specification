@@ -23,7 +23,6 @@ We use the following shorthands
 			+ & \oobInstIsEcadd        _{i}  \\
 			+ & \oobInstIsEcmul        _{i}  \\
 			+ & \oobInstIsEcpairing    _{i}  \\
-			+ & \oobInstIsPointEvaluation_{i}\\
 			+ & \locPrcFlagSumBls      _{i}  \\
 		\end{array} \right] \vspace{2mm} \\
 		\locPrcFlagSumBlake_{i} & \define &
@@ -39,7 +38,9 @@ We use the following shorthands
 			+ & \oobInstIsModexpPricing     _{i}  \\
 			+ & \oobInstIsModexpExtract     _{i}  \\
 		\end{array} \right] \vspace{2mm} \\
-		\locPrcFlagSumBls_{i} & \define &
+		\locFlagSumEipBlobTransactions_{i} & \define & \oobInstIsPointEvaluation_{i} \\
+		\vspace{2mm} \\
+		\locFlagSumEipBlsTwelvePrecompiles_{i} & \define &
 		\left[ \begin{array}{cl}
 			+ & \oobInstIsBlsGOneAdd       _{i}  \\
 			+ & \oobInstIsBlsGOneMsm       _{i}  \\
@@ -48,9 +49,18 @@ We use the following shorthands
 			+ & \oobInstIsBlsPairingCheck  _{i}  \\
 			+ & \oobInstIsBlsMapFpToGOne   _{i}  \\
 			+ & \oobInstIsBlsMapFpTwoToGTwo_{i}  \\
-		\end{array} \right]		
+		\end{array} \right] \vspace{2mm} \\
+		\locPrcFlagSumBls_ {i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \locFlagSumEipBlobTransactions_ {i} \\
+			+ & \locFlagSumEipBlsTwelvePrecompiles_ {i} \\
+		\end{array} \right] \vspace{2mm} \\
 	\end{array} \right.
 \]
+\saNote{} 
+If the Ethereum network configuration is at the Cancun hard fork, one may further impose $\locFlagSumEipBlsTwelvePrecompiles_{i} = 0$,
+thereby not allowing \blsMod{} precompiles to be executed.
+
 we also set
 \[
 	\left\{ \begin{array}{lcl}
@@ -69,6 +79,7 @@ we also set
 \]
 and
 \[
+	\hspace*{-1cm}
 	\left\{ \begin{array}{lcl}
 		\weightedFlagSumInst_{i} & \define &
 		\left[ \begin{array}{clcl}
@@ -92,7 +103,6 @@ and
 			+ & \oobInstEcadd           & \cdot & \oobInstIsEcadd _{i}               \\
 			+ & \oobInstEcmul           & \cdot & \oobInstIsEcmul _{i}               \\
 			+ & \oobInstEcpairing       & \cdot & \oobInstIsEcpairing _{i}           \\
-			+ & \oobInstPointEvaluation & \cdot & \oobInstIsPointEvaluation _{i}     \\
 			+ & \weightedPrcFlagSumBls_{i} \\
 		\end{array} \right] \vspace{2mm} \\
 		\weightedPrcFlagSumBlake_{i} & \define &
@@ -108,7 +118,9 @@ and
 			+ & \oobInstModexpPricing  & \cdot & \oobInstIsModexpPricing     _{i}  \\
 			+ & \oobInstModexpExtract  & \cdot & \oobInstIsModexpExtract     _{i}  \\
 		\end{array} \right] \vspace{2mm} \\
-		\weightedPrcFlagSumBls_{i} & \define &
+		\weightedPrcEipBlobTransactions_{i} & \define & \oobInstPointEvaluation \cdot \oobInstIsPointEvaluation _{i} \\
+		\vspace{2mm} \\
+		\weightedPrcEipBlsTwelvePrecompiles_{i} & \define &
 		\left[ \begin{array}{crcl}
 			+ & \oobInstBlsGOneAdd         & \cdot & \oobInstIsBlsGOneAdd         _{i}  \\
 			+ & \oobInstBlsGOneMsm         & \cdot & \oobInstIsBlsGOneMsm         _{i}  \\
@@ -117,6 +129,11 @@ and
 			+ & \oobInstBlsPairingCheck    & \cdot & \oobInstIsBlsPairingCheck    _{i}  \\
 			+ & \oobInstBlsMapFpToGOne     & \cdot & \oobInstIsBlsMapFpToGOne     _{i}  \\
 			+ & \oobInstBlsMapFpTwoToGTwo  & \cdot & \oobInstIsBlsMapFpTwoToGTwo  _{i}  \\
+		\end{array} \right] \vspace{2mm} \\
+		\weightedPrcFlagSumBls_{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \weightedPrcEipBlobTransactions_ {i} \\
+			+ & \weightedPrcEipBlsTwelvePrecompiles_ {i} \\
 		\end{array} \right]
 	\end{array} \right.
 \]
@@ -159,7 +176,6 @@ where
 		\oobInstEcadd           & \define &   \oxEcadd       \\
 		\oobInstEcmul           & \define &   \oxEcmul       \\
 		\oobInstEcpairing       & \define &   \oxEcpairing   \\
-		\oobInstPointEvaluation & \define &   \oxPointEvaluation \\
 		\oobInstBlakeCds        & \define &   \oxBlakeCds    \\
 		\oobInstBlakeParams     & \define &   \oxBlakeParams \\
 	\end{array} \right.
@@ -177,6 +193,7 @@ and
 and
 \[
 	\left\{ \begin{array}{lclcr}
+		\oobInstPointEvaluation   & \define & \oxPointEvaluation \\
 		\oobInstBlsGOneAdd        & \define & \oxBlsGOneAdd        \\
 		\oobInstBlsGOneMsm        & \define & \oxBlsGOneMsm        \\
 		\oobInstBlsGTwoAdd        & \define & \oxBlsGTwoAdd        \\
@@ -192,6 +209,7 @@ The only requirement for these constants must satisfy is that all constants defi
 
 We further set
 \[
+	\hspace*{-1cm}
 	\left\{ \begin{array}{lcl}
 		\maxCtFlagSumInst_{i} & \define &
 		\left[ \begin{array}{clcl}
@@ -215,7 +233,6 @@ We further set
 			+ & \oobCtMaxEcadd           & \cdot & \oobInstIsEcadd      _{i} \\
 			+ & \oobCtMaxEcmul           & \cdot & \oobInstIsEcmul      _{i} \\
 			+ & \oobCtMaxEcpairing       & \cdot & \oobInstIsEcpairing  _{i} \\
-			+ & \oobCtMaxPointEvaluation & \cdot & \oobInstIsPointEvaluation _{i} \\
 			+ & \maxCtFlagSumPrcBls_{i} \\
 		\end{array} \right] \vspace{2mm} \\
 		\maxCtFlagSumPrcBlake_{i} & \define &
@@ -231,7 +248,9 @@ We further set
 			+ & \oobCtMaxModexpPricing      & \cdot & \oobInstIsModexpPricing      _{i}   \\
 			+ & \oobCtMaxModexpExtract      & \cdot & \oobInstIsModexpExtract      _{i}   \\
 		\end{array} \right] \vspace{2mm} \\
-		\maxCtFlagSumPrcBls_{i} & \define &
+		\maxCtFlagSumPrcEipBlobTransactions_{i} & \define & \oobCtMaxPointEvaluation \cdot \oobInstIsPointEvaluation _{i} \\
+	    \vspace{2mm} \\
+		\maxCtFlagSumPrcEipBlsTwelvePrecompiles_{i} & \define &
 		\left[ \begin{array}{crcl}
 			+ & \oobCtMaxBlsGOneAdd        & \cdot & \oobInstIsBlsGOneAdd        _{i}   \\
 			+ & \oobCtMaxBlsGOneMsm        & \cdot & \oobInstIsBlsGOneMsm        _{i}   \\
@@ -240,6 +259,11 @@ We further set
 			+ & \oobCtMaxBlsPairingCheck   & \cdot & \oobInstIsBlsPairingCheck   _{i}   \\
 			+ & \oobCtMaxBlsMapFpToGOne    & \cdot & \oobInstIsBlsMapFpToGOne    _{i}   \\
 			+ & \oobCtMaxBlsMapFpTwoToGTwo & \cdot & \oobInstIsBlsMapFpTwoToGTwo _{i}   \\
+		\end{array} \right] \vspace{2mm} \\
+		\maxCtFlagSumPrcBls_{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \maxCtFlagSumPrcEipBlobTransactions_ {i} \\
+			+ & \maxCtFlagSumPrcEipBlsTwelvePrecompiles_ {i} \\
 		\end{array} \right]
 	\end{array} \right.
 \]
@@ -283,7 +307,6 @@ where
         \oobCtMaxEcadd           & \define &  2 \\
         \oobCtMaxEcmul           & \define &  2 \\
         \oobCtMaxEcpairing       & \define &  4 \\
-		\oobCtMaxPointEvaluation & \define &  3 \\
     \end{array} \right. \\
     \left\{ \begin{array}{lcl}
         \oobCtMaxBlakeCds     & \define &  1 \\
@@ -298,6 +321,7 @@ where
         \oobCtMaxModexpExtract  & \define & 3 \\
     \end{array} \right. \\
 	\left\{ \begin{array}{lcl}
+		\oobCtMaxPointEvaluation   & \define &  3 \\
 		\oobCtMaxBlsGOneAdd        & \define &  3 \\
 		\oobCtMaxBlsGOneMsm        & \define &  6 \\
 		\oobCtMaxBlsGTwoAdd        & \define &  3 \\
