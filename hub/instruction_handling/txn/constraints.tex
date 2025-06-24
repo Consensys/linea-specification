@@ -9,7 +9,12 @@
 \end{center}
 We impose the following constraints:
 \begin{description}
-	\item[\underline{Setting the stack pattern:}] we impose $\zeroOneSP_{i}$;
+	\item[\underline{Setting the stack pattern:}] we impose:
+		\begin{enumerate}
+		 	\item \If $\locIsOrigin   = 1$ \Then $\zeroOneSP_{i}$
+		 	\item \If $\locIsGasPrice = 1$ \Then $\zeroOneSP_{i}$
+		 	\item \If $\locIsBlobhash = 1$ \Then $\oneOneSP _{i}$
+		\end{enumerate} 
 	\item[\underline{Setting $\nonStackRows$:}] we impose $\nonStackRows_{i} = 1 + \cmc_{i}$;
 	\item[\underline{Setting the peeking flags:}] we impose
 		\[
@@ -36,6 +41,13 @@ We impose the following constraints:
 					\left\{ \begin{array}{lcl}
 						\stackItemValHi{4}_{i} & \!\!\! = \!\!\! & 0 \\
 						\stackItemValLo{4}_{i} & \!\!\! = \!\!\! & \txGasPrice_{i + \locTxnRow} \\
+					\end{array} \right.
+				\]
+			\item \If $\locIsBlobhash = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\stackItemValHi{4}_{i} & \!\!\! = \!\!\! & 0 \\
+						\stackItemValLo{4}_{i} & \!\!\! = \!\!\! & 0 \\
 					\end{array} \right.
 				\]
 		\end{enumerate}
