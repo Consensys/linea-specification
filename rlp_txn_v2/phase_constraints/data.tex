@@ -10,11 +10,11 @@ We first determine the RLP prefix of the data on the first row:
 \begin{enumerate}[resume]
 	\item \If $\isTxn _{i - 1}=1$ \Then
 		\begin{enumerate}
-			\item $\isPrefix _{i} = 1$
-			\item $\numberOfZero _{i - 1}    = \tmpData{1} _{i}$
-			\item $\numberOfNonZero _{i - 1} = \tmpData{2} _{i}$
-			\item $\inputColumn{1} _{i} = \tmpData{1} _{i} + \tmpData{2} _{i}$
-			\item $\inputColumn{2} _{i} = \outputColumn{3} _{i} \cdot \outputColumn{5} _{i + 1}$
+			\item $\isPrefix                               _{i}     = 1$
+			\item $\rlpTxnTransactionColumnNumberOfZero    _{i - 1} = \tmpData{1} _{i}$
+			\item $\rlpTxnTransactionColumnNumberOfNonZero _{i - 1} = \tmpData{2} _{i}$
+			\item $\inputColumn{1}                         _{i}     = \tmpData{1} _{i} + \tmpData{2} _{i}$
+			\item $\inputColumn{2}                         _{i}     = \outputColumn{3} _{i} \cdot \outputColumn{5} _{i + 1}$
 				\footnote{This mean that, if the data length is not zero, we constrain the value of the first byte of the data to be consistent.}
 			\item $\inputColumn{3} _{i} = 0$ 
 			\item 
@@ -58,7 +58,7 @@ We now have rows where we expose in the $\limb$ column chunks of the data. We de
 \end{enumerate}
 And we impose finalization constraint:
 \begin{enumerate}[resume]
-	\item \If $\tmpData{1} _{i} + \tmpData{2} _{i} =0$ \Then $\phaseEnd _{i} = 1$  
-	\item \If $\phaseEnd _{i} = 1$ \Then $\tmpData{1} _{i} + \tmpData{2} _{i} =0$
+	\item \If $\tmpData{1} _{i} =0$ \et $\tmpData{2} _{i} =0$ \Then $\phaseEnd _{i} = 1$  
+	\item \If $\phaseEnd _{i} = 1$ \Then $\tmpData{1} _{i} =0$ \et $\tmpData{2} _{i} =0$
 \end{enumerate}
     
