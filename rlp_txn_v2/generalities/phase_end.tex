@@ -33,17 +33,3 @@ and we impose the following:
 The above constraint~(\ref{rlp txn v2: generalities: PHASE_END constraints})
 must be understood as follows: rather than \textbf{constraining} \phaseEnd{},
 the constraints will often times \textbf{set} the value of \phaseEnd{} and thereby force a phase transition upon the module.
-
-In other words, a phase transition happens if and only if $\phaseEnd_{i} = 1$ and means $\phase{p}_{i} = 1$ and $\phase{q}_{i + 1} = 1$ with the only given possibility for p and q, depending of $\rlpTxnTransactionColumnTxType$:
-\begin{table}[h]
-    \centering
-    \renewcommand{\arraystretch}{1.5}
-    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} \hline
-        $\phase{p}_{i}$                                                & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9  & 10 & 11 & 12 & 13 & 14 \\ \hline \hline
-        $\phase{q}_{i + 1}$ (for $\rlpTxnTransactionColumnTxType = 0$) & 2 &   & 3 & 6 &   &   & 7 & 8 & 9 & 11 &    & 13 &    & 14 & 0  \\ \hline
-        $\phase{q}_{i + 1}$ (for $\rlpTxnTransactionColumnTxType = 1$) & 1 & 2 & 3 & 6 &   &   & 7 & 8 & 9 & 10 & 12 &    & 13 & 14 & 0  \\ \hline
-        $\phase{q}_{i + 1}$ (for $\rlpTxnTransactionColumnTxType = 2$) & 1 & 2 & 4 &   & 5 & 6 & 7 & 8 & 9 & 10 & 12 &    & 13 & 14 & 0  \\ \hline
-    \end{tabular}
-    \caption{Possible phase transition}
-    \label{tab:Possible phase transition}
-\end{table}

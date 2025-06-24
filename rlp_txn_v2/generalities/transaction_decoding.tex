@@ -34,3 +34,10 @@ We impose:
 \saNote{} \label{rlp txn v2: generalities: transaction decoding: flag exclusivity}
 The above implicitly imposes flag exclusivity on the ``transaction type flags.''
 It further imposes that every transaction raises precisely one of the ``transaction type flags.''
+\begin{enumerate}[resume]
+	\item $\rlpTxnTransactionColumnChainlessTransaction{}$ is binary \quad (\sanityCheck)
+	\item \If $\isTxn_{i} = 1$ \et $\rlpTxnTransactionColumnChainId_{i} \neq 0$ \Then $\rlpTxnTransactionColumnChainlessTransaction_{i} = 0$
+	\item \If $\isTxn_{i} = 1$ \et $\typeZeroTx_{i} = 0$ \Then $\rlpTxnTransactionColumnChainlessTransaction_{i} = 0$ \quad (\sanityCheck)
+\end{enumerate}
+\saNote{} \label{rlp txn v2: generalities: transaction decoding: non legacy transaction can't be chainless}
+The above imposes that only legacy transactions can be chainless.

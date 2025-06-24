@@ -6,21 +6,13 @@ We impose some generalities:
 	\item $\lt _{i}=1$
 	\item $\lx _{i}=1$
 \end{enumerate}
-We prove some values of the transaction row:
-\begin{enumerate}[resume]
-	\item \If $\isTxn _{i - 1}=0$ \Then
-		\begin{enumerate}
-			\item $\numberOfZero _{i - 1}    = \tmpData{1} _{i}$
-			\item $\numberOfNonZero _{i - 1} = \tmpData{2} _{i}$
-		\end{enumerate}
-\end{enumerate}
-In other words, $\tmpData{1} _{i}$ stores the number of zero bytes in the data (resp. nonzeros). 
-\newline
 We first determine the RLP prefix of the data on the first row:
 \begin{enumerate}[resume]
 	\item \If $\isTxn _{i - 1}=1$ \Then
 		\begin{enumerate}
 			\item $\isPrefix _{i} = 1$
+			\item $\numberOfZero _{i - 1}    = \tmpData{1} _{i}$
+			\item $\numberOfNonZero _{i - 1} = \tmpData{2} _{i}$
 			\item $\inputColumn{1} _{i} = \tmpData{1} _{i} + \tmpData{2} _{i}$
 			\item $\inputColumn{2} _{i} = \outputColumn{3} _{i} \cdot \outputColumn{5} _{i + 1}$
 				\footnote{This mean that, if the data length is not zero, we constrain the value of the first byte of the data to be consistent.}
@@ -51,7 +43,7 @@ We first determine the RLP prefix of the data on the first row:
 \end{enumerate}
 We now have rows where we expose in the $\limb$ column chunks of the data. We delegate to RLPUTILS proving that the limb is up to $\llarge$ bytes long, and counting the number of zeros and nonzeros byte. 
 \begin{enumerate}[resume]
-	\item \If $\isTxn _{i - 1}=0$ \Then
+	\item \If $\isCmp _{i - 1} \cdot \isCmp _{i} = 1$ \Then
 		\begin{enumerate}
 			\item $\isPrefix _{i} = 0$
 			\item $\rlpUtilsFlag _{i} = 1$
@@ -61,7 +53,7 @@ We now have rows where we expose in the $\limb$ column chunks of the data. We de
 			\item \If $\phaseEnd _{i} = 0$ \Then: $\inputColumn{2} _{i} = \llarge$
 			\item $\tmpData{1} _{i} = \tmpData{1} _{i - 1} - \outputColumn{2} _{i}$
 			\item $\tmpData{2} _{i} = \tmpData{2} _{i - 1} - \outputColumn{4} _{i}$
-			\item \If $\phaseEnd _{i} = 0$ \Then: $\done _{i} = 0$
+			\item $\phaseEnd _{i} = \done _{i}$
 		\end{enumerate}
 \end{enumerate}
 And we impose finalization constraint:
