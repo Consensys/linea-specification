@@ -23,7 +23,7 @@ We impose:
 	\item
 		we impose that $\locTransactionTypeSum _{i} = \locPhaseFlagSum _{i}$
 	\item
-		\If $\isTxn_{i} = 1$ \Then $\rlpTxnTransactionColumnTxType _{i} = \locWeightedTransactionTypeSum _{i}$
+		\If $\isTxn _{i} = 1$ \Then $\rlpTxnTransactionColumnTxType _{i} = \locWeightedTransactionTypeSum _{i}$
 		% \begin{enumerate}
 		% 	\item $\ct       _{i}   = 0$ (\sanityCheck)
 		% 	\item $\maxCt    _{i}   = 0$ (\sanityCheck)
@@ -35,9 +35,9 @@ We impose:
 The above implicitly imposes flag exclusivity on the ``transaction type flags.''
 It further imposes that every transaction raises precisely one of the ``transaction type flags.''
 \begin{enumerate}[resume]
-	\item $\rlpTxnTransactionColumnChainlessTransaction{}$ is binary \quad (\sanityCheck)
-	\item \If $\isTxn_{i} = 1$ \et $\rlpTxnTransactionColumnChainId_{i} \neq 0$ \Then $\rlpTxnTransactionColumnChainlessTransaction_{i} = 0$
-	\item \If $\isTxn_{i} = 1$ \et $\typeZeroTx_{i} = 0$ \Then $\rlpTxnTransactionColumnChainlessTransaction_{i} = 0$ \quad (\sanityCheck)
+	\item $\rlpTxnCommonColumnReplayProtection{}$ is binary \quad (\sanityCheck)
+	\item \If $\isTxn _{i} = 1$ \et $\rlpTxnTransactionColumnChainId _{i} \neq 0$ \Then $\rlpTxnCommonColumnReplayProtection _{i} = 0$
+	\item \If $\isTxn _{i} = 1$ \et $\typeZeroTx _{i} = 0$ \Then $\rlpTxnCommonColumnReplayProtection _{i} = 0$ \quad (\sanityCheck)
 \end{enumerate}
 \saNote{} \label{rlp txn v2: generalities: transaction decoding: non legacy transaction can't be chainless}
 The above imposes that only legacy transactions can be chainless.

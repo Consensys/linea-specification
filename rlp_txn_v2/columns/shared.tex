@@ -70,3 +70,15 @@ We further introduce ``phase flag columns'':
     \item $\done$:
 	binary column; equal to $1$ on the final row of every \ct{} cycle; equal to $0$ otherwise;
 \end{enumerate}
+The following columns we put into the ``shared columns'' for the sole reason that we want to easily impose transaction-constancy.
+\begin{enumerate}
+        \item 
+	    \rlpTxnCommonColumnReplayProtection{}:
+	    transaction-constant binary column;
+	    equals $1$ if and only if the transaction \textbf{does not} implement replay protection i.e.
+	    does not specify a \chainId{};
+	\item
+	    \rlpTxnCommonColumnYparity{}:
+	    transaction-constant binary column;
+	    contains \textbf{yParity} of the transaction;
+\end{enumerate}
