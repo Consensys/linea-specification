@@ -22,3 +22,172 @@
 \newcommand{\rlpStorageKey}       {\texttt{rlpStorageKey}}
 \newcommand{\rlpInteger}          {\texttt{rlpInteger}}
 \newcommand{\rlpBytestringPrefix} {\texttt{rlpByteStringPrefix}}
+
+
+\makeatletter
+ 
+\define@cmdkey [RLP] {var} {anchorRow}        {}
+\define@cmdkey [RLP] {var} {relOffset}        {}
+\define@cmdkey [RLP] {var} {utilizeRow}       {}
+\define@cmdkey [RLP] {var} {limb}             {}
+\define@cmdkey [RLP] {var} {nBytes}           {}
+\define@cmdkey [RLP] {var} {byteStringLength} {}
+\define@cmdkey [RLP] {var} {firstByte}        {}
+\define@cmdkey [RLP] {var} {isList}           {}
+
+\presetkeys    [RLP] {var} {
+	anchorRow          = \missingParameter ,
+	relOffset          = \missingParameter ,
+        utilizeRow         = \missingParameter ,
+        limb               = \missingParameter ,
+        nBytes             = \missingParameter ,
+        byteStringLength   = \missingParameter ,
+        firstByte          = \missingParameter ,
+        isList             = \missingParameter ,
+        % offsetHi           = \missingParameter ,
+}{}
+
+
+\newcommand{\potentiallySetLimbName} {\inst{potentiallySetLimb}}
+\newcommand{\potentiallySetLimb} [1] {
+    \setkeys[RLP]{var}{#1}
+    \potentiallySetLimbName _{\cmdRLP@var@anchorRow}
+    \left[ \begin{array}{lr}
+        \utt{Rel. row offset:} & \cmdRLP@var@relOffset  \\
+        \utt{Utilize row:}     & \cmdRLP@var@utilizeRow \\
+        \utt{Data limb:}       & \cmdRLP@var@limb       \\
+        \utt{Number of bytes:} & \cmdRLP@var@nBytes     \\
+    \end{array} \right]
+    }
+
+% \potentiallySetLimb {
+%     anchorRow  = ,
+%     relOffset  = ,
+%     utilizeRow = ,
+%     limb       = ,
+%     nBytes     = ,
+% }
+
+\newcommand{\finalizeLimbName} {\inst{finalizeLimb}}
+\newcommand{\finalizeLimb} [1] {
+    \setkeys[RLP]{var}{#1}
+    \finalizeLimbName _{\cmdRLP@var@anchorRow}
+    \left[ \begin{array}{lr}
+        \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
+        \utt{Data limb:}       & \cmdRLP@var@limb      \\
+        \utt{Number of bytes:} & \cmdRLP@var@nBytes    \\
+    \end{array} \right]
+    }
+
+% \finalizeLimb {
+%     anchorRow  = ,
+%     relOffset  = ,
+%     limb       = ,
+%     nBytes     = ,
+% }
+
+\newcommand{\dismissLimbName} {\inst{dismissLimb}}
+\newcommand{\dismissLimb} [1] {
+    \setkeys[RLP]{var}{#1}
+    \dismissLimbName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{lr}
+            \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
+        \end{array} \right]
+    }
+
+% \dismissLimb {
+%     anchorRow  = ,
+%     relOffset  = ,
+% }
+
+\newcommand{\limbBelongsToLtOnlyName} {\inst{limbOfLTonly}}
+\newcommand{\limbBelongsToLtOnly} [1] {
+    \setkeys[RLP]{var}{#1}
+    \limbBelongsToLtOnlyName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{lr}
+            \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
+        \end{array} \right]
+    }
+
+% \limbBelongsToLtOnly {
+%     anchorRow  = ,
+%     relOffset  = ,
+% }
+
+\newcommand{\limbBelongsToLxOnlyName} {\inst{limbOfLXonly}}
+\newcommand{\limbBelongsToLxOnly} [1] {
+    \setkeys[RLP]{var}{#1}
+    \limbBelongsToLxOnlyName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{lr}
+            \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
+        \end{array} \right]
+    }
+
+% \limbBelongsToLxOnly {
+%     anchorRow  = ,
+%     relOffset  = ,
+% }
+
+\newcommand{\limbBelongsToBothLtAndLxName} {\inst{limbOfBothLTandLX}}
+\newcommand{\limbBelongsToBothLtAndLx} [1] {
+    \setkeys[RLP]{var}{#1}
+    \limbBelongsToBothLtAndLxName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{lr}
+            \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
+        \end{array} \right]
+    }
+
+% \limbBelongsToBothLtAndLx {
+%     anchorRow  = ,
+%     relOffset  = ,
+% }
+
+
+\newcommand{\rlpUtilsInstCallIntegerName}        {\inst{rlpUtilsCall\_INTEGER}}
+\newcommand{\rlpUtilsInstCallInteger}        [1] {
+    \setkeys[RLP]{var}{#1}
+    \rlpUtilsInstCallIntegerName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{lr}
+            \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
+        \end{array} \right]
+    }
+
+\newcommand{\rlpUtilsInstCallByteStringName}     {\inst{rlpUtilsCall\_BYTE\_STRING}}
+\newcommand{\rlpUtilsInstCallByteString}     [1] {
+    \setkeys[RLP]{var}{#1}
+    \rlpUtilsInstCallByteStringName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{lr}
+            \utt{Rel. row offset:}    & \cmdRLP@var@relOffset        \\
+            \utt{Byte string length:} & \cmdRLP@var@byteStringLength \\
+            \utt{First byte:}         & \cmdRLP@var@firstByte        \\
+            \utt{Is list:}            & \cmdRLP@var@isList           \\
+        \end{array} \right]
+    }
+
+% \rlpUtilsInstCallByteString {
+%     anchorRow        = ,
+%     relOffset        = ,
+%     byteStringLength = ,
+%     firstByte        = ,
+%     isList           = ,
+% }
+
+\newcommand{\rlpUtilsInstCallBytesThirtyTwoName} {\inst{rlpUtilsCall\_BYTES32}}
+\newcommand{\rlpUtilsInstCallBytesThirtyTwo} [1] {
+    \setkeys[RLP]{var}{#1}
+    \rlpUtilsInstCallBytesThirtyTwoName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{lr}
+            \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
+        \end{array} \right]
+    }
+
+\newcommand{\rlpUtilsInstCallDataPricingName}    {\inst{rlpUtilsCall\_DATA\_PRICING}}
+\newcommand{\rlpUtilsInstCallDataPricing}    [1] {
+    \setkeys[RLP]{var}{#1}
+    \rlpUtilsInstCallDataPricingName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{lr}
+            \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
+        \end{array} \right]
+    }
+
+\makeatother
