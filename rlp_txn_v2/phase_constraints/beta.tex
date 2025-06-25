@@ -8,15 +8,19 @@ We use the following shorthand:
         \locChainlessTransaction & \define & \rlpTxnTransactionColumnChainlessTransaction_{i} \\
         \locChainId              & \define & \rlpTxnTransactionColumnChainId             _{i} \\
         \locY                    & \define & \rlpTxnTransactionColumnY                   _{i} \\
-        
     \end{array} \right.
 \]
 
 We first compute $\rlp(w)$ which is in $\locLtTilde$ only:
 
 \begin{enumerate}
-    \item $\lt_{i +1} =1$
-    \item $\lx_{i + 1} =0$
+    \item
+        $
+        \limbBelongsToLtOnly {
+            anchorRow = i ,
+            relOffset = 1 ,
+        }
+        $
     \item $\inputColumn{1}_{i + 1} = 0$
     \item
         \[
@@ -59,8 +63,11 @@ $\locLxTilde$ which is $\mathtt{RLP}(\beta) \cdot \mathtt{RLP}(\varnothing) \cdo
 \begin{enumerate}[resume]
     \item \If $\locChainlessTransaction = 0$ \Then:
         \begin{enumerate}
-            \item $\lt            _{i + \rlpIntegerInstNbRows + 1} = 0$
-            \item $\lx            _{i + \rlpIntegerInstNbRows + 1} = 1$
+            \item
+                $\limbBelongsToLxOnly {
+                    anchorRow = i                     ,
+                    relOffset = \rlpIntegerInstNbRows ,
+                }$
             \item $\inputColumn{1}_{i + \rlpIntegerInstNbRows + 1} = 0$
             \item $\inputColumn{2}_{i + \rlpIntegerInstNbRows + 1} = \locChainId $
             \item
@@ -86,8 +93,12 @@ $\locLxTilde$ which is $\mathtt{RLP}(\beta) \cdot \mathtt{RLP}(\varnothing) \cdo
                     \right)
                 \]
             \item $\phaseEnd _{i + \rlpIntegerInstNbRows + \rlpIntegerInstNbRows} = 0$
-            \item $\lt       _{i + \rlpIntegerInstNbRows + \rlpIntegerInstNbRows + 1} = 0$
-            \item $\lx       _{i + \rlpIntegerInstNbRows + \rlpIntegerInstNbRows + 1} = 1$
+            \item
+                $\limbBelongsToLxOnly {
+                    anchorRow = i                                                 ,
+                    relOffset = \rlpIntegerInstNbRows + \rlpIntegerInstNbRows + 1 ,
+                }$
+
             \item $\limb     _{i + \rlpIntegerInstNbRows + \rlpIntegerInstNbRows + 1} = \rlprefixShortInt \cdot 256^{15} + \rlprefixShortInt \cdot 256^{14}$
             \item $\limbsize _{i + \rlpIntegerInstNbRows + \rlpIntegerInstNbRows + 1} = 2$ 
             \item $\phaseEnd _{i + \rlpIntegerInstNbRows + \rlpIntegerInstNbRows + 1} = 1$ 
