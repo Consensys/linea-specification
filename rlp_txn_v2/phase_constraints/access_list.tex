@@ -1,6 +1,6 @@
 \begin{center}
 	\boxed{\text{Throughout this section it is assumed that $\phaseAccessList_{i}=1$.}}
-\end{center} 
+\end{center}
 
 We use the following shorthand:
 \[
@@ -31,7 +31,7 @@ We prove some values of the transaction row:
 	\item \If $\isTxn_{i-1}=0$ \Then
 		\begin{enumerate}
 			\item $\nbWarmedAddress_{i-1} = \locTotNbOfAddress_{i}$
-			\item $\nbWarmedStorageKey_{i-1} = \locTotNbOfStorage_{i}$ 
+			\item $\nbWarmedStorageKey_{i-1} = \locTotNbOfStorage_{i}$
 		\end{enumerate}
 \end{enumerate}
 eit
@@ -42,30 +42,30 @@ We first determine the RLP prefix of the data on the first row:
 			\item $\isPrefix _{i} = 1$
 			\item $\isAddr   _{i} = 0$
 			\item $\isSto    _{i} = 0$
-			\item $\inputColumn{1}_{i} = \locPhaseSize_{i}$
-			\item $\inputColumn{3}_{i} = 1$ 
-			\item 
+			\item $\exoDataColumn{1}_{i} = \locPhaseSize_{i}$
+			\item $\exoDataColumn{3}_{i} = 1$
+			\item
 				\[
 					\rlpBytestringPrefix_{i}
 					\left(
 					\begin{array}{r}
-						\inputColumn{1},
-						\inputColumn{2},
-						\inputColumn{3},
+						\exoDataColumn{1},
+						\exoDataColumn{2},
+						\exoDataColumn{3},
 						\ct,
 						\maxCt; \\
 						\rlpUtilsFlag,
 						\INST,
-						\outputColumn{1},
-						\outputColumn{2},
-						\outputColumn{5}; \\
+						\exoDataColumn{4},
+						\exoDataColumn{5},
+						\exoDataColumn{8}; \\
 						\limb,
 						\lc,
 						\limbsize; \\
 					\end{array}
 					\right)
 				\]
-			\item $\phaseEnd_{i} = \outputColumn{3}_{i}$
+			\item $\phaseEnd_{i} = \exoDataColumn{6}_{i}$
 			\item \If $\phaseEnd_{i} =0$ \Then:
 				\begin{enumerate}
 					\item $\isPrefix _{i+1} = 1$
@@ -79,23 +79,23 @@ An access list tuple always starts with the rlp prefix of the tuple, followed by
 \begin{enumerate}[resume]
 	\item \If $\isPrefix_{i} = 1$ \et $\isAddr_{i} = 1$ \et $\isSto_{i} = 0$ Then:
 		\begin{enumerate}
-			\item $\inputColumn{1}_{i} = \locAccessListTupleSize_{i}$
-			\item $\inputColumn{3}_{i} = 1$ 
-			\item 
+			\item $\exoDataColumn{1}_{i} = \locAccessListTupleSize_{i}$
+			\item $\exoDataColumn{3}_{i} = 1$
+			\item
 				\[
 					\rlpBytestringPrefix_{i}
 					\left(
 					\begin{array}{r}
-						\inputColumn{1},
-						\inputColumn{2},
-						\inputColumn{3},
+						\exoDataColumn{1},
+						\exoDataColumn{2},
+						\exoDataColumn{3},
 						\ct,
 						\maxCt; \\
 						\rlpUtilsFlag,
 						\INST,
-						\outputColumn{1},
-						\outputColumn{2},
-						\outputColumn{5}; \\
+						\exoDataColumn{4},
+						\exoDataColumn{5},
+						\exoDataColumn{8}; \\
 						\limb,
 						\lc,
 						\limbsize; \\
@@ -104,8 +104,8 @@ An access list tuple always starts with the rlp prefix of the tuple, followed by
 				\]
 			\item $\isPrefix _{i+1} = 0$
 			\item $\isAddr   _{i+1} = 1$
-			\item $\isSto    _{i+1} = 0$	
-			\item 
+			\item $\isSto    _{i+1} = 0$
+			\item
 				\[
 					\rlpAddress_{i+1}
 					\left(
@@ -123,29 +123,29 @@ An access list tuple always starts with the rlp prefix of the tuple, followed by
 				\]
 		\end{enumerate}
 
-		After the RLP of an address, we have the RLP of the list of the (possibly empty) list of storage keys: 
+		After the RLP of an address, we have the RLP of the list of the (possibly empty) list of storage keys:
 		\begin{enumerate}[resume]
 			\item \If $\isPrefix_{i-1} = 0$ \et $\isAddr_{i-1} = 1$ \et $\isSto_{i-1} = 0$ \et $\done_{i-1} =1$ Then:
 				\begin{enumerate}
 					\item $\isPrefix _{i} = 1$
 					\item $\isAddr   _{i} = 0$
 					\item $\isSto    _{i} = 1$
-					\item $\inputColumn{1}_{i} = 33 \cdot \locTotStorageForThisAddress_{i}$
-					\item 
+					\item $\exoDataColumn{1}_{i} = 33 \cdot \locTotStorageForThisAddress_{i}$
+					\item
 						\[
 							\rlpBytestringPrefix_{i}
 							\left(
 							\begin{array}{r}
-								\inputColumn{1},
-								\inputColumn{2},
-								\inputColumn{3},
+								\exoDataColumn{1},
+								\exoDataColumn{2},
+								\exoDataColumn{3},
 								\ct,
 								\maxCt; \\
 								\rlpUtilsFlag,
 								\INST,
-								\outputColumn{1},
-								\outputColumn{2},
-								\outputColumn{5}; \\
+								\exoDataColumn{4},
+								\exoDataColumn{5},
+								\exoDataColumn{8}; \\
 								\limb,
 								\lc,
 								\limbsize; \\
@@ -153,39 +153,39 @@ An access list tuple always starts with the rlp prefix of the tuple, followed by
 							\right)
 						\]
 
-					\item \If $\outputColumn{3}_{i} = 1$ \Then:
+					\item \If $\exoDataColumn{6}_{i} = 1$ \Then:
 						\begin{enumerate}
 							\item $\isPrefix _{i+1} = 0$
 							\item $\isAddr   _{i+1} = 0$
 							\item $\isSto    _{i+1} = 1$
 						\end{enumerate}
 
-					\item \If $\outputColumn{3}_{i} = 0$ \et $\locTotNbOfAddress_{i} \neq 0$ \Then:
+					\item \If $\exoDataColumn{6}_{i} = 0$ \et $\locTotNbOfAddress_{i} \neq 0$ \Then:
 						\begin{enumerate}
 							\item $\isPrefix _{i+1} = 1$
 							\item $\isAddr   _{i+1} = 1$
 							\item $\isSto    _{i+1} = 0$
 						\end{enumerate}
 
-					\item \If $\outputColumn{3}_{i} = 0$ \et $\locTotNbOfAddress_{i} = 0$ \Then:
+					\item \If $\exoDataColumn{6}_{i} = 0$ \et $\locTotNbOfAddress_{i} = 0$ \Then:
 						\begin{enumerate}
 							\item $\phaseEnd _{i} = 1$
 						\end{enumerate}
-				\end{enumerate}			
+				\end{enumerate}
 		\end{enumerate}
 
-		Here we constraint what happens when we have to do the RLP of a storage key: 
+		Here we constraint what happens when we have to do the RLP of a storage key:
 		\begin{enumerate}[resume]
 			\item \If $\isPrefix_{i-1} = 0$ \et $\isAddr_{i-1} = 0$ \et $\isSto_{i-1} = 1$ \et $\done_{i-1} =1$ Then:
 				\begin{enumerate}
-					\item $\inputColumn{1}_{i} = \inputColumn{1}_{i+1} = \inputColumn{1}_{i+2}$
-					\item $\inputColumn{2}_{i} = \inputColumn{2}_{i+1} = \inputColumn{2}_{i+2}$
+					\item $\exoDataColumn{1}_{i} = \exoDataColumn{1}_{i+1} = \exoDataColumn{1}_{i+2}$
+					\item $\exoDataColumn{2}_{i} = \exoDataColumn{2}_{i+1} = \exoDataColumn{2}_{i+2}$
 					\item \[
 							\rlpStorageKey_{i}
 							\left(
 							\begin{array}{r}
-								\inputColumn{1},
-								\inputColumn{2},
+								\exoDataColumn{1},
+								\exoDataColumn{2},
 								\ct,
 								\maxCt; \\
 								\rlpUtilsFlag,
@@ -203,7 +203,7 @@ An access list tuple always starts with the rlp prefix of the tuple, followed by
 			\item \If $\isPrefix_{i} = 0$ \et $\isAddr_{i} = 0$ \et $\isSto_{i} = 1$ \et $\done_{i} =1$ \Then:
 				\begin{enumerate}
 					\item \If $\locTotStorageForThisAddress_{i} \neq 0$ \Then: $\isPrefix_{i+1} = 0$ \et $\isAddr_{i+1} = 0$ \et $\isSto_{i+1} = 1$
-					\item \If $\locTotStorageForThisAddress_{i} = 0$ \Then: 
+					\item \If $\locTotStorageForThisAddress_{i} = 0$ \Then:
 						\begin{enumerate}
 							\item $\locAccessListTupleSize_{i} = 0$
 							\item \If $\locTotNbOfAddress_{i} \neq 0$ \Then: $\isPrefix_{i+1} = 1$ \et $\isAddr_{i+1} = 1$ \et $\isSto_{i+1} = 0$
@@ -214,7 +214,7 @@ An access list tuple always starts with the rlp prefix of the tuple, followed by
 
 		We constraint finalize the phase before the end by imposing:
 		\begin{enumerate}
-			\item \If $\phaseEnd_{i} =1$ \Then: 
+			\item \If $\phaseEnd_{i} =1$ \Then:
 				\begin{enumerate}
 					\item $\locPhaseSize_{i} =0$
 					\item $\locTotNbOfAddress_{i} =0$
@@ -227,7 +227,7 @@ An access list tuple always starts with the rlp prefix of the tuple, followed by
 			\item $\locPhaseSize_{i} = \locPhaseSize_{i-1} - \lc_{i} \cdot \limbsize_{i}$
 			\item \If $\isSto_{i} =1$ \Or ($\isAddr_{i} =1$ \et $\isPrefix_{i} =0$) \Then: $\locAccessListTupleSize_{i} = \locAccessListTupleSize_{i-1} - \lc_{i} \cdot \limbsize_{i}$
 			\item $\locTotNbOfAddress_{i} = \locTotNbOfAddress_{i-1} - \isPrefix_{i} \cdot \isAddr_{i}$
-			\item \If $\isAddr_{i} =1$ \et $\isSto_{i}=1$ \et $\locTotNbOfAddress_{i} = \locTotNbOfAddress_{i+1}$ \Then: 
+			\item \If $\isAddr_{i} =1$ \et $\isSto_{i}=1$ \et $\locTotNbOfAddress_{i} = \locTotNbOfAddress_{i+1}$ \Then:
 				\begin{enumerate}
 					\item $\locAddressHi_{i} = \locAddressHi_{i+1}$
 					\item $\locAddressLo_{i} = \locAddressLo_{i+1}$
