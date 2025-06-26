@@ -23,23 +23,24 @@ which stands for the following set of constraints
 		we define the following shorthands
 		\[
 			\left\{ \begin{array}{lcl}
-				\locOutputHasRlpPrefix     & \define & \outputColumn {1} _{i + \relof} \\
-				\locOutputRlpPrefix        & \define & \outputColumn {2} _{i + \relof} \\
-				\locOutputHasNonzeroHiPart & \define & \outputColumn {3} _{i + \relof} \\
-				\locOutputLeftShiftedInput & \define & \outputColumn {4} _{i + \relof} \\
-				\locOutputNBytes           & \define & \outputColumn {5} _{i + \relof} \\
+				\locOutputInputIntegerIsNonzero        & \define & \exoDataColumn {3} _{i + \relof} \\
+				\locOutputInputIngegerHasNonzeroHiPart & \define & \exoDataColumn {4} _{i + \relof} \\
+				\locOutputRlpPrefixRequired            & \define & \exoDataColumn {5} _{i + \relof} \\
+				\locOutputRlpPrefix                    & \define & \exoDataColumn {6} _{i + \relof} \\
+				\locOutputLeadingLimbLeftShifted       & \define & \exoDataColumn {7} _{i + \relof} \\
+				\locOutputLeadingLimbByteSize          & \define & \exoDataColumn {8} _{i + \relof} \\
 			\end{array} \right.
 		\]
 		and furthermore we set
 		\begin{enumerate}
-			\item \If $\locOutputHasNonzeroHiPart = 0$ \Then
+			\item \If $\locOutputInputIngegerHasNonzeroHiPart = 0$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
-						\locLastLimb   & \define & \locOutputLeftShiftedInput \\
-						\locLastNBytes & \define & \locOutputNBytes           \\
+						\locLastLimb   & \define & \locOutputLeadingLimbLeftShifted \\
+						\locLastNBytes & \define & \locOutputLeadingLimbByteSize    \\
 					\end{array} \right.
 				\]
-			\item \If $\locOutputHasNonzeroHiPart = 1$ \Then
+			\item \If $\locOutputInputIngegerHasNonzeroHiPart = 1$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
 						\locLastLimb   & \define & \loc{integer\_lo} \\
@@ -53,11 +54,11 @@ which stands for the following set of constraints
 		we impose
 		\[
 			\conditionallySetLimb {
-				anchorRow  = i                       ,
-				relOffset  = \relof                  ,
-				condition  = \locOutputHasRlpPrefix  ,
-				limb       = \locOutputRlpPrefix     ,
-				nBytes     = 1                       ,
+				anchorRow = i                           ,
+				relOffset = \relof                      ,
+				condition = \locOutputRlpPrefixRequired ,
+				limb      = \locOutputRlpPrefix         ,
+				nBytes    = 1                           ,
 			} \vspace{2mm} \\
 		\]
 		\saNote{}
@@ -65,27 +66,26 @@ which stands for the following set of constraints
 		When represented as tuples of bytes $\in\mathbb{O}^*$,
 		they fit into tuples of length $0$ to $\evmWordSize$.
 		Their \rlp{}-prefix is therefore at most $1$ byte long.
-		To be precise: an $\loc{integer}$ produces a prefix when \rlp{}-ized if and only if
-		it is in the range $\texttt{0x\,00} < \loc{integer} < \texttt{0x\,7f}$
 	\item[\underline{\underline{Enshrining the hi part of the (large) integer into the \rlp{} string:}}]
 		we impose
 		\[
 			\conditionallySetLimb {
-				anchorRow  = i                          ,
-				relOffset  = \relof + 1                 ,
-				condition  = \locOutputHasNonzeroHiPart ,
-				limb       = \locOutputLeftShiftedInput ,
-				nBytes     = \locOutputNBytes           ,
+				anchorRow  = i                                      ,
+				relOffset  = \relof + 1                             ,
+				condition  = \locOutputInputIngegerHasNonzeroHiPart ,
+				limb       = \locOutputLeadingLimbLeftShifted       ,
+				nBytes     = \locOutputLeadingLimbByteSize          ,
 			}
 		\]
 	\item[\underline{\underline{Enshrining the lo part of the integer into the \rlp{} string:}}]
 		we impose
 		\[
-			\setLimb{
-				anchorRow  = i              ,
-				relOffset  = \relof + 2     ,
-				limb       = \locLastLimb   ,
-				nBytes     = \locLastNBytes ,
+			\conditionallySetLimb {
+				anchorRow  = i                               ,
+				relOffset  = \relof + 2                      ,
+				condition  = \locOutputInputIntegerIsNonzero ,
+				limb       = \locLastLimb                    ,
+				nBytes     = \locLastNBytes                  ,
 			}
 		\]
 \end{description}
