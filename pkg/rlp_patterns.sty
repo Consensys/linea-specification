@@ -38,6 +38,8 @@
 \define@cmdkey [RLP] {var} {integerLo}        {}
 \define@cmdkey [RLP] {var} {dataHi}           {}
 \define@cmdkey [RLP] {var} {dataLo}           {}
+\define@cmdkey [RLP] {var} {limbByteSize}     {}
+
 
 \presetkeys    [RLP] {var} {
 	anchorRow          = \missingParameter ,
@@ -52,6 +54,7 @@
         integerLo          = \missingParameter ,
         dataHi             = \missingParameter ,
         dataLo             = \missingParameter ,
+        limbByteSize       = \missingParameter ,
         % offsetHi           = \missingParameter ,
 }{}
 
@@ -262,5 +265,23 @@
             \utt{Number of bytes:} & \cmdRLP@var@nBytes    \\
         \end{array} \right]
     }
+
+\newcommand{\conditionallyGetShiftingFactorName}    {\inst{conditionallyGetShifingFactor}}
+\newcommand{\conditionallyGetShiftingFactor}    [1] {
+    \setkeys[RLP]{var}{#1}
+    \conditionallyGetShiftingFactorName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{ll}
+            \utt{Rel. row offset:} & \cmdRLP@var@relOffset    \\
+            \utt{Condition:}       & \cmdRLP@var@condition    \\
+            \utt{Limb byte size:}  & \cmdRLP@var@limbByteSize \\
+        \end{array} \right]
+    }
+
+% \conditionallyGetShiftingFactor {
+%     anchorRow    = i                ,
+%     relOffset    = \relof           ,
+%     condition    = \loc{condition}  ,
+%     limbByteSize = \loc{limb\_byte\_size} ,
+% }
 
 \makeatother
