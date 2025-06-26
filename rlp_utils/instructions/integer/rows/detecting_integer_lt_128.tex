@@ -1,0 +1,29 @@
+\item[\underline{\underline{Processing row $n^\circ(\rowOffsetSmallInt)$:}} \underline{Detecting when the integer is $< \oneTwoEight$:}]
+    we impose that
+    \[
+        \wcpCallToLt {
+            anchorRow = i                  ,
+            relOffset = \rowOffsetSmallInt ,
+            argOneHi  = 0                  ,
+            argOneLo  = \locInputIntegerLo ,
+            argTwoLo  = \oneTwoEight       ,
+        }
+    \]
+    and we derive the following shorthand
+    \[
+        \left\{ \begin{array}{lcl}
+            \locIntegerIsLtOneTwoEight  & \define & \locIntegerHiPartIsZero \cdot \res_{i + \rowOffsetSmallInt}         \\
+            \locIntegerIsGeqOneTwoEight & \define & 1 - \locIntegerIsLtOneTwoEight                                      \\
+            \locIntegerLoByteSize       & \define & \wcpCtMax _{i + \rowOffsetSmallInt} + \locIntIsNonzero \vspace{2mm} \\
+            \locLeadingLimbByteSize     & \define &
+            \left[ \begin{array}{clcl}
+                + & \locIntegerHiPartIsNonzero & \cdot & \locIntegerHiByteSize \\
+                + & \locIntegerHiPartIsZero    & \cdot & \locIntegerLoByteSize \\
+            \end{array} \right] \vspace{2mm} \\
+            \locIntegerByteSize & \define & \locLeadingLimbByteSize + \locIntegerHiPartIsNonzero \cdot \llarge \\
+        \end{array} \right.
+    \]
+    \saNote{}
+    The definition of $\locIntegerLoByteSize$ is incorrect in general.
+    It \emph{is} correct in the special case of a ``zero high part'' (i.e. when $\locIntegerHiPartIsZero \equiv 1$.)
+    This is the \emph{only} case where the value contained in that shorthand matters.

@@ -1,0 +1,23 @@
+\item[\underline{\underline{Conditionally getting a byte shifting factor:}}]
+    we impose
+    \[
+        \conditionallyGetShiftingFactor {
+            anchorRow    = i                       ,
+            relOffset    = \rowOffsetSmallInt      ,
+            condition    = \locIntIsNonzero        ,
+            limbByteSize = \locLeadingLimbByteSize ,
+        }
+    \]
+    and we define the following shorthand
+    \[
+        \left\{ \begin{array}{lcl}
+            \locShiftingFactor & \define & \shfPower _{i + \rowOffsetSmallInt} \\
+            \locLeadingLimb & \define &
+            \left[ \begin{array}{clcl}
+                + & \locIntegerHiPartIsNonzero & \cdot & \locInputIntegerHi \\
+                + & \locIntegerHiPartIsZero    & \cdot & \locInputIntegerLo \\
+            \end{array} \right] \vspace{2mm} \\
+            \locLeadingLimbLeftShifted & \define & \locShiftingFactor \cdot \locLeadingLimb \\
+        \end{array} \right.
+    \]
+

@@ -1,0 +1,22 @@
+\item[\underline{\underline{Processing row $n^\circ(\rowOffsetHighZero)$:}} \underline{Detecting when the integer has zero high part:}]
+    we impose that
+    \[
+        \wcpCallToGt {
+            anchorRow = i                  ,
+            relOffset = \rowOffsetHighZero ,
+            argOneHi  = 0                  ,
+            argOneLo  = \locInputIntegerHi ,
+            argTwoLo  = 0                  ,
+        }
+    \]
+    and we derive the following shorthand
+    \[
+        \left\{ \begin{array}{lcl}
+            \locIntegerHiPartIsNonzero & \define & \res      _{i + \rowOffsetHighZero}                              \\
+            \locIntegerHiPartIsZero    & \define & 1 - \locIntegerHiPartIsNonzero                                   \\
+            \locIntegerHiByteSize           & \define & \wcpCtMax _{i + \rowOffsetHighZero} + \locIntegerHiPartIsNonzero \\
+        \end{array} \right.
+    \]
+    \saNote{}
+    The definition of $\locIntegerHiByteSize$ is unconditionally correct.
+

@@ -4,118 +4,25 @@
 We use the following shorthands:
 \[
     \left\{ \begin{array}{lcl}
-        \locInputIntegerHi & \define & \inputColumn {1} _{i} \\
-        \locInputIntegerLo & \define & \inputColumn {2} _{i} \\
+        \locInputIntegerHi & \define & \rlpUtilsDataColumn{1} _{i} \\
+        \locInputIntegerLo & \define & \rlpUtilsDataColumn{2} _{i} \\
     \end{array} \right.
     \quad\text{and}\quad
-    \left\{ \begin{array}{lcl}
-        \locOutputHasRlpPrefix     & \define & \outputColumn {1} _{i} \\
-        \locOutputRlpPrefix        & \define & \outputColumn {2} _{i} \\
-        \locOutputHasNonzeroHiPart & \define & \outputColumn {3} _{i} \\
-        \locOutputLeftShiftedInput & \define & \outputColumn {4} _{i} \\
-        \locOutputNBytes           & \define & \outputColumn {5} _{i} \\
+    \left\{ \begin{array}{lclr}
+        \locOutputInputIntegerIsNonzero        & \define & \rlpUtilsDataColumn{3} _{i} & \prediction \\
+        \locOutputInputIngegerHasNonzeroHiPart & \define & \rlpUtilsDataColumn{4} _{i} & \prediction \\
+        \locOutputRlpPrefixRequired            & \define & \rlpUtilsDataColumn{5} _{i} & \prediction \\
+        \locOutputRlpPrefix                    & \define & \rlpUtilsDataColumn{6} _{i} & \prediction \\
+        \locOutputLeadingLimbLeftShifted       & \define & \rlpUtilsDataColumn{7} _{i} & \prediction \\
+        \locOutputLeadingLimbByteSize          & \define & \rlpUtilsDataColumn{8} _{i} & \prediction \\
     \end{array} \right.
 \]
+The purpose of the constraints below is to justify the predictions i.e. the cells labeled with $\prediction$ above.
 \begin{description}
-    \item[\underline{\underline{Processing row $n^\circ(\rowOffsetIntegerZero)$:}} \underline{Detecting integer is zero:}]
-        we impose that
-        \[
-            \wcpCallToIszero {
-                anchorRow = i                     ,
-                relOffset = \rowOffsetIntegerZero ,
-                argOneHi  = \locInputIntegerHi    ,
-                argOneLo  = \locInputIntegerLo    ,
-            }
-        \]
-        and we derive the following shorthand
-        \[
-            \locIntIsZero \define \res_{i + \rowOffsetIntegerZero}
-        \]
-    \item[\underline{\underline{The ``zero'' case:}}]
-        \If $\locIntIsZero = 1$ \Then:
-        \[
-            \left\{ \begin{array}{lcl}
-                \maxCt       _{i + 1}      & = & 0                                       \\
-                \locOutputHasRlpPrefix     & = & \gZero                                  \\
-                \locOutputRlpPrefix        & = & 0                                       \\
-                \locOutputHasNonzeroHiPart & = & 0                                       \\
-                \locOutputLeftShiftedInput & = & \rlprefixShortInt \cdot 256^{\llargeMO} \\
-                \locOutputNBytes           & = & 1                                       \\
-            \end{array} \right.
-        \]
-        \saNote{}
-        This finishes the computation phase for this particular subcase.
-    \item[\underline{\underline{The ``nonzero'' case:}}]
-        \If $\locIntIsZero = 0$ \Then we impose that
-        \begin{description}
-            \item[\underline{Setting \maxCt:}]
-                we impose $\maxCt_{i + 1} = \integerCtMax$.
-            \item[\underline{Processing row $n^\circ(\rowOffsetHighZero)$:} \underline{Detecting null high part:}]
-                we impose that
-                \[
-                    \wcpCallToGt {
-                        anchorRow = i                  ,
-                        relOffset = \rowOffsetHighZero ,
-                        argOneHi  = 0                  ,
-                        argOneLo  = \locInputIntegerHi      ,
-                        argTwoLo  = 0                  ,
-                    }
-                \]
-                and we derive the following shorthand
-                \[
-                    \left\{ \begin{array}{lcl}
-                        \locBigInt       & \define &     \res      _{i + \rowOffsetHighZero} \\
-                        \locNBytesHiPart & \define & 1 + \wcpCtMax _{i + \rowOffsetHighZero} \\
-                    \end{array} \right.
-                \]
-            \item[\underline{Processing row $n^\circ(\rowOffsetSmallInt)$:} \underline{Detecting small integer:}]
-                we impose that
-                \[
-                    \wcpCallToLt {
-                        anchorRow = i                  ,
-                        relOffset = \rowOffsetSmallInt ,
-                        argOneHi  = 0                  ,
-                        argOneLo  = \locInputIntegerLo ,
-                        argTwoLo  = \oneTwoEight       ,
-                    }
-                \]
-                and we derive the following shorthand
-                \[
-                    \left\{ \begin{array}{lcl}
-                        \locSmallInt     & \define & (1 - \locBigInt) \cdot \res_{i + \rowOffsetSmallInt} \\
-                        \locNBytesLoPart & \define & 1 + \wcpCtMax _{i + \rowOffsetSmallInt}              \\
-                        \locTotalSize & \define &
-                        \left[ \begin{array}{crcl}
-                            + & \locBigInt       & \cdot & (\llarge + \locNBytesHiPart) \\
-                            + & (1 - \locBigInt) & \cdot & \locNBytesLoPart             \\
-                        \end{array} \right] \vspace{2mm} \\
-                        \locNBytes    & \define &
-                        \left[ \begin{array}{crcl}
-                            + & \locBigInt       & \cdot & \locNBytesHiPart  \\
-                            + & (1 - \locBigInt) & \cdot & \locNBytesLoPart  \\
-                        \end{array} \right]
-                    \end{array} \right.
-                \]
-            \item[\underline{Finalization:}]
-                we impose
-                \[
-                    \left\{ \begin{array}{lcl}
-                        \shfFlag          _{i + \rowOffsetSmallInt} & = & 1                                                            \\
-                        \shfArg           _{i + \rowOffsetSmallInt} & = & \llarge - \locNBytes                                         \\
-                        \locOutputHasRlpPrefix                         & = & 1 - \locSmallInt                                          \\
-                        \locOutputRlpPrefix                            & = & (\rlprefixShortInt + \locTotalSize) \cdot 256^{\llargeMO} \\
-                        \locOutputHasNonzeroHiPart                     & = & \locBigInt                                                \\
-                        \locOutputLeftShiftedInput                     & = & \locPaddedLimb                                            \\
-                        \locOutputNBytes                               & = & \locNBytes                                                \\
-                    \end{array} \right.
-                \]
-                where we used the following shorthand
-                \[
-                        \locPaddedLimb \define \shfPower _{i + \rowOffsetSmallInt} \cdot
-                        \left[ \begin{array}{clcl}
-                            + & \locBigInt       & \cdot & \locInputIntegerHi \\
-                            + & (1 - \locBigInt) & \cdot & \locInputIntegerLo \\
-                        \end{array} \right]
-                \]
-        \end{description}
+        \input{instructions/integer/rows/setting_ct_max}
+        \input{instructions/integer/rows/detecting_integer_is_zero}
+        \input{instructions/integer/rows/detecting_integer_hi_is_zero}
+        \input{instructions/integer/rows/detecting_integer_lt_128}
+        \input{instructions/integer/rows/get_shifting_factor}
+        \input{instructions/integer/rows/justifying_predictions}
 \end{description}
