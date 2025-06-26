@@ -1,0 +1,71 @@
+We define the following shorthands
+\[
+	\begin{array}{l}
+		\rlpProcessInteger {
+			anchorRow = i                 ,
+			relOffset = \relof            ,
+			integerHi = \loc{integer\_hi} ,
+			integerLo = \loc{integer\_lo} ,
+		}
+		\vspace{2mm}
+		\\
+		\qquad \define
+		\left\{ \begin{array}{l}
+			\rlpUtilsInstCallInteger {
+				anchorRow = i                 ,
+				relOffset = \relof            ,
+				integerHi = \loc{integer\_hi} ,
+				integerLo = \loc{integer\_lo} ,
+			}
+			\vspace{2mm} \\
+			\maxCt _{i + \relof} = \rlpIntegerInstNbRows - 1 \vspace{2mm} \\
+			\conditionallySetLimb {
+				anchorRow  = i                       ,
+				relOffset  = \relof                  ,
+				condition  = \locOutputHasRlpPrefix  ,
+				limb       = \locOutputRlpPrefix     ,
+				nBytes     = 1                       ,
+			} \vspace{2mm} \\
+			\conditionallySetLimb {
+				anchorRow  = i                          ,
+				relOffset  = \relof + 1                 ,
+				condition  = \locOutputHasNonzeroHiPart ,
+				limb       = \locOutputLeftShiftedInput ,
+				nBytes     = \locOutputNBytes           ,
+			} \vspace{2mm} \\
+			\setLimb{
+				anchorRow  = i              ,
+				relOffset  = \relof + 2     ,
+				limb       = \locLastLimb   ,
+				nBytes     = \locLastNBytes ,
+			}
+		\end{array} \right.
+	\end{array}
+\]
+Where he have used the following shorthands
+\[
+	\left\{ \begin{array}{lcl}
+		\locOutputHasRlpPrefix     & \define & \outputColumn {1} _{i + \relof} \\
+		\locOutputRlpPrefix        & \define & \outputColumn {2} _{i + \relof} \\
+		\locOutputHasNonzeroHiPart & \define & \outputColumn {3} _{i + \relof} \\
+		\locOutputLeftShiftedInput & \define & \outputColumn {4} _{i + \relof} \\
+		\locOutputNBytes           & \define & \outputColumn {5} _{i + \relof} \\
+	\end{array} \right.
+\]
+and furthermore we set
+\begin{enumerate}
+	\item \If $\locOutputHasNonzeroHiPart = 0$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\locLastLimb   & \define & \locOutputLeftShiftedInput \\
+				\locLastNBytes & \define & \locOutputNBytes           \\
+			\end{array} \right.
+		\]
+	\item \If $\locOutputHasNonzeroHiPart = 1$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\locLastLimb   & \define & \loc{integer\_lo} \\
+				\locLastNBytes & \define & \llarge           \\
+			\end{array} \right.
+		\]
+\end{enumerate}

@@ -18,52 +18,34 @@ We first compute $\rlp(w)$ which is in $\locLtTilde$ only:
             anchorRow = i ,
             relOffset = 1 ,
         }$
-    \item we define a \locTwScalar{} shorthand for what the \cite{EYP-Shanghai} calls ``a scalar $T_\text{w}$'':
+    \item we define a \locTwScalar{} shorthand for what the \cite{EYP-Shanghai} calls
+        ``\textbf{w}: A scalar value encoding Y parity and possibly chain ID.
+        Formally $T_\text{w}$.
+        $T_\text{w} = 27 + T_\text{y}$ or $T_\text{w} = 2\beta + 35 + T_\text{y}$'':
         \begin{enumerate}
             \item \If $\locReplayProtection = 0$ \Then $\locTwScalar = \unprotectedV + \locYparity$
-            \item \If $\locReplayProtection = 1$ \Then $\locTwScalar = \protectedBaseV + 2 \cdot \locChainId + \locYparity$
+            \item \If $\locReplayProtection = 1$ \Then $\locTwScalar = 2 \cdot \locChainId + \protectedBaseV + \locYparity$
         \end{enumerate}
-    \item $\inputColumn{1} _{i + 1} = 0$
     \item
         \[
-            \rlpInteger _{i}
-            \left(
-            \begin{array}{r}
-                \inputColumn{1},
-                \inputColumn{2},
-                \ct,
-                \maxCt; \\
-                \rlpUtilsFlag,
-                \INST,
-                \outputColumn{1},
-                \outputColumn{2},
-                \outputColumn{3},
-                \outputColumn{4},
-                \outputColumn{5}; \\
-                \limb,
-                \lc,
-                \limbsize; \\
-            \end{array}
-            \right)
+            \rlpUtilsInstCallInteger {
+                anchorRow = i            ,
+                relOffset = 1            ,
+                integerHi = 0            ,
+                integerLo = \locTwScalar ,
+            }
         \]
-    \item \If $\locReplayProtection = 0$ \Then:
-        \begin{enumerate}
-            \item $\inputColumn{2} _{i + 1} = \unprotectedV + \locYparity $
-            \item $\phaseEnd _{i + \rlpIntegerInstNbRows} = 1$
-        \end{enumerate}
-    \item \If $\locReplayProtection = 1$ \Then:
-        \begin{enumerate}
-            \item $\inputColumn{2} _{i + 1} = 2 \cdot \locChainId + \locYparity$ 
-            \item $\phaseEnd _{i + \rlpIntegerInstNbRows} = 0$
-        \end{enumerate}
 \end{enumerate}
-
-In the case $\locReplayProtection = 1$ the phase stops here.
-In the case $\locReplayProtection = 0$, we now compute the postfix of
-$\locLxTilde$ which is $\mathtt{RLP}(\beta) \cdot \mathtt{RLP}(\varnothing) \cdot \mathtt{RLP}(\varnothing)$  where $\beta = ChainId$ is specified (equivalently $w \notin \{\unprotectedV , \unprotectedVPO \}$.)
-
+If $\locReplayProtection = 0$ we are done.
+If $\locReplayProtection = 1$ we must still compute the postfix of
+$\locLxTilde$ which is $\mathtt{RLP}(\beta) \cdot \mathtt{RLP}(\varnothing) \cdot \mathtt{RLP}(\varnothing)$  where the chain ID $\beta$ is specified (equivalently $\textbf{w} \notin \{\unprotectedV , \unprotectedVPO \}$.)
 \begin{enumerate}[resume]
-    \item \If $\locReplayProtection = 0$ \Then:
+    \item \If $\locReplayProtection = 0$ \Then $\phaseEnd _{i + \rlpIntegerInstNbRows} = 1$
+    \item \If $\locReplayProtection = 1$ \Then $\phaseEnd _{i + \rlpIntegerInstNbRows} = 0$
+\end{enumerate}
+The constraints that follow pertain to the \rlp{}-ization of the aforementioned postfix.
+\begin{enumerate}[resume]
+    \item \If $\locReplayProtection = 1$ \Then:
         \begin{enumerate}
             \item
                 $\limbBelongsToLxOnly {
