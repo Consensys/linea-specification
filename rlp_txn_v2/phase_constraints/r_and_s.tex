@@ -2,40 +2,30 @@
     \boxed{\text{In all this section, it is assumed that $\phaseR_{i}+\phaseS_{i}=1$.}}
 \end{center}
 \begin{enumerate}
-    \item we impose
+    \item
+        we impose
         $\limbBelongsToLtOnly {
             anchorRow = i ,
             relOffset = 0 ,
         }$
-    \item \If $\isTxn_{i-1} =1$ \Then:
+    \item \If $\isTxn_{i} = 1$ \Then:
         \[
-            \rlpInteger_{i}
-            \left(
-            \begin{array}{r}
-                \exoDataColumn{1},
-                \exoDataColumn{2},
-                \ct,
-                \maxCt; \\
-                \rlpUtilsFlag,
-                \INST,
-                \exoDataColumn{4},
-                \exoDataColumn{5},
-                \exoDataColumn{6},
-                \exoDataColumn{7},
-                \exoDataColumn{8}; \\
-                \limb,
-                \lc,
-                \limbsize; \\
-            \end{array}
-            \right)
+            \rlpProcessInteger {
+                anchorRow  = i              ,
+                relOffset  = 1              ,
+                integerHi  = \relevantValue ,
+                integerLo  = \relevantValue ,
+                endOfPhase = \true          ,
+            }
         \]
-    \item \If $\isCmp_{i} =1$ \et $\done_{i}=1$ \Then:
+    \item \If $\phaseS_{i} = 1$ \Then we impose \textbf{finalization} constraints
         \begin{enumerate}
-            \item $\phaseEnd_{i}=1$
-            \item \If $\phaseS_{i}=1$ \Then:
-                \begin{enumerate}
-                    \item $\rlptsize_{i} = 0$
-                    \item $\rlpxsize_{i} = 0$ 
-                \end{enumerate}
+            \item $\rlptsize_{i} = 0$
+            \item $\rlpxsize_{i} = 0$ 
         \end{enumerate}
 \end{enumerate}
+\saNote{}
+We provide some explanations around the interpretation of the ``\relevantValue'' fields.
+No other component in the arithmetization requires access to the transaction signature $(\texttt{r}, \texttt{s})$.
+(Signature verification is handled by means of an outside circuit.)
+The relevant values of $\texttt{r}$ and $\texttt{s}$ are therefore \emph{simply written into the relevant $\exoDataColumn{k}$ column.}

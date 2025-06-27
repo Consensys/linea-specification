@@ -36,29 +36,39 @@ Note that the method described below does not produce a single byte string.
 Rather it produces a series of chunks of bytes which, when correctly identified and assembled, yield $\locLtTildeOfT$ (resp. $\locLxTildeOfT$.)
 
 We now provide slightly more detail on the procedure.
-First of all we recall that, in the
-\zkEvm{} in general, and in this module in particular, transactions are identified with their absolute transaction number
+First of all we recall that, in the \zkEvm{} in general, and in this module in particular,
+\emph{user transactions} are identified with their user transaction number
 $\userTransactionNumber$.
 The reader will find more information on this in the \userTxnDataMod{} module.
-We therefore consider a (well-formed) transaction $\locTransaction$ with $\userTransactionNumber \equiv \col{a}$.
-The goal is that, considering exactly those rows $i$ where
+We therefore consider a (well-formed) transaction $\locTransaction$ with $\userTransactionNumber \equiv \loc{a}$.
+
+The goal is that the byte string $\locLtTildeOfT$
+of the \loc{a}-th transaction
+should be recoverable from data concentrated along rows
+(with row-index $i$) satisfying
 \begin{multicols}{3}
 	\begin{itemize}
-		\item $\userTransactionNumber_{i} \equiv \col{a}$
-		\item $\lc_{i} \equiv 1$
-		\item $\lt_{i} \equiv 1$
+		\item $\userTransactionNumber _{i} \equiv \loc{a}$
+		\item $\lc                    _{i} \equiv 1$
+		\item $\lt                    _{i} \equiv 1$
 	\end{itemize}
 \end{multicols}
-\noindent in ascending order of $\indext$\footnote{starting from zero},
+The present module provides, along such rows,
+pairs $(\limb _{i}, \limbsize _{i})$
+which must be interpreted as in the diagram below
+
+\includepdf[fitpaper=true, pages={1}]{lua/limb_and_limb_size.pdf}
+
+in ascending order of $\indext$\footnote{starting from zero},
 the concatenation of the most significant 
 $\limbsize _{i}$ bytes of $\limb _{i}$ should produce $\locLtTildeOfT$.
 
 Similarly, considering exactly those rows $i$ where
 \begin{multicols}{3}
 	\begin{itemize}
-		\item $\userTransactionNumber_{i} \equiv \col{a}$
-		\item $\lc_{i} \equiv 1$
-		\item $\lx_{i} \equiv 1$
+		\item $\userTransactionNumber _{i} \equiv \loc{a}$
+		\item $\lc                    _{i} \equiv 1$
+		\item $\lx                    _{i} \equiv 1$
 	\end{itemize}
 \end{multicols}
 \noindent in ascending order of $\indexx$\footnote{starting from zero},
@@ -68,6 +78,6 @@ $\limbsize _{i}$ bytes of $\limb _{i}$ should give $\locLtTildeOfT$.
 \saNote{} For a given transaction $\locTransaction$,
 the concatenation of the
 $\limb$ when
-$\phaseData_{i}=1$ \et{}
-$\isPrefix_{i}=0$, indexed by
+$\phaseData _{i} = 1$ \et{}
+$\isPrefix _{i} = 0$, indexed by
 $\indexData$ gives the input data of the transaction.
