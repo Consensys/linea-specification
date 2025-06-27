@@ -1,14 +1,31 @@
 We define the following ``compound constraint'' for the \rlp{}-ization process of \texttt{INTEGER}'s
 \[
 	\rlpProcessInteger {
-		anchorRow = i                 ,
-		relOffset = \relof            ,
-		integerHi = \loc{integer\_hi} ,
-		integerLo = \loc{integer\_lo} ,
+		anchorRow  = i                    ,
+		relOffset  = \relof               ,
+		integerHi  = \loc{integer\_hi}    ,
+		integerLo  = \loc{integer\_lo}    ,
+		endOfPhase = \loc{end\_of\_phase} ,
 	}
 \]
 which stands for the following set of constraints
 \begin{description}
+	\item[\underline{\underline{Setting \maxCt:}}]
+		we impose $\maxCt _{i + \relof} = \rlpIntegerInstNbRows - 1$
+	\item[\underline{\underline{No premature \phaseEnd{}:}}]
+		we impose
+		\[
+			\left[ \begin{array}{crcl}
+				+ & 2 ^ {0} & \!\!\!\cdot\!\!\! & \phaseEnd _{i + \relof}     \\
+				+ & 2 ^ {1} & \!\!\!\cdot\!\!\! & \phaseEnd _{i + \relof + 1} \\
+				+ & 2 ^ {2} & \!\!\!\cdot\!\!\! & \phaseEnd _{i + \relof + 2} \\
+			\end{array} \right]
+			=
+			2 ^ {2} \cdot \loc{end\_of\_phase}
+		\]
+		\saNote{}
+		Setting $\phaseEnd _{i + \relof + 2}$ (via $\loc{end\_of\_phase}$)
+		must be done when invoking the current compound constraint.
 	\item[\underline{\underline{\rlpUtilsMod{} instruction call:}}]
 		we impose
 		\[
@@ -48,8 +65,6 @@ which stands for the following set of constraints
 					\end{array} \right.
 				\]
 		\end{enumerate}
-	\item[\underline{\underline{Setting \maxCt:}}]
-		we impose $\maxCt _{i + \relof} = \rlpIntegerInstNbRows - 1$
 	\item[\underline{\underline{Enshrining the \rlp{} prefix into the \rlp{} string:}}]
 		we impose
 		\[

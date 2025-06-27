@@ -39,6 +39,7 @@
 \define@cmdkey [RLP] {var} {dataHi}           {}
 \define@cmdkey [RLP] {var} {dataLo}           {}
 \define@cmdkey [RLP] {var} {limbByteSize}     {}
+\define@cmdkey [RLP] {var} {endOfPhase}       {}
 
 
 \presetkeys    [RLP] {var} {
@@ -55,6 +56,7 @@
         dataHi             = \missingParameter ,
         dataLo             = \missingParameter ,
         limbByteSize       = \missingParameter ,
+        endOfPhase         = \missingParameter ,
         % offsetHi           = \missingParameter ,
 }{}
 
@@ -175,10 +177,11 @@
 \newcommand{\rlpProcessInteger}        [1] {
     \setkeys[RLP]{var}{#1}
     \rlpProcessIntegerName _{\cmdRLP@var@anchorRow}
-        \left[ \begin{array}{lr}
-            \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
-            \utt{Integer hi part:} & \cmdRLP@var@integerHi \\
-            \utt{Integer lo part:} & \cmdRLP@var@integerLo \\
+        \left[ \begin{array}{ll}
+            \utt{Rel. row offset:} & \cmdRLP@var@relOffset  \\
+            \utt{Integer hi part:} & \cmdRLP@var@integerHi  \\
+            \utt{Integer lo part:} & \cmdRLP@var@integerLo  \\
+            \utt{Is end of phase:} & \cmdRLP@var@endOfPhase \\
         \end{array} \right]
     }
 

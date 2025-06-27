@@ -1,75 +1,62 @@
 \begin{center}
     \boxed{\text{All constraints in this subsection assume that 
-    $
-    \left[ \begin{array}{cl}
-        + & \phaseChainId              _{i} \\
-        + & \phaseNonce                _{i} \\
-        + & \phaseGasPrice             _{i} \\
-        + & \phaseMaxPriorityFeePerGas _{i} \\
-        + & \phaseMaxFeePerGas         _{i} \\
-        + & \phaseGasLimit             _{i} \\
-        + & \phaseValue                _{i} \\
-    \end{array} \right]
-    = 1$
+    $\locIsIntegerPhase _{i} = 1$
     }}
 \end{center}
+We start by defining some shorthands,
+one of which we have already made use of in the section-wide precondition:
+\[
+    \hspace*{-1cm}
+    \left\{ \begin{array}{lcl}
+        \locIsIntegerPhase _{i} & \define &
+        \left[ \begin{array}{cl}
+            + & \phaseChainId              _{i} \\
+            + & \phaseNonce                _{i} \\
+            + & \phaseGasPrice             _{i} \\
+            + & \phaseMaxPriorityFeePerGas _{i} \\
+            + & \phaseMaxFeePerGas         _{i} \\
+            + & \phaseGasLimit             _{i} \\
+            + & \phaseValue                _{i} \\
+        \end{array} \right]
+        \vspace{2mm} \\
+        \locPhaseAppropriateInteger _{i} & \define &
+        \left[ \begin{array}{clcl}
+            +\!\!\! & \phaseChainId              _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnChainId              _{i} \\
+            +\!\!\! & \phaseNonce                _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnNonce                _{i} \\
+            +\!\!\! & \phaseGasPrice             _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnGasPrice             _{i} \\
+            +\!\!\! & \phaseMaxPriorityFeePerGas _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnMaxPriorityFeePerGas _{i} \\
+            +\!\!\! & \phaseMaxFeePerGas         _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnMaxFeePerGas         _{i} \\
+            +\!\!\! & \phaseGasLimit             _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnGasLimit             _{i} \\
+            +\!\!\! & \phaseValue                _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnTxnValue             _{i} \\
+        \end{array} \right]
+    \end{array} \right.
+\]
+\saNote{}
+For the $\locPhaseAppropriateInteger _{i}$ shorthand to ``make sense''
+one must be on a \textbf{transaction-row}.
 
+For all ``integer phases'' we impose the following:
 \begin{enumerate}
     \item we impose
         $\limbBelongsToBothLtAndLx {
             anchorRow = i ,
             relOffset = 0 ,
         }$
-    \item \If $\isTxn_{i - 1} =1$ \Then:
+    \item \If $\isTxn _{i} =1$ \Then:
         \begin{enumerate}
-            \item                                             $\exoDataColumn{1}_{i} = 0$
-            \item we perform ``transaction-row assignments''
-                \[
-                    \exoDataColumn{2} _{i}
-                    =
-                    \left[ \begin{array}{clcl}
-                        +\!\!\! & \phaseChainId              _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnChainId              _{i - 1} \\
-                        +\!\!\! & \phaseNonce                _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnNonce                _{i - 1} \\
-                        +\!\!\! & \phaseGasPrice             _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnGasPrice             _{i - 1} \\
-                        +\!\!\! & \phaseMaxPriorityFeePerGas _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnMaxPriorityFeePerGas _{i - 1} \\
-                        +\!\!\! & \phaseMaxFeePerGas         _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnMaxFeePerGas         _{i - 1} \\
-                        +\!\!\! & \phaseGasLimit             _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnGasLimit             _{i - 1} \\
-                        +\!\!\! & \phaseValue                _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnTxnValue             _{i - 1} \\
-                    \end{array} \right]
-                \]
             \item
+                we define the following shorthand
                 \[
-                    \rlpInteger _{i}
-                    \left(
-                    \begin{array}{r}
-                        \exoDataColumn{1},
-                        \exoDataColumn{2},
-                        \ct,
-                        \maxCt; \\
-                        \rlpUtilsFlag,
-                        \INST,
-                        \exoDataColumn{4},
-                        \exoDataColumn{5},
-                        \exoDataColumn{6},
-                        \exoDataColumn{7},
-                        \exoDataColumn{8}; \\
-                        \limb,
-                        \lc,
-                        \limbsize; \\
-                    \end{array}
-                    \right)
                 \]
-            \item $\phaseEnd _{i + \rlpIntegerInstCtMax} = 1$
+                we perform ``transaction-row assignments''
+                \[
+                    \rlpProcessInteger {
+                        anchorRow  = i                                ,
+                        relOffset  = \yellowm{1}                      ,
+                        integerHi  = 0                                ,
+                        integerLo  = \locPhaseAppropriateInteger _{i} ,
+                        endOfPhase = \true                            ,
+                    }
+                \]
         \end{enumerate}
 \end{enumerate}
-% \saNote{}
-% The single ``assignment'' constraint corresponds to the following individual assignments
-% \begin{enumerate}
-%     \item \If $\phaseChainId              _{i}=1$ \Then $\exoDataColumn{2} _{i} = \rlpTxnTransactionColumnChainId              _{i - 1}$ \quad (\sanityCheck)
-%     \item \If $\phaseNonce                _{i}=1$ \Then $\exoDataColumn{2} _{i} = \rlpTxnTransactionColumnNonce                _{i - 1}$ \quad (\sanityCheck)
-%     \item \If $\phaseGasPrice             _{i}=1$ \Then $\exoDataColumn{2} _{i} = \rlpTxnTransactionColumnGasPrice             _{i - 1}$ \quad (\sanityCheck)
-%     \item \If $\phaseMaxPriorityFeePerGas _{i}=1$ \Then $\exoDataColumn{2} _{i} = \rlpTxnTransactionColumnMaxPriorityFeePerGas _{i - 1}$ \quad (\sanityCheck)
-%     \item \If $\phaseMaxFeePerGas         _{i}=1$ \Then $\exoDataColumn{2} _{i} = \rlpTxnTransactionColumnMaxFeePerGas         _{i - 1}$ \quad (\sanityCheck)
-%     \item \If $\phaseGasLimit             _{i}=1$ \Then $\exoDataColumn{2} _{i} = \rlpTxnTransactionColumnGasLimit             _{i - 1}$ \quad (\sanityCheck)
-%     \item \If $\phaseValue                _{i}=1$ \Then $\exoDataColumn{2} _{i} = \rlpTxnTransactionColumnTxnValue             _{i - 1}$ \quad (\sanityCheck)
-% \end{enumerate}
