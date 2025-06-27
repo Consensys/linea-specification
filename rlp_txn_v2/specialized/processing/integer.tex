@@ -1,19 +1,24 @@
 We define the following ``compound constraint'' for the \rlp{}-ization process of \texttt{INTEGER}'s
 \[
 	\rlpProcessInteger {
-		anchorRow  = i                    ,
-		relOffset  = \relof               ,
-		integerHi  = \loc{integer\_hi}    ,
-		integerLo  = \loc{integer\_lo}    ,
-		endOfPhase = \loc{is\_end\_of\_phase} ,
+		anchorRow  = i                 ,
+		relOffset  = \relof            ,
+		integerHi  = \loc{integer\_hi} ,
+		integerLo  = \loc{integer\_lo} ,
+		endOfPhase = \locIsEndOfPhase  ,
 	}
 \]
-which stands for the following set of constraints
+Its purpose is to set up to 3 limbs of an \rlp{}-string corresponding to the \rlp{}-ization of an integer $\in \mathbb{N}_{256}$.
+The first  limb \emph{may} hold the (left aligned)                    \rlp{}-prefix of the \rlp{}-ization of said integer.
+The second limb \emph{may} hold the (left aligned)                    hi-part of the underlying integer.
+The third  limb \emph{may} hold the (\emph{potentially} left aligned) lo-part of the underlying integer.
+
+$\rlpProcessIntegerName\big[\cdots\big]$ stands for the following set of constraints
 \begin{description}
 	\item[\underline{\underline{Setting \maxCt:}}]
 		we impose $\maxCt _{i + \relof} = \rlpIntegerInstNbRows - 1$
 	\item[\underline{\underline{Constraining \phaseEnd{}:}}]
-		we impose $\phaseEnd _{i + \relof + 2} = \loc{is\_end\_of\_phase}$
+		we impose $\phaseEnd _{i + \relof + (\rlpIntegerInstNbRows - 1)} = \locIsEndOfPhase$
 		% \[
 		% 	\left[ \begin{array}{crcl}
 		% 		+ & 2 ^ {0} & \!\!\!\cdot\!\!\! & \phaseEnd _{i + \relof}     \\
@@ -21,7 +26,7 @@ which stands for the following set of constraints
 		% 		+ & 2 ^ {2} & \!\!\!\cdot\!\!\! & \phaseEnd _{i + \relof + 2} \\
 		% 	\end{array} \right]
 		% 	=
-		% 	2 ^ {2} \cdot \loc{end\_of\_phase}
+		% 	2 ^ {2} \cdot \locIsEndOfPhase
 		% \]
 	\item[\underline{\underline{\rlpUtilsMod{} instruction call:}}]
 		we impose
