@@ -1,0 +1,88 @@
+\begin{enumerate}
+    \item $\userTransactionNumber$:
+	transaction number column, starts at 0 and is incremented by one when starting a new transaction.
+    \item $\isTxn$:
+	bit column that defines the transaction perspective;
+    \item $\isCmp$:
+	bit column that defines the computation perspective;
+    \item \col{LIMB\_CONSTRUCTED}:
+	binary column;
+	is equal to $1$ when the $\limb$ is part of either \rlp{} bytestrings $\locLtTilde$ or $\locLxTilde$, otherwise is equal to $0$;
+	abbreviated to $\lc$;
+	\item $\lt$:
+	binary column; equal to $1$ when the constructed $\limb$ is part of $\locLtTilde$, otherwise equal to $0$;
+    \item $\lx$:
+	binary column; equal to $1$ when the constructed $\limb$ is part of $\locLxTilde$, otherwise equal to $0$;
+    \item $\indext$:
+	index of the current limb within the current string of $\locLtTilde$. Starts at 0 when starting a new transaction and increments by 1 when $\lc$ and $\lt$ are one; 
+    \item $\indexx$:                                                       
+	index of the current limb within the current string of $\locLxTilde$. Starts at 0 when starting a new transaction and increments by 1 when $\lc$ and $\lx$ are one;
+    \item $\rlptsize$:
+	number of bytes of $L_{\mathrm{T}}(T)$ of the current transaction ($T$) \emph{minus} a certain number of bytes,
+	see section~(\ref{rlp txn v2: phase constraints: rlp prefix});
+	used in \phaseRlpPrefix{} to compute the global \rlp{} prefix of $L_{\mathrm{T}}(T)$;
+	in futher phases this column simply decreases by $\limbsize$ when $\lc$ and $\lt$ are one;
+	constrained to vanish at the end of the transaction;
+    \item $\rlpxsize$:
+	same interpretation as \rlptsize{} but for $L_{\mathrm{X}}(T)$
+	(and with $\lt$ swapped for $\lx$);
+    \item \toHashByProver{}:
+	binary column; equals $\lc \cdot \lx$; is a selector to extract data for the prover;
+	\item \CFI{}:
+	a transaction-constant unique (conflation)-identifier of a code fragment;
+\end{enumerate}
+We define exclusive binary columns the transaction type.
+\begin{multicols}{3}
+    \begin{enumerate}
+	\setcounter{enumi}{9}
+	\item \typeZeroTx{}
+	\item \typeOneTx{}
+	\item \typeTwoTx{}
+    \end{enumerate}
+\end{multicols}
+We further introduce ``phase flag columns'':
+\begin{multicols}{3}
+    \begin{enumerate}[resume]
+	\setcounter{enumi}{12}
+	\item \phaseRlpPrefix{}
+	\item \phaseChainId{}
+	\item \phaseNonce{}
+	\item \phaseGasPrice{}
+	\item \phaseGasLimit{}
+	\item \phaseTo{}
+	\item \phaseValue{}
+	\item \phaseData{}
+	\item \phaseAccessList{}
+	\item \phaseBeta{}
+	\item \phaseMaxPriorityFeePerGas{}
+	\item \phaseMaxFeePerGas{}
+	\item \phaseY{}
+	\item \phaseR{}
+	\item \phaseS{}
+    \end{enumerate}
+\end{multicols}
+\begin{enumerate}
+	\setcounter{enumi}{27}
+    \item $\phaseEnd$:
+	binary column; equals $1$ on the last row of any phase, $0$ elsewhere;
+    \item \ct{}:
+	counter column; 
+	either hovers around $0$ or counts continuously up from $0$ to \maxCt{} whereupon it resets;
+    \item \maxCt:
+	counter-constant column;
+	indicates the value at which \ct{} must reset;
+    \item $\done$:
+	binary column; equal to $1$ on the final row of every \ct{} cycle; equal to $0$ otherwise;
+\end{enumerate}
+The following columns we put into the ``shared columns'' for the sole reason that we want to easily impose transaction-constancy.
+\begin{enumerate}
+        \item 
+	    \rlpTxnCommonColumnReplayProtection{}:
+	    transaction-constant binary column;
+	    equals $1$ if and only if the transaction \textbf{does not} implement replay protection i.e.
+	    does not specify a \chainId{};
+	\item
+	    \rlpTxnCommonColumnYparity{}:
+	    transaction-constant binary column;
+	    contains \textbf{yParity} of the transaction;
+\end{enumerate}
