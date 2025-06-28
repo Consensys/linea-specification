@@ -5,12 +5,12 @@ We introduce the following simple constraint system
 			anchorRow    = i               ,
 			relOffset    = \relof          ,
 			condition    = \loc{condition} ,
-			limbByteSize = \loc{size}      ,
+			limbByteSize = \loc{\#bytes}   ,
 		} \vspace{2mm} \\
 		\qquad \define
 		\left\{ \begin{array}{lcl}
 			\shfFlag _{i + \relof} & = & \loc{condition}      \\
-			\shfArg  _{i + \relof} & = & \llarge - \loc{size} \\
+			\shfArg  _{i + \relof} & = & \llarge - \loc{\#bytes} \\
 		\end{array} \right.
 	\end{array} \right.
 \]
@@ -19,6 +19,6 @@ The above, given that the condition is met (i.e. $\loc{condition} \equiv 1$)
 unlocks the appropriate power of $256$ whereby one can (left) shift a limb occupying
 consecutive bytes onto the $\llarge$-th byte.
 \[
-	\shfPower _{i + \relof} \equiv 256 ^ \loc{comp}
+	\shfPower _{i + \relof} \equiv 256 ^ \loc{complement}
 \]
-where $	\loc{comp} \define \llarge - \loc{size}$
+where $	\loc{complement} \define \llarge - \loc{\#bytes}$

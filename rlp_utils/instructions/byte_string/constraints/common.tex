@@ -1,26 +1,31 @@
 \[
-    \boxed{\text{All constraints in this subsection assume } \isRlpUtilsMacro_{i} = 1 \et \rlpUtilsInstByteStringFlag _{i} = 1 }
+    \boxed{\text{All constraints in this subsection assume } \isRlpUtilsMacro_{i} = 1 \et \rlpUtilsInstByteStringPrefixFlag _{i} = 1 }
 \]
 We use the following shorthand:
 \[
-    \left\{ \begin{array}{lcl}
-        \locInputBytestringLength & \define & \rlpUtilsDataColumn{1}_{i} \\
-        \locInputFirstByte        & \define & \rlpUtilsDataColumn{2}_{i} \\
-        \locInputIsList           & \define & \rlpUtilsDataColumn{3}_{i} \\
+    \left\{ \begin{array}{lclr}
+        \locInputByteStringByteSize      & \define & \rlpUtilsDataColumn{1} _{i} \\
+        \locInputByteStringFirstByte             & \define & \rlpUtilsDataColumn{2} _{i} \\
+        \locInputByteStringIsList      & \define & \rlpUtilsDataColumn{3} _{i} \vspace{2mm} \\
+        \locOutputRlpPrefixRequired    & \define & \rlpUtilsDataColumn{4} _{i} & \prediction \\
+        \locOutputRlpPrefix            & \define & \rlpUtilsDataColumn{5} _{i} & \prediction \\
+        \locOutputByteStringIsNonempty & \define & \rlpUtilsDataColumn{6} _{i} & \prediction \\
+        \locOutputRlpPrefixByteSize    & \define & \rlpUtilsDataColumn{8} _{i} & \prediction \\
     \end{array} \right.
-    \quad\text{and}\quad
-    \left\{ \begin{array}{lcl}
-        \locOutputHasRlpPrefix   & \define & \rlpUtilsDataColumn{4} _{i} \\
-        \locOutputRlpPrefix      & \define & \rlpUtilsDataColumn{5} _{i} \\
-        \locOutputIsNonempty     & \define & \rlpUtilsDataColumn{6} _{i} \\
-        \locOutputNBytesOfPrefix & \define & \rlpUtilsDataColumn{8} _{i}      \\
+\]
+When defining local shorthands we will use the following conventions
+\[
+    \left\{ \begin{array}{ll}
+        \locByteString          & \text{stands for }\loc{byte\_string}              \\
+        \locByteStringByteSize  & \text{stands for }\loc{byte\_string\_byte\_size}  \\
+        \locByteStringFirstByte & \text{stands for }\loc{byte\_string\_first\_byte} \\
     \end{array} \right.
 \]
 We further define
 \[
     \left\{ \begin{array}{lcl}
-        \locBaseRlpPrefixShort & \define & \rlprefixShortInt \cdot (1 - \locInputIsList) + \rlprefixShortList \cdot \locInputIsList \\
-        \locBaseRlpPrefixLong  & \define & \rlprefixLongInt  \cdot (1 - \locInputIsList) + \rlprefixLongList  \cdot \locInputIsList \\
+        \locBaseRlpPrefixShort & \define & \rlprefixShortInt \cdot (1 - \locInputByteStringIsList) + \rlprefixShortList \cdot \locInputByteStringIsList \\
+        \locBaseRlpPrefixLong  & \define & \rlprefixLongInt  \cdot (1 - \locInputByteStringIsList) + \rlprefixLongList  \cdot \locInputByteStringIsList \\
     \end{array} \right.
 \]
 We impose the following constraints
@@ -32,16 +37,19 @@ We impose the following constraints
                 anchorRow = i                    ,
                 relOffset = \rowOffsetNullString ,
                 argOneHi  = 0                    ,
-                argOneLo  = \locInputBytestringLength ,
+                argOneLo  = \locInputByteStringByteSize ,
             }
         \]
         and we derive the following shorthand
         \[
             \left\{ \begin{array}{lcl}
-                \locEmptyByteString    & \define & \res_{i + \rowOffsetNullString} \\
-                \locNonemptyByteString & \define & 1 - \locEmptyByteString         \\
+                \locByteStringIsEmpty    & \define & \res_{i + \rowOffsetNullString} \\
+                \locByteStringIsNonempty & \define & 1 - \locByteStringIsEmpty         \\
             \end{array} \right.
         \]
-    \item[\underline{\underline{Setting \locOutputIsNonempty:}}]
-        we unconditionally impose $\locOutputIsNonempty = 1 - \locEmptyByteString$
+    \item[\underline{\underline{Justifying \locOutputByteStringIsNonempty:}}]
+        we unconditionally impose
+        \[
+            \locOutputByteStringIsNonempty = \locByteStringIsNonempty
+        \]
 \end{description}

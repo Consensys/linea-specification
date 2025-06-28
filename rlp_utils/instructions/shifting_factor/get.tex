@@ -1,0 +1,22 @@
+We introduce the following simple constraint system
+\[
+	\left\{ \begin{array}{l}
+		\getShiftingFactor {
+			anchorRow    = i             ,
+			relOffset    = \relof        ,
+			limbByteSize = \loc{\#bytes} ,
+		} \vspace{2mm} \\
+		\qquad \define
+		\left\{ \begin{array}{lcl}
+			\shfFlag _{i + \relof} & = & \true                   \\
+			\shfArg  _{i + \relof} & = & \llarge - \loc{\#bytes} \\
+		\end{array} \right. \\
+	\end{array} \right.
+\]
+\saNote{}
+The above unlocks the appropriate power of $256$ whereby one can (left) shift a limb occupying
+consecutive bytes onto the $\llarge$-th byte.
+\[
+	\shfPower _{i + \relof} \equiv 256 ^ \loc{complement}
+\]
+where $	\loc{complement} \define \llarge - \loc{\#bytes}$

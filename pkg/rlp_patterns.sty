@@ -40,6 +40,7 @@
 \define@cmdkey [RLP] {var} {dataLo}           {}
 \define@cmdkey [RLP] {var} {limbByteSize}     {}
 \define@cmdkey [RLP] {var} {endOfPhase}       {}
+\define@cmdkey [RLP] {var} {mustBeNontrivial} {}
 
 
 \presetkeys    [RLP] {var} {
@@ -57,6 +58,7 @@
         dataLo             = \missingParameter ,
         limbByteSize       = \missingParameter ,
         endOfPhase         = \missingParameter ,
+        mustBeNontrivial   = \missingParameter ,
         % offsetHi           = \missingParameter ,
 }{}
 
@@ -117,7 +119,7 @@
 \newcommand{\limbBelongsToLtOnly} [1] {
     \setkeys[RLP]{var}{#1}
     \limbBelongsToLtOnlyName _{\cmdRLP@var@anchorRow}
-        \left[ \begin{array}{lr}
+        \left[ \begin{array}{ll}
             \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
         \end{array} \right]
     }
@@ -131,7 +133,7 @@
 \newcommand{\limbBelongsToLxOnly} [1] {
     \setkeys[RLP]{var}{#1}
     \limbBelongsToLxOnlyName _{\cmdRLP@var@anchorRow}
-        \left[ \begin{array}{lr}
+        \left[ \begin{array}{ll}
             \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
         \end{array} \right]
     }
@@ -145,7 +147,7 @@
 \newcommand{\limbBelongsToBothLtAndLx} [1] {
     \setkeys[RLP]{var}{#1}
     \limbBelongsToBothLtAndLxName _{\cmdRLP@var@anchorRow}
-        \left[ \begin{array}{lr}
+        \left[ \begin{array}{ll}
             \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
         \end{array} \right]
     }
@@ -165,7 +167,7 @@
 \newcommand{\rlpUtilsInstCallInteger}        [1] {
     \setkeys[RLP]{var}{#1}
     \rlpUtilsInstCallIntegerName _{\cmdRLP@var@anchorRow}
-        \left[ \begin{array}{lr}
+        \left[ \begin{array}{ll}
             \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
             \utt{Integer hi part:} & \cmdRLP@var@integerHi \\
             \utt{Integer lo part:} & \cmdRLP@var@integerLo \\
@@ -193,7 +195,7 @@
 \newcommand{\rlpUtilsInstCallByteString}     [1] {
     \setkeys[RLP]{var}{#1}
     \rlpUtilsInstCallByteStringName _{\cmdRLP@var@anchorRow}
-        \left[ \begin{array}{lr}
+        \left[ \begin{array}{ll}
             \utt{Rel. row offset:}    & \cmdRLP@var@relOffset        \\
             \utt{Byte string length:} & \cmdRLP@var@byteStringLength \\
             \utt{First byte:}         & \cmdRLP@var@firstByte        \\
@@ -205,11 +207,12 @@
 \newcommand{\rlpProcessByteString}     [1] {
     \setkeys[RLP]{var}{#1}
     \rlpProcessByteStringName _{\cmdRLP@var@anchorRow}
-        \left[ \begin{array}{lr}
-            \utt{Rel. row offset:}    & \cmdRLP@var@relOffset        \\
-            \utt{Byte string length:} & \cmdRLP@var@byteStringLength \\
-            \utt{First byte:}         & \cmdRLP@var@firstByte        \\
-            \utt{Is list:}            & \cmdRLP@var@isList           \\
+        \left[ \begin{array}{ll}
+            \utt{Rel. row offset:}        & \cmdRLP@var@relOffset        \\
+            \utt{Byte string length:}     & \cmdRLP@var@byteStringLength \\
+            \utt{Byte string first byte:} & \cmdRLP@var@firstByte        \\
+            \utt{Byte string is list:}    & \cmdRLP@var@isList           \\
+            \utt{Must be nontrivial:}     & \cmdRLP@var@mustBeNontrivial \\
         \end{array} \right]
     }
 
@@ -229,7 +232,7 @@
 \newcommand{\rlpUtilsInstCallBytesThirtyTwo} [1] {
     \setkeys[RLP]{var}{#1}
     \rlpUtilsInstCallBytesThirtyTwoName _{\cmdRLP@var@anchorRow}
-        \left[ \begin{array}{lr}
+        \left[ \begin{array}{ll}
             \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
             \utt{Data hi part:}    & \cmdRLP@var@dataHi \\
             \utt{Data lo part:}    & \cmdRLP@var@dataLo \\
@@ -240,7 +243,7 @@
 \newcommand{\rlpProcessBytesThirtyTwo} [1] {
     \setkeys[RLP]{var}{#1}
     \rlpProcessBytesThirtyTwoName _{\cmdRLP@var@anchorRow}
-        \left[ \begin{array}{lr}
+        \left[ \begin{array}{ll}
             \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
             \utt{Data hi part:}    & \cmdRLP@var@dataHi \\
             \utt{Data lo part:}    & \cmdRLP@var@dataLo \\
@@ -251,7 +254,7 @@
 \newcommand{\rlpUtilsInstCallDataPricing}    [1] {
     \setkeys[RLP]{var}{#1}
     \rlpUtilsInstCallDataPricingName _{\cmdRLP@var@anchorRow}
-        \left[ \begin{array}{lr}
+        \left[ \begin{array}{ll}
             \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
             \utt{Limb:}            & \cmdRLP@var@limb      \\
             \utt{Number of bytes:} & \cmdRLP@var@nBytes    \\
@@ -262,7 +265,7 @@
 \newcommand{\rlpProcessDataPricing}    [1] {
     \setkeys[RLP]{var}{#1}
     \rlpProcessDataPricingName _{\cmdRLP@var@anchorRow}
-        \left[ \begin{array}{lr}
+        \left[ \begin{array}{ll}
             \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
             \utt{Limb:}            & \cmdRLP@var@limb      \\
             \utt{Number of bytes:} & \cmdRLP@var@nBytes    \\
@@ -274,17 +277,20 @@
     \setkeys[RLP]{var}{#1}
     \conditionallyGetShiftingFactorName _{\cmdRLP@var@anchorRow}
         \left[ \begin{array}{ll}
-            \utt{Rel. row offset:} & \cmdRLP@var@relOffset    \\
-            \utt{Condition:}       & \cmdRLP@var@condition    \\
-            \utt{Limb byte size:}  & \cmdRLP@var@limbByteSize \\
+            \utt{Rel. row offset:}        & \cmdRLP@var@relOffset    \\
+            \utt{Condition:}              & \cmdRLP@var@condition    \\
+            \utt{\#bytes away from 16th:} & \cmdRLP@var@limbByteSize \\
         \end{array} \right]
     }
 
-% \conditionallyGetShiftingFactor {
-%     anchorRow    = i                ,
-%     relOffset    = \relof           ,
-%     condition    = \loc{condition}  ,
-%     limbByteSize = \loc{limb\_byte\_size} ,
-% }
+\newcommand{\getShiftingFactorName}    {\inst{getShifingFactor}}
+\newcommand{\getShiftingFactor}    [1] {
+    \setkeys[RLP]{var}{#1}
+    \getShiftingFactorName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{ll}
+            \utt{Rel. row offset:}        & \cmdRLP@var@relOffset    \\
+            \utt{\#bytes away from 16th:} & \cmdRLP@var@limbByteSize \\
+        \end{array} \right]
+    }
 
 \makeatother
