@@ -62,7 +62,7 @@
 |-----------+-------+--------+---------------------------------------------------------------+--------------+-----------|
 |     "     | i + 2 |   ACC  |                                                               |  τ • h  + 0  |     0     |
 |           |       |        | • account/ADDRESS = account_address                           |              |           |
-|           |       |        | • account/MARKED_FOR_SELFDESTRUCT  =  false                   |              |           |
+|           |       |        | • account/MARKED_FOR_DELETION  =  false                       |              |           |
 |           |       |        |                                                               |              |           |
 |           |       |        | • bal                     ←  acc/BALANCE                      |              |           |
 |           |       |        | • acc_initially_had_code  ←  acc/INITIALLY_HAD_CODE           |              |           |
@@ -96,7 +96,7 @@
 |     "     | i + 4 |   ACC  |                                                               | τ • ζ + ε_sd |   τ • h   |
 |           |       |        | • account/ADDRESS = account_address                           |              |           |
 |           |       |        |                                                               |              |           |
-|           |       |        | If acc_initially_had_no_code:                                 |              |           |
+|           |       |        | If ¬acc_initially_had_code:                                   |              |           |
 |           |       |        | Delete account from state:                                    |              |           |
 |           |       |        | .    + account/BALANCE_NEW   = 0                              |              |           |
 |           |       |        | .    + account/NONCE_NEW     = 0                              |              |           |
@@ -105,7 +105,7 @@
 |           |       |        | .    + account/DEPLOYMENT_NUMBER += 1                         |              |           |
 |           |       |        | .    + account/DEPLOYMENT_STATUS  = 0                         |              |           |
 |           |       |        |                                                               |              |           |
-|           |       |        | If acc_initially_had_no_code:                                 |              |           |
+|           |       |        | If acc_initially_had_code:                                    |              |           |
 |           |       |        | Account stays the same:                                       |              |           |
 |           |       |        | • [4]accSameBalance                                           |              |           |
 |           |       |        | • [4]accSameNonce                                             |              |           |
