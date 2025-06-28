@@ -24,18 +24,18 @@
         and we derive the following shorthand
         \[
             \left\{ \begin{array}{lcl}
-                \locByteStringByteSizeIsOne            & \define & \res_{i + \rowOffsetLengthIsOne} \\
-                \locByteStringByteSizeIsGreaterThanOne & \define & 1 - \locByteStringByteSizeIsOne  \\
+                \locByteStringLengthIsOne            & \define & \res_{i + \rowOffsetLengthIsOne} \\
+                \locByteStringLengthIsGreaterThanOne & \define & 1 - \locByteStringLengthIsOne  \\
             \end{array} \right.
         \]
 \end{description}
 We must now distinguish between the two associated subcases.
 \begin{description}
     \item[\underline{\underline{Processing row $n^\circ(\rowOffsetCompareOneTwoEight)$:}}]
-        we must distinguish between $\locByteStringByteSizeIsOne \equiv 0$ and $\locByteStringByteSizeIsOne \equiv 1$.
+        we must distinguish between $\locByteStringLengthIsOne \equiv 0$ and $\locByteStringLengthIsOne \equiv 1$.
         \begin{description}
-            \item[\underline{\underline{The \locByteStringByteSizeIsOne{} case:}}]
-                \If $\locByteStringByteSizeIsOne = 1$ \Then
+            \item[\underline{\underline{The \locByteStringLengthIsOne{} case:}}]
+                \If $\locByteStringLengthIsOne = 1$ \Then
                 \begin{description}
                     \item[\underline{Comparing \locInputByteStringFirstByte{} to $\rlprefixShortInt$:}]
                         we impose that
@@ -73,8 +73,8 @@ We must now distinguish between the two associated subcases.
                                 \]
                         \end{enumerate}
                 \end{description}
-            \item[\underline{\underline{The \locByteStringByteSizeIsGreaterThanOne{} case:}}]
-                \If $\locByteStringByteSizeIsGreaterThanOne = 1$ \Then
+            \item[\underline{\underline{The \locByteStringLengthIsGreaterThanOne{} case:}}]
+                \If $\locByteStringLengthIsGreaterThanOne = 1$ \Then
                 \begin{description}
                     \item[\underline{Comparing data length to $\fiftySix$:}]
                         we impose that
@@ -90,14 +90,14 @@ We must now distinguish between the two associated subcases.
                         and we derive the following shorthand
                         \[
                             \left\{ \begin{array}{lcl}
-                                \locByteStringByteSizeIsLtFiftySix & \define & \res_{i + \rowOffsetCompareFiftyFive}            \\
-                                \locByteStringByteSizeByteSize     & \define & (\wcpCtMax_{i + \rowOffsetCompareFiftyFive} + 1) \\
+                                \locByteStringLengthIsLtFiftySix & \define & \res_{i + \rowOffsetCompareFiftyFive}            \\
+                                \locByteStringLengthByteSize     & \define & (\wcpCtMax_{i + \rowOffsetCompareFiftyFive} + 1) \\
                             \end{array} \right.
                         \]
                     \item[\underline{Justifying remaining predictions:}]
                         we must again distinguish cases:
                         \begin{enumerate}
-                            \item \If $\locByteStringByteSizeIsLtFiftySix = 1$ we impose
+                            \item \If $\locByteStringLengthIsLtFiftySix = 1$ we impose
                                 \[
                                     \left\{ \begin{array}{lcl}
                                         \locOutputRlpPrefixRequired & = & \true \\
@@ -111,14 +111,14 @@ We must now distinguish between the two associated subcases.
                                         \locOutputRlpPrefixByteSize & = & 1 \\
                                     \end{array} \right.
                                 \]
-                            \item \If $\locByteStringByteSizeIsLtFiftySix = 0$ we derive the following shorthand
+                            \item \If $\locByteStringLengthIsLtFiftySix = 0$ we derive the following shorthand
                                 we impose
                                 \[
                                     \left\{ \begin{array}{l}
                                         \getShiftingFactor {
                                             anchorRow    = i                                  ,
                                             relOffset    = \rowOffsetCompareFiftyFive         ,
-                                            limbByteSize = 1 + \locByteStringByteSizeByteSize ,
+                                            limbByteSize = 1 + \locByteStringLengthByteSize ,
                                         } \vspace{2mm} \\
                                         \locLeftShiftedByteSize \define \locInputByteStringByteSize \cdot \shfPower _{i + \rowOffsetCompareFiftyFive} \\
                                     \end{array} \right.
@@ -130,12 +130,12 @@ We must now distinguish between the two associated subcases.
                                         \locOutputRlpPrefix         & = &
                                         \left[ \begin{array}{cr}
                                             + & \locBaseRlpPrefixLong          \\
-                                            + & \locByteStringByteSizeByteSize \\
+                                            + & \locByteStringLengthByteSize \\
                                         \end{array} \right]
                                         \cdot 256 ^{\llargeMO}
                                         + \locLeftShiftedByteSize
                                         \\
-                                        \locOutputRlpPrefixByteSize & = & 1 + \locByteStringByteSizeByteSize \\
+                                        \locOutputRlpPrefixByteSize & = & 1 + \locByteStringLengthByteSize \\
                                     \end{array} \right.
                                 \]
                                 \saNote{}
