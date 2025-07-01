@@ -1,0 +1,31 @@
+\[
+    \boxed{\text{All constraints in this subsection assume } \isRlpUtilsMacro_{i} = 1 \et \rlpUtilsInstBytesThirtyTwoFlag _{i} = 1 }
+\]
+We prove that the input is a $\evmWordSize$-bytes.
+The constraints are as follows:
+\begin{enumerate}
+    \item $\maxCt_{i + 1} = 0$
+    \item we impose
+        \[
+            \left\{ \begin{array}{l}
+                \wcpCallToGeq {
+                    anchorRow = i                           ,
+                    relOffset = 1                           ,
+                    argOneHi  = \rlpUtilsDataColumn{1} _{i} ,
+                    argOneLo  = \rlpUtilsDataColumn{2} _{i} ,
+                    argTwoHi  = \nothing                    ,
+                    argTwoLo  = 0                           ,
+                }
+                \vspace{2mm} \\
+                \resultMustBeTrue {
+                    anchorRow = i ,
+                    relOffset = 1 ,
+                }
+            \end{array} \right.
+        \]
+\end{enumerate}
+\saNote{}
+The above thus verifies that both
+$\rlpUtilsDataColumn{1}$ and
+$\rlpUtilsDataColumn{2}$
+occupy at most $\llarge$-many bytes.

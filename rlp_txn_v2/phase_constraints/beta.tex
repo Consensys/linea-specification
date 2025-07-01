@@ -1,0 +1,111 @@
+\begin{center}
+    \boxed{\text{In all this section, it is assumed that
+    $
+    \left\{ \begin{array}{lcl}
+        \phaseBeta _{i} = 1 \\
+        \isTxn     _{i} = 1 \\
+    \end{array} \right.
+    $
+    }}
+\end{center}
+We use the following shorthands:
+\[
+    \left\{ \begin{array}{lcl}
+        \locReplayProtection & \define & \rlpTxnCommonColumnReplayProtection _{i} \\
+        \locChainId          & \define & \rlpTxnTransactionColumnChainId     _{i} \\
+        \locYparity          & \define & \rlpTxnCommonColumnYparity          _{i} \\
+    \end{array} \right.
+\]
+we further define a \locTwScalar{} shorthand for what the \cite{EYP-Shanghai} calls
+``\textbf{w}: A scalar value encoding Y parity and possibly chain ID.
+Formally $T_\text{w}$.
+$T_\text{w} = 27 + T_\text{y}$ or $T_\text{w} = 2\beta + 35 + T_\text{y}$'':
+\begin{enumerate}
+    \item \If $\locReplayProtection = 0$ \Then $\locTwScalar \define \unprotectedV + \locYparity$
+    \item \If $\locReplayProtection = 1$ \Then $\locTwScalar \define 2 \cdot \locChainId + \protectedBaseV + \locYparity$
+\end{enumerate}
+We first compute $\rlp(\textbf{w})$ which is in $\locLtTilde$ only:
+\begin{description}
+    \item[\underline{\underline{\rlp{}-ization of $T_\text{w}$:}}]
+        we impose that
+        \begin{enumerate}
+            \item $\limbBelongsToLtOnly {
+                    anchorRow = i ,
+                    relOffset = 1 ,
+                }$
+            \item
+                \[
+                    \rlpProcessInteger {
+                        anchorRow  = i                ,
+                        relOffset  = 1                ,
+                        integerHi  = 0                ,
+                        integerLo  = \locTwScalar     ,
+                        endOfPhase = \locIsEndOfPhase ,
+                    }
+                \]
+                where
+                \[
+                    \locIsEndOfPhase \define 1 - \locReplayProtection
+                \]
+        \end{enumerate}
+\end{description}
+\saNote{}
+We explain our choice for \locIsEndOfPhase{}.
+If $\locReplayProtection \equiv 0 \equiv \false$ we are done.
+If $\locReplayProtection \equiv 1 \equiv \true$ we must still compute the postfix of
+$\locLxTilde$ which is $\mathtt{RLP}(\beta) \cdot \mathtt{RLP}(\varnothing) \cdot \mathtt{RLP}(\varnothing)$  where the chain ID $\beta$ is specified (equivalently $\textbf{w} \notin \{\unprotectedV , \unprotectedVPO \}$.)
+
+\begin{center}
+    \boxed{\text{Until the end of this section, it is assumed that
+    $
+    \left\{ \begin{array}{lcl}
+        \phaseBeta _{i}      & = & 1 \\
+        \isTxn     _{i}      & = & 1 \\
+        \locReplayProtection & = & 1 \\
+    \end{array} \right.
+    $
+    }}
+\end{center}
+The constraints that follow pertain to the \rlp{}-ization of the aforementioned postfix.
+\begin{description}
+    \item[\underline{\underline{\rlp{}-ization of the \textbf{ChainId} $\beta$:}}]
+        we impose
+        \begin{enumerate}[resume]
+            \item
+                $\limbBelongsToLxOnly {
+                    anchorRow = i                         ,
+                    relOffset = \rlpIntegerInstNbRows + 1 ,
+                }$
+            \item
+                \[
+                    \rlpProcessInteger {
+                        anchorRow  = i                         ,
+                        relOffset  = \rlpIntegerInstNbRows + 1 ,
+                        integerHi  = 0                         ,
+                        integerLo  = \locChainId               ,
+                        endOfPhase = \false                    ,
+                    }
+                \]
+        \end{enumerate}
+    \item[\underline{\underline{Accounting for $\mathtt{RLP}(\varnothing) \cdot \mathtt{RLP}(\varnothing)$ in the \rlp{} string:}}]
+        we impose
+        \begin{enumerate}[resume]
+            \item
+                $\limbBelongsToLxOnly {
+                    anchorRow = i                                                 ,
+                    relOffset = \rlpIntegerInstNbRows + \rlpIntegerInstNbRows + 1 ,
+                }$
+            \item
+                we set
+                \[
+                    \setLimb{
+                        anchorRow = i                                                                   ,
+                        relOffset = \rlpIntegerInstNbRows + \rlpIntegerInstNbRows + 1                   ,
+                        limb      = \rlprefixShortInt \cdot 256^{15} + \rlprefixShortInt \cdot 256^{14} ,
+                        nBytes    = 2                                                                   ,
+                    }
+                \]
+            \item
+                we impose $\phaseEnd _{i + \rlpIntegerInstNbRows + \rlpIntegerInstNbRows + 1} = 1$ 
+        \end{enumerate}
+\end{description}
