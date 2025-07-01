@@ -3,13 +3,10 @@
     \left\{ \begin{array}{lcl}
         \isRlpUtilsMacro                  _{i} & = & 1 \\
         \rlpUtilsInstByteStringPrefixFlag _{i} & = & 1 \\
-        \locByteStringIsNonempty               & = & 1 \\
     \end{array} \right.
     }
 \]
 \begin{description}
-    \item[\underline{\underline{Setting \maxCt:}}]
-        we impose $\maxCt _{i + 1} = \bytestringNonEmptyCtMax$
     \item[\underline{\underline{Processing row $n^\circ(\rowOffsetLengthIsOne)$:}} \underline{Comparing \locInputByteStringByteSize{} to $1$:}]
         we impose
         \[
@@ -25,15 +22,15 @@
         and we derive the following shorthand
         \[
             \left\{ \begin{array}{lcl}
-                \locByteStringLengthIsOne            & \define & \res_{i + \rowOffsetLengthIsOne} \\
-                \locByteStringLengthIsGreaterThanOne & \define & 1 - \locByteStringLengthIsOne  \\
+                \locByteStringLengthIsOne            & \define & \locByteStringIsNonempty \cdot      \res_{i + \rowOffsetLengthIsOne}   \\
+                \locByteStringLengthIsGreaterThanOne & \define & \locByteStringIsNonempty \cdot (1 - \res_{i + \rowOffsetLengthIsOne})  \\
             \end{array} \right.
         \]
 \end{description}
 We must now distinguish between the two associated subcases.
 \begin{description}
     \item[\underline{\underline{Processing row $n^\circ(\rowOffsetCompareOneTwoEight)$:}}]
-        we must distinguish between $\locByteStringLengthIsOne \equiv 0$ and $\locByteStringLengthIsOne \equiv 1$.
+        we must distinguish between $\locByteStringLengthIsGreaterThanOne \equiv 1$ and $\locByteStringLengthIsOne \equiv 1$.
         \begin{description}
             \item[\underline{\underline{The \locByteStringLengthIsOne{} case:}}]
                 \If $\locByteStringLengthIsOne = 1$ \Then
