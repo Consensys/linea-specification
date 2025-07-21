@@ -79,30 +79,35 @@ The present section deals with handling \inst{REVERT} instructions.
 	\item[\underline{Setting \locTriggerMmu{}:}] 
 		we impose the following:
 		\begin{enumerate}
-			\item \If $\xAhoy           _{i} = 1$ \Then $\locTriggerMmu = 0$
-			\item \If $\locCurrentContextIsRoot = 1$ \Then $\locTriggerMmu = 0$
+			\item \If $\xAhoy              _{i} = 1$ \Then $\locTriggerMmu \define 0$
+			\item \If $\locCurrentContextIsRoot = 1$ \Then $\locTriggerMmu \define 0$
 			\item \If \Big($\xAhoy      _{i} = 0$ \et $\locCurrentContextIsRoot = 0$\Big) \Then
 				\begin{enumerate}
-					\item \If $\locSizeLo \cdot \locRac =    0$ \Then $\locTriggerMmu = 0$
-					\item \If $\locSizeLo \cdot \locRac \neq 0$ \Then $\locTriggerMmu = 1$
+					\item \If $\locSizeLo \cdot \locRac =    0$ \Then $\locTriggerMmu \define 0$
+					\item \If $\locSizeLo \cdot \locRac \neq 0$ \Then $\locTriggerMmu \define 1$
 				\end{enumerate}
 		\end{enumerate}
 		\saNote{} \label{hub: instruction handling: halting: revert: trigger_MMU definition}
-		In order to trigger the \mmuMod{} module a \inst{REVERT} instruction must trigger no exception, have nonzero size parameter and arise in a context with nonzero \cnRac{}. In particular this cannot happen
-		(\emph{a}) in the root context of a transaction nor
-		(\emph{b}) in a context that was spawned through a \inst{CREATE}-type instruction. Indeed in both cases it holds that $\cnRac \equiv 0$. 
+		In order to trigger the \mmuMod{} module a \inst{REVERT} instruction must trigger no exception,
+		not take place in the root context of a transaction,
+		have nonzero size parameter and arise in a context with nonzero \cnRac{}.
+		The ``$\locCurrentContextIsRoot \equiv \false$ and $\cnRac \neq 0$'' condition in particular implies that
+		$\locTriggerMmu \equiv 0$ in any deployment context as such contexts have $\cnRac \equiv 0$.
+
+		\saNote{} \label{hub: instruction handling: halting: revert: trigger_MMU provably binary}
+		Observe that $\locTriggerMmu$ is \textbf{provably binary}.
 	\item[\underline{The miscellaneous-row $n^°(i + \locRevertMiscRowOffset)$:}]
 		we impose
 		\[
-			\left\{ \begin{array}{lclr}
-				\weightedMiscFlagSumSansMmu {
+				\weightedMiscFlagSum {
 					anchorRow = i                       ,
 					relOffset = \locRevertMiscRowOffset ,
 				}
-                                                                            & = & \miscMxpWeight \vspace{2mm} \\
-				\miscMmuFlag _{i + \locRevertMiscRowOffset} & = & \locTriggerMmu              \\
-			\end{array} \right.
-			% OK
+				=
+				\left[ \begin{array}{crcl}
+					+ & \miscMxpWeight \\
+					+ & \miscMmuWeight & \cdot & \locTriggerMmu \\
+				\end{array} \right]
 		\]
 		in other words
 		\[
@@ -114,6 +119,9 @@ The present section deals with handling \inst{REVERT} instructions.
 				\miscStpFlag _{i + \locRevertMiscRowOffset} & = & \gZero         & (\sanityCheck) \\
 			\end{array} \right.
 		\]
+		\saNote{}
+		The above is safe given the \textbf{provable binarity} of \locTriggerMmu,
+		see (\ref{hub: instruction handling: halting: revert: trigger_MMU provably binary}).
 	\item[\underline{Setting the \mxpMod{} data:}]
 		we impose
 		\[
@@ -122,7 +130,7 @@ The present section deals with handling \inst{REVERT} instructions.
 				anchorRow    = i                       ,
 				relOffset    = \locRevertMiscRowOffset ,
 				instruction  = \locInst                ,
-				deploys      = \varnothing             ,
+				deploys      = \nothing                ,
 				offsetHi     = \locOffsetHi            ,
 				offsetLo     = \locOffsetLo            ,
 				sizeHi       = \locSizeHi              ,
