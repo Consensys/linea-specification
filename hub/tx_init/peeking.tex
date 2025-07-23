@@ -9,9 +9,9 @@ We unconditionally impose the following
 		the \textbf{first few} peeking flags must satisfy:
 		\[
 			\left[ \begin{array}{cl}
-				+ & \peekTransaction _{i + \locTxInitRoffTxn}      \\
-				+ & \peekMisc        _{i + \locTxInitRoffMisc}     \\
-				+ & \peekAccount     _{i + \locTxInitWarmCoinbase} \\
+				+ & \peekTransaction _{i + \roffTxInitTxn}      \\
+				+ & \peekMisc        _{i + \roffTxInitMisc}     \\
+				+ & \peekAccount     _{i + \roffTxInitWarmCoinbase} \\
 			\end{array} \right]
 			= 3
 		\]
@@ -20,9 +20,9 @@ Given peeking flag exclusivity,
 see section~(\ref{hub: heartbeat: peeking flag exclusivity}),
 the above translates precisely to
 \begin{enumerate}[resume]
-	\item $\peekTransaction _{i + \locTxInitRoffTxn}      = 1$ ~ (\trash)
-	\item $\peekMisc        _{i + \locTxInitRoffMisc}     = 1$ ~ (\trash)
-	\item $\peekAccount     _{i + \locTxInitWarmCoinbase} = 1$ ~ (\trash)
+	\item $\peekTransaction _{i + \roffTxInitTxn}      = 1$ ~ (\trash)
+	\item $\peekMisc        _{i + \roffTxInitMisc}     = 1$ ~ (\trash)
+	\item $\peekAccount     _{i + \roffTxInitWarmCoinbase} = 1$ ~ (\trash)
 \end{enumerate}
 \begin{enumerate}[resume]
 	\item \If $\locTransactionWillRevert = 1$ \Then
@@ -30,22 +30,22 @@ the above translates precisely to
 			\item we justify 
 				\[
 					\left\{ \begin{array}{lcr}
-						\locTransactionWillRevert  & = & \cnSelfRev  _ {i + \locTxInitRoffExceptionalFirstExecutionRow} \\
-						\locTransactionRevertStamp & = & \cnRevStamp _ {i + \locTxInitRoffExceptionalFirstExecutionRow} \\
+						\locTransactionWillRevert  & = & \cnSelfRev  _ {i + \roffTxInitExceptionalFirstExecutionRow} \\
+						\locTransactionRevertStamp & = & \cnRevStamp _ {i + \roffTxInitExceptionalFirstExecutionRow} \\
 					\end{array} \right.
 				\]
 			\item we set the peeking flags
 				\[
 					\left[ \begin{array}{cl} 
-						+ & \peekTransaction _{i + \locTxInitRoffTxn                               } \\
-						+ & \peekMisc        _{i + \locTxInitRoffMisc                              } \\
-						+ & \peekAccount     _{i + \locTxInitWarmCoinbase                          } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccDoingSndPayGas                 } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccDoingSenderValueTransfer       } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccDoingRecipientValueReception   } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccUndoingSenderValueTransfer     } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccUndoingRecipientValueReception } \\
-						+ & \peekContext     _{i + \locTxInitRoffConExceptionalContextRowOffset    } \\
+						+ & \peekTransaction _{i + \roffTxInitTxn                               } \\
+						+ & \peekMisc        _{i + \roffTxInitMisc                              } \\
+						+ & \peekAccount     _{i + \roffTxInitWarmCoinbase                          } \\
+						+ & \peekAccount     _{i + \roffTxInitAccDoingSndPayGas                 } \\
+						+ & \peekAccount     _{i + \roffTxInitAccDoingSenderValueTransfer       } \\
+						+ & \peekAccount     _{i + \roffTxInitAccDoingRecipientValueReception   } \\
+						+ & \peekAccount     _{i + \roffTxInitAccUndoingSenderValueTransfer     } \\
+						+ & \peekAccount     _{i + \roffTxInitAccUndoingRecipientValueReception } \\
+						+ & \peekContext     _{i + \roffTxInitConExceptionalContextRowOffset    } \\
 					\end{array} \right] =
 					\nsrTxInitWillRevert
 				\]
@@ -55,20 +55,20 @@ the above translates precisely to
 			\item we justify 
 				\[
 					\left\{ \begin{array}{lcr}
-						\locTransactionWillRevert  & = & \cnSelfRev  _ {i + \locTxInitRoffUnexceptionalFirstExecutionRow} \\
-						\locTransactionRevertStamp & = & \cnRevStamp _ {i + \locTxInitRoffUnexceptionalFirstExecutionRow} \\
+						\locTransactionWillRevert  & = & \cnSelfRev  _ {i + \roffTxInitUnexceptionalFirstExecutionRow} \\
+						\locTransactionRevertStamp & = & \cnRevStamp _ {i + \roffTxInitUnexceptionalFirstExecutionRow} \\
 					\end{array} \right.
 				\]
 			\item we set the peeking flags
 				\[
 					\left[ \begin{array}{cl} 
-						+ & \peekTransaction _{i + \locTxInitRoffTxn                              } \\
-						+ & \peekMisc        _{i + \locTxInitRoffMisc                             } \\
-						+ & \peekAccount     _{i + \locTxInitWarmCoinbase                         } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccDoingSndPayGas                } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccDoingSenderValueTransfer      } \\
-						+ & \peekAccount     _{i + \locTxInitRoffAccDoingRecipientValueReception  } \\
-						+ & \peekContext     _{i + \locTxInitRoffConUnexceptionalContextRowOffset } \\
+						+ & \peekTransaction _{i + \roffTxInitTxn                              } \\
+						+ & \peekMisc        _{i + \roffTxInitMisc                             } \\
+						+ & \peekAccount     _{i + \roffTxInitWarmCoinbase                         } \\
+						+ & \peekAccount     _{i + \roffTxInitAccDoingSndPayGas                } \\
+						+ & \peekAccount     _{i + \roffTxInitAccDoingSenderValueTransfer      } \\
+						+ & \peekAccount     _{i + \roffTxInitAccDoingRecipientValueReception  } \\
+						+ & \peekContext     _{i + \roffTxInitConUnexceptionalContextRowOffset } \\
 					\end{array} \right] =
 					\nsrTxInitWontRevert
 				\]
