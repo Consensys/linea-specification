@@ -2,15 +2,15 @@
 	we peek into the sender account:
 	\[
 		\left\{ \begin{array}{lclr}
-			\accAddress    \high _{i + \roffTxSkipUserSenderAccount} & = & \txFrom  \high  _{i + \roffTxSkipUserTransaction}              \\
-			\accAddress    \low  _{i + \roffTxSkipUserSenderAccount} & = & \txFrom  \low   _{i + \roffTxSkipUserTransaction} \vspace{2mm} \\
-			\multicolumn{3}{l}{\accDecrementBalance               {i}{\roffTxSkipUserSenderAccount}{\locWeiCost}} \\
-			\multicolumn{3}{l}{\accIncrementNonce                 {i}{\roffTxSkipUserSenderAccount}} \\
-			\multicolumn{3}{l}{\accSameCode                       {i}{\roffTxSkipUserSenderAccount}} \\
-			\multicolumn{3}{l}{\accSameDeployment                 {i}{\roffTxSkipUserSenderAccount}} \\
-			\multicolumn{3}{l}{\accSameWarmth                     {i}{\roffTxSkipUserSenderAccount}} \\
-			\multicolumn{3}{l}{\accSameMarkedForDeletionFlag      {i}{\roffTxSkipUserSenderAccount}} \\
-			\multicolumn{3}{l}{\accIsntPrecompile                 {i}{\roffTxSkipUserSenderAccount}} & (\trash) \\
+			\accAddress    \high  _{i + \roffTxSkipUserSenderAccount} & = & \txFrom  \high  _{i + \roffTxSkipUserTransaction}              \\
+			\accAddress    \low   _{i + \roffTxSkipUserSenderAccount} & = & \txFrom  \low   _{i + \roffTxSkipUserTransaction} \vspace{2mm} \\
+			\multicolumn{3}{l}{\accDecrementBalance           {i}{\roffTxSkipUserSenderAccount}{\locWeiCost}} \\
+			\multicolumn{3}{l}{\accIncrementNonce             {i}{\roffTxSkipUserSenderAccount}} \\
+			\multicolumn{3}{l}{\accSameCode                   {i}{\roffTxSkipUserSenderAccount}} \\
+			\multicolumn{3}{l}{\accSameDeployment             {i}{\roffTxSkipUserSenderAccount}} \\
+			\multicolumn{3}{l}{\accSameWarmth                 {i}{\roffTxSkipUserSenderAccount}} \\
+			\multicolumn{3}{l}{\accSameMarkedForDeletionFlag  {i}{\roffTxSkipUserSenderAccount}} \\
+			\multicolumn{3}{l}{\accIsntPrecompile             {i}{\roffTxSkipUserSenderAccount}} & (\trash) \\
 			\multicolumn{3}{l}{
 				\standardDomSubStamps {
 					anchorRow = i                            ,
@@ -24,13 +24,16 @@
 	\[
 		\locWeiCost \define
 		\left[ \begin{array}{cr}
-			+ & \txValue_{i + \roffTxSkipUserTransaction}                                                                                                                            \\
-			+ & \txGasPrice_{i + \roffTxSkipUserTransaction} \cdot \big( \txGasLimit_{i + \roffTxSkipUserTransaction} - \txInitialGas_{i + \roffTxSkipUserTransaction} \big) \\
+			+ & \txValue    _{i + \roffTxSkipUserTransaction} \\
+			+ & \txGasPrice _{i + \roffTxSkipUserTransaction}
+			    \cdot
+			    \big[ \txGasLimit _{i + \roffTxSkipUserTransaction} - \txEffectiveRefund _{i + \roffTxSkipUserTransaction} \big] \\
 		\end{array} \right]
 	\]
 	In accordance with \cite{EIP-3607} we further impose
 	\[
 		\accHasCode _{i + \roffTxSkipUserSenderAccount} = 0
 	\]
-	\saNote{}
-	\specTodo{}, the definition of \locWeiCost{} likely to change due to call data floor price.
+	\iffalse
+	% TODO: uncomment the NOTE below for Prague
+	\fi
