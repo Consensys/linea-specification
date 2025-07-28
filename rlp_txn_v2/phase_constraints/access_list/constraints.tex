@@ -3,49 +3,30 @@
 \end{center}
 An access list tuple always starts with the \rlp{} prefix of the tuple, followed by the \rlp{} of an address:
 \begin{enumerate}[resume]
-	\item \If $\isPrefix _{i} = 1$ \et $\isAddr _{i} = 1$ \et $\isSto _{i} = 0$ Then:
+	\item \If $\isPrefix _{i} = 1$ \et $\isAddr _{i} = 1$ \et $\isSto _{i} = 0$ \Then:
 		\begin{enumerate}
-			\item $\exoDataColumn{1} _{i} = \locAccessListTupleSize _{i}$
-			\item $\exoDataColumn{3} _{i} = 1$
-			\item
+			\item we impose
 				\[
-					\rlpBytestringPrefix _{i}
-					\left(
-					\begin{array}{r}
-						\exoDataColumn{1},
-						\exoDataColumn{2},
-						\exoDataColumn{3},
-						\ct,
-						\maxCt; \\
-						\rlpUtilsFlag,
-						\INST,
-						\exoDataColumn{4},
-						\exoDataColumn{5},
-						\exoDataColumn{8}; \\
-						\limb,
-						\lc,
-						\limbsize; \\
-					\end{array}
-					\right)
+					\rlpProcessByteString {
+						anchorRow        = i                            ,
+						relOffset        = 0                            ,
+						byteStringLength = \locAccessListTupleSize _{i} ,
+						firstByte        = \nothing                     ,
+						isList           = \true                        ,
+						mustBeNontrivial = \true                        ,
+					}
 				\]
 			\item $\isPrefix _{i + 1} = 0$
 			\item $\isAddr   _{i + 1} = 1$
 			\item $\isSto    _{i + 1} = 0$
 			\item
 				\[
-					\rlpAddress _{i + 1}
-					\left(
-					\begin{array}{r}
-						\locAddressHi,
-						\locAddressLo,
-						\ct,
-						\maxCt; \\
-						\trmFlag,
-						\limb,
-						\lc,
-						\limbsize; \\
-					\end{array}
-					\right)
+					\rlpProcessAddress {
+						anchorRow = i             ,
+						relOffset = 1             ,
+						addressHi = \locAddressHi ,
+						addressLo = \locAddressLo ,
+					}
 				\]
 		\end{enumerate}
 
