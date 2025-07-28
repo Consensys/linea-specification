@@ -1,40 +1,54 @@
 \begin{center}
-\boxed{\text{In all this section, it is assumed that $\phaseTo _{i}=1$.}}
+    \boxed{\text{In all this section, it is assumed that $\phaseTo _{i}=1$.}}
 \end{center}
-
-In the following, we assume: $\isTxn _{i-1} =1$:
-\If $\isDep  _{i - 1} = 1$ \Then:
+The \texttt{to} field of a transaction may be left empty,
+which signals deployment transactions.
+We therefore introduce
+\[
+    \left\{ \begin{array}{lcl}
+	\locIsDeploymentTransaction  & \define & \rlpTxnTransactionColumnIsDep _{i - 1} \\
+	\locIsMessageCallTransaction & \define & 1 - \locIsDeploymentTransaction        \\
+	\locToAddressHi              & \define & \rlpTxnTransactionColumnToHi _{i - 1}  \\
+	\locToAddressLo              & \define & \rlpTxnTransactionColumnToLo _{i - 1}  \\
+    \end{array} \right.
+\]
+The deployment address (if applicable) is first obtained in the \userTxnDataMod{} module.
 \begin{enumerate}
     \item we impose
-        $\limbBelongsToBothLtAndLx {
-            anchorRow = i ,
-            relOffset = 0 ,
-        }$
-    \item $\maxCt _{i} = 0$
-    \item $\lc _{i} = 1$
-    \item $\limb _{i} = \rlprefixShortInt \cdot 256 ^{\llargeMO}$
-    \item $\limbsize _{i} = 1$
+	$\limbBelongsToBothLtAndLx {
+	    anchorRow = i ,
+	    relOffset = 0 ,
+	}$
+    \item \If $\isTxn _{i - 1} = 1$ \Then
+	\begin{description}
+	    \item[\underline{\underline{The deployment transaction case:}}]
+		\If $\locIsDeploymentTransaction = \true$ \Then
+		\begin{description}
+		    \item[\underline{Setting \maxCt{}:}]
+			we impose $\maxCt _{i} = 0$
+		    \item[\underline{Writing the \rlp{} prefix to the \rlp{} string:}]
+			\[
+			    \setLimb{
+				anchorRow  = i                                        ,
+				relOffset  = 0                                        ,
+				limb       = \rlprefixShortInt \cdot 256 ^{\llargeMO} ,
+				nBytes     = 1                                        ,
+			    }
+			\]
+		\end{description}
+	    \item[\underline{\underline{The deployment transaction case:}}]
+		\If $\locIsMessageCallTransaction = \true$ \Then
+		\begin{description}
+		    \item[\underline{Using \rlpProcessAddressName{}:}]
+			we impose
+			\[
+			    \rlpProcessAddress {
+				anchorRow = i               ,
+				relOffset = 0               ,
+				addressHi = \locToAddressHi ,
+				addressLo = \locToAddressLo ,
+			    }
+			\]
+		\end{description}
+	\end{description}
 \end{enumerate}
-
-\If $\isDep _{i-1} = 0$ \Then:
-\begin{enumerate}
-    \item $\exoDataColumn{1} _{i} = \toHi _{i-1}$
-    \item $\exoDataColumn{2} _{i} = \toLo _{i-1}$
-    \item \[
-	    \rlpAddress _{i}
-	    \left(
-	    \begin{array}{r}
-		\exoDataColumn{1},
-		\exoDataColumn{2},
-		\ct,
-		\maxCt; \\
-		\trmFlag,
-		\limb,
-		\lc,
-		\limbsize; \\
-	    \end{array}
-	    \right)
-	\]
-\end{enumerate}
-In the following, we assume: $\isCmp _{i} =1$:
-\If $\done _{i}=1$ \Then $\phaseEnd _{i}=1$

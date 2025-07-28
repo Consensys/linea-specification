@@ -7,24 +7,26 @@
 	bit column that defines the computation perspective;
     \item \col{LIMB\_CONSTRUCTED}:
 	binary column;
-	is equal to $1$ when the $\limb$ is part of either \rlp{} bytestrings $\locLtTilde$ or $\locLxTilde$, otherwise is equal to $0$;
+	is equal to $1$ when the $\limb$ is part of either \rlp{} bytestrings $\locLtTilde(\locTransaction)$ or $\locLxTilde(\locTransaction)$, otherwise is equal to $0$;
 	abbreviated to $\lc$;
 	\item $\lt$:
-	binary column; equal to $1$ when the constructed $\limb$ is part of $\locLtTilde$, otherwise equal to $0$;
+	binary column; equal to $1$ when the constructed $\limb$ is part of $\locLtTilde(\locTransaction)$, otherwise equal to $0$;
     \item $\lx$:
-	binary column; equal to $1$ when the constructed $\limb$ is part of $\locLxTilde$, otherwise equal to $0$;
+	binary column; equal to $1$ when the constructed $\limb$ is part of $\locLxTilde(\locTransaction)$, otherwise equal to $0$;
     \item $\indext$:
-	index of the current limb within the current string of $\locLtTilde$. Starts at 0 when starting a new transaction and increments by 1 when $\lc$ and $\lt$ are one; 
+	index of the current limb within the current string of $\locLtTilde(\locTransaction)$;
+	starts at $0$ when starting a new transaction and increments by 1 when $\lc$ and $\lt$ are one; 
     \item $\indexx$:                                                       
-	index of the current limb within the current string of $\locLxTilde$. Starts at 0 when starting a new transaction and increments by 1 when $\lc$ and $\lx$ are one;
+	index of the current limb within the current string of $\locLxTilde(\locTransaction)$;
+	starts at $0$ when starting a new transaction and increments by 1 when $\lc$ and $\lx$ are one;
     \item $\rlptsize$:
-	number of bytes of $L_{\mathrm{T}}(T)$ of the current transaction ($T$) \emph{minus} a certain number of bytes,
+	number of bytes of $L_{\mathrm{T}}(\locTransaction)$ of the current transaction ($\locTransaction$) \emph{minus} a certain number of bytes,
 	see section~(\ref{rlp txn v2: phase constraints: rlp prefix});
-	used in \phaseRlpPrefix{} to compute the global \rlp{} prefix of $L_{\mathrm{T}}(T)$;
+	used in \phaseRlpPrefix{} to compute the global \rlp{} prefix of $L_{\mathrm{T}}(\locTransaction)$;
 	in futher phases this column simply decreases by $\limbsize$ when $\lc$ and $\lt$ are one;
 	constrained to vanish at the end of the transaction;
     \item $\rlpxsize$:
-	same interpretation as \rlptsize{} but for $L_{\mathrm{X}}(T)$
+	same interpretation as \rlptsize{} but for $L_{\mathrm{X}}(\locTransaction)$
 	(and with $\lt$ swapped for $\lx$);
     \item \toHashByProver{}:
 	binary column; equals $\lc \cdot \lx$; is a selector to extract data for the prover;
@@ -76,6 +78,7 @@ We further introduce ``phase flag columns'':
 \end{enumerate}
 The following columns we put into the ``shared columns'' for the sole reason that we want to easily impose transaction-constancy.
 \begin{enumerate}
+	\setcounter{enumi}{31}
         \item 
 	    \rlpTxnCommonColumnReplayProtection{}:
 	    transaction-constant binary column;

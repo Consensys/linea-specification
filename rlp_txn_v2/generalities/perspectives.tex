@@ -29,9 +29,9 @@ We define the following shorthands:
 \]
 and we impose that
 \begin{enumerate}
-    \item $\locPerspFlagSum      _{i} = \locPhaseFlagSum _{i}$
+    \item $\locPerspFlagSum         _{i} = \locPhaseFlagSum _{i}$
     \item $\locAboutToEnterNewPhase _{i} = \isTxn           _{i + 1}$
-    \item \If $\isTxn _{i} = 1$ \Then $\isCmp _{i + 1} = 1$
+    \item \label{rlp txn v2: generalities: perspectives: every transaction row is followed by a computation row} \If $\isTxn _{i} = 1$ \Then $\isCmp _{i + 1} = 1$
     \item \If $\locPhaseFlagSum _{i} = 1$ \Then
 	\[
 	    \locAboutToEnterNewPhase _{i} = \locValidPhaseTransition _{i} \quad (\sanityCheck)
@@ -44,6 +44,7 @@ the above implies that
 $\isTxn$ and $\isCmp$
 are (binary) exclusive.
 
-\saNote{}
+\saNote{} \label{rlp txn v2: generalities: perspectives: perspective columns are fully constrained and every transaction row is followed by at least one computation row}
 The above constraints \emph{completely} constrain both $\isTxn$ and $\isCmp$.
-Furthermore it imposes that \emph{each and every} phase starts with a $\isTxn$-row.
+Furthermore, constraint (\ref{rlp txn v2: generalities: perspectives: every transaction row is followed by a computation row})
+imposes that \emph{each and every} phase starts with a \textbf{single} $\isTxn$-row followed by at least one $\isCmp$-row.

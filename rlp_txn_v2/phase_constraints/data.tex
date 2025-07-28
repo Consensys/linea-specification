@@ -12,6 +12,17 @@ We define the following shorthands
 		\locIsLimbContentAnalysisRow _{i} & \define & \isCmp _{i - 1} \cdot \isCmp _{i} \\
 	\end{array} \right.
 \]
+\saNote{}
+There is (seemingly) an asymetry between the definitions of
+\locIsPayloadSizeAnalysisRow{} and
+\locIsLimbContentAnalysisRow{}.
+However, in light of
+constraint~(\ref{rlp txn v2: generalities: perspectives: perspective columns are fully constrained and every transaction row is followed by at least one computation row}),
+we have
+\[
+	\isTxn _{i - 1} \equiv 1
+	\iff \isTxn _{i - 1} \cdot \isCmp _{i} \equiv 1
+\]
 We impose some generalities:
 \begin{enumerate}
 	\item we impose
@@ -20,7 +31,7 @@ We impose some generalities:
 			relOffset = 0 ,
 		}$
 \end{enumerate}
-We first determine the RLP prefix of the data on the first row:
+We first determine the \rlp{} prefix of the data on the first row:
 \begin{enumerate}[resume]
 	\item \If $\locIsPayloadSizeAnalysisRow _{i}=1$ \Then
 		\begin{enumerate}
@@ -32,9 +43,48 @@ We first determine the RLP prefix of the data on the first row:
 						\locNonzeroBytesCountdown _{i} & = & \rlpTxnTransactionColumnNumberOfNonZero _{i - 1} \\
 					\end{array} \right.
 				\]
-			\item $\exoDataColumn{1} _{i} = \locZeroBytesInLimb _{i} + \locNonzeroBytesInLimb _{i}$
-			\item $\exoDataColumn{2} _{i} = \exoDataColumn{6} _{i} \cdot \exoDataColumn{8} _{i + 1}$
-				\footnote{This mean that, if the data length is not zero, we constrain the value of the first byte of the data to be consistent.}
+			\item we introduce some shorthands
+				\[
+					\left\{ \begin{array}{lcl}
+						\locTransactionPayloadSize & \define &
+						\left[ \begin{array}{cl}
+							+ & \rlpTxnTransactionColumnNumberOfZero    _{i - 1} \\
+							+ & \rlpTxnTransactionColumnNumberOfNonZero _{i - 1} \\
+						\end{array} \right]
+						\vspace{2mm}
+						\\
+						\locPayloadIsNonempty          & \define & \exoDataColumn{5} _{i}                                     \\
+						\locMaybeFirstByteOfByteString & \define & \exoDataColumn{8} _{i  + 1}                                \\
+						\locFirstByteOrZero            & \define &
+						\left[ \begin{array}{cl}
+							\cdot & \locPayloadIsNonempty          \\
+							\cdot & \locMaybeFirstByteOfByteString \\
+						\end{array} \right]
+					\end{array} \right.
+				\]
+				\saNote{}
+				The above mixes in an \textbf{output} of the upcoming \rlpUtilsMod{} module instruction
+				with one of the same instruction's \textbf{inputs}.
+				Indeed $\exoDataColumn{6}$ is an output of said (upcoming) instruction.
+				Inspection of the relevat \rlpUtilsMod{} module constraints
+				reveals that this output is a bit and is logically equivalent to
+				$[\, \locTransactionPayloadSize \neq 0 \,]$.
+				Inspection also reveals that, in case the payload is nonempty,
+				the value contained in $\exoDataColumn{8} _{i + 1}$
+				will be the first byte of the payload byte string.
+			\item we impose
+				\[
+					\rlpProcessByteString {
+						anchorRow        = i                          ,
+						relOffset        = 0                          ,
+						byteStringLength = \locTransactionPayloadSize ,
+						firstByte        = \locFirstByteOrZero        ,
+						isList           = \false                     ,
+						mustBeNontrivial = \loc{must\_be\_nontrivial} ,
+					}
+				\]
+			\item $\exoDataColumn{1} _{i} = \locTransactionPayloadSize$
+			\item $\exoDataColumn{2} _{i} = $
 			\item $\exoDataColumn{3} _{i} = 0$
 			\item
 				\[

@@ -41,6 +41,8 @@
 \define@cmdkey [RLP] {var} {limbByteSize}     {}
 \define@cmdkey [RLP] {var} {endOfPhase}       {}
 \define@cmdkey [RLP] {var} {mustBeNontrivial} {}
+\define@cmdkey [RLP] {var} {addressHi}        {}
+\define@cmdkey [RLP] {var} {addressLo}        {}
 
 
 \presetkeys    [RLP] {var} {
@@ -60,6 +62,8 @@
         endOfPhase         = \missingParameter ,
         mustBeNontrivial   = \missingParameter ,
         % offsetHi           = \missingParameter ,
+        addressHi          = \missingParameter ,
+        addressLo          = \missingParameter ,
 }{}
 
 
@@ -191,10 +195,10 @@
 %%  BYTE STRING
 %%%%%%%%%%%%%%%
 
-\newcommand{\rlpUtilsInstCallByteStringName}     {\rlpUtilsInstructionCall{BYTE\_STRING\_PREFIX}}
-\newcommand{\rlpUtilsInstCallByteString}     [1] {
+\newcommand{\rlpUtilsInstCallByteStringPrefixName}     {\rlpUtilsInstructionCall{BYTE\_STRING\_PREFIX}}
+\newcommand{\rlpUtilsInstCallByteStringPrefix}     [1] {
     \setkeys[RLP]{var}{#1}
-    \rlpUtilsInstCallByteStringName _{\cmdRLP@var@anchorRow}
+    \rlpUtilsInstCallByteStringPrefixName _{\cmdRLP@var@anchorRow}
         \left[ \begin{array}{ll}
             \utt{Rel. row offset:}    & \cmdRLP@var@relOffset        \\
             \utt{Byte string length:} & \cmdRLP@var@byteStringLength \\
@@ -216,7 +220,7 @@
         \end{array} \right]
     }
 
-% \rlpUtilsInstCallByteString {
+% \rlpUtilsInstCallByteStringPrefix {
 %     anchorRow        = ,
 %     relOffset        = ,
 %     byteStringLength = ,
@@ -269,6 +273,17 @@
             \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
             \utt{Limb:}            & \cmdRLP@var@limb      \\
             \utt{Number of bytes:} & \cmdRLP@var@nBytes    \\
+        \end{array} \right]
+    }
+
+\newcommand{\rlpProcessAddressName}    {\rlpDataProcessingCompoundConstraints{ADDRESS}}
+\newcommand{\rlpProcessAddress}    [1] {
+    \setkeys[RLP]{var}{#1}
+    \rlpProcessAddressName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{ll}
+            \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
+            \utt{Address hi:}      & \cmdRLP@var@addressHi \\
+            \utt{Address lo:}      & \cmdRLP@var@addressLo \\
         \end{array} \right]
     }
 
