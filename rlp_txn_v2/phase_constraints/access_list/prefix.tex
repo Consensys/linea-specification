@@ -1,0 +1,62 @@
+\begin{center}
+	\boxed{\text{Throughout this section it is assumed that }
+	\left\{ \begin{array}{lcl}
+		\phaseAccessList     _{i} & = & \true \\
+		\locAccessListPrefix _{i} & = & \true \\
+	\end{array} \right.
+	}
+\end{center}
+Access list items are part of both \rlp{} strings.
+We therfore impose that
+\begin{enumerate}
+	\item
+		$\limbBelongsToBothLtAndLx {
+			anchorRow = i ,
+			relOffset = 0 ,
+		}$
+\end{enumerate}
+Next we initialize
+\locAddressPrewarmingCountdown{} and
+\locStoragePrewarmingCountdown{}.
+\begin{enumerate}[resume]
+	\item $\locAddressPrewarmingCountdown _{i} = \rlpTxnTransactionColumnNbWarmedAddress     _{i - 1}$
+	\item $\locStoragePrewarmingCountdown _{i} = \rlpTxnTransactionColumnNbWarmedStorageKey  _{i - 1}$
+\end{enumerate}
+We first determine the \rlp{} prefix of the data on the first row:
+\begin{enumerate}[resume]
+	\item $\isPrefix _{i} = 1$
+	\item $\isAddr   _{i} = 0$
+	\item $\isSto    _{i} = 0$
+	\item we impose
+		\[
+			\rlpProcessByteString {
+				anchorRow        = i                          ,
+				relOffset        = 0                          ,
+				byteStringLength = \locPhaseSize _{i}         ,
+				firstByte        = \nothing                   ,
+				isList           = \true                      ,
+				mustBeNontrivial = \false                     ,
+			}
+		\]
+		and we define
+		\[
+			\left\{ \begin{array}{lcl}
+			\locAccessListIsNonempty & \define & \exoDataColumn{4} _{i}       \\
+			\locAccessListIsEmpty    & \define & 1 - \locAccessListIsNonempty \\
+			\end{array} \right.
+		\]
+		\specTodo{}
+		Do we need to enforce $\locPhaseSize \neq 1$ ?
+	\item $\phaseEnd _{i} = \locAccessListIsEmpty$
+\end{enumerate}
+Access list items always start with an address.
+As such we further impose
+\begin{enumerate}[resume]
+	\item \If $\phaseEnd _{i} = 0$ \Then:
+		\begin{enumerate}
+			\item $\isPrefix _{i + 1} = 1$
+			\item $\isAddr   _{i + 1} = 1$
+			\item $\isSto    _{i + 1} = 0$
+		\end{enumerate}
+\end{enumerate}
+
