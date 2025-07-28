@@ -1,28 +1,3 @@
-\begin{center}
-	\boxed{\text{In all this section, it is assumed that $\phaseData _{i}=1$.}}
-\end{center}
-We define the following shorthands
-\[
-	\left\{ \begin{array}{lcl}
-		\locZeroBytesCountdown    _{i}    & \define & \tmpData{1} _{i}                  \\
-		\locNonzeroBytesCountdown _{i}    & \define & \tmpData{2} _{i}                  \\
-		\locZeroBytesInLimb       _{i}    & \define & \exoDataColumn{5} _{i}             \\
-		\locNonzeroBytesInLimb    _{i}    & \define & \exoDataColumn{7} _{i}             \\
-		\locIsPayloadSizeAnalysisRow _{i} & \define & \isTxn _{i - 1}                   \\
-		\locIsLimbContentAnalysisRow _{i} & \define & \isCmp _{i - 1} \cdot \isCmp _{i} \\
-	\end{array} \right.
-\]
-\saNote{}
-There is (seemingly) an asymetry between the definitions of
-\locIsPayloadSizeAnalysisRow{} and
-\locIsLimbContentAnalysisRow{}.
-However, in light of
-constraint~(\ref{rlp txn v2: generalities: perspectives: perspective columns are fully constrained and every transaction row is followed by at least one computation row}),
-we have
-\[
-	\isTxn _{i - 1} \equiv 1
-	\iff \isTxn _{i - 1} \cdot \isCmp _{i} \equiv 1
-\]
 We impose some generalities:
 \begin{enumerate}
 	\item we impose
@@ -33,9 +8,9 @@ We impose some generalities:
 \end{enumerate}
 We first determine the \rlp{} prefix of the data on the first row:
 \begin{enumerate}[resume]
-	\item \If $\locIsPayloadSizeAnalysisRow _{i}=1$ \Then
+	\item \If $\locIsPayloadSizeAnalysisRow _{i} = 1$ \Then
 		\begin{enumerate}
-			\item $\isPrefix   _{i} = 1$
+			\item $\isPrefix _{i} = 1$
 			\item we initialize the countdowns
 				\[
 					\left\{ \begin{array}{lcl}
@@ -53,8 +28,9 @@ We first determine the \rlp{} prefix of the data on the first row:
 						\end{array} \right]
 						\vspace{2mm}
 						\\
-						\locPayloadIsNonempty          & \define & \exoDataColumn{5} _{i}                                     \\
-						\locMaybeFirstByteOfByteString & \define & \exoDataColumn{8} _{i  + 1}                                \\
+						\locPayloadIsNonempty          & \define & \exoDataColumn{4} _{i}      \\
+						\locPayloadIsEmpty             & \define & 1 - \locPayloadIsNonempty   \\
+						\locMaybeFirstByteOfByteString & \define & \exoDataColumn{8} _{i  + 1} \\
 						\locFirstByteOrZero            & \define &
 						\left[ \begin{array}{cl}
 							\cdot & \locPayloadIsNonempty          \\
@@ -65,12 +41,13 @@ We first determine the \rlp{} prefix of the data on the first row:
 				\saNote{}
 				The above mixes in an \textbf{output} of the upcoming \rlpUtilsMod{} module instruction
 				with one of the same instruction's \textbf{inputs}.
-				Indeed $\exoDataColumn{6}$ is an output of said (upcoming) instruction.
-				Inspection of the relevat \rlpUtilsMod{} module constraints
+				Indeed \locPayloadIsNonempty{} is an output of said (upcoming) instruction.
+				Inspection of the relevant \rlpUtilsMod{} instruction
 				reveals that this output is a bit and is logically equivalent to
-				$[\, \locTransactionPayloadSize \neq 0 \,]$.
-				Inspection also reveals that, in case the payload is nonempty,
-				the value contained in $\exoDataColumn{8} _{i + 1}$
+				$[\, \locTransactionPayloadSize \neq 0 \,]$,
+				see section~(\ref{rlp utils: instructions: byte string processing}).
+				Inspection of the next row also reveals that, when $\locPayloadIsNonempty \equiv \true$,
+				the value contained in $\locMaybeFirstByteOfByteString$
 				will be the first byte of the payload byte string.
 			\item we impose
 				\[
@@ -80,46 +57,35 @@ We first determine the \rlp{} prefix of the data on the first row:
 						byteStringLength = \locTransactionPayloadSize ,
 						firstByte        = \locFirstByteOrZero        ,
 						isList           = \false                     ,
-						mustBeNontrivial = \loc{must\_be\_nontrivial} ,
+						mustBeNontrivial = \false                     ,
 					}
 				\]
-			\item $\exoDataColumn{1} _{i} = \locTransactionPayloadSize$
-			\item $\exoDataColumn{2} _{i} = $
-			\item $\exoDataColumn{3} _{i} = 0$
-			\item
+			\item \If $\locPayloadIsEmpty = \true$ \Then
 				\[
-					\rlpBytestringPrefix _{i}
-					\left(
-					\begin{array}{r}
-						\exoDataColumn{1},
-						\exoDataColumn{2},
-						\exoDataColumn{3},
-						\ct,
-						\maxCt; \\
-						\rlpUtilsFlag,
-						\INST,
-						\exoDataColumn{4},
-						\exoDataColumn{5},
-						\exoDataColumn{8}; \\
-						\limb,
-						\lc,
-						\limbsize; \\
-					\end{array}
-					\right)
+					\left\{ \begin{array}{lcl}
+						\locZeroBytesCountdown    _{i} & = & 0 \\
+						\locNonzeroBytesCountdown _{i} & = & 0 \\
+					\end{array} \right.
 				\]
-			\item $\phaseEnd _{i} = \exoDataColumn{6} _{i}$
+			\item $\phaseEnd _{i} = 1 - \locPayloadIsNonempty$
 		\end{enumerate}
 \end{enumerate}
-We now have rows where we expose in the $\limb$ column chunks of the data.
+We now deal with the \rlp{}-ization of the actual data,
+as contained in the $\limb$ column.
 We delegate to \rlpUtilsMod{} proving that the limb is up to $\llarge$ bytes long, and counting the number of zeros and nonzeros byte.
 \begin{enumerate}[resume]
 	\item \If $\locIsLimbContentAnalysisRow _{i} = 1$ \Then
 		\begin{enumerate}
 			\item $\isPrefix     _{i} = 0$
-			\item $\rlpUtilsFlag _{i} = 1$
-			\item $\INST _{i} = \rlpUtilsInstDataPricing$
-			\item $\exoDataColumn{1} _{i} = \limb     _{i}$
-			\item $\exoDataColumn{2} _{i} = \limbsize _{i}$
+			\item we call the \rlpUtilsMod{} module
+				\[
+					\rlpUtilsInstCallDataPricing {
+						anchorRow = i              ,
+						relOffset = 0              ,
+						limb      = \limb     _{i} ,
+						nBytes    = \limbsize _{i} ,
+					}
+				\]
 			\item we update the countdowns
 				\[
 					\left\{ \begin{array}{lcl}

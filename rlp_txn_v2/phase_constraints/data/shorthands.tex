@@ -1,0 +1,24 @@
+\begin{center}
+	\boxed{\text{In all this section, it is assumed that $\phaseData _{i}=1$.}}
+\end{center}
+We define the following shorthands
+\[
+	\left\{ \begin{array}{lcl}
+		\locZeroBytesCountdown       _{i} & \define & \tmpData{1}       _{i}                           \\
+		\locNonzeroBytesCountdown    _{i} & \define & \tmpData{2}       _{i}                           \\
+		\locIsPayloadSizeAnalysisRow _{i} & \define & \isTxn            _{i - 1}                       \\
+		\locIsLimbContentAnalysisRow _{i} & \define & \isCmp            _{i - 1} \cdot \isCmp _{i}     \\
+	\end{array} \right.
+\]
+\saNote{}
+There is (seemingly) an asymmetry between the definitions of
+\locIsPayloadSizeAnalysisRow{} and
+\locIsLimbContentAnalysisRow{}.
+However, in light of
+constraint~(\ref{rlp txn v2: generalities: perspectives: perspective columns are fully constrained and every transaction row is followed by at least one computation row}),
+we have
+\[
+	\isTxn _{i - 1} \equiv 1
+	\iff \isTxn _{i - 1} \cdot \isCmp _{i} \equiv 1
+\]
+
