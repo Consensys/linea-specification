@@ -6,8 +6,8 @@ We use the following shorthand:
 \[
 	\left\{ \begin{array}{lcl}
 		\locPhaseSize                    _{i} & \define & \tmpData{1}_{i} \\
-		\locTotNbOfAddress               _{i} & \define & \tmpData{2}_{i} \\
-		\locTotNbOfStorage               _{i} & \define & \tmpData{3}_{i} \\
+		\locAddressPrewarmingCountdown               _{i} & \define & \tmpData{2}_{i} \\
+		\locStoragePrewarmingCountdown               _{i} & \define & \tmpData{3}_{i} \\
 		\locAccessListTupleSize          _{i} & \define & \tmpData{4}_{i} \\
 		\locAddressHi                    _{i} & \define & \tmpData{5}_{i} \\
 		\locAddressLo                    _{i} & \define & \tmpData{6}_{i} \\
@@ -28,8 +28,8 @@ We prove some values of the transaction row:
 \begin{enumerate}[resume]
 	\item \If $\isTxn_{i-1}=0$ \Then
 		\begin{enumerate}
-			\item $\nbWarmedAddress_{i-1} = \locTotNbOfAddress_{i}$
-			\item $\nbWarmedStorageKey_{i-1} = \locTotNbOfStorage_{i}$
+			\item $\nbWarmedAddress_{i-1} = \locAddressPrewarmingCountdown_{i}$
+			\item $\nbWarmedStorageKey_{i-1} = \locStoragePrewarmingCountdown_{i}$
 		\end{enumerate}
 \end{enumerate}
 eit
@@ -158,14 +158,14 @@ An access list tuple always starts with the \rlp{} prefix of the tuple, followed
 							\item $\isSto    _{i+1} = 1$
 						\end{enumerate}
 
-					\item \If $\exoDataColumn{6}_{i} = 0$ \et $\locTotNbOfAddress_{i} \neq 0$ \Then:
+					\item \If $\exoDataColumn{6}_{i} = 0$ \et $\locAddressPrewarmingCountdown_{i} \neq 0$ \Then:
 						\begin{enumerate}
 							\item $\isPrefix _{i+1} = 1$
 							\item $\isAddr   _{i+1} = 1$
 							\item $\isSto    _{i+1} = 0$
 						\end{enumerate}
 
-					\item \If $\exoDataColumn{6}_{i} = 0$ \et $\locTotNbOfAddress_{i} = 0$ \Then:
+					\item \If $\exoDataColumn{6}_{i} = 0$ \et $\locAddressPrewarmingCountdown_{i} = 0$ \Then:
 						\begin{enumerate}
 							\item $\phaseEnd _{i} = 1$
 						\end{enumerate}
@@ -204,8 +204,8 @@ An access list tuple always starts with the \rlp{} prefix of the tuple, followed
 					\item \If $\locTotStorageForThisAddress_{i} = 0$ \Then:
 						\begin{enumerate}
 							\item $\locAccessListTupleSize_{i} = 0$
-							\item \If $\locTotNbOfAddress_{i} \neq 0$ \Then: $\isPrefix_{i+1} = 1$ \et $\isAddr_{i+1} = 1$ \et $\isSto_{i+1} = 0$
-							\item \If $\locTotNbOfAddress_{i} = 0$ \Then: $\phaseEnd_{i} =1$
+							\item \If $\locAddressPrewarmingCountdown_{i} \neq 0$ \Then: $\isPrefix_{i+1} = 1$ \et $\isAddr_{i+1} = 1$ \et $\isSto_{i+1} = 0$
+							\item \If $\locAddressPrewarmingCountdown_{i} = 0$ \Then: $\phaseEnd_{i} =1$
 						\end{enumerate}
 				\end{enumerate}
 		\end{enumerate}
@@ -215,8 +215,8 @@ An access list tuple always starts with the \rlp{} prefix of the tuple, followed
 			\item \If $\phaseEnd_{i} =1$ \Then:
 				\begin{enumerate}
 					\item $\locPhaseSize_{i} =0$
-					\item $\locTotNbOfAddress_{i} =0$
-					\item $\locTotNbOfStorage_{i} =0$
+					\item $\locAddressPrewarmingCountdown_{i} =0$
+					\item $\locStoragePrewarmingCountdown_{i} =0$
 				\end{enumerate}
 		\end{enumerate}
 
@@ -224,13 +224,13 @@ An access list tuple always starts with the \rlp{} prefix of the tuple, followed
 		\begin{enumerate}
 			\item $\locPhaseSize_{i} = \locPhaseSize_{i-1} - \lc_{i} \cdot \limbsize_{i}$
 			\item \If $\isSto_{i} =1$ \Or ($\isAddr_{i} =1$ \et $\isPrefix_{i} =0$) \Then: $\locAccessListTupleSize_{i} = \locAccessListTupleSize_{i-1} - \lc_{i} \cdot \limbsize_{i}$
-			\item $\locTotNbOfAddress_{i} = \locTotNbOfAddress_{i-1} - \isPrefix_{i} \cdot \isAddr_{i}$
-			\item \If $\isAddr_{i} =1$ \et $\isSto_{i}=1$ \et $\locTotNbOfAddress_{i} = \locTotNbOfAddress_{i+1}$ \Then:
+			\item $\locAddressPrewarmingCountdown_{i} = \locAddressPrewarmingCountdown_{i-1} - \isPrefix_{i} \cdot \isAddr_{i}$
+			\item \If $\isAddr_{i} =1$ \et $\isSto_{i}=1$ \et $\locAddressPrewarmingCountdown_{i} = \locAddressPrewarmingCountdown_{i+1}$ \Then:
 				\begin{enumerate}
 					\item $\locAddressHi_{i} = \locAddressHi_{i+1}$
 					\item $\locAddressLo_{i} = \locAddressLo_{i+1}$
 				\end{enumerate}
-			\item $\locTotNbOfStorage_{i} = \locTotNbOfStorage_{i} - \done_{i+2} \cdot \isSto_{i+2} \cdot (1 - \isPrefix_{i+2})$
+			\item $\locStoragePrewarmingCountdown_{i} = \locStoragePrewarmingCountdown_{i} - \done_{i+2} \cdot \isSto_{i+2} \cdot (1 - \isPrefix_{i+2})$
 			\item \If ($\isPrefix_{i} =1$ \et $\isAddr_{i} =1$) \Then: $\locTotStorageForThisAddress_{i} = \locTotStorageForThisAddress_{i} - \done_{i+2} \cdot \isSto_{i+2} \cdot (1 - \isPrefix_{i+2})$
 		\end{enumerate}
 	\end{enumerate}
