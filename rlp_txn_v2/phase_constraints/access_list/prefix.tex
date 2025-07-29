@@ -24,10 +24,22 @@ Next we initialize
 \end{enumerate}
 We first determine the \rlp{} prefix of the data on the first row:
 \begin{enumerate}[resume]
-	\item $\rlpTxnComputationColumnIsPrefix _{i} = 1$
-	\item $\rlpTxnComputationColumnIsAccessListAddress   _{i} = 0$
-	\item $\rlpTxnComputationColumnIsAccessListStorageKey    _{i} = 0$
-	\item we impose
+	\item
+		we impose
+		\[
+			\left\{ \begin{array}{lclc}
+				\rlpTxnComputationColumnIsPrefix                 _{i} & = & \true                   \\
+				\rlpTxnComputationColumnIsPrefixOfAccessListItem _{i} & = & \false & (\sanityCheck) \\
+				\rlpTxnComputationColumnIsAccessListAddress      _{i} & = & \false & (\sanityCheck) \\
+				\rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i} & = & \false & (\sanityCheck) \\
+				\rlpTxnComputationColumnIsAccessListStorageKey   _{i} & = & \false & (\sanityCheck) \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		The (\sanityCheck) constraints follow from
+		section~(\ref{rlp txn v2: phase constraints: access list: access list bits}).
+	\item
+		we impose
 		\[
 			\rlpProcessByteString {
 				anchorRow        = i                          ,
@@ -41,8 +53,8 @@ We first determine the \rlp{} prefix of the data on the first row:
 		and we define
 		\[
 			\left\{ \begin{array}{lcl}
-			\locAccessListIsNonempty & \define & \rlpTxnComputationColumnExoDataColumn{4} _{i}       \\
-			\locAccessListIsEmpty    & \define & 1 - \locAccessListIsNonempty \\
+				\locAccessListIsNonempty & \define & \rlpTxnComputationColumnExoDataColumn{4} _{i}       \\
+				\locAccessListIsEmpty    & \define & 1 - \locAccessListIsNonempty \\
 			\end{array} \right.
 		\]
 		\specTodo{}
@@ -53,10 +65,18 @@ Access list items always start with an address.
 As such we further impose
 \begin{enumerate}[resume]
 	\item \If $\phaseEnd _{i} = \false$ \Then:
-		\begin{enumerate}
-			\item $\rlpTxnComputationColumnIsPrefix _{i + 1} = 1$
-			\item $\rlpTxnComputationColumnIsAccessListAddress   _{i + 1} = 1$
-			\item $\rlpTxnComputationColumnIsAccessListStorageKey    _{i + 1} = 0$
-		\end{enumerate}
+		\[
+			\left\{ \begin{array}{lclc}
+				\rlpTxnComputationColumnIsPrefix                 _{i + 1} & = & \true  & (\sanityCheck) \\
+				\rlpTxnComputationColumnIsPrefixOfAccessListItem _{i + 1} & = & \true  & (\sanityCheck) \\
+				\rlpTxnComputationColumnIsAccessListAddress      _{i + 1} & = & \false & (\sanityCheck) \\
+				\rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i + 1} & = & \false & (\sanityCheck) \\
+				\rlpTxnComputationColumnIsAccessListStorageKey   _{i + 1} & = & \false & (\sanityCheck) \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		The (\sanityCheck) constraints follow from
+		section~(\ref{rlp txn v2: phase constraints: access list: access list bits}) and
+		constraint~(\ref{rlp txn v2: phase constraints: access list: legal transitions: start with access list item prefix}).
 \end{enumerate}
 
