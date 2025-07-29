@@ -1,0 +1,95 @@
+\begin{center}
+    \boxed{\text{Throughout this section it is assumed that }
+    \isCmp _{i} = \true
+    }
+\end{center}
+We impose that
+\begin{enumerate}
+    \item
+	\If $\phaseAccessList _{i} = \true$ \et $\locAccessListPrefix _{i} = \true$ \Then
+	\[
+		\rlpTxnComputationColumnIsPrefixOfAccessListItem _{i + 1} = \true
+	\]
+    \item
+	\If $\rlpTxnComputationColumnIsPrefixOfAccessListItem _{i} = \true$ \Then
+	\[
+	    \left\{ \begin{array}{l}
+		\left[ \begin{array}{cl}
+		    + & \rlpTxnComputationColumnIsPrefixOfAccessListItem _{i + 1} \\
+		    + & \rlpTxnComputationColumnIsAccessListAddress      _{i + 1} \\
+		    % + & \rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i + 1} \\
+		    % + & \rlpTxnComputationColumnIsAccessListStorageKey   _{i + 1} \\
+		\end{array} \right]
+		= \true \vspace{2mm} \\
+		\rlpTxnComputationColumnIsAccessListAddress _{i + 1} = \done _{i} \\
+	    \end{array} \right.
+	\]
+	\saNote{}
+	In fact, the processing of an access list item \rlp{}-prefix takes up one row.
+	And so $\done _{i} = 1$ will hold in all cases.
+    \item
+	\If $\rlpTxnComputationColumnIsAccessListAddress      _{i} = \true$ \Then
+	\[
+	    \left\{ \begin{array}{l}
+		\left[ \begin{array}{cl}
+		    % + & \rlpTxnComputationColumnIsPrefixOfAccessListItem _{i + 1} \\
+		    + & \rlpTxnComputationColumnIsAccessListAddress      _{i + 1} \\
+		    + & \rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i + 1} \\
+		    % + & \rlpTxnComputationColumnIsAccessListStorageKey   _{i + 1} \\
+		\end{array} \right]
+		= \true \vspace{2mm} \\
+		\rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i + 1} = \done _{i} \\
+	    \end{array} \right.
+	\]
+    \item
+	\If $\rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i} = \true$ \Then
+	\[
+	    \left\{ \begin{array}{l}
+		\left[ \begin{array}{cl}
+		    + & \rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i + 1} \\
+		    + & \rlpTxnComputationColumnIsAccessListStorageKey   _{i + 1} \\
+		    % + & \rlpTxnComputationColumnIsAccessListAddress      _{i + 1} \\
+		    + & \rlpTxnComputationColumnIsPrefixOfAccessListItem _{i + 1} \\
+		\end{array} \right]
+		= \phaseAccessList _{i + 1} \vspace{2mm} \\
+		\left[ \begin{array}{cl}
+		    % + & \rlpTxnComputationColumnIsAccessListAddress      _{i + 1} \\
+		    % + & \rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i + 1} \\
+		    + & \rlpTxnComputationColumnIsAccessListStorageKey   _{i + 1} \\
+		    + & \rlpTxnComputationColumnIsPrefixOfAccessListItem _{i + 1} \\
+		\end{array} \right]
+		=  \phaseAccessList _{i + 1} \cdot \done _{i} \\
+	    \end{array} \right.
+	\]
+	\saNote{}
+	In fact, the processing of a storage key list \rlp{}-prefix takes up one row.
+	And so $\done _{i} = 1$ will hold in all cases.
+    \item
+	\If $\rlpTxnComputationColumnIsAccessListStorageKey   _{i} = \true$ \Then
+	\[
+	    \left\{ \begin{array}{lcl}
+		\left[ \begin{array}{clr}
+		    % + & \rlpTxnComputationColumnIsAccessListAddress      _{i + 1} \\
+		    % + & \rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i + 1} \\
+		    + & \rlpTxnComputationColumnIsAccessListStorageKey   _{i + 1} \\
+		    + & \rlpTxnComputationColumnIsPrefixOfAccessListItem _{i + 1} \\
+		\end{array} \right]
+		= \phaseAccessList   _{i + 1} \vspace{2mm} \\
+		\If \rlpTxnComputationColumnIsPrefixOfAccessListItem _{i + 1} = \true ~ \Then \done _{i} = \true & (\sanityCheck) \\
+	    \end{array} \right.
+	\]
+\end{enumerate}
+\saNote{}
+By counter-constancy transitions may only take place when $\ct \equiv \maxCt$ i.e. when $\done \equiv 1$, see (\ref{rlp txn v2: generalities: ct and ct_max}).
+The constraint adorned with (\sanityCheck) follows from that.
+The other constraints linking sub-sums to \done{} enforce the fact that
+\begin{itemize}
+    \item \rlpTxnComputationColumnIsPrefixOfAccessListItem {}
+    \item \rlpTxnComputationColumnIsAccessListAddress      {}
+    \item \rlpTxnComputationColumnIsPrefixOfStorageKeyList {}
+\end{itemize}
+should last \textbf{one} counter-cycle, while
+\begin{itemize}
+    \item \rlpTxnComputationColumnIsAccessListStorageKey {}
+\end{itemize}
+may be repeated over \textbf{several} contiguous counter-cycles.

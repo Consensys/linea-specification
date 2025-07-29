@@ -1,10 +1,6 @@
 \begin{center}
     \boxed{\text{Throughout this section it is assumed that }
     \isCmp _{i} = \true
-    %    \left\{ \begin{array}{lcl}
-    % \phaseAccessList _{i} & = & \true \\
-    % \isCmp           _{i} & = & \true \\
-    %    \end{array} \right.
     }
 \end{center}
 We impose general constraints on access list bit columns.
@@ -74,91 +70,3 @@ The \rlp{}-prefix corresponding to the (possibly empty) access list itself
     T_\mathbf{A} \equiv (E, E', \dots)
 \]
 is taken care of on \locAccessListPrefix{}-rows.
-\begin{description}[resume]
-    \item[\underline{Legal transitions:}]
-	we impose that
-	\begin{enumerate}
-	    \item 
-		\If $\rlpTxnComputationColumnIsPrefixOfAccessListItem _{i}$ \Then
-		\[
-		    \left\{ \begin{array}{l}
-			\left[ \begin{array}{cl}
-			    + & \rlpTxnComputationColumnIsPrefixOfAccessListItem _{i + 1} \\
-			    + & \rlpTxnComputationColumnIsAccessListAddress      _{i + 1} \\
-			    % + & \rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i + 1} \\
-			    % + & \rlpTxnComputationColumnIsAccessListStorageKey   _{i + 1} \\
-			\end{array} \right]
-			= 1 \vspace{2mm} \\
-			\rlpTxnComputationColumnIsAccessListAddress _{i + 1} = \done _{i} \\
-		    \end{array} \right.
-		\]
-		\saNote{}
-		In fact, the processing of an access list item \rlp{}-prefix takes up one row.
-		And so $\done _{i} = 1$ will hold in all cases.
-	    \item 
-		\If $\rlpTxnComputationColumnIsAccessListAddress      _{i}$ \Then
-		\[
-		    \left\{ \begin{array}{l}
-			\left[ \begin{array}{cl}
-			    % + & \rlpTxnComputationColumnIsPrefixOfAccessListItem _{i + 1} \\
-			    + & \rlpTxnComputationColumnIsAccessListAddress      _{i + 1} \\
-			    + & \rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i + 1} \\
-			    % + & \rlpTxnComputationColumnIsAccessListStorageKey   _{i + 1} \\
-			\end{array} \right]
-			= 1 \vspace{2mm} \\
-			\rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i + 1} = \done _{i} \\
-		    \end{array} \right.
-		\]
-	    \item 
-		\If $\rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i}$ \Then
-		\[
-		    \left\{ \begin{array}{l}
-			\left[ \begin{array}{cl}
-			    + & \rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i + 1} \\
-			    + & \rlpTxnComputationColumnIsAccessListStorageKey   _{i + 1} \\
-			    % + & \rlpTxnComputationColumnIsAccessListAddress      _{i + 1} \\
-			    + & \rlpTxnComputationColumnIsPrefixOfAccessListItem _{i + 1} \\
-			\end{array} \right]
-			= \phaseAccessList _{i + 1} \vspace{2mm} \\
-			\left[ \begin{array}{cl}
-			    % + & \rlpTxnComputationColumnIsAccessListAddress      _{i + 1} \\
-			    % + & \rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i + 1} \\
-			    + & \rlpTxnComputationColumnIsAccessListStorageKey   _{i + 1} \\
-			    + & \rlpTxnComputationColumnIsPrefixOfAccessListItem _{i + 1} \\
-			\end{array} \right]
-			=  \phaseAccessList _{i + 1} \cdot \done _{i} \\
-		    \end{array} \right.
-		\]
-		\saNote{}
-		In fact, the processing of a storage key list \rlp{}-prefix takes up one row.
-		And so $\done _{i} = 1$ will hold in all cases.
-	    \item 
-		\If $\rlpTxnComputationColumnIsAccessListStorageKey   _{i}$ \Then
-		\[
-		    \left\{ \begin{array}{lcl}
-			\left[ \begin{array}{clr}
-			    % + & \rlpTxnComputationColumnIsAccessListAddress      _{i + 1} \\
-			    % + & \rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i + 1} \\
-			    + & \rlpTxnComputationColumnIsAccessListStorageKey   _{i + 1} \\
-			    + & \rlpTxnComputationColumnIsPrefixOfAccessListItem _{i + 1} \\
-			\end{array} \right]
-			= \phaseAccessList   _{i + 1} \\
-			\If \rlpTxnComputationColumnIsPrefixOfAccessListItem _{i + 1} = 1 \Then \done _{i} = \true & (\sanityCheck) \\
-		    \end{array} \right.
-		\]
-	\end{enumerate}
-    \end{description}
-    \saNote{}
-    By counter-constancy transitions may only take place when $\ct \equiv \maxCt$ i.e. when $\done \equiv 1$, see (\ref).
-    The constraint adorned with (\sanityCheck) follows from that.
-    The other constraints linking sub-sums to \done{} enforce the fact that
-    \begin{itemize}
-	\item \rlpTxnComputationColumnIsPrefixOfAccessListItem {}
-    	\item \rlpTxnComputationColumnIsAccessListAddress      {}
-    	\item \rlpTxnComputationColumnIsPrefixOfStorageKeyList {}
-    \end{itemize}
-    should last (at most) one counter-cycle, while
-    \begin{itemize}
-	\item \rlpTxnComputationColumnIsAccessListStorageKey {}
-    \end{itemize}
-    may be repeated over several such cycles.
