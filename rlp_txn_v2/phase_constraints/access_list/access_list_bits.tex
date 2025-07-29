@@ -1,67 +1,142 @@
 \begin{center}
     \boxed{\text{Throughout this section it is assumed that }
-    \phaseAccessList _{i} = \true
- %    \left\{ \begin{array}{lcl}
-	% \phaseAccessList _{i} & = & \true \\
-	% \isCmp           _{i} & = & \true \\
- %    \end{array} \right.
+    \isCmp _{i} = \true
+    %    \left\{ \begin{array}{lcl}
+    % \phaseAccessList _{i} & = & \true \\
+    % \isCmp           _{i} & = & \true \\
+    %    \end{array} \right.
     }
 \end{center}
 We impose general constraints on access list bit columns.
 We impose that
-\begin{enumerate}
-    \item all columns below
+\begin{description}
+    \item[\underline{Generalities:}]
+	all columns below
 	\begin{multicols}{2}
 	    \begin{enumerate}
 		\item
 		    \rlpTxnComputationColumnIsPrefixOfAccessListItem
 		\item
-		    \rlpTxnComputationColumnIsPrefixOfStorageKeyList
-		\item
 		    \rlpTxnComputationColumnIsAccessListAddress
+		\item
+		    \rlpTxnComputationColumnIsPrefixOfStorageKeyList
 		\item
 		    \rlpTxnComputationColumnIsAccessListStorageKey
 	    \end{enumerate}
 	\end{multicols}
 	are required to be \textbf{binary} and \textbf{counter-constant}
-    \item
-	we impose flag exclusivity
+    \item[\underline{Flag exclusivities:}]
+	we impose
+	\[
+	    \left[ \begin{array}{cl}
+		+ & \rlpTxnComputationColumnIsPrefixOfAccessListItem _{i} \\
+		+ & \rlpTxnComputationColumnIsAccessListAddress      _{i} \\
+		+ & \rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i} \\
+		+ & \rlpTxnComputationColumnIsAccessListStorageKey   _{i} \\
+	    \end{array} \right]
+	    = 
+	    \left[ \begin{array}{cl}
+		\cdot & \phaseAccessList   _{i} \\
+		\cdot & \locAccessListData _{i} \\
+	    \end{array} \right]
+	\]
+    \item[\underline{Deducing $\rlpTxnComputationColumnIsPrefix$:}]
+	we impose
 	\[
 	    \left[ \begin{array}{cl}
 		+ & \rlpTxnComputationColumnIsPrefixOfAccessListItem _{i} \\
 		+ & \rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i} \\
-		+ & \rlpTxnComputationColumnIsAccessListAddress      _{i} \\
-		+ & \rlpTxnComputationColumnIsAccessListStorageKey   _{i} \\
-	    \end{array} \right]
-	    = \locAccessListData   _{i}
-	\]
-    \item
-	we impose
-	\[
-	    \left[ \begin{array}{cl}
-		+ & \rlpTxnComputationColumnIsPrefixOfAccessListItem     _{i} \\
-		+ & \rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i} \\
 	    \end{array} \right]
 	    =
 	    \left[ \begin{array}{cl}
+		\cdot & \phaseAccessList                 _{i} \\
 		\cdot & \locAccessListData               _{i} \\
-		\cdot & \rlpTxnComputationColumnIsPrefix _{i} \\
 	    \end{array} \right]
+	    \cdot
+	    \rlpTxnComputationColumnIsPrefix _{i}
 	\]
-\end{enumerate}
+\end{description}
 \saNote{}
 The above imposes that along \locAccessListData{}-rows, any row raising the
 \rlpTxnComputationColumnIsPrefix{} flag does so because either it corresponds to
 the \rlp{}-prefix of an access list item
 \[
-	E \equiv (E_a, E_\textbf{s})
+    E \equiv (E_a, E_\textbf{s})
 \]
-or
-the \rlp{}-prefix of a storage key list $E_\textbf{s}$.
+or the \rlp{}-prefix of a storage key list
+\[
+    E_\textbf{s} \equiv (\texttt{key}, \texttt{key'}, \dots)
+\]
 
 \saNote{}
 The \rlp{}-prefix corresponding to the (possibly empty) access list itself
 \[
-	T_\mathbf{A} \equiv (E, E', \dots)
+    T_\mathbf{A} \equiv (E, E', \dots)
 \]
 is taken care of on \locAccessListPrefix{}-rows.
+\begin{description}[resume]
+    \item[\underline{Legal transitions:}]
+	we impose that
+	\begin{enumerate}
+	    \item 
+		\If $\rlpTxnComputationColumnIsPrefixOfAccessListItem _{i}$ \Then
+		\[
+		    \left\{ \begin{array}{l}
+			\left[ \begin{array}{cl}
+			    + & \rlpTxnComputationColumnIsPrefixOfAccessListItem _{i + 1} \\
+			    + & \rlpTxnComputationColumnIsAccessListAddress      _{i + 1} \\
+			    % + & \rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i + 1} \\
+			    % + & \rlpTxnComputationColumnIsAccessListStorageKey   _{i + 1} \\
+			\end{array} \right]
+			= 1 \vspace{2mm} \\
+			\rlpTxnComputationColumnIsAccessListAddress _{i + 1} = \phaseEnd _{i} \\
+		    \end{array} \right.
+		\]
+	    \item 
+		\If $\rlpTxnComputationColumnIsAccessListAddress      _{i}$ \Then
+		\[
+		    \left\{ \begin{array}{l}
+			\left[ \begin{array}{cl}
+			    % + & \rlpTxnComputationColumnIsPrefixOfAccessListItem _{i + 1} \\
+			    + & \rlpTxnComputationColumnIsAccessListAddress      _{i + 1} \\
+			    + & \rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i + 1} \\
+			    % + & \rlpTxnComputationColumnIsAccessListStorageKey   _{i + 1} \\
+			\end{array} \right]
+			= 1 \vspace{2mm} \\
+			\rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i + 1} = \phaseEnd _{i} \\
+		    \end{array} \right.
+		\]
+	    \item 
+		\If $\rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i}$ \Then
+		\[
+		    \left\{ \begin{array}{l}
+			\left[ \begin{array}{cl}
+			    + & \rlpTxnComputationColumnIsPrefixOfAccessListItem _{i + 1} \\
+			    % + & \rlpTxnComputationColumnIsAccessListAddress      _{i + 1} \\
+			    + & \rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i + 1} \\
+			    + & \rlpTxnComputationColumnIsAccessListStorageKey   _{i + 1} \\
+			\end{array} \right]
+			= 1 \vspace{2mm} \\
+			\left[ \begin{array}{cl}
+			    % + & \rlpTxnComputationColumnIsPrefixOfAccessListItem _{i + 1} \\
+			    % + & \rlpTxnComputationColumnIsAccessListAddress      _{i + 1} \\
+			    + & \rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i + 1} \\
+			    + & \rlpTxnComputationColumnIsAccessListStorageKey   _{i + 1} \\
+			\end{array} \right]
+			= \phaseEnd _{i}
+		    \end{array} \right.
+		\]
+	    \item 
+		\If $\rlpTxnComputationColumnIsAccessListStorageKey   _{i}$ \Then
+		\[
+		    \left[ \begin{array}{cl}
+			% + & \rlpTxnComputationColumnIsAccessListAddress      _{i + 1} \\
+			% + & \rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i + 1} \\
+			+ & \rlpTxnComputationColumnIsAccessListStorageKey   _{i + 1} \\
+			+ & \rlpTxnComputationColumnIsPrefixOfAccessListItem _{i + 1} \\
+		    \end{array} \right]
+		    = \isCmp _{i + 1} \cdot \phaseAccessList   _{i + 1} \\
+		\]
+	\end{enumerate}
+	% \item[\underline{}]
+    \end{description}
