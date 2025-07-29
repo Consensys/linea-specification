@@ -24,9 +24,9 @@ Next we initialize
 \end{enumerate}
 We first determine the \rlp{} prefix of the data on the first row:
 \begin{enumerate}[resume]
-	\item $\isPrefix _{i} = 1$
-	\item $\isAddr   _{i} = 0$
-	\item $\isSto    _{i} = 0$
+	\item $\rlpTxnComputationColumnIsPrefix _{i} = 1$
+	\item $\rlpTxnComputationColumnIsAccessListAddress   _{i} = 0$
+	\item $\rlpTxnComputationColumnIsAccessListStorageKey    _{i} = 0$
 	\item we impose
 		\[
 			\rlpProcessByteString {
@@ -41,7 +41,7 @@ We first determine the \rlp{} prefix of the data on the first row:
 		and we define
 		\[
 			\left\{ \begin{array}{lcl}
-			\locAccessListIsNonempty & \define & \exoDataColumn{4} _{i}       \\
+			\locAccessListIsNonempty & \define & \rlpTxnComputationColumnExoDataColumn{4} _{i}       \\
 			\locAccessListIsEmpty    & \define & 1 - \locAccessListIsNonempty \\
 			\end{array} \right.
 		\]
@@ -54,9 +54,9 @@ As such we further impose
 \begin{enumerate}[resume]
 	\item \If $\phaseEnd _{i} = \false$ \Then:
 		\begin{enumerate}
-			\item $\isPrefix _{i + 1} = 1$
-			\item $\isAddr   _{i + 1} = 1$
-			\item $\isSto    _{i + 1} = 0$
+			\item $\rlpTxnComputationColumnIsPrefix _{i + 1} = 1$
+			\item $\rlpTxnComputationColumnIsAccessListAddress   _{i + 1} = 1$
+			\item $\rlpTxnComputationColumnIsAccessListStorageKey    _{i + 1} = 0$
 		\end{enumerate}
 \end{enumerate}
 

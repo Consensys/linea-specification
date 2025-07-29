@@ -10,7 +10,7 @@ We first determine the \rlp{} prefix of the data on the first row:
 \begin{enumerate}[resume]
 	\item \If $\locIsPayloadSizeAnalysisRow _{i} = 1$ \Then
 		\begin{enumerate}
-			\item $\isPrefix _{i} = 1$
+			\item $\rlpTxnComputationColumnIsPrefix _{i} = 1$
 			\item we initialize the countdowns
 				\[
 					\left\{ \begin{array}{lcl}
@@ -28,9 +28,9 @@ We first determine the \rlp{} prefix of the data on the first row:
 						\end{array} \right]
 						\vspace{2mm}
 						\\
-						\locPayloadIsNonempty          & \define & \exoDataColumn{4} _{i}      \\
+						\locPayloadIsNonempty          & \define & \rlpTxnComputationColumnExoDataColumn{4} _{i}      \\
 						\locPayloadIsEmpty             & \define & 1 - \locPayloadIsNonempty   \\
-						\locMaybeFirstByteOfByteString & \define & \exoDataColumn{8} _{i  + 1} \\
+						\locMaybeFirstByteOfByteString & \define & \rlpTxnComputationColumnExoDataColumn{8} _{i  + 1} \\
 						\locFirstByteOrZero            & \define &
 						\left[ \begin{array}{cl}
 							\cdot & \locPayloadIsNonempty          \\
@@ -76,14 +76,14 @@ We delegate to \rlpUtilsMod{} proving that the limb is up to $\llarge$ bytes lon
 \begin{enumerate}[resume]
 	\item \If $\locIsLimbContentAnalysisRow _{i} = 1$ \Then
 		\begin{enumerate}
-			\item $\isPrefix     _{i} = 0$
+			\item $\rlpTxnComputationColumnIsPrefix     _{i} = 0$
 			\item we call the \rlpUtilsMod{} module
 				\[
 					\rlpUtilsInstCallDataPricing {
 						anchorRow = i              ,
 						relOffset = 0              ,
 						limb      = \limb     _{i} ,
-						nBytes    = \limbsize _{i} ,
+						nBytes    = \rlpTxnComputationColumnLimbSize _{i} ,
 					}
 				\]
 			\item we update the countdowns
@@ -94,7 +94,7 @@ We delegate to \rlpUtilsMod{} proving that the limb is up to $\llarge$ bytes lon
 					\end{array} \right.
 				\]
 			\item $\phaseEnd _{i} = \done _{i}$
-			\item \If $\phaseEnd _{i} = 0$ \Then $\limbsize _{i} = \llarge$
+			\item \If $\phaseEnd _{i} = 0$ \Then $\rlpTxnComputationColumnLimbSize _{i} = \llarge$
 		\end{enumerate}
 	\item we impose finalization constraint:
 		\begin{enumerate}[resume]

@@ -3,7 +3,7 @@
 \end{center}
 An access list tuple always starts with the \rlp{} prefix of the tuple, followed by the \rlp{} of an address:
 \begin{enumerate}[resume]
-	\item \If $\isPrefix _{i} = 1$ \et $\isAddr _{i} = 1$ \et $\isSto _{i} = 0$ \Then:
+	\item \If $\rlpTxnComputationColumnIsPrefix _{i} = 1$ \et $\rlpTxnComputationColumnIsAccessListAddress _{i} = 1$ \et $\rlpTxnComputationColumnIsAccessListStorageKey _{i} = 0$ \Then:
 		\begin{enumerate}
 			\item we impose
 				\[
@@ -16,9 +16,9 @@ An access list tuple always starts with the \rlp{} prefix of the tuple, followed
 						mustBeNontrivial = \true                        ,
 					}
 				\]
-			\item $\isPrefix _{i + 1} = 0$
-			\item $\isAddr   _{i + 1} = 1$
-			\item $\isSto    _{i + 1} = 0$
+			\item $\rlpTxnComputationColumnIsPrefix _{i + 1} = 0$
+			\item $\rlpTxnComputationColumnIsAccessListAddress   _{i + 1} = 1$
+			\item $\rlpTxnComputationColumnIsAccessListStorageKey    _{i + 1} = 0$
 			\item
 				\[
 					\rlpProcessAddress {
@@ -32,49 +32,49 @@ An access list tuple always starts with the \rlp{} prefix of the tuple, followed
 
 		After the \rlp{} of an address, we have the \rlp{} of the list of the (possibly empty) list of storage keys:
 		\begin{enumerate}[resume]
-			\item \If $\isPrefix _{i - 1} = 0$ \et $\isAddr _{i - 1} = 1$ \et $\isSto _{i - 1} = 0$ \et $\done _{i - 1} =1$ Then:
+			\item \If $\rlpTxnComputationColumnIsPrefix _{i - 1} = 0$ \et $\rlpTxnComputationColumnIsAccessListAddress _{i - 1} = 1$ \et $\rlpTxnComputationColumnIsAccessListStorageKey _{i - 1} = 0$ \et $\done _{i - 1} =1$ Then:
 				\begin{enumerate}
-					\item $\isPrefix _{i} = 1$
-					\item $\isAddr   _{i} = 0$
-					\item $\isSto    _{i} = 1$
-					\item $\exoDataColumn{1} _{i} = 33 \cdot \locTotStorageForThisAddress _{i}$
+					\item $\rlpTxnComputationColumnIsPrefix _{i} = 1$
+					\item $\rlpTxnComputationColumnIsAccessListAddress   _{i} = 0$
+					\item $\rlpTxnComputationColumnIsAccessListStorageKey    _{i} = 1$
+					\item $\rlpTxnComputationColumnExoDataColumn{1} _{i} = 33 \cdot \locTotStorageForThisAddress _{i}$
 					\item
 						\[
 							\rlpBytestringPrefix _{i}
 							\left(
 							\begin{array}{r}
-								\exoDataColumn{1},
-								\exoDataColumn{2},
-								\exoDataColumn{3},
+								\rlpTxnComputationColumnExoDataColumn{1},
+								\rlpTxnComputationColumnExoDataColumn{2},
+								\rlpTxnComputationColumnExoDataColumn{3},
 								\ct,
 								\maxCt; \\
-								\rlpUtilsFlag,
-								\INST,
-								\exoDataColumn{4},
-								\exoDataColumn{5},
-								\exoDataColumn{8}; \\
+								\rlpTxnComputationColumnRlpUtilsFlag,
+								\rlpTxnComputationColumnRlpUtilsInstruction,
+								\rlpTxnComputationColumnExoDataColumn{4},
+								\rlpTxnComputationColumnExoDataColumn{5},
+								\rlpTxnComputationColumnExoDataColumn{8}; \\
 								\limb,
 								\lc,
-								\limbsize; \\
+								\rlpTxnComputationColumnLimbSize; \\
 							\end{array}
 							\right)
 						\]
 
-					\item \If $\exoDataColumn{6} _{i} = 1$ \Then:
+					\item \If $\rlpTxnComputationColumnExoDataColumn{6} _{i} = 1$ \Then:
 						\begin{enumerate}
-							\item $\isPrefix _{i + 1} = 0$
-							\item $\isAddr   _{i + 1} = 0$
-							\item $\isSto    _{i + 1} = 1$
+							\item $\rlpTxnComputationColumnIsPrefix _{i + 1} = 0$
+							\item $\rlpTxnComputationColumnIsAccessListAddress   _{i + 1} = 0$
+							\item $\rlpTxnComputationColumnIsAccessListStorageKey    _{i + 1} = 1$
 						\end{enumerate}
 
-					\item \If $\exoDataColumn{6} _{i} = 0$ \et $\locAddressPrewarmingCountdown _{i} \neq 0$ \Then:
+					\item \If $\rlpTxnComputationColumnExoDataColumn{6} _{i} = 0$ \et $\locAddressPrewarmingCountdown _{i} \neq 0$ \Then:
 						\begin{enumerate}
-							\item $\isPrefix _{i + 1} = 1$
-							\item $\isAddr   _{i + 1} = 1$
-							\item $\isSto    _{i + 1} = 0$
+							\item $\rlpTxnComputationColumnIsPrefix _{i + 1} = 1$
+							\item $\rlpTxnComputationColumnIsAccessListAddress   _{i + 1} = 1$
+							\item $\rlpTxnComputationColumnIsAccessListStorageKey    _{i + 1} = 0$
 						\end{enumerate}
 
-					\item \If $\exoDataColumn{6} _{i} = 0$ \et $\locAddressPrewarmingCountdown _{i} = 0$ \Then:
+					\item \If $\rlpTxnComputationColumnExoDataColumn{6} _{i} = 0$ \et $\locAddressPrewarmingCountdown _{i} = 0$ \Then:
 						\begin{enumerate}
 							\item $\phaseEnd _{i} = 1$
 						\end{enumerate}
@@ -83,23 +83,23 @@ An access list tuple always starts with the \rlp{} prefix of the tuple, followed
 
 		Here we constraint what happens when we have to do the \rlp{} of a storage key:
 		\begin{enumerate}[resume]
-			\item \If $\isPrefix _{i - 1} = 0$ \et $\isAddr _{i - 1} = 0$ \et $\isSto _{i - 1} = 1$ \et $\done _{i - 1} =1$ Then:
+			\item \If $\rlpTxnComputationColumnIsPrefix _{i - 1} = 0$ \et $\rlpTxnComputationColumnIsAccessListAddress _{i - 1} = 0$ \et $\rlpTxnComputationColumnIsAccessListStorageKey _{i - 1} = 1$ \et $\done _{i - 1} =1$ Then:
 				\begin{enumerate}
-					\item $\exoDataColumn{1} _{i} = \exoDataColumn{1} _{i + 1} = \exoDataColumn{1} _{i + 2}$
-					\item $\exoDataColumn{2} _{i} = \exoDataColumn{2} _{i + 1} = \exoDataColumn{2} _{i + 2}$
+					\item $\rlpTxnComputationColumnExoDataColumn{1} _{i} = \rlpTxnComputationColumnExoDataColumn{1} _{i + 1} = \rlpTxnComputationColumnExoDataColumn{1} _{i + 2}$
+					\item $\rlpTxnComputationColumnExoDataColumn{2} _{i} = \rlpTxnComputationColumnExoDataColumn{2} _{i + 1} = \rlpTxnComputationColumnExoDataColumn{2} _{i + 2}$
 					\item \[
 							\rlpStorageKey _{i}
 							\left(
 							\begin{array}{r}
-								\exoDataColumn{1},
-								\exoDataColumn{2},
+								\rlpTxnComputationColumnExoDataColumn{1},
+								\rlpTxnComputationColumnExoDataColumn{2},
 								\ct,
 								\maxCt; \\
-								\rlpUtilsFlag,
-								\INST; \\
+								\rlpTxnComputationColumnRlpUtilsFlag,
+								\rlpTxnComputationColumnRlpUtilsInstruction; \\
 								\limb,
 								\lc,
-								\limbsize; \\
+								\rlpTxnComputationColumnLimbSize; \\
 							\end{array}
 							\right)
 						\]
@@ -107,13 +107,13 @@ An access list tuple always starts with the \rlp{} prefix of the tuple, followed
 		\end{enumerate}
 		And the possibilities after the \rlp{} of a storage key:
 		\begin{enumerate}[resume]
-			\item \If $\isPrefix _{i} = 0$ \et $\isAddr _{i} = 0$ \et $\isSto _{i} = 1$ \et $\done _{i} =1$ \Then:
+			\item \If $\rlpTxnComputationColumnIsPrefix _{i} = 0$ \et $\rlpTxnComputationColumnIsAccessListAddress _{i} = 0$ \et $\rlpTxnComputationColumnIsAccessListStorageKey _{i} = 1$ \et $\done _{i} =1$ \Then:
 				\begin{enumerate}
-					\item \If $\locTotStorageForThisAddress _{i} \neq 0$ \Then: $\isPrefix _{i + 1} = 0$ \et $\isAddr _{i + 1} = 0$ \et $\isSto _{i + 1} = 1$
+					\item \If $\locTotStorageForThisAddress _{i} \neq 0$ \Then: $\rlpTxnComputationColumnIsPrefix _{i + 1} = 0$ \et $\rlpTxnComputationColumnIsAccessListAddress _{i + 1} = 0$ \et $\rlpTxnComputationColumnIsAccessListStorageKey _{i + 1} = 1$
 					\item \If $\locTotStorageForThisAddress _{i} = 0$ \Then:
 						\begin{enumerate}
 							\item $\locAccessListTupleSize _{i} = 0$
-							\item \If $\locAddressPrewarmingCountdown _{i} \neq 0$ \Then: $\isPrefix _{i + 1} = 1$ \et $\isAddr _{i + 1} = 1$ \et $\isSto _{i + 1} = 0$
+							\item \If $\locAddressPrewarmingCountdown _{i} \neq 0$ \Then: $\rlpTxnComputationColumnIsPrefix _{i + 1} = 1$ \et $\rlpTxnComputationColumnIsAccessListAddress _{i + 1} = 1$ \et $\rlpTxnComputationColumnIsAccessListStorageKey _{i + 1} = 0$
 							\item \If $\locAddressPrewarmingCountdown _{i} = 0$ \Then: $\phaseEnd _{i} =1$
 						\end{enumerate}
 				\end{enumerate}
@@ -131,15 +131,15 @@ An access list tuple always starts with the \rlp{} prefix of the tuple, followed
 
 		And some constancies properties:
 		\begin{enumerate}
-			\item $\locPhaseSize _{i} = \locPhaseSize _{i - 1} - \lc _{i} \cdot \limbsize _{i}$
-			\item \If $\isSto _{i} =1$ \Or ($\isAddr _{i} =1$ \et $\isPrefix _{i} =0$) \Then: $\locAccessListTupleSize _{i} = \locAccessListTupleSize _{i - 1} - \lc _{i} \cdot \limbsize _{i}$
-			\item $\locAddressPrewarmingCountdown _{i} = \locAddressPrewarmingCountdown _{i - 1} - \isPrefix _{i} \cdot \isAddr _{i}$
-			\item \If $\isAddr _{i} =1$ \et $\isSto _{i}=1$ \et $\locAddressPrewarmingCountdown _{i} = \locAddressPrewarmingCountdown _{i + 1}$ \Then:
+			\item $\locPhaseSize _{i} = \locPhaseSize _{i - 1} - \lc _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}$
+			\item \If $\rlpTxnComputationColumnIsAccessListStorageKey _{i} =1$ \Or ($\rlpTxnComputationColumnIsAccessListAddress _{i} =1$ \et $\rlpTxnComputationColumnIsPrefix _{i} =0$) \Then: $\locAccessListTupleSize _{i} = \locAccessListTupleSize _{i - 1} - \lc _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}$
+			\item $\locAddressPrewarmingCountdown _{i} = \locAddressPrewarmingCountdown _{i - 1} - \rlpTxnComputationColumnIsPrefix _{i} \cdot \rlpTxnComputationColumnIsAccessListAddress _{i}$
+			\item \If $\rlpTxnComputationColumnIsAccessListAddress _{i} =1$ \et $\rlpTxnComputationColumnIsAccessListStorageKey _{i}=1$ \et $\locAddressPrewarmingCountdown _{i} = \locAddressPrewarmingCountdown _{i + 1}$ \Then:
 				\begin{enumerate}
 					\item $\locAddressHi _{i} = \locAddressHi _{i + 1}$
 					\item $\locAddressLo _{i} = \locAddressLo _{i + 1}$
 				\end{enumerate}
-			\item $\locStoragePrewarmingCountdown _{i} = \locStoragePrewarmingCountdown _{i} - \done _{i + 2} \cdot \isSto _{i + 2} \cdot (1 - \isPrefix _{i + 2})$
-			\item \If ($\isPrefix _{i} =1$ \et $\isAddr _{i} =1$) \Then: $\locTotStorageForThisAddress _{i} = \locTotStorageForThisAddress _{i} - \done _{i + 2} \cdot \isSto _{i + 2} \cdot (1 - \isPrefix _{i + 2})$
+			\item $\locStoragePrewarmingCountdown _{i} = \locStoragePrewarmingCountdown _{i} - \done _{i + 2} \cdot \rlpTxnComputationColumnIsAccessListStorageKey _{i + 2} \cdot (1 - \rlpTxnComputationColumnIsPrefix _{i + 2})$
+			\item \If ($\rlpTxnComputationColumnIsPrefix _{i} =1$ \et $\rlpTxnComputationColumnIsAccessListAddress _{i} =1$) \Then: $\locTotStorageForThisAddress _{i} = \locTotStorageForThisAddress _{i} - \done _{i + 2} \cdot \rlpTxnComputationColumnIsAccessListStorageKey _{i + 2} \cdot (1 - \rlpTxnComputationColumnIsPrefix _{i + 2})$
 		\end{enumerate}
 	\end{enumerate}

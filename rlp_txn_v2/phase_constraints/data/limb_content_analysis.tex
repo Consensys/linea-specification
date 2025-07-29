@@ -8,26 +8,26 @@
 \end{center}
 We now deal with the \rlp{}-ization of the actual payload.
 We delegate to the \rlpUtilsMod{} module the verification that
-the \limb{} contents are $1 \leq \limbsize \leq \llarge$ bytes long and
+the \limb{} contents are $1 \leq \rlpTxnComputationColumnLimbSize \leq \llarge$ bytes long and
 left aligned on the $\llarge$-th byte,
 as well as performing the actual counting of zero and nonzero bytes
-which make up the \limbsize{} relevant bytes of \limb{}.
+which make up the \rlpTxnComputationColumnLimbSize{} relevant bytes of \limb{}.
 \begin{enumerate}
-	\item $\isPrefix     _{i} = 0$
+	\item $\rlpTxnComputationColumnIsPrefix     _{i} = 0$
 	\item we call the \rlpUtilsMod{} module
 		\[
 			\rlpUtilsInstCallDataPricing {
 				anchorRow = i              ,
 				relOffset = 0              ,
 				limb      = \limb     _{i} ,
-				nBytes    = \limbsize _{i} ,
+				nBytes    = \rlpTxnComputationColumnLimbSize _{i} ,
 			}
 		\]
 		and we define the following shorthands:
 		\[
 			\left\{ \begin{array}{lcl}
-				\locZeroBytesInLimb    _{i} & \define & \exoDataColumn{5} _{i} \\
-				\locNonzeroBytesInLimb _{i} & \define & \exoDataColumn{7} _{i} \\
+				\locZeroBytesInLimb    _{i} & \define & \rlpTxnComputationColumnExoDataColumn{5} _{i} \\
+				\locNonzeroBytesInLimb _{i} & \define & \rlpTxnComputationColumnExoDataColumn{7} _{i} \\
 			\end{array} \right.
 		\]
 		\saNote{}
@@ -37,7 +37,7 @@ which make up the \limbsize{} relevant bytes of \limb{}.
 			\left\{ \begin{array}{l}
 				0 \leq \locZeroBytesInLimb    _{i} \leq \llarge \\
 				0 \leq \locNonzeroBytesInLimb _{i} \leq \llarge \\
-				\limbsize _{i} =
+				\rlpTxnComputationColumnLimbSize _{i} =
 				\left[ \begin{array}{cr}
 					+ & \locZeroBytesInLimb    _{i} \\
 					+ & \locNonzeroBytesInLimb _{i} \\
@@ -53,7 +53,7 @@ which make up the \limbsize{} relevant bytes of \limb{}.
 		\]
 	\item we constrain \phaseEnd{} and add further relations:
 		\begin{enumerate}[resume]
-			\item \If $\phaseEnd _{i} = 0$ \Then $\limbsize _{i} = \llarge$
+			\item \If $\phaseEnd _{i} = 0$ \Then $\rlpTxnComputationColumnLimbSize _{i} = \llarge$
 			\item \If $\locZeroBytesCountdown _{i} = 0$ \et $\locNonzeroBytesCountdown _{i} = 0$ \Then $\phaseEnd _{i} = 1$
 			\item \If $\phaseEnd _{i} = 1$ \Then $\locZeroBytesCountdown _{i} = 0$ \et   $\locNonzeroBytesCountdown _{i} = 0$
 			\item $\phaseEnd _{i} = \done _{i}$
