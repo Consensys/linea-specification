@@ -1,13 +1,11 @@
-We define the following shorthands
+We define the following shorthand
 \[
-	\left\{ \begin{array}{l}
-		\rlpProcessBytesThirtyTwo {
-			anchorRow = i              ,
-			relOffset = \relof         ,
-			dataHi    = \loc{data\_hi} ,
-			dataLo    = \loc{data\_lo} ,
-		}
-	\end{array} \right.
+	\rlpProcessBytesThirtyTwo {
+		anchorRow = i              ,
+		relOffset = \relof         ,
+		dataHi    = \loc{data\_hi} ,
+		dataLo    = \loc{data\_lo} ,
+	}
 \]
 which stands for the following collection of constraints:
 \begin{description}
@@ -35,24 +33,24 @@ which stands for the following collection of constraints:
 				nBytes    = 1                                         ,
 			}
 		\]
-	\item[\underline{\underline{Enshrining the \texttt{BYTES32}'s hi part into the \rlp{} string:}}] 
+	\item[\underline{\underline{Enshrining \loc{data\_hi} into the \rlp{} string:}}] 
 		we impose
 		\[
 			\setLimb {
 				anchorRow = i              ,
 				relOffset = \relof + 1     ,
 				limb      = \loc{data\_hi} ,
-				nBytes    = 1              ,
+				nBytes    = \llarge        ,
 			}
 		\]
-	\item[\underline{\underline{Enshrining the \texttt{BYTES32}'s lo part into the \rlp{} string:}}] 
+	\item[\underline{\underline{Enshrining \loc{data\_lo} into the \rlp{} string:}}] 
 		we impose
 		\[
 			\setLimb {
 				anchorRow = i              ,
 				relOffset = \relof + 2     ,
 				limb      = \loc{data\_lo} ,
-				nBytes    = 1              ,
+				nBytes    = \llarge        ,
 			}
 		\]
 \end{description}
