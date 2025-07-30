@@ -1,34 +1,40 @@
-\item[\underline{\underline{Miscellaneous-row n$^°~(\bm{i + \locTxInitRoffMisc})$:}}]
+\item[\underline{\underline{Miscellaneous-row n$^°~(\bm{i + \roffTxInitMisc})$:}}]
 	we impose the following
 	\[
-		\weightedMiscFlagSum {i}{\locTxInitRoffMisc}
-		=
-		\miscMmuWeight \cdot \txCopyTxcd _{i + \locTxInitRoffTxn}
+		\weightedMiscFlagSum {
+			anchorRow = i                  ,
+			relOffset = \roffTxInitMisc ,
+		}
+		= \miscMmuWeight \cdot \txCopyTxcd _{i + \roffTxInitTxn}
+		% OK
 	\]
-	Furthermore, \If $\miscMmuFlag _{i + \locTxInitRoffMisc} = 1$ \Then
+	Furthermore, \If $\miscMmuFlag _{i + \roffTxInitMisc} = 1$ \Then
 	\[
 		\setMmuInstructionParametersExoToRamTransplants {
 			anchorRow = i                                        ,
-			relOffset = \locTxInitRoffMisc                       ,
-			sourceId  = \totalTransactionNumber_{i}              ,
+			relOffset = \roffTxInitMisc                          ,
+			sourceId  = \userTransactionNumber _{i}              ,
 			targetId  = \locTxInitCallDataContextNumber          ,
-			size      = \txCallDataSize _{i + \locTxInitRoffTxn} ,
+			size      = \txCallDataSize _{i + \roffTxInitTxn}    ,
 			exoSum    = \exoWeightRlpTxn                         ,
 			phase     = \phaseTransactionCallData                ,
 		}
 	\]
 	where we have set
 	\[
-		\locTxInitCallDataContextNumber \define \txCopyTxcd _{i + \locTxInitRoffTxn} \cdot \hubStamp_{i}
+		\locTxInitCallDataContextNumber \define \txCopyTxcd _{i + \roffTxInitTxn} \cdot \hubStamp_{i}
 	\]
+	\saNote{}
+	Recall that $\txCopyTxcd$ is \textbf{provably binary}.
+
 	\saNote{} In other words
 	\[
 		\left\{ \begin{array}{lclr}
-			\miscExpFlag _{i + \locTxInitRoffMisc} & = & \gZero                               & (\trash) \\
-			\miscMmuFlag _{i + \locTxInitRoffMisc} & = & \txCopyTxcd _{i + \locTxInitRoffTxn} & (\trash) \\
-			\miscMxpFlag _{i + \locTxInitRoffMisc} & = & \rZero                               & (\trash) \\
-			\miscOobFlag _{i + \locTxInitRoffMisc} & = & \gZero                               & (\trash) \\
-			\miscStpFlag _{i + \locTxInitRoffMisc} & = & \gZero                               & (\trash) \\
+			\miscExpFlag _{i + \roffTxInitMisc} & = & \gZero                               & (\trash) \\
+			\miscMmuFlag _{i + \roffTxInitMisc} & = & \txCopyTxcd _{i + \roffTxInitTxn} & (\trash) \\
+			\miscMxpFlag _{i + \roffTxInitMisc} & = & \rZero                               & (\trash) \\
+			\miscOobFlag _{i + \roffTxInitMisc} & = & \gZero                               & (\trash) \\
+			\miscStpFlag _{i + \roffTxInitMisc} & = & \gZero                               & (\trash) \\
 		\end{array} \right.
 	\]
 	\saNote{}
@@ -36,5 +42,6 @@
 	The $\txCopyTxcd$ flag is set in the \userTxnDataMod{} module as the conjunction of a transaction requiring \evm{} execution and being provided with nonempty call data,
 	see section~(\ref{user txn data: constraints: comparisons}).
 	The \mmuMod{} instruction serves to transfer the transaction's call data to a fresh new \textsc{ram} segment.
-	Future \inst{CALLDATACOPY} and \inst{CALLDATALOAD} instructions executed in the root context will extract their data from that ``execution context's \textsc{ram}'', which contains a full copy of the transaction's call data.
-
+	Future \inst{CALLDATACOPY} and \inst{CALLDATALOAD} instructions executed in the root context
+	will extract their data from that ``execution context's \textsc{ram}'',
+	which contains a full copy of the transaction's call data.

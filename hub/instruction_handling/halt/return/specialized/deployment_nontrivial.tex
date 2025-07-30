@@ -1,8 +1,3 @@
-% \locSecondMiscRowOffsetDeployAndHash
-% \locNonemptyDeploymentFirstAccountRowOffset 
-% \locNonemptyDeploymentSecondAccountRowOffset
-% \locCallerContextRowOffsetNonemptyDeploymentWillRevert
-% \locCallerContextRowOffsetNonemptyDeploymentWontRevert
 \begin{center}
 	\boxed{%
 		\text{The constraints presented below assume }
@@ -16,19 +11,22 @@ As per the above this section deals with recognizing and handling \textbf{unexce
 	\item[\underline{The second miscellaneous row $n^°(i + \locSecondMiscRowOffsetDeployAndHash)$:}]
 		we impose the following (wherein we deploy bytecode and hash it at the same time)
 		\[
-			\weightedMiscFlagSum
-			{i}{\locSecondMiscRowOffsetDeployAndHash}
+			\weightedMiscFlagSum {
+				anchorRow = i                                    ,
+				relOffset = \locSecondMiscRowOffsetDeployAndHash ,
+			}
 			=
 			\miscMmuWeight
+			% OK
 		\]
 		in other words
 		\[
 			\left\{ \begin{array}{lclr}
-				\miscExpFlag  _{i + \locSecondMiscRowOffsetDeployAndHash} & = & \gZero & (\trash) \\
-				\miscMmuFlag  _{i + \locSecondMiscRowOffsetDeployAndHash} & = & \rOne  & (\trash) \\
-				\miscMxpFlag  _{i + \locSecondMiscRowOffsetDeployAndHash} & = & \rZero & (\trash) \\
-				\miscOobFlag  _{i + \locSecondMiscRowOffsetDeployAndHash} & = & \gZero & (\trash) \\
-				\miscStpFlag  _{i + \locSecondMiscRowOffsetDeployAndHash} & = & \gZero & (\trash) \\
+				\miscExpFlag _{i + \locSecondMiscRowOffsetDeployAndHash} & = & \gZero & (\sanityCheck) \\
+				\miscMmuFlag _{i + \locSecondMiscRowOffsetDeployAndHash} & = & \rOne  & (\sanityCheck) \\
+				\miscMxpFlag _{i + \locSecondMiscRowOffsetDeployAndHash} & = & \rZero & (\sanityCheck) \\
+				\miscOobFlag _{i + \locSecondMiscRowOffsetDeployAndHash} & = & \gZero & (\sanityCheck) \\
+				\miscStpFlag _{i + \locSecondMiscRowOffsetDeployAndHash} & = & \gZero & (\sanityCheck) \\
 			\end{array} \right.
 		\]
 	\item[\underline{Setting the (second) \mmuMod{} instruction:}]
@@ -52,23 +50,6 @@ As per the above this section deals with recognizing and handling \textbf{unexce
 				exoSum            = \exoWeightRom + \exoWeightKec        ,
 				phase             = \nothing                             ,
 				}
-			% \setMmuInstructionParametersRamToExoWithPadding {i}{\locSecondMiscRowOffsetDeployAndHash}
-			% \left[ \begin{array}{ll}
-			% 	\utt{Source ID:}            & \cn_{i}                                                    \\
-			% 	\utt{Target ID:}            & \accCfi _{i + \locNonemptyDeploymentFirstAccountRowOffset} \\
-			% 	\utt{Auxiliary ID:}         & 1 + \hubStamp_{i}                                          \\
-			% 	% \utt{Source offset high:} & \col{src\_offset\_hi}                                      \\
-			% 	\utt{Source offset low:}    & \locOffsetLo                                               \\
-			% 	% \utt{Target offset low:}  & \col{tgt\_offset\_lo}                                      \\
-			% 	\utt{Size:}                 & \locSizeLo                                                 \\
-			% 	% \utt{Reference offset:}   & \col{ref\_offset}                                          \\
-			% 	\utt{Reference size:}       & \locSizeLo                                                 \\
-			% 	\utt{Success bit:}          & \nothing                                                   \\
-			% 	% \utt{Limb one:}           & \col{limb\_1}                                              \\
-			% 	% \utt{Limb two:}           & \col{limb\_2}                                              \\
-			% 	\utt{Exo sum:}              & \exoWeightRom + \exoWeightKec                              \\
-			% 	\utt{Phase:}                & \nothing                                                   \\
-			% \end{array} \right]
 		\]
 		\saNote{}
 		The above performs both
@@ -126,13 +107,11 @@ As per the above this section deals with recognizing and handling \textbf{unexce
 				\accTrmFlag    _{i + \locNonemptyDeploymentSecondAccountRowOffset}   & = & 0 \\
 				\multicolumn{3}{l}{
 					\revertDomSubStamps {
-						anchorRow        = i,
-						relOffset        = \locNonemptyDeploymentSecondAccountRowOffset,
-						subOffset        = 1,
+						anchorRow = i                                            ,
+						relOffset = \locNonemptyDeploymentSecondAccountRowOffset ,
+						subOffset = 1                                            ,
 					}
 				} \\
-				% \ob{TODO: The second argument \dots{} just a typo ?}
-				% {i}{\locEmptyDeploymentSecondAccountRowOffset}{\locEmptyDeploymentFirstAccountRowOffset}} \\
 			\end{array} \right.
 		\]
 	\item[\underline{Setting the caller's new return data:}]
