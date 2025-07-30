@@ -16,16 +16,22 @@
 				relOffset        = 0                                             ,
 				byteStringLength = \locLengthOfConcatenationOfRlpizedStorageKeys ,
 				firstByte        = \nothing                                      ,
-				isList           = \false                                        ,
+				isList           = \true                                         ,
 				mustBeNontrivial = \false                                        ,
 			}
 		\]
 		where
 		\[
-			\begin{array}{l}
-				\locLengthOfConcatenationOfRlpizedStorageKeys \\
-				\qquad \define 33 \cdot \locTotStorageForThisAddress _{i} \\
-			\end{array}
+			\left\{ \begin{array}{l}
+				\locLengthOfConcatenationOfRlpizedStorageKeys \vspace{2mm} \\
+				\qquad \define
+				\left[ \begin{array}{cl}
+					\cdot & \lengthOfSingleRlpizedStorageKey        \\
+					\cdot & \locTotStorageForThisAddress _{i} \\
+				\end{array} \right]
+				\vspace{2mm} \\
+				\lengthOfSingleRlpizedStorageKey \define \lengthOfSingleRlpizedStorageKeyValue \\
+			\end{array} \right.
 		\]
 		and we extract the following shorthands
 		\[
