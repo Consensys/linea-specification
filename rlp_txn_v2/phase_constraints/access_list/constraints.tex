@@ -10,7 +10,7 @@ An access list tuple always starts with the \rlp{} prefix of the tuple, followed
 					\rlpProcessByteString {
 						anchorRow        = i                            ,
 						relOffset        = 0                            ,
-						byteStringLength = \locAccessListTupleSize _{i} ,
+						byteStringLength = \locAccessListItemRlpLengthCountdown _{i} ,
 						firstByte        = \nothing                     ,
 						isList           = \true                        ,
 						mustBeNontrivial = \true                        ,
@@ -37,7 +37,7 @@ An access list tuple always starts with the \rlp{} prefix of the tuple, followed
 					\item $\rlpTxnSharedColumnIsPrefix _{i} = 1$
 					\item $\rlpTxnSharedColumnIsAccessListAddress   _{i} = 0$
 					\item $\rlpTxnSharedColumnIsAccessListStorageKey    _{i} = 1$
-					\item $\rlpTxnComputationColumnExoDataColumn{1} _{i} = 33 \cdot \locTotStorageForThisAddress _{i}$
+					\item $\rlpTxnComputationColumnExoDataColumn{1} _{i} = 33 \cdot \locStorageKeyListCountdown _{i}$
 					\item
 						\[
 							\rlpBytestringPrefix _{i}
@@ -109,10 +109,10 @@ An access list tuple always starts with the \rlp{} prefix of the tuple, followed
 		\begin{enumerate}[resume]
 			\item \If $\rlpTxnSharedColumnIsPrefix _{i} = 0$ \et $\rlpTxnSharedColumnIsAccessListAddress _{i} = 0$ \et $\rlpTxnSharedColumnIsAccessListStorageKey _{i} = 1$ \et $\done _{i} =1$ \Then:
 				\begin{enumerate}
-					\item \If $\locTotStorageForThisAddress _{i} \neq 0$ \Then: $\rlpTxnSharedColumnIsPrefix _{i + 1} = 0$ \et $\rlpTxnSharedColumnIsAccessListAddress _{i + 1} = 0$ \et $\rlpTxnSharedColumnIsAccessListStorageKey _{i + 1} = 1$
-					\item \If $\locTotStorageForThisAddress _{i} = 0$ \Then:
+					\item \If $\locStorageKeyListCountdown _{i} \neq 0$ \Then: $\rlpTxnSharedColumnIsPrefix _{i + 1} = 0$ \et $\rlpTxnSharedColumnIsAccessListAddress _{i + 1} = 0$ \et $\rlpTxnSharedColumnIsAccessListStorageKey _{i + 1} = 1$
+					\item \If $\locStorageKeyListCountdown _{i} = 0$ \Then:
 						\begin{enumerate}
-							\item $\locAccessListTupleSize _{i} = 0$
+							\item $\locAccessListItemRlpLengthCountdown _{i} = 0$
 							\item \If $\locAddressPrewarmingCountdown _{i} \neq 0$ \Then: $\rlpTxnSharedColumnIsPrefix _{i + 1} = 1$ \et $\rlpTxnSharedColumnIsAccessListAddress _{i + 1} = 1$ \et $\rlpTxnSharedColumnIsAccessListStorageKey _{i + 1} = 0$
 							\item \If $\locAddressPrewarmingCountdown _{i} = 0$ \Then: $\phaseEnd _{i} =1$
 						\end{enumerate}
@@ -123,7 +123,7 @@ An access list tuple always starts with the \rlp{} prefix of the tuple, followed
 		\begin{enumerate}
 			\item \If $\phaseEnd _{i} =1$ \Then:
 				\begin{enumerate}
-					\item $\locPhaseSize _{i} =0$
+					\item $\locAccessListLengthCountdown  _{i} =0$
 					\item $\locAddressPrewarmingCountdown _{i} =0$
 					\item $\locStoragePrewarmingCountdown _{i} =0$
 				\end{enumerate}
@@ -131,8 +131,8 @@ An access list tuple always starts with the \rlp{} prefix of the tuple, followed
 
 		And some constancies properties:
 		\begin{enumerate}
-			\item $\locPhaseSize _{i} = \locPhaseSize _{i - 1} - \lc _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}$
-			\item \If $\rlpTxnSharedColumnIsAccessListStorageKey _{i} =1$ \Or ($\rlpTxnSharedColumnIsAccessListAddress _{i} =1$ \et $\rlpTxnSharedColumnIsPrefix _{i} =0$) \Then: $\locAccessListTupleSize _{i} = \locAccessListTupleSize _{i - 1} - \lc _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}$
+			\item $\locAccessListLengthCountdown _{i} = \locAccessListLengthCountdown _{i - 1} - \lc _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}$
+			\item \If $\rlpTxnSharedColumnIsAccessListStorageKey _{i} =1$ \Or ($\rlpTxnSharedColumnIsAccessListAddress _{i} =1$ \et $\rlpTxnSharedColumnIsPrefix _{i} =0$) \Then: $\locAccessListItemRlpLengthCountdown _{i} = \locAccessListItemRlpLengthCountdown _{i - 1} - \lc _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}$
 			\item $\locAddressPrewarmingCountdown _{i} = \locAddressPrewarmingCountdown _{i - 1} - \rlpTxnSharedColumnIsPrefix _{i} \cdot \rlpTxnSharedColumnIsAccessListAddress _{i}$
 			\item \If $\rlpTxnSharedColumnIsAccessListAddress _{i} =1$ \et $\rlpTxnSharedColumnIsAccessListStorageKey _{i}=1$ \et $\locAddressPrewarmingCountdown _{i} = \locAddressPrewarmingCountdown _{i + 1}$ \Then:
 				\begin{enumerate}
@@ -140,6 +140,6 @@ An access list tuple always starts with the \rlp{} prefix of the tuple, followed
 					\item $\locAddressLo _{i} = \locAddressLo _{i + 1}$
 				\end{enumerate}
 			\item $\locStoragePrewarmingCountdown _{i} = \locStoragePrewarmingCountdown _{i} - \done _{i + 2} \cdot \rlpTxnSharedColumnIsAccessListStorageKey _{i + 2} \cdot (1 - \rlpTxnSharedColumnIsPrefix _{i + 2})$
-			\item \If ($\rlpTxnSharedColumnIsPrefix _{i} =1$ \et $\rlpTxnSharedColumnIsAccessListAddress _{i} =1$) \Then: $\locTotStorageForThisAddress _{i} = \locTotStorageForThisAddress _{i} - \done _{i + 2} \cdot \rlpTxnSharedColumnIsAccessListStorageKey _{i + 2} \cdot (1 - \rlpTxnSharedColumnIsPrefix _{i + 2})$
+			\item \If ($\rlpTxnSharedColumnIsPrefix _{i} =1$ \et $\rlpTxnSharedColumnIsAccessListAddress _{i} =1$) \Then: $\locStorageKeyListCountdown _{i} = \locStorageKeyListCountdown _{i} - \done _{i + 2} \cdot \rlpTxnSharedColumnIsAccessListStorageKey _{i + 2} \cdot (1 - \rlpTxnSharedColumnIsPrefix _{i + 2})$
 		\end{enumerate}
 	\end{enumerate}

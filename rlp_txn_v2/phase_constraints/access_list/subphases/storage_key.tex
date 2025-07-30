@@ -7,8 +7,8 @@
 	}
 \end{center}
 We impose the following constraints:
-\begin{enumerate}
-	\item
+\begin{description}
+	\item[\underline{Calling the \rlpUtilsMod{} module:}]
 		we impose
 		\[
 			\rlpProcessBytesThirtyTwo {
@@ -18,4 +18,13 @@ We impose the following constraints:
 				dataLo    = \loc{storage\_key\_lo} ,
 			}
 		\]
-\end{enumerate}
+	\item[\underline{Setting the next step:}] ---
+		\begin{enumerate}
+			\item \If $\locStorageKeyListCountdown _{i} \neq 0$ \Then \[ \rlpTxnSharedColumnIsAccessListStorageKey _{i + 1} = \true \]
+			\item \If $\locStorageKeyListCountdown _{i} =    0$ \Then
+				\begin{enumerate}
+					\item \If $\locAddressPrewarmingCountdown _{i} \neq 0$ \Then \[ \rlpTxnSharedColumnIsPrefixOfAccessListItem _{i + 1} = \true \]
+					\item \If $\locAddressPrewarmingCountdown _{i} =    0$ \Then \[ \phaseEnd _{i} = \true \]
+				\end{enumerate}
+		\end{enumerate}
+\end{description}

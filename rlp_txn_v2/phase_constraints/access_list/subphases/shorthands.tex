@@ -4,12 +4,21 @@
 We use the following shorthands:
 \[
 	\left\{ \begin{array}{lcl}
-		\locPhaseSize                  _{i} & \define & \rlpTxnComputationColumnTmpData{1}_{i} \\
-		\locAddressPrewarmingCountdown _{i} & \define & \rlpTxnComputationColumnTmpData{2}_{i} \\
-		\locStoragePrewarmingCountdown _{i} & \define & \rlpTxnComputationColumnTmpData{3}_{i} \\
-		\locAccessListTupleSize        _{i} & \define & \rlpTxnComputationColumnTmpData{4}_{i} \\
-		\locAddressHi                  _{i} & \define & \rlpTxnComputationColumnTmpData{5}_{i} \\
-		\locAddressLo                  _{i} & \define & \rlpTxnComputationColumnTmpData{6}_{i} \\
-		\locTotStorageForThisAddress   _{i} & \define & \rlpTxnComputationColumnTmpData{7}_{i} \\
-	\end{array} \right.
+		\locAccessListLengthCountdown        _{i} & \define & \rlpTxnComputationColumnAuxiliaryData{1}                _{i} \\
+		\locAccessListItemRlpLengthCountdown _{i} & \define & \rlpTxnComputationColumnAuxiliaryData{2}                _{i} \\
+		\locAddressPrewarmingCountdown       _{i} & \define & \rlpTxnComputationColumnCounterConstantAuxiliaryData{1} _{i} \\
+		\locStoragePrewarmingCountdown       _{i} & \define & \rlpTxnComputationColumnCounterConstantAuxiliaryData{2} _{i} \\
+		\locStorageKeyListCountdown          _{i} & \define & \rlpTxnComputationColumnCounterConstantAuxiliaryData{3} _{i} \\
+		\locAddressHi                        _{i} & \define & \rlpTxnComputationColumnCounterConstantAuxiliaryData{4} _{i} \\
+		\locAddressLo                        _{i} & \define & \rlpTxnComputationColumnCounterConstantAuxiliaryData{5} _{i} \\
+	\end{array}                            \right.
 \]
+\saNote{}
+We \textbf{intentionally} use a non-counter-constant columns
+to hold
+\locAccessListLengthCountdown{} and
+\locAccessListItemRlpLengthCountdown{}.
+Indeed we may at times update either
+more than once per counter-cycle,
+see section~(\ref{rlp txn v2: phase constraints: access list: subphases: countdown}) and
+note~(\ref{rlp txn v2: phase constraints: access list: subphases: countdown: non counter constancy}).

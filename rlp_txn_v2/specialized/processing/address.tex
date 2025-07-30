@@ -10,7 +10,7 @@ We define the following shorthand
 which stands for the following collection of constraints:
 \begin{description}
 	\item[\underline{\underline{Setting \maxCt{}:}}] 
-		we impose $\maxCt _{i + \relof} = 1$
+		we impose $\maxCt _{i + \relof} = 2$
 	\item[\underline{\underline{Setting \rlpTxnSharedColumnIsPrefix{}:}}]
 		we impose $\rlpTxnSharedColumnIsPrefix _{i + \relof} = \false$
 	\item[\underline{\underline{Calling \rlpAddrMod{}:}}] 
@@ -21,31 +21,51 @@ which stands for the following collection of constraints:
 				\rlpTxnComputationColumnExoDataColumn{2} _{i + \relof} & = & \locAddressLo \\
 			\end{array} \right.
 		\]
-	\item[\underline{\underline{Enshrining the \rlp{} prefix and hi part of the address into the \rlp{} string:}}] 
+	% \item[\underline{\underline{Enshrining the \rlp{} prefix and hi part of the address into the \rlp{} string:}}] 
+	% 	we impose
+	% 	\[
+	% 		\setLimb{
+	% 			anchorRow = i                                  ,
+	% 			relOffset = \relof                             ,
+	% 			limb      = \locAddressPrefixPlusAddressHiPart ,
+	% 			nBytes    = 1 + 4                              ,
+	% 		}
+	% 	\]
+	% 	where
+	% 	\[
+	% 		\locAddressPrefixPlusAddressHiPart
+	% 		\define
+	% 		\left[ \begin{array}{crcl}
+	% 			+ & \rlprefixAddress & \cdot & 256 ^{\llargeMO} \\
+	% 			+ & \locAddressHi    & \cdot & 256 ^{11}        \\
+	% 		\end{array} \right]
+	% 	\]
+	\item[\underline{\underline{Enshrining the \rlp{} prefix into the \rlp{} string:}}] 
 		we impose
 		\[
 			\setLimb{
-				anchorRow = i                                  ,
-				relOffset = \relof                             ,
-				limb      = \locAddressPrefixPlusAddressHiPart ,
-				nBytes    = 1 + 4                              ,
+				anchorRow = i                                        ,
+				relOffset = \relof                                   ,
+				limb      = \rlprefixAddress \cdot 256 ^ {\llargeMO} ,
+				nBytes    = 1                                        ,
 			}
 		\]
-		where
+	\item[\underline{\underline{Enshrining the hi part of the address into the \rlp{} string:}}] 
+		we impose
 		\[
-			\locAddressPrefixPlusAddressHiPart
-			\define
-			\left[ \begin{array}{crcl}
-				+ & \rlprefixAddress & \cdot & 256 ^{\llargeMO} \\
-				+ & \locAddressHi    & \cdot & 256 ^{11}        \\
-			\end{array} \right]
+			\setLimb{
+				anchorRow = i                             ,
+				relOffset = \relof + 1                    ,
+				limb      = \locAddressHi \cdot 256 ^{12} ,
+				nBytes    = 4                             ,
+			}
 		\]
 	\item[\underline{\underline{Enshrining the lo part of the address into the \rlp{} string:}}] 
 		we impose
 		\[
 			\setLimb{
 				anchorRow = i             ,
-				relOffset = \relof + 1    ,
+				relOffset = \relof + 2    ,
 				limb      = \locAddressLo ,
 				nBytes    = \llarge       ,
 			}
