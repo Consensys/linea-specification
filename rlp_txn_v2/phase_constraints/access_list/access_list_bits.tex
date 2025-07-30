@@ -1,8 +1,8 @@
-\begin{center}
-    \boxed{\text{Throughout this section it is assumed that }
-    \isCmp _{i} = \true
-    }
-\end{center}
+% \begin{center}
+%     \boxed{\text{Throughout this section it is assumed that }
+%     \isCmp _{i} = \true
+%     }
+% \end{center}
 We impose general constraints on access list bit columns.
 We impose that
 \begin{description}
@@ -10,14 +10,12 @@ We impose that
 	all columns below
 	\begin{multicols}{2}
 	    \begin{enumerate}
-		\item
-		    \rlpTxnComputationColumnIsPrefixOfAccessListItem
-		\item
-		    \rlpTxnComputationColumnIsAccessListAddress
-		\item
-		    \rlpTxnComputationColumnIsPrefixOfStorageKeyList
-		\item
-		    \rlpTxnComputationColumnIsAccessListStorageKey
+		\item \rlpTxnSharedColumnIsPrefix
+		\item \rlpTxnSharedColumnIsPrefixOfAccessListItem
+		\item \rlpTxnSharedColumnIsPrefixOfStorageKeyList
+		\item[\vspace{\fill}]
+		\item \rlpTxnSharedColumnIsAccessListAddress
+		\item \rlpTxnSharedColumnIsAccessListStorageKey
 	    \end{enumerate}
 	\end{multicols}
 	are required to be \textbf{binary} and \textbf{counter-constant}
@@ -25,36 +23,40 @@ We impose that
 	we impose
 	\[
 	    \left[ \begin{array}{cl}
-		+ & \rlpTxnComputationColumnIsPrefixOfAccessListItem _{i} \\
-		+ & \rlpTxnComputationColumnIsAccessListAddress      _{i} \\
-		+ & \rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i} \\
-		+ & \rlpTxnComputationColumnIsAccessListStorageKey   _{i} \\
+		+ & \rlpTxnSharedColumnIsPrefixOfAccessListItem _{i} \\
+		+ & \rlpTxnSharedColumnIsAccessListAddress      _{i} \\
+		+ & \rlpTxnSharedColumnIsPrefixOfStorageKeyList _{i} \\
+		+ & \rlpTxnSharedColumnIsAccessListStorageKey   _{i} \\
 	    \end{array} \right]
-	    = 
-	    \left[ \begin{array}{cl}
-		\cdot & \phaseAccessList   _{i} \\
-		\cdot & \locAccessListData _{i} \\
-	    \end{array} \right]
+	    = \locAccessListData _{i}
+	    % \left[ \begin{array}{cl}
+	    %     \cdot & \phaseAccessList   _{i} \\
+	    %     \cdot & \locAccessListData _{i} \\
+	    % \end{array} \right]
 	\]
-    \item[\underline{Deducing $\rlpTxnComputationColumnIsPrefix$:}]
+	\saNote{}
+	The above implies both flag exclusivity of the involved binary flags,
+	it also requires that precisely one is active on any \locAccessListData{}-row
+	of the \phaseAccessList{} phase.
+    \item[\underline{Deducing $\rlpTxnSharedColumnIsPrefix$:}]
 	we impose
 	\[
 	    \left[ \begin{array}{cl}
-		+ & \rlpTxnComputationColumnIsPrefixOfAccessListItem _{i} \\
-		+ & \rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i} \\
+		+ & \rlpTxnSharedColumnIsPrefixOfAccessListItem _{i} \\
+		+ & \rlpTxnSharedColumnIsPrefixOfStorageKeyList _{i} \\
 	    \end{array} \right]
-	    =
-	    \left[ \begin{array}{cl}
-		\cdot & \phaseAccessList                 _{i} \\
-		\cdot & \locAccessListData               _{i} \\
-	    \end{array} \right]
+	    = \locAccessListData _{i}
+	    % \left[ \begin{array}{cl}
+	    %     \cdot & \phaseAccessList                 _{i} \\
+	    %     \cdot & \locAccessListData               _{i} \\
+	    % \end{array} \right]
 	    \cdot
-	    \rlpTxnComputationColumnIsPrefix _{i}
+	    \rlpTxnSharedColumnIsPrefix _{i}
 	\]
 \end{description}
 \saNote{}
 The above imposes that along \locAccessListData{}-rows, any row raising the
-\rlpTxnComputationColumnIsPrefix{} flag does so because either it corresponds to
+\rlpTxnSharedColumnIsPrefix{} flag does so because either it corresponds to
 the \rlp{}-prefix of an access list item
 \[
     E \equiv (E_a, E_\textbf{s})

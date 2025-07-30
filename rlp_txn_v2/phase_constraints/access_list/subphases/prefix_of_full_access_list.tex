@@ -1,9 +1,10 @@
 \begin{center}
 	\boxed{\text{Throughout this section it is assumed that }
-	\left\{ \begin{array}{lcl}
-		\phaseAccessList     _{i} & = & \true \\
-		\locAccessListPrefix _{i} & = & \true \\
-	\end{array} \right.
+	\locAccessListPrefix _{i}
+	% \left\{ \begin{array}{lcl}
+	% 	\phaseAccessList     _{i} & = & \true \\
+	% 	\locAccessListPrefix _{i} & = & \true \\
+	% \end{array} \right.
 	}
 \end{center}
 Access list items are part of both \rlp{} strings.
@@ -27,17 +28,14 @@ We first determine the \rlp{} prefix of the data on the first row:
 	\item
 		we impose
 		\[
-			\left\{ \begin{array}{lclc}
-				\rlpTxnComputationColumnIsPrefix                 _{i} & = & \true                   \\
-				\rlpTxnComputationColumnIsPrefixOfAccessListItem _{i} & = & \false & (\sanityCheck) \\
-				\rlpTxnComputationColumnIsAccessListAddress      _{i} & = & \false & (\sanityCheck) \\
-				\rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i} & = & \false & (\sanityCheck) \\
-				\rlpTxnComputationColumnIsAccessListStorageKey   _{i} & = & \false & (\sanityCheck) \\
+			\left\{ \begin{array}{lcll}
+				\rlpTxnSharedColumnIsPrefix                 _{i} & = & \true  & (\sanityCheck), \text{ see section~(\ref{rlp txn v2: specialized: processing: byte string prefix})} \\
+				\rlpTxnSharedColumnIsPrefixOfAccessListItem _{i} & = & \false & (\sanityCheck), \text{ see section~(\ref{rlp txn v2: phase constraints: access list: access list bits})} \\
+				\rlpTxnSharedColumnIsAccessListAddress      _{i} & = & \false & (\sanityCheck), \text{ idem} \\
+				\rlpTxnSharedColumnIsPrefixOfStorageKeyList _{i} & = & \false & (\sanityCheck), \text{ idem} \\
+				\rlpTxnSharedColumnIsAccessListStorageKey   _{i} & = & \false & (\sanityCheck), \text{ idem} \\
 			\end{array} \right.
 		\]
-		\saNote{}
-		The (\sanityCheck) constraints follow from
-		section~(\ref{rlp txn v2: phase constraints: access list: access list bits}).
 	\item
 		we impose
 		\[
@@ -67,11 +65,11 @@ As such we further impose
 	\item \If $\phaseEnd _{i} = \false$ \Then:
 		\[
 			\left\{ \begin{array}{lclc}
-				\rlpTxnComputationColumnIsPrefix                 _{i + 1} & = & \true  & (\sanityCheck) \\
-				\rlpTxnComputationColumnIsPrefixOfAccessListItem _{i + 1} & = & \true  & (\sanityCheck) \\
-				\rlpTxnComputationColumnIsAccessListAddress      _{i + 1} & = & \false & (\sanityCheck) \\
-				\rlpTxnComputationColumnIsPrefixOfStorageKeyList _{i + 1} & = & \false & (\sanityCheck) \\
-				\rlpTxnComputationColumnIsAccessListStorageKey   _{i + 1} & = & \false & (\sanityCheck) \\
+				\rlpTxnSharedColumnIsPrefix                 _{i + 1} & = & \true  & (\sanityCheck) \\
+				\rlpTxnSharedColumnIsPrefixOfAccessListItem _{i + 1} & = & \true  & (\sanityCheck) \\
+				\rlpTxnSharedColumnIsAccessListAddress      _{i + 1} & = & \false & (\sanityCheck) \\
+				\rlpTxnSharedColumnIsPrefixOfStorageKeyList _{i + 1} & = & \false & (\sanityCheck) \\
+				\rlpTxnSharedColumnIsAccessListStorageKey   _{i + 1} & = & \false & (\sanityCheck) \\
 			\end{array} \right.
 		\]
 		\saNote{}

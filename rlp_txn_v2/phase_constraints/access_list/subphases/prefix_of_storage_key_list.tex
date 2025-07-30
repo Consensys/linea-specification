@@ -1,0 +1,49 @@
+\begin{center}
+	\boxed{\text{Throughout this section it is assumed that }
+	\left\{ \begin{array}{lcl}
+		\rlpTxnSharedColumnIsPrefixOfStorageKeyList _{i}     & = & \true \\
+		\done                                       _{i - 1} & = & \true \\
+	\end{array} \right.
+	}
+\end{center}
+\begin{description}
+	\item[\underline{Calling the \rlpUtilsMod{} module:}]
+		we impose
+		\[
+			\hspace*{-2cm}
+			\rlpProcessByteString {
+				anchorRow        = i                                             ,
+				relOffset        = 0                                             ,
+				byteStringLength = \locLengthOfConcatenationOfRlpizedStorageKeys ,
+				firstByte        = \nothing                                      ,
+				isList           = \false                                        ,
+				mustBeNontrivial = \false                                        ,
+			}
+		\]
+		where
+		\[
+			\begin{array}{l}
+				\locLengthOfConcatenationOfRlpizedStorageKeys \\
+				\qquad \define 33 \cdot \locTotStorageForThisAddress _{i} \\
+			\end{array}
+		\]
+		and we extract the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locStorageKeyListIsEmpty    & \define & \rlpTxnComputationColumnExoDataColumn{4} _{i} \\
+				\locStorageKeyListIsNonempty & \define & 1 - \locStorageKeyListIsEmpty                 \\
+			\end{array} \right.
+		\]
+	\item[\underline{Setting the next step I:}]
+		we further impose
+		\[
+			\rlpTxnSharedColumnIsAccessListStorageKey _{i + 1} = \locStorageKeyListIsNonempty
+		\]
+	\item[\underline{Setting the next step II:}]
+		\If $\locStorageKeyListIsEmpty = \true$ \Then
+		we impose that
+		\begin{enumerate}
+		        \item \If $\locAddressPrewarmingCountdown _{i} \neq 0$ \Then $\rlpTxnSharedColumnIsPrefixOfAccessListItem _{i + 1} = \true$
+		        \item \If $\locAddressPrewarmingCountdown _{i} =    0$ \Then $\phaseEnd _{i} = \true$
+		\end{enumerate}
+\end{description}
