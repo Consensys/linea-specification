@@ -23,6 +23,24 @@ Next we initialize
 	\item $\locAddressPrewarmingCountdown _{i} = \rlpTxnTransactionColumnNbWarmedAddress     _{i - 1}$
 	\item $\locStoragePrewarmingCountdown _{i} = \rlpTxnTransactionColumnNbWarmedStorageKey  _{i - 1}$
 \end{enumerate}
+\saNote{}
+\rlpTxnTransactionColumnNbWarmedAddress    {} and
+\rlpTxnTransactionColumnNbWarmedStorageKey {}
+represent, respectively, the total number of access list items $(E _a, E _\textbf{s})$
+present in the transaction \locTransaction{}
+and
+the total number of storage keys across all access list items present in the \locTransaction{}, i.e.
+\[
+	\left\{ \begin{array}{lcl}
+		\rlpTxnTransactionColumnNbWarmedAddress & \equiv &
+		\displaystyle \sum _{E \text{ acc. list item in } \locTransaction}
+		1 
+		\vspace{1mm} \\
+		\rlpTxnTransactionColumnNbWarmedStorageKey & \equiv &
+		\displaystyle \sum _{E \text{ acc. list item in } \locTransaction}
+		\big\| E _\textbf{s} \big\| \\
+	\end{array} \right.
+\]
 We first determine the \rlp{} prefix of the data on the first row:
 \begin{enumerate}[resume]
 	\item
