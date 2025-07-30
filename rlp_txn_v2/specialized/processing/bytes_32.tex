@@ -1,20 +1,58 @@
 We define the following shorthands
 \[
 	\left\{ \begin{array}{l}
-		\rlpUtilsInstCallBytesThirtyTwo {
+		\rlpProcessBytesThirtyTwo {
 			anchorRow = i              ,
 			relOffset = \relof         ,
 			dataHi    = \loc{data\_hi} ,
 			dataLo    = \loc{data\_lo} ,
-			}
-			\vspace{2mm}
-			\\
-			\qquad \define
-			\left\{ \begin{array}{lcl}
-				\rlpTxnComputationColumnRlpUtilsFlag   _{i + \relof} & = & \rOne                       \\
-				\rlpTxnComputationColumnRlpUtilsInstruction           _{i + \relof} & = & \rlpUtilsInstBytesThirtyTwo \\
-				\rlpTxnComputationColumnExoDataColumn{1} _{i + \relof} & = & \loc{data\_hi}              \\
-				\rlpTxnComputationColumnExoDataColumn{2} _{i + \relof} & = & \loc{data\_lo}              \\
-			\end{array} \right.
+		}
 	\end{array} \right.
 \]
+which stands for the following collection of constraints:
+\begin{description}
+	\item[\underline{\underline{Setting \maxCt{}:}}]
+		we impose $\maxCt _{i + \relof} = 2$
+	\item[\underline{\underline{Setting \rlpTxnSharedColumnIsPrefix{}:}}]
+		we impose $\rlpTxnSharedColumnIsPrefix _{i + \relof} = \false$
+	\item[\underline{\underline{\rlpUtilsMod{} instruction call:}}] 
+		we impose
+		\[
+			\rlpUtilsInstCallBytesThirtyTwo {
+				anchorRow = i              ,
+				relOffset = \relof         ,
+				dataHi    = \loc{data\_hi} ,
+				dataLo    = \loc{data\_lo} ,
+			}
+		\]
+	\item[\underline{\underline{Enshrining the \rlp{}-prefix into the \rlp{} string:}}] 
+		we impose
+		\[
+			\setLimb {
+				anchorRow = i                                         ,
+				relOffset = \relof                                    ,
+				limb      = \rlprefixStorage \cdot (256 ^{\llargeMO}) ,
+				nBytes    = 1                                         ,
+			}
+		\]
+	\item[\underline{\underline{Enshrining the \texttt{BYTES32}'s hi part into the \rlp{} string:}}] 
+		we impose
+		\[
+			\setLimb {
+				anchorRow = i              ,
+				relOffset = \relof + 1     ,
+				limb      = \loc{data\_hi} ,
+				nBytes    = 1              ,
+			}
+		\]
+	\item[\underline{\underline{Enshrining the \texttt{BYTES32}'s lo part into the \rlp{} string:}}] 
+		we impose
+		\[
+			\setLimb {
+				anchorRow = i              ,
+				relOffset = \relof + 2     ,
+				limb      = \loc{data\_lo} ,
+				nBytes    = 1              ,
+			}
+		\]
+\end{description}
