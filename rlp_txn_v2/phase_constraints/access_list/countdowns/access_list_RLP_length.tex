@@ -1,5 +1,32 @@
+The \locAccessListLengthCountdown{} shorthand holds the length in bytes of
+the \rlp{}-ized contents of the access list $T_\textbf{A}$.
+To be precise, \rlp{}-izing a transaction $T$ which features an access list $T_\textbf{A}$ requires computing
+the following (where we use notations from the \cite{EYP-London})
+\[
+	\rlp \big( T_\textbf{A} \big) = R_\text{l} \big( T_\textbf{A} \big) \\
+\]
+where, in general for $\mathbf{x} \in \mathbb{L}$ one sets
+\[
+	R_\text{l} \big( \textbf{x} \big)
+	\equiv
+	\left\{ \begin{array}{ll}
+		( \rlprefixShortList + \| s( \textbf{x} ) \| ) \cdot s( \textbf{x} )                                                                                 & \text{ if }      s( \textbf{x} ) \neq \varnothing \wedge \| s( \textbf{x} ) \| < \fiftySix  \vspace{1mm} \\
+		\big( \rlprefixLongList  + \big\| \texttt{BE} ( \| s( \textbf{x} \| ) \big\| \big) \cdot \texttt{BE} ( \| s( \textbf{x} ) \| ) \cdot s( \textbf{x} ) & \text{ else if } s( \textbf{x} ) \neq \varnothing \wedge \| s( \textbf{x} ) \| < 2^{64}     \vspace{1mm} \\
+		\varnothing                                                                                                                                          & \text{ otherwise }                                                                                       \\
+	\end{array} \right.
+\]
+and
+\[
+	s( \mathbf{x} ) \equiv
+	\left\{ \begin{array}{ll}
+		\rlp \big( \mathbf{x}[0] \big) \cdot \rlp \big( \mathbf{x}[1] \big) \cdot ~ \cdots & \text{ if } \forall i, ~ \rlp \big( \mathbf{x}[i] \big) \neq \varnothing \\
+		\varnothing                                                                      & \text{ otherwise }                                                       \\
+	\end{array} \right.
+\]
+The purpose of \locAccessListLengthCountdown{} is to \textbf{initially} hold $\| s( T_\textbf{A} ) \|$
+and then count down to $0$ as the access list gets processed.
 \begin{description}
-	\item[\underline{Updates:}]
+	\item[\underline{\underline{Updates:}}]
 		\If 
 		\[
 			\left[ \begin{array}{cl}

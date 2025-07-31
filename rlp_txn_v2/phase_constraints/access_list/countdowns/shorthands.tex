@@ -1,4 +1,29 @@
-We introduce the following shorthands, all of which are \textbf{bits}
+\begin{center}
+	\boxed{\text{The following shorthands only make sense provided that $\phaseAccessList _{i} = 1$.}}
+\end{center}
+We use the following shorthands:
+\[
+	\left\{ \begin{array}{lcl}
+		\locAccessListLengthCountdown        _{i} & \define & \rlpTxnComputationColumnAuxiliaryData{1}                _{i} \\
+		\locAccessListItemRlpLengthCountdown _{i} & \define & \rlpTxnComputationColumnAuxiliaryData{2}                _{i} \\
+		\locAddressPrewarmingCountdown       _{i} & \define & \rlpTxnComputationColumnCounterConstantAuxiliaryData{1} _{i} \\
+		\locStoragePrewarmingCountdown       _{i} & \define & \rlpTxnComputationColumnCounterConstantAuxiliaryData{2} _{i} \\
+		\locStorageKeyListCountdown          _{i} & \define & \rlpTxnComputationColumnCounterConstantAuxiliaryData{3} _{i} \\
+		\locAddressHi                        _{i} & \define & \rlpTxnComputationColumnCounterConstantAuxiliaryData{4} _{i} \\
+		\locAddressLo                        _{i} & \define & \rlpTxnComputationColumnCounterConstantAuxiliaryData{5} _{i} \\
+	\end{array}                            \right.
+\]
+\saNote{}
+We \textbf{intentionally} use a non-counter-constant columns
+to hold
+\locAccessListLengthCountdown{} and
+\locAccessListItemRlpLengthCountdown{}.
+Indeed we may at times update either
+more than once per counter-cycle,
+see section~(\ref{rlp txn v2: phase constraints: access list: subphases: countdown}) and
+note~(\ref{rlp txn v2: phase constraints: access list: subphases: countdown: non counter constancy}).
+
+We further the following shorthands, all of which are \textbf{bits}
 \[
 	\left\{ \begin{array}{lcl}
 		\locStorageStuff _{i} & \define &
@@ -12,4 +37,3 @@ We introduce the following shorthands, all of which are \textbf{bits}
 		\locEndOfTupleOrEndOfPhase _{i} & \define & \locStorageStuff _{i} \cdot \locNotStorageStuff _{i + 1} \\
 	\end{array} \right.
 \]
-

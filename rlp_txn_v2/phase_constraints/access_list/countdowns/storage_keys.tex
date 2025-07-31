@@ -1,11 +1,19 @@
+The \locStoragePrewarmingCountdown{} shorthand counts
+the total number of storage keys across all access list items present in the \locTransaction{}, i.e.
+\[
+		\rlpTxnTransactionColumnNbWarmedStorageKey \equiv
+		\displaystyle \sum _{E \text{ acc. list item in } \locTransaction}
+		\big\| E _\textbf{s} \big\|
+\]
+We impose
 \begin{description}
-	\item[\underline{Initialization:}]
+	\item[\underline{\underline{Initialization:}}]
 		\If $\locAccessListPrefix _{i} = \true$ \Then
 		we impose
 		\[
 			\locStoragePrewarmingCountdown _{i} = \rlpTxnTransactionColumnNbWarmedStorageKey  _{i - 1}
 		\]
-	\item[\underline{Updates:}]
+	\item[\underline{\underline{Updates:}}]
 		\If $\locAccessListData _{i} = \true$ \Then
 		we impose
 		\[
@@ -23,21 +31,3 @@
 			\end{array} \right]
 		\]
 \end{description}
-\saNote{}
-\rlpTxnTransactionColumnNbWarmedAddress    {} and
-\rlpTxnTransactionColumnNbWarmedStorageKey {}
-represent, respectively, the total number of access list items $(E _a, E _\textbf{s})$
-present in the transaction \locTransaction{}
-and
-the total number of storage keys across all access list items present in the \locTransaction{}, i.e.
-\[
-	\left\{ \begin{array}{lcl}
-		\rlpTxnTransactionColumnNbWarmedAddress & \equiv &
-		\displaystyle \sum _{E \text{ acc. list item in } \locTransaction}
-		1
-		\vspace{1mm} \\
-		\rlpTxnTransactionColumnNbWarmedStorageKey & \equiv &
-		\displaystyle \sum _{E \text{ acc. list item in } \locTransaction}
-		\big\| E _\textbf{s} \big\| \\
-	\end{array} \right.
-\]
