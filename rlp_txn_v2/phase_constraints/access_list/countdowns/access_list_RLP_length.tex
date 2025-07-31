@@ -1,0 +1,22 @@
+\begin{description}
+	\item[\underline{Updates:}]
+		\If 
+		\[
+			\left[ \begin{array}{cl}
+				+ & \rlpTxnSharedColumnIsPrefixOfAccessListItem _{i} \\
+				+ & \rlpTxnSharedColumnIsAccessListAddress      _{i} \\
+				+ & \rlpTxnSharedColumnIsPrefixOfStorageKeyList _{i} \\
+				+ & \rlpTxnSharedColumnIsAccessListStorageKey   _{i} \\
+			\end{array} \right]
+			= \true
+		\]
+		\Then
+		we impose that
+		\[
+			\locAccessListLengthCountdown _{i} = \locAccessListLengthCountdown _{i - 1} - \lc _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}
+		\]
+\end{description}
+\saNote{} \label{rlp txn v2: phase constraints: access list: countdowns: non counter constancy of access list RLP length}
+The \locAccessListLengthCountdown{}
+and \locAccessListItemRlpLengthCountdown{}
+updates may happen mid-counter-cycle.

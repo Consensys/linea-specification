@@ -1,0 +1,26 @@
+\begin{description}
+	\item[\underline{Initialization:}]
+		\If $\locAccessListPrefix _{i} = \true$ \Then
+		we impose
+		\[
+			\locAddressPrewarmingCountdown _{i} = \rlpTxnTransactionColumnNbWarmedAddress _{i - 1}
+		\]
+	\item[\underline{Updates:}]
+		\If $\locAccessListData _{i} = \true$ \Then
+		we impose
+		\[
+			\begin{array}{lcl}
+				\locAddressPrewarmingCountdown _{i} & = & \locAddressPrewarmingCountdown             _{i - 1}          \\
+				&   & \qquad - \, \locStartRlpizingNewAddress    _{i} \vspace{2mm} \\
+			\end{array}
+		\]
+		where we define
+		\[
+			\locStartRlpizingNewAddress _{i} \define
+			\left[ \begin{array}{cl}
+				\cdot & \rlpTxnSharedColumnIsAccessListAddress _{i} \\
+				\cdot & \done _{i - 1}                              \\
+			\end{array} \right]
+		\]
+\end{description}
+
