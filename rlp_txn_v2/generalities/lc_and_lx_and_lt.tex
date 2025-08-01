@@ -11,49 +11,64 @@ The general idea for setting \lc{}, \lt{} and \lx{} is as follows:
 \end{itemize}
 We introduce the following shorthand
 \[
-    \begin{array}{l}
-        \locPhaseWillNotChangeAndPhaseIsntRlpPrefix _{i} \vspace{2mm} \\
-        \qquad \define
+    \left\{ \begin{array}{lcl}
+        \locLimbPartakesInLx _{i} & \define &
         \left[ \begin{array}{clcl}
-            % + & \phaseRlpPrefix            _{i} & \!\!\!\cdot\!\!\! & \phaseRlpPrefix            _{i + 1} \\
-            + & \phaseChainId              _{i} & \!\!\!\cdot\!\!\! & \phaseChainId              _{i + 1} \\
-            + & \phaseNonce                _{i} & \!\!\!\cdot\!\!\! & \phaseNonce                _{i + 1} \\
-            + & \phaseGasPrice             _{i} & \!\!\!\cdot\!\!\! & \phaseGasPrice             _{i + 1} \\
-            + & \phaseMaxPriorityFeePerGas _{i} & \!\!\!\cdot\!\!\! & \phaseMaxPriorityFeePerGas _{i + 1} \\
-            + & \phaseMaxFeePerGas         _{i} & \!\!\!\cdot\!\!\! & \phaseMaxFeePerGas         _{i + 1} \\
-            + & \phaseGasLimit             _{i} & \!\!\!\cdot\!\!\! & \phaseGasLimit             _{i + 1} \\
-            + & \phaseTo                   _{i} & \!\!\!\cdot\!\!\! & \phaseTo                   _{i + 1} \\
-            + & \phaseValue                _{i} & \!\!\!\cdot\!\!\! & \phaseValue                _{i + 1} \\
-            + & \phaseData                 _{i} & \!\!\!\cdot\!\!\! & \phaseData                 _{i + 1} \\
-            + & \phaseAccessList           _{i} & \!\!\!\cdot\!\!\! & \phaseAccessList           _{i + 1} \\
-            + & \phaseBeta                 _{i} & \!\!\!\cdot\!\!\! & \phaseBeta                 _{i + 1} \\
-            + & \phaseY                    _{i} & \!\!\!\cdot\!\!\! & \phaseY                    _{i + 1} \\
-            + & \phaseR                    _{i} & \!\!\!\cdot\!\!\! & \phaseR                    _{i + 1} \\
-            + & \phaseS                    _{i} & \!\!\!\cdot\!\!\! & \phaseS                    _{i + 1} \\
+            % + & \phaseRlpPrefix            _{i} \\
+            + & \phaseChainId              _{i} \\
+            + & \phaseNonce                _{i} \\
+            + & \phaseGasPrice             _{i} \\
+            + & \phaseMaxPriorityFeePerGas _{i} \\
+            + & \phaseMaxFeePerGas         _{i} \\
+            + & \phaseGasLimit             _{i} \\
+            + & \phaseTo                   _{i} \\
+            + & \phaseValue                _{i} \\
+            + & \phaseData                 _{i} \\
+            + & \phaseAccessList           _{i} \\
+            % + & \phaseBeta                 _{i} \\
+            % + & \phaseY                    _{i} \\
+            % + & \phaseR                    _{i} \\
+            % + & \phaseS                    _{i} \\
         \end{array} \right]
-    \end{array}
+        \vspace{2mm}
+        \\
+        \locLimbPartakesInLt _{i} & \define &
+        \left[ \begin{array}{clcl}
+            % + & \phaseRlpPrefix            _{i} \\
+            % + & \phaseChainId              _{i} \\
+            % + & \phaseNonce                _{i} \\
+            % + & \phaseGasPrice             _{i} \\
+            % + & \phaseMaxPriorityFeePerGas _{i} \\
+            % + & \phaseMaxFeePerGas         _{i} \\
+            % + & \phaseGasLimit             _{i} \\
+            % + & \phaseTo                   _{i} \\
+            % + & \phaseValue                _{i} \\
+            % + & \phaseData                 _{i} \\
+            % + & \phaseAccessList           _{i} \\
+            % + & \phaseBeta                 _{i} \\
+            +   & \locLimbPartakesInLx       _{i} \\
+            +   & \phaseY                    _{i} \\
+            +   & \phaseR                    _{i} \\
+            +   & \phaseS                    _{i} \\
+        \end{array} \right]
+    \end{array} \right.
 \]
-\saNote{}
-\locPhaseWillNotChangeAndPhaseIsntRlpPrefix{} only takes on binary values.
-
 We impose that
 \begin{enumerate}
     \item \lc{}, \lt{} and \lx{} are binary \quad (\sanityCheck)
     \item \lt{} and \lx{} are counter-constant \quad (\sanityCheck)
     \item \If $\isCmp  _{i} = 0$ \Then $\lc _{i} = 0$
-    \item \label{rlp txn v2: generalities: lc lt and lx constraints: lt and lx remain constant during all phases except the first}
-        \If $\locPhaseWillNotChangeAndPhaseIsntRlpPrefix _{i} = \true$ \Then
-	\[
-	    \left\{ \begin{array}{lcl}
-		\lt _{i + 1} & = & \lt _{i} \\
-		\lx _{i + 1} & = & \lx _{i} \\
-	    \end{array} \right.
-	\]
+    \item \If $\locLimbPartakesInLt _{i} = \true$ \Then
+        \[
+            \left\{ \begin{array}{lcl}
+                \lt _{i} & = & \locLimbPartakesInLt _{i} \\
+                \lx _{i} & = & \locLimbPartakesInLx _{i} \\
+            \end{array} \right.
+        \]
+        \saNote{}
+        Clearly the first constraint could be replaced with ``$\lt _{i} = \true$''.
 \end{enumerate}
 \saNote{}
-The purpose of
-constraint~(\ref{rlp txn v2: generalities: lc lt and lx constraints: lt and lx remain constant during all phases except the first})
-is to force
-\lt{} and
-\lx{}
-to remain constant through-out all phases save for \phaseRlpPrefix{}.
+Special constraints apply to the
+\phaseRlpPrefix{} and
+\phaseBeta{} phases.

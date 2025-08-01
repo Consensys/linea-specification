@@ -1,4 +1,4 @@
-The \locAddressPrewarmingCountdown{} shorthand counts the number of access list items in the access list.
+The \locAccessListItemCountdown{} shorthand counts the number of access list items in the access list.
 In other words, it counts the total number of access list items $(E _a, E _\textbf{s})$
 present in the access list $T_\textbf{A}$ the transaction \locTransaction{}:
 \[
@@ -13,7 +13,7 @@ as part of the upfront gas cost of transaction processing.
 We impose
 \begin{description}
 	\item[\underline{\underline{Counter-constancy:}}]
-		\locAddressPrewarmingCountdown{}
+		\locAccessListItemCountdown{}
 		is counter-constant
 		(\sanityCheck)
 		by virtue of its definition,
@@ -23,23 +23,23 @@ We impose
 		\If $\locAccessListPrefix _{i} = \true$ \Then
 		we impose
 		\[
-			\locAddressPrewarmingCountdown _{i} = \rlpTxnTransactionColumnNbWarmedAddress _{i - 1}
+			\locAccessListItemCountdown _{i} = \rlpTxnTransactionColumnNbWarmedAddress _{i - 1}
 		\]
 	\item[\underline{\underline{Updates:}}]
 		\If $\locAccessListData _{i} = \true$ \Then
 		we impose
 		\[
 			\begin{array}{lcl}
-				\locAddressPrewarmingCountdown _{i} & = & \locAddressPrewarmingCountdown             _{i - 1}          \\
-				&   & \qquad - \, \locStartRlpizingNewAddress    _{i} \vspace{2mm} \\
+				\locAccessListItemCountdown _{i} & = & \locAccessListItemCountdown             _{i - 1}          \\
+				&   & \qquad - \, \locNewAccessListItem    _{i} \vspace{2mm} \\
 			\end{array}
 		\]
 		where we define
 		\[
-			\locStartRlpizingNewAddress _{i} \define
+			\locNewAccessListItem _{i} \define
 			\left[ \begin{array}{cl}
-				\cdot & \rlpTxnSharedColumnIsAccessListAddress _{i} \\
-				\cdot & \done _{i - 1}                              \\
+				\cdot & \rlpTxnSharedColumnIsPrefixOfAccessListItem _{i} \\
+				\cdot & \done _{i - 1}                                   \\
 			\end{array} \right]
 		\]
 \end{description}
