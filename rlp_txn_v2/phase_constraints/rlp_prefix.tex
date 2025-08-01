@@ -25,7 +25,7 @@ if applicable, the first byte encoding the transaction type.
 We first determine the $\transactionType$ prefix concatenation on the first row:
 \begin{description}
 		\def\locRowOffset{\yellowm{1}}
-	\item[\underline{Computation row $n^°\locRowOffset$:} \underline{transaction type prefix:}] 
+	\item[\underline{\underline{Computation row $n^°\locRowOffset$:}} \underline{transaction type prefix:}] 
 		we impose
 		\begin{enumerate}
 			\item
@@ -35,14 +35,14 @@ We first determine the $\transactionType$ prefix concatenation on the first row:
 					relOffset = \locRowOffset ,
 				}
 				$
-			\item \If $\typeZeroTx _{i + \locRowOffset} =    0$ \Then
+			\item \If $\typeZeroTx _{i + \locRowOffset} = \true$ \Then
 				\[
 					\discardLimb {
 						anchorRow = i             ,
 						relOffset = \locRowOffset ,
 					}
 				\]
-			\item \If $\typeZeroTx _{i + \locRowOffset} \neq 0$ \Then
+			\item \If $\typeZeroTx _{i + \locRowOffset} = \false$ \Then
 				\[
 					\setLimb{
 						anchorRow = i                                                         ,
@@ -51,10 +51,10 @@ We first determine the $\transactionType$ prefix concatenation on the first row:
 						nBytes    = 1                                                         ,
 					}
 				\]
-			\item $\phaseEnd _{i + \locRowOffset} = 0$
+			\item $\phaseEnd _{i + \locRowOffset} = \false$
 		\end{enumerate}
 		\def\locRowOffset{\yellowm{2}}
-	\item[\underline{Computation row $n^°\locRowOffset$:} \underline{global prefix for $\locLtTilde$}] 
+	\item[\underline{\underline{Computation row $n^°\locRowOffset$:}} \underline{global prefix for $\locLtTilde$}] 
 		we impose
 		\begin{enumerate}
 			\item
@@ -67,12 +67,13 @@ We first determine the $\transactionType$ prefix concatenation on the first row:
 			\item 
 				we impose
 				\[
-					\rlpUtilsInstCallByteStringPrefix {
+					\rlpProcessByteString {
 						anchorRow        = i                 ,
 						relOffset        = \locRowOffset     ,
 						byteStringLength = \rlptsize _{i}    ,
 						firstByte        = \nothing          ,
 						isList           = \true             ,
+						mustBeNontrivial = \true             ,
 					}
 				\]
 				and we define the following shorthands
@@ -87,28 +88,28 @@ We first determine the $\transactionType$ prefix concatenation on the first row:
 				\saNote{}
 				There is no need to specify the first byte of the byte string of which we are computing the \rlp{}-prefix:
 				that string is necessarily longer than $1$ byte, and thus its first byte is irrelevant.
-			\item
-				we impose
-				\[
-					\setLimb {
-						anchorRow = i                       ,
-						relOffset = \locRowOffset           ,
-						limb      = \locLtRlpPrefix         ,
-						nBytes    = \locLtRlpPrefixByteSize ,
-					}
-				\]
-			\item
-				the following are non essential sanity checks:
-				\[
-					\left\{ \begin{array}{lclr}
-						\locLtHasRlpPrefix         & = & 1 & (\sanityCheck) \\
-						\locLtByteStringIsNonempty & = & 1 & (\sanityCheck) \\
-					\end{array} \right.
-				\]
-			\item $\phaseEnd _{i + \locRowOffset} = 0$
+			% \item
+			% 	we impose
+			% 	\[
+			% 		\setLimb {
+			% 			anchorRow = i                       ,
+			% 			relOffset = \locRowOffset           ,
+			% 			limb      = \locLtRlpPrefix         ,
+			% 			nBytes    = \locLtRlpPrefixByteSize ,
+			% 		}
+			% 	\]
+			% \item
+			% 	the following are non essential sanity checks:
+			% 	\[
+			% 		\left\{ \begin{array}{lclr}
+			% 			\locLtHasRlpPrefix         & = & 1 & (\sanityCheck) \\
+			% 			\locLtByteStringIsNonempty & = & 1 & (\sanityCheck) \\
+			% 		\end{array} \right.
+			% 	\]
+			\item $\phaseEnd _{i + \locRowOffset} = \false$
 		\end{enumerate}
 		\def\locRowOffset{\yellowm{3}}
-	\item[\underline{Computation row $n^°\locRowOffset$:} \underline{global prefix for $\locLxTilde$}] 
+	\item[\underline{\underline{Computation row $n^°\locRowOffset$:}} \underline{global prefix for $\locLxTilde$}] 
 		we impose
 		\begin{enumerate}
 			\item
@@ -121,12 +122,13 @@ We first determine the $\transactionType$ prefix concatenation on the first row:
 			\item 
 				we impose
 				\[
-					\rlpUtilsInstCallByteStringPrefix {
-						anchorRow        = i                 ,
-						relOffset        = \locRowOffset     ,
-						byteStringLength = \rlpxsize _{i}    ,
-						firstByte        = \nothing          ,
-						isList           = 1                 ,
+					\rlpProcessByteString {
+						anchorRow        = i              ,
+						relOffset        = \locRowOffset  ,
+						byteStringLength = \rlpxsize _{i} ,
+						firstByte        = \nothing       ,
+						isList           = 1              ,
+						mustBeNontrivial = \true          ,
 					}
 				\]
 				and we define the following shorthands
@@ -141,25 +143,25 @@ We first determine the $\transactionType$ prefix concatenation on the first row:
 				\saNote{}
 				There is no need to specify the first byte of the byte string of which we are computing the \rlp{}-prefix:
 				that string is necessarily longer than $1$ byte, and thus its first byte is irrelevant.
-			\item
-				we impose
-				\[
-					\setLimb {
-						anchorRow = i                       ,
-						relOffset = \locRowOffset           ,
-						limb      = \locLxRlpPrefix         ,
-						nBytes    = \locLxRlpPrefixByteSize ,
-					}
-				\]
-			\item
-				the following are non essential sanity checks:
-				\[
-					\left\{ \begin{array}{lclr}
-						\locLxHasRlpPrefix         & = & 1 & (\sanityCheck) \\
-						\locLxByteStringIsNonempty & = & 1 & (\sanityCheck) \\
-					\end{array} \right.
-				\]
-			\item $\phaseEnd _{i + \locRowOffset} = 1$
+			% \item
+			% 	we impose
+			% 	\[
+			% 		\setLimb {
+			% 			anchorRow = i                       ,
+			% 			relOffset = \locRowOffset           ,
+			% 			limb      = \locLxRlpPrefix         ,
+			% 			nBytes    = \locLxRlpPrefixByteSize ,
+			% 		}
+			% 	\]
+			% \item
+			% 	the following are non essential sanity checks:
+			% 	\[
+			% 		\left\{ \begin{array}{lclr}
+			% 			\locLxHasRlpPrefix         & = & 1 & (\sanityCheck) \\
+			% 			\locLxByteStringIsNonempty & = & 1 & (\sanityCheck) \\
+			% 		\end{array} \right.
+			% 	\]
+			\item $\phaseEnd _{i + \locRowOffset} = \true$
 		\end{enumerate}
 \end{description}
 
