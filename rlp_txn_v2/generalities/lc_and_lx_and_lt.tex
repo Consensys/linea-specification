@@ -12,7 +12,7 @@ The general idea for setting \lc{}, \lt{} and \lx{} is as follows:
 We introduce the following shorthand
 \[
     \left\{ \begin{array}{lcl}
-        \locLimbPartakesInLx _{i} & \define &
+        \locLimbUnconditionallyPartakesInLx _{i} & \define &
         \left[ \begin{array}{clcl}
             % + & \phaseRlpPrefix            _{i} \\
             + & \phaseChainId              _{i} \\
@@ -32,7 +32,7 @@ We introduce the following shorthand
         \end{array} \right]
         \vspace{2mm}
         \\
-        \locLimbPartakesInLt _{i} & \define &
+        \locLimbUnconditionallyPartakesInLt _{i} & \define &
         \left[ \begin{array}{clcl}
             % + & \phaseRlpPrefix            _{i} \\
             % + & \phaseChainId              _{i} \\
@@ -46,7 +46,7 @@ We introduce the following shorthand
             % + & \phaseData                 _{i} \\
             % + & \phaseAccessList           _{i} \\
             % + & \phaseBeta                 _{i} \\
-            +   & \locLimbPartakesInLx       _{i} \\
+            +   & \locLimbUnconditionallyPartakesInLx       _{i} \\
             +   & \phaseY                    _{i} \\
             +   & \phaseR                    _{i} \\
             +   & \phaseS                    _{i} \\
@@ -58,17 +58,27 @@ We impose that
     \item \lc{}, \lt{} and \lx{} are binary \quad (\sanityCheck)
     \item \lt{} and \lx{} are counter-constant \quad (\sanityCheck)
     \item \If $\isCmp  _{i} = 0$ \Then $\lc _{i} = 0$
-    \item \If $\locLimbPartakesInLt _{i} = \true$ \Then
+    \item \If $\locLimbUnconditionallyPartakesInLt _{i} = \true$ \Then
         \[
             \left\{ \begin{array}{lcl}
-                \lt _{i} & = & \locLimbPartakesInLt _{i} \\
-                \lx _{i} & = & \locLimbPartakesInLx _{i} \\
+                \lt _{i} & = & \locLimbUnconditionallyPartakesInLt _{i} \\
+                \lx _{i} & = & \locLimbUnconditionallyPartakesInLx _{i} \\
             \end{array} \right.
         \]
         \saNote{}
         Clearly the first constraint could be replaced with ``$\lt _{i} = \true$''.
+    \item \If $\locPhaseFlagSum _{i} = 0$ \Then
+        \[
+            \left\{ \begin{array}{lcl}
+                \lt _{i} & = & 0 \\
+                \lx _{i} & = & 0 \\
+            \end{array} \right.
+        \]
 \end{enumerate}
 \saNote{}
 Special constraints apply to the
 \phaseRlpPrefix{} and
-\phaseBeta{} phases.
+\phaseBeta{} phases,
+see section~(\ref{rlp txn v2: phase constraints: rlp prefix})
+and section~(\ref{rlp txn v2: phase constraints: beta})
+respectively.
