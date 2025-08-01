@@ -4,12 +4,12 @@
 
 We unconditionally impose that
 \begin{enumerate}
-	\item $\rlptsize _{i} = \rlptsize _{i + 1}$
-	\item $\rlpxsize _{i} = \rlpxsize _{i + 1}$
+	\item $\ltByteSizeCountDown _{i} = \ltByteSizeCountDown _{i + 1}$
+	\item $\lxByteSizeCountDown _{i} = \lxByteSizeCountDown _{i + 1}$
 	\item $\maxCt    _{i} = 0$
 \end{enumerate}
 \saNote{}
-The initial value of \rlptsize{}
+The initial value of \ltByteSizeCountDown{}
 is the length of the \rlp{}-ization of the whole transaction \emph{minus}
 the number of bytes of the global \rlp{} prefix itself and,
 if applicable, the first byte encoding the transaction type.
@@ -68,12 +68,12 @@ We first determine the $\transactionType$ prefix concatenation on the first row:
 				we impose
 				\[
 					\rlpProcessByteString {
-						anchorRow        = i                 ,
-						relOffset        = \locRowOffset     ,
-						byteStringLength = \rlptsize _{i}    ,
-						firstByte        = \nothing          ,
-						isList           = \true             ,
-						mustBeNontrivial = \true             ,
+						anchorRow        = i                            ,
+						relOffset        = \locRowOffset                ,
+						byteStringLength = \ltByteSizeCountDown _{i}    ,
+						firstByte        = \nothing                     ,
+						isList           = \true                        ,
+						mustBeNontrivial = \true                        ,
 					}
 				\]
 				and we define the following shorthands
@@ -123,12 +123,12 @@ We first determine the $\transactionType$ prefix concatenation on the first row:
 				we impose
 				\[
 					\rlpProcessByteString {
-						anchorRow        = i              ,
-						relOffset        = \locRowOffset  ,
-						byteStringLength = \rlpxsize _{i} ,
-						firstByte        = \nothing       ,
-						isList           = 1              ,
-						mustBeNontrivial = \true          ,
+						anchorRow        = i                         ,
+						relOffset        = \locRowOffset             ,
+						byteStringLength = \lxByteSizeCountDown _{i} ,
+						firstByte        = \nothing                  ,
+						isList           = 1                         ,
+						mustBeNontrivial = \true                     ,
 					}
 				\]
 				and we define the following shorthands
