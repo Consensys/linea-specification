@@ -4,10 +4,10 @@ We constrain those columns to be binary:
 \begin{enumerate}
     \item \lc{}
     \item \phase{k} for $k = 1 .. 5$
-    \item \phasend{} \quad (\trash)
+    \item \phaseEnd{} \quad (\trash)
     \item \done{} \quad (\trash)
     \item \col{BIT}
-    \item \isprefix{} \quad (\trash)
+    \item \isPrefix{} \quad (\trash)
     \item \ispadding{}
     \item \Depth{1} \quad (\trash)
     \item \isOt{} \quad (\trash)
@@ -33,16 +33,16 @@ We define that a column \col{X} is
     \item \textbf{$\bm{\phase{k}}$-decrementing}: \If $\phase{k}_{i-1} = 1$ \et $\phase{k}_{i}=1$ \Then $\col{X}_{i} \in \{\col{X}_{i-1} -1; \col{X}_{i-1} \}$. If \col{X} is a bit column, it implies $\col{X}_{i} \in \{0 ; \col{X}_{i-1}\}$.
 \end{enumerate}
 
-We constrain: 
+We constrain:
 \begin{enumerate}
     \item $\absTxNumInfty$ and $\absLogNumMax$ to be block-constant;
-    \item $\Input k$ (for $k= 2, 3, 4$), $\nbstep$, $\isprefix$, $\Depth 1$, $\isOt$, $\isOd$  are counter-constant;
-    \item \If ($\phase 5_{i} \neq 1$ \Or $\Depth1_{i} \neq 1$ \Or $\isprefix_{i} \neq 0$ \Or $\isOd_{i} \neq 1$) \Then $\Input 1$ is counter-constant;
+    \item $\Input k$ (for $k= 2, 3, 4$), $\nbstep$, $\isPrefix$, $\Depth 1$, $\isOt$, $\isOd$  are counter-constant;
+    \item \If ($\phase 5_{i} \neq 1$ \Or $\Depth1_{i} \neq 1$ \Or $\isPrefix_{i} \neq 0$ \Or $\isOd_{i} \neq 1$) \Then $\Input 1$ is counter-constant;
     \saNote{} We impose the counter constancy of $\Input 1$ on all the trace but when dealing with $O_{\textbf{d}}$.
 
     \item $\ispadding$ is counter-incrementing;
-    \item \If ($\isprefix_{i}=0$ \Or $\isOd_{i}=0$) \Then $\lc$ is counter-incrementing;
-    \item $\isprefix$ is $\phase 4$-decrementing;
+    \item \If ($\isPrefix_{i}=0$ \Or $\isOd_{i}=0$) \Then $\lc$ is counter-incrementing;
+    \item $\isPrefix$ is $\phase 4$-decrementing;
     \item $\Depth 1$ is $\phase 5$-incrementing;
     \item $\indexlocal$ is $\isOt$-incrementing;
     \item $\logsize$ is $\phase{1}$-constant.
@@ -53,7 +53,7 @@ Constraints on the transaction number:
 \begin{enumerate}
     \item $\col{ABS\_TX\_NUM}_{0}=0$
     \item \If $\col{ABS\_TX\_NUM}_{i}=0$ \Then $\sum_{k=1}^{5} \phase{k}_{i} = 0$
-    \item \If $\col{ABS\_TX\_NUM}_{i} \neq 0$ \Then $\sum_{k=1}^{5} \phase{k}_{i} = 1$;  
+    \item \If $\col{ABS\_TX\_NUM}_{i} \neq 0$ \Then $\sum_{k=1}^{5} \phase{k}_{i} = 1$;
 \end{enumerate}
 In other words padding rows have all phase flags turned off while every non padding row has precisely \emph{one} phase column turned on.
 \begin{enumerate}[resume]
@@ -61,22 +61,22 @@ In other words padding rows have all phase flags turned off while every non padd
 \end{enumerate}
 Constraint on \Phase{}:
 \begin{enumerate}
-    \item $\Phase_{i} = \sum_{k=1}^{5} k \cdot \phase{k}_{i} + \subPhaseIdWeightIsPrefix \cdot \isprefix_{i} + \subPhaseIdWeightIsOt \cdot \isOt_{i} + \subPhaseIdWeightIsOd \cdot \isOd_{i} + \subPhaseIdWeightDepth \cdot \Depth1_{i} + \subPhaseIdWeightIndexLocal \cdot \isOt_{i} \cdot \indexlocal_{i}$ \label{RlpTxrcpt: subPhaseId} 
+    \item $\Phase_{i} = \sum_{k=1}^{5} k \cdot \phase{k}_{i} + \subPhaseIdWeightIsPrefix \cdot \isPrefix_{i} + \subPhaseIdWeightIsOt \cdot \isOt_{i} + \subPhaseIdWeightIsOd \cdot \isOd_{i} + \subPhaseIdWeightDepth \cdot \Depth1_{i} + \subPhaseIdWeightIndexLocal \cdot \isOt_{i} \cdot \indexlocal_{i}$ \label{RlpTxrcpt: subPhaseId}
 \end{enumerate}
 Explanation
 \begin{enumerate}
     \item $\phase{k}$ are exclusive binary column;
-    \item $\isprefix$, $\isOt$ and $\isOd$ are binary columns;
+    \item $\isPrefix$, $\isOt$ and $\isOd$ are binary columns;
     \item When $\isOt_{i} = 1$, we store in $\indexlocal$ the number of the current topic (between 0 and 4) for this logentry;
 \end{enumerate}
 Constraints on $\absLogNum$
 \begin{enumerate}
     \item $\absLogNum_{0}=0$
-    \item \If ($\phase{5}_{i}=1$ \et $\Depth 1_{i}=1$ \et $\isprefix_{i}=1$ \et $\isOt_{i}=0$ \et $\isOd_{i}=0$ \et $\ct_{i}=0$) 
+    \item \If ($\phase{5}_{i}=1$ \et $\Depth 1_{i}=1$ \et $\isPrefix_{i}=1$ \et $\isOt_{i}=0$ \et $\isOd_{i}=0$ \et $\ct_{i}=0$)
     \begin{enumerate}
         \item \Then $\absLogNum_{i}=\absLogNum_{i-1}+1$
         \item \Else $\absLogNum_{i}=\absLogNum_{i-1}$
-    \end{enumerate} 
+    \end{enumerate}
 \end{enumerate}
 In other words, $\absLogNum$ starts at 0, and is constant except increasing by one when starting a new log entry.
 Constraints on nullity of $\limb$
@@ -85,11 +85,11 @@ Constraints on nullity of $\limb$
 \end{enumerate}
 Constraints on the phase transition:
 \begin{enumerate}[resume]
-    \item \If $\Done_{i}=0$ \Then $\phasend_{i}=0$.
-    \item \If $\phasesize \neq 0$ \Then $\phasend_{i}=0$
-    \item \If ($\absTxNum_{i} \neq 0$ \et $\phasend_{i}=0$) \Then $\sum_{k=1}^{5} k \cdot \phase{k}_{i} = \sum_{k=1}^{5} k \cdot \phase{k}_{i+1}$                             \\
+    \item \If $\Done_{i}=0$ \Then $\phaseEnd_{i}=0$.
+    \item \If $\phasesize \neq 0$ \Then $\phaseEnd_{i}=0$
+    \item \If ($\absTxNum_{i} \neq 0$ \et $\phaseEnd_{i}=0$) \Then $\sum_{k=1}^{5} k \cdot \phase{k}_{i} = \sum_{k=1}^{5} k \cdot \phase{k}_{i+1}$                             \\
         In other words $\phase{k}_{i+1}=\phase{k}_{i}$ for every $k \in [\![ 0 ; 4 ]\!]$.
-    \item \If $\phasend_{i}=1$ \Then
+    \item \If $\phaseEnd_{i}=1$ \Then
         \begin{enumerate}
             \item We impose phase transition constraints:
                 \[
@@ -97,7 +97,7 @@ Constraints on the phase transition:
                         \begin{array}{r}
                             \phase{1}_{i} \cdot \phase{2}_{i+1}
                             + \phase{2}_{i} \cdot \phase{3}_{i+1} \\
-                            + \phase{3}_{i} \cdot \phase{4}_{i+1} 
+                            + \phase{3}_{i} \cdot \phase{4}_{i+1}
                             + \phase{4}_{i} \cdot \phase{5}_{i+1} \\
                             + \phase{5}_{i} \cdot \phase{1}_{i+1} \\
                         \end{array}
@@ -123,13 +123,13 @@ Constraints on the phase transition:
 \end{center}
 We remind the reader that $\nbstep$ is $\ct$-constant, and $\lc$ is $\ct$-incrementing (see \ref{constancy_constraints}).
 \begin{enumerate}
-    \item \If $\ct_{i}=\nbstep_{i}-1$ \Then $\Done_{i}=1$ 
+    \item \If $\ct_{i}=\nbstep_{i}-1$ \Then $\Done_{i}=1$
     \item \If $\ct_{i} \neq \nbstep_{i}-1$ \Then $\Done_{i}=0$
 \end{enumerate}
 In other words, $\Done$ is nonzero only at the last row of a loop.
 \begin{enumerate}[resume]
     \item \If $\Done_{i}=0$ \Then $\ct_{i+1} = \ct_{i} +1$
-    \item \If $\Done_{i}=1$ \Then 
+    \item \If $\Done_{i}=1$ \Then
     \begin{enumerate}
         \item $\lc_{i}=1-\ispadding_{i}$
         \item $\ct_{i+1} = 0$
@@ -137,9 +137,9 @@ In other words, $\Done$ is nonzero only at the last row of a loop.
 \end{enumerate}
 
 \subsubsection{Byte and bit accumulation constraints}
-We build some blind byte and bit accumulators. There are more constaints when those decomposition and accumulators are used, depending of the phase. 
+We build some blind byte and bit accumulators. There are more constaints when those decomposition and accumulators are used, depending of the phase.
 \begin{enumerate}
-    \item Constraints on the bytes accumulator columns for $k= 1,2, 3, 4$. 
+    \item Constraints on the bytes accumulator columns for $k= 1,2, 3, 4$.
     \begin{enumerate}
         \item \If $\ct_{i}=0$ \Then $\byteCol{k}_{i} = \acc{k}_{i}$
         \item \If $\ct_{i} \neq 0$  \Then $\acc{k}_{i}=256 \cdot \acc{k}_{i-1} + \byteCol{k}_{i}$
@@ -170,16 +170,16 @@ We build some blind byte and bit accumulators. There are more constaints when th
                 \]
                 We remind the reader that $\logsize$ is $\phase{1}$-constant, see \ref{constancy_constraints}.
         \end{enumerate}
-    \item[{Updating $\phasesize$:}] the only phases that require the \phasesize{} columnms are phase 4 and phase 5. We leave the column unconstrained outside of these: 
+    \item[{Updating $\phasesize$:}] the only phases that require the \phasesize{} columnms are phase 4 and phase 5. We leave the column unconstrained outside of these:
         \begin{enumerate}
-            \item \If \Big($(\phase{4}_{i}=1 \et \isprefix_{i}=0)$ \Or $(\phase{5}_{i}=1 \et \Depth 1 _{i}=1)$\Big) \Then 
+            \item \If \Big($(\phase{4}_{i}=1 \et \isPrefix_{i}=0)$ \Or $(\phase{5}_{i}=1 \et \Depth 1 _{i}=1)$\Big) \Then
                 \[ \phasesize_{i} = \phasesize_{i-1} - \lc_{i} \cdot \limbsize_{i} \]
         \end{enumerate}
 \end{description}
 
 \subsubsection{\ispadding{} updates}
 
-\noindent Miscelanous: 
+\noindent Miscelanous:
 \begin{enumerate}[resume]
     \item \If $(\phase{1}_{i}=0 \et (\phase{5}_{i}=0 \Or \isOd_{i}=0))$ \Then $\ispadding_{i}=0$
 \end{enumerate}
@@ -187,7 +187,7 @@ We build some blind byte and bit accumulators. There are more constaints when th
 \subsubsection{Finalisation constraints}
 \If $\absTxNum_{N} \neq 0$ \Then
 \begin{enumerate}
-    \item $\phasend_{N}=1$
+    \item $\phaseEnd_{N}=1$
     \item $\phase{5}_{N}=1$
     \item $\absTxNum_{N}=\absTxNumInfty_{N}$
     \item $\absLogNum_{N}=\absLogNumMax_{N}$

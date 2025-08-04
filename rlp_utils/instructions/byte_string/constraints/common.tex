@@ -1,0 +1,57 @@
+\[
+    \boxed{\text{All constraints in this subsection assume } \isRlpUtilsMacro_{i} = 1 \et \rlpUtilsInstByteStringPrefixFlag _{i} = 1 }
+\]
+We use the following shorthand:
+\[
+    \left\{ \begin{array}{lclr}
+        \locInputByteStringByteSize    & \define & \rlpUtilsDataColumn{1} _{i}              \\
+        \locInputByteStringFirstByte   & \define & \rlpUtilsDataColumn{2} _{i}              \\
+        \locInputByteStringIsList      & \define & \rlpUtilsDataColumn{3} _{i} \vspace{2mm} \\
+        \locOutputByteStringIsNonempty & \define & \rlpUtilsDataColumn{4} _{i}               & \prediction \\
+        \locOutputRlpPrefixRequired    & \define & \rlpUtilsDataColumn{5} _{i}               & \prediction \\
+        \locOutputRlpPrefix            & \define & \rlpUtilsDataColumn{6} _{i}               & \prediction \\
+        \locOutputRlpPrefixByteSize    & \define & \rlpUtilsDataColumn{8} _{i}               & \prediction \\
+    \end{array} \right.
+\]
+When defining local shorthands we will use the following conventions
+\[
+    \left\{ \begin{array}{ll}
+        \locByteString          & \text{stands for }\loc{byte\_string}              \\
+        \locByteStringLength    & \text{stands for }\loc{byte\_string\_length}      \\
+        \locByteStringFirstByte & \text{stands for }\loc{byte\_string\_first\_byte} \\
+    \end{array} \right.
+\]
+We further define
+\[
+    \left\{ \begin{array}{lcl}
+        \locBaseRlpPrefixShort & \define & \rlprefixShortInt \cdot (1 - \locInputByteStringIsList) + \rlprefixShortList \cdot \locInputByteStringIsList \\
+        \locBaseRlpPrefixLong  & \define & \rlprefixLongInt  \cdot (1 - \locInputByteStringIsList) + \rlprefixLongList  \cdot \locInputByteStringIsList \\
+    \end{array} \right.
+\]
+We impose the following constraints
+\begin{description}
+    \item[\underline{\underline{Setting \maxCt:}}]
+        we impose $\maxCt _{i + 1} = \bytestringNonEmptyCtMax$
+    \item[\underline{\underline{Processing row $n^\circ(\rowOffsetNullString)$:}} \underline{Detecting the empty byte string:}]
+        we impose that
+        \[
+            \wcpCallToIszero {
+                anchorRow = i                    ,
+                relOffset = \rowOffsetNullString ,
+                argOneHi  = 0                    ,
+                argOneLo  = \locInputByteStringByteSize ,
+            }
+        \]
+        and we derive the following shorthand
+        \[
+            \left\{ \begin{array}{lcl}
+                \locByteStringIsEmpty    & \define & \res_{i + \rowOffsetNullString} \\
+                \locByteStringIsNonempty & \define & 1 - \locByteStringIsEmpty         \\
+            \end{array} \right.
+        \]
+    \item[\underline{\underline{Justifying \locOutputByteStringIsNonempty:}}]
+        we unconditionally impose
+        \[
+            \locOutputByteStringIsNonempty = \locByteStringIsNonempty
+        \]
+\end{description}

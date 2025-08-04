@@ -1,0 +1,56 @@
+The present section describes the lookup emanating from the \rlpTxnMod{} and targeting the \hubMod{} module. 
+This lookup is require to ensure that the \hubMod{} performs \textbf{all} required pre-warming operations of addresses and storage keys \textbf{as required} i.e. only for transactions presenting an access list and requiring \evm{} execution.
+
+\begin{description}
+	\item[Source selector column:]
+		we use the following selector:
+		\[
+			\rlpIntoHubSelector _{i}
+			\define
+			\rlpTxnSharedColumnRequiresEvmExecution  _{i}
+			\cdot
+			\left[ \begin{array}{cl}
+				+ & \rlpTxnSharedColumnIsAccessListAddress    _{i} \\
+				+ & \rlpTxnSharedColumnIsAccessListStorageKey _{i} \\
+			\end{array} \right]
+			\cdot
+			\done _{i - 1}
+		\]
+		\saNote{}
+		The above thus targets the first row of every
+		\rlpTxnSharedColumnIsAccessListAddress{}    sub-phase and every
+		\rlpTxnSharedColumnIsAccessListStorageKey{} sub-phase.
+	\item[Source columns:] ---
+		\begin{multicols}{2}
+			\begin{enumerate}
+				\item $1                                         $
+				\item $\userTransactionNumber                    _{i}$
+				\item $\rlpTxnSharedColumnIsAccessListAddress    _{i}$
+				\item $\rlpTxnSharedColumnIsAccessListStorageKey _{i}$
+				\item $\locAddressHi                             _{i}$
+				\item $\locAddressLo                             _{i}$
+				\item $\rlpTxnComputationColumnExoDataColumn{1} \cdot \rlpTxnSharedColumnIsAccessListStorageKey _{i}$
+				\item $\rlpTxnComputationColumnExoDataColumn{2} \cdot \rlpTxnSharedColumnIsAccessListStorageKey _{i}$
+			\end{enumerate}
+		\end{multicols}
+		\saNote{}
+		The above uses shorthands introduced
+		in section~(\ref{rlp txn v2: phase constraints: access list: countdowns: shorthands}).
+	\item[Target columns:] ---
+		\begin{multicols}{2}
+			\begin{enumerate}
+				\item $\txWarm                _{j}$
+				\item $\userTransactionNumber _{j}$
+				\item $\peekAccount           _{j}$
+				\item $\peekStorage           _{j}$
+				\item $\locAddressHi          _{j}$
+				\item $\locAddressLo          _{j}$
+				\item $\locStorageKeyHi       _{j}$
+				\item $\locStorageKeyLo       _{j}$
+			\end{enumerate}
+		\end{multicols}
+\end{description}
+\saNote{}
+We have used \hubMod{} module shorthands introduced
+in section~(\ref{hub: lookups: into rlpTxn}):
+\input{../hub/lookups/address_and_storage_key_shorthand_definitions}
