@@ -1,3 +1,4 @@
+\input{../rlp_txn_v2/_local}
 The present section describes the lookup between the \hubMod{} and the \rlpTxnMod{} module. 
 This lookup allows the \hubMod{} to learn about which (account) addresses and storage keys to pre-warm during the \txWarm-phase.
 \begin{description}
@@ -6,13 +7,13 @@ This lookup allows the \hubMod{} to learn about which (account) addresses and st
 	\item[Source columns:] ---
 		\begin{multicols}{2}
 			\begin{enumerate}
-				\item $\userTransactionNumber		_{i}$
-				\item $\peekAccount					_{i}$			
-				\item $\peekStorage					_{i}$		
-				\item $\locAddressHi				_{i}$		
-				\item $\locAddressLo				_{i}$	
-				\item $\locStorageKeyHi				_{i}$		
-				\item $\locStorageKeyLo				_{i}$	
+				\item $\userTransactionNumber _{i}$
+				\item $\peekAccount           _{i}$
+				\item $\peekStorage           _{i}$
+				\item $\locAddressHi          _{i}$
+				\item $\locAddressLo          _{i}$
+				\item $\locStorageKeyHi       _{i}$
+				\item $\locStorageKeyLo       _{i}$
 			\end{enumerate}
 		\end{multicols}
 		where we used the following shorthands
@@ -20,22 +21,22 @@ This lookup allows the \hubMod{} to learn about which (account) addresses and st
 	\item[Target selector column:]
 		we use the following selector:
 		\[
-		\col{tgt\_sel}
-		\define
-		\txRequiresEvmExecution  _{i}
-		\cdot \phaseAccessList   _{i}
-		\cdot \locAccessListData _{i}
+			\col{tgt\_sel}
+			\define
+			\txRequiresEvmExecution  _{i}
+			\cdot \phaseAccessList   _{i}
+			\cdot \locAccessListData _{i}
 		\]
 	\item[Target columns:] ---
 		\begin{multicols}{2}
 			\begin{enumerate}
-				\item $\userTransactionNumber     																	_{j}$
-				\item $\rlpTxnSharedColumnIsAccessListAddress              											_{j}$
-				\item $\rlpTxnSharedColumnIsAccessListStorageKey            										_{j}$
-				\item $\locAddressHi                 																_{j}$
-				\item $\locAddressLo                  																_{j}$
-				\item $\rlpTxnComputationColumnExoDataColumn{1} \cdot \rlpTxnSharedColumnIsAccessListStorageKey  	_{j}$
-				\item $\rlpTxnComputationColumnExoDataColumn{2} \cdot \rlpTxnSharedColumnIsAccessListStorageKey  	_{j}$
+				\item $\userTransactionNumber                    _{j}$
+				\item $\rlpTxnSharedColumnIsAccessListAddress    _{j}$
+				\item $\rlpTxnSharedColumnIsAccessListStorageKey _{j}$
+				\item $\locAddressHi                             _{j}$
+				\item $\locAddressLo                             _{j}$
+				\item $\rlpTxnComputationColumnExoDataColumn{1} \cdot \rlpTxnSharedColumnIsAccessListStorageKey _{j}$
+				\item $\rlpTxnComputationColumnExoDataColumn{2} \cdot \rlpTxnSharedColumnIsAccessListStorageKey _{j}$
 			\end{enumerate}
 		\end{multicols}
 \end{description}
