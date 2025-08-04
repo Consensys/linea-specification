@@ -1,226 +1,145 @@
 \begin{center}
-	\boxed{\text{Throughout this section it is assumed that $\phaseAccessList_{i}=1$.}}
-\end{center} 
-
-We remind the reader that $\nbAddr$, $\nStorageKeysInAccessList$, $\nStorageKeysInAccessEntry$, $\Depth1$ and $\Depth2$ are counter-constant (see \ref{constancy_constraints}).
-\newline
-Constraints on the end of the phase:
-\begin{enumerate}
-	\item \If $\phasesize_{i} \neq 0$ \Then $\phaseEnd_{i}=0$
-	\item\label{constraint: end of access set phase} \If ($\phasesize_{i}=0$ \et $\done_{i}=1$) \Then $\phaseEnd_{i}=1$.
-\end{enumerate}
-Constraint on $\outgoingDataSymb$ as $\nbAddr$ and $\nStorageKeysInAccessList$ are initialised at the begining of the phase:
+	\boxed{\text{Throughout this section it is assumed that $\phaseAccessList _{i} = 1$.}}
+\end{center}
+An access list tuple always starts with the \rlp{} prefix of the tuple, followed by the \rlp{} of an address:
 \begin{enumerate}[resume]
-	\item \If $\phaseAccessList_{i-1}=0$ \Then:
+	\item \If $\rlpTxnSharedColumnIsPrefix _{i} = 1$ \et $\rlpTxnSharedColumnIsAccessListAddress _{i} = 1$ \et $\rlpTxnSharedColumnIsAccessListStorageKey _{i} = 0$ \Then:
 		\begin{enumerate}
-			\item $\outgoingDataSymb\high_{i}=\nStorageKeysInAccessList_{i}$
-			\item $\outgoingDataSymb\low_{i}=\nbAddr_{i}$
-			\item $\isPrefix_{i}=1$
-			\item $\Depth1_{i} = 0$
-			\item $\Depth2_{i} = 0$
-			\item $\Input1_{i} = \phasesize_{i}$
-			\item \If $\nbAddr_{i}=0$ \Then: 
-				\begin{enumerate}
-					\item $\nbstep_{i}=1$
-					\item $\limb_{i}=\rlprefixShortList \cdot 256 ^{\llargeMO}$
-					\item $\limbsize_{i}=1$
-				\end{enumerate}
-			\item \If $\nbAddr_{i} \neq 0$ \Then $\nbstep_{i}=8$
-		\end{enumerate} 
-\end{enumerate}
-We first compute the RLP prefix and in the case of an empty list, end the phase:
-\begin{enumerate}[resume]
-	\item \If ($\Depth 1_{i}=0$ \et $\nbAddr_{i} \neq 0$) \Then:
-		\begin{enumerate}
-			\item 
+			\item we impose
 				\[
-					\rlpPrefixByteString
-					\left( \begin{array}{r}
-						\Input1,
-						\ct,
-						\nbstep,
-						\done,
-						\phaseAccessList{}; \\
-						\accsize,
-						\Power,
-						\phaseAccessList,
-						\acc1,
-						\acc2; \\
-						\lc,
-						\limb,
-						\limbsize; \\
-					\end{array} \right)
+					\rlpProcessByteString {
+						anchorRow        = i                                         ,
+						relOffset        = 0                                         ,
+						byteStringLength = \locAccessListItemRlpLengthCountdown _{i} ,
+						firstByte        = \nothing                                  ,
+						isList           = \true                                     ,
+						mustBeNontrivial = \true                                     ,
+					}
 				\]
-			\item \If $\done_{i}=1$ \Then:
-				\begin{enumerate} 
-					\item $\isPrefix_{i+1}=1$
-					\item $\Depth1_{i+1}=1$
-					\item $\Depth2_{i+1}=0$	
-				\end{enumerate}
-		\end{enumerate}
-\end{enumerate}
-We now deal with an access list item. We first compute the RLP prefix of an access tuple:
-\begin{enumerate}[resume]
-	\item \If ($\isPrefix_{i}=1$ \et $\Depth1_{i}=1$ \et $\Depth2_{i}=0$) \footnote{It is implemented \If $\isPrefix_{i} \cdot \Depth1_{i} - \Depth2_{i}=1$ \Then:} \Then:
-		\begin{enumerate}
-			\item $\Input1_{i} = \col{ACCESS\_TUPLE\_BYTESIZE}_{i}$
-			\item $\nbstep_{i}=8$
-			\item 
-				\[
-					\rlpPrefixByteString
-					\left( \begin{array}{r}
-						\Input1,
-						\ct,
-						\nbstep,
-						\done,
-						\phaseAccessList{}; \\
-						\accsize,
-						\Power,
-						\phaseAccessList,
-						\acc1,
-						\acc2; \\
-						\lc,
-						\limb,
-						\limbsize; \\
-					\end{array} \right)
-				\]
-			\item \If $\done_{i}=1$ \Then:
-				\begin{enumerate}
-					\item $\isPrefix_{i+1}=0$
-					\item $\Depth1_{i+1}=1$
-					\item $\Depth2_{i+1}=0$ 
-				\end{enumerate}
-		\end{enumerate}
-\end{enumerate}
-Then we compute the RLP of an address:
-\begin{enumerate}[resume]
-	\item \If ($\isPrefix_{i}=0$ \et $\Depth1_{i}=1$ \et $\Depth2_{i}=0$) \footnote{It is implemented \If  $\Depth1_{i} - \isPrefix_{i} - \Depth2_{i}=1$ \Then:} \Then:
-		\begin{enumerate}
+			\item $\rlpTxnSharedColumnIsPrefix               _{i + 1} = 0$
+			\item $\rlpTxnSharedColumnIsAccessListAddress    _{i + 1} = 1$
+			\item $\rlpTxnSharedColumnIsAccessListStorageKey _{i + 1} = 0$
 			\item
 				\[
-					\left\{
-						\begin{array}{lcl}
-							\Input1_{i} & \!\!\! = \!\!\! & \col{Addr}^{hi}_{i} \\
-							\Input2_{i} & \!\!\! = \!\!\! & \col{Addr}^{lo}_{i} \\
-							\nbstep & \!\!\! = \!\!\! & 16 \vspace{2mm} \\
-							\multicolumn{3}{l}{\texttt{rlpAddressConstraints}_{i}(\Input1, \Input2, \oli, \ct)} \\
-						\end{array}
-						\right.
-					\]
-				\item \If $\done_{i}=1$ \Then:
-					\begin{enumerate}
-						\item $\isPrefix_{i+1}=1$
-						\item $\Depth1_{i+1}=1$
-						\item $\Depth2_{i+1}=1$
-					\end{enumerate}
-		\end{enumerate}
-\end{enumerate}
-Then we compute the RLP prefix of the list of StorageKey in this access tuple:
-\begin{enumerate}[resume]
-
-	\item \If ($\isPrefix_{i}=1$ \et $\Depth1_{i}=1$ \et $\Depth2_{i}=1$) \footnote{It is implemented \If $\isPrefix_{i} \cdot \Depth1_{i} \cdot \Depth2_{i}=1$ \Then:} \Then:
-
-		\begin{enumerate}
-			\item \If $\nStorageKeysInAccessEntry_{i}=0$ \Then:
-				\begin{enumerate}
-					\item $\nbstep_{i}=1$
-					\item $\limb_{i}=\rlprefixShortList \cdot 256^{\llargeMO}$
-					\item $\limbsize_{i}=1$
-				\end{enumerate}
-			\item \If $\nStorageKeysInAccessEntry_{i} \neq 0$ \Then:  
-			\item $\nbstep_{i}=8$
-			\item $\Input1_{i} = 33\cdot\nStorageKeysInAccessEntry_{i} \footnote{As a storage key in 32 bytes long, RLP(StorageKey) is 33 bytes long.}$
-			\item 
-				\[
-					\rlpPrefixByteString
-					\left( \begin{array}{r}
-						\Input1,
-						\ct,
-						\nbstep,
-						\done,
-						\phaseAccessList{}; \\
-						\accsize,
-						\Power,
-						\phaseAccessList,
-						\acc1,
-						\acc2; \\
-						\lc,
-						\limb,
-						\limbsize; \\
-					\end{array} \right)
+					\rlpProcessAddress {
+						anchorRow = i             ,
+						relOffset = 1             ,
+						addressHi = \locAddressHi ,
+						addressLo = \locAddressLo ,
+					}
 				\]
 		\end{enumerate}
-\end{enumerate}
-Then, if relevant, we compute the RLP of a StorageKey:
-\begin{enumerate}[resume]
-	\item \If ($\isPrefix_{i}=0$ \et $\Depth1_{i}=1$ \et $\Depth2_{i}=1$)\footnote{It is implemented \If $\Depth1_{i} \cdot \Depth2_{i} - \isPrefix_{i}=1$ \Then:} \linebreak \Then $\texttt{rlpStorageKeyConstraints}_{i}(\Input1, \Input2, \ct)$
-\end{enumerate}
-Hereafter we give the condition on the step to do after computing the RLP prefix of the list of StorageKey, or the RLP of a StorageKey. It is either compute a RLP(StorageKey) if $\nStorageKeysInAccessEntry_{i} \neq 0$, a RLP(access tuple) if ($\nStorageKeysInAccessEntry_{i} = 0$ and $\nbAddr \neq 0$), ot the end of the phase if $\nbAddr_{i}=\nStorageKeysInAccessList_{i}=0$:
-\begin{enumerate}[resume]
-	\item \If ($\Depth2_{i}=1$ \et $\done_{i}=1$) \Then:
-		\begin{enumerate}
-			\item \If $\nStorageKeysInAccessEntry_{i} \neq 0$ \Then:
+
+		After the \rlp{} of an address, we have the \rlp{} of the list of the (possibly empty) list of storage keys:
+		\begin{enumerate}[resume]
+			\item \If $\rlpTxnSharedColumnIsPrefix _{i - 1} = 0$ \et $\rlpTxnSharedColumnIsAccessListAddress _{i - 1} = 1$ \et $\rlpTxnSharedColumnIsAccessListStorageKey _{i - 1} = 0$ \et $\done _{i - 1} =1$ Then:
 				\begin{enumerate}
-					\item $\isPrefix_{i+1}=0$  
-					\item $\Depth1_{i+1}=1$ 
-					\item $\Depth2_{i+1}=1$
-				\end{enumerate}
-			\item \If $\nStorageKeysInAccessEntry_{i}=0$ \Then:
-				\begin{enumerate}
-					\item $\col{ACCESS\_TUPLE\_BYTESIZE}_{i}=0$
-					\item \If $\nbAddr_{i} \neq 0$ \Then:
+					\item $\rlpTxnSharedColumnIsPrefix               _{i} = 1$
+					\item $\rlpTxnSharedColumnIsAccessListAddress    _{i} = 0$
+					\item $\rlpTxnSharedColumnIsAccessListStorageKey _{i} = 1$
+					\item $\rlpTxnComputationColumnExoDataColumn{1}  _{i} = 33 \cdot \locStorageKeyListCountdown _{i}$
+					\item
+						\[
+							\rlpBytestringPrefix _{i}
+							\left(
+							\begin{array}{r}
+								\rlpTxnComputationColumnExoDataColumn{1},
+								\rlpTxnComputationColumnExoDataColumn{2},
+								\rlpTxnComputationColumnExoDataColumn{3},
+								\ct,
+								\maxCt; \\
+								\rlpTxnComputationColumnRlpUtilsFlag,
+								\rlpTxnComputationColumnRlpUtilsInstruction,
+								\rlpTxnComputationColumnExoDataColumn{4},
+								\rlpTxnComputationColumnExoDataColumn{5},
+								\rlpTxnComputationColumnExoDataColumn{8}; \\
+								\rlpTxnComputationColumnLimb,
+								\lc,
+								\rlpTxnComputationColumnLimbSize; \\
+							\end{array}
+							\right)
+						\]
+
+					\item \If $\rlpTxnComputationColumnExoDataColumn{6} _{i} = 1$ \Then:
 						\begin{enumerate}
-							\item $\isPrefix_{i+1}=1$
-							\item $\Depth1_{i+1}=1$
-							\item $\Depth2_{i+1}=0$
+							\item $\rlpTxnSharedColumnIsPrefix _{i + 1} = 0$
+							\item $\rlpTxnSharedColumnIsAccessListAddress   _{i + 1} = 0$
+							\item $\rlpTxnSharedColumnIsAccessListStorageKey    _{i + 1} = 1$
 						\end{enumerate}
-					\item \trash We remind the reader of constraint~\ref{constraint: end of access set phase}. At this point, $\phasesize_{i}=0$ is equivalent to ($\nbAddr_{i} = 0$ and $\nStorageKeysInAccessList_{i}=0$), so the phase ends.
-				\end{enumerate} 
+
+					\item \If $\rlpTxnComputationColumnExoDataColumn{6} _{i} = 0$ \et $\locAccessListItemCountdown _{i} \neq 0$ \Then:
+						\begin{enumerate}
+							\item $\rlpTxnSharedColumnIsPrefix _{i + 1} = 1$
+							\item $\rlpTxnSharedColumnIsAccessListAddress   _{i + 1} = 1$
+							\item $\rlpTxnSharedColumnIsAccessListStorageKey    _{i + 1} = 0$
+						\end{enumerate}
+
+					\item \If $\rlpTxnComputationColumnExoDataColumn{6} _{i} = 0$ \et $\locAccessListItemCountdown _{i} = 0$ \Then:
+						\begin{enumerate}
+							\item $\phaseEnd _{i} = 1$
+						\end{enumerate}
+				\end{enumerate}
 		\end{enumerate}
-\end{enumerate}
-Here we define initialisation and decrementation of $\phasesize$, $\col{ACCESS\_TUPLE\_BYTESIZE}$, $\nbAddr$, $\nStorageKeysInAccessList$ and $\nStorageKeysInAccessEntry$.
-\begin{enumerate}[resume]
-	\item \If $\Depth1_{i}=0$ \Then $\phasesize_{i} = \phasesize_{i+1}$.
-	\item \If $\Depth1_{i}=1$ \Then $\phasesize_{i} = \phasesize_{i-1} - \lc_{i} \cdot \limbsize_{i}$. 
-\end{enumerate}
-In other words $\phasesize$ is initialized at the begining of $\phaseAccessList{}$ and then decreased by the number of bytes in the $\limb$ when $\lc$ is nonzero.
-\begin{enumerate}[resume]
 
-	\item \If ($\Depth1_{i}=1$ \et ($\isPrefix_{i}=0$ \Or $\Depth2_{i}=1$) \footnote{It is implemented \If $\isPrefix_{i} \cdot (1 - \Depth2_{i})=0$ \Then} \Then $\col{ACCESS\_TUPLE\_BYTESIZE}_{i}=\col{ACCESS\_TUPLE\_BYTESIZE}_{i-1} - \lc_{i} \cdot \limbsize_{i}$
+		Here we constraint what happens when we have to do the \rlp{} of a storage key:
+		\begin{enumerate}[resume]
+			\item \If $\rlpTxnSharedColumnIsPrefix _{i - 1} = 0$ \et $\rlpTxnSharedColumnIsAccessListAddress _{i - 1} = 0$ \et $\rlpTxnSharedColumnIsAccessListStorageKey _{i - 1} = 1$ \et $\done _{i - 1} =1$ Then:
+				\begin{enumerate}
+					\item $\rlpTxnComputationColumnExoDataColumn{1} _{i} = \rlpTxnComputationColumnExoDataColumn{1} _{i + 1} = \rlpTxnComputationColumnExoDataColumn{1} _{i + 2}$
+					\item $\rlpTxnComputationColumnExoDataColumn{2} _{i} = \rlpTxnComputationColumnExoDataColumn{2} _{i + 1} = \rlpTxnComputationColumnExoDataColumn{2} _{i + 2}$
+					\item \[
+							\rlpStorageKey _{i}
+							\left(
+							\begin{array}{r}
+								\rlpTxnComputationColumnExoDataColumn{1},
+								\rlpTxnComputationColumnExoDataColumn{2},
+								\ct,
+								\maxCt; \\
+								\rlpTxnComputationColumnRlpUtilsFlag,
+								\rlpTxnComputationColumnRlpUtilsInstruction; \\
+								\rlpTxnComputationColumnLimb,
+								\lc,
+								\rlpTxnComputationColumnLimbSize; \\
+							\end{array}
+							\right)
+						\]
+				\end{enumerate}
+		\end{enumerate}
+		And the possibilities after the \rlp{} of a storage key:
+		\begin{enumerate}[resume]
+			\item \If $\rlpTxnSharedColumnIsPrefix _{i} = 0$ \et $\rlpTxnSharedColumnIsAccessListAddress _{i} = 0$ \et $\rlpTxnSharedColumnIsAccessListStorageKey _{i} = 1$ \et $\done _{i} =1$ \Then:
+				\begin{enumerate}
+					\item \If $\locStorageKeyListCountdown _{i} \neq 0$ \Then: $\rlpTxnSharedColumnIsPrefix _{i + 1} = 0$ \et $\rlpTxnSharedColumnIsAccessListAddress _{i + 1} = 0$ \et $\rlpTxnSharedColumnIsAccessListStorageKey _{i + 1} = 1$
+					\item \If $\locStorageKeyListCountdown _{i} = 0$ \Then:
+						\begin{enumerate}
+							\item $\locAccessListItemRlpLengthCountdown _{i} = 0$
+							\item \If $\locAccessListItemCountdown _{i} \neq 0$ \Then: $\rlpTxnSharedColumnIsPrefix _{i + 1} = 1$ \et $\rlpTxnSharedColumnIsAccessListAddress _{i + 1} = 1$ \et $\rlpTxnSharedColumnIsAccessListStorageKey _{i + 1} = 0$
+							\item \If $\locAccessListItemCountdown _{i} = 0$ \Then: $\phaseEnd _{i} =1$
+						\end{enumerate}
+				\end{enumerate}
+		\end{enumerate}
 
-\end{enumerate}
-In other words $\col{ACCESS\_TUPLE\_BYTESIZE}$ is initialized at the begining of an access tuple loop, with initialisation value only depending on the value of $\nStorageKeysInAccessEntry$ 
-\footnote{The bytesize of an access tuple is 21 (20 for address + 1 for its RLP prefix) + RLP of the list of StorageKey (from 1 to 4 depending of the length of the bytesize of the list of StorageKeys) + 33 per StorageKeys (32 + 1 for its RLP prefix). The RLP prefix of the list of StorageKey is computed when $\isPrefix = 1$, $\Depth 1 =1$ and $\Depth 2 = 1$ thus constraining the value of $\col{ACCESS\_TUPLE\_BYTESIZE}$.
-\begin{enumerate}
-	\item \If $\nStorageKeysInAccessEntry_{i}=0$ \Then $\col{ACCESS\_TUPLE\_BYTESIZE}_{i}=(1+20) + 1$
-	\item \If $\nStorageKeysInAccessEntry_{i}=1$ \Then $\col{ACCESS\_TUPLE\_BYTESIZE}_{i}=(1+20) + 1 + (1+32)$
-	\item \If $\nStorageKeysInAccessEntry_{i} \in [\![ 2 ; 7 ]\!] $ \Then $\col{ACCESS\_TUPLE\_BYTESIZE}_{i}= (1+20) + 2 + (1+32) \cdot \nStorageKeysInAccessEntry$
-	\item \If $\nStorageKeysInAccessEntry_{i} \in [\![ 8 ; 1985  ]\!]$ \footnote{In this case the bytesize of $\nStorageKeysInAccessEntry$ RLP(StorageKey) is a two bytes integer.} \Then $\col{ACCESS\_TUPLE\_BYTESIZE}_{i}= (1+20) + 3 + (1+32) \cdot \nStorageKeysInAccessEntry$
-	\item \If $\nStorageKeysInAccessEntry_{i} \in [\![ 1986 ; 508400]\!]$ \Then $\col{ACCESS\_TUPLE\_BYTESIZE}_{i}= (1+20) + 4 + (1+32) \cdot \nStorageKeysInAccessEntry$
-\end{enumerate}
-}
-and decreased by the number of bytes in the $\limb$ when $\lc$ is nonzero during the loop (except during the access tuple RLP prefix).
-\newline
-For the following, we remind the reader that $\nbAddr$, $\nStorageKeysInAccessList$ and $\nStorageKeysInAccessEntry$ are $\ct$-constant (see \ref{constancy_constraints}).
-\begin{enumerate}[resume]
-	\item \If ($\Depth1_{i}=1$ \et $\ct_{i}=0$) \Then $\nbAddr_{i} = \nbAddr_{i-1} - \isPrefix_{i} \cdot (1 - \Depth2_{i})$
-\end{enumerate}
-In other words, $\nbAddr$ is initialized at the begining of the phase, and then decrease by one at the begining of each RLP(access tuple).
-\begin{enumerate}[resume]    
-	\item \If ($\Depth1_{i}=1$ \et $\ct_{i}=0$) \Then $\nStorageKeysInAccessList_{i} = \nStorageKeysInAccessList_{i-1} - (1- \isPrefix_{i}) \cdot \Depth2_{i}$
-\end{enumerate}
-In other words, $\nStorageKeysInAccessList$ is initialized at the begining of the phase, and then decrease by one at the begining of each RLP(Sto).
-\begin{enumerate}[resume]
-	\item \If (($\isPrefix_{i}=0$ \Or $\Depth2_{i}=1$) \et $\ct_{i}=0$) \footnote{It is implemented \If $\isPrefix_{i} \cdot (\Depth2_{i}-1) +\ct_{i} =0$ \Then} \Then $\nStorageKeysInAccessEntry_{i} = \nStorageKeysInAccessEntry_{i-1} - (1- \isPrefix_{i}) \cdot \Depth2_{i})$
-\end{enumerate}
-In other words$\nStorageKeysInAccessEntry$ is initialized at the begining of an access tuple loop, and then decrease by one at the begining of each RLP(Sto).
-\begin{enumerate}[resume]
-	\item \If ($\Depth1_{i}=1$ \et $\nbAddr_{i} \neq \nbAddr_{i-1} -1$) \Then 
+		We constraint finalize the phase before the end by imposing:
 		\begin{enumerate}
-			\item $\col{Addr}\high_{i} = \col{Addr}\high_{i-1}$
-			\item $\col{Addr}\low_{i} = \col{Addr}\low_{i-1}$
+			\item \If $\phaseEnd _{i} =1$ \Then:
+				\begin{enumerate}
+					\item $\locAccessListLengthCountdown  _{i} =0$
+					\item $\locAccessListItemCountdown _{i} =0$
+					\item $\locStoragePrewarmingCountdown _{i} =0$
+				\end{enumerate}
 		\end{enumerate}
-\end{enumerate}
-In other words $\col{Addr}\high$ and $\col{Addr}\low$ are constant all along an AccessTuple.
-\saNote{} In our case, $\nbAddr_{i} \neq \nbAddr_{i-1} -1$ is equivalent to $\nbAddr_{i} = \nbAddr_{i-1}$
 
+		And some constancies properties:
+		\begin{enumerate}
+			\item $\locAccessListLengthCountdown _{i} = \locAccessListLengthCountdown _{i - 1} - \lc _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}$
+			\item \If $\rlpTxnSharedColumnIsAccessListStorageKey _{i} =1$ \Or ($\rlpTxnSharedColumnIsAccessListAddress _{i} =1$ \et $\rlpTxnSharedColumnIsPrefix _{i} =0$) \Then: $\locAccessListItemRlpLengthCountdown _{i} = \locAccessListItemRlpLengthCountdown _{i - 1} - \lc _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}$
+			\item $\locAccessListItemCountdown _{i} = \locAccessListItemCountdown _{i - 1} - \rlpTxnSharedColumnIsPrefix _{i} \cdot \rlpTxnSharedColumnIsAccessListAddress _{i}$
+			\item \If $\rlpTxnSharedColumnIsAccessListAddress _{i} =1$ \et $\rlpTxnSharedColumnIsAccessListStorageKey _{i}=1$ \et $\locAccessListItemCountdown _{i} = \locAccessListItemCountdown _{i + 1}$ \Then:
+				\begin{enumerate}
+					\item $\locAddressHi _{i} = \locAddressHi _{i + 1}$
+					\item $\locAddressLo _{i} = \locAddressLo _{i + 1}$
+				\end{enumerate}
+			\item $\locStoragePrewarmingCountdown _{i} = \locStoragePrewarmingCountdown _{i} - \done _{i + 2} \cdot \rlpTxnSharedColumnIsAccessListStorageKey _{i + 2} \cdot (1 - \rlpTxnSharedColumnIsPrefix _{i + 2})$
+			\item \If ($\rlpTxnSharedColumnIsPrefix _{i} =1$ \et $\rlpTxnSharedColumnIsAccessListAddress _{i} =1$) \Then: $\locStorageKeyListCountdown _{i} = \locStorageKeyListCountdown _{i} - \done _{i + 2} \cdot \rlpTxnSharedColumnIsAccessListStorageKey _{i + 2} \cdot (1 - \rlpTxnSharedColumnIsPrefix _{i + 2})$
+		\end{enumerate}
+	\end{enumerate}

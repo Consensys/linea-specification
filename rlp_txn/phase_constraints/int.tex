@@ -1,74 +1,88 @@
 \begin{center}
-    \boxed{\text{All constraints in this subsection assume that $\sum_{\substack{ \phaseChainId \leq k \leq \phaseGasLimit }} \phase{k}_{i} + \phaseValue_{i} = 1$.}}
+    \boxed{\text{All constraints in this subsection assume that 
+    $\locIsIntegerPhase _{i} = 1$
+    }}
 \end{center}
+We start by defining some shorthands,
+one of which we have already made use of in the section-wide precondition:
+\[
+    \hspace*{-1cm}
+    \left\{ \begin{array}{lcl}
+        \locIsIntegerPhase _{i} & \define &
+        \left[ \begin{array}{cl}
+            + & \phaseChainId              _{i} \\
+            + & \phaseNonce                _{i} \\
+            + & \phaseGasPrice             _{i} \\
+            + & \phaseMaxPriorityFeePerGas _{i} \\
+            + & \phaseMaxFeePerGas         _{i} \\
+            + & \phaseGasLimit             _{i} \\
+            + & \phaseValue                _{i} \\
+            + & \phaseY                    _{i} \\
+            + & \phaseR                    _{i} \\
+            + & \phaseS                    _{i} \\
+        \end{array} \right]
+        \vspace{2mm} \\
+        \locPhaseAppropriateIntegerHi _{i} & \define &
+        \left[ \begin{array}{clcl}
+            + \!\!\! & \phaseR                    _{i} & \!\!\!\cdot\!\!\! & \rlpTxnComputationColumnExoDataColumn{1}     _{i} \\
+            + \!\!\! & \phaseS                    _{i} & \!\!\!\cdot\!\!\! & \rlpTxnComputationColumnExoDataColumn{1}     _{i} \\
+        \end{array} \right]
+        \vspace{2mm} \\
+        \locPhaseAppropriateIntegerLo _{i} & \define &
+        \left[ \begin{array}{clcl}
+            + \!\!\! & \phaseChainId              _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnChainId              _{i} \\
+            + \!\!\! & \phaseNonce                _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnNonce                _{i} \\
+            + \!\!\! & \phaseGasPrice             _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnGasPrice             _{i} \\
+            + \!\!\! & \phaseMaxPriorityFeePerGas _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnMaxPriorityFeePerGas _{i} \\
+            + \!\!\! & \phaseMaxFeePerGas         _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnMaxFeePerGas         _{i} \\
+            + \!\!\! & \phaseGasLimit             _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnGasLimit             _{i} \\
+            + \!\!\! & \phaseValue                _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnTxnValue             _{i} \\
+            + \!\!\! & \phaseY                    _{i} & \!\!\!\cdot\!\!\! & \rlpTxnCommonColumnYparity                   _{i} \\
+            + \!\!\! & \phaseR                    _{i} & \!\!\!\cdot\!\!\! & \rlpTxnComputationColumnExoDataColumn{2}     _{i} \\
+            + \!\!\! & \phaseS                    _{i} & \!\!\!\cdot\!\!\! & \rlpTxnComputationColumnExoDataColumn{2}     _{i} \\
+        \end{array} \right]
+    \end{array} \right.
+\]
+\saNote{}
+For the $\locPhaseAppropriateInteger _{i}$ shorthand to ``make sense''
+one must be on a \textbf{transaction-row}.
 
-This phase computes \rlp($\Input 1$) where $\Input 1$ is an integer.
-Let Max number of Bytes as given in the following table. We assume all entries can be written on up to 8 bytes ($\approx 10^{19}$), except the value (phase 8) who can be written in 16 bytes. \footnote{ChainId can be arbitrary great, but we assume it will be a 8 bytes integer.}
-
-\begin{table}[h]
-    \renewcommand{\arraystretch}{1.3}
-    \centering
-    \begin{tabular}{|c|c|c|} \hline
-        Phase & Name                 & Max number of Bytes \\ \hline
-        1     & ChainID              & 8                   \\ \hline
-        2     & nonce                & 8                   \\ \hline
-        3     & GasPrice             & 8                   \\ \hline
-        4     & MaxPriorityFeePerGas & 8                   \\ \hline
-        5     & MaxFeePerGas         & 8                   \\ \hline
-        6     & GasLimit             & 8                   \\ \hline
-        8     & Value                & 16                  \\ \hline
-    \end{tabular}
-\end{table}
-
+For all ``integer phases'' we impose the following:
 \begin{enumerate}
-    \item \If $\Input1 = 0$ \Then:
+    \item \If $\isTxn _{i} =1$ \Then:
         \begin{enumerate}
-            \item $\nbstep = 1$
-            \item $\limb_{i} = \rlprefixShortInt \cdot 256 ^{\llargeMO}$
-            \item $\limbsize_{i} = 1$ 
-        \end{enumerate} 
-    \item \If $\Input1 \neq 0$ \Then:
-        \begin{enumerate}
-            \item $\nbstep_{i} = 8 \cdot (\sum_{k = \phaseChainIdValue}^{\phaseGasLimitValue} \phase{k}_{i}) + \llarge \cdot \phaseValue_{i}$ 
             \item
+                we define the following shorthand
                 \[
-                    \rlpPrefixInt_{i}
-                    \left(
-                    \begin{array}{r}
-                        \Input{1},
-                        \ct,
-                        \nbstep,
-                        \done; \\
-                        \byteCol{1},
-                        \acc{1},
-                        \accsize,
-                        \Power,
-                        \genBit,
-                        \genBitAcc; \\
-                        \limb,
-                        \lc,
-                        \limbsize; \\
-                    \end{array}
-                    \right)
                 \]
-            \item \If $\done_{i} = 1$ \Then:
+                we perform ``transaction-row assignments''
                 \[
-                    \limbShifting
-                    \left(
-                    \begin{array}{r}
-                        \Input 1_{i},
-                        \Power_{i},
-                        \accsize_{i}; \\
-                        \limb_{i},
-                        \limbsize_{i}; \\
-                    \end{array}
-                    \right)
+                    \rlpProcessInteger {
+                        anchorRow  = i                                  ,
+                        relOffset  = \yellowm{1}                        ,
+                        integerHi  = \locPhaseAppropriateIntegerHi _{i} ,
+                        integerLo  = \locPhaseAppropriateIntegerLo _{i} ,
+                        endOfPhase = \true                              ,
+                    }
                 \]
-        \end{enumerate}
-    \item \If $\Done_{i} = 1$ \Then:
-        \begin{enumerate}
-            \item $\phaseEnd_{i} = 1$.
-            \item \If $\phaseNonce_{i} + \phaseGasPrice_{i} + \phaseMaxFeePerGas_{i} + \phaseGasLimit_{i} + \phaseValue_{i} = 1$ \Then $\outgoingDataSymb\low_{i} = \Input1_{i}$
-            \item \If $\phaseMaxPriorityFeePerGas_{i} = 1$ \Then $\outgoingDataSymb\high_{i + 1} = \Input1_{i}$
         \end{enumerate}
 \end{enumerate}
+\saNote{}
+Given the constraints from
+section~(\ref{rlp txn v2: specialized: processing: integer}) and
+section~(\ref{rlp txn v2: specialized: utils calls: integer}),
+the shorthand definitions of
+\locPhaseAppropriateIntegerHi{} and
+\locPhaseAppropriateIntegerLo{}
+and their use as parameters of a compound constraint
+,
+is essentially saying
+\[
+    \text{``for \phaseR{} and \phaseS{} processing, }
+    \rlpTxnComputationColumnExoDataColumn{k} = \rlpTxnComputationColumnExoDataColumn{k}",
+    \quad k = 1, 2
+\]
+which may seem redundant.
+This must be interpreted as follows:
+the trace is \textbf{implicitly} provided with
+the correct values of (the hi and lo parts of) the signature components \texttt{r} and \texttt{s}.
