@@ -21,19 +21,22 @@ However, this time we are also assuming that $\scenPrcSuccess \equiv 1$.
 			\item[\underline{Setting lookup flags:}]
 				we impose
 				\[
-					\weightedMiscFlagSum
-					{i}{\prcStandardSuccessSecondMiscRowOffset}
+					\weightedMiscFlagSum {
+						anchorRow = i                                      ,
+						relOffset = \prcStandardSuccessSecondMiscRowOffset ,
+					}
 					=
 					\miscMmuWeight
+					% OK
 				\]
 				in other words:
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero & (\trash) \\
-						\miscMmuFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \one   & (\trash) \\
-						\miscMxpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero & (\trash) \\
-						\miscOobFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero & (\trash) \\
-						\miscStpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero & (\trash) \\
+						\miscExpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \one   & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero & (\sanityCheck) \\
 					\end{array} \right.
 				\]
 			\item[\underline{\mmuMod{} data:}]
@@ -108,21 +111,27 @@ However, this time we are also assuming that $\scenPrcSuccess \equiv 1$.
 			\item[\underline{Setting lookup flags:}]
 				we impose
 				\[
-					\weightedMiscFlagSum
-					{i}{\prcStandardSuccessThirdMiscRowOffset}
+					\weightedMiscFlagSum {
+						anchorRow = i                                     ,
+						relOffset = \prcStandardSuccessThirdMiscRowOffset ,
+					}
 					=
 					\miscMmuWeight \cdot \locOobResultNonzeroRac
+					% OK
 				\]
 				in other words:
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\trash) \\
-						\miscMmuFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \locOobResultNonzeroRac & (\trash) \\
-						\miscMxpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\trash) \\
-						\miscOobFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\trash) \\
-						\miscStpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\trash) \\
+						\miscExpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \locOobResultNonzeroRac & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\sanityCheck) \\
 					\end{array} \right.
 				\]
+				\saNote{}
+				\locOobResultNonzeroRac{} is provably binary,
+				see (\ref{hub: instruction handling: call: precompiles: common: generalities: oob shorthands are provably binary}).
 			\item[\underline{\mmuMod{} data:}]
 				\If $\miscMmuFlag_{i + \prcStandardSuccessThirdMiscRowOffset} = 1$ \Then we impose
 				\[

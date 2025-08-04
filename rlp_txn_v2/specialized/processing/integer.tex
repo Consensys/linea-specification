@@ -1,0 +1,99 @@
+We define the following ``compound constraint'' for the \rlp{}-ization process of \texttt{INTEGER}'s
+\[
+	\rlpProcessInteger {
+		anchorRow  = i                 ,
+		relOffset  = \relof            ,
+		integerHi  = \loc{integer\_hi} ,
+		integerLo  = \loc{integer\_lo} ,
+		endOfPhase = \locIsEndOfPhase  ,
+	}
+\]
+Its purpose is to set up to 3 limbs of an \rlp{}-string corresponding to the \rlp{}-ization of an integer $\in \mathbb{N}_{256}$.
+The first  limb \emph{may} hold the (left aligned)                    \rlp{}-prefix of the \rlp{}-ization of said integer.
+The second limb \emph{may} hold the (left aligned)                    hi-part of the underlying integer.
+The third  limb \emph{may} hold the (\emph{potentially} left aligned) lo-part of the underlying integer.
+
+$\rlpProcessIntegerName\big[\cdots\big]$ stands for the following set of constraints
+\begin{description}
+	\item[\underline{\underline{Setting \maxCt:}}]
+		we impose $\maxCt _{i + \relof} = \rlpIntegerInstNbRows - 1$
+	\item[\underline{\underline{Constraining \phaseEnd{}:}}]
+		we impose $\phaseEnd _{i + \relof + (\rlpIntegerInstNbRows - 1)} = \locIsEndOfPhase$
+	\item[\underline{\underline{\rlpUtilsMod{} instruction call:}}]
+		we impose
+		\[
+			\rlpUtilsInstCallInteger {
+				anchorRow = i                 ,
+				relOffset = \relof            ,
+				integerHi = \loc{integer\_hi} ,
+				integerLo = \loc{integer\_lo} ,
+			}
+		\]
+	\item[\underline{\underline{Deriving shorthands:}}]
+		we define the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locOutputInputIntegerIsNonzero        & \define & \rlpTxnComputationColumnExoDataColumn {3} _{i + \relof} \\
+				\locOutputInputIntegerHasNonzeroHiPart & \define & \rlpTxnComputationColumnExoDataColumn {4} _{i + \relof} \\
+				\locOutputRlpPrefixRequired            & \define & \rlpTxnComputationColumnExoDataColumn {5} _{i + \relof} \\
+				\locOutputRlpPrefix                    & \define & \rlpTxnComputationColumnExoDataColumn {6} _{i + \relof} \\
+				\locOutputLeadingLimbLeftShifted       & \define & \rlpTxnComputationColumnExoDataColumn {7} _{i + \relof} \\
+				\locOutputLeadingLimbByteSize          & \define & \rlpTxnComputationColumnExoDataColumn {8} _{i + \relof} \\
+			\end{array} \right.
+		\]
+		and furthermore we set
+		\begin{enumerate}
+			\item \If $\locOutputInputIntegerHasNonzeroHiPart = 0$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\locLastLimb         & \define & \locOutputLeadingLimbLeftShifted \\
+						\locLastLimbByteSize & \define & \locOutputLeadingLimbByteSize    \\
+					\end{array} \right.
+				\]
+			\item \If $\locOutputInputIntegerHasNonzeroHiPart = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\locLastLimb         & \define & \loc{integer\_lo} \\
+						\locLastLimbByteSize & \define & \llarge           \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+	\item[\underline{\underline{Enshrining the integer's \rlp{} prefix into the \rlp{} string:}}]
+		we impose
+		\[
+			\conditionallySetLimb {
+				anchorRow = i                           ,
+				relOffset = \relof                      ,
+				condition = \locOutputRlpPrefixRequired ,
+				limb      = \locOutputRlpPrefix         ,
+				nBytes    = 1                           ,
+			} \vspace{2mm} \\
+		\]
+		\saNote{}
+		Integers $\loc{integer}$ in \ethereum{} are in $\mathbb{N}_{256}$.
+		When represented as tuples of bytes $\in\mathbb{O}^*$,
+		they fit into tuples of length $0$ to $\evmWordSize$.
+		Their \rlp{}-prefix is therefore at most $1$ byte long.
+	\item[\underline{\underline{Enshrining the hi part of a (\textit{large}) integer into the \rlp{} string:}}]
+		we impose
+		\[
+			\conditionallySetLimb {
+				anchorRow  = i                                      ,
+				relOffset  = \relof + 1                             ,
+				condition  = \locOutputInputIntegerHasNonzeroHiPart ,
+				limb       = \locOutputLeadingLimbLeftShifted       ,
+				nBytes     = \locOutputLeadingLimbByteSize          ,
+			}
+		\]
+	\item[\underline{\underline{Enshrining the lo part of a (\textit{nonzero}) integer into the \rlp{} string:}}]
+		we impose
+		\[
+			\conditionallySetLimb {
+				anchorRow  = i                               ,
+				relOffset  = \relof + 2                      ,
+				condition  = \locOutputInputIntegerIsNonzero ,
+				limb       = \locLastLimb                    ,
+				nBytes     = \locLastLimbByteSize                  ,
+			}
+		\]
+\end{description}

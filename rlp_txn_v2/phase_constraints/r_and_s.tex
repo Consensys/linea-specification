@@ -1,0 +1,32 @@
+\begin{center}
+    \boxed{\text{In all this section, it is assumed that $\phaseR _{i} + \phaseS _{i} = 1$.}}
+\end{center}
+\begin{enumerate}
+    \item \If $\isTxn _{i} = 1$ \Then:
+        \[
+            \rlpProcessInteger {
+                anchorRow  = i              ,
+                relOffset  = 1              ,
+                integerHi  = \relevantValue ,
+                integerLo  = \relevantValue ,
+                endOfPhase = \true          ,
+            }
+        \]
+    % \item \If $\phaseS _{i} = 1$ \Then we impose \textbf{finalization} constraints
+    %     \begin{enumerate}
+    %         \item $\ltByteSizeCountDown _{i} = 0$
+    %         \item $\lxByteSizeCountDown _{i} = 0$
+    %     \end{enumerate}
+\end{enumerate}
+\saNote{}
+We remind the reader that \textbf{finalization} constraints apply to both
+\ltByteSizeCountDown{} and
+\lxByteSizeCountDown{}
+when $\phaseS _{i} = 1$,
+see section~(\ref{rlp txn v2: generalities: rlp lt and lx byte size constraints}).
+
+\saNote{}
+We provide some explanations around the interpretation of the ``\relevantValue'' fields.
+No other component in the arithmetization requires access to the transaction signature $(\texttt{r}, \texttt{s})$.
+(Signature verification is handled by means of an outside circuit.)
+The relevant values of $\texttt{r}$ and $\texttt{s}$ are therefore \emph{simply written into the relevant $\rlpTxnComputationColumnExoDataColumn{k}$ column.}

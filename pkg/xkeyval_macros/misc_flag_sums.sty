@@ -1,0 +1,38 @@
+\makeatletter
+% DEFINING KEYS
+
+\define@cmdkey [MISCFLAGS] {var} {anchorRow} {}
+\define@cmdkey [MISCFLAGS] {var} {relOffset} {}
+
+% DEFAULT VALUES
+\presetkeys [MISCFLAGS] {var} {
+	anchorRow = \missingParameter,
+	relOffset = \missingParameter,
+}{}
+
+\newcommand{\weightedMiscFlagSumSansMmuName} {\miscSignifier\texttt{weightedMiscFlagSumSansMmu}}
+\newcommand{\weightedMiscFlagSumSansMmu} [1] {
+	\setkeys[MISCFLAGS]{var}{#1}
+	\weightedMiscFlagSumSansMmuName _{\cmdMISCFLAGS@var@anchorRow}
+	\big[\;\cmdMISCFLAGS@var@relOffset\;\big]
+}
+
+% \weightedMiscFlagSumSansMmu {
+% 	anchorRow = ,
+% 	relOffset = ,
+% }
+
+\newcommand{\weightedMiscFlagSumName} {\miscSignifier\texttt{weightedMiscFlagSum}}
+\newcommand{\weightedMiscFlagSum} [1] {
+	\setkeys[MISCFLAGS]{var}{#1}
+	\weightedMiscFlagSumName _{\cmdMISCFLAGS@var@anchorRow}
+	\big[\;\cmdMISCFLAGS@var@relOffset\;\big]
+}
+
+% \weightedMiscFlagSum {
+% 	anchorRow = ,
+% 	relOffset = ,
+% }
+
+
+\makeatother

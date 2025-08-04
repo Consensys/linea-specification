@@ -1,0 +1,76 @@
+% \begin{center}
+%     \boxed{\text{Throughout this section it is assumed that }
+%     \isCmp _{i} = \true
+%     }
+% \end{center}
+We impose general constraints on access list bit columns.
+We impose that
+\begin{description}
+    \item[\underline{Generalities:}]
+	all columns below
+	\begin{multicols}{2}
+	    \begin{enumerate}
+		% \item \rlpTxnSharedColumnIsPrefix
+		\item \rlpTxnSharedColumnIsPrefixOfAccessListItem
+		\item \rlpTxnSharedColumnIsPrefixOfStorageKeyList
+		% \item[\vspace{\fill}]
+		\item \rlpTxnSharedColumnIsAccessListAddress
+		\item \rlpTxnSharedColumnIsAccessListStorageKey
+	    \end{enumerate}
+	\end{multicols}
+	are required to be \textbf{binary} (\sanityCheck),
+	see section~(\ref{rlp txn v2: generalities: binarities}),
+	and \textbf{counter-constant}.
+    \item[\underline{Flag exclusivities:}]
+	we impose
+	\[
+	    \left[ \begin{array}{cl}
+		+ & \rlpTxnSharedColumnIsPrefixOfAccessListItem _{i} \\
+		+ & \rlpTxnSharedColumnIsAccessListAddress      _{i} \\
+		+ & \rlpTxnSharedColumnIsPrefixOfStorageKeyList _{i} \\
+		+ & \rlpTxnSharedColumnIsAccessListStorageKey   _{i} \\
+	    \end{array} \right]
+	    = \locAccessListData _{i}
+	    % \left[ \begin{array}{cl}
+	    %     \cdot & \phaseAccessList   _{i} \\
+	    %     \cdot & \locAccessListData _{i} \\
+	    % \end{array} \right]
+	\]
+	\saNote{}
+	The above implies both flag exclusivity of the involved binary flags,
+	it also requires that precisely one is active on any \locAccessListData{}-row
+	of the \phaseAccessList{} phase.
+ %    \item[\underline{Deducing $\rlpTxnSharedColumnIsPrefix$:}]
+	% we impose
+	% \[
+	%     \left[ \begin{array}{cl}
+	% 	+ & \rlpTxnSharedColumnIsPrefixOfAccessListItem _{i} \\
+	% 	+ & \rlpTxnSharedColumnIsPrefixOfStorageKeyList _{i} \\
+	%     \end{array} \right]
+	%     = \locAccessListData _{i}
+	%     % \left[ \begin{array}{cl}
+	%     %     \cdot & \phaseAccessList                 _{i} \\
+	%     %     \cdot & \locAccessListData               _{i} \\
+	%     % \end{array} \right]
+	%     \cdot
+	%     \rlpTxnSharedColumnIsPrefix _{i}
+	% \]
+\end{description}
+% \saNote{}
+% The above imposes that along \locAccessListData{}-rows, any row raising the
+% \rlpTxnSharedColumnIsPrefix{} flag does so because either it corresponds to
+% the \rlp{}-prefix of an access list item
+% \[
+%     E \equiv (E_a, E_\textbf{s})
+% \]
+% or the \rlp{}-prefix of a storage key list
+% \[
+%     E_\textbf{s} \equiv (\texttt{key}, \texttt{key'}, \dots)
+% \]
+
+\saNote{}
+The \rlp{}-prefix corresponding to the (possibly empty) access list itself
+\[
+    T_\mathbf{A} \equiv (E, E', \dots)
+\]
+is taken care of on \locAccessListPrefix{}-rows.

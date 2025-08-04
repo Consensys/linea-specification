@@ -4,5 +4,308 @@
 \newcommand{\rlpByteCounting}           {\texttt{byteCountAndPower}}
 \newcommand{\compareFiftyFive}          {\texttt{compTo55}}
 \newcommand{\fiftyFive}                 {\red{55}}
+\newcommand{\fiftySix}                  {\red{56}}
+% \newcommand{\oneTwoEight}               {\red{128}}
 \newcommand{\Power}{\col{POWER}}
 \newcommand{\limbShifting}{\texttt{limbShifting}}
+
+
+%Special RLP numbers
+\newcommand{\rlprefixShortInt}                        {\redm{128}} % base RLP prefix of a short integer (<56 bytes long)
+\newcommand{\rlprefixAddress}                         {\redm{148}} % base RLP prefix of an address (148 = 128 + 20)
+\newcommand{\rlprefixStorage}                         {\redm{160}} % base RLP prefix of an address (160 = 128 + 32)
+\newcommand{\rlprefixLongInt}                         {\redm{183}} % base RLP prefix of a long integer (>= 56 bytes long)
+\newcommand{\rlprefixShortList}                       {\redm{192}} % base RLP prefix of a short list (<56 bytes long)
+\newcommand{\rlprefixLongList}                        {\redm{247}} % base RLP prefix of a long list (>= 56 bytes long)
+
+\newcommand{\rlpAddress}          {\texttt{rlpAddress}}
+\newcommand{\rlpStorageKey}       {\texttt{rlpStorageKey}}
+\newcommand{\rlpInteger}          {\texttt{rlpInteger}}
+\newcommand{\rlpBytestringPrefix} {\texttt{rlpByteStringPrefix}}
+
+
+\makeatletter
+ 
+\define@cmdkey [RLP] {var} {anchorRow}        {}
+\define@cmdkey [RLP] {var} {relOffset}        {}
+\define@cmdkey [RLP] {var} {condition}        {}
+\define@cmdkey [RLP] {var} {limb}             {}
+\define@cmdkey [RLP] {var} {nBytes}           {}
+\define@cmdkey [RLP] {var} {byteStringLength} {}
+\define@cmdkey [RLP] {var} {firstByte}        {}
+\define@cmdkey [RLP] {var} {isList}           {}
+\define@cmdkey [RLP] {var} {integerHi}        {}
+\define@cmdkey [RLP] {var} {integerLo}        {}
+\define@cmdkey [RLP] {var} {dataHi}           {}
+\define@cmdkey [RLP] {var} {dataLo}           {}
+\define@cmdkey [RLP] {var} {limbByteSize}     {}
+\define@cmdkey [RLP] {var} {endOfPhase}       {}
+\define@cmdkey [RLP] {var} {mustBeNontrivial} {}
+\define@cmdkey [RLP] {var} {addressHi}        {}
+\define@cmdkey [RLP] {var} {addressLo}        {}
+
+
+\presetkeys    [RLP] {var} {
+	anchorRow          = \missingParameter ,
+	relOffset          = \missingParameter ,
+        condition          = \missingParameter ,
+        limb               = \missingParameter ,
+        nBytes             = \missingParameter ,
+        byteStringLength   = \missingParameter ,
+        firstByte          = \missingParameter ,
+        isList             = \missingParameter ,
+        integerHi          = \missingParameter ,
+        integerLo          = \missingParameter ,
+        dataHi             = \missingParameter ,
+        dataLo             = \missingParameter ,
+        limbByteSize       = \missingParameter ,
+        endOfPhase         = \missingParameter ,
+        mustBeNontrivial   = \missingParameter ,
+        % offsetHi           = \missingParameter ,
+        addressHi          = \missingParameter ,
+        addressLo          = \missingParameter ,
+}{}
+
+
+\newcommand{\conditionallySetLimbName} {\inst{conditionallySetLimb}}
+\newcommand{\conditionallySetLimb} [1] {
+    \setkeys[RLP]{var}{#1}
+    \conditionallySetLimbName _{\cmdRLP@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:} & \cmdRLP@var@relOffset  \\
+        \utt{Condition:}       & \cmdRLP@var@condition  \\
+        \utt{Data limb:}       & \cmdRLP@var@limb       \\
+        \utt{Number of bytes:} & \cmdRLP@var@nBytes     \\
+    \end{array} \right]
+    }
+
+% \conditionallySetLimb {
+%     anchorRow  = ,
+%     relOffset  = ,
+%     condition  = ,
+%     limb       = ,
+%     nBytes     = ,
+% }
+
+\newcommand{\setLimbName} {\inst{setLimb}}
+\newcommand{\setLimb} [1] {
+    \setkeys[RLP]{var}{#1}
+    \setLimbName _{\cmdRLP@var@anchorRow}
+    \left[ \begin{array}{ll}
+        \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
+        \utt{Data limb:}       & \cmdRLP@var@limb      \\
+        \utt{Number of bytes:} & \cmdRLP@var@nBytes    \\
+    \end{array} \right]
+    }
+
+% \finalizeLimb {
+%     anchorRow  = ,
+%     relOffset  = ,
+%     limb       = ,
+%     nBytes     = ,
+% }
+
+\newcommand{\discardLimbName} {\inst{discardLimb}}
+\newcommand{\discardLimb} [1] {
+    \setkeys[RLP]{var}{#1}
+    \discardLimbName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{ll}
+            \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
+        \end{array} \right]
+    }
+
+% \discardLimb {
+%     anchorRow  = ,
+%     relOffset  = ,
+% }
+
+\newcommand{\limbBelongsToLtOnlyName} {\inst{limbOfLTonly}}
+\newcommand{\limbBelongsToLtOnly} [1] {
+    \setkeys[RLP]{var}{#1}
+    \limbBelongsToLtOnlyName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{ll}
+            \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
+        \end{array} \right]
+    }
+
+% \limbBelongsToLtOnly {
+%     anchorRow  = ,
+%     relOffset  = ,
+% }
+
+\newcommand{\limbBelongsToLxOnlyName} {\inst{limbOfLXonly}}
+\newcommand{\limbBelongsToLxOnly} [1] {
+    \setkeys[RLP]{var}{#1}
+    \limbBelongsToLxOnlyName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{ll}
+            \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
+        \end{array} \right]
+    }
+
+% \limbBelongsToLxOnly {
+%     anchorRow  = ,
+%     relOffset  = ,
+% }
+
+\newcommand{\limbBelongsToBothLtAndLxName} {\inst{limbOfBothLTandLX}}
+\newcommand{\limbBelongsToBothLtAndLx} [1] {
+    \setkeys[RLP]{var}{#1}
+    \limbBelongsToBothLtAndLxName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{ll}
+            \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
+        \end{array} \right]
+    }
+
+% \limbBelongsToBothLtAndLx {
+%     anchorRow  = ,
+%     relOffset  = ,
+% }
+
+\newcommand{\rlpUtilsInstructionCall}              [1] {\inst{rlpUtilsCall\_#1}}
+\newcommand{\rlpDataProcessingCompoundConstraints} [1] {\inst{rlpCompoundConstraint\_#1}}
+
+%%  INTEGER
+%%%%%%%%%%%
+
+\newcommand{\rlpUtilsInstCallIntegerName}        {\rlpUtilsInstructionCall{INTEGER}}
+\newcommand{\rlpUtilsInstCallInteger}        [1] {
+    \setkeys[RLP]{var}{#1}
+    \rlpUtilsInstCallIntegerName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{ll}
+            \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
+            \utt{Integer hi part:} & \cmdRLP@var@integerHi \\
+            \utt{Integer lo part:} & \cmdRLP@var@integerLo \\
+        \end{array} \right]
+    }
+
+
+\newcommand{\rlpProcessIntegerName}        {\rlpDataProcessingCompoundConstraints{INTEGER}}
+\newcommand{\rlpProcessInteger}        [1] {
+    \setkeys[RLP]{var}{#1}
+    \rlpProcessIntegerName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{ll}
+            \utt{Rel. row offset:} & \cmdRLP@var@relOffset  \\
+            \utt{Integer hi part:} & \cmdRLP@var@integerHi  \\
+            \utt{Integer lo part:} & \cmdRLP@var@integerLo  \\
+            \utt{Is end of phase:} & \cmdRLP@var@endOfPhase \\
+        \end{array} \right]
+    }
+
+
+%%  BYTE STRING
+%%%%%%%%%%%%%%%
+
+\newcommand{\rlpUtilsInstCallByteStringPrefixName}     {\rlpUtilsInstructionCall{BYTE\_STRING\_PREFIX}}
+\newcommand{\rlpUtilsInstCallByteStringPrefix}     [1] {
+    \setkeys[RLP]{var}{#1}
+    \rlpUtilsInstCallByteStringPrefixName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{ll}
+            \utt{Rel. row offset:}    & \cmdRLP@var@relOffset        \\
+            \utt{Byte string length:} & \cmdRLP@var@byteStringLength \\
+            \utt{First byte:}         & \cmdRLP@var@firstByte        \\
+            \utt{Is list:}            & \cmdRLP@var@isList           \\
+        \end{array} \right]
+    }
+
+\newcommand{\rlpProcessByteStringName}     {\rlpDataProcessingCompoundConstraints{BYTE\_STRING\_PREFIX}}
+\newcommand{\rlpProcessByteString}     [1] {
+    \setkeys[RLP]{var}{#1}
+    \rlpProcessByteStringName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{ll}
+            \utt{Rel. row offset:}        & \cmdRLP@var@relOffset        \\
+            \utt{Byte string length:}     & \cmdRLP@var@byteStringLength \\
+            \utt{Byte string first byte:} & \cmdRLP@var@firstByte        \\
+            \utt{Byte string is list:}    & \cmdRLP@var@isList           \\
+            \utt{Must be nontrivial:}     & \cmdRLP@var@mustBeNontrivial \\
+        \end{array} \right]
+    }
+
+% \rlpUtilsInstCallByteStringPrefix {
+%     anchorRow        = ,
+%     relOffset        = ,
+%     byteStringLength = ,
+%     firstByte        = ,
+%     isList           = ,
+% }
+
+
+%%  BYTES32
+%%%%%%%%%%%
+
+\newcommand{\rlpUtilsInstCallBytesThirtyTwoName} {\rlpUtilsInstructionCall{BYTES32}}
+\newcommand{\rlpUtilsInstCallBytesThirtyTwo} [1] {
+    \setkeys[RLP]{var}{#1}
+    \rlpUtilsInstCallBytesThirtyTwoName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{ll}
+            \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
+            \utt{Data hi part:}    & \cmdRLP@var@dataHi \\
+            \utt{Data lo part:}    & \cmdRLP@var@dataLo \\
+        \end{array} \right]
+    }
+
+\newcommand{\rlpProcessBytesThirtyTwoName} {\rlpDataProcessingCompoundConstraints{BYTES32}}
+\newcommand{\rlpProcessBytesThirtyTwo} [1] {
+    \setkeys[RLP]{var}{#1}
+    \rlpProcessBytesThirtyTwoName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{ll}
+            \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
+            \utt{Data hi part:}    & \cmdRLP@var@dataHi \\
+            \utt{Data lo part:}    & \cmdRLP@var@dataLo \\
+        \end{array} \right]
+    }
+
+\newcommand{\rlpUtilsInstCallDataPricingName}    {\rlpUtilsInstructionCall{DATA\_PRICING}}
+\newcommand{\rlpUtilsInstCallDataPricing}    [1] {
+    \setkeys[RLP]{var}{#1}
+    \rlpUtilsInstCallDataPricingName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{ll}
+            \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
+            \utt{Limb:}            & \cmdRLP@var@limb      \\
+            \utt{Number of bytes:} & \cmdRLP@var@nBytes    \\
+        \end{array} \right]
+    }
+
+\newcommand{\rlpProcessDataPricingName}    {\rlpDataProcessingCompoundConstraints{DATA\_PRICING}}
+\newcommand{\rlpProcessDataPricing}    [1] {
+    \setkeys[RLP]{var}{#1}
+    \rlpProcessDataPricingName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{ll}
+            \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
+            \utt{Limb:}            & \cmdRLP@var@limb      \\
+            \utt{Number of bytes:} & \cmdRLP@var@nBytes    \\
+        \end{array} \right]
+    }
+
+\newcommand{\rlpProcessAddressName}    {\rlpDataProcessingCompoundConstraints{ADDRESS}}
+\newcommand{\rlpProcessAddress}    [1] {
+    \setkeys[RLP]{var}{#1}
+    \rlpProcessAddressName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{ll}
+            \utt{Rel. row offset:} & \cmdRLP@var@relOffset \\
+            \utt{Address hi:}      & \cmdRLP@var@addressHi \\
+            \utt{Address lo:}      & \cmdRLP@var@addressLo \\
+        \end{array} \right]
+    }
+
+\newcommand{\conditionallyGetShiftingFactorName}    {\inst{conditionallyGetShifingFactor}}
+\newcommand{\conditionallyGetShiftingFactor}    [1] {
+    \setkeys[RLP]{var}{#1}
+    \conditionallyGetShiftingFactorName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{ll}
+            \utt{Rel. row offset:}        & \cmdRLP@var@relOffset    \\
+            \utt{Condition:}              & \cmdRLP@var@condition    \\
+            \utt{\#bytes away from 16th:} & \cmdRLP@var@limbByteSize \\
+        \end{array} \right]
+    }
+
+\newcommand{\getShiftingFactorName}    {\inst{getShifingFactor}}
+\newcommand{\getShiftingFactor}    [1] {
+    \setkeys[RLP]{var}{#1}
+    \getShiftingFactorName _{\cmdRLP@var@anchorRow}
+        \left[ \begin{array}{ll}
+            \utt{Rel. row offset:}        & \cmdRLP@var@relOffset    \\
+            \utt{\#bytes away from 16th:} & \cmdRLP@var@limbByteSize \\
+        \end{array} \right]
+    }
+
+\makeatother

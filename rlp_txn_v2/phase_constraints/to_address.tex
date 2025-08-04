@@ -1,0 +1,49 @@
+\begin{center}
+    \boxed{\text{In all this section, it is assumed that $\phaseTo _{i}=1$.}}
+\end{center}
+The \texttt{to} field of a transaction may be left empty,
+which signals deployment transactions.
+We therefore introduce
+\[
+    \left\{ \begin{array}{lcl}
+	\locIsDeploymentTransaction  & \define & \rlpTxnTransactionColumnIsDep _{i - 1} \\
+	\locIsMessageCallTransaction & \define & 1 - \locIsDeploymentTransaction        \\
+	\locToAddressHi              & \define & \rlpTxnTransactionColumnToHi _{i - 1}  \\
+	\locToAddressLo              & \define & \rlpTxnTransactionColumnToLo _{i - 1}  \\
+    \end{array} \right.
+\]
+The deployment address (if applicable) is first obtained in the \userTxnDataMod{} module.
+\begin{enumerate}
+    \item \If $\isTxn _{i - 1} = 1$ \Then
+	\begin{description}
+	    \item[\underline{\underline{The deployment transaction case:}}]
+		\If $\locIsDeploymentTransaction = \true$ \Then
+		\begin{description}
+		    \item[\underline{Setting \maxCt{}:}]
+			we impose $\maxCt _{i} = 0$
+		    \item[\underline{Writing the \rlp{} prefix to the \rlp{} string:}]
+			\[
+			    \setLimb{
+				anchorRow  = i                                        ,
+				relOffset  = 0                                        ,
+				limb       = \rlprefixShortInt \cdot 256 ^{\llargeMO} ,
+				nBytes     = 1                                        ,
+			    }
+			\]
+		\end{description}
+	    \item[\underline{\underline{The deployment transaction case:}}]
+		\If $\locIsMessageCallTransaction = \true$ \Then
+		\begin{description}
+		    \item[\underline{Using \rlpProcessAddressName{}:}]
+			we impose
+			\[
+			    \rlpProcessAddress {
+				anchorRow = i               ,
+				relOffset = 0               ,
+				addressHi = \locToAddressHi ,
+				addressLo = \locToAddressLo ,
+			    }
+			\]
+		\end{description}
+	\end{description}
+\end{enumerate}

@@ -35,38 +35,43 @@ We will use the following shorthands
 The constraints are as follows:
 \begin{description}
 	\item[\underline{Setting the stack pattern:}]
-		we impose $\twoOneSP_{i}$;
+		we impose $\twoOneSP _{i}$;
 	\item[\underline{Setting $\nonStackRows$ and peeking flags:}]
-		we impose $\nonStackRows_{i} =  1 + \cmc_{i}$.
+		we impose $\nonStackRows _{i} =  1 + \cmc _{i}$.
 	\item[\underline{Setting the peeking flags:}]
 		one miscellaneous row is sufficient to deal with \inst{SHA3} instructions:
 		\[
 			\left[ \begin{array}{r}
 				+ \peekMisc                    _{i + \miscRowOffset} \\
-				+ \cmc_{i} \cdot \peekContext  _{i + \conRowOffset} \\
+				+ \cmc _{i} \cdot \peekContext _{i + \conRowOffset}  \\
 			\end{array} \right]
-			= \nonStackRows_{i}
+			= \nonStackRows _{i}
 		\]
-	\item[\underline{Miscellaneous-row $n^°(i + \miscRowOffset)$: flags:}] we impose
+	\item[\underline{Miscellaneous-row $n^°(i + \miscRowOffset)$: flags:}]
+		we impose
 		\[
-			\weightedMiscFlagSum {i}{\miscRowOffset}
-			=
-			\left[ \begin{array}{llcl}
-				+ & \miscMmuWeight & \!\!\!\cdot\!\!\! & \locCallMmu \\
-				+ & \miscMxpWeight  \\
-			\end{array} \right]
+			\left\{ \begin{array}{lclr}
+				\weightedMiscFlagSumSansMmu {
+					anchorRow = i              ,
+					relOffset = \miscRowOffset ,
+				}
+                                                                   & = & \miscMxpWeight                      \vspace{2mm} \\
+				\miscMmuFlag _{i + \miscRowOffset} & = & \undefinedStar \quad \locTriggerMmu              \\
+			\end{array} \right.
+			% OK
 		\]
 		in other words
 		\[
 			\left\{ \begin{array}{lclr}
-				\miscExpFlag          _{i + \miscRowOffset} & = & \gZero      & (\trash) \\
-				\miscMmuFlag          _{i + \miscRowOffset} & = & \locCallMmu & (\trash) \\
-				\miscMxpFlag          _{i + \miscRowOffset} & = & \one        & (\trash) \\
-				\miscOobFlag          _{i + \miscRowOffset} & = & \gZero      & (\trash) \\
-				\miscStpFlag          _{i + \miscRowOffset} & = & \gZero      & (\trash) \\
+				\miscExpFlag _{i + \miscRowOffset} & = & \gZero         & (\sanityCheck) \\
+				\miscMmuFlag _{i + \miscRowOffset} & = & \locTriggerMmu & (\sanityCheck) \\
+				\miscMxpFlag _{i + \miscRowOffset} & = & \one           & (\sanityCheck) \\
+				\miscOobFlag _{i + \miscRowOffset} & = & \gZero         & (\sanityCheck) \\
+				\miscStpFlag _{i + \miscRowOffset} & = & \gZero         & (\sanityCheck) \\
 			\end{array} \right.
 		\]
-		\saNote{} The binary flag \locCallMmu{} will be defined below.
+		\saNote{}
+		The binary flag \locTriggerMmu{} will be defined below.
 	\item[\underline{Miscellaneous-row $n^°(i + \miscRowOffset)$: \mxpMod{} data:}]
 		we deal with the memory expansion cost:
 		\[
@@ -82,30 +87,33 @@ The constraints are as follows:
 				sizeLo      = \locSizeLo     ,
 			}
 		\]
-	\item[\underline{Defining \locCallMmu{}:}] we define it as follows
+	\item[\underline{Defining \locTriggerMmu{}:}] we define it as follows
 		\[
-			\locCallMmu
+			\locTriggerMmu
 			\define
-			(1 - \xAhoy_{i}) \cdot \miscMxpSizeOneNonzeroNoMxpx _{i + \miscRowOffset}
+			(1 - \xAhoy _{i}) \cdot \miscMxpSizeOneNonzeroNoMxpx _{i + \miscRowOffset}
 		\]
+		\saNote{}
+		\locTriggerMmu{} is \textbf{binary conditionally to} the \mxpMod{} module having been called.
+
 		in other words
 		\begin{enumerate}
-			\item \If $\xAhoy_{i} = 1$ \Then $\locCallMmu = 0$ \quad (\trash)
-			\item \If $\xAhoy_{i} = 0$ \Then 
+			\item \If $\xAhoy _{i} = 1$ \Then $\locTriggerMmu = 0$ \quad (\trash)
+			\item \If $\xAhoy _{i} = 0$ \Then
 				\begin{enumerate}
-					\item \If $\locSizeLo =    0$ \Then $\locCallMmu = 0$ \quad (\trash)
-					\item \If $\locSizeLo \neq 0$ \Then $\locCallMmu = 1$ \quad (\trash)
+					\item \If $\locSizeLo =    0$ \Then $\locTriggerMmu = 0$ \quad (\trash)
+					\item \If $\locSizeLo \neq 0$ \Then $\locTriggerMmu = 1$ \quad (\trash)
 				\end{enumerate}
 		\end{enumerate}
 	\item[\underline{Miscellaneous-row $n^°(i + \miscRowOffset)$: \mmuMod{} data:}]
-		\If $\miscMmuFlag_{i + \miscRowOffset} = 1$ \Then
+		\If $\miscMmuFlag _{i + \miscRowOffset} = 1$ \Then
 		\[
 			\setMmuInstructionParametersRamToExoWithPadding {
 				anchorRow         = i                     ,
 				relOffset         = \miscRowOffset        ,
-				sourceId          = \cn_{i}               ,
+				sourceId          = \cn _{i}              ,
 				targetId          = \nothing              ,
-				auxiliaryId       = 1 + \hubStamp_{i}     ,
+				auxiliaryId       = 1 + \hubStamp _{i}    ,
 				% sourceOffsetHi  = \col{src\_offset\_hi} ,
 				sourceOffsetLo    = \locOffsetLo          ,
 				% targetOffsetLo  = \col{tgt\_offset\_lo} ,
@@ -120,29 +128,30 @@ The constraints are as follows:
 				}
 		\]
 	\item[\underline{Justifying the \mxpxSH{}:}]
-		we impose that $\stackMxpx_{i} = \locMxpx$
+		we impose that $\stackMxpx _{i} = \locMxpx$
 	\item[\underline{Setting the gas cost:}]
-		we impose that 
+		we impose that
 		\begin{enumerate}
-			\item \If $\locMxpx = 0$ \Then \( \gasCost_{i} = \stackStaticGas _{i} + \locMxpGas \)
-			\item \If $\locMxpx = 1$ \Then \( \gasCost_{i} = 0 \)
+			\item \If $\locMxpx = 0$ \Then \( \gasCost _{i} = \stackStaticGas _{i} + \locMxpGas \)
+			\item \If $\locMxpx = 1$ \Then \( \gasCost _{i} = 0 \)
 		\end{enumerate}
-	\item[\underline{Constraining \stackHashInfoFlag{}:}] we impose $\stackHashInfoFlag_{i} = \locCallMmu$;
+	\item[\underline{Constraining \stackHashInfoFlag{}:}]
+		we impose $\stackHashInfoFlag _{i} = \locTriggerMmu$;
 	\item[\underline{Value constraints:}]
-		\If $\xAhoy_{i} = 0$ \et  \Then
+		\If $\xAhoy _{i} = 0$ \et  \Then
 		\begin{enumerate}
-			\item \If $\locCallMmu = 0$ \Then
+			\item \If $\locTriggerMmu = 0$ \Then
 				\[
 					\begin{cases}
 						\locKeccakHi = \emptyKeccakHi \\
 						\locKeccakLo = \emptyKeccakLo \\
 					\end{cases}
 				\]
-			\item \If $\locCallMmu = 1$ \Then 
+			\item \If $\locTriggerMmu = 1$ \Then
 				\[
 					\left\{ \begin{array}{lclr}
-						\locKeccakHi & = & \stackHashInfoValHi_{i} \\
-						\locKeccakLo & = & \stackHashInfoValLo_{i} \\
+						\locKeccakHi & = & \stackHashInfoValHi _{i} \\
+						\locKeccakLo & = & \stackHashInfoValLo _{i} \\
 					\end{array} \right.
 				\]
 		\end{enumerate}
