@@ -1,15 +1,15 @@
 \begin{enumerate}
 	\item
-		$\txnDataRlpTxType$:
+		\txnDataRlpTxType{}:
 		column containing the ``transaction type'' of the transaction;
 	\item 
-		$\txnDataRlpIsLegacyTransaction            $,
-		$\txnDataRlpIsAccessSetTransaction         $,
-		$\txnDataRlpIsTypeTwoTransaction           $,
-		$\txnDataRlpIsBlobTransaction              $ and
-		$\txnDataRlpIsAccountDelegationTransaction $:
+		\txnDataRlpIsLegacyTransaction{},
+		\txnDataRlpIsAccessSetTransaction{},
+		\txnDataRlpIsTypeTwoTransaction{},
+		\txnDataRlpIsBlobTransaction{} and
+		\txnDataRlpIsAccountDelegationTransaction{}:
 		exclusive binary columns that decode
-		$\txnDataRlpTxType$;
+		\txnDataRlpTxType{};
 \end{enumerate}
 We associate ``transaction types'' as follows
 \[
@@ -28,45 +28,42 @@ We associate ``transaction types'' as follows
 ``\textsc{Fee market transactions}'' are also known as ``\textsc{eip-1559 transactions}.''
 \begin{enumerate}[resume]
 	\item
-		$\txnDataRlpToAddrHi$ and
-		$\txnDataRlpToAddrLo$:
+		\txnDataRlpToAddrHi{} and
+		\txnDataRlpToAddrLo{}:
 		recipient address of transaction for a message call transaction;
 		zero for deployment transactions;
 	\item
-		$\txnDataRlpNonce$:
+		\txnDataRlpNonce{}:
 		transaction nonce;
 	\item
-		$\txnDataRlpIsDep$:
+		\txnDataRlpIsDep{}:
 		binary column indicating whether a transaction is a deployment;
 	\item
-		$\txnDataRlpValue$:
+		\txnDataRlpValue{}:
 		value to transfer in transaction;
 	\item
-		$\txnDataRlpNumberOfZeroBytes$ and
-		$\txnDataRlpNumberOfNonzeroBytes$:
-		number of zero / nonzero bytes in the transaction's payload;
+		\txnDataRlpNumberOfZeroBytes{} and
+		\txnDataRlpNumberOfNonzeroBytes{}:
+		number of zero / nonzero bytes in the transaction's \textbf{payload};
 	\item
-		$\txnDataRlpNumKeys$ and
-		$\txnDataRlpNumAddr$
-	\item
-		$\txnDataRlpDataSize$:
+		\txnDataRlpDataSize{}:
 		number of bytes in the payload;
 	\item
-		$\txnDataRlpGasLimit$:
+		\txnDataRlpGasLimit{}:
 		transaction gas limit;
 	\item
-		$\txnDataRlpGasPrice$:
+		\txnDataRlpGasPrice{}:
 		transaction gas price for
 		\textsc{Legacy} and
 		\textsc{Access Set} transactions;
 	\item
-		$\txnDataRlpMaxPriorityFeePerGas $ and
-		$\txnDataRlpMaxFeePerGas         $:
+		\txnDataRlpMaxPriorityFeePerGas{}  and
+		\txnDataRlpMaxFeePerGas{}:
 		gas parameters for transaction types implementing the
 		\cite{EIP-1559} gas price semantics;
 	\item
-		$\txnDataRlpNumAddr$ and
-		$\txnDataRlpNumKeys$:
+		\txnDataRlpNumberOfAccessListAddresses{} and
+		\txnDataRlpNumberOfAccessListStorageKeys{}:
 		number of addresses and storage keys in the access list;
 		for \cite{EIP-2929} and \cite{EIP-2930} transactions;
 	% TODO: enable for PRAGUE and EIP-7702
@@ -75,6 +72,12 @@ We associate ``transaction types'' as follows
 	% 	number of account delegations
 	% 	for \cite{EIP-7702} transactions;
 	\item
-		$\txnDataRlpCfi$:
+		\txnDataRlpChainId{}
+		chain id of the chain;
+	\item
+		\txnDataRlpCfi{}:
 		provides nontrivial deployment transactions with a $\CFI$;
+	\item
+		\txnDataRlpRequiresEvmExecution{}:
+		bit indicating whether the transaction requires \evm{} execution or not;
 \end{enumerate}
