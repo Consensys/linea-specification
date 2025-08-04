@@ -37,21 +37,26 @@ We impose the following constraints:
 	\item[\underline{Setting the miscellaneous row for \inst{MSIZE}:}]
 		\If $\locIsMsize = 1$ \Then
 		\[
-			\weightedMiscFlagSum {i}{\locMachineStateMiscRow}
+			\weightedMiscFlagSum {
+				anchorRow = i                       ,
+				relOffset = \locMachineStateMiscRow ,
+			}
 			=
 			\miscMxpWeight
+			% OK
 		\]
 		in other words
 		\[
 			\left\{ \begin{array}{lclr}
-				\miscExpFlag_{i + \locMachineStateMiscRow} & = & \gZero  & (\trash) \\
-				\miscMmuFlag_{i + \locMachineStateMiscRow} & = & \rZero  & (\trash) \\
-				\miscMxpFlag_{i + \locMachineStateMiscRow} & = & \rOne   & (\trash) \\
-				\miscOobFlag_{i + \locMachineStateMiscRow} & = & \gZero  & (\trash) \\
-				\miscStpFlag_{i + \locMachineStateMiscRow} & = & \gZero  & (\trash) \\
+				\miscExpFlag_{i + \locMachineStateMiscRow} & = & \gZero  & (\sanityCheck) \\
+				\miscMmuFlag_{i + \locMachineStateMiscRow} & = & \rZero  & (\sanityCheck) \\
+				\miscMxpFlag_{i + \locMachineStateMiscRow} & = & \rOne   & (\sanityCheck) \\
+				\miscOobFlag_{i + \locMachineStateMiscRow} & = & \gZero  & (\sanityCheck) \\
+				\miscStpFlag_{i + \locMachineStateMiscRow} & = & \gZero  & (\sanityCheck) \\
 			\end{array} \right.
 		\]
-		Furthermore
+	\item[\underline{Setting the \mxpMod{} instruction row for \inst{MSIZE}:}]
+		\If $\locIsMsize = 1$ \Then
 		\[
 			\setMxpInstructionMsize {
 				anchorRow = i                       ,
