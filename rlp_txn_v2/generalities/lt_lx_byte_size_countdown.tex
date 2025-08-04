@@ -1,9 +1,11 @@
 We impose
-\begin{enumerate}
-    \item \If $\phaseRlpPrefix _{i} = \true$ \Then
+\begin{description}
+    \item[\underline{\underline{Initialization:}}]
+        both \ltByteSizeCountDown{} and \lxByteSizeCountDown{} are \textbf{implicitly} initialized,
         see section~(\ref{rlp txn v2: phase constraints: rlp prefix}),
-        where both \ltByteSizeCountDown{} and \lxByteSizeCountDown{} are \textbf{implicitly} initialized;
-    \item \If $\phaseRlpPrefix _{i} = \false$ \Then
+        during the ``$\phaseRlpPrefix _{i} = \true$'' rows.
+    \item[\underline{\underline{Updates:}}]
+        \If $\phaseRlpPrefix _{i} = \false$ \Then
         \begin{enumerate}
             \item $\ltByteSizeCountDown _{i} = \ltByteSizeCountDown _{i - 1} - \lc _{i} \cdot \lt _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}$
             \item $\lxByteSizeCountDown _{i} = \lxByteSizeCountDown _{i - 1} - \lc _{i} \cdot \lx _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}$
@@ -17,13 +19,15 @@ We impose
         so that the use of the \rlpTxnComputationColumnLimbSize{} column
         of the \textbf{computation-perspective} without explicitly requiring
         ``$\isCmp _{i} = \true$'' is legitimate.
-    \item \If $\phaseS _{i} = \true$ \et $\phaseEnd _{i} = \true$ \Then
+    \item[\underline{\underline{Finalization:}}]
+        \If $\phaseS _{i} = \true$ \et $\phaseEnd _{i} = \true$ \Then
         \begin{enumerate}
             \item $\ltByteSizeCountDown _{i} = 0$
             \item $\lxByteSizeCountDown _{i} = 0$
         \end{enumerate}
-    \item $\toHashByProver _{i} = \lc _{i} \cdot \lx _{i}$
-\end{enumerate}
+    \item[\underline{\underline{\toHashByProver{} definition:}}]
+        $\toHashByProver _{i} = \lc _{i} \cdot \lx _{i}$
+\end{description}
 We represent the intent in a diagram below.
 
 \includepdf[fitpaper=true, pages={1}]{lua/lc_lt_lx_etc.pdf}
