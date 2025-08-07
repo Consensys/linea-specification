@@ -1,22 +1,59 @@
-The present section constrains the $\txCumulativeConsumedGas$ column. 
+\def\locFirstRowOfNewTransactionRoff {\numConst{1}}
+The present section constrains the $\cumulativeConsumedGas$ column.
+The goal is to have $\cumulativeConsumedGas$
+tally the consumed gas \textbf{in a block},
+\textbf{up to and including the current transaction},
+and \textbf{reset with every block}.
 \begin{enumerate}
 	\item $\cumulativeConsumedGas$ is counter-constant
-	\item \If $\user _{i} = 0$ \Then $\cumulativeConsumedGas _{i} = 0$
-	\item \If $\userTransactionNumber _{i + 1} \neq \userTransactionNumber _{i}$ \Then
-		\begin{enumerate}
-			\item \If $\user _{i} = 0$ \Then
-				\[
-					\cumulativeConsumedGas _{i + 1} = \txGasLimit _{i + 1} - \txEffectiveRefund_{i + 1}
-				\]
-			\item \If $\user _{i} = 1$ \Then
-				\[
-					\cumulativeConsumedGas _{i + 1} 
-					=
-					\left[ \begin{array}{ll}
-						+ & \cumulativeConsumedGas _{i}                           \\
-						+ & \big(\txGasLimit_{i + 1} - \txEffectiveRefund_{i + 1}\big) \\
-					\end{array}\right]
-				\]
-		\end{enumerate}
+	\item
+		\label{user txn data: generalities: cumulative gas: cumulative gas is zero outside of user and sysf transactions}
+		\If $\user _{i} + \sysf _{i} = \false$ \Then $\cumulativeConsumedGas _{i} = 0$
+	\item
+		\label{user txn data: generalities: cumulative gas: cumulative gas update constraints}
+		\If $\userTransactionNumber _{i + \locFirstRowOfNewTransactionRoff} \neq \userTransactionNumber _{i}$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\isUserTxnHubView      _{i + \locFirstRowOfNewTransactionRoff} & = & \true \qquad (\sanityCheck) \\
+				\cumulativeConsumedGas _{i + \locFirstRowOfNewTransactionRoff} & = &
+				\left[ \begin{array}{ll}
+					+ & \cumulativeConsumedGas    _{i}                                                 \\
+					+ & \big( \txnDataHubGasLimit _{i + \locFirstRowOfNewTransactionRoff} - \txnDataHubEffectiveRefund _{i + \locFirstRowOfNewTransactionRoff} \big) \\
+				\end{array}\right] \\
+			\end{array} \right.
+		\]
+	\item
+		\label{user txn data: generalities: cumulative gas: cumulative gas propagation constraints during SYSF}
+		\If $\sysf _{i} = \true$ \Then $\cumulativeConsumedGas _{i} = \cumulativeConsumedGas _{i - 1}$
 \end{enumerate}
-The constraints above thus enfoce that $\cumulativeConsumedGas$ tallies the consumed gas in the block up to and including the current transaction and resets with every block.
+\saNote{}
+We draw attention to the reader that
+section~(\ref{user txn data: generalities: total transaction number: transaction processing starts with a HUB row})
+imposes transaction processing to start with a $\isUserTxnHubView$-row.
+From the premise ``$\userTransactionNumber _{i + \locFirstRowOfNewTransactionRoff} \neq \userTransactionNumber _{i}$''
+we can therefore deduce that $\isUserTxnHubView _{i + \locFirstRowOfNewTransactionRoff} \equiv \true$,
+whence the (\sanityCheck).
+In particular the usage of $\txnDataHubXxx _{i + \locFirstRowOfNewTransactionRoff}$ cells is justified.
+
+\saNote{}
+When $\sysi _{i} = \true$, and hence $\cumulativeConsumedGas _{i} \equiv 0$
+by constraint~(\ref{user txn data: generalities: cumulative gas: cumulative gas is zero outside of user and sysf transactions}),
+then
+constraint~(\ref{user txn data: generalities: cumulative gas: cumulative gas update constraints})
+\textbf{initializes} \cumulativeConsumedGas{} for the first \user{}-transaction in any block.
+
+\saNote{}
+When $\user _{i} = \true$,
+then
+constraint~(\ref{user txn data: generalities: cumulative gas: cumulative gas update constraints})
+\textbf{updates} \cumulativeConsumedGas{} at \user{}-transaction boundaries within a block.
+
+\saNote{}
+Constraint~(\ref{user txn data: generalities: cumulative gas: cumulative gas propagation constraints during SYSF})
+ensures that \cumulativeConsumedGas{} remain constant through-out
+\sysf{}-transactions.
+Note that it remains correct even for \textbf{empty blocks}
+(i.e. blocks containing no \user{}-transactions) given that those blocks witness
+a direct transition from \sysi{}-transactions and \sysf{}-transactions,
+and that $\cumulativeConsumedGas \equiv 0$ for \sysi{}-transactions,
+see constraint~(\ref{user txn data: generalities: cumulative gas: cumulative gas is zero outside of user and sysf transactions}).
