@@ -1,138 +1,161 @@
 We use the following shorthands
 \[
 	\left\{ \begin{array}{lcl}
-		\locInstFlagSum_{i} & \define &
+		\locInstFlagSum _{i} & \define &
 		\left[ \begin{array}{cl}
-			+ & \oobInstIsJump         _{i} \\
-			+ & \oobInstIsJumpI        _{i} \\
-			+ & \oobInstIsRdc          _{i} \\
-			+ & \oobInstIsCdl          _{i} \\
-			+ & \oobInstIsXcall        _{i} \\
-			+ & \oobInstIsCall         _{i} \\
-			+ & \oobInstIsXcreate      _{i} \\
-			+ & \oobInstIsCreate       _{i} \\
-			+ & \oobInstIsSstore       _{i} \\
-			+ & \oobInstIsDeployment   _{i} \\
+			+ & \oobInstIsJump       _{i} \\
+			+ & \oobInstIsJumpI      _{i} \\
+			+ & \oobInstIsRdc        _{i} \\
+			+ & \oobInstIsCdl        _{i} \\
+			+ & \oobInstIsXcall      _{i} \\
+			+ & \oobInstIsCall       _{i} \\
+			+ & \oobInstIsXcreate    _{i} \\
+			+ & \oobInstIsCreate     _{i} \\
+			+ & \oobInstIsSstore     _{i} \\
+			+ & \oobInstIsDeployment _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\locPrcFlagSumCommon_{i} & \define &
+		\locPrcFlagSumCommon _{i} & \define &
 		\left[ \begin{array}{cl}
-			+ & \oobInstIsEcrecover    _{i}  \\
-			+ & \oobInstIsShaTwo       _{i}  \\
-			+ & \oobInstIsRipemd       _{i}  \\
-			+ & \oobInstIsIdentity     _{i}  \\
-			+ & \oobInstIsEcadd        _{i}  \\
-			+ & \oobInstIsEcmul        _{i}  \\
-			+ & \oobInstIsEcpairing    _{i}  \\
-			+ & \oobInstIsPointEvaluation_{i}\\
-			+ & \locPrcFlagSumBls      _{i}  \\
+			+ & \oobInstIsEcrecover _{i} \\
+			+ & \oobInstIsShaTwo    _{i} \\
+			+ & \oobInstIsRipemd    _{i} \\
+			+ & \oobInstIsIdentity  _{i} \\
+			+ & \oobInstIsEcadd     _{i} \\
+			+ & \oobInstIsEcmul     _{i} \\
+			+ & \oobInstIsEcpairing _{i} \\
+			+ & \locPrcFlagSumBls   _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\locPrcFlagSumBlake_{i} & \define &
+		\locPrcFlagSumBlake _{i} & \define &
 		\left[ \begin{array}{cl}
-			+ & \oobInstIsBlakeCds     _{i}  \\
-			+ & \oobInstIsBlakeParams  _{i}  \\
+			+ & \oobInstIsBlakeCds    _{i} \\
+			+ & \oobInstIsBlakeParams _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\locPrcFlagSumModexp_{i} & \define &
+		\locPrcFlagSumModexp _{i} & \define &
 		\left[ \begin{array}{cl}
-			+ & \oobInstIsModexpCds         _{i}  \\
-			+ & \oobInstIsModexpXbs         _{i}  \\
-			+ & \oobInstIsModexpLead        _{i}  \\
-			+ & \oobInstIsModexpPricing     _{i}  \\
-			+ & \oobInstIsModexpExtract     _{i}  \\
+			+ & \oobInstIsModexpCds     _{i} \\
+			+ & \oobInstIsModexpXbs     _{i} \\
+			+ & \oobInstIsModexpLead    _{i} \\
+			+ & \oobInstIsModexpPricing _{i} \\
+			+ & \oobInstIsModexpExtract _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\locPrcFlagSumBls_{i} & \define &
+		\locFlagSumNewCancunPrecompiles _{i} & \define & \oobInstIsPointEvaluation _{i} \\
+		\vspace{2mm} \\
+		\locFlagSumNewPraguePrecompiles _{i} & \define &
 		\left[ \begin{array}{cl}
-			+ & \oobInstIsBlsGOneAdd       _{i}  \\
-			+ & \oobInstIsBlsGOneMsm       _{i}  \\
-			+ & \oobInstIsBlsGTwoAdd       _{i}  \\
-			+ & \oobInstIsBlsGTwoMsm       _{i}  \\
-			+ & \oobInstIsBlsPairingCheck  _{i}  \\
-			+ & \oobInstIsBlsMapFpToGOne   _{i}  \\
-			+ & \oobInstIsBlsMapFpTwoToGTwo_{i}  \\
-		\end{array} \right]		
+			+ & \oobInstIsBlsGOneAdd        _{i}  \\
+			+ & \oobInstIsBlsGOneMsm        _{i}  \\
+			+ & \oobInstIsBlsGTwoAdd        _{i}  \\
+			+ & \oobInstIsBlsGTwoMsm        _{i}  \\
+			+ & \oobInstIsBlsPairingCheck   _{i}  \\
+			+ & \oobInstIsBlsMapFpToGOne    _{i}  \\
+			+ & \oobInstIsBlsMapFpTwoToGTwo _{i}  \\
+		\end{array} \right] \vspace{2mm} \\
+		\locPrcFlagSumBls _{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \locFlagSumNewCancunPrecompiles _{i} \\
+			+ & \locFlagSumNewPraguePrecompiles _{i} \\
+		\end{array} \right] \vspace{2mm} \\
 	\end{array} \right.
 \]
+\saNote{} 
+If the \textsc{Ethereum} network configuration is at the \textsc{Cancun} hard fork, one \emph{may} further impose
+\[
+	\locFlagSumNewPraguePrecompiles _{i} = 0 \qquad (\sanityCheck)
+\]
+thereby preventing \textsc{Prague}-specific \texttt{BLS} precompiles to be executed.
+This isn't strictly speaking necessary, as the \trmMod{} won't recognize addresses in the range
+$[\texttt{0x\,0b}..\texttt{0x\,11}]$
+as precompile addresses, hence the sanity check mark.
+
 we also set
 \[
 	\left\{ \begin{array}{lcl}
-		\locPrcFlagSum_{i} & \define &
+		\locPrcFlagSum _{i} & \define &
 		\left[ \begin{array}{cl}
-			+ & \locPrcFlagSumCommon_{i} \\
-			+ & \locPrcFlagSumBlake_{i}  \\
-			+ & \locPrcFlagSumModexp_{i} \\
+			+ & \locPrcFlagSumCommon _{i} \\
+			+ & \locPrcFlagSumBlake  _{i} \\
+			+ & \locPrcFlagSumModexp _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\flagSum_{i}       & \define &
+		\flagSum _{i}       & \define &
 		\left[ \begin{array}{cl}
-			+ & \locInstFlagSum_{i} \\
-			+ & \locPrcFlagSum_{i}  \\
+			+ & \locInstFlagSum _{i} \\
+			+ & \locPrcFlagSum  _{i} \\
 		\end{array} \right] \\
 	\end{array} \right.
 \]
 and
 \[
+	\hspace*{-1cm}
 	\left\{ \begin{array}{lcl}
-		\weightedFlagSumInst_{i} & \define &
+		\weightedFlagSumInst _{i} & \define &
 		\left[ \begin{array}{clcl}
-			+ & \oobInstJump       & \cdot & \oobInstIsJump        _{i} \\
-			+ & \oobInstJumpI      & \cdot & \oobInstIsJumpI       _{i} \\
-			+ & \oobInstRdc        & \cdot & \oobInstIsRdc         _{i} \\
-			+ & \oobInstCdl        & \cdot & \oobInstIsCdl         _{i} \\
-			+ & \oobInstXcall      & \cdot & \oobInstIsXcall       _{i} \\
-			+ & \oobInstCall       & \cdot & \oobInstIsCall        _{i} \\
-			+ & \oobInstXcreate    & \cdot & \oobInstIsXcreate     _{i} \\
-			+ & \oobInstCreate     & \cdot & \oobInstIsCreate      _{i} \\
-			+ & \oobInstSstore     & \cdot & \oobInstIsSstore      _{i} \\
-			+ & \oobInstDeployment & \cdot & \oobInstIsDeployment  _{i} \\
+			+ & \oobInstJump       & \cdot & \oobInstIsJump       _{i} \\
+			+ & \oobInstJumpI      & \cdot & \oobInstIsJumpI      _{i} \\
+			+ & \oobInstRdc        & \cdot & \oobInstIsRdc        _{i} \\
+			+ & \oobInstCdl        & \cdot & \oobInstIsCdl        _{i} \\
+			+ & \oobInstXcall      & \cdot & \oobInstIsXcall      _{i} \\
+			+ & \oobInstCall       & \cdot & \oobInstIsCall       _{i} \\
+			+ & \oobInstXcreate    & \cdot & \oobInstIsXcreate    _{i} \\
+			+ & \oobInstCreate     & \cdot & \oobInstIsCreate     _{i} \\
+			+ & \oobInstSstore     & \cdot & \oobInstIsSstore     _{i} \\
+			+ & \oobInstDeployment & \cdot & \oobInstIsDeployment _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\weightedPrcFlagSumCommon_{i} & \define &
+		\weightedPrcFlagSumCommon _{i} & \define &
 		\left[ \begin{array}{crcl}
-			+ & \oobInstEcrecover       & \cdot & \oobInstIsEcrecover _{i}           \\
-			+ & \oobInstShaTwo          & \cdot & \oobInstIsShaTwo _{i}              \\
-			+ & \oobInstRipemd          & \cdot & \oobInstIsRipemd _{i}              \\
-			+ & \oobInstIdentity        & \cdot & \oobInstIsIdentity _{i}            \\
-			+ & \oobInstEcadd           & \cdot & \oobInstIsEcadd _{i}               \\
-			+ & \oobInstEcmul           & \cdot & \oobInstIsEcmul _{i}               \\
-			+ & \oobInstEcpairing       & \cdot & \oobInstIsEcpairing _{i}           \\
-			+ & \oobInstPointEvaluation & \cdot & \oobInstIsPointEvaluation _{i}     \\
-			+ & \weightedPrcFlagSumBls_{i} \\
+			+ & \oobInstEcrecover & \cdot & \oobInstIsEcrecover _{i} \\
+			+ & \oobInstShaTwo    & \cdot & \oobInstIsShaTwo    _{i} \\
+			+ & \oobInstRipemd    & \cdot & \oobInstIsRipemd    _{i} \\
+			+ & \oobInstIdentity  & \cdot & \oobInstIsIdentity  _{i} \\
+			+ & \oobInstEcadd     & \cdot & \oobInstIsEcadd     _{i} \\
+			+ & \oobInstEcmul     & \cdot & \oobInstIsEcmul     _{i} \\
+			+ & \oobInstEcpairing & \cdot & \oobInstIsEcpairing _{i} \\
+			+ & \weightedPrcFlagSumBls _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\weightedPrcFlagSumBlake_{i} & \define &
+		\weightedPrcFlagSumBlake _{i} & \define &
 		\left[ \begin{array}{crcl}
-			+ & \oobInstBlakeCds      & \cdot & \oobInstIsBlakeCds           _{i} \\
-			+ & \oobInstBlakeParams   & \cdot & \oobInstIsBlakeParams        _{i} \\
+			+ & \oobInstBlakeCds    & \cdot & \oobInstIsBlakeCds    _{i} \\
+			+ & \oobInstBlakeParams & \cdot & \oobInstIsBlakeParams _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\weightedPrcFlagSumModexp_{i} & \define &
+		\weightedPrcFlagSumModexp _{i} & \define &
 		\left[ \begin{array}{crcl}
-			+ & \oobInstModexpCds      & \cdot & \oobInstIsModexpCds         _{i}  \\
-			+ & \oobInstModexpXbs      & \cdot & \oobInstIsModexpXbs         _{i}  \\
-			+ & \oobInstModexpLead     & \cdot & \oobInstIsModexpLead        _{i}  \\
-			+ & \oobInstModexpPricing  & \cdot & \oobInstIsModexpPricing     _{i}  \\
-			+ & \oobInstModexpExtract  & \cdot & \oobInstIsModexpExtract     _{i}  \\
+			+ & \oobInstModexpCds     & \cdot & \oobInstIsModexpCds     _{i} \\
+			+ & \oobInstModexpXbs     & \cdot & \oobInstIsModexpXbs     _{i} \\
+			+ & \oobInstModexpLead    & \cdot & \oobInstIsModexpLead    _{i} \\
+			+ & \oobInstModexpPricing & \cdot & \oobInstIsModexpPricing _{i} \\
+			+ & \oobInstModexpExtract & \cdot & \oobInstIsModexpExtract _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\weightedPrcFlagSumBls_{i} & \define &
+		\weightedPrcFlagSumNewCancunPrecompiles _{i} & \define & \oobInstPointEvaluation \cdot \oobInstIsPointEvaluation _{i} \\
+		\vspace{2mm} \\
+		\weightedPrcFlagSumNewPraguePrecompiles _{i} & \define &
 		\left[ \begin{array}{crcl}
-			+ & \oobInstBlsGOneAdd         & \cdot & \oobInstIsBlsGOneAdd         _{i}  \\
-			+ & \oobInstBlsGOneMsm         & \cdot & \oobInstIsBlsGOneMsm         _{i}  \\
-			+ & \oobInstBlsGTwoAdd         & \cdot & \oobInstIsBlsGTwoAdd         _{i}  \\
-			+ & \oobInstBlsGTwoMsm         & \cdot & \oobInstIsBlsGTwoMsm         _{i}  \\
-			+ & \oobInstBlsPairingCheck    & \cdot & \oobInstIsBlsPairingCheck    _{i}  \\
-			+ & \oobInstBlsMapFpToGOne     & \cdot & \oobInstIsBlsMapFpToGOne     _{i}  \\
-			+ & \oobInstBlsMapFpTwoToGTwo  & \cdot & \oobInstIsBlsMapFpTwoToGTwo  _{i}  \\
+			+ & \oobInstBlsGOneAdd        & \cdot & \oobInstIsBlsGOneAdd        _{i} \\
+			+ & \oobInstBlsGOneMsm        & \cdot & \oobInstIsBlsGOneMsm        _{i} \\
+			+ & \oobInstBlsGTwoAdd        & \cdot & \oobInstIsBlsGTwoAdd        _{i} \\
+			+ & \oobInstBlsGTwoMsm        & \cdot & \oobInstIsBlsGTwoMsm        _{i} \\
+			+ & \oobInstBlsPairingCheck   & \cdot & \oobInstIsBlsPairingCheck   _{i} \\
+			+ & \oobInstBlsMapFpToGOne    & \cdot & \oobInstIsBlsMapFpToGOne    _{i} \\
+			+ & \oobInstBlsMapFpTwoToGTwo & \cdot & \oobInstIsBlsMapFpTwoToGTwo _{i} \\
+		\end{array} \right] \vspace{2mm} \\
+		\weightedPrcFlagSumBls _{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \weightedPrcFlagSumNewCancunPrecompiles _{i} \\
+			+ & \weightedPrcFlagSumNewPraguePrecompiles _{i} \\
 		\end{array} \right]
 	\end{array} \right.
 \]
 and
 \[
 	\left\{ \begin{array}{lcl}
-		\weightedPrcFlagSum_{i} & \define &
+		\weightedPrcFlagSum _{i} & \define &
 		\left[ \begin{array}{cl}
-			+ & \weightedPrcFlagSumCommon_{i} \\
-			+ & \weightedPrcFlagSumBlake_{i}  \\
-			+ & \weightedPrcFlagSumModexp_{i} \\
+			+ & \weightedPrcFlagSumCommon _{i} \\
+			+ & \weightedPrcFlagSumBlake  _{i} \\
+			+ & \weightedPrcFlagSumModexp _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\weightedFlagSum_{i}       & \define &
+		\weightedFlagSum _{i}       & \define &
 		\left[ \begin{array}{cl}
-			+ & \weightedFlagSumInst_{i} \\
-			+ & \weightedPrcFlagSum_{i}  \\
+			+ & \weightedFlagSumInst _{i} \\
+			+ & \weightedPrcFlagSum  _{i} \\
 		\end{array} \right] \\
 	\end{array} \right.
 \]
@@ -152,31 +175,31 @@ where
 	\end{array} \right.
 	,
 	\left\{ \begin{array}{lclcr}
-		\oobInstEcrecover       & \define &   \oxEcrecover   \\
-		\oobInstShaTwo          & \define &   \oxShaTwo      \\
-		\oobInstRipemd          & \define &   \oxRipemd      \\
-		\oobInstIdentity        & \define &   \oxIdentity    \\
-		\oobInstEcadd           & \define &   \oxEcadd       \\
-		\oobInstEcmul           & \define &   \oxEcmul       \\
-		\oobInstEcpairing       & \define &   \oxEcpairing   \\
-		\oobInstPointEvaluation & \define &   \oxPointEvaluation \\
-		\oobInstBlakeCds        & \define &   \oxBlakeCds    \\
-		\oobInstBlakeParams     & \define &   \oxBlakeParams \\
+		\oobInstEcrecover   & \define & \oxEcrecover   \\
+		\oobInstShaTwo      & \define & \oxShaTwo      \\
+		\oobInstRipemd      & \define & \oxRipemd      \\
+		\oobInstIdentity    & \define & \oxIdentity    \\
+		\oobInstEcadd       & \define & \oxEcadd       \\
+		\oobInstEcmul       & \define & \oxEcmul       \\
+		\oobInstEcpairing   & \define & \oxEcpairing   \\
+		\oobInstBlakeCds    & \define & \oxBlakeCds    \\
+		\oobInstBlakeParams & \define & \oxBlakeParams \\
 	\end{array} \right.
 \]
 and
 \[
 	\left\{ \begin{array}{lclcr}
-		\oobInstModexpCds     & \define &   \oxModexpCds         \\
-		\oobInstModexpXbs     & \define &   \oxModexpXbs         \\
-		\oobInstModexpLead    & \define &   \oxModexpLead        \\
-		\oobInstModexpPricing & \define &   \oxModexpPricing     \\
-		\oobInstModexpExtract & \define &   \oxModexpExtract     \\
+		\oobInstModexpCds     & \define & \oxModexpCds     \\
+		\oobInstModexpXbs     & \define & \oxModexpXbs     \\
+		\oobInstModexpLead    & \define & \oxModexpLead    \\
+		\oobInstModexpPricing & \define & \oxModexpPricing \\
+		\oobInstModexpExtract & \define & \oxModexpExtract \\
 	\end{array} \right.
 \]
 and
 \[
 	\left\{ \begin{array}{lclcr}
+		\oobInstPointEvaluation   & \define & \oxPointEvaluation   \\
 		\oobInstBlsGOneAdd        & \define & \oxBlsGOneAdd        \\
 		\oobInstBlsGOneMsm        & \define & \oxBlsGOneMsm        \\
 		\oobInstBlsGTwoAdd        & \define & \oxBlsGTwoAdd        \\
@@ -192,8 +215,9 @@ The only requirement for these constants must satisfy is that all constants defi
 
 We further set
 \[
+	\hspace*{-1cm}
 	\left\{ \begin{array}{lcl}
-		\maxCtFlagSumInst_{i} & \define &
+		\maxCtFlagSumInst _{i} & \define &
 		\left[ \begin{array}{clcl}
 			+ & \oobCtMaxJump       & \cdot & \oobInstIsJump       _{i} \\
 			+ & \oobCtMaxJumpI      & \cdot & \oobInstIsJumpI      _{i} \\
@@ -206,113 +230,119 @@ We further set
 			+ & \oobCtMaxSstore     & \cdot & \oobInstIsSstore     _{i} \\
 			+ & \oobCtMaxDeployment & \cdot & \oobInstIsDeployment _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\maxCtFlagSumPrcCommon_{i} & \define &
+		\maxCtFlagSumPrcCommon _{i} & \define &
 		\left[ \begin{array}{crcl}
-			+ & \oobCtMaxEcrecover       & \cdot & \oobInstIsEcrecover  _{i} \\
-			+ & \oobCtMaxShaTwo          & \cdot & \oobInstIsShaTwo     _{i} \\
-			+ & \oobCtMaxRipemd          & \cdot & \oobInstIsRipemd     _{i} \\
-			+ & \oobCtMaxIdentity        & \cdot & \oobInstIsIdentity   _{i} \\
-			+ & \oobCtMaxEcadd           & \cdot & \oobInstIsEcadd      _{i} \\
-			+ & \oobCtMaxEcmul           & \cdot & \oobInstIsEcmul      _{i} \\
-			+ & \oobCtMaxEcpairing       & \cdot & \oobInstIsEcpairing  _{i} \\
-			+ & \oobCtMaxPointEvaluation & \cdot & \oobInstIsPointEvaluation _{i} \\
-			+ & \maxCtFlagSumPrcBls_{i} \\
+			+ & \oobCtMaxEcrecover & \cdot & \oobInstIsEcrecover _{i} \\
+			+ & \oobCtMaxShaTwo    & \cdot & \oobInstIsShaTwo    _{i} \\
+			+ & \oobCtMaxRipemd    & \cdot & \oobInstIsRipemd    _{i} \\
+			+ & \oobCtMaxIdentity  & \cdot & \oobInstIsIdentity  _{i} \\
+			+ & \oobCtMaxEcadd     & \cdot & \oobInstIsEcadd     _{i} \\
+			+ & \oobCtMaxEcmul     & \cdot & \oobInstIsEcmul     _{i} \\
+			+ & \oobCtMaxEcpairing & \cdot & \oobInstIsEcpairing _{i} \\
+			+ & \maxCtFlagSumPrcBls _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\maxCtFlagSumPrcBlake_{i} & \define &
+		\maxCtFlagSumPrcBlake _{i} & \define &
 		\left[ \begin{array}{clcl}
 			+ & \oobCtMaxBlakeCds      & \cdot & \oobInstIsBlakeCds    _{i}    \\
 			+ & \oobCtMaxBlakeParams   & \cdot & \oobInstIsBlakeParams _{i}    \\
 		\end{array} \right] \vspace{2mm} \\
-		\maxCtFlagSumPrcModexp_{i} & \define &
+		\maxCtFlagSumPrcModexp _{i} & \define &
 		\left[ \begin{array}{clcl}
-			+ & \oobCtMaxModexpCds          & \cdot & \oobInstIsModexpCds          _{i}   \\
-			+ & \oobCtMaxModexpXbs          & \cdot & \oobInstIsModexpXbs          _{i}   \\
-			+ & \oobCtMaxModexpLead         & \cdot & \oobInstIsModexpLead         _{i}   \\
-			+ & \oobCtMaxModexpPricing      & \cdot & \oobInstIsModexpPricing      _{i}   \\
-			+ & \oobCtMaxModexpExtract      & \cdot & \oobInstIsModexpExtract      _{i}   \\
+			+ & \oobCtMaxModexpCds     & \cdot & \oobInstIsModexpCds     _{i} \\
+			+ & \oobCtMaxModexpXbs     & \cdot & \oobInstIsModexpXbs     _{i} \\
+			+ & \oobCtMaxModexpLead    & \cdot & \oobInstIsModexpLead    _{i} \\
+			+ & \oobCtMaxModexpPricing & \cdot & \oobInstIsModexpPricing _{i} \\
+			+ & \oobCtMaxModexpExtract & \cdot & \oobInstIsModexpExtract _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\maxCtFlagSumPrcBls_{i} & \define &
+		\maxCtFlagSumPrcNewCancunPrecompiles _{i} & \define & \oobCtMaxPointEvaluation \cdot \oobInstIsPointEvaluation _{i} \\
+		\vspace{2mm} \\
+		\maxCtFlagSumPrcNewPraguePrecompiles _{i} & \define &
 		\left[ \begin{array}{crcl}
-			+ & \oobCtMaxBlsGOneAdd        & \cdot & \oobInstIsBlsGOneAdd        _{i}   \\
-			+ & \oobCtMaxBlsGOneMsm        & \cdot & \oobInstIsBlsGOneMsm        _{i}   \\
-			+ & \oobCtMaxBlsGTwoAdd        & \cdot & \oobInstIsBlsGTwoAdd        _{i}   \\
-			+ & \oobCtMaxBlsGTwoMsm        & \cdot & \oobInstIsBlsGTwoMsm        _{i}   \\
-			+ & \oobCtMaxBlsPairingCheck   & \cdot & \oobInstIsBlsPairingCheck   _{i}   \\
-			+ & \oobCtMaxBlsMapFpToGOne    & \cdot & \oobInstIsBlsMapFpToGOne    _{i}   \\
-			+ & \oobCtMaxBlsMapFpTwoToGTwo & \cdot & \oobInstIsBlsMapFpTwoToGTwo _{i}   \\
+			+ & \oobCtMaxBlsGOneAdd        & \cdot & \oobInstIsBlsGOneAdd        _{i} \\
+			+ & \oobCtMaxBlsGOneMsm        & \cdot & \oobInstIsBlsGOneMsm        _{i} \\
+			+ & \oobCtMaxBlsGTwoAdd        & \cdot & \oobInstIsBlsGTwoAdd        _{i} \\
+			+ & \oobCtMaxBlsGTwoMsm        & \cdot & \oobInstIsBlsGTwoMsm        _{i} \\
+			+ & \oobCtMaxBlsPairingCheck   & \cdot & \oobInstIsBlsPairingCheck   _{i} \\
+			+ & \oobCtMaxBlsMapFpToGOne    & \cdot & \oobInstIsBlsMapFpToGOne    _{i} \\
+			+ & \oobCtMaxBlsMapFpTwoToGTwo & \cdot & \oobInstIsBlsMapFpTwoToGTwo _{i} \\
+		\end{array} \right] \vspace{2mm} \\
+		\maxCtFlagSumPrcBls _{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \maxCtFlagSumPrcNewCancunPrecompiles _{i} \\
+			+ & \maxCtFlagSumPrcNewPraguePrecompiles _{i} \\
 		\end{array} \right]
 	\end{array} \right.
 \]
 and
 \[
 	\left\{ \begin{array}{lcl}
-		\maxCtFlagSumPrc_{i} & \define &
+		\maxCtFlagSumPrc _{i} & \define &
 		\left[ \begin{array}{cl}
-			+ & \maxCtFlagSumPrcCommon_{i} \\
-			+ & \maxCtFlagSumPrcBlake_{i}  \\
-			+ & \maxCtFlagSumPrcModexp_{i} \\
+			+ & \maxCtFlagSumPrcCommon _{i} \\
+			+ & \maxCtFlagSumPrcBlake  _{i} \\
+			+ & \maxCtFlagSumPrcModexp _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\maxCtFlagSum_{i}       & \define &
+		\maxCtFlagSum _{i}       & \define &
 		\left[ \begin{array}{cl}
-			+ & \weightedFlagSumInst_{i} \\
-			+ & \weightedPrcFlagSum_{i}  \\
+			+ & \weightedFlagSumInst _{i} \\
+			+ & \weightedPrcFlagSum  _{i} \\
 		\end{array} \right] \\
 	\end{array} \right.
 \]
 where
 \[
-\begin{array}{ll}
-    \left\{ \begin{array}{lcl}
-        \oobCtMaxJump       & \define & 0 \\
-        \oobCtMaxJumpI      & \define & 1 \\
-        \oobCtMaxRdc        & \define & 2 \\
-        \oobCtMaxCdl        & \define & 0 \\
-        \oobCtMaxXcall      & \define & 0 \\
-        \oobCtMaxCall       & \define & 2 \\
-        \oobCtMaxXcreate    & \define & 0 \\
-        \oobCtMaxCreate     & \define & 4 \\
-        \oobCtMaxSstore     & \define & 0 \\
-        \oobCtMaxDeployment & \define & 0 \\
-    \end{array} \right.
-    &
-    \left\{ \begin{array}{lcl}
-        \oobCtMaxEcrecover       & \define &  2 \\
-        \oobCtMaxShaTwo          & \define &  3 \\
-        \oobCtMaxRipemd          & \define &  3 \\
-        \oobCtMaxIdentity        & \define &  3 \\
-        \oobCtMaxEcadd           & \define &  2 \\
-        \oobCtMaxEcmul           & \define &  2 \\
-        \oobCtMaxEcpairing       & \define &  4 \\
-		\oobCtMaxPointEvaluation & \define &  3 \\
-    \end{array} \right. \\
-    \left\{ \begin{array}{lcl}
-        \oobCtMaxBlakeCds     & \define &  1 \\
-        \oobCtMaxBlakeParams  & \define &  1 \\
-    \end{array} \right.
-    &
-    \left\{ \begin{array}{lcl}
-        \oobCtMaxModexpCds      & \define & 2 \\
-        \oobCtMaxModexpXbs      & \define & 2 \\
-        \oobCtMaxModexpLead     & \define & 3 \\
-        \oobCtMaxModexpPricing  & \define & 5 \\
-        \oobCtMaxModexpExtract  & \define & 3 \\
-    \end{array} \right. \\
-	\left\{ \begin{array}{lcl}
-		\oobCtMaxBlsGOneAdd        & \define &  3 \\
-		\oobCtMaxBlsGOneMsm        & \define &  6 \\
-		\oobCtMaxBlsGTwoAdd        & \define &  3 \\
-		\oobCtMaxBlsGTwoMsm        & \define &  6 \\
-		\oobCtMaxBlsPairingCheck   & \define &  4 \\
-		\oobCtMaxBlsMapFpToGOne    & \define &  3 \\
-		\oobCtMaxBlsMapFpTwoToGTwo & \define &  3 \\ 
-	\end{array} \right.
-\end{array}
+	\begin{array}{ll}
+		\left\{ \begin{array}{lcl}
+			\oobCtMaxJump       & \define & 0 \\
+			\oobCtMaxJumpI      & \define & 1 \\
+			\oobCtMaxRdc        & \define & 2 \\
+			\oobCtMaxCdl        & \define & 0 \\
+			\oobCtMaxXcall      & \define & 0 \\
+			\oobCtMaxCall       & \define & 2 \\
+			\oobCtMaxXcreate    & \define & 0 \\
+			\oobCtMaxCreate     & \define & 4 \\
+			\oobCtMaxSstore     & \define & 0 \\
+			\oobCtMaxDeployment & \define & 0 \\
+		\end{array} \right.
+		&
+		\left\{ \begin{array}{lcl}
+			\oobCtMaxEcrecover       & \define &  2 \\
+			\oobCtMaxShaTwo          & \define &  3 \\
+			\oobCtMaxRipemd          & \define &  3 \\
+			\oobCtMaxIdentity        & \define &  3 \\
+			\oobCtMaxEcadd           & \define &  2 \\
+			\oobCtMaxEcmul           & \define &  2 \\
+			\oobCtMaxEcpairing       & \define &  4 \\
+		\end{array} \right. \\
+		\left\{ \begin{array}{lcl}
+			\oobCtMaxBlakeCds     & \define &  1 \\
+			\oobCtMaxBlakeParams  & \define &  1 \\
+		\end{array} \right.
+		&
+		\left\{ \begin{array}{lcl}
+			\oobCtMaxModexpCds      & \define & 2 \\
+			\oobCtMaxModexpXbs      & \define & 2 \\
+			\oobCtMaxModexpLead     & \define & 3 \\
+			\oobCtMaxModexpPricing  & \define & 5 \\
+			\oobCtMaxModexpExtract  & \define & 3 \\
+		\end{array} \right. \\
+		\left\{ \begin{array}{lcl}
+			\oobCtMaxPointEvaluation   & \define &  3 \\
+			\oobCtMaxBlsGOneAdd        & \define &  3 \\
+			\oobCtMaxBlsGOneMsm        & \define &  6 \\
+			\oobCtMaxBlsGTwoAdd        & \define &  3 \\
+			\oobCtMaxBlsGTwoMsm        & \define &  6 \\
+			\oobCtMaxBlsPairingCheck   & \define &  4 \\
+			\oobCtMaxBlsMapFpToGOne    & \define &  3 \\
+			\oobCtMaxBlsMapFpTwoToGTwo & \define &  3 \\ 
+		\end{array} \right.
+	\end{array}
 \] 
 
 We consider the following shorthands:
 \[
 	\left\{ \begin{array}{lcrcrcrcr}
-		\locLookupFlagSum         _{i} & \define & \addFlag_{i}               & + & \modFlag_{i}               & + & \wcpFlag_{i}               & + & \blsRefTableFlag_{i} \\
-		\locLookupWeightedSum _{i} & \define & \locAdd \cdot \addFlag_{i} & + & \locMod \cdot \modFlag_{i} & + & \locWcp \cdot \wcpFlag_{i} & + & \locBlsRefTable \cdot \blsRefTableFlag_{i} \\
+		\locLookupFlagSum     _{i} & \define & \addFlag _{i}               & + & \modFlag _{i}               & + & \wcpFlag _{i}               & + & \blsRefTableFlag _{i}                       \\
+		\locLookupWeightedSum _{i} & \define & \locAdd \cdot \addFlag _{i} & + & \locMod \cdot \modFlag _{i} & + & \locWcp \cdot \wcpFlag _{i} & + & \locBlsRefTable \cdot \blsRefTableFlag _{i} \\
 	\end{array} \right.
 \]
