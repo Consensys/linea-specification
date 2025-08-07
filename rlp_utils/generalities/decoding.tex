@@ -1,0 +1,29 @@
+The present section sets the ``instruction flags'' depending on the instruction.
+We introduce the usual flag related shorthands
+\[
+	\left\{ \begin{array}{lcl}
+		\locFlagSum _{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \rlpUtilsInstIntegerFlag          _{i} \\
+			+ & \rlpUtilsInstByteStringPrefixFlag _{i} \\
+			+ & \rlpUtilsInstBytesThirtyTwoFlag   _{i} \\
+			+ & \rlpUtilsInstDataPricingFlag      _{i} \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\locWeightedFlagSum _{i} & \define &
+		\left[ \begin{array}{clcl}
+			+ & \rlpUtilsInstInteger          & \!\!\!\cdot\!\!\! & \rlpUtilsInstIntegerFlag          _{i} \\
+			+ & \rlpUtilsInstByteStringPrefix & \!\!\!\cdot\!\!\! & \rlpUtilsInstByteStringPrefixFlag _{i} \\
+			+ & \rlpUtilsInstBytesThirtyTwo   & \!\!\!\cdot\!\!\! & \rlpUtilsInstBytesThirtyTwoFlag   _{i} \\
+			+ & \rlpUtilsInstDataPricing      & \!\!\!\cdot\!\!\! & \rlpUtilsInstDataPricingFlag      _{i} \\
+		\end{array} \right]
+	\end{array} \right.
+\]
+and we impose the following
+\begin{enumerate}
+	\item $\locFlagSum _{i} = \iomf _{i}$
+	\item \If $\isRlpUtilsMacro _{i} = 1$ \Then $\locWeightedFlagSum _{i} = \INST _{i}$
+	\item \If $\isRlpUtilsCompt _{i} = 1$ \Then $\locWeightedFlagSum _{i} = \locWeightedFlagSum _{i - 1}$
+\end{enumerate}
+\saNote{}
+The last constraint imposes that the \locWeightedFlagSum{} is actually ``instruction constant.''

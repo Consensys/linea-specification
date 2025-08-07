@@ -1,0 +1,42 @@
+The \locAccessListItemRlpLengthCountdown{} shorthand holds the length in bytes of
+the \rlp{}-ized contents of the access list items $E$, $E'$, \dots{} where
+$T_\textbf{A} \equiv ( E, E', \dots )$.
+To be precise, \rlp{}-izing an access list item $E \equiv (E_a, E_\textbf{s})$ requires computing
+the following (where we use notations from the \cite{EYP-London})
+\[
+	\rlp \big( E \big) = R_\text{l} \big( E \big) \\
+\]
+The purpose of \locAccessListItemRlpLengthCountdown{} is to \textbf{initially} hold $\| s( E ) \|$
+for the various access list items that make up $T_\textbf{A}$,
+and then count down to $0$ as the access list item gets processed.
+\begin{description}
+	\item[\underline{\underline{Initialization:}}]
+		there isn't any to speak of,
+		it is ``implicit'';
+	\item[\underline{\underline{Updates:}}]
+		\If
+		\[
+			\left[ \begin{array}{cl}
+				% + & \rlpTxnSharedColumnIsPrefixOfAccessListItem _{i} \\
+				+ & \rlpTxnSharedColumnIsAccessListAddress      _{i} \\
+				+ & \rlpTxnSharedColumnIsPrefixOfStorageKeyList _{i} \\
+				+ & \rlpTxnSharedColumnIsAccessListStorageKey   _{i} \\
+			\end{array} \right]
+			= \true
+		\]
+		\Then
+		we impose that
+		\[
+			\locAccessListItemRlpLengthCountdown _{i} = \locAccessListItemRlpLengthCountdown _{i - 1} - \lc _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}
+		\]
+	\item[\underline{\underline{Finalization:}}]
+		we impose that
+		\[
+			\If     \locEndOfTupleOrEndOfPhase           _{i} = \true
+			~ \Then \locAccessListItemRlpLengthCountdown _{i} = 0
+		\]
+\end{description}
+\saNote{} \label{rlp txn v2: phase constraints: access list: countdowns: non counter constancy of access list item RLP length}
+The \locAccessListLengthCountdown{}
+and \locAccessListItemRlpLengthCountdown{}
+updates may happen mid-counter-cycle.

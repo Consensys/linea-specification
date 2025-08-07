@@ -1,0 +1,45 @@
+The \locAccessListItemCountdown{} shorthand counts the number of access list items in the access list.
+In other words, it counts the total number of access list items $(E _a, E _\textbf{s})$
+present in the access list $T_\textbf{A}$ the transaction \locTransaction{}:
+\[
+		\rlpTxnTransactionColumnNbWarmedAddress \equiv
+		\displaystyle \sum _{E \text{ acc. list item in } \locTransaction}
+		1
+\]
+Alternatively, and as witnessed by the initialization constraint below,
+it counts the number addresses for which the transaction will have to pay the pre-warming fee
+as part of the upfront gas cost of transaction processing.
+
+We impose
+\begin{description}
+	\item[\underline{\underline{Counter-constancy:}}]
+		\locAccessListItemCountdown{}
+		is counter-constant
+		(\sanityCheck)
+		by virtue of its definition,
+		see section~(\ref{rlp txn v2: phase constraints: access list: countdowns: shorthands}),
+		and section~(\ref{rlp txn v2: generalities: TMP k column generalities})
+	\item[\underline{\underline{Initialization:}}]
+		\If $\locAccessListPrefix _{i} = \true$ \Then
+		we impose
+		\[
+			\locAccessListItemCountdown _{i} = \rlpTxnTransactionColumnNbWarmedAddress _{i - 1}
+		\]
+	\item[\underline{\underline{Updates:}}]
+		\If $\locAccessListData _{i} = \true$ \Then
+		we impose
+		\[
+			\begin{array}{lcl}
+				\locAccessListItemCountdown _{i} & = & \locAccessListItemCountdown             _{i - 1}          \\
+				&   & \qquad - \, \locNewAccessListItem    _{i} \vspace{2mm} \\
+			\end{array}
+		\]
+		where we define
+		\[
+			\locNewAccessListItem _{i} \define
+			\left[ \begin{array}{cl}
+				\cdot & \rlpTxnSharedColumnIsPrefixOfAccessListItem _{i} \\
+				\cdot & \done _{i - 1}                                   \\
+			\end{array} \right]
+		\]
+\end{description}

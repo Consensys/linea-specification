@@ -1,0 +1,50 @@
+Each phase represents an entry of the transaction list to \rlp{}-ised, as described in the \cite{EYP-London}.
+\phaseRlpPrefix{} is the phase where the $\transactionType$ of transaction,
+concatanated with the \rlp{} prefix of the total list is computed.
+Not all phases are accessible to any transaction type,
+see section~(\ref{rlp txn v2: generalities: PHASE_END constraints}).
+However, the actions performed during a given phase are independent of the underlying transaction type.
+
+Most phases have $\lx \equiv 1$ \emph{and} $\lt \equiv 1$,
+which means that the $\rlpTxnComputationColumnLimb$s constructed during said phase
+are used both in the production of
+$\locLtTilde$ and of
+$\locLxTilde$.
+For \phaseRlpPrefix{} and \phaseBeta{},
+some $\rlpTxnComputationColumnLimb$s ``belong'' only to $\locLtTilde$ (as witnessed by $\lt \equiv 1$ and $\lx \equiv 0$),
+others        ``belong'' only to $\locLxTilde$ (as witnessed by $\lt \equiv 0$ and $\lx \equiv 1$),
+others yet    ``belong'' to both               (as witnessed by $\lt \equiv 1$ and $\lx \equiv 1$).
+The phases \phaseY{}, \phaseR{} and \phaseS{} correspond to the \rlp{}-ization of components of the signature.
+They therefore only contribute to limbs belonging to $\locLtTilde$.
+
+The table~(\ref{rlp txn v2: phase constraints: definitions: table}) shows the phase which \textbf{will be executed} depending on the \transactionType. 
+\begin{table}[h]
+    \def\gCheckMark     {\text{~{\color{solarized-green}\faCheck}~}}
+    \def\rCross         {\text{~{\color{gray}\faClose}~}}
+    \def\gCM            {\gCheckMark}
+    \def\rC             {\rCross}
+    % \hspace*{-2.5cm}
+    \renewcommand{\arraystretch}{1.5}
+    \centering
+    \begin{tabular}{|l|l|c|c|c|c|c|c|c|} \hline
+        \textsc{Phase flag}          & \textsc{Description}          & \typeZeroTx & \typeOneTx & \typeTwoTx & $\lt$            & $\lx$            \\ \hline \hline
+        $\phaseRlpPrefix$            & ``Global'' \rlp{} prefix      & \gCM        & \gCM       & \gCM       & \texttt{depends} & \texttt{depends} \\ \hline
+        $\phaseChainId$              & \texttt{chainId}              & \rC         & \gCM       & \gCM       & \true            & \true            \\ \hline
+        $\phaseNonce$                & \texttt{nonce}                & \gCM        & \gCM       & \gCM       & \true            & \true            \\ \hline
+        $\phaseGasPrice$             & \texttt{gasPrice}             & \gCM        & \gCM       & \rC        & \true            & \true            \\ \hline
+        $\phaseMaxPriorityFeePerGas$ & \texttt{maxPriorityFeePerGas} & \rC         & \rC        & \gCM       & \true            & \true            \\ \hline
+        $\phaseMaxFeePerGas$         & \texttt{maxFeePerGas}         & \rC         & \rC        & \gCM       & \true            & \true            \\ \hline
+        $\phaseGasLimit$             & \texttt{gasLimit}             & \gCM        & \gCM       & \gCM       & \true            & \true            \\ \hline
+        $\phaseTo$                   & \texttt{to}                   & \gCM        & \gCM       & \gCM       & \true            & \true            \\ \hline
+        $\phaseValue$                & \texttt{value}                & \gCM        & \gCM       & \gCM       & \true            & \true            \\ \hline
+        $\phaseData$                 & \texttt{data}                 & \gCM        & \gCM       & \gCM       & \true            & \true            \\ \hline
+        $\phaseAccessList$           & \texttt{accessList}           & \rC         & \gCM       & \gCM       & \true            & \true            \\ \hline
+        $\phaseBeta$                 & $\beta$ or w                  & \gCM        & \rC        & \rC        & \texttt{depends} & \texttt{depends} \\ \hline
+        $\phaseY$                    & \texttt{yParity}              & \rC         & \gCM       & \gCM       & \true            & \false           \\ \hline
+        $\phaseR$                    & \texttt{r}                    & \gCM        & \gCM       & \gCM       & \true            & \false           \\ \hline
+        $\phaseS$                    & \texttt{s}                    & \gCM        & \gCM       & \gCM       & \true            & \false           \\ \hline
+    \end{tabular}
+    \caption{Phase definition}
+    \label{rlp txn v2: phase constraints: definitions: table}
+\end{table}
+

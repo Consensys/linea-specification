@@ -1,0 +1,26 @@
+We impose further constancy conditions on the
+\loc{address} shorthands:
+\begin{enumerate}
+	\item
+		\If
+		\[
+			\left[ \begin{array}{cl}
+				% + & \rlpTxnSharedColumnIsPrefixOfAccessListItem _{i} \\
+				+ & \rlpTxnSharedColumnIsAccessListAddress      _{i} \\
+				+ & \rlpTxnSharedColumnIsPrefixOfStorageKeyList _{i} \\
+				+ & \rlpTxnSharedColumnIsAccessListStorageKey   _{i} \\
+			\end{array} \right]
+			= \true
+		\]
+		\Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\locAddressHi _{i} & = & \locAddressHi _{i - 1} \\
+				\locAddressLo _{i} & = & \locAddressLo _{i - 1} \\
+			\end{array} \right.
+		\]
+\end{enumerate}
+\saNote{}
+The above enforces that within the (contiguous) set of rows where an access list item is processed
+by the present module, the \loc{address} fields remain constant.
+It \emph{does} allow for a resetting of these fields when the processing of the next access list item starts.
