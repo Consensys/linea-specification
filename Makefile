@@ -23,8 +23,8 @@ hash_data:       view-hash_data
 hash_info:       view-hash_info
 hub:             view-hub
 lex:             view-lex
-logd_data:       view-log_data
-logi_info:       view-log_info
+log_data:        view-log_data
+log_info:        view-log_info
 mmio:            view-mmio
 modexp:          view-modexp_data
 mmu:             view-mmu
