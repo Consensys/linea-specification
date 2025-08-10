@@ -8,7 +8,9 @@
 				argOneLo  = \txnDataHubBlockNumber _{i}             ,
 			}
 			\vspace{2mm} \\
-			\locBlockNumberIsZero = \computationRes _{i + \previousBlockNumberDefinitionRowOffset} \\
+			\locCurrentBlockIsGenesisBlock
+			=
+			\computationRes _{i + \previousBlockNumberDefinitionRowOffset} \\
 		\end{array} \right.
 	\]
 	where we set
@@ -17,6 +19,6 @@
 	\]
 	We further impose the following
 	\begin{enumerate}
-	        \item \If $\locBlockNumberIsZero = 1$ \Then $\locPreviousBlockNumber = 0$
-	        \item \If $\locBlockNumberIsZero = 0$ \Then $\locPreviousBlockNumber = \txnDataHubBlockNumber _{i} - 1$
+	        \item \If $\locCurrentBlockIsGenesisBlock = \true$  \Then $\locPreviousBlockNumber = 0$
+	        \item \If $\locCurrentBlockIsGenesisBlock = \false$ \Then $\locPreviousBlockNumber = \txnDataHubBlockNumber _{i} - 1$
 	\end{enumerate}
