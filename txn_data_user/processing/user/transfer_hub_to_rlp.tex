@@ -8,9 +8,21 @@ values passed on to the \hubMod{} module (and thus present in the $\isUserTxnHub
 Constraints are conditional to the following standing hypothesis:
 \begin{description}
 	\item[\underline{Passing the \cfi{} along:}]
-		\If $\locRlpIsDeployment = 1$ \et $\locHubRequiresEvmExecution = 1$ \Then
+		a \cfi{} is generated and passed along,
+		from \hubMod{} to \rlpTxnMod{}, for
+		\textbf{nontrivial deployment transactions} only,
+		i.e. \emph{iff}
+		$\locHubRequiresEvmExecution \equiv \true$ \&
+		$\locRlpIsDeployment \equiv \true$;
+		as such we impose
 		\[
-			\txnDataRlpCfi  _{i + \rlpViewRowOffset} = \txnDataHubCfi _{i + \hubViewRowOffset}
+			\txnDataRlpCfi  _{i + \rlpViewRowOffset} =
+			\left[ \begin{array}{cl}
+				\cdot & \locRlpIsDeployment         \\
+				\cdot & \locHubRequiresEvmExecution \\
+			\end{array} \right]
+			\cdot
+			\txnDataHubCfi _{i + \hubViewRowOffset}
 		\]
 	\item[\underline{Passing the \requiresEvmExecutionName{} along:}]
 		we impose
