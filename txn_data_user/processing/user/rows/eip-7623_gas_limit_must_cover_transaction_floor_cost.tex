@@ -1,22 +1,26 @@
 \item[\underline{\underline{Row n$°(i + \transactionFloorCostRowOffset)$: gas limit must cover the transaction floor cost:}}]
 	we impose that
 	\[
-		\left\{ \begin{array}{lcl}
-			\smallCallToLeq {
-				anchorRow = i                              ,
-				relOffset = \transactionFloorCostRowOffset ,
-				argOneLo  = \locDataFloorCost              ,
-				argTwoLo  = \locRlpGasLimit                ,
-			}
-			\vspace{2mm} \\
-			\resultMustBeTrue {
-				anchorRow = i                              ,
-				relOffset = \transactionFloorCostRowOffset ,
-			} \\
-		\end{array} \right.
+		\smallCallToLeq {
+			anchorRow = i                              ,
+			relOffset = \transactionFloorCostRowOffset ,
+			argOneLo  = \locDataFloorCost              ,
+			argTwoLo  = \locRlpGasLimit                ,
+		}
 	\]
-	In other words we are requiring $\locDataFloorCost \leq \locRlpGasLimit$.
+	If the network runs the \textsc{Prague} \evm{} we further impose
+	\[
+		\resultMustBeTrue {
+			anchorRow = i                              ,
+			relOffset = \transactionFloorCostRowOffset ,
+		}
+	\]
+	In other words we require $\locDataFloorCost \leq \locRlpGasLimit$.
 
 	\saNote{}
-	Starting with \cite{EIP-7623} transaction call data induces a ``\textbf{transaction floor price}'' which has to be covered by the transaction's \textbf{gas limit}.
-	That floor price (and the usual call data cost) is defined like so
+	Starting with \cite{EIP-7623},
+	which is part of the \textsc{Prague} hardfork,
+	transaction call data induces a ``\textbf{transaction floor price}''
+	which has to be covered by the transaction's \textbf{gas limit}.
+	The above performs the comparison but imposes the result (to \true)
+	only if the network runs the \textsc{Prague} \evm{}.
