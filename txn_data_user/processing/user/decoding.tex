@@ -1,0 +1,107 @@
+\begin{center}
+	\boxed{\text{The constraints below assume that } \userTransactionStandingHypothesis }
+\end{center}
+We impose the following constraints on the transaction type flag columns:
+\[
+	\left\{ \begin{array}{lcl}
+		\locTransactionWithFixedGasPrice & \define &
+		\left[ \begin{array}{cl}
+			+ & \txnDataRlpIsLegacyTransaction            _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsAccessSetTransaction         _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsTypeTwoTransaction           _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsBlobTransaction              _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsAccountDelegationTransaction _{i + \rlpViewRowOffset} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locTransactionSansFixedGasPrice & \define &
+		\left[ \begin{array}{cl}
+			% + & \txnDataRlpIsLegacyTransaction            _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsAccessSetTransaction         _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsTypeTwoTransaction           _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsBlobTransaction              _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsAccountDelegationTransaction _{i + \rlpViewRowOffset} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locTransactionSansAccessList & \define &
+		\left[ \begin{array}{cl}
+			+ & \txnDataRlpIsLegacyTransaction            _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsAccessSetTransaction         _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsTypeTwoTransaction           _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsBlobTransaction              _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsAccountDelegationTransaction _{i + \rlpViewRowOffset} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locTransactionWithAccessList & \define &
+		\left[ \begin{array}{cl}
+			% + & \txnDataRlpIsLegacyTransaction            _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsAccessSetTransaction         _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsTypeTwoTransaction           _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsBlobTransaction              _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsAccountDelegationTransaction _{i + \rlpViewRowOffset} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locTransactionSansDelegation & \define &
+		\left[ \begin{array}{cl}
+			+ & \txnDataRlpIsLegacyTransaction            _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsAccessSetTransaction         _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsTypeTwoTransaction           _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsBlobTransaction              _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsAccountDelegationTransaction _{i + \rlpViewRowOffset} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locTransactionWithDelegation & \define &
+		\left[ \begin{array}{cl}
+			% + & \txnDataRlpIsLegacyTransaction            _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsAccessSetTransaction         _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsTypeTwoTransaction           _{i + \rlpViewRowOffset} \\
+			% + & \txnDataRlpIsBlobTransaction              _{i + \rlpViewRowOffset} \\
+			+ & \txnDataRlpIsAccountDelegationTransaction _{i + \rlpViewRowOffset} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locTransactionTypeFlagSum & \define &
+		\left[ \begin{array}{cl}
+			+ & \locTransactionWithFixedGasPrice    \\
+			+ & \locTransactionSansFixedGasPrice \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locTransactionTypeWeightedFlagSum & \define &
+		\left[ \begin{array}{cccl}
+			+ & 0 & \cdot & \txnDataRlpIsLegacyTransaction            _{i + \rlpViewRowOffset} \\
+			+ & 1 & \cdot & \txnDataRlpIsAccessSetTransaction         _{i + \rlpViewRowOffset} \\
+			+ & 2 & \cdot & \txnDataRlpIsTypeTwoTransaction           _{i + \rlpViewRowOffset} \\
+			+ & 3 & \cdot & \txnDataRlpIsBlobTransaction              _{i + \rlpViewRowOffset} \\
+			+ & 4 & \cdot & \txnDataRlpIsAccountDelegationTransaction _{i + \rlpViewRowOffset} \\
+		\end{array} \right]
+		\\
+	\end{array} \right.
+	\]
+	We then impose that
+	\begin{enumerate}
+		\item $\locTransactionTypeFlagSum         = 1$
+		\item $\locTransactionTypeWeightedFlagSum = \locRlpTxType$
+		\item \label{user txn data: processing: user: transaction decoding: no access list if tx doesn't allow it}
+			\If $\locTransactionSansAccessList = 1$ \Then
+			\[
+				\left\{ \begin{array}{lcl}
+					\locRlpNumKeys & = & 0 \\
+					\locRlpNumAddr & = & 0 \\
+				\end{array} \right.
+			\]
+		\item
+			for the \textsc{Cancun} hardfork we disallow \textsc{account delegation transactions};
+			as such, if the underlying network runs the \textsc{Cancun} \evm{} we impose
+			\[
+				\txnDataRlpIsAccountDelegationTransaction _{i + \rlpViewRowOffset}
+				=
+				\false
+			\]
+		% \item \label{user txn data: processing: user: transaction decoding: no account delegations if tx doesn't allow it} TODO: re-enable for Prague and EIP-7702
+		% \If $\locTransactionSansDelegation = 1$ \Then $\locRlpNumAccountDelegations = 0$                                   TODO: re-enable for Prague and EIP-7702
+	\end{enumerate}
