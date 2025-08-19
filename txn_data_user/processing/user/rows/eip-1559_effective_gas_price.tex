@@ -7,16 +7,28 @@
 			argOneLo  = \locRlpMaxPriorityFee + \locHubBasefee  ,
 			argTwoLo  = \locRlpMaxFee  ,
 		}
-		% {i}{\effectiveGasPriceRowOffset}
-		% {\locMaxPriorityFee + \txBasefee}
-		% {\locMaxFee                     }
 	\]
 	and we define the following shorthand
 	\[
 		\locGetFullTip \define \res_{i + \effectiveGasPriceRowOffset}
 	\]
+	We further set
+	\begin{enumerate}
+		\item \If $\locGetFullTip = \true$  \Then
+			\[
+				\locHubGasPrice
+				=
+				\locRlpMaxPriorityFee + \locHubBasefee
+			\]
+		\item \If $\locGetFullTip = \false$ \Then
+			\[
+				\locHubGasPrice
+				=
+				\locRlpMaxFee
+			\]
+	\end{enumerate}
 	\saNote{}
 	By construction
 	\[
-		\locGetFullTip = 1 \iff \locRlpMaxPriorityFee + \locHubBasefee \leq \locRlpMaxFee
+		\locGetFullTip = \true \iff \locRlpMaxPriorityFee + \locHubBasefee \leq \locRlpMaxFee
 	\]
