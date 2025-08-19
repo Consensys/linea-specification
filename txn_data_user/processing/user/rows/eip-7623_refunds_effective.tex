@@ -8,16 +8,20 @@
 			argTwoLo  = \locRefundLimit           ,
 		}
 	\]
-	thus
-	The interpretation is as follows:
-	\begin{IEEEeqnarray*}{LCL}
-		\locGetFullRefund = 1 & \iff & \locHubFinalRefundCounter < \locRefundLimit                                                                     \\
-                                      & \iff & \locHubFinalRefundCounter < \left\lfloor\frac{\locRlpGasLimit - \locHubLeftoverGas}\maxRefundQuotient\right\rfloor \\
-	\end{IEEEeqnarray*}
 	We further define the following shorthands:
 	\begin{enumerate}
-		\item $\locGetFullRefund \define \res_{i + \effectiveRefundRowOffset}$
-		\item \If $\locGetFullRefund = 0$ \Then
+		\item $\locAccruedRefundsAreLtRefundLimit \define \res_{i + \effectiveRefundRowOffset}$
+
+			\saNote{}
+			The interpretation is as follows:
+			\[
+				\begin{array}{l}
+					\locAccruedRefundsAreLtRefundLimit = \true \vspace{2mm}                                                                          \\
+					\qquad \iff ~ \locHubFinalRefundCounter < \locRefundLimit                                                                        \\
+					\qquad \iff ~ \locHubFinalRefundCounter < \left\lfloor\frac{\locRlpGasLimit - \locHubLeftoverGas}\maxRefundQuotient\right\rfloor \\
+				\end{array}
+			\]
+		\item \If $\locAccruedRefundsAreLtRefundLimit = 0$ \Then
 			\[
 				\locLeftoverGasPlusRefunds \define
 				\left[ \begin{array}{cr}
@@ -25,7 +29,7 @@
 					+ & \locRefundLimit    \\
 				\end{array} \right]
 			\]
-		\item \If $\locGetFullRefund = 1$ \Then
+		\item \If $\locAccruedRefundsAreLtRefundLimit = 1$ \Then
 			\[
 				\locLeftoverGasPlusRefunds \define
 				\left[ \begin{array}{cl}
