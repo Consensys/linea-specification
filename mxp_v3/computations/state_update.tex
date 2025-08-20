@@ -84,6 +84,25 @@ This works due to flag exclusivity properties in the present \mxpMod{} module an
 		\]
 		\saNote{}
 		We filter the \wcpMod{}-arguments by $\locDoubleOffsetOpcode$ to prevent unnecesary comparisons when $\locSingleOffsetOpcode \equiv 1$.
+
+		\saNote{}
+		When defining
+		\locMaxOne{} and
+		\locMaxTwo{}
+		we must be careful to disregard ``max offsets'' associated to ``zero sizes''.
+		We achieve this by filtering their expressions through the corresponding \locSizeKIsNonZero{}.
+		Here is our rationale for this.
+		When entering the present scenario
+		($\locMxpScenarioStateUpdate \equiv \true$)
+		we are ensured that \textbf{at least one size parameter is nonzero},
+		see section~(\ref{mxp: computation: non msize: the trivial scenario corresponds to zero sizes}).
+		For instructions taking two size parameters
+		($\locDoubleOffsetOpcode \equiv \true$)
+		\textbf{the other size parameter may very well be zero}.
+		In that case no memory expansion is associated with the zero size parameter.
+		The associated ``offset $=$ offset $+$ 0'' value may, however, be nonzero and potentially larger than the only relevant ``offset $+$ size'' value.
+		By filtering this value using $\locSizeKIsNonZero$ we ensure that the corresponding \locMaxK{} to zero
+		and does not affect the computation of the maximum offset touched by the operation.
 	\def\nRows{\yellowm{8}}\item[\underline{\underline{Computing the floor of the division of \locMaxOffset{} by $\evmWordSize$:}}] 
 		we impose that
 		\[
