@@ -96,13 +96,15 @@ This works due to flag exclusivity properties in the present \mxpMod{} module an
 		($\locMxpScenarioStateUpdate \equiv \true$)
 		we are ensured that \textbf{at least one size parameter is nonzero},
 		see section~(\ref{mxp: computation: non msize: the trivial scenario corresponds to zero sizes}).
-		For instructions taking two size parameters
+		For instructions taking \textbf{two} size parameters
 		($\locDoubleOffsetOpcode \equiv \true$)
-		\textbf{the other size parameter may very well be zero}.
-		In that case no memory expansion is associated with the zero size parameter.
-		The associated ``offset $=$ offset $+$ 0'' value may, however, be nonzero and potentially larger than the only relevant ``offset $+$ size'' value.
-		By filtering this value using $\locSizeKIsNonZero$ we ensure that the corresponding \locMaxK{} to zero
-		and does not affect the computation of the maximum offset touched by the operation.
+		\textbf{it is perfectly legal for one size parameter to be zero}.
+		(Note that this cannot happen for \inst{MCOPY}.)
+		No memory expansion should be associated with the corresponding offset and (zero) size.
+		The associated ``offset $=$ offset $+$ 0'' value may, however, be nonzero
+		and potentially larger than the other, and only relevant, ``offset $+$ size'' value.
+		By filtering this value using $\locSizeKIsNonZero$ we ensure that the corresponding \locMaxK{} is set to zero
+		and does not pollute the computation of \locMaxOffset{} later on.
 	\def\nRows{\yellowm{8}}\item[\underline{\underline{Computing the floor of the division of \locMaxOffset{} by $\evmWordSize$:}}] 
 		we impose that
 		\[
