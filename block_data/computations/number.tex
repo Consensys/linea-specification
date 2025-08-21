@@ -57,16 +57,13 @@ We impose the following constraints
 		\begin{enumerate}
 			\item
 				\If $\locIsFirstBlock = 1$ \Then
-				\begin{enumerate}
-					\item
-						we unconditionally impose that
-						\[
-							\left\{ \begin{array}{lcl}
-								\currNumberHi & = & 0                                         \\
-								\currNumberLo & = & \blockNumberOfFirstBlockInConflation _{i} \\
-							\end{array} \right.
-						\]
-				\end{enumerate}
+				we impose that
+				\[
+					\left\{ \begin{array}{lcl}
+						\currNumberHi & = & 0                                         \\
+						\currNumberLo & = & \blockNumberOfFirstBlockInConflation _{i} \\
+					\end{array} \right.
+				\]
 			\item
 				\If $\locIsntFirstBlock = 1$ \Then
 				we impose that
@@ -78,5 +75,11 @@ We impose the following constraints
 				\]
 		\end{enumerate}
 	\item[\underline{\underline{Setting \inst{NUMBER} (2/2):}}]
-		we impose $\numberr _{i} = \currNumberLo$
+		we unconditionally impose that
+		\[
+			\left\{ \begin{array}{lclr}
+				\numberr _{i} & = & \currNumberLo                                                    \\
+				\numberr _{i} & = & \blockNumberOfFirstBlockInConflation _{i} + (\relBlock _{i} - 1)  & (\sanityCheck) \\
+			\end{array} \right.
+		\]
 \end{description}
