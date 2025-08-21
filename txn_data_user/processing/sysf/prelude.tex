@@ -1,0 +1,43 @@
+\begin{center}
+	\boxed{\text{The constraints below assume that }
+	\left\{ \begin{array}{lcl}
+	        \totalTransactionNumber _{i} & \neq & \totalTransactionNumber _{i - 1} \\
+		\sysf                   _{i} & =    & 1                                \\
+	\end{array} \right.
+	}
+\end{center}
+We impose preliminary constraints that apply to the processing of any type of system transaction
+happening after user transaction processing.
+\begin{description}
+	\item[\underline{Setting the first few perspectives:}]
+		we impose that
+		\[
+			\left[ \begin{array}{cr}
+				+ & \isUserTxnHubView     _{i + \hubViewRowOffset                            } \\
+				+ & \isUserTxnComputation _{i + \firtComputationOfSystemTransactionRowOffset } \\
+			\end{array} \right]
+			=
+			\yellowm{2}
+		\]
+	\item[\underline{Imposing the ``\loc{noop}'' scenario:}]
+		we impose that
+		\[
+			\txnDataHubSysfNoop _{i + \hubViewRowOffset} = \true
+		\]
+		\saNote{}
+		As of the \textsc{Cancun} and \textsc{Prague} releases of \linea's \zkEvm{}
+		there is \textbf{no support} of any of the system transactions playing out at the end
+		of block processing.
+	\item[\underline{Setting \maxCt{}:}]
+		we impose the following
+		\[
+			\maxCt _{i} = \locMaxCtSysiSum _{i}
+		\]
+		where
+		\[
+			\locMaxCtSysiSum _{i}
+			\define
+			\maxCtForSysfNoop \cdot \txnDataHubSysiNoop _{i + \hubViewRowOffset}
+		\]
+\end{description}
+
