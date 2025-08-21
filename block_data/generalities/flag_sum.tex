@@ -1,0 +1,21 @@
+We define the following shorthand
+\[
+	\locAboutToStartNewBlock _{i} \define
+	(1 - \locIsCoinbase _{i}) \cdot \locIsCoinbase _{i + 1}
+\]
+and impose the following constraints on the \locFlagSum{} shorthand:
+\begin{enumerate}
+	\item $\iomf$ is binary (\sanityCheck)
+	\item $\iomf _{0} = 0$
+	\item \If $\iomf _{i} = 0$ \Then $\iomf _{i + 1} = \locAboutToStartNewBlock _{i}$
+	\item \If $\iomf _{i} = 1$ \Then $\iomf _{i + 1} = 1$
+	\item $\iomf _{i} = \locFlagSum _{i}$
+\end{enumerate}
+\saNote{}
+The above ensures that the $\loc{is\_XX}$ columns are (binary) exclusive.
+
+\saNote{}
+The above further ensures that \locFlagSum{} is monotonous.
+
+\saNote{}
+The above ensures that the first processing phase is that corresponding to the \texttt{COINBASE}.
