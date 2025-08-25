@@ -1,8 +1,8 @@
 We impose that
 \begin{enumerate}
-	\item \wcpFlag{} is binary (\trash)
-	\item \eucFlag{} is binary (\trash)
-	\item $\wcpFlag \cdot \eucFlag \equiv 0$ i.e. \wcpFlag{} and \eucFlag{} are \textbf{exclusive binary flags}
+	\item \txnDataCmptnWcpFlag{} is binary (\trash)
+	\item \txnDataCmptnEucFlag{} is binary (\trash)
+	\item $\txnDataCmptnWcpFlag \cdot \txnDataCmptnEucFlag \equiv 0$ i.e. \txnDataCmptnWcpFlag{} and \txnDataCmptnEucFlag{} are \textbf{exclusive binary flags}
 \end{enumerate}
 We define parametrized constraint families to deal with setting comparisons
 \[
@@ -15,11 +15,11 @@ We define parametrized constraint families to deal with setting comparisons
 		}
 		& \iff &
 		\left\{ \begin{array}{lcl}
-			\wcpFlag   _{i + \relof}  & = & \true        \\
-			\eucFlag   _{i + \relof}  & = & \nothing     \\
-			\argOneLo  _{i + \relof}  & = & \col{arg\_1} \\
-			\argTwoLo  _{i + \relof}  & = & \col{arg\_2} \\
-			\INST      _{i + \relof}  & = & \inst{LT}    \\
+			\txnDataCmptnWcpFlag   _{i + \relof}  & = & \true        \\
+			\txnDataCmptnEucFlag   _{i + \relof}  & = & \nothing     \\
+			\txnDataCmptnArgOneLo  _{i + \relof}  & = & \col{arg\_1} \\
+			\txnDataCmptnArgTwoLo  _{i + \relof}  & = & \col{arg\_2} \\
+			\txnDataCmptnInst      _{i + \relof}  & = & \inst{LT}    \\
 		\end{array} \right. \vspace{2mm} \\
 		\smallCallToLeq {
 			anchorRow = i            ,
@@ -29,11 +29,11 @@ We define parametrized constraint families to deal with setting comparisons
 		}
 		& \iff &
 		\left\{ \begin{array}{lcl}
-			\wcpFlag   _{i + \relof}  & = & \true        \\
-			\eucFlag   _{i + \relof}  & = & \nothing     \\
-			\argOneLo  _{i + \relof}  & = & \col{arg\_1} \\
-			\argTwoLo  _{i + \relof}  & = & \col{arg\_2} \\
-			\INST      _{i + \relof}  & = & \inst{LEQ}    \\
+			\txnDataCmptnWcpFlag   _{i + \relof}  & = & \true        \\
+			\txnDataCmptnEucFlag   _{i + \relof}  & = & \nothing     \\
+			\txnDataCmptnArgOneLo  _{i + \relof}  & = & \col{arg\_1} \\
+			\txnDataCmptnArgTwoLo  _{i + \relof}  & = & \col{arg\_2} \\
+			\txnDataCmptnInst      _{i + \relof}  & = & \inst{LEQ}    \\
 		\end{array} \right. \vspace{2mm} \\
 		\smallCallToIszero {
 			anchorRow = i            ,
@@ -42,11 +42,11 @@ We define parametrized constraint families to deal with setting comparisons
 		}
 		& \iff &
 		\left\{ \begin{array}{lcl}
-			\wcpFlag   _{i + \relof} & = & \true         \\
-			\eucFlag   _{i + \relof} & = & \nothing     \\
-			\argOneLo  _{i + \relof} & = & \col{arg\_1}  \\
-			\argTwoLo  _{i + \relof} & = & \nothing      \\
-			\INST      _{i + \relof} & = & \inst{ISZERO} \\
+			\txnDataCmptnWcpFlag   _{i + \relof} & = & \true         \\
+			\txnDataCmptnEucFlag   _{i + \relof} & = & \nothing     \\
+			\txnDataCmptnArgOneLo  _{i + \relof} & = & \col{arg\_1}  \\
+			\txnDataCmptnArgTwoLo  _{i + \relof} & = & \nothing      \\
+			\txnDataCmptnInst      _{i + \relof} & = & \inst{ISZERO} \\
 		\end{array} \right. \vspace{2mm} \\
 		\callToEuc
 		{i}{\relof}
@@ -54,22 +54,22 @@ We define parametrized constraint families to deal with setting comparisons
 		{\col{arg\_2}}
 		& \iff &
 		\left\{ \begin{array}{lcl}
-			\wcpFlag   _{i + \relof} & = & \nothing      \\
-			\eucFlag   _{i + \relof} & = & \true         \\
-			\argOneLo  _{i + \relof} & = & \col{arg\_1}  \\
-			\argTwoLo  _{i + \relof} & = & \col{arg\_2}  \\
+			\txnDataCmptnWcpFlag   _{i + \relof} & = & \nothing      \\
+			\txnDataCmptnEucFlag   _{i + \relof} & = & \true         \\
+			\txnDataCmptnArgOneLo  _{i + \relof} & = & \col{arg\_1}  \\
+			\txnDataCmptnArgTwoLo  _{i + \relof} & = & \col{arg\_2}  \\
 		\end{array} \right. \vspace{4mm} \\
 		\resultMustBeFalse {
 			anchorRow = i      ,
 			relOffset = \relof ,
 		}
 		& \iff &
-		\res _{i + \relof} = \false \\
+		\txnDataCmptnRes _{i + \relof} = \false \\
 		\resultMustBeTrue {
 			anchorRow = i      ,
 			relOffset = \relof ,
 		}
 		& \iff &
-		\res _{i + \relof} = \true  \\
+		\txnDataCmptnRes _{i + \relof} = \true  \\
 	\end{array} \right.
 \]
