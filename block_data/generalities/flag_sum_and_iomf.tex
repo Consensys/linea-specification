@@ -5,13 +5,20 @@ We define the following shorthand
 \]
 and impose the following constraints on the \locFlagSum{} shorthand:
 \begin{enumerate}
-	\item $\iomf$ is binary (\sanityCheck)
-	\item $\iomf _{0} = 0$
-	\item \If $\iomf _{i} = 0$ \Then $\iomf _{i + 1} = \locAboutToStartNewBlock _{i}$
-	\item \If $\iomf _{i} = 1$ \Then $\iomf _{i + 1} = 1$
-	\item $\iomf _{i} = \locFlagSum _{i}$
+	\item
+		$\iomf$ is binary (\sanityCheck)
+	\item
+		$\iomf _{0} = 0$
+	\item
+		\label{block data: generalities: flag sum and iomf constraints: the first phase is COINBASE}
+		\If $\iomf _{i} = 0$ \Then $\iomf _{i + 1} = \locAboutToStartNewBlock _{i}$
+	\item
+		\If $\iomf _{i} = 1$ \Then $\iomf _{i + 1} = 1$
+	\item
+		\label{block data: generalities: flag sum and iomf constraints: pegging iomf to the flag sum}
+		$\iomf _{i} = \locFlagSum _{i}$
 \end{enumerate}
-\saNote{} \label{block data: generalities: flag sum and iomf constraints: flag exclusivities}
+\saNote{}\label{block data: generalities: flag sum and iomf constraints: flag exclusivities}
 The above ensures that the $\loc{is\_XX}$ columns are (binary) exclusive.
 
 \saNote{}
@@ -19,3 +26,12 @@ The above further ensures that \locFlagSum{} is monotonous.
 
 \saNote{}
 The above ensures that the first processing phase is that corresponding to the \texttt{COINBASE}.
+Given
+constraint~(\ref{block data: generalities: flag sum and iomf constraints: pegging iomf to the flag sum})
+pegging \iomf{} to \locFlagSum{} one could replace
+constraint~(\ref{block data: generalities: flag sum and iomf constraints: the first phase is COINBASE})
+with e.g. 
+\[
+	``\If \iomf _{i} = 0 ~ \Then \iomf _{i + 1} = \locIsCoinbase _{i + 1}" \qquad (\sanityCheck)
+\]
+but we have chosen not to for readability.

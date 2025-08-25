@@ -85,43 +85,46 @@ where we set
 \]
 We further define the following shorthands
 \[
-	\locPhaseEntry _{i} \define
-	\left[ \begin{array}{clcl}
-		+ & (1 - \locIsCoinbase    _{i}) & \cdot & \locIsCoinbase    _{i + 1} \\
-		+ & (1 - \locIsTimestamp   _{i}) & \cdot & \locIsTimestamp   _{i + 1} \\
-		+ & (1 - \locIsNumber      _{i}) & \cdot & \locIsNumber      _{i + 1} \\
-		+ & (1 - \locIsPrevRandao  _{i}) & \cdot & \locIsPrevRandao  _{i + 1} \\
-		+ & (1 - \locIsGaslimit    _{i}) & \cdot & \locIsGaslimit    _{i + 1} \\
-		+ & (1 - \locIsChainid     _{i}) & \cdot & \locIsChainid     _{i + 1} \\
-		+ & (1 - \locIsBasefee     _{i}) & \cdot & \locIsBasefee     _{i + 1} \\
-		+ & (1 - \locIsBlobBasefee _{i}) & \cdot & \locIsBlobBasefee _{i + 1} \\
-	\end{array} \right]
-	\quad\text{and}\quad
-	\locSamePhase _{i} \define
-	\left[ \begin{array}{clcl}
-		+ & \locIsCoinbase    _{i} & \cdot & \locIsCoinbase    _{i + 1} \\
-		+ & \locIsTimestamp   _{i} & \cdot & \locIsTimestamp   _{i + 1} \\
-		+ & \locIsNumber      _{i} & \cdot & \locIsNumber      _{i + 1} \\
-		+ & \locIsPrevRandao  _{i} & \cdot & \locIsPrevRandao  _{i + 1} \\
-		+ & \locIsGaslimit    _{i} & \cdot & \locIsGaslimit    _{i + 1} \\
-		+ & \locIsChainid     _{i} & \cdot & \locIsChainid     _{i + 1} \\
-		+ & \locIsBasefee     _{i} & \cdot & \locIsBasefee     _{i + 1} \\
-		+ & \locIsBlobBasefee _{i} & \cdot & \locIsBlobBasefee _{i + 1} \\
-	\end{array} \right]
-\]
-and
-\[
-	\locLegalTransitions _{i} \define
-	\left[ \begin{array}{clcl}
-		+ & \locIsCoinbase    _{i} & \cdot & \locIsTimestamp   _{i + 1} \\
-		+ & \locIsTimestamp   _{i} & \cdot & \locIsNumber      _{i + 1} \\
-		+ & \locIsNumber      _{i} & \cdot & \locIsPrevRandao  _{i + 1} \\
-		+ & \locIsPrevRandao  _{i} & \cdot & \locIsGaslimit    _{i + 1} \\
-		+ & \locIsGaslimit    _{i} & \cdot & \locIsChainid     _{i + 1} \\
-		+ & \locIsChainid     _{i} & \cdot & \locIsBasefee     _{i + 1} \\
-		+ & \locIsBasefee     _{i} & \cdot & \locIsBlobBasefee _{i + 1} \\
-		+ & \locIsBlobBasefee _{i} & \cdot & \locIsCoinbase    _{i + 1} \\
-	\end{array} \right]
+	\left\{ \begin{array}{lcl}
+		\locUpcomingPhaseIsDifferent _{i} & \define &
+		\left[ \begin{array}{clcl}
+			+ & (1 - \locIsCoinbase    _{i}) & \cdot & \locIsCoinbase    _{i + 1} \\
+			+ & (1 - \locIsTimestamp   _{i}) & \cdot & \locIsTimestamp   _{i + 1} \\
+			+ & (1 - \locIsNumber      _{i}) & \cdot & \locIsNumber      _{i + 1} \\
+			+ & (1 - \locIsPrevRandao  _{i}) & \cdot & \locIsPrevRandao  _{i + 1} \\
+			+ & (1 - \locIsGaslimit    _{i}) & \cdot & \locIsGaslimit    _{i + 1} \\
+			+ & (1 - \locIsChainid     _{i}) & \cdot & \locIsChainid     _{i + 1} \\
+			+ & (1 - \locIsBasefee     _{i}) & \cdot & \locIsBasefee     _{i + 1} \\
+			+ & (1 - \locIsBlobBasefee _{i}) & \cdot & \locIsBlobBasefee _{i + 1} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locUpcomingPhaseIsTheSame _{i} & \define &
+		\left[ \begin{array}{clcl}
+			+ & \locIsCoinbase    _{i} & \cdot & \locIsCoinbase    _{i + 1} \\
+			+ & \locIsTimestamp   _{i} & \cdot & \locIsTimestamp   _{i + 1} \\
+			+ & \locIsNumber      _{i} & \cdot & \locIsNumber      _{i + 1} \\
+			+ & \locIsPrevRandao  _{i} & \cdot & \locIsPrevRandao  _{i + 1} \\
+			+ & \locIsGaslimit    _{i} & \cdot & \locIsGaslimit    _{i + 1} \\
+			+ & \locIsChainid     _{i} & \cdot & \locIsChainid     _{i + 1} \\
+			+ & \locIsBasefee     _{i} & \cdot & \locIsBasefee     _{i + 1} \\
+			+ & \locIsBlobBasefee _{i} & \cdot & \locIsBlobBasefee _{i + 1} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locUpcomingLegalTransition _{i} & \define &
+		\left[ \begin{array}{clcl}
+			+ & \locIsCoinbase    _{i} & \cdot & \locIsTimestamp   _{i + 1} \\
+			+ & \locIsTimestamp   _{i} & \cdot & \locIsNumber      _{i + 1} \\
+			+ & \locIsNumber      _{i} & \cdot & \locIsPrevRandao  _{i + 1} \\
+			+ & \locIsPrevRandao  _{i} & \cdot & \locIsGaslimit    _{i + 1} \\
+			+ & \locIsGaslimit    _{i} & \cdot & \locIsChainid     _{i + 1} \\
+			+ & \locIsChainid     _{i} & \cdot & \locIsBasefee     _{i + 1} \\
+			+ & \locIsBasefee     _{i} & \cdot & \locIsBlobBasefee _{i + 1} \\
+			+ & \locIsBlobBasefee _{i} & \cdot & \locIsCoinbase    _{i + 1} \\
+		\end{array} \right]
+		\\
+	\end{array} \right.
 \]
 We also introduce the following shorthands for improved expressivity
 \[
