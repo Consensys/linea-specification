@@ -1,0 +1,45 @@
+As per usual we declare a column \col{X} to be \textbf{conflation-constant} if it satisfies
+\[
+	\If \iomf _{i} = \true ~ \Then \col{X} _{i + 1} = \col{X} _{i}
+\]
+\textbf{block-constant} if it satisfies
+\[
+	\If   \relBlock _{i} \neq 1 + \relBlock _{i - 1} ~
+	\Then \col{X}_{i} = \col{X}_{i - 1}
+\]
+and \textbf{counter-constant} if it satisfies
+\[
+	\If \ct _{i} \neq 0 ~
+	\Then \col{X}_{i} = \col{X}_{i - 1}
+\]
+We impose that the following columns be \textbf{conflation-constant}
+\begin{enumerate}
+	\item \blockNumberOfFirstBlockInConflation
+\end{enumerate}
+and the following columns be \textbf{block-constant}
+\begin{multicols}{3}
+	\begin{enumerate}
+		\item $\coinbase\high$
+		\item $\coinbase\low$
+		\item $\blockGasLimit$
+		\item $\basefee$
+		\item $\timestamp$
+		\item $\numberr$
+	\end{enumerate}
+\end{multicols}
+and that the following columns be \textbf{counter-constant}
+\begin{multicols}{3}
+	\begin{enumerate}
+		\item $\blockDataHi$
+		\item $\blockDataLo$
+		\item $\locWghtSum$
+	\end{enumerate}
+\end{multicols}
+\saNote{}
+The \textbf{counter-constancy} of $\locWghtSum$ along with
+\textbf{flag exclusivity} of the \loc{is\_XX} binary flags,
+see note~(\ref{block data: generalities: flag sum and iomf constraints: flag exclusivities}),
+implicitly enforces
+counter-constancy of all involved \loc{is\_XX} binary flags
+and thus of all expressions derived from these flags by linear combination,
+e.g. \locMaxCtSum{} or \locInstSum{}.

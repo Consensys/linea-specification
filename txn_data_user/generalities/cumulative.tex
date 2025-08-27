@@ -1,0 +1,48 @@
+\def\locFirstRowOfNewTransactionRoff {\numConst{1}}
+The present section constrains the $\cumulativeConsumedGas$ column.
+The goal is to have $\cumulativeConsumedGas$
+tally the consumed gas \textbf{in a block},
+\textbf{up to and including the current transaction},
+and \textbf{reset with every block}.
+\begin{enumerate}
+	\item
+		$\cumulativeConsumedGas$ is counter-constant
+	\item
+		\label{user txn data: generalities: cumulative gas: cumulative gas is zero outside of user transactions}
+		\If $\user _{i} = \false$ \Then $\cumulativeConsumedGas _{i} = 0$
+	\item
+		\label{user txn data: generalities: cumulative gas: cumulative gas update constraints}
+		\If $\userTransactionNumber _{i + \locFirstRowOfNewTransactionRoff} \neq \userTransactionNumber _{i}$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\isUserTxnHubView      _{i + \locFirstRowOfNewTransactionRoff} & = & \true \qquad (\sanityCheck) \\
+				\cumulativeConsumedGas _{i + \locFirstRowOfNewTransactionRoff} & = &
+				\left[ \begin{array}{ll}
+					+ & \cumulativeConsumedGas    _{i}                                                 \\
+					+ & \big( \txnDataHubGasLimit _{i + \locFirstRowOfNewTransactionRoff} - \txnDataHubEffectiveRefund _{i + \locFirstRowOfNewTransactionRoff} \big) \\
+				\end{array}\right] \\
+			\end{array} \right.
+		\]
+\end{enumerate}
+\saNote{}
+We draw attention to the reader that
+section~(\ref{user txn data: generalities: total transaction number: transaction processing starts with a HUB row})
+imposes transaction processing to start with a $\isUserTxnHubView$-row.
+From the premise ``$\userTransactionNumber _{i + \locFirstRowOfNewTransactionRoff} \neq \userTransactionNumber _{i}$''
+we can therefore deduce that $\isUserTxnHubView _{i + \locFirstRowOfNewTransactionRoff} \equiv \true$,
+whence the (\sanityCheck).
+In particular the usage of $\txnDataHubXxx _{i + \locFirstRowOfNewTransactionRoff}$ cells is justified.
+
+\saNote{}
+When $\sysi _{i} = \true$, and hence $\cumulativeConsumedGas _{i} \equiv 0$
+by constraint~(\ref{user txn data: generalities: cumulative gas: cumulative gas is zero outside of user transactions}),
+then
+constraint~(\ref{user txn data: generalities: cumulative gas: cumulative gas update constraints})
+\textbf{initializes} \cumulativeConsumedGas{} for the first \user{}-transaction in any block.
+
+\saNote{}
+When $\user _{i} = \true$,
+then
+constraint~(\ref{user txn data: generalities: cumulative gas: cumulative gas update constraints})
+\textbf{updates} \cumulativeConsumedGas{} at \user{}-transaction boundaries within a block.
+

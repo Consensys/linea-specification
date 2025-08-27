@@ -13,12 +13,27 @@ We impose the following constraints:
 		\[
 			\rlpProcessBytesThirtyTwo {
 				anchorRow = i                      ,
-				relOffset = 0	                   ,
+				relOffset = 0                      ,
 				dataHi    = \loc{storage\_key\_hi} ,
 				dataLo    = \loc{storage\_key\_lo} ,
 			}
 		\]
-	\item[\underline{Setting the next step:}] ---
+		where
+		\[
+			\left\{ \begin{array}{lcl}
+				\loc{storage\_key\_hi} & \define & \rlpTxnComputationColumnExoDataColumn{1} _{i} \\
+				\loc{storage\_key\_lo} & \define & \rlpTxnComputationColumnExoDataColumn{2} _{i} \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		The above is, as it pertains to setting the storage key parameters,
+		tautological, in that, given the definitions of
+		\loc{storage\_key\_hi} / \loc{storage\_key\_lo}
+		$\rlpProcessBytesThirtyTwoName$ will end up equating
+		$\rlpTxnComputationColumnExoDataColumn{k}$ with itself for $k = 1, 2$.
+		The intent is that $\rlpTxnComputationColumnExoDataColumn{k}$
+		should contain the correct data to begin with.
+\item[\underline{Setting the next step:}] ---
 		\begin{enumerate}
 			\item \If $\locStorageKeyListCountdown _{i} \neq 0$ \Then \[ \rlpTxnSharedColumnIsAccessListStorageKey _{i + 3} = \true \]
 			\item \If $\locStorageKeyListCountdown _{i} =    0$ \Then

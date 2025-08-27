@@ -200,13 +200,14 @@
 \newcommand{\deprecated}                            {\colorbox{solarized-green}     {\textbf{~~Deprecated~~}}}
 \newcommand{\markAsExtractedFromBtc}                {\colorbox{solarized-red}       {\textbf{~~Extracted from \btcMod{}~~}}}
 \newcommand{\markAsExtractedFromRlpTxn}             {\colorbox{solarized-blue}      {\textbf{~~Extracted from \rlpTxnMod{}~~}}}
-\newcommand{\markAsSometimesExtractedFromRlpTxn}    {\colorbox{solarized-blue}      {\textbf{~~Sometimes extracted from \rlpTxnMod{}~~}}}
+\newcommand{\markAsDerivedFromRlpTxn}               {\colorbox{solarized-green}     {\textbf{~~Derived from \rlpTxnMod{}~~}}}
+\newcommand{\markAsExtractedFromRlpAddr}            {\colorbox{solarized-blue}      {\textbf{~~Extracted from \rlpAddrMod{}~~}}}
 \newcommand{\markAsExtractedFromHub}                {\colorbox{solarized-orange}    {\textbf{~~Extracted from \hubMod{}~~}}}
 \newcommand{\markAsPartiallyComputedHere}           {\colorbox{solarized-yellow}    {\textbf{~~Partially computed here~~}}}
 \newcommand{\markAsComputedHere}                    {\colorbox{solarized-yellow}    {\textbf{~~Computed here~~}}}
 \newcommand{\markAsPartiallyJustifiedHere}          {\colorbox{solarized-yellow}    {\textbf{~~Partially justified here~~}}}
 \newcommand{\markAsJustifiedHere}                   {\colorbox{solarized-yellow}    {\textbf{~~Justified here~~}}}
-\newcommand{\markAsExtractedFromEcrecover}          {\colorbox{solarized-yellow}    {\textbf{~~Extracted from ECRECOVER~~}}}
+\newcommand{\markAsObtainedViaEcrecover}            {\colorbox{solarized-yellow}    {\textbf{~~Obtained via \texttt{ECRECOVER}~~}}}
 
 
 % \newcommand{\define}                   {\triangleq}
@@ -243,6 +244,7 @@
 \newcommand{\ccbc}           {\yellow{\col{c.c.b.c.}}}    % counter-constant binary column
 \newcommand{\cncc}           {\yellow{\col{cn.c.c.}}}     % context-constant column
 \newcommand{\cncbc}          {\yellow{\col{cn.c.b.c.}}}   % context-constant column binary column
+\newcommand{\bcc}            {\yellow{\col{b.c.c.}}}      % block-constant column
 
 \newcommand{\module}{\col{MOD}}
 
@@ -304,3 +306,14 @@
 % TODO: move to file for global macros
 \newcommand{\both}[1]                   {#1[] \textcolor{magenta}{$\equiv$} #1}
 \newcommand{\newcol}[3]                 {\newcommand{#1}[1][\empty]{\ifx\empty##1\col{#2}\else\col{#3}\fi}}
+
+\usepackage{graphicx}
+
+\makeatletter
+\providecommand{\leftsquigarrow}{%
+  \mathrel{\mathpalette\reflect@squig\relax}%
+}
+\newcommand{\reflect@squig}[2]{%
+  \reflectbox{$\m@th#1\rightsquigarrow$}%
+}
+\makeatother

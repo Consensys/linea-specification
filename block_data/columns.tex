@@ -8,6 +8,9 @@ The first set of columns will be used to define the heartbeat of the \btcMod{} m
 	\item $\ct$:
 		counter column; hovers around zero and then cycles from $0$ to $\maxCt$;
 \end{enumerate}
+We define
+\textbf{padding-rows} as those rows where $\iomf \equiv \false$ and
+\textbf{non-padding-rows} as those rows where $\iomf \equiv \true$.
 We introduce some binary columns linked to the instructions that the present module deals with:
 \begin{multicols}{3}
 	\begin{enumerate}[resume]
@@ -22,27 +25,36 @@ We introduce some binary columns linked to the instructions that the present mod
 	\end{enumerate}
 \end{multicols}
 \noindent The following columns contain data which is reflected in the \userTxnDataMod{} module.
+The acronym ``\bcc'' stands for \textbf{block-constant column}.
 \begin{enumerate}[resume, start=13]
 	\item $\instruction$:
+		\ccc{}
 		instruction column;
 	\item $\coinbase\high$ and $\coinbase\low$:
-		\ccc{} containing the
-		coinbase address;
+		\bcc{} containing the block's
+		\textbf{coinbase} address;
 	\item \blockGasLimit{}:
-		\ccc{} containing the
-		block gas limit;
+		\bcc{} containing the block's
+		\textbf{block gas limit};
 	\item \basefee{}:
-		\ccc{} containing the
-		base fee;
+		\bcc{} containing the block's
+		\textbf{base fee};
+	\item \timestamp{}:
+		\bcc{} containing the block's
+		\textbf{timestamp};
+	\item \numberr{}:
+		\bcc{} containing the block's
+		\textbf{(block) number};
 \end{enumerate}
 The following columns pertain to transaction and block numbers.
 \begin{enumerate}[resume]
 	\item \blockNumberOfFirstBlockInConflation{}:
 		``conflation-constant'' column containing the block number\footnote{In the sense of the \evm{}} of the first block of this conflation;
 	\item $\relBlock$:
-		\ccc{} containing the relative block number;
+		column containing the relative block number;
+		the first block of any conflation has $\relBlock \equiv 1$;
 	\item $\blockDataHi$, $\blockDataLo$:
-		columns containing block data;
+		\ccc{}'s containing various block data;
 \end{enumerate}
 The following columns are used in lookups from the \btcMod{} module into the \wcpMod{} and \eucMod{} modules.
 \begin{enumerate}[resume]
