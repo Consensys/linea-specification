@@ -21,9 +21,9 @@ In other words: row $i$ marks the beginning of the processing of a new transacti
 		Its definition will be given in
 		section~(\ref{hub: tx skip: sysi: eip 4788: shorthands}).
 	\item
-		We refine the above in terms of \locBeaconRootAccountExists:
+		We refine the above in terms of whether or not the system transaction is trivial or not:
 		\begin{enumerate}
-			\item \If $\locBeaconRootAccountExists = \false$ \Then
+			\item \If $\locSystemTransactionIsTrivial = \true$ \Then
 				\[
 					\left[ \begin{array}{cl}
 						+ & \peekTransaction _{i + \roffTxSkipSysiBeaconRootTransaction                        } \\
@@ -33,17 +33,22 @@ In other words: row $i$ marks the beginning of the processing of a new transacti
 					= 
 					\nsrTxSkipSysiBeaconRootAccountDoesntExist
 				\]
-			\item \If $\locBeaconRootAccountExists = \true$ \Then
+			\item \If $\locSystemTransactionIsNontrivial = \true$ \Then
 				\[
 					\left[ \begin{array}{cl}
 						+ & \peekTransaction _{i + \roffTxSkipSysiBeaconRootTransaction                        } \\
 						+ & \peekAccount     _{i + \roffTxSkipSysiBeaconRootSystemContractAccount              } \\
 						+ & \peekStorage     _{i + \roffTxSkipSysiBeaconRootSystemContractStorageSetTimestamp  } \\
 						+ & \peekStorage     _{i + \roffTxSkipSysiBeaconRootSystemContractStorageSetBeaconRoot } \\
-						+ & \peekContext     _{i + \roffTxSkipSysiBeaconRootZeroContext                        } \\
+						+ & \peekContext     _{i + \roffTxSkipSysiBeaconRootZeroContextAccountExists                        } \\
 					\end{array} \right]
 					= 
 					\nsrTxSkipSysiBeaconRootAccountExists
 				\]
 		\end{enumerate}
 \end{enumerate}
+\saNote{}
+\locSystemTransactionIsTrivial{} and
+\locSystemTransactionIsNontrivial{}
+are defined in
+section~(\ref{hub: tx skip: sysi: eip 4788: shorthands}).

@@ -1,13 +1,32 @@
 We define the following shorthands
 \[
 	\left\{ \begin{array}{lcl}
-		\locBeaconRootAccountExists   & \define & \accExists           _{i + \roffTxSkipSysiBeaconRootSystemContractAccount} \vspace{2mm} \\
-		\locLineaTimestamp            & \define & \systemTxnDataCol{1} _{i + \roffTxSkipSysiBeaconRootTransaction}           \\
-		\locLineaTimestampModuloPrime & \define & \systemTxnDataCol{2} _{i + \roffTxSkipSysiBeaconRootTransaction}           \\
-		\locBeaconRootHi              & \define & \systemTxnDataCol{3} _{i + \roffTxSkipSysiBeaconRootTransaction}           \\
-		\locBeaconRootLo              & \define & \systemTxnDataCol{4} _{i + \roffTxSkipSysiBeaconRootTransaction}           \\
+		\locBeaconRootAccountExists    & \define & \accExists           _{i + \roffTxSkipSysiBeaconRootSystemContractAccount} \vspace{2mm} \\
+		\locLineaTimestamp             & \define & \systemTxnDataCol{1} _{i + \roffTxSkipSysiBeaconRootTransaction}                        \\
+		\locLineaTimestampModuloPrime  & \define & \systemTxnDataCol{2} _{i + \roffTxSkipSysiBeaconRootTransaction}                        \\
+		\locBeaconRootHi               & \define & \systemTxnDataCol{3} _{i + \roffTxSkipSysiBeaconRootTransaction}                        \\
+		\locBeaconRootLo               & \define & \systemTxnDataCol{4} _{i + \roffTxSkipSysiBeaconRootTransaction}                        \\
+		\locCurrentBlockIsGenesisBlock & \define & \systemTxnDataCol{5} _{i + \roffTxSkipSysiBeaconRootTransaction}                        \\
 	\end{array} \right.
 \]
+and we deduce the following shorthand from it
+\[
+	\left\{ \begin{array}{lcl}
+		\locSystemTransactionIsNontrivial & \define &
+		\left[ \begin{array}{cl}
+			\cdot & \locBeaconRootAccountExists          \\
+			\cdot & (1 - \locCurrentBlockIsGenesisBlock) \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locSystemTransactionIsTrivial      & \define & 1 - \locSystemTransactionIsNontrivial                                  \\
+	\end{array} \right.
+\]
+\saNote{}
+\locSystemTransactionIsNontrivial{} is therefore logically equivalent to the
+the conjunction of the relevant system smart contract existing and the present block
+not being the genesis block.
+
 \saNote{}
 The above is well-defined given the
 unconditional constraint~(\ref{hub: tx skip: sysi: eip 4788: peeking flags: the first two rows are txn and acc rows}).
