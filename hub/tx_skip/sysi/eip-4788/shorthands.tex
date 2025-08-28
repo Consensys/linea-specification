@@ -12,20 +12,22 @@ We define the following shorthands
 and we deduce the following shorthand from it
 \[
 	\left\{ \begin{array}{lcl}
-		\locSystemTransactionIsNontrivial & \define &
+		\locBeaconRootSystemTransactionIsNontrivial & \define &
 		\left[ \begin{array}{cl}
 			\cdot & \locBeaconRootAccountExists          \\
 			\cdot & (1 - \locCurrentBlockIsGenesisBlock) \\
 		\end{array} \right]
 		\vspace{2mm}
 		\\
-		\locSystemTransactionIsTrivial      & \define & 1 - \locSystemTransactionIsNontrivial                                  \\
+		\locBeaconRootSystemTransactionIsTrivial      & \define & 1 - \locBeaconRootSystemTransactionIsNontrivial                                  \\
 	\end{array} \right.
 \]
 \saNote{}
-\locSystemTransactionIsNontrivial{} is therefore logically equivalent to the
-the conjunction of the relevant system smart contract existing and the present block
-not being the genesis block.
+\locBeaconRootSystemTransactionIsNontrivial{}
+is therefore logically equivalent to the
+the conjunction of
+(\emph{a}) the account at address \beaconRootAddress{} having nonempty byte code
+(\emph{b}) the current block not being the genesis block.
 
 \saNote{}
 The above is well-defined given the
