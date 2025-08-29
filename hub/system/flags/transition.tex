@@ -14,15 +14,20 @@ The following constraints define legal flag transitions:
 % 	``\If \sysi _{i} = 1 ~ \Then + ~ \sysi _{i + 1} + \user _{i + 1} + \sysf _{i + 1} = 1"
 % \]
 \saNote{}
-The first (\sanityCheck) constraint is \textbf{vacuously true}.
+The first (\sanityCheck) constraint is \textbf{vacuously true},
+see section~(\ref{hub: system: system flags: generalities}).
 We include it for completeness sake and because its interpretation is meaningful.
-Indeed, \textbf{this constraints allows for empty blocks}.
-If one wants to disallow empty blocks one should insteam impose
+Indeed, \textbf{this constraints allows for empty blocks},
+meaning: blocks that include not \user{}-transactions.
+If one wants to disallow empty blocks one should instead impose
 \[
 	``\If \sysi _{i} = 1 ~ \Then + ~ \sysi _{i + 1} + \user _{i + 1} = 1"
 \]
-which requires \sysi{}-transactions to be followed up by either
-\sysi{}-transactions or
-\user{}-transactions
-and disallows direct transitions from \sysi{}-transactions to \sysf{}-transactions.
+which requires
+\sysi{}-rows (and therefore \sysi{}-transactions) to be followed up by either
+\sysi{}-rows (and therefore \sysi{}-transactions) or
+\user{}-rows (and therefore \user{}-transactions)
+and thereby explicitly disallows direct transitions from
+\sysi{}-rows (and therefore \sysi{}-transactions) to
+\sysf{}-rows (and therefore \sysf{}-transactions).
 
