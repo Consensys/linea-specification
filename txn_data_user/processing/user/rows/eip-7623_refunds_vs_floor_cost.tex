@@ -7,13 +7,13 @@
 					anchorRow = i                                               ,
 					relOffset = \effectiveRefundVsTransactionFloorCostRowOffset ,
 					argOneLo  = \locConsumedGasAfterRefunds                     ,
-					argTwoLo  = \locDataFloorCost                               ,
+					argTwoLo  = \locTransactionFloorCost                        ,
 				}}
 				\vspace{2mm} \\
-				\locPayFloorCost        & \define & \txnDataCmptnRes _{i + \effectiveRefundVsTransactionFloorCostRowOffset} \\
+				\locPayFloorCost & \define & \txnDataCmptnRes _{i + \effectiveRefundVsTransactionFloorCostRowOffset} \\
 		\end{array} \right.
 	\]
-	In other words $\locPayFloorCost \equiv \texttt{true} \iff \big[ \locConsumedGasAfterRefunds < \locDataFloorCost \big]$.
+	In other words $\locPayFloorCost \equiv \true \iff \big[ \locConsumedGasAfterRefunds < \locTransactionFloorCost \big]$.
 
 	We are now in a position to constrain \locHubEffectiveRefund{}.
 	However, the value of \locHubEffectiveRefund{} depends on the hardfork:
@@ -49,8 +49,8 @@
 						\locHubEffectiveRefund
 						=
 						\left[ \begin{array}{cr}
-							+ & \locRlpGasLimit   \\
-							- & \locDataFloorCost \\
+							+ & \locRlpGasLimit          \\
+							- & \locTransactionFloorCost \\
 						\end{array} \right]
 					\]
 			\end{enumerate}
