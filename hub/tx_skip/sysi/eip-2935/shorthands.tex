@@ -1,11 +1,35 @@
 We define the following shorthands
 \[
+	\left\{ \begin{array}{lclr}
+		\locBlockHashAccountExists         & \define & \accExists           _{i + \roffTxSkipSysiBlockHashSystemContractAccount} \vspace{2mm} \\
+		\locPreviousBlockNumber            & \define & \systemTxnDataCol{1} _{i + \roffTxSkipSysiBlockHashTransaction}                         & (\trash) \\
+		\locPreviousBlockNumberModuloPrime & \define & \systemTxnDataCol{2} _{i + \roffTxSkipSysiBlockHashTransaction}                        \\
+		\locPreviousBlockHashHi            & \define & \systemTxnDataCol{3} _{i + \roffTxSkipSysiBlockHashTransaction}                        \\
+		\locPreviousBlockHashLo            & \define & \systemTxnDataCol{4} _{i + \roffTxSkipSysiBlockHashTransaction}                        \\ % XXXXXX with EIP 2935 \specTodo
+		\locCurrentBlockIsGenesisBlock     & \define & \systemTxnDataCol{5} _{i + \roffTxSkipSysiBlockHashTransaction}                        \\
+	\end{array} \right.
+\]
+and we deduce the following shorthand from it
+\[
 	\left\{ \begin{array}{lcl}
-		\locPreviousBlockNumberModuloPrime & \define & \systemTxnDataCol {1}  _{i + \roffTxSkipSysiBlockHashTransaction} \\
-		\locPreviousBlockHashHi            & \define & \systemTxnDataCol {2}  _{i + \roffTxSkipSysiBlockHashTransaction} \\
-		\locPreviousBlockHashLo            & \define & \systemTxnDataCol {3}  _{i + \roffTxSkipSysiBlockHashTransaction} \\ % XXXXXX with EIP 2935 \specTodo
+		\locBlockHashSystemTransactionIsNontrivial & \define &
+		\left[ \begin{array}{cl}
+			\cdot & \locBlockHashAccountExists           \\
+			\cdot & (1 - \locCurrentBlockIsGenesisBlock) \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locBlockHashSystemTransactionIsTrivial & \define & 1 - \locBlockHashSystemTransactionIsNontrivial \\
 	\end{array} \right.
 \]
 \saNote{}
-Compare this to
+\locBlockHashSystemTransactionIsNontrivial{}
+is therefore logically equivalent to the
+the conjunction of
+(\emph{a}) the account at address \blockHashAddress{} having nonempty byte code
+(\emph{b}) the current block not being the genesis block.
+
+\saNote{}
+We won't use the \locPreviousBlockNumber{} shorthand,
+we include it in the above only to mirror
 section~(\ref{system transactions: computations: eip 2935: shorthands}).
