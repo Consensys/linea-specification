@@ -1,16 +1,28 @@
 The following constraints define legal flag transitions:
 \[
 	\left\{ \begin{array}{lrrrrr}
-		% \If \sysi _{i} = 1 ~ \Then + ~ \sysi _{i + 1} & + ~ \user _{i + 1} & + ~ \sysf _{i + 1} & = & 1 & (\sanityCheck) \\
-		\If \sysi _{i} = 1 ~ \Then + ~ \sysi _{i + 1} & + ~ \user _{i + 1} &                    & = & 1 & \undefinedStar \\
+		\If \sysi _{i} = 1 ~ \Then + ~ \sysi _{i + 1} & + ~ \user _{i + 1} & + ~ \sysf _{i + 1} & = & 1 & (\sanityCheck) \\
+		% \If \sysi _{i} = 1 ~ \Then + ~ \sysi _{i + 1} & + ~ \user _{i + 1} &                    & = & 1 & \undefinedStar \\
 		\If \user _{i} = 1 ~ \Then   ~                & + ~ \user _{i + 1} & + ~ \sysf _{i + 1} & = & 1 \\
 		\If \sysf _{i} = 1 ~ \Then + ~ \sysi _{i + 1} & ~                  & + ~ \sysf _{i + 1} & = & 1 \\
 	\end{array} \right.
 \]
+% \saNote{}
+% The \zkEvm{} may be upgraded to allow for empty blocks (that is: blocks containing no user transactions)
+% by replacing the equation $\undefinedStar$ with
+% \[
+% 	``\If \sysi _{i} = 1 ~ \Then + ~ \sysi _{i + 1} + \user _{i + 1} + \sysf _{i + 1} = 1"
+% \]
 \saNote{}
-The \zkEvm{} may be upgraded to allow for empty blocks (that is: blocks containing no user transactions)
-by replacing the equation $\undefinedStar$ with
+The first (\sanityCheck) constraint is \textbf{vacuously true}.
+We include it for completeness sake and because its interpretation is meaningful.
+Indeed, \textbf{this constraints allows for empty blocks}.
+If one wants to disallow empty blocks one should insteam impose
 \[
-	``\If \sysi _{i} = 1 ~ \Then + ~ \sysi _{i + 1} + \user _{i + 1} + \sysf _{i + 1} = 1"
+	``\If \sysi _{i} = 1 ~ \Then + ~ \sysi _{i + 1} + \user _{i + 1} = 1"
 \]
+which requires \sysi{}-transactions to be followed up by either
+\sysi{}-transactions or
+\user{}-transactions
+and disallows direct transitions from \sysi{}-transactions to \sysf{}-transactions.
 
