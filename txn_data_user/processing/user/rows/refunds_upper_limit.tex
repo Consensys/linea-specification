@@ -1,16 +1,18 @@
 \item[\underline{\underline{Row n$°(i + \maxRefundRowOffset)$: upper limit for refunds:}}]
 	we impose that
 	\[
-		\callToEuc
-		{i}{\maxRefundRowOffset}
-		{\locExecutionGasCost}
-		{\maxRefundQuotient}
+		\eucCall {
+			anchorRow = i                    ,
+			relOffset = \maxRefundRowOffset  ,
+			argOne    = \locExecutionGasCost ,
+			argTwo    = \maxRefundQuotient   ,
+		}
 	\]
 	where we set / have used the following shorthands
 	\[
 		\left\{ \begin{array}{lcl}
-			\locExecutionGasCost & \define & \locRlpGasLimit - \locHubLeftoverGas \\
-			\locRefundLimit      & \define & \txnDataCmptnRes _{i + \maxRefundRowOffset}      \\
+			\locExecutionGasCost & \define & \locRlpGasLimit - \locHubLeftoverGas                \\
+			\locRefundLimit      & \define & \txnDataCmptnEucQuotient _{i + \maxRefundRowOffset} \\
 		\end{array} \right.
 	\]
 	where we have set
