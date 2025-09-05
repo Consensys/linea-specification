@@ -50,10 +50,12 @@ We define parametrized constraint families to deal with setting comparisons
 			\txnDataCmptnArgTwoLo  _{i + \relof} & = & \nothing      \\
 			\txnDataCmptnInst      _{i + \relof} & = & \inst{ISZERO} \\
 		\end{array} \right. \vspace{2mm} \\
-		\callToEuc
-		{i}{\relof}
-		{\col{arg\_1}}
-		{\col{arg\_2}}
+		\eucCall {
+			anchorRow = i            ,
+			relOffset = \relof       ,
+			argOne    = \col{arg\_1} ,
+			argTwo    = \col{arg\_2} ,
+		}
 		& \iff &
 		\left\{ \begin{array}{lcl}
 			\txnDataCmptnWcpFlag   _{i + \relof} & = & \nothing      \\
@@ -74,13 +76,13 @@ We define parametrized constraint families to deal with setting comparisons
 		& \iff &
 		\txnDataCmptnWcpRes _{i + \relof} = \true  \\
 	\end{array} \right.
-\]
-\saNote{}
-All comparisons requested in the present module involve ``small values''
-i.e. values that fit into a single $\oneTwoEight$-byte integer.
-These values arise from either the \rlpTxnMod{},
-which already enforces various smallness conditions,
-or from \linea{}'s state (e.g. \txnDataHubInitialBalance{}).
-Compare with the lookup from
-section~(\ref{user txn data: lookups: wcp})
-which sets the ``high'' parts of the \wcpMod{} counterparts to zero.
+	\]
+	\saNote{}
+	All comparisons requested in the present module involve ``small values''
+	i.e. values that fit into a single $\oneTwoEight$-byte integer.
+	These values arise from either the \rlpTxnMod{},
+	which already enforces various smallness conditions,
+	or from \linea{}'s state (e.g. \txnDataHubInitialBalance{}).
+	Compare with the lookup from
+	section~(\ref{user txn data: lookups: wcp})
+	which sets the ``high'' parts of the \wcpMod{} counterparts to zero.

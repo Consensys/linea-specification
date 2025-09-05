@@ -1,16 +1,18 @@
 \item[\underline{\underline{Row n$°(i + \initCodePricingRowOffset)$: \cite{EIP-3860} mandated init code pricing:}}]
 	we impose that
 	\[
-		\callToEuc
-		{i}{\initCodePricingRowOffset}
-		{\locHubInitCodeSize + \evmWordSizeMO}
-		{\evmWordSize}
+		\eucCall {
+			anchorRow = i                                    ,
+			relOffset = \initCodePricingRowOffset            ,
+			argOne    = \locHubInitCodeSize + \evmWordSizeMO ,
+			argTwo    = \evmWordSize                         ,
+		}
 	\]
 	and we unconditionally define the following shorthand
 	\[
 		\left\{ \begin{array}{lcl}
-			\locInitCodeWords & \define & \txnDataCmptnWcpRes _{i + \initCodePricingRowOffset}           \\
-			\locInitCodeCost  & \define & G_{\text{initcodeword}} \cdot \locInitCodeWords \\
+			\locInitCodeWords & \define & \txnDataCmptnEucQuotient _{i + \initCodePricingRowOffset} \\
+			\locInitCodeCost  & \define & G_{\text{initcodeword}} \cdot \locInitCodeWords           \\
 		\end{array} \right.
 	\]
 	where
