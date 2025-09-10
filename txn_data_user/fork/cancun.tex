@@ -17,4 +17,18 @@ When the underlying network runs the \textsc{Cancun} \evm{} we impose the follow
 				\If   $\sysi _{i} = \true$ and $\isUserTxnHubView _{i} = \true$
 				\Then $\txnDataHubNoopSystemTransaction _{i} = \true$
 		\end{enumerate}
+	\item[\underline{Transaction order:}]
+		we impose that
+		\begin{enumerate}
+			\item
+				\If $\sysi _{i - 1} = \false$ \et $\sysi _{i} = \true$
+				\Then
+				\[
+					\left\{ \begin{array}{lclr}
+						\isUserTxnHubView        _{i}                                         & = & \true               & (\sanityCheck) \\
+						\txnDataHubEipBeaconRoot _{i}                                         & = & \true \vspace{2mm} \\
+						\user _{i + \nRowsSysiBeaconRoot} + \sysf _{i + \nRowsSysiBeaconRoot} & = & \true              \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
 \end{description}
