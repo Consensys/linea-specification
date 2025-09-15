@@ -69,23 +69,6 @@ The following are columns \textbf{imported} from the RAM preprocessor. Colums th
 	\item $\idOne{}$ and $\idTwo{}$: contain an identifier (stamp) of the needed exo module;
 	\item $\Phase{}$: contains the ``phase'' in the exo module to specify, for a given ``stamp'' at which rows the lookup occurs;
 	\item $\successBit{}$: bit column; contains the success (or failure) of the current evm operation;
-		% TODO: add new macros and replace them everywhere in the MMIO module spec
-		% µ/XX MMIO/XX 
-		% \item $\mmioStamp{}$: contains the \mmioMod{} stamp;
-		% \item $\mmioInst{}$: contains the \mmioMod{} instruction of the current $\mmioStamp{}$;
-		% \item $\CNS{}$: context number of the context whose RAM \emph{may} be used as a source of limbs; abbreviated to $\mmioCnS{}$;
-		% \item $\CNT{}$: context number of the context whose RAM \emph{may} be used as a target of limbs; abbreviated to $\mmioCnT{}$;
-		% \item $\SLO{}$: this column contains the limb offset of the first limb to read from / write to in $\mmioCnS{}$'s RAM; abbreviated to $\mmioSlo{}$
-		% \item $\TLO{}$: this column contains the limb offset of the first limb to read from / write to in $\mmioCnT{}$'s RAM; abbreviated to $\mmioTlo{}$
-		% \item $\SBO{}$: this column contains the byte offset within the limb to read from / write to in $\mmioCnS{}$'s RAM; with values in $\{0,1,\dots, \llargeMO\}$; abbreviated to $\mmioSbo{}$;
-		% \item $\TBO{}$: this column contains the byte offset within the limb to read from / write to in $\mmioCnT{}$'s RAM; with values in $\{0,1,\dots, \llargeMO\}$; abbreviated to $\mmioTbo{}$;
-		% \item $\mmioSize{}$: a column containing a ``size'' parameter used by certain limb surgeries;
-		% \item $\mmioLimb{}$: a column containing a ``limb'';
-		% \item $\mmioTotalSize{}$: a column containing the total size of the output of the $\mmuInstAnyToRamWithPadding$;
-		% \item $\mmioExoSum{}$: a column containing an integer that is understood as a bit field; is decoded into flags to impose in which exo module read or write the limbs;
-		% \item $\mmioIdOne{}$ and $\idTwo{}$: contain an identifier (stamp) of the needed exo module;
-		% \item $\mmioPhase{}$: contains the ``phase'' in the exo module to specify, for a given ``stamp'' at which rows the lookup occurs;
-		% \item $\mmioSuccessBit{}$: bit column; contains the success (or failure) of the current evm operation;
 \end{enumerate}
 
 The following are binary columns \textbf{decoded} from the previous \textbf{imported} columns: 
@@ -103,7 +86,10 @@ The following are binary columns \textbf{decoded} from the previous \textbf{impo
 	\item \isMmioInstRamToRamTwoSource{}
 	\item \isMmioInstRamExcision{}                
 	\item \isMmioInstRamVanishes{}            
-	\item \fastOp{} and \slowOp{}: binary flag, indicates whether a micro instruction is fast (i.e. occupies a single line in the RAM data processor) or slow (i.e. occupies 16 consecutive lines in the RAM data processor.)
+	\item \fastOp{} and \slowOp{}:
+		binary flags, indicate whether a micro instruction is
+		fast (i.e. occupies a single row in the trace) or
+		slow (i.e. occupies $\llarge$ consecutive rows in the trace);
 	\item \isExoFlagRom         {}
 	\item \isExoFlagKec         {}
 	\item \isExoFlagLog         {}
@@ -111,6 +97,7 @@ The following are binary columns \textbf{decoded} from the previous \textbf{impo
 	\item \isExoFlagEcdata      {}
 	\item \isExoFlagRipSha      {}
 	\item \isExoFlagBlakeModexp {}
+	\item \isExoFlagBlsdata     {}
 	\item \indexX{}: contains the limb offset of exogenous data;
 	\item \byteLimb{}: byte column; \emph{may} contain the byte decomposition of $\limb{}$;
 	\item \acc{LIMB}: if $\slowOp{} = 1$ accumulates the bytes of the \byteLimb{} column;

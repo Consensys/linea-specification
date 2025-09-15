@@ -52,6 +52,7 @@ full_names = {
 	"shakira": "shakira",
 	"ripSha": "rip Sha",
 	"blkMdx": "blk Mdx",
+	"blsData": "bls Data",
 	# flags
 	"txn": "txn",
 	"trans": "trans Storage",
@@ -68,6 +69,7 @@ full_names = {
 	"rlpUtils": "rlp Utils",
 	# instruction decoder
 	"id": "instruction Decoder",
+	"blsRefTable": "bls Reference Table"
 }
 
 def module_list():

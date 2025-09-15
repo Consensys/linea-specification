@@ -5,12 +5,16 @@ We use the following shorthands:
 \[
 	\left\{ \begin{array}{lclclcl}
 		\locAccessListPrefix _{i} & \define & \isTxn _{i - 1} &       &             & \cdot & \phaseAccessList _{i} \\
-		\locAccessListData   _{i} & \define & \isCmp _{i - 1} & \cdot & \isCmp _{i} & \cdot & \phaseAccessList _{i} \\
 	\end{array} \right.
 \]
-\saNote{}
-The same remark about the seeming asymmetry between
-\locAccessListPrefix{} and
-\locAccessListData{}
-as in note~(\ref{rlp txn v2: phase constraints: payload: asymmetry between row nature bits})
-applies.
+and 
+\[
+	    \left[ \begin{array}{cl}
+		+ & \rlpTxnSharedColumnIsPrefixOfAccessListItem _{i} \\
+		+ & \rlpTxnSharedColumnIsAccessListAddress      _{i} \\
+		+ & \rlpTxnSharedColumnIsPrefixOfStorageKeyList _{i} \\
+		+ & \rlpTxnSharedColumnIsAccessListStorageKey   _{i} \\
+	    \end{array} \right]
+	    \define \locAccessListData _{i}
+	\]
+
