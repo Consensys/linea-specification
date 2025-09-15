@@ -1,16 +1,54 @@
 \input{tx_skip/sysi/eip-4788/_precondition}
 In other words: row $i$ marks the beginning of the processing of a new transaction which (supposedly) requires no \textsc{evm}-execution. We impose the views over the next rows:
 \begin{enumerate}
-	\item The following rows (in which we include the present row with index $i$) peek into account data and finally peek into storage data:
-	\[
-		\left[ \begin{array}{cl}
-			+ & \peekTransaction _{i + \roffTxSkipSysiBeaconRootTransaction                        } \\
-			+ & \peekAccount     _{i + \roffTxSkipSysiBeaconRootSystemContractAccount              } \\
-			+ & \peekStorage     _{i + \roffTxSkipSysiBeaconRootSystemContractStorageSetTimestamp  } \\
-			+ & \peekStorage     _{i + \roffTxSkipSysiBeaconRootSystemContractStorageSetBeaconRoot } \\
-			+ & \peekContext     _{i + \roffTxSkipSysiBeaconRootZeroContext                        } \\
-		\end{array} \right]
-		= 
-		\nsrTxSkipSysiBeaconRoot
-	\]
+	\item \label{hub: tx skip: sysi: eip 4788: peeking flags: the first two rows are txn and acc rows}
+		We unconditionally impose
+		\[
+			\left[ \begin{array}{cl}
+				+ & \peekTransaction _{i + \roffTxSkipSysiBeaconRootTransaction                        } \\
+				+ & \peekAccount     _{i + \roffTxSkipSysiBeaconRootSystemContractAccount              } \\
+			\end{array} \right]
+			= 
+			\yellowm{2}
+		\]
+		\saNote{}
+		We impose the above in order to ``guarantee'' the
+		well-definedness of the
+		\[
+			\locBeaconRootAccountHasCode
+		\]
+		shorthand.
+		Its definition will be given in
+		section~(\ref{hub: tx skip: sysi: eip 4788: shorthands}).
+	\item
+		We refine the above in terms of whether or not the system transaction is trivial or not:
+		\begin{enumerate}
+			\item \If $\locBeaconRootSystemTransactionIsTrivial = \true$ \Then
+				\[
+					\left[ \begin{array}{cl}
+						+ & \peekTransaction _{i + \roffTxSkipSysiBeaconRootTransaction                        } \\
+						+ & \peekAccount     _{i + \roffTxSkipSysiBeaconRootSystemContractAccount              } \\
+						+ & \peekContext     _{i + \roffTxSkipSysiBeaconRootZeroContextAccountDoesntExist      } \\
+					\end{array} \right]
+					= 
+					\nsrTxSkipSysiBeaconRootAccountDoesntExist
+				\]
+			\item \If $\locBeaconRootSystemTransactionIsNontrivial = \true$ \Then
+				\[
+					\left[ \begin{array}{cl}
+						+ & \peekTransaction _{i + \roffTxSkipSysiBeaconRootTransaction                        } \\
+						+ & \peekAccount     _{i + \roffTxSkipSysiBeaconRootSystemContractAccount              } \\
+						+ & \peekStorage     _{i + \roffTxSkipSysiBeaconRootSystemContractStorageSetTimestamp  } \\
+						+ & \peekStorage     _{i + \roffTxSkipSysiBeaconRootSystemContractStorageSetBeaconRoot } \\
+						+ & \peekContext     _{i + \roffTxSkipSysiBeaconRootZeroContextAccountExists                        } \\
+					\end{array} \right]
+					= 
+					\nsrTxSkipSysiBeaconRootAccountExists
+				\]
+		\end{enumerate}
 \end{enumerate}
+\saNote{}
+\locBeaconRootSystemTransactionIsTrivial{} and
+\locBeaconRootSystemTransactionIsNontrivial{}
+are defined in
+section~(\ref{hub: tx skip: sysi: eip 4788: shorthands}).

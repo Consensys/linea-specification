@@ -1,14 +1,14 @@
 \item[\underline{\underline{Storing the \inst{TIMESTAMP} in the state:}}]
 	\[
 		\left\{ \begin{array}{lclr}
-			\stoAddressHi        _{i + \roffTxSkipSysiBeaconRootSystemContractStorageSetTimestamp} & = & \beaconRootAddressHi                                                       \\
-			\stoAddressLo        _{i + \roffTxSkipSysiBeaconRootSystemContractStorageSetTimestamp} & = & \beaconRootAddressLo                                                       \\
-			\stoDeploymentNumber _{i + \roffTxSkipSysiBeaconRootSystemContractStorageSetTimestamp} & = & \accDeploymentNumber _{i + \roffTxSkipSysiBeaconRootSystemContractAccount} \\
-			\stoKeyHi            _{i + \roffTxSkipSysiBeaconRootSystemContractStorageSetTimestamp} & = & 0                                                                          \\
-			\stoKeyLo            _{i + \roffTxSkipSysiBeaconRootSystemContractStorageSetTimestamp} & = & \locLineaTimestampModuloPrime                                              \\
-			\stoNextValueHi      _{i + \roffTxSkipSysiBeaconRootSystemContractStorageSetTimestamp} & = & 0                                                                          \\
-			\stoNextValueLo      _{i + \roffTxSkipSysiBeaconRootSystemContractStorageSetTimestamp} & = & \locLineaTimestamp                                                         \\
-			\multicolumn{3}{l}{\stoSameWarmth  {i}{\roffTxSkipSysiBeaconRootSystemContractStorageSetTimestamp} } \\
+			\stoAddressHi        _{i + \roffTxSkipSysiBeaconRootSystemContractStorageSetTimestamp} & = & \beaconRootAddressHi          \\
+			\stoAddressLo        _{i + \roffTxSkipSysiBeaconRootSystemContractStorageSetTimestamp} & = & \beaconRootAddressLo          \\
+			\stoDeploymentNumber _{i + \roffTxSkipSysiBeaconRootSystemContractStorageSetTimestamp} & = & \accDeploymentNumber          _{i + \roffTxSkipSysiBeaconRootSystemContractAccount} \\
+			\stoKeyHi            _{i + \roffTxSkipSysiBeaconRootSystemContractStorageSetTimestamp} & = & 0                             \\
+			\stoKeyLo            _{i + \roffTxSkipSysiBeaconRootSystemContractStorageSetTimestamp} & = & \locLineaTimestampModuloPrime \\
+			\stoNextValueHi      _{i + \roffTxSkipSysiBeaconRootSystemContractStorageSetTimestamp} & = & 0                             \\
+			\stoNextValueLo      _{i + \roffTxSkipSysiBeaconRootSystemContractStorageSetTimestamp} & = & \locLineaTimestamp            \\
+			\multicolumn{3}{l}{\stoSameWarmth  {i}{\roffTxSkipSysiBeaconRootSystemContractStorageSetTimestamp} } & (\sanityCheck)      \\
 			\multicolumn{3}{l}{
 				\standardDomSubStamps {
 					anchorRow = i                                                          ,
@@ -18,7 +18,17 @@
 		\end{array} \right.
 	\]
 	\saNote{} \label{hub: tx skip: sysi: eip 4788: deployment number of system contract}
-	The account at address $\beaconRootAddress$ will have been deployed prior to the present conflation.
-	As such the deployment number
-	$\accDeploymentNumber _{i + \roffTxSkipSysiBeaconRootSystemContractAccount}$
-	will be zero.
+	The ``system transaction account'' at address $\beaconRootAddress$ may or may not have have been deployed
+	in a standard (albeit synthetic) \user{} transaction in a prior conflation of blocks.
+	If that deployment hasn't yet taken place, or, altnernatively,
+	if that deployment took place in a \emph{past} conflation of blocks,
+	then $\accDeploymentNumber _{i + \roffTxSkipSysiBeaconRootSystemContractAccount}$
+	will be $0$.
+	If, on the other hand, that deployment takes place in the \emph{current} conflation of blocks,
+	then $\accDeploymentNumber _{i + \roffTxSkipSysiBeaconRootSystemContractAccount}$
+	is $1$ if said transaction was processed in an earlier block of the conflation,
+	and $0$ otherwise.
+
+	\saNote{} \label{hub: tx skip: sysi: eip 4788: transaction processing: storage warmth constancy not strictly necessary}
+	Requiring $\stoSameWarmth  {i}{\roffTxSkipSysiBeaconRootSystemContractStorageSetTimestamp} $ isn't
+	strictly speaking necessary, as storage warmths will be reset in the next transaction.

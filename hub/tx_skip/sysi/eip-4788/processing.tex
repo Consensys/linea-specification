@@ -5,7 +5,19 @@ We now populate the rows of the initialization phase.
 		we impose that \( \peekTransaction _{i} = 1 (\sanityCheck) \)
 		\input{tx_skip/sysi/eip-4788/rows/transaction}
 		\input{tx_skip/sysi/eip-4788/rows/account_beaconroot}
-		\input{tx_skip/sysi/eip-4788/rows/storage_beaconroot_set_timestamp}
-		\input{tx_skip/sysi/eip-4788/rows/storage_beaconroot_set_beacon_root}
-		\input{tx_skip/sysi/eip-4788/rows/context_zero}
+\end{description}
+We now have to differentiate between the ``trivial'' and ``nontrivial'' cases.
+\begin{description}
+	\item[\underline{\underline{The ``trivial'' case:}}] 
+		\If $\locBeaconRootSystemTransactionIsTrivial = \true$ \Then we impose
+		\begin{description}
+				\input{tx_skip/sysi/eip-4788/rows/context_zero_nonexistence}
+		\end{description}
+	\item[\underline{\underline{The ``nontrivial'' case:}}] 
+		\If $\locBeaconRootSystemTransactionIsNontrivial = \true$ \Then we impose
+		\begin{description}
+				\input{tx_skip/sysi/eip-4788/rows/storage_beaconroot_set_timestamp}
+				\input{tx_skip/sysi/eip-4788/rows/storage_beaconroot_set_beacon_root}
+				\input{tx_skip/sysi/eip-4788/rows/context_zero_existence}
+		\end{description}
 \end{description}
