@@ -19,19 +19,27 @@ $\cumulativeConsumedGas$ and the $\txnDataHubStatusCode$.
 			\left\{ \begin{array}{lcl}
 				\locRlpTxnRcptPhaseSum _{i} & \define &
 				\left[ \begin{array}{clcl}
-					+ & \isUserTxnHubView     _{i} & \cdot & \subPhaseIdStatusCode \\
-				        + & \isUserTxnRlpView     _{i} & \cdot & \subPhaseIdType       \\
-				        + & \isUserTxnComputation _{i} & \cdot & \subPhaseIdCumulGas   \\
+					+ & \isUserTxnRlpView     _{i} & \cdot & \subPhaseTypeName       \\
+					+ & \isUserTxnHubView     _{i} & \cdot & \subPhaseStatusCodeName \\
+					+ & \isUserTxnComputation _{i} & \cdot & \subPhaseCumulGasName   \\
 				\end{array} \right]
 				\vspace{2mm}
 				\\
 				\locRlpTxnRcptOutgoing _{i} & \define &
 				\left[ \begin{array}{clcl}
-					+ & \isUserTxnHubView     _{i} & \cdot & \txnDataHubStatusCode  _{i} \\
 					+ & \isUserTxnRlpView     _{i} & \cdot & \txnDataRlpTxType      _{i} \\
+					+ & \isUserTxnHubView     _{i} & \cdot & \txnDataHubStatusCode  _{i} \\
 					+ & \isUserTxnComputation _{i} & \cdot & \cumulativeConsumedGas _{i} \\
 				\end{array} \right]
 				\\
+			\end{array} \right.
+		\]
+		where
+		\[
+			\left\{ \begin{array}{lcl}
+				\subPhaseTypeName       & \define & \subPhaseIdType        \\
+				\subPhaseStatusCodeName & \define & \subPhaseIdStatusCode  \\
+				\subPhaseCumulGasName   & \define & \subPhaseIdCumulGas    \\
 			\end{array} \right.
 		\]
 	\item[\underline{Target columns:}] ---
