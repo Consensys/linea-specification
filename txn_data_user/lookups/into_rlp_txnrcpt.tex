@@ -4,16 +4,36 @@ $\cumulativeConsumedGas$ and the $\txnDataHubStatusCode$.
 \begin{description}
 	\item[\underline{Selector:}] we use
 		\[
-			\col{rlptxnrcpt\_selector} _{i} \define \user _{i} \cdot \isUserTxnHubView _{i}
+			\col{rlptxnrcpt\_selector} _{i} \define \user _{i}
 		\]
 	\item[\underline{Source columns:}] ---
 		\begin{multicols}{2}
 			\begin{enumerate}
 				\item $\userTransactionNumber _{i}$
-				\item $\phaseNumRlpTxnRcpt    _{i}$
-				\item $\outgoingTxrcpt        _{i}$
+				\item $\locRlpTxnRcptPhaseSum _{i}$
+				\item $\locRlpTxnRcptOutgoing _{i}$
 			\end{enumerate}
 		\end{multicols}
+		where we have used the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locRlpTxnRcptPhaseSum _{i} & \define &
+				\left[ \begin{array}{clcl}
+					+ & \isUserTxnHubView     _{i} & \cdot & \subPhaseIdStatusCode \\
+				        + & \isUserTxnRlpView     _{i} & \cdot & \subPhaseIdType       \\
+				        + & \isUserTxnComputation _{i} & \cdot & \subPhaseIdCumulGas   \\
+				\end{array} \right]
+				\vspace{2mm}
+				\\
+				\locRlpTxnRcptOutgoing _{i} & \define &
+				\left[ \begin{array}{clcl}
+					+ & \isUserTxnHubView     _{i} & \cdot & \txnDataHubStatusCode  _{i} \\
+					+ & \isUserTxnRlpView     _{i} & \cdot & \txnDataRlpTxType      _{i} \\
+					+ & \isUserTxnComputation _{i} & \cdot & \cumulativeConsumedGas _{i} \\
+				\end{array} \right]
+				\\
+			\end{array} \right.
+		\]
 	\item[\underline{Target columns:}] ---
 		\begin{multicols}{2}
 			\begin{enumerate}
@@ -23,3 +43,6 @@ $\cumulativeConsumedGas$ and the $\txnDataHubStatusCode$.
 			\end{enumerate}
 		\end{multicols}
 \end{description}
+
+
+
