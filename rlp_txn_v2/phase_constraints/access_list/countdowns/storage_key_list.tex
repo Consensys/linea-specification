@@ -1,0 +1,34 @@
+The \locStorageKeyListCountdown{} shorthand counts,
+for a given access list item $E \equiv (E_a, E_\textbf{s})$,
+the number of storage keys in that access list item,
+i.e. one expects, \textbf{at initialization}
+\[
+	\locStorageKeyListCountdown \equiv \big\| E_\textbf{s} \big\|
+\]
+The idea is that it gets initialized during the \rlpTxnSharedColumnIsPrefixOfStorageKeyList{}
+rows and decrements by one with every ``new'' storage key processed as part of the access list item.
+
+We impose
+\begin{description}
+	\item[\underline{\underline{Initialization:}}]
+		there isn't any to speak of,
+		it is ``implicit'';
+	\item[\underline{\underline{Update:}}]
+		\If $\rlpTxnSharedColumnIsAccessListStorageKey _{i} = 1$ \Then
+		\[
+			\begin{array}{lcl}
+				\locStorageKeyListCountdown _{i} & = & \locStorageKeyListCountdown _{i - 1} \\
+                                                                 &   & \qquad - \, \done _{i - 1}           \\
+			\end{array}
+		\]
+		\saNote{}
+		In other words, \locStorageKeyListCountdown{} gets decremented at the onset
+		of the processing of any new storage key.
+	\item[\underline{\underline{Finalization:}}]
+		we impose that
+		\[
+			\If     \locEndOfTupleOrEndOfPhase  _{i} = \true
+			~ \Then \locStorageKeyListCountdown _{i} = 0
+		\]
+\end{description}
+

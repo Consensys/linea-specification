@@ -50,35 +50,24 @@ The present section deals with generalities pertaining to \inst{CREATE}-type ins
 	\item[\underline{Setting the module flags of miscellaneous-row $n^°(i + \createMiscRowOffset)$:}]
 		every processing path for \inst{CREATE}-type instructions contains a single \textbf{miscellaneous-row}
 		\[
-			\weightedMiscFlagSum
-			{i}{\createMiscRowOffset}
-			=
-			\left[ \begin{array}{lcl}
-				\miscMmuWeight & \cdot & \locTriggerMmu \\
-				\miscMxpWeight & \cdot & \locTriggerMxp \\
-				\miscOobWeight & \cdot & \locTriggerOob \\
-				\miscStpWeight & \cdot & \locTriggerStp \\
-			\end{array} \right]
-		\]
-		in other words
-		\[
 			\left\{ \begin{array}{lclr}
-				\miscExpFlag _{i + \createMiscRowOffset} & = & \gZero         & (\trash) \\
-				\miscMmuFlag _{i + \createMiscRowOffset} & = & \locTriggerMmu & (\trash) \\
-				\miscMxpFlag _{i + \createMiscRowOffset} & = & \locTriggerMxp & (\trash) \\
-				\miscOobFlag _{i + \createMiscRowOffset} & = & \locTriggerOob & (\trash) \\
-				\miscStpFlag _{i + \createMiscRowOffset} & = & \locTriggerStp & (\trash) \\
+				\miscExpFlag _{i + \createMiscRowOffset} & = & \gZero         \\
+				\miscMmuFlag _{i + \createMiscRowOffset} & = & \locTriggerMmu \\
+				\miscMxpFlag _{i + \createMiscRowOffset} & = & \locTriggerMxp \\
+				\miscOobFlag _{i + \createMiscRowOffset} & = & \locTriggerOob \\
+				\miscStpFlag _{i + \createMiscRowOffset} & = & \locTriggerStp \\
 			\end{array} \right.
+			% OK
 		\]
 	\item[\underline{Setting the \mxpMod{} instruction:}]
 		we impose \If $\miscMxpFlag_{i + \createMiscRowOffset} = 1$ \Then
 		\[
-			\setMxpInstructionTypeFour
+			\setMxpInstructionOneOffset
 			{
 				anchorRow    = i                    ,
 				relOffset    = \createMiscRowOffset ,
 				instruction  = \locInst             ,
-				deploys      = 0                    ,
+				deploys      = \varnothing          ,
 				offsetHi     = \locOffsetHi         ,
 				offsetLo     = \locOffsetLo         ,
 				sizeHi       = \locSizeHi           ,
@@ -228,7 +217,7 @@ The present section deals with generalities pertaining to \inst{CREATE}-type ins
 				\[
 					\scenCreateExecutionNonEmptyInitCode _{i}
 					=
-					\locMxpMtntop
+					\locMxpSizeOneNonzeroAndNoMxpx
 				\]
 			\item \If $\scenCreateExecutionNonEmptyInitCode _{i} = 1$ \Then
 				\[

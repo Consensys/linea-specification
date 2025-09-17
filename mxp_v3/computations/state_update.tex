@@ -13,8 +13,10 @@ We impose the following
 		we define the following shorthands
 		\[
 			\left\{ \begin{array}{lcl}
-				\locWordPricingOpcode  & \define & \mxpDecoderIsWordPricing   _{i - \locScenarioToDecoderRowOffset} \\
-				\locBytePricingOpcode  & \define & \mxpDecoderIsBytePricing   _{i - \locScenarioToDecoderRowOffset} \\
+				\locSingleOffsetOpcode & \define & \mxpDecoderIsSingleMaxOffset _{i - \locScenarioToDecoderRowOffset} \\
+				\locDoubleOffsetOpcode & \define & \mxpDecoderIsDoubleMaxOffset _{i - \locScenarioToDecoderRowOffset} \\
+				\locWordPricingOpcode  & \define & \mxpDecoderIsWordPricing     _{i - \locScenarioToDecoderRowOffset} \\
+				\locBytePricingOpcode  & \define & \mxpDecoderIsBytePricing     _{i - \locScenarioToDecoderRowOffset} \\
 			\end{array} \right.
 		\]
 		we can now finish justifying the scenario
@@ -46,8 +48,8 @@ This works due to flag exclusivity properties in the present \mxpMod{} module an
 		we introduce the following shorthands
 		\[
 			\left\{ \begin{array}{lcl}
-				\locMaxOne       & \define & \locOffsetOneLo + \locSizeOneLo                 \\
-				\locMaxTwo       & \define & \locOffsetTwoLo + \locSizeTwoLo                 \\
+				\locMaxOne       & \define & \locSizeOneIsNonZero \cdot (\locOffsetOneLo + \locSizeOneLo) \\
+				\locMaxTwo       & \define & \locSizeTwoIsNonZero \cdot (\locOffsetTwoLo + \locSizeTwoLo) \\
 			\end{array} \right.
 		\]
 		we impose that
@@ -82,6 +84,27 @@ This works due to flag exclusivity properties in the present \mxpMod{} module an
 		\]
 		\saNote{}
 		We filter the \wcpMod{}-arguments by $\locDoubleOffsetOpcode$ to prevent unnecesary comparisons when $\locSingleOffsetOpcode \equiv 1$.
+
+		\saNote{}
+		When defining
+		\locMaxOne{} and
+		\locMaxTwo{}
+		we must be careful to disregard ``max offsets'' associated to ``zero sizes''.
+		We achieve this by filtering their expressions through the corresponding \locSizeKIsNonZero{}.
+		Here is our rationale for this.
+		When entering the present scenario
+		($\locMxpScenarioStateUpdate \equiv \true$)
+		we are ensured that \textbf{at least one size parameter is nonzero},
+		see section~(\ref{mxp: computation: non msize: the trivial scenario corresponds to zero sizes}).
+		For instructions taking \textbf{two} size parameters
+		($\locDoubleOffsetOpcode \equiv \true$)
+		\textbf{it is perfectly legal for one size parameter to be zero}.
+		(Note that this cannot happen for \inst{MCOPY}.)
+		No memory expansion should be associated with the corresponding offset and (zero) size.
+		The associated ``offset $=$ offset $+$ 0'' value may, however, be nonzero
+		and potentially larger than the other, and only relevant, ``offset $+$ size'' value.
+		By filtering this value using $\locSizeKIsNonZero$ we ensure that the corresponding \locMaxK{} is set to zero
+		and that it does not pollute the definition of \locMaxOffset{} given later on.
 	\def\nRows{\yellowm{8}}\item[\underline{\underline{Computing the floor of the division of \locMaxOffset{} by $\evmWordSize$:}}] 
 		we impose that
 		\[

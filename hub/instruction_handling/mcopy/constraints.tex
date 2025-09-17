@@ -17,10 +17,35 @@ The typical \emph{modus operandi} is to specify peeking flags and then to fill t
 With the present instruction we begin by specifying a single miscellaneous-row which is unconditionally present.
 \begin{description}
 	\item[\underline{The first row must be a miscellaneous-row:}]
-		we unconditionally impose that $\peekMisc _{i + \locMcopyFrstMiscOffset} = 1$;
-	\item[\underline{Calling the \mxpMod{}-module:}]
-		we unconditionally call the \mxpMod{} module
-		$\miscMxpFlag _{i + \locMcopyFrstMiscOffset} = 1$;
+		we unconditionally impose that
+		$\peekMisc _{i + \locMcopyFrstMiscOffset} = \one$;
+	\item[\underline{Setting the peeking flags:}]
+		we unconditionally impose that
+		\[
+			\left\{ \begin{array}{lclr}
+				\weightedMiscFlagSumSansMmu {
+					anchorRow = i                       ,
+					relOffset = \locMcopyFrstMiscOffset ,
+				}
+                                                                            & = & \miscMxpWeight \vspace{2mm} \\
+				\miscMmuFlag _{i + \locMcopyFrstMiscOffset} & = & \undefinedStar \quad \locTriggerMmu              \\
+			\end{array} \right.
+			% OK
+		\]
+		in other words
+		\[
+			\left\{ \begin{array}{lclr}
+				\miscExpFlag_{i + \locMcopyFrstMiscOffset} & = & \gZero         & (\sanityCheck) \\
+				\miscMmuFlag_{i + \locMcopyFrstMiscOffset} & = & \locTriggerMmu & (\sanityCheck) \\
+				\miscMxpFlag_{i + \locMcopyFrstMiscOffset} & = & \rOne          & (\sanityCheck) \\
+				\miscOobFlag_{i + \locMcopyFrstMiscOffset} & = & \gZero         & (\sanityCheck) \\
+				\miscStpFlag_{i + \locMcopyFrstMiscOffset} & = & \gZero         & (\sanityCheck) \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		The \locTriggerMmu{} shorthand will be defined below.
+		It is \textbf{provably binary},
+		given that the \mxpMod{} module was called.
 	\item[\underline{Defining the \mxpMod{}-instruction:}]
 		we impose
 		\[
@@ -42,20 +67,21 @@ With the present instruction we begin by specifying a single miscellaneous-row w
 		the underlying \inst{MCOPY} instruction is unexceptional ($\xAhoy \equiv 0$)
 		and its size parameter is nonzero ($\locMcopyMxpSizeOneNonZeroNoMxpx \equiv 1$.)
 		\[
-			\left\{ \begin{array}{lcl}
-				\locTriggerMxp & \define & 1                                                        \\
-				\locTriggerMmu & \define & (1 - \xAhoy _{i}) \cdot \locMcopyMxpSizeOneNonZeroNoMxpx \\
-			\end{array} \right.
+			\locTriggerMmu \define (1 - \xAhoy _{i}) \cdot \locMcopyMxpSizeOneNonZeroNoMxpx
 		\]
 		In other words
 		\begin{enumerate}
-			\item \If $\xAhoy_{i} = 1$ \Then $\locTriggerMmu = 0$ \quad (\trash)
-			\item \If $\xAhoy_{i} = 0$ \Then 
+			\item \If $\xAhoy _{i} = 1$ \Then $\locTriggerMmu = 0$ \quad (\sanityCheck)
+			\item \If $\xAhoy _{i} = 0$ \Then
 				\begin{enumerate}
-					\item \If $\locSizeLo =    0$ \Then $\locTriggerMmu = 0$ \quad (\trash)
-					\item \If $\locSizeLo \neq 0$ \Then $\locTriggerMmu = 1$ \quad (\trash)
+					\item \If $\locSizeLo =    0$ \Then $\locTriggerMmu = 0$ \quad (\sanityCheck)
+					\item \If $\locSizeLo \neq 0$ \Then $\locTriggerMmu = 1$ \quad (\sanityCheck)
 				\end{enumerate}
 		\end{enumerate}
+		\saNote{} \label{hub: instruction handling: mcopy: trigger MMU is indeed binary}
+		The expression defining $\locTriggerMmu$ is \textbf{provably binary}
+		provided that the \mxpMod{} indeed gets triggered.
+		A previous constraint ensures us of this.
 \end{description}
 We are now in a position to specify the peeking flags.
 \begin{description}
@@ -100,59 +126,42 @@ We are now in a position to specify the peeking flags.
 			\locMcopyMxpMxpx
 		\]
 	\item[\underline{Setting the gas cost:}]
-		we impose that 
+		we impose that
 		\begin{enumerate}
 			\item \If $\stackMxpx _{i} = 0$ \Then \( \gasCost_{i} = \stackStaticGas _{i} + \locMcopyMxpGas \)
 			\item \If $\stackMxpx _{i} = 1$ \Then \( \gasCost_{i} = 0 \)
 		\end{enumerate}
-	\item[\underline{Miscellaneous-row $n^°(i + \locMcopyFrstMiscOffset)$: flags:}]
-		we impose that
-		\[
-			\weightedMiscFlagSum {i}{\locMcopyFrstMiscOffset}
-			=
-			\left[ \begin{array}{llcl}
-				+ & \miscMmuWeight & \!\!\!\cdot\!\!\! & \locCallMmu \\
-				+ & \miscMxpWeight  \\
-			\end{array} \right]
-		\]
-		in other words
-		\[
-			\left\{ \begin{array}{lclr}
-				\miscExpFlag  _{i + \locMcopyFrstMiscOffset} & = & \gZero      & (\trash) \\
-				\miscMmuFlag  _{i + \locMcopyFrstMiscOffset} & = & \locCallMmu & (\trash) \\
-				\miscMxpFlag  _{i + \locMcopyFrstMiscOffset} & = & \one        & (\trash) \\
-				\miscOobFlag  _{i + \locMcopyFrstMiscOffset} & = & \gZero      & (\trash) \\
-				\miscStpFlag  _{i + \locMcopyFrstMiscOffset} & = & \gZero      & (\trash) \\
-			\end{array} \right.
-		\]
 	\item[\underline{Miscellaneous-row $n^°(i + \locMcopyScndMiscOffset)$: flags:}]
 		\If $\locTriggerMmu = 1$ \Then we impose that
 		\[
-			\weightedMiscFlagSum {i}{\locMcopyScndMiscOffset}
+			\weightedMiscFlagSum {
+				anchorRow = i                       ,
+				relOffset = \locMcopyScndMiscOffset ,
+			}
 			=
 			\miscMmuWeight
+			% OK
 		\]
 		in other words
 		\[
 			\left\{ \begin{array}{lclr}
-				\miscExpFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\trash) \\
-				\miscMmuFlag  _{i + \locMcopyScndMiscOffset} & = & \one    & (\trash) \\
-				\miscMxpFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\trash) \\
-				\miscOobFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\trash) \\
-				\miscStpFlag  _{i + \locMcopyScndMiscOffset} & = & \gZero  & (\trash) \\
+				\miscExpFlag _{i + \locMcopyScndMiscOffset} & = & \gZero & (\sanityCheck) \\
+				\miscMmuFlag _{i + \locMcopyScndMiscOffset} & = & \one   & (\sanityCheck) \\
+				\miscMxpFlag _{i + \locMcopyScndMiscOffset} & = & \rZero & (\sanityCheck) \\
+				\miscOobFlag _{i + \locMcopyScndMiscOffset} & = & \gZero & (\sanityCheck) \\
+				\miscStpFlag _{i + \locMcopyScndMiscOffset} & = & \gZero & (\sanityCheck) \\
 			\end{array} \right.
 		\]
-		\saNote{} The binary flag \locCallMmu{} will be defined below.
 \end{description}
 The \zkEvm{} carries out the \inst{MCOPY} instruction in two steps,
-similarly to how it deals with the \inst{IDENTITY} precompile,
+similarly to how it deals with the \instIdentity{} precompile,
 see section~(\ref{hub: instruction handling: call: precompiles: identity}).
-The first step is to carry out a full copy of the specified (\emph{nonempty}) source memory span into a new,
-hitherto untouched, memory span with fresh (and as of yet, unclaimed) identifier $1 + \hubStamp_{i}$.
-The second step is to copy the contents over from that new memory span to the target memory span.
-In the above the source memory span starts at offset $\locSrcOffsetLo$ an occupies $\locSizeLo$ many bytes, and
-the target memory span starts at offset $\locTgtOffsetLo$ an (also) occupies $\locSizeLo$ many bytes.
-Both have identifier $\cn _{i}$.
+The first step is a full copy of the (\emph{nonempty}) source memory span
+(with identifier $\cn _{i}$, starting offset $\locSrcOffsetLo$ and size in bytes $\locSizeLo \neq 0$),
+into a new, hitherto untouched, memory span
+(with fresh, and as of yet, unclaimed, identifier $1 + \hubStamp_{i}$, starting offset $0$ and size in bytes $\locSizeLo$.)
+The second step is to copy the contents over from that new memory span to the target memory span
+(with identifier $\cn _{i}$, starting offset $\locTgtOffsetLo$ and size in bytes $\locSizeLo$.)
 
 This approach avoids difficulties related to
 (\emph{a}) overlapping source and target memory spans
@@ -203,5 +212,5 @@ This approach avoids difficulties related to
 			}
 		\]
 		\saNote{}
-		The current context and caller context (which may own the call data) are provided by the lookup. 
+		The current context and caller context (which may own the call data) are provided by the lookup.
 \end{description}

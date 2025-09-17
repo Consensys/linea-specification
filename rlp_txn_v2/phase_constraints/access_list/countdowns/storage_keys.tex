@@ -1,0 +1,33 @@
+The \locStoragePrewarmingCountdown{} shorthand counts
+the total number of storage keys across all access list items present in the \locTransaction{}, i.e.
+\[
+		\rlpTxnTransactionColumnNbWarmedStorageKey \equiv
+		\displaystyle \sum _{E \text{ acc. list item in } \locTransaction}
+		\big\| E _\textbf{s} \big\|
+\]
+We impose
+\begin{description}
+	\item[\underline{\underline{Initialization:}}]
+		\If $\locAccessListPrefix _{i} = \true$ \Then
+		we impose
+		\[
+			\locStoragePrewarmingCountdown _{i} = \rlpTxnTransactionColumnNbWarmedStorageKey  _{i - 1}
+		\]
+	\item[\underline{\underline{Updates:}}]
+		\If $\locAccessListData _{i} = \true$ \Then
+		we impose
+		\[
+			\begin{array}{lcl}
+				\locStoragePrewarmingCountdown _{i} & = & \locStoragePrewarmingCountdown             _{i - 1} \\
+				&   & \qquad - \, \locStartRlpizingNewStorageKey _{i}     \\
+			\end{array}
+		\]
+		where we define
+		\[
+			\locStartRlpizingNewStorageKey _{i} \define
+			\left[ \begin{array}{cl}
+				\cdot & \rlpTxnSharedColumnIsAccessListStorageKey _{i} \\
+				\cdot & \done _{i - 1}                                 \\
+			\end{array} \right]
+		\]
+\end{description}

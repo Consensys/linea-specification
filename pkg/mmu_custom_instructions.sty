@@ -2,38 +2,56 @@
 
 
 % from MMU_v2
-\newcommand{\mmuInstMload                        }    {\mmuInstruction{mload}}
-\newcommand{\mmuInstMstore                       }    {\mmuInstruction{mstore}}
-\newcommand{\mmuInstMstoreEight                  }    {\mmuInstruction{mstore8}}
-\newcommand{\mmuInstInvalidCodePrefix            }    {\mmuInstruction{invalidCodePrefix}}
-\newcommand{\mmuInstRightPaddedWordExtraction    }    {\mmuInstruction{rightPaddedWordExtraction}}
-\newcommand{\mmuInstRamToExoWithPadding          }    {\mmuInstruction{ramToExoWithPadding}}
-\newcommand{\mmuInstExoToRamTransplants          }    {\mmuInstruction{exoToRamTransplants}}
-\newcommand{\mmuInstRamToRamSansPadding          }    {\mmuInstruction{ramToRamSansPadding}}
-\newcommand{\mmuInstAnyToRamWithPadding          }    {\mmuInstruction{anyToRamWithPadding}}
-\newcommand{\mmuInstModexpZero                   }    {\mmuInstruction{modexpZero}}
-\newcommand{\mmuInstModexpData                   }    {\mmuInstruction{modexpData}}
-\newcommand{\mmuInstBlake                        }    {\mmuInstruction{blake}}
+\newcommand{\mmuInstMload                     } {\mmuInstruction{mload}}
+\newcommand{\mmuInstMstore                    } {\mmuInstruction{mstore}}
+\newcommand{\mmuInstMstoreEight               } {\mmuInstruction{mstore8}}
+\newcommand{\mmuInstInvalidCodePrefix         } {\mmuInstruction{invalidCodePrefix}}
+\newcommand{\mmuInstRightPaddedWordExtraction } {\mmuInstruction{rightPaddedWordExtraction}}
+\newcommand{\mmuInstRamToExoWithPadding       } {\mmuInstruction{ramToExoWithPadding}}
+\newcommand{\mmuInstExoToRamTransplants       } {\mmuInstruction{exoToRamTransplants}}
+\newcommand{\mmuInstRamToRamSansPadding       } {\mmuInstruction{ramToRamSansPadding}}
+\newcommand{\mmuInstAnyToRamWithPadding       } {\mmuInstruction{anyToRamWithPadding}}
+\newcommand{\mmuInstModexpZero                } {\mmuInstruction{modexpZero}}
+\newcommand{\mmuInstModexpData                } {\mmuInstruction{modexpData}}
+\newcommand{\mmuInstBlake                     } {\mmuInstruction{blake}}
 
 \newcommand{\exoModulePhase       }      [1]      {\redm{[\![\Phi\texttt{\_#1}]\!]}}
-%
-\newcommand{\phaseTransactionCallData}            {\exoModulePhase{transaction\_call\_data}}
-%
-\newcommand{\phaseKeccakData      }               {\exoModulePhase{KECCAK\_DATA}}
-\newcommand{\phaseEcrecoverData   }               {\exoModulePhase{ECRECOVER\_DATA}}
-\newcommand{\phaseShaTwoData      }               {\exoModulePhase{SHA2\_DATA}}
-\newcommand{\phaseRipemdData      }               {\exoModulePhase{RIPEMD\_DATA}}
-\newcommand{\phaseEcaddData       }               {\exoModulePhase{ECADD\_DATA}}
-\newcommand{\phaseEcmulData       }               {\exoModulePhase{ECMUL\_DATA}}
-\newcommand{\phaseEcpairingData   }               {\exoModulePhase{ECPAIRING\_DATA}}
+\newcommand{\exoModulePhaseData   }      [1]      {\exoModulePhase{#1\_DATA}}
+\newcommand{\exoModulePhaseResult }      [1]      {\exoModulePhase{#1\_RESULT}}
 
-\newcommand{\phaseKeccakResult    }               {\exoModulePhase{KECCAK\_RESULT}}
-\newcommand{\phaseEcrecoverResult }               {\exoModulePhase{ECRECOVER\_RESULT}}
-\newcommand{\phaseShaTwoResult    }               {\exoModulePhase{SHA2\_RESULT}}
-\newcommand{\phaseRipemdResult    }               {\exoModulePhase{ripemd\_result}}
-\newcommand{\phaseEcaddResult     }               {\exoModulePhase{ECADD\_RESULT}}
-\newcommand{\phaseEcmulResult     }               {\exoModulePhase{ECMUL\_RESULT}}
-\newcommand{\phaseEcpairingResult }               {\exoModulePhase{ECPAIRING\_RESULT}}
+\newcommand{\phaseTransactionCallData}            {\exoModulePhase{transaction\_call\_data}}
+
+\newcommand{\phaseKeccakData              } {\exoModulePhaseData{KECCAK}}
+\newcommand{\phaseEcrecoverData           } {\exoModulePhaseData{\prcNameEcrecover}}
+\newcommand{\phaseShaTwoData              } {\exoModulePhaseData{\prcNameShaTwo}}
+\newcommand{\phaseRipemdData              } {\exoModulePhaseData{\prcNameRipemd}}
+\newcommand{\phaseEcaddData               } {\exoModulePhaseData{\prcNameEcadd}}
+\newcommand{\phaseEcmulData               } {\exoModulePhaseData{\prcNameEcmul}}
+\newcommand{\phaseEcpairingData           } {\exoModulePhaseData{\prcNameEcpairing}}
+\newcommand{\phasePointEvaluationData     } {\exoModulePhaseData{\prcNamePointEvaluation}}
+\newcommand{\phaseBlsGOneAddData          } {\exoModulePhaseData{\prcNameBlsGOneAdd}}
+\newcommand{\phaseBlsGOneMsmData          } {\exoModulePhaseData{\prcNameBlsGOneMsm}}
+\newcommand{\phaseBlsGTwoAddData          } {\exoModulePhaseData{\prcNameBlsGTwoAdd}}
+\newcommand{\phaseBlsGTwoMsmData          } {\exoModulePhaseData{\prcNameBlsGTwoMsm}}
+\newcommand{\phaseBlsPairingCheckData     } {\exoModulePhaseData{\prcNameBlsPairingCheck}}
+\newcommand{\phaseBlsMapFpToGOneData      } {\exoModulePhaseData{\prcNameBlsMapFpToGOne}}
+\newcommand{\phaseBlsMapFpTwoToGTwoData   } {\exoModulePhaseData{\prcNameBlsMapFpTwoToGTwo}}
+
+\newcommand{\phaseKeccakResult            } {\exoModulePhaseResult{KECCAK}}
+\newcommand{\phaseEcrecoverResult         } {\exoModulePhaseResult{\prcNameEcrecover}}
+\newcommand{\phaseShaTwoResult            } {\exoModulePhaseResult{\prcNameShaTwo}}
+\newcommand{\phaseRipemdResult            } {\exoModulePhaseResult{\prcNameRipemd}}
+\newcommand{\phaseEcaddResult             } {\exoModulePhaseResult{\prcNameEcadd}}
+\newcommand{\phaseEcmulResult             } {\exoModulePhaseResult{\prcNameEcmul}}
+\newcommand{\phaseEcpairingResult         } {\exoModulePhaseResult{\prcNameEcpairing}}
+\newcommand{\phasePointEvaluationResult   } {\exoModulePhaseResult{\prcNamePointEvaluation}}
+\newcommand{\phaseBlsGOneAddResult        } {\exoModulePhaseResult{\prcNameBlsGOneAdd}}
+\newcommand{\phaseBlsGOneMsmResult        } {\exoModulePhaseResult{\prcNameBlsGOneMsm}}
+\newcommand{\phaseBlsGTwoAddResult        } {\exoModulePhaseResult{\prcNameBlsGTwoAdd}}
+\newcommand{\phaseBlsGTwoMsmResult        } {\exoModulePhaseResult{\prcNameBlsGTwoMsm}}
+\newcommand{\phaseBlsPairingCheckResult   } {\exoModulePhaseResult{\prcNameBlsPairingCheck}}
+\newcommand{\phaseBlsMapFpToGOneResult    } {\exoModulePhaseResult{\prcNameBlsMapFpToGOne}}
+\newcommand{\phaseBlsMapFpTwoToGTwoResult } {\exoModulePhaseResult{\prcNameBlsMapFpTwoToGTwo}}
 
 \newcommand{\phaseModexpBase      }               {\exoModulePhase{MODEXP\_BASE}}
 \newcommand{\phaseModexpExponent  }               {\exoModulePhase{MODEXP\_EXPONENT}}
@@ -52,6 +70,7 @@
 \newcommand{\exoWeightEcdata      }               {\exoWeight{ecdata}}
 \newcommand{\exoWeightRipSha      }               {\exoWeight{ripsha}}
 \newcommand{\exoWeightBlakeModexp }               {\exoWeight{blakeModexp}}
+\newcommand{\exoWeightBlsdata     }               {\exoWeight{blsdata}}
 
 %% EXO IS X flags
 \newcommand{\isExoFlag            }      [1]      {\col{EXO\_IS\_#1}}
@@ -63,3 +82,4 @@
 \newcommand{\isExoFlagEcdata      }               {\isExoFlag{ECDATA}}
 \newcommand{\isExoFlagRipSha      }               {\isExoFlag{RIPSHA}}
 \newcommand{\isExoFlagBlakeModexp }               {\isExoFlag{BLAKEMODEXP}}
+\newcommand{\isExoFlagBlsdata	  }               {\isExoFlag{BLSDATA}}

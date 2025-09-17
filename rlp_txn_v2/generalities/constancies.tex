@@ -1,0 +1,27 @@
+The current section defines various constancy conditions for columns.
+Below \col{X} may represent either a column or an algebraic expression derived from columns.
+\begin{description}
+	\item[Transaction-constancy:]
+		\col{X} is said to be
+		\textbf{transaction-constant} if it satisfies
+		\[
+			\If \userTransactionNumber _{i} \neq 1 + \userTransactionNumber _{i - 1} ~
+			\Then \col{X} _{i} = \col{X} _{i - 1}
+		\]
+	\item[Counter-constancy:]
+		\col{X} is said to be
+		\textbf{counter-constant} if it satisfies
+		\[
+			\If \ct _{i} \neq 0 ~
+			\Then \col{X} _{i} = \col{X} _{i - 1}
+		\]
+\end{description}
+We require that
+\begin{multicols}{3}
+	\begin{enumerate}
+		\item \CFI
+		\item \rlpTxnCommonColumnReplayProtection
+		\item \rlpTxnCommonColumnYparity
+	\end{enumerate}
+\end{multicols}
+\noindent be \textbf{transaction-constant}.

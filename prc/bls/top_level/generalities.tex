@@ -1,0 +1,74 @@
+We introduce shorthands:
+\[
+    \left\{ \begin{array}{lcl}
+        \locMalformedData_{i}  & \define & \malformedDataInternalTot_{i} + \malformedDataExternalTot_{i}  \\
+        \locWellformedData_{i} & \define & \wellformedDataTrivial_{i} + \wellformedDataNontrivial_{i}            \vspace{2mm} \\
+        \locCaseDataSum_{i}    & \define &
+        \left[ \begin{array}{cl}
+            + & \locMalformedData_{i} \\
+            + & \locWellformedData_{i} \\
+        \end{array} \right]
+        \\
+    \end{array} \right.
+\]
+We impose the following constraints:
+\begin{enumerate}
+    \item \malformedDataInternalTot{}, \malformedDataExternalTot{}, \wellformedDataTrivial{}, \wellformedDataNontrivial{}  are \textbf{binary} and \textbf{stamp-constant} \quad (\trash)
+    \item $\locCaseDataSum _{i} = \locFlagSum        _{i}$
+\end{enumerate}
+\saNote{}
+The above implies both that
+\malformedDataInternalTot{}, \malformedDataExternalTot{}, \wellformedDataTrivial{}, \wellformedDataNontrivial{}
+are \textbf{binary exclusive}
+and that every precompile call carries precisely one of these labels.
+\begin{enumerate}[resume]
+    \item
+        \label{bls: top level: hash to G1 cannot throw MEXT}
+        \If $\locIsBlsMapFpToGOne    _{i} = 1$ \Then $\malformedDataExternalTot _{i} = 0$
+    \item
+        \label{bls: top level: hash to G2 cannot throw MEXT}
+        \If $\locIsBlsMapFpTwoToGTwo _{i} = 1$ \Then $\malformedDataExternalTot _{i} = 0$
+    \item
+        \label{bls: top level: only pairings may be well formed trivial}
+        \If $\locIsBlsPairingCheck _{i} = 0$ \Then $\wellformedDataTrivial _{i} = 0$
+    \item
+        \If $\locIsBlsPairingCheck _{i} = 1$ \et   $\locTransitionToResult _{i} = 1$
+        \begin{enumerate}
+            \item
+                \If $\locMalformedData _{i} = 1$ \Then $\wellformedDataNontrivial _{i} = 0$ \quad (\sanityCheck)
+            \item
+                \label{bls: generalities for malformed and wellformed: set wellformed data flags}
+                \If $\locWellformedData _{i} = 1$ \Then $\wellformedDataNontrivial _{i} = \nontrivialPairOfPointsAcc _{i}$
+        \end{enumerate}
+    \item 
+        \label{bls: top level: msm g1 cannot raise mint bit}  
+        \If $\isBlsGOneMsmData _{i} = 1$ \et $\isSecondInput _{i} = 1$ \Then $\malformedDataInternalBit _{i} = 0$
+    \item 
+        \label{bls: top level: msm g2 cannot raise mint bit}
+        \If $\isBlsGTwoMsmData _{i} = 1$ \et $\isSecondInput _{i} = 1$ \Then $\malformedDataInternalBit _{i} = 0$
+\end{enumerate}
+\saNote{}
+The first few points, that is
+(\ref{bls: top level: hash to G1 cannot throw MEXT}),
+(\ref{bls: top level: hash to G2 cannot throw MEXT}) and
+(\ref{bls: top level: only pairings may be well formed trivial})
+enforce the restrictions from
+diagram~(\ref{bls: top level flags: setting diagrams}).
+Clearly constraints
+(\ref{bls: top level: hash to G1 cannot throw MEXT}) and
+(\ref{bls: top level: hash to G2 cannot throw MEXT})
+can be implemented as one single constraint.
+
+\saNote{}
+The value of $\wellformedDataTrivial_{i}$ is implicitly set by flag exclusivity in constraint (\ref{bls: generalities for malformed and wellformed: set wellformed data flags}).
+
+\saNote{}
+Constraints
+(\ref{bls: top level: msm g1 cannot raise mint bit}) and
+(\ref{bls: top level: msm g2 cannot raise mint bit})
+enforce that scalars cannot raise \malformedDataInternalBit{}.
+
+\noindent We further use these columns to define the success of the precompile call:
+\begin{enumerate}[resume]
+    \item $\blsSuccessBit  _{i} = \locWellformedData _{i}$
+\end{enumerate}

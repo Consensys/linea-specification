@@ -1,15 +1,48 @@
 \input{tx_skip/sysi/eip-2935/_precondition}
 In other words: row $i$ marks the beginning of the processing of a new transaction which (supposedly) requires no \textsc{evm}-execution. We impose the views over the next rows:
 \begin{enumerate}
-	\item The following rows (in which we include the present row with index $i$) peek into account data and finally peek into transaction data:
-	\[
-		\left[ \begin{array}{cl}
-			+ & \peekTransaction  _{i + \roffTxSkipSysiBlockHashTransaction           } \\
-			+ & \peekAccount      _{i + \roffTxSkipSysiBlockHashSystemContractAccount } \\
-			+ & \peekStorage      _{i + \roffTxSkipSysiBlockHashSystemContractStorage } \\
-			+ & \peekContext      _{i + \roffTxSkipSysiBlockHashZeroContext           } \\
-		\end{array} \right]
-		= 
-		\nsrTxSkipSysiBlockHash
-	\]
+	\item \label{hub: tx skip: sysi: eip 2935: peeking flags: the first two rows are txn and acc rows}
+		The following rows (in which we include the present row with index $i$) peek into account data and finally peek into storage data:
+		\[
+			\left[ \begin{array}{cl}
+				+ & \peekTransaction  _{i + \roffTxSkipSysiBlockHashTransaction           } \\
+				+ & \peekAccount      _{i + \roffTxSkipSysiBlockHashSystemContractAccount } \\
+			\end{array} \right]
+			= 
+			\yellowm{2}
+		\]
+		\saNote{}
+		We impose the above, in particular the presence of an \textbf{account-row},
+		in order to ``guarantee'' the well-definedness of the
+		\[
+			\locBlockHashAccountHasCode
+		\]
+		shorthand.
+		Its definition will be given in
+		section~(\ref{hub: tx skip: sysi: eip 2935: shorthands}).
+	\item
+		We refine the above in terms of \locBlockHashAccountHasCode:
+		\begin{enumerate}
+			\item \If $\locBlockHashSystemTransactionIsTrivial = \true$ \Then
+				\[
+					\left[ \begin{array}{cl}
+						+ & \peekTransaction _{i + \roffTxSkipSysiBlockHashTransaction                   } \\
+						+ & \peekAccount     _{i + \roffTxSkipSysiBlockHashSystemContractAccount         } \\
+						+ & \peekContext     _{i + \roffTxSkipSysiBlockHashZeroContextAccountDoesntExist } \\
+					\end{array} \right]
+					= 
+					\nsrTxSkipSysiBlockHashAccountDoesntExist
+				\]
+			\item \If $\locBlockHashSystemTransactionIsNontrivial = \true$ \Then
+				\[
+					\left[ \begin{array}{cl}
+						+ & \peekTransaction  _{i + \roffTxSkipSysiBlockHashTransaction              } \\
+						+ & \peekAccount      _{i + \roffTxSkipSysiBlockHashSystemContractAccount    } \\
+						+ & \peekStorage      _{i + \roffTxSkipSysiBlockHashSystemContractStorage    } \\
+						+ & \peekContext      _{i + \roffTxSkipSysiBlockHashZeroContextAccountExists } \\
+					\end{array} \right]
+					= 
+					\nsrTxSkipSysiBlockHashAccountExists
+				\]
+		\end{enumerate}
 \end{enumerate}

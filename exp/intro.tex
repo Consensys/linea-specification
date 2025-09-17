@@ -1,13 +1,13 @@
-The \expMod{} module is a small module which carries out intermediate computations required for the pricing of the \inst{EXP} opcode and the \inst{MODEXP} precompile.
-Despite its name it neither carries out the \inst{EXP} instruction nor the modular exponentiation of \inst{MODEXP}.
-What it does is actually somewhat the polar opposite of computing an exponentiation: it computes logs.
+The \expMod{} module is a small module which carries out intermediate computations required for the pricing of the \inst{EXP} opcode and the \instModexp{} precompile.
+Despite its name it neither carries out the \inst{EXP} instruction nor the modular exponentiation of \instModexp{}.
+What it does is actually somewhat the polar opposite of computing exponentiations: it computes \emph{logarithms}.
 
 We give a brief overview of the computations carried out in the present module.
 \begin{description}
 	\item[Dynamic gas cost of \inst{EXP} opcode:]
 		the gas cost of \inst{EXP} is the sum of static and dynamic costs:
 		\[
-			\col{gas\_cost} \equiv G_\text{exp} + G_\text{expbyte} \times \locExponentLog \\
+			\loc{gas\_cost} \equiv G_\text{exp} + G_\text{expbyte} \times \locExponentLog \\
 		\]
 		where $G_\text{exp} = 10$ and $G_{\text{expbyte}} = 50$
 		and
@@ -19,14 +19,14 @@ We give a brief overview of the computations carried out in the present module.
 			\end{array} \right. \\
 		\]
 		The present module will compute $\locExponentLog$. For more details see section~(\ref{exp: exp log: intro}).
-	\item[Base $2$ log of leading word of exponent for \inst{MODEXP}:]
-		\inst{MODEXP} pricing requires computing
-		\[ \locExponentLogEYP = \lfloor \log_{2}(\col{lead}) \rfloor \]
+	\item[Base $2$ log of leading word of exponent for \instModexp{}:]
+		\instModexp{} pricing requires computing
+		\[ \locExponentLogEYP = \lfloor \log_{2}(\loc{lead}) \rfloor \]
 		of the leading word of the exponent.
 		The present module is initially provided with a \textbf{raw} \evm{} word
 		$\locRawLeadingWord \in \mathbb{B}_{\evmWordSize}$ in the form of the associated high and low parts
 		$\locRawLeadingWordHi$ and $\locRawLeadingWordLo$
-		\col{raw\_lead}  and two cutoff parameters:
+		\loc{raw\_lead}  and two cutoff parameters:
 		\[
 			\left\{ \begin{array}{lcl}
 				\locEbsCutoff & \equiv & \text{exponent byte size cutoff} \vspace{1mm} \\
@@ -34,7 +34,7 @@ We give a brief overview of the computations carried out in the present module.
 			\end{array} \right.
 		\]
 		Both are \textbf{guaranteed} by the \hubMod{} and \oobMod{} modules to be in the range $[\![ 1, \evmWordSize ]\!]$.
-		One must then compute the (rounded up) $\log_{2}$ of the word of size \locEbsCutoff{} extracted from \col{raw\_lead} by considering only the first \locCdsCutoff{} bytes of \col{raw\_lead} and setting to \utt{00} all bytes of the resulting word with index $\geq \locCdsCutoff{}$;
+		One must then compute the (rounded down) $\log_{2}$ of the word of size \locEbsCutoff{} extracted from \loc{raw\_lead} by considering only the first \locCdsCutoff{} bytes of \loc{raw\_lead} and setting to \utt{00} all bytes of the resulting word with index $\geq \locCdsCutoff{}$;
 \end{description}
 
 \input{vision/_table}

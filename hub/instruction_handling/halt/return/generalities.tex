@@ -153,8 +153,8 @@ We impose the following:
 			\item \If $\scenReturnFromDeployment    _{i} = 1$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
-						\scenReturnDeploymentWillRevert _{i} & = & \cnWillRev _{i} \\
-						\scenReturnNonemptyDeployment   _{i} & = & \locMxpMtntop   \\
+						\scenReturnDeploymentWillRevert _{i} & = & \cnWillRev _{i}                \\
+						\scenReturnNonemptyDeployment   _{i} & = & \locMxpSizeOneNonzeroAndNoMxpx \\
 					\end{array} \right.
 				\]
 				\saNote{}
@@ -169,9 +169,9 @@ We impose the following:
 					\locTouchRamAfterMessageCallExpression
 					\define
 					\left[ \begin{array}{cr}
-                                                \cdot & (1 - \locIsRoot) \\
-						\cdot & \locMxpMtntop    \\
-						\cdot & \locRac          \\
+                                                \cdot & (1 - \locIsRoot)               \\
+						\cdot & \locMxpSizeOneNonzeroAndNoMxpx \\
+						\cdot & \locRac                        \\
 					\end{array} \right]
 				\]
 				\saNote{} 
@@ -185,26 +185,34 @@ We impose the following:
 	\item[\underline{Setting the miscellaneous-row $n^°(i + \locFirstMiscRowOffset)$:}]
 		we impose that
 		\[
-			\weightedMiscFlagSum
-			{i}{\locFirstMiscRowOffset}
-			=
-			\left[ \begin{array}{crcl}
-				+ & \miscMmuWeight & \!\!\!\cdot\!\!\! & \locTriggerMmu \\
-				+ & \miscMxpWeight & \!\!\!\cdot\!\!\! & \locTriggerMxp \\
-				+ & \miscOobWeight & \!\!\!\cdot\!\!\! & \locTriggerOob \\
-			\end{array} \right]
-		\]
-		in other words
-		\[
 			\left\{ \begin{array}{lclr}
-				\miscExpFlag  _{i + \locFirstMiscRowOffset} & = & \gZero         & (\trash) \\
-				\miscMmuFlag  _{i + \locFirstMiscRowOffset} & = & \locTriggerMmu & (\trash) \\
-				\miscMxpFlag  _{i + \locFirstMiscRowOffset} & = & \locTriggerMxp & (\trash) \\
-				\miscOobFlag  _{i + \locFirstMiscRowOffset} & = & \locTriggerOob & (\trash) \\
-				\miscStpFlag  _{i + \locFirstMiscRowOffset} & = & \gZero         & (\trash) \\
+				\miscExpFlag  _{i + \locFirstMiscRowOffset} & = & \gZero         \\
+				\miscMmuFlag  _{i + \locFirstMiscRowOffset} & = & \locTriggerMmu \\
+				\miscMxpFlag  _{i + \locFirstMiscRowOffset} & = & \locTriggerMxp \\
+				\miscOobFlag  _{i + \locFirstMiscRowOffset} & = & \locTriggerOob \\
+				\miscStpFlag  _{i + \locFirstMiscRowOffset} & = & \gZero         \\
+			\end{array} \right.
+			% OK
+		\]
+		\saNote{}
+		We will specify \locTriggerMmu{}, \locTriggerMxp{} and \locTriggerOob{} shortly.
+
+		\saNote{} \label{hub: instruction handling: halt: return: generalities: optimized misc flags}
+		One may slightly reduce the number of constraints above by imposing instead
+		\[
+			\left\{ \begin{array}{lcl}
+				\left[ \begin{array}{clcl}
+					+ & \miscExpWeight & \cdot & \miscExpFlag _{i + \locFirstMiscRowOffset} \\
+					% + & \miscMmuWeight & \cdot & \miscMmuFlag _{i + \locFirstMiscRowOffset} \\
+					+ & \miscMxpWeight & \cdot & \miscMxpFlag _{i + \locFirstMiscRowOffset} \\
+					% + & \miscOobWeight & \cdot & \miscOobFlag _{i + \locFirstMiscRowOffset} \\
+					+ & \miscStpWeight & \cdot & \miscStpFlag _{i + \locFirstMiscRowOffset} \\
+				\end{array} \right]
+				& = & \miscMxpWeight \cdot \locTriggerMxp \vspace{2mm} \\
+				\miscMmuFlag  _{i + \locFirstMiscRowOffset} & = & \locTriggerMmu \\
+				\miscOobFlag  _{i + \locFirstMiscRowOffset} & = & \locTriggerOob \\
 			\end{array} \right.
 		\]
-		\saNote{} We will specify \locTriggerMmu{}, \locTriggerMxp{} and \locTriggerOob{} shortly.
 	\item[\underline{Setting \locTriggerMxp:}]
 		we impose that
 		\[
@@ -246,17 +254,17 @@ For concreteness we include a table representing the desired behavior of these f
 	\[
 		\hspace*{-2.9cm}
 		\begin{array}{|l|lc||c|c|c|c|c|c|} \hline
-			\textsc{Scenario}                                                            & \textsc{Exception} &                                   & \locTriggerMxp & \locTriggerOob  & \locTriggerMmu & \locTriggerHashInfo \\ \hline \hline
-			\scenReturnException                                                         & \mxpxSH            & (\stackMxpx    _{i - \locStackRowOffset} \equiv 1) & \oneCell       & \gZero          & \gZero         & \gZero              \\ \hline
-			\scenReturnException                                                         & \oogxSH            & (\stackOogx    _{i - \locStackRowOffset} \equiv 1) & \oneCell       & \gZero          & \gZero         & \gZero              \\ \hline
-			\scenReturnException                                                         & \maxcsxSH          & (\stackMaxcsx  _{i - \locStackRowOffset} \equiv 1) & \oneCell       & \oneCell        & \gZero         & \gZero              \\ \hline
-			\scenReturnException                                                         & \icpxSH            & (\stackIcpx    _{i - \locStackRowOffset} \equiv 1) & \oneCell       & \gZero          & \oneCell       & \gZero              \\ \hline \hline
-			\multicolumn{3}{|l||}{\scenReturnFromMessageCallWillTouchRam               } & \oneCell           & \gZero                            & \oneCell       & \gZero         \\ \hline
-			\multicolumn{3}{|l||}{\scenReturnFromMessageCallWontTouchRam               } & \oneCell           & \gZero                            & \gZero         & \gZero         \\ \hline
-			\multicolumn{3}{|l||}{\scenReturnFromDeploymentEmptyByteCodeWillRevert     } & \oneCell           & \gZero                            & \gZero         & \gZero         \\ \hline
-			\multicolumn{3}{|l||}{\scenReturnFromDeploymentEmptyByteCodeWontRevert     } & \oneCell           & \gZero                            & \gZero         & \gZero         \\ \hline
-			\multicolumn{3}{|l||}{\scenReturnFromDeploymentNonemptyByteCodeWillRevert  } & \oneCell           & \oneCell                          & \oneCell       & \oneCell       \\ \hline
-			\multicolumn{3}{|l||}{\scenReturnFromDeploymentNonemptyByteCodeWontRevert  } & \oneCell           & \oneCell                          & \oneCell       & \oneCell       \\ \hline
+			\textsc{Scenario}                                                           & \textsc{Exception} &                                                              & \locTriggerMxp & \locTriggerOob  & \locTriggerMmu & \locTriggerHashInfo \\ \hline   \hline
+			\scenReturnException                                                        & \mxpxSH            & (\stackMxpx   _{i            - \locStackRowOffset} \equiv 1) & \oneCell       & \gZero          & \gZero         & \gZero              \\ \hline
+			\scenReturnException                                                        & \oogxSH            & (\stackOogx   _{i            - \locStackRowOffset} \equiv 1) & \oneCell       & \gZero          & \gZero         & \gZero              \\ \hline
+			\scenReturnException                                                        & \maxcsxSH          & (\stackMaxcsx _{i            - \locStackRowOffset} \equiv 1) & \oneCell       & \oneCell        & \gZero         & \gZero              \\ \hline
+			\scenReturnException                                                        & \icpxSH            & (\stackIcpx   _{i            - \locStackRowOffset} \equiv 1) & \oneCell       & \gZero          & \oneCell       & \gZero              \\ \hline \hline
+			\multicolumn{3}{|l||}{\scenReturnFromMessageCallWillTouchRam              }                                                                                     & \oneCell       & \gZero          & \oneCell       & \gZero              \\ \hline
+			\multicolumn{3}{|l||}{\scenReturnFromMessageCallWontTouchRam              }                                                                                     & \oneCell       & \gZero          & \gZero         & \gZero              \\ \hline
+			\multicolumn{3}{|l||}{\scenReturnFromDeploymentEmptyByteCodeWillRevert    }                                                                                     & \oneCell       & \gZero          & \gZero         & \gZero              \\ \hline
+			\multicolumn{3}{|l||}{\scenReturnFromDeploymentEmptyByteCodeWontRevert    }                                                                                     & \oneCell       & \gZero          & \gZero         & \gZero              \\ \hline
+			\multicolumn{3}{|l||}{\scenReturnFromDeploymentNonemptyByteCodeWillRevert }                                                                                     & \oneCell       & \oneCell        & \oneCell       & \oneCell            \\ \hline
+			\multicolumn{3}{|l||}{\scenReturnFromDeploymentNonemptyByteCodeWontRevert }                                                                                     & \oneCell       & \oneCell        & \oneCell       & \oneCell            \\ \hline
 		\end{array}
 	\]
 	\label{hub: instruction handling: halting: return: desired trigger flags}
@@ -283,7 +291,7 @@ Indeed, \textbf{the \mmuMod{} module expects small parameters}, see chapter~(\re
 	\item[\underline{Setting the \mxpMod{} data:}]
 		\If $\miscMxpFlag _{i + \locFirstMiscRowOffset} = 1$ \Then we impose
 		\[
-			\setMxpInstructionTypeFour
+			\setMxpInstructionOneOffset
 			{
 				anchorRow    = i                      ,
 				relOffset    = \locFirstMiscRowOffset ,

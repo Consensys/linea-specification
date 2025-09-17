@@ -31,29 +31,48 @@ We impose the following constraints:
 		this row compares the balance to the value to transfer:
 		\[
 			\left\{ \begin{array}{l}
-				\oobCallToLt
-				{i}{0}
-				{0}{\locBalance}
-				{\locValueHi}{\locValueLo}
+				\wcpCallToLt {
+					anchorRow = i           ,
+					relOffset = 0           ,
+					argOneHi  = 0           ,
+					argOneLo  = \locBalance ,
+					argTwoHi  = \locValueHi ,
+					argTwoLo  = \locValueLo ,
+				}
 				\vspace{2mm} \\
-				\oobCallToLt
-				{i}{1}
-				{0}{\locCallStackDepth}
-				{0}{1024}
+				\wcpCallToLt {
+					anchorRow = i                  ,
+					relOffset = 1                  ,
+					argOneHi  = 0                  ,
+					argOneLo  = \locCallStackDepth ,
+					argTwoHi  = 0                  ,
+					argTwoLo  = 1024               ,
+				}
 				\vspace{2mm} \\
-				\oobCallToIszero
-				{i}{2}
-				{0}{\locNonce}
+				\wcpCallToIszero {
+					anchorRow = i         ,
+					relOffset = 2         ,
+					argOneHi  = 0         ,
+					argOneLo  = \locNonce ,
+				}
 				\vspace{2mm} \\
-				\oobCallToLt
-				{i}{3}
-				{0}{\locCreatorNonce}
-				{0}{\maxNonce}
+				\wcpCallToLt {
+					anchorRow = i                ,
+					relOffset = 3                ,
+					argOneHi  = 0                ,
+					argOneLo  = \locCreatorNonce ,
+					argTwoHi  = 0                ,
+					argTwoLo  = \maxNonce        ,
+				}
 				\vspace{2mm} \\
-				\oobCallToLt
-				{i}{4}
-				{0}{\maxInitCodeSize}
-				{0}{\locInitCodeSize}
+				\wcpCallToLt {
+					anchorRow = i                ,
+					relOffset = 4                ,
+					argOneHi  = 0                ,
+					argOneLo  = \maxInitCodeSize ,
+					argTwoHi  = 0                ,
+					argTwoLo  = \locInitCodeSize ,
+				}
 			\end{array} \right.
 		\]
 		and we introduce the following shorthands

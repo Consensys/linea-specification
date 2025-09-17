@@ -1,0 +1,98 @@
+% \begin{center}
+%     \boxed{\text{Throughout this section it is assumed that }
+%     \isCmp _{i} = \true
+%     }
+% \end{center}
+We impose that
+\begin{enumerate}
+    \item \label{rlp txn v2: phase constraints: access list: legal transitions: start with access list item prefix}
+	\If $\locAccessListPrefix _{i} = \true$ \Then
+	\[
+		\rlpTxnSharedColumnIsPrefixOfAccessListItem _{i + 1} = \phaseAccessList _{i + 1}
+	\]
+	\saNote{}
+	The above enforces that the ``data processing'' of (\textbf{nonempty}) access lists start with the
+	processing of the prefix of an access list item $E \equiv (E_a, E_\textbf{s})$.
+    \item
+	\If $\rlpTxnSharedColumnIsPrefixOfAccessListItem _{i} = \true$ \Then
+	\[
+	    \left\{ \begin{array}{l}
+		\left[ \begin{array}{cl}
+		    + & \rlpTxnSharedColumnIsPrefixOfAccessListItem _{i + 1} \\
+		    + & \rlpTxnSharedColumnIsAccessListAddress      _{i + 1} \\
+		    % + & \rlpTxnSharedColumnIsPrefixOfStorageKeyList _{i + 1} \\
+		    % + & \rlpTxnSharedColumnIsAccessListStorageKey   _{i + 1} \\
+		\end{array} \right]
+		= \true \vspace{2mm} \\
+		\rlpTxnSharedColumnIsAccessListAddress _{i + 1} = \done _{i} \\
+	    \end{array} \right.
+	\]
+	\saNote{}
+	In fact, the processing of an access list item \rlp{}-prefix takes up one row.
+	And so $\done _{i} = 1$ will hold in all cases.
+    \item
+	\If $\rlpTxnSharedColumnIsAccessListAddress      _{i} = \true$ \Then
+	\[
+	    \left\{ \begin{array}{l}
+		\left[ \begin{array}{cl}
+		    % + & \rlpTxnSharedColumnIsPrefixOfAccessListItem _{i + 1} \\
+		    + & \rlpTxnSharedColumnIsAccessListAddress      _{i + 1} \\
+		    + & \rlpTxnSharedColumnIsPrefixOfStorageKeyList _{i + 1} \\
+		    % + & \rlpTxnSharedColumnIsAccessListStorageKey   _{i + 1} \\
+		\end{array} \right]
+		= \true \vspace{2mm} \\
+		\rlpTxnSharedColumnIsPrefixOfStorageKeyList _{i + 1} = \done _{i} \\
+	    \end{array} \right.
+	\]
+    \item
+	\If $\rlpTxnSharedColumnIsPrefixOfStorageKeyList _{i} = \true$ \Then
+	\[
+	    \left\{ \begin{array}{l}
+		\left[ \begin{array}{cl}
+		    + & \rlpTxnSharedColumnIsPrefixOfStorageKeyList _{i + 1} \\
+		    + & \rlpTxnSharedColumnIsAccessListStorageKey   _{i + 1} \\
+		    % + & \rlpTxnSharedColumnIsAccessListAddress      _{i + 1} \\
+		    + & \rlpTxnSharedColumnIsPrefixOfAccessListItem _{i + 1} \\
+		\end{array} \right]
+		= \phaseAccessList _{i + 1} \vspace{2mm} \\
+		\left[ \begin{array}{cl}
+		    % + & \rlpTxnSharedColumnIsAccessListAddress      _{i + 1} \\
+		    % + & \rlpTxnSharedColumnIsPrefixOfStorageKeyList _{i + 1} \\
+		    + & \rlpTxnSharedColumnIsAccessListStorageKey   _{i + 1} \\
+		    + & \rlpTxnSharedColumnIsPrefixOfAccessListItem _{i + 1} \\
+		\end{array} \right]
+		=  \phaseAccessList _{i + 1} \cdot \done _{i} \\
+	    \end{array} \right.
+	\]
+	\saNote{}
+	In fact, the processing of a storage key list \rlp{}-prefix takes up one row.
+	And so $\done _{i} = 1$ will hold in all cases.
+    \item
+	\If $\rlpTxnSharedColumnIsAccessListStorageKey   _{i} = \true$ \Then
+	\[
+	    \left\{ \begin{array}{lcl}
+		\left[ \begin{array}{clr}
+		    % + & \rlpTxnSharedColumnIsAccessListAddress      _{i + 1} \\
+		    % + & \rlpTxnSharedColumnIsPrefixOfStorageKeyList _{i + 1} \\
+		    + & \rlpTxnSharedColumnIsAccessListStorageKey   _{i + 1} \\
+		    + & \rlpTxnSharedColumnIsPrefixOfAccessListItem _{i + 1} \\
+		\end{array} \right]
+		= \phaseAccessList   _{i + 1} \vspace{2mm} \\
+		\If \rlpTxnSharedColumnIsPrefixOfAccessListItem _{i + 1} = \true ~ \Then \done _{i} = \true & (\sanityCheck) \\
+	    \end{array} \right.
+	\]
+\end{enumerate}
+\saNote{}
+By counter-constancy transitions may only take place when $\ct \equiv \maxCt$ i.e. when $\done \equiv 1$, see (\ref{rlp txn v2: generalities: ct and ct_max}).
+The constraint adorned with (\sanityCheck) follows from that.
+The other constraints linking sub-sums to \done{} enforce the fact that
+\begin{itemize}
+    \item \rlpTxnSharedColumnIsPrefixOfAccessListItem {}
+    \item \rlpTxnSharedColumnIsAccessListAddress      {}
+    \item \rlpTxnSharedColumnIsPrefixOfStorageKeyList {}
+\end{itemize}
+should last \textbf{one} counter-cycle, while
+\begin{itemize}
+    \item \rlpTxnSharedColumnIsAccessListStorageKey {}
+\end{itemize}
+may be repeated over \textbf{several} contiguous counter-cycles.

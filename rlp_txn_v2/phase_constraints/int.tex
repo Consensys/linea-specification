@@ -1,0 +1,88 @@
+\begin{center}
+    \boxed{\text{All constraints in this subsection assume that 
+    $\locIsIntegerPhase _{i} = 1$
+    }}
+\end{center}
+We start by defining some shorthands,
+one of which we have already made use of in the section-wide precondition:
+\[
+    \hspace*{-1cm}
+    \left\{ \begin{array}{lcl}
+        \locIsIntegerPhase _{i} & \define &
+        \left[ \begin{array}{cl}
+            + & \phaseChainId              _{i} \\
+            + & \phaseNonce                _{i} \\
+            + & \phaseGasPrice             _{i} \\
+            + & \phaseMaxPriorityFeePerGas _{i} \\
+            + & \phaseMaxFeePerGas         _{i} \\
+            + & \phaseGasLimit             _{i} \\
+            + & \phaseValue                _{i} \\
+            + & \phaseY                    _{i} \\
+            + & \phaseR                    _{i} \\
+            + & \phaseS                    _{i} \\
+        \end{array} \right]
+        \vspace{2mm} \\
+        \locPhaseAppropriateIntegerHi _{i} & \define &
+        \left[ \begin{array}{clcl}
+            + \!\!\! & \phaseR                    _{i} & \!\!\!\cdot\!\!\! & \rlpTxnComputationColumnExoDataColumn{1}     _{i + 1} \\
+            + \!\!\! & \phaseS                    _{i} & \!\!\!\cdot\!\!\! & \rlpTxnComputationColumnExoDataColumn{1}     _{i + 1} \\
+        \end{array} \right]
+        \vspace{2mm} \\
+        \locPhaseAppropriateIntegerLo _{i} & \define &
+        \left[ \begin{array}{clcl}
+            + \!\!\! & \phaseChainId              _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnChainId              _{i} \\
+            + \!\!\! & \phaseNonce                _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnNonce                _{i} \\
+            + \!\!\! & \phaseGasPrice             _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnGasPrice             _{i} \\
+            + \!\!\! & \phaseMaxPriorityFeePerGas _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnMaxPriorityFeePerGas _{i} \\
+            + \!\!\! & \phaseMaxFeePerGas         _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnMaxFeePerGas         _{i} \\
+            + \!\!\! & \phaseGasLimit             _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnGasLimit             _{i} \\
+            + \!\!\! & \phaseValue                _{i} & \!\!\!\cdot\!\!\! & \rlpTxnTransactionColumnTxnValue             _{i} \\
+            + \!\!\! & \phaseY                    _{i} & \!\!\!\cdot\!\!\! & \rlpTxnCommonColumnYparity                   _{i} \\
+            + \!\!\! & \phaseR                    _{i} & \!\!\!\cdot\!\!\! & \rlpTxnComputationColumnExoDataColumn{2}     _{i + 1} \\
+            + \!\!\! & \phaseS                    _{i} & \!\!\!\cdot\!\!\! & \rlpTxnComputationColumnExoDataColumn{2}     _{i + 1} \\
+        \end{array} \right]
+    \end{array} \right.
+\]
+\saNote{}
+For the $\locPhaseAppropriateInteger _{i}$ shorthand to ``make sense''
+one must be on a \textbf{transaction-row}.
+
+For all ``integer phases'' we impose the following:
+\begin{enumerate}
+    \item \If $\isTxn _{i} =1$ \Then:
+        \begin{enumerate}
+            \item
+                we define the following shorthand
+                \[
+                \]
+                we perform ``transaction-row assignments''
+                \[
+                    \rlpProcessInteger {
+                        anchorRow  = i                                  ,
+                        relOffset  = \yellowm{1}                        ,
+                        integerHi  = \locPhaseAppropriateIntegerHi _{i} ,
+                        integerLo  = \locPhaseAppropriateIntegerLo _{i} ,
+                        endOfPhase = \true                              ,
+                    }
+                \]
+        \end{enumerate}
+\end{enumerate}
+\saNote{}
+Given the constraints from
+section~(\ref{rlp txn v2: specialized: processing: integer}) and
+section~(\ref{rlp txn v2: specialized: utils calls: integer}),
+the shorthand definitions of
+\locPhaseAppropriateIntegerHi{} and
+\locPhaseAppropriateIntegerLo{}
+and their use as parameters of a compound constraint
+,
+is essentially saying
+\[
+    \text{``for \phaseR{} and \phaseS{} processing, }
+    \rlpTxnComputationColumnExoDataColumn{k} = \rlpTxnComputationColumnExoDataColumn{k}",
+    \quad k = 1, 2
+\]
+which may seem redundant.
+This must be interpreted as follows:
+the trace is \textbf{implicitly} provided with
+the correct values of (the hi and lo parts of) the signature components \texttt{r} and \texttt{s}.

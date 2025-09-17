@@ -52,6 +52,7 @@ full_names = {
 	"shakira": "shakira",
 	"ripSha": "rip Sha",
 	"blkMdx": "blk Mdx",
+	"blsData": "bls Data",
 	# flags
 	"txn": "txn",
 	"trans": "trans Storage",
@@ -62,11 +63,13 @@ full_names = {
 	"swap": "swap",
 	"invalid": "invalid",
 	# rlp modules
-	"rlpAddr": "address Rlp",		# I'm taking out the d for readability
+	"rlpAddr": "address Rlp",
 	"rlpTxn": "transaction Rlp",
 	"rlpTxnRcpt": "transaction Receipt Rlp",
+	"rlpUtils": "rlp Utils",
 	# instruction decoder
 	"id": "instruction Decoder",
+	"blsRefTable": "bls Reference Table"
 }
 
 def module_list():

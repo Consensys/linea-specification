@@ -55,25 +55,35 @@ We impose the following constraints:
 	\item[\underline{Setting miscellaneous flags on row $n^°(i + \callMiscRowOffset)$:}]
 		we impose that
 		\[
-			\weightedMiscFlagSum
-			{i}{\callMiscRowOffset}
+			\weightedMiscFlagSum {
+				anchorRow = i                  ,
+				relOffset = \callMiscRowOffset ,
+			}
 			=
 			\left[ \begin{array}{lrcl}
 				+ & \miscMxpWeight & \cdot & \locCallTriggersMxp \\
 				+ & \miscOobWeight & \cdot & \locCallTriggersOob \\
 				+ & \miscStpWeight & \cdot & \locCallTriggersStp \\
 			\end{array} \right]
+			% OK
 		\]
-		in other words
+		\saNote{} \label{hub: instruction handling: call: generalities: universal: optimized misc flags}
+		In other words
 		\[
 			\left\{ \begin{array}{lclr}
-				\miscExpFlag_{i + \callMiscRowOffset} & = & \gZero              & (\trash) \\
-				\miscMmuFlag_{i + \callMiscRowOffset} & = & \rZero              & (\trash) \\
-				\miscMxpFlag_{i + \callMiscRowOffset} & = & \locCallTriggersMxp & (\trash) \\
-				\miscOobFlag_{i + \callMiscRowOffset} & = & \locCallTriggersOob & (\trash) \\
-				\miscStpFlag_{i + \callMiscRowOffset} & = & \locCallTriggersStp & (\trash) \\
+				\miscExpFlag_{i + \callMiscRowOffset} & = & \gZero              & (\sanityCheck) \\
+				\miscMmuFlag_{i + \callMiscRowOffset} & = & \rZero              & (\sanityCheck) \\
+				\miscMxpFlag_{i + \callMiscRowOffset} & = & \locCallTriggersMxp & (\sanityCheck) \\
+				\miscOobFlag_{i + \callMiscRowOffset} & = & \locCallTriggersOob & (\sanityCheck) \\
+				\miscStpFlag_{i + \callMiscRowOffset} & = & \locCallTriggersStp & (\sanityCheck) \\
 			\end{array} \right.
+			% OK
 		\]
+		Indeed, given the definitions from
+		section~(\ref{hub: instruction handling: call: trigger: mxp}),
+		section~(\ref{hub: instruction handling: call: trigger: oob}) and
+		section~(\ref{hub: instruction handling: call: trigger: mmu})
+		all relevant trigger columns \textbf{unconditionally binary}.
 	\item[\underline{Setting \oobMod{} instruction parameters:}]
 		\If $\miscOobFlag_{i + \callMiscRowOffset} = 1$ \Then
 		we impose that 
@@ -124,18 +134,18 @@ We impose the following constraints:
 	\item[\underline{Setting \mxpMod{} instruction parameters:}]
 		\If $\miscMxpFlag_{i + \callMiscRowOffset} = 1$ \Then we impose that
 		\[
-			\setMxpInstructionTypeFive {
-				anchorRow          = i,
-				relOffset          = \callMiscRowOffset,
-				instruction        = \locInst,
-				callDataOffsetHi   = \locCdoHi,
-				callDataOffsetLo   = \locCdoLo,
-				callDataSizeHi     = \locCdsHi,
-				callDataSizeLo     = \locCdsLo,
-				returnAtOffsetHi   = \locRaoHi,
-				returnAtOffsetLo   = \locRaoLo,
-				returnAtCapacityHi = \locRacHi,
-				returnAtCapacityLo = \locRacLo,
+			\setMxpInstructionCalls {
+				anchorRow          = i                  ,
+				relOffset          = \callMiscRowOffset ,
+				instruction        = \locInst           ,
+				callDataOffsetHi   = \locCdoHi          ,
+				callDataOffsetLo   = \locCdoLo          ,
+				callDataSizeHi     = \locCdsHi          ,
+				callDataSizeLo     = \locCdsLo          ,
+				returnAtOffsetHi   = \locRaoHi          ,
+				returnAtOffsetLo   = \locRaoLo          ,
+				returnAtCapacityHi = \locRacHi          ,
+				returnAtCapacityLo = \locRacLo          ,
 			}
 		\]
 	\item[\underline{Justifying \mxpxSH's:}]

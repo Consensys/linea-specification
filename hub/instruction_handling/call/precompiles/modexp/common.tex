@@ -7,7 +7,7 @@
 		\end{array} \right.
 		}
 \end{center}
-In other words we will be specifying the common prefix for all \inst{MODEXP} handling, regardless of success or failure.
+In other words we will be specifying the common prefix for all \instModexp{} handling, regardless of success or failure.
 We know, see section~(\ref{hub: instruction handling: call: precompiles: modexp: representation}), that the current scenario row will be followed by a miscellaneous-row.
 \begin{description}
 	\item[\underline{\underline{Excluding execution scenarios:}}]
@@ -17,19 +17,22 @@ We know, see section~(\ref{hub: instruction handling: call: precompiles: modexp:
 			\item[\underline{Setting lookup flags:}]
 				we impose
 				\[
-					\weightedMiscFlagSum
-					{i}{\prcModexpCdsMiscRowOffset}
+					\weightedMiscFlagSum {
+						anchorRow = i                          ,
+						relOffset = \prcModexpCdsMiscRowOffset ,
+					}
 					=
 					\miscOobWeight
+					% OK
 				\]
 				in other words
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + \prcModexpCdsMiscRowOffset} & = & \gZero & (\trash) \\
-						\miscMmuFlag _{i + \prcModexpCdsMiscRowOffset} & = & \rZero & (\trash) \\
-						\miscMxpFlag _{i + \prcModexpCdsMiscRowOffset} & = & \rZero & (\trash) \\
-						\miscOobFlag _{i + \prcModexpCdsMiscRowOffset} & = & \one   & (\trash) \\
-						\miscStpFlag _{i + \prcModexpCdsMiscRowOffset} & = & \gZero & (\trash) \\
+						\miscExpFlag _{i + \prcModexpCdsMiscRowOffset} & = & \gZero & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcModexpCdsMiscRowOffset} & = & \rZero & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcModexpCdsMiscRowOffset} & = & \rZero & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcModexpCdsMiscRowOffset} & = & \one   & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcModexpCdsMiscRowOffset} & = & \gZero & (\sanityCheck) \\
 					\end{array} \right.
 				\]
 			\item[\underline{Setting \oobMod{} values and defining shorthands:}] 
@@ -49,11 +52,19 @@ We know, see section~(\ref{hub: instruction handling: call: precompiles: modexp:
 						\locExtractMbs & \define & \miscOobDataCol {5} _{i + \prcModexpCdsMiscRowOffset} \\
 					\end{array} \right.
 				\]
+				\saNote{} \label{hub: instruction handling: call: precompiles: modexp: common constraints: extract bbs ebs and mbs OOB shorthands are binary}
+				The shorthands
+				\locExtractBbs{},
+				\locExtractEbs{},
+				\locExtractMbs{}
+				are \textbf{unconditionally binary}.
+				See section~(\ref{oob: precompiles: modexp: cds})
+				from the \oobMod{} module for details.
 		\end{description}
 \end{description}
 We refer the reader to section~(\ref{oob: precompiles: modexp: cds}) for the interpretation of these fields and the interface of the \oobInstModexpCds{} instruction. 
 
-The following three rows serve to extract the three byte size parameters of the \inst{MODEXP} precompile.
+The following three rows serve to extract the three byte size parameters of the \instModexp{} precompile.
 In order of appearance they extract the following parameters:
 the base     byte size $\locBbs~(\equiv\locBase)$,
 the exponent byte size $\locEbs~(\equiv\locExponent)$ and
@@ -66,8 +77,10 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 			\item[\underline{Setting lookup flags:}]
 				we impose
 				\[
-					\weightedMiscFlagSum
-					{i}{\prcModexpFirstXbsRowOffset}
+					\weightedMiscFlagSum {
+						anchorRow = i                           ,
+						relOffset = \prcModexpFirstXbsRowOffset ,
+					}
 					=
 					\left[ \begin{array}{crcl}
 						\miscMmuWeight  & \cdot & \locExtractBbs \\
@@ -77,13 +90,17 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 				in other words
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + \prcModexpFirstXbsRowOffset} & = & \gZero         & (\trash) \\
-						\miscMmuFlag _{i + \prcModexpFirstXbsRowOffset} & = & \locExtractBbs & (\trash) \\
-						\miscMxpFlag _{i + \prcModexpFirstXbsRowOffset} & = & \rZero         & (\trash) \\
-						\miscOobFlag _{i + \prcModexpFirstXbsRowOffset} & = & \one           & (\trash) \\
-						\miscStpFlag _{i + \prcModexpFirstXbsRowOffset} & = & \gZero         & (\trash) \\
+						\miscExpFlag _{i + \prcModexpFirstXbsRowOffset} & = & \gZero         & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcModexpFirstXbsRowOffset} & = & \locExtractBbs & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcModexpFirstXbsRowOffset} & = & \rZero         & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcModexpFirstXbsRowOffset} & = & \one           & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcModexpFirstXbsRowOffset} & = & \gZero         & (\sanityCheck) \\
 					\end{array} \right.
 				\]
+				\saNote{}
+				\locExtractBbs{}
+				is known to be binary,
+				see note~(\ref{hub: instruction handling: call: precompiles: modexp: common constraints: extract bbs ebs and mbs OOB shorthands are binary}).
 			\item[\underline{Setting \mmuMod{} values:}] 
 				\If $\miscMmuFlag_{i + \prcModexpFirstXbsRowOffset} = 1$ \Then
 				\[
@@ -106,7 +123,8 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 						\locBbsLo & \define & \locExtractBbs \cdot \miscMmuLimbTwo _{i + \prcModexpFirstXbsRowOffset} \\ 
 					\end{array} \right.
 				\]
-				\saNote{} This imposes vanishing conditions in case call data is empty.
+				\saNote{}
+				This imposes vanishing conditions in case call data is empty.
 			\item[\underline{Setting \oobMod{} values and defining shorthands:}] 
 				\[
 					\setOobInstructionModexpXbs {
@@ -124,8 +142,10 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 			\item[\underline{Setting lookup flags:}]
 				we impose
 				\[
-					\weightedMiscFlagSum
-					{i}{\prcModexpSecondXbsRowOffset}
+					\weightedMiscFlagSum {
+						anchorRow = i                            ,
+						relOffset = \prcModexpSecondXbsRowOffset ,
+					}
 					=
 					\left[ \begin{array}{crcl}
 						\miscMmuWeight  & \cdot & \locExtractEbs \\
@@ -135,13 +155,17 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 				in other words
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + \prcModexpSecondXbsRowOffset} & = & \gZero         & (\trash) \\
-						\miscMmuFlag _{i + \prcModexpSecondXbsRowOffset} & = & \locExtractEbs & (\trash) \\
-						\miscMxpFlag _{i + \prcModexpSecondXbsRowOffset} & = & \rZero         & (\trash) \\
-						\miscOobFlag _{i + \prcModexpSecondXbsRowOffset} & = & \one           & (\trash) \\
-						\miscStpFlag _{i + \prcModexpSecondXbsRowOffset} & = & \gZero         & (\trash) \\
+						\miscExpFlag _{i + \prcModexpSecondXbsRowOffset} & = & \gZero         & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcModexpSecondXbsRowOffset} & = & \locExtractEbs & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcModexpSecondXbsRowOffset} & = & \rZero         & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcModexpSecondXbsRowOffset} & = & \one           & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcModexpSecondXbsRowOffset} & = & \gZero         & (\sanityCheck) \\
 					\end{array} \right.
 				\]
+				\saNote{}
+				\locExtractEbs{}
+				is known to be binary,
+				see note~(\ref{hub: instruction handling: call: precompiles: modexp: common constraints: extract bbs ebs and mbs OOB shorthands are binary}).
 			\item[\underline{Setting \mmuMod{} values:}] 
 				\If $\miscMmuFlag_{i + \prcModexpSecondXbsRowOffset} = 1$ \Then
 				\[
@@ -182,8 +206,10 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 			\item[\underline{Setting lookup flags:}]
 				we impose
 				\[
-					\weightedMiscFlagSum
-					{i}{\prcModexpThirdXbsRowOffset}
+					\weightedMiscFlagSum {
+						anchorRow = i                           ,
+						relOffset = \prcModexpThirdXbsRowOffset ,
+					}
 					=
 					\left[ \begin{array}{crcl}
 						\miscMmuWeight  & \cdot & \locExtractMbs \\
@@ -193,13 +219,17 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 				in other words
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + \prcModexpThirdXbsRowOffset} & = & \gZero         & (\trash) \\
-						\miscMmuFlag _{i + \prcModexpThirdXbsRowOffset} & = & \locExtractMbs & (\trash) \\
-						\miscMxpFlag _{i + \prcModexpThirdXbsRowOffset} & = & \rZero         & (\trash) \\
-						\miscOobFlag _{i + \prcModexpThirdXbsRowOffset} & = & \one           & (\trash) \\
-						\miscStpFlag _{i + \prcModexpThirdXbsRowOffset} & = & \gZero         & (\trash) \\
+						\miscExpFlag _{i + \prcModexpThirdXbsRowOffset} & = & \gZero         & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcModexpThirdXbsRowOffset} & = & \locExtractMbs & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcModexpThirdXbsRowOffset} & = & \rZero         & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcModexpThirdXbsRowOffset} & = & \one           & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcModexpThirdXbsRowOffset} & = & \gZero         & (\sanityCheck) \\
 					\end{array} \right.
 				\]
+				\saNote{}
+				\locExtractMbs{}
+				is known to be binary,
+				see note~(\ref{hub: instruction handling: call: precompiles: modexp: common constraints: extract bbs ebs and mbs OOB shorthands are binary}).
 			\item[\underline{Setting \mmuMod{} values:}] 
 				\If $\miscMmuFlag_{i + \prcModexpThirdXbsRowOffset} = 1$ \Then
 				\[
@@ -258,26 +288,31 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 				\item[\underline{Setting lookup flags:}]
 					we impose
 					\[
-						\weightedMiscFlagSum
-						{i}{\prcModexpLeadRowOffset}
-						=
-						\left[ \begin{array}{crcl}
-							\miscExpWeight  & \cdot & \locLoadLeadingWord \\
-							\miscMmuWeight  & \cdot & \locLoadLeadingWord \\
-							\miscOobWeight \\
-						\end{array} \right]
-					\]
-					in other words
-					\[
 						\left\{ \begin{array}{lclr}
-							\miscExpFlag _{i + \prcModexpLeadRowOffset} & = & \undefinedStar \quad \locLoadLeadingWord & (\trash) \\
-							\miscMmuFlag _{i + \prcModexpLeadRowOffset} & = & \undefinedStar \quad \locLoadLeadingWord & (\trash) \\
-							\miscMxpFlag _{i + \prcModexpLeadRowOffset} & = & \rZero                                   & (\trash) \\
-							\miscOobFlag _{i + \prcModexpLeadRowOffset} & = & \one                                     & (\trash) \\
-							\miscStpFlag _{i + \prcModexpLeadRowOffset} & = & \gZero                                   & (\trash) \\
+							\miscExpFlag _{i + \prcModexpLeadRowOffset} & = & \undefinedStar \quad \locLoadLeadingWord \\
+							\miscMmuFlag _{i + \prcModexpLeadRowOffset} & = & \undefinedStar \quad \locLoadLeadingWord \\
+							\miscMxpFlag _{i + \prcModexpLeadRowOffset} & = & \rZero                                   \\
+							\miscOobFlag _{i + \prcModexpLeadRowOffset} & = & \one                                     \\
+							\miscStpFlag _{i + \prcModexpLeadRowOffset} & = & \gZero                                   \\
 						\end{array} \right.
 					\]
-					\saNote{} The shorthand \locLoadLeadingWord{} labeled with $\undefinedStar$ is defined below.
+					\saNote{}
+					The shorthand \locLoadLeadingWord{} labeled with $\undefinedStar$ is defined below.
+
+					\saNote{}
+					One may, in the implemementation, compress the above into fewer constraints like so:
+					\[
+						\left\{ \begin{array}{lclr}
+							\miscExpFlag _{i + \prcModexpLeadRowOffset} & = & \undefinedStar \quad \locLoadLeadingWord \\
+							\miscMmuFlag _{i + \prcModexpLeadRowOffset} & = & \undefinedStar \quad \locLoadLeadingWord \\
+							\left[ \begin{array}{cccl}
+								+ & \miscMxpWeight & \!\!\!\cdot\!\!\! & \miscMxpFlag _{i + \prcModexpLeadRowOffset} \\
+								+ & \miscOobWeight & \!\!\!\cdot\!\!\! & \miscOobFlag _{i + \prcModexpLeadRowOffset} \\
+								+ & \miscStpWeight & \!\!\!\cdot\!\!\! & \miscStpFlag _{i + \prcModexpLeadRowOffset} \\
+							\end{array} \right]
+							& = & \miscOobWeight  & (\sanityCheck) \\
+						\end{array} \right.
+					\]
 				\item[\underline{Setting \oobMod{} values:}] 
 					\[
 						\setOobInstructionModexpLead {
@@ -357,7 +392,7 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 		section~(\ref{exp: intro}) for the description of the \expInstModexpLog{} instruction and to
 		section~(\ref{exp: modexp log base 2}) for a description of the interface of this instruction and further details.
 
-		The \zkEvm{} is, at long last, in a position to compute the gas cost of the \inst{MODEXP} call, and thereby justify
+		The \zkEvm{} is, at long last, in a position to compute the gas cost of the \instModexp{} call, and thereby justify
 		\scenPrcSuccess{} and \scenPrcFailureKnownToRam{}.
 		\begin{description}
 		\item[\underline{\underline{Miscellaneous row $n^°(i + \prcModexpPricingRowOffset)$:}}] we impose 
@@ -365,31 +400,33 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 				\item[\underline{Setting lookup flags:}]
 					we impose
 					\[
-						\weightedMiscFlagSum
-						{i}{\prcModexpPricingRowOffset}
+						\weightedMiscFlagSum {
+							anchorRow = i                          ,
+							relOffset = \prcModexpPricingRowOffset ,
+						}
 						=
 						\miscOobWeight
 					\]
 					in other words
 					\[
 						\left\{ \begin{array}{lclr}
-							\miscExpFlag _{i + \prcModexpPricingRowOffset} & = & \gZero & (\trash) \\
-							\miscMmuFlag _{i + \prcModexpPricingRowOffset} & = & \rZero & (\trash) \\
-							\miscMxpFlag _{i + \prcModexpPricingRowOffset} & = & \rZero & (\trash) \\
-							\miscOobFlag _{i + \prcModexpPricingRowOffset} & = & \one   & (\trash) \\
-							\miscStpFlag _{i + \prcModexpPricingRowOffset} & = & \gZero & (\trash) \\
+							\miscExpFlag _{i + \prcModexpPricingRowOffset} & = & \gZero & (\sanityCheck) \\
+							\miscMmuFlag _{i + \prcModexpPricingRowOffset} & = & \rZero & (\sanityCheck) \\
+							\miscMxpFlag _{i + \prcModexpPricingRowOffset} & = & \rZero & (\sanityCheck) \\
+							\miscOobFlag _{i + \prcModexpPricingRowOffset} & = & \one   & (\sanityCheck) \\
+							\miscStpFlag _{i + \prcModexpPricingRowOffset} & = & \gZero & (\sanityCheck) \\
 						\end{array} \right.
 					\]
 				\item[\underline{Setting \oobMod{} values:}] 
 					we impose
 					\[
 						\setOobInstructionModexpPricing {
-							anchorRow          = i                                   ,
-							relOffset          = \prcModexpPricingRowOffset          ,
-							calleeGas          = \locCalleeGas                       ,
-							returnAtCapacity   = \locPrcRac                          ,
-							exponentLog        = \locModexpExponentLog               ,
-							maxMbsBbs          = \locMaxMbsBbs                       ,
+							anchorRow        = i                          ,
+							relOffset        = \prcModexpPricingRowOffset ,
+							calleeGas        = \locCalleeGas              ,
+							returnAtCapacity = \locPrcRac                 ,
+							exponentLog      = \locModexpExponentLog      ,
+							maxMbsBbs        = \locMaxMbsBbs              ,
 						}
 					\]
 				\item[\underline{Setting some shorthands:}] 

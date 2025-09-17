@@ -1,7 +1,7 @@
 The present section describes the remaining computations required for dealing with
-\inst{SHA2-256},
-\inst{RIPEMD-160} and
-\inst{IDENTITY}.
+\instShaTwo{},
+\instRipemd{} and
+\instIdentity{}.
 As such:
 \[
 	\boxed{\text{All constraints in this subsection further assume }
@@ -31,10 +31,14 @@ The sum ``$\locCds + 31$'' may therefore be safely computed as above.
 \begin{description}
 	\item[\underline{Row n°$(i + 3)$:}] we impose that
 		\[
-			\oobCallToLt
-			{i}{3}
-			{0}{\locCalleeGas}
-			{0}{\locPrecompileCost}
+			\wcpCallToLt {
+				anchorRow = i                  ,
+				relOffset = 3                  ,
+				argOneHi  = 0                  ,
+				argOneLo  = \locCalleeGas      ,
+				argTwoHi  = 0                  ,
+				argTwoLo  = \locPrecompileCost ,
+			}
 		\]
 		where
 		\[

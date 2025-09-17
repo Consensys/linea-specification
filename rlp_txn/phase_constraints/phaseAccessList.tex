@@ -14,7 +14,7 @@ The general loop intrication is resumed in the next table.
 \begin{table}[h]
     \centering
     \begin{tabular}{|c|c|c|c|c|c|c|} \hline
-    \isprefix & $\Depth1$ & \Depth2 & \nbAddr & \nbSto & \nbStoPerAddr & Action                           \\ \hline
+    \isPrefix & $\Depth1$ & \Depth2 & \nbAddr & \nbSto & \nbStoPerAddr & Action                           \\ \hline
     1         & 0         & 0       & init    & init   & 0             & RLP prefix of AccessList         \\ \hline \hline
     1         & 1         & 0       &         &        & 0             & RLP prefix of an access tuple    \\ \hline
     0         & 1         & 0       & -=1     &        & 0             & RLP(Addr)                        \\ \hline
@@ -34,8 +34,8 @@ We remind the reader that $\nbAddr$, $\nbSto$, $\nbStoPerAddr$, $\Depth1$ and $\
 \newline
 Constraints on the end of the phase:
 \begin{enumerate}
-	\item \If $\phasesize_{i} \neq 0$ \Then $\phasend_{i}=0$
-	\item\label{constraint: end of access set phase} \If ($\phasesize_{i}=0$ \et $\done_{i}=1$) \Then $\phasend_{i}=1$.
+	\item \If $\phasesize_{i} \neq 0$ \Then $\phaseEnd_{i}=0$
+	\item\label{constraint: end of access set phase} \If ($\phasesize_{i}=0$ \et $\done_{i}=1$) \Then $\phaseEnd_{i}=1$.
 \end{enumerate}
 Constraint on $\outgoingDataSymb$ as $\nbAddr$ and $\nbSto$ are initialised at the begining of the phase:
 \begin{enumerate}[resume]
@@ -43,7 +43,7 @@ Constraint on $\outgoingDataSymb$ as $\nbAddr$ and $\nbSto$ are initialised at t
     \begin{enumerate}
         \item $\outgoingDataSymb\high_{i}=\nbSto_{i}$
         \item $\outgoingDataSymb\low_{i}=\nbAddr_{i}$
-		\item $\isprefix_{i}=1$
+		\item $\isPrefix_{i}=1$
 		\item $\Depth1_{i} = 0$
 		\item $\Depth2_{i} = 0$
 		\item $\Input1_{i} = \phasesize_{i}$
@@ -81,7 +81,7 @@ We first compute the RLP prefix and in the case of an empty list, end the phase:
 			\]
 	     \item \If $\done_{i}=1$ \Then:
 	     \begin{enumerate} 
-		 	\item $\isprefix_{i+1}=1$
+		 	\item $\isPrefix_{i+1}=1$
 		 	\item $\Depth1_{i+1}=1$
 		 	\item $\Depth2_{i+1}=0$	
 	     \end{enumerate}
@@ -89,7 +89,7 @@ We first compute the RLP prefix and in the case of an empty list, end the phase:
 \end{enumerate}
 We now deal with an access list item. We first compute the RLP prefix of an access tuple:
 \begin{enumerate}[resume]
-	\item \If ($\isprefix_{i}=1$ \et $\Depth1_{i}=1$ \et $\Depth2_{i}=0$) \footnote{It is implemented \If $\isprefix_{i} \cdot \Depth1_{i} - \Depth2_{i}=1$ \Then:} \Then:
+	\item \If ($\isPrefix_{i}=1$ \et $\Depth1_{i}=1$ \et $\Depth2_{i}=0$) \footnote{It is implemented \If $\isPrefix_{i} \cdot \Depth1_{i} - \Depth2_{i}=1$ \Then:} \Then:
 	\begin{enumerate}
 		\item $\Input1_{i} = \col{ACCESS\_TUPLE\_BYTESIZE}_{i}$
 		\item $\nbstep_{i}=8$
@@ -114,7 +114,7 @@ We now deal with an access list item. We first compute the RLP prefix of an acce
 			\]
 		\item \If $\done_{i}=1$ \Then:
 		\begin{enumerate}
-		 	\item $\isprefix_{i+1}=0$
+		 	\item $\isPrefix_{i+1}=0$
 		 	\item $\Depth1_{i+1}=1$
 		 	\item $\Depth2_{i+1}=0$ 
 		\end{enumerate}
@@ -122,7 +122,7 @@ We now deal with an access list item. We first compute the RLP prefix of an acce
 \end{enumerate}
 Then we compute the RLP of an address:
 \begin{enumerate}[resume]
-	\item \If ($\isprefix_{i}=0$ \et $\Depth1_{i}=1$ \et $\Depth2_{i}=0$) \footnote{It is implemented \If  $\Depth1_{i} - \isprefix_{i} - \Depth2_{i}=1$ \Then:} \Then:
+	\item \If ($\isPrefix_{i}=0$ \et $\Depth1_{i}=1$ \et $\Depth2_{i}=0$) \footnote{It is implemented \If  $\Depth1_{i} - \isPrefix_{i} - \Depth2_{i}=1$ \Then:} \Then:
 	\begin{enumerate}
 	\item
         \[
@@ -137,7 +137,7 @@ Then we compute the RLP of an address:
         \]
 	 	\item \If $\done_{i}=1$ \Then:
 	 	\begin{enumerate}
-	 		\item $\isprefix_{i+1}=1$
+	 		\item $\isPrefix_{i+1}=1$
 	 		\item $\Depth1_{i+1}=1$
 	 		\item $\Depth2_{i+1}=1$
 	 	\end{enumerate}
@@ -146,7 +146,7 @@ Then we compute the RLP of an address:
 Then we compute the RLP prefix of the list of StorageKey in this access tuple:
 \begin{enumerate}[resume]
 
-	\item \If ($\isprefix_{i}=1$ \et $\Depth1_{i}=1$ \et $\Depth2_{i}=1$) \footnote{It is implemented \If $\isprefix_{i} \cdot \Depth1_{i} \cdot \Depth2_{i}=1$ \Then:} \Then:
+	\item \If ($\isPrefix_{i}=1$ \et $\Depth1_{i}=1$ \et $\Depth2_{i}=1$) \footnote{It is implemented \If $\isPrefix_{i} \cdot \Depth1_{i} \cdot \Depth2_{i}=1$ \Then:} \Then:
 
 	\begin{enumerate}
 		\item \If $\nbStoPerAddr_{i}=0$ \Then:
@@ -181,7 +181,7 @@ Then we compute the RLP prefix of the list of StorageKey in this access tuple:
 \end{enumerate}
 Then, if relevant, we compute the RLP of a StorageKey:
 \begin{enumerate}[resume]
-	\item \If ($\isprefix_{i}=0$ \et $\Depth1_{i}=1$ \et $\Depth2_{i}=1$)\footnote{It is implemented \If $\Depth1_{i} \cdot \Depth2_{i} - \isprefix_{i}=1$ \Then:} \linebreak \Then $\texttt{rlpStorageKeyConstraints}_{i}(\Input1, \Input2, \ct)$
+	\item \If ($\isPrefix_{i}=0$ \et $\Depth1_{i}=1$ \et $\Depth2_{i}=1$)\footnote{It is implemented \If $\Depth1_{i} \cdot \Depth2_{i} - \isPrefix_{i}=1$ \Then:} \linebreak \Then $\texttt{rlpStorageKeyConstraints}_{i}(\Input1, \Input2, \ct)$
 \end{enumerate}
 Hereafter we give the condition on the step to do after computing the RLP prefix of the list of StorageKey, or the RLP of a StorageKey. It is either compute a RLP(StorageKey) if $\nbStoPerAddr_{i} \neq 0$, a RLP(access tuple) if ($\nbStoPerAddr_{i} = 0$ and $\nbAddr \neq 0$), ot the end of the phase if $\nbAddr_{i}=\nbSto_{i}=0$:
 \begin{enumerate}[resume]
@@ -189,7 +189,7 @@ Hereafter we give the condition on the step to do after computing the RLP prefix
 	\begin{enumerate}
 		\item \If $\nbStoPerAddr_{i} \neq 0$ \Then:
 		\begin{enumerate}
-		 	\item $\isprefix_{i+1}=0$  
+		 	\item $\isPrefix_{i+1}=0$  
 		 	\item $\Depth1_{i+1}=1$ 
 		 	\item $\Depth2_{i+1}=1$
 		\end{enumerate}
@@ -198,7 +198,7 @@ Hereafter we give the condition on the step to do after computing the RLP prefix
 			\item $\col{ACCESS\_TUPLE\_BYTESIZE}_{i}=0$
 		 	\item \If $\nbAddr_{i} \neq 0$ \Then:
 		 		\begin{enumerate}
-			 		\item $\isprefix_{i+1}=1$
+			 		\item $\isPrefix_{i+1}=1$
 			 		\item $\Depth1_{i+1}=1$
 			 		\item $\Depth2_{i+1}=0$
 		 		\end{enumerate}
@@ -214,11 +214,11 @@ Here we define initialisation and decrementation of $\phasesize$, $\col{ACCESS\_
 In other words $\phasesize$ is initialized at the begining of $\phase{10}$ and then decreased by the number of bytes in the $\limb$ when $\lc$ is nonzero.
 \begin{enumerate}[resume]
 
-    \item \If ($\Depth1_{i}=1$ \et ($\isprefix_{i}=0$ \Or $\Depth2_{i}=1$) \footnote{It is implemented \If $\isprefix_{i} \cdot (1 - \Depth2_{i})=0$ \Then} \Then $\col{ACCESS\_TUPLE\_BYTESIZE}_{i}=\col{ACCESS\_TUPLE\_BYTESIZE}_{i-1} - \lc_{i} \cdot \limbsize_{i}$
+    \item \If ($\Depth1_{i}=1$ \et ($\isPrefix_{i}=0$ \Or $\Depth2_{i}=1$) \footnote{It is implemented \If $\isPrefix_{i} \cdot (1 - \Depth2_{i})=0$ \Then} \Then $\col{ACCESS\_TUPLE\_BYTESIZE}_{i}=\col{ACCESS\_TUPLE\_BYTESIZE}_{i-1} - \lc_{i} \cdot \limbsize_{i}$
 
 \end{enumerate}
 In other words $\col{ACCESS\_TUPLE\_BYTESIZE}$ is initialized at the begining of an access tuple loop, with initialisation value only depending on the value of $\nbStoPerAddr$ 
-				\footnote{The bytesize of an access tuple is 21 (20 for address + 1 for its RLP prefix) + RLP of the list of StorageKey (from 1 to 4 depending of the length of the bytesize of the list of StorageKeys) + 33 per StorageKeys (32 + 1 for its RLP prefix). The RLP prefix of the list of StorageKey is computed when $\isprefix = 1$, $\Depth 1 =1$ and $\Depth 2 = 1$ thus constraining the value of $\col{ACCESS\_TUPLE\_BYTESIZE}$.
+				\footnote{The bytesize of an access tuple is 21 (20 for address + 1 for its RLP prefix) + RLP of the list of StorageKey (from 1 to 4 depending of the length of the bytesize of the list of StorageKeys) + 33 per StorageKeys (32 + 1 for its RLP prefix). The RLP prefix of the list of StorageKey is computed when $\isPrefix = 1$, $\Depth 1 =1$ and $\Depth 2 = 1$ thus constraining the value of $\col{ACCESS\_TUPLE\_BYTESIZE}$.
 					    \begin{enumerate}
 							\item \If $\nbStoPerAddr_{i}=0$ \Then $\col{ACCESS\_TUPLE\_BYTESIZE}_{i}=(1+20) + 1$
 							\item \If $\nbStoPerAddr_{i}=1$ \Then $\col{ACCESS\_TUPLE\_BYTESIZE}_{i}=(1+20) + 1 + (1+32)$
@@ -231,15 +231,15 @@ and decreased by the number of bytes in the $\limb$ when $\lc$ is nonzero during
 \newline
 For the following, we remind the reader that $\nbAddr$, $\nbSto$ and $\nbStoPerAddr$ are $\ct$-constant (see \ref{constancy_constraints}).
 \begin{enumerate}[resume]
-    \item \If ($\Depth1_{i}=1$ \et $\ct_{i}=0$) \Then $\nbAddr_{i} = \nbAddr_{i-1} - \isprefix_{i} \cdot (1 - \Depth2_{i})$
+    \item \If ($\Depth1_{i}=1$ \et $\ct_{i}=0$) \Then $\nbAddr_{i} = \nbAddr_{i-1} - \isPrefix_{i} \cdot (1 - \Depth2_{i})$
 \end{enumerate}
 In other words, $\nbAddr$ is initialized at the begining of the phase, and then decrease by one at the begining of each RLP(access tuple).
 \begin{enumerate}[resume]    
-    \item \If ($\Depth1_{i}=1$ \et $\ct_{i}=0$) \Then $\nbSto_{i} = \nbSto_{i-1} - (1- \isprefix_{i}) \cdot \Depth2_{i}$
+    \item \If ($\Depth1_{i}=1$ \et $\ct_{i}=0$) \Then $\nbSto_{i} = \nbSto_{i-1} - (1- \isPrefix_{i}) \cdot \Depth2_{i}$
 \end{enumerate}
 In other words, $\nbSto$ is initialized at the begining of the phase, and then decrease by one at the begining of each RLP(Sto).
 \begin{enumerate}[resume]
-	\item \If (($\isprefix_{i}=0$ \Or $\Depth2_{i}=1$) \et $\ct_{i}=0$) \footnote{It is implemented \If $\isprefix_{i} \cdot (\Depth2_{i}-1) +\ct_{i} =0$ \Then} \Then $\nbStoPerAddr_{i} = \nbStoPerAddr_{i-1} - (1- \isprefix_{i}) \cdot \Depth2_{i})$
+	\item \If (($\isPrefix_{i}=0$ \Or $\Depth2_{i}=1$) \et $\ct_{i}=0$) \footnote{It is implemented \If $\isPrefix_{i} \cdot (\Depth2_{i}-1) +\ct_{i} =0$ \Then} \Then $\nbStoPerAddr_{i} = \nbStoPerAddr_{i-1} - (1- \isPrefix_{i}) \cdot \Depth2_{i})$
 \end{enumerate}
 In other words$\nbStoPerAddr$ is initialized at the begining of an access tuple loop, and then decrease by one at the begining of each RLP(Sto).
 \begin{enumerate}[resume]

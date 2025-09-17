@@ -1,0 +1,50 @@
+We define the following shorthands:
+\[
+    \begin{array}{l}
+	\locPerspFlagSum _{i} \define
+	\left[ \begin{array}{cr}
+	    + & \isTxn _{i}    \\
+	    + & \isCmp _{i}    \\
+	\end{array} \right] \vspace{2mm} \\
+	\locAboutToEnterNewPhase _{i} \vspace{2mm} \\
+	\define
+	\left[ \begin{array}{clcl}
+	    + & (1 - \phaseRlpPrefix            _{i}) & \!\!\!\cdot\!\!\! & \phaseRlpPrefix            _{i + 1} \\
+	    + & (1 - \phaseChainId              _{i}) & \!\!\!\cdot\!\!\! & \phaseChainId              _{i + 1} \\
+	    + & (1 - \phaseNonce                _{i}) & \!\!\!\cdot\!\!\! & \phaseNonce                _{i + 1} \\
+	    + & (1 - \phaseGasPrice             _{i}) & \!\!\!\cdot\!\!\! & \phaseGasPrice             _{i + 1} \\
+	    + & (1 - \phaseMaxPriorityFeePerGas _{i}) & \!\!\!\cdot\!\!\! & \phaseMaxPriorityFeePerGas _{i + 1} \\
+	    + & (1 - \phaseMaxFeePerGas         _{i}) & \!\!\!\cdot\!\!\! & \phaseMaxFeePerGas         _{i + 1} \\
+	    + & (1 - \phaseGasLimit             _{i}) & \!\!\!\cdot\!\!\! & \phaseGasLimit             _{i + 1} \\
+	    + & (1 - \phaseTo                   _{i}) & \!\!\!\cdot\!\!\! & \phaseTo                   _{i + 1} \\
+	    + & (1 - \phaseValue                _{i}) & \!\!\!\cdot\!\!\! & \phaseValue                _{i + 1} \\
+	    + & (1 - \phaseData                 _{i}) & \!\!\!\cdot\!\!\! & \phaseData                 _{i + 1} \\
+	    + & (1 - \phaseAccessList           _{i}) & \!\!\!\cdot\!\!\! & \phaseAccessList           _{i + 1} \\
+	    + & (1 - \phaseBeta                 _{i}) & \!\!\!\cdot\!\!\! & \phaseBeta                 _{i + 1} \\
+	    + & (1 - \phaseY                    _{i}) & \!\!\!\cdot\!\!\! & \phaseY                    _{i + 1} \\
+	    + & (1 - \phaseR                    _{i}) & \!\!\!\cdot\!\!\! & \phaseR                    _{i + 1} \\
+	    + & (1 - \phaseS                    _{i}) & \!\!\!\cdot\!\!\! & \phaseS                    _{i + 1} \\
+	\end{array} \right]
+    \end{array}
+\]
+and we impose that
+\begin{enumerate}
+    \item $\locPerspFlagSum         _{i} = \locPhaseFlagSum _{i}$
+    \item $\locAboutToEnterNewPhase _{i} = \isTxn           _{i + 1}$
+    \item \label{rlp txn v2: generalities: perspectives: every transaction row is followed by a computation row} \If $\isTxn _{i} = 1$ \Then $\isCmp _{i + 1} = 1$
+    \item \If $\locPhaseFlagSum _{i} = 1$ \Then
+	\[
+	    \locAboutToEnterNewPhase _{i} = \locAboutToExitPhase _{i} \quad (\sanityCheck)
+	\]
+\end{enumerate}
+\saNote{} \label{rlp txn v2: generalities: heartbeat: the perspective flags are binary exclusive}
+Given the \emph{empirical binarity} of \locPhaseFlagSum{},
+see note~(\ref{rlp txn v2: generalities: phase flag sum: phase flag sum is binary}),
+the above implies that
+$\isTxn$ and $\isCmp$
+are (binary) exclusive.
+
+\saNote{} \label{rlp txn v2: generalities: perspectives: perspective columns are fully constrained and every transaction row is followed by at least one computation row}
+The above constraints \emph{completely} constrain both $\isTxn$ and $\isCmp$.
+Furthermore, constraint (\ref{rlp txn v2: generalities: perspectives: every transaction row is followed by a computation row})
+imposes that \emph{each and every} phase starts with a \textbf{single} $\isTxn$-row followed by at least one $\isCmp$-row.
