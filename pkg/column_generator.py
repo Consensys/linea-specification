@@ -64,6 +64,7 @@ full_names = {
 	"invalid": "invalid",
 	# rlp modules
 	"rlpAddr": "address Rlp",
+	"rlpAuth": "authorization Rlp",
 	"rlpTxn": "transaction Rlp",
 	"rlpTxnRcpt": "transaction Receipt Rlp",
 	"rlpUtils": "rlp Utils",
