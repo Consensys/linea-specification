@@ -4,6 +4,7 @@ The heartbeat of the word comparison module is simple: if $\wcpStamp \neq 0$ and
 	\item \If $\wcpStamp_{i} = 0$ \Then
 		\[
 			\left\{ \begin{array}{lcl}
+				\INST_{i}  & = & 0 \sanityCheck   \\
 				\maxCt_{i} & = & 0 \quad (\trash) \\
 				\ct_{i}    & = & 0 \quad (\trash) \\
 			\end{array} \right.
@@ -16,8 +17,35 @@ The heartbeat of the word comparison module is simple: if $\wcpStamp \neq 0$ and
 			\item \If $\ct_{i} \neq \maxCt_{i}$ \Then $\ct_{i + 1} = 1 + \ct_{i}$
 			\item \If $\ct_{i} =    \maxCt_{i}$ \Then $\wcpStamp_{i + 1} = 1 + \wcpStamp_{i}$
 		\end{enumerate}
-	\item $\ct_{i} \neq \llarge$
+	\item \label{wcp: heartbeat: smallness of ct max}
+		$\ct_{i} \neq \llarge$
+	\item \label{wcp: heartbeat: determinism of ct max}
+		\If $\ct_{i} \neq 0 $ \Then:
+		\begin{enumerate}
+			\item \Or $\acc{1}_{i - 1} \neq 0$
+			\item \Or $\acc{2}_{i - 1} \neq 0$
+			\item \Or $\acc{3}_{i - 1} \neq 0$
+			\item \Or $\acc{4}_{i - 1} \neq 0$
+		\end{enumerate}
 	\item $\ct_{N} = \maxCt_{N}$.
 \end{enumerate}
-\saNote{} We don't explicitly impose anything on the value of $\maxCt_i$ when $\vli_i \equiv 1$.
-But the above forces us to have at all times $0 \leq \ct_{i} \leq \maxCt_{i} < \llarge$, at the very least whenever $\wcpStamp_{i} \neq 0$ if the implementation omits the constraints marked with $(\trash)$.
+\saNote{}
+When $\vli_i \equiv 1$, the value of $\maxCt_i$ is deterministic and small:
+\begin{itemize}
+        \item
+		constraint (\ref{wcp: heartbeat: smallness of ct max})
+		imposes the smallness of $\maxCt$: $0 \leq \ct_{i} \leq \maxCt_{i} < \llarge$
+	\item
+		constraint (\ref{wcp: heartbeat: determinism of ct max})
+		imposes the determinism of $\maxCt$:
+		at least one of the byte decomposition accumulators is nonzero
+		at all times;
+		in particular along the first row,
+		so that one of them starts with a nonzero byte on the first row (i.e. when $\ct_{i} = 0$);
+		the longest argument thus fit precisely into a
+		$\max \left\{ \argOneHi, \argOneLo, \argTwoHi, \argTwoLo \right\}$-byte
+		integer
+\end{itemize}
+-
+-
+
