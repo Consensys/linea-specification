@@ -51,15 +51,17 @@ We also need comparisons that are ALLOWED TO FAIL
 |-----------------|---------------|------------------|-------------------------|--------------------------------------------------------------------|
 
 
-## Lookup to RLP_UTILS
+## RLP-ization of authority list tuples
 
-We need to RLP-ize the authority list items. Recall that these are of the form
+We need to RLP-ize the authority list. Recall that these are of the form
 
-    item ≡ [ chain_id, address, nonce, y_parity, r, s ]
+    authority_list ≡ [ authority_item, authority_item...]
+    authority_item ≡ [ chain_id, address, nonce, y_parity, r, s ]
 
 With
 - chain_id ≡ integer, 32B at most, rlp-ization: 1B to 33B
 - address  ≡ address, 20B exactly, rlp-ization: 21B
+- nonce    ≡ integer,  8B at most, rlp-ization: 1B to 9B
 - y_parity ≡ integer,  1B at most, rlp-ization: 1B or 2B
 - r        ≡ integer, 32B at most, rlp-ization: 1B to 33B
 - s        ≡ integer, 32B at most, rlp-ization: 1B to 33B
@@ -70,11 +72,12 @@ so that
 
 where k ∈ {25, ..., 122}. So that
 
-    RLP( item ) ≡ RLP( ζ )
-                ≡ <rlp prefix> ∙ ζ
+    RLP( authority_item ) ≡ RLP( ζ )
+                          ≡ <rlp_prefix> ∙ ζ
 
 and so we must call `RLP_UTILS` for
 
+|-----------------------|---------------|-------|
 | RLP_UTILS instruction | argument      | notes |
 |-----------------------|---------------|-------|
 | BYTESTRING            | global prefix |       |
@@ -85,6 +88,10 @@ and so we must call `RLP_UTILS` for
 | INTEGER               | r             |       |
 | INTEGER               | s             |       |
 |-----------------------|---------------|-------|
+
+and for the whole list
+
+    RLP( authority_list ) ≡ <rlp_prefix> ∙ RLP( item_1 ) ∙ RLP( item_2 ) ∙ ⋯ ∙ RLP( item_n )
 
 ## Lookup to BLOCK_DATA
 
