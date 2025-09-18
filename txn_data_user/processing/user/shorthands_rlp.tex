@@ -1,0 +1,67 @@
+\begin{center}
+	\boxed{\text{The shorthands below only make sense given that } \userTransactionStandingHypothesis }
+\end{center}
+\saNote{}
+By section~(\ref{user txn data: processing: user: prelude})
+the above forces
+$\isUserTxnRlpView _{i + \rlpViewRowOffset } \equiv \true$.
+
+To simplify notations in following sections we use the following short hands:
+\[
+	\left\{ \begin{array}{lcl}
+		\locRlpTxType                & \define & \txnDataRlpTxType                        _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpToAddrHi              & \define & \txnDataRlpToAddrHi                      _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpToAddrLo              & \define & \txnDataRlpToAddrLo                      _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpIsDeployment          & \define & \txnDataRlpIsDep                         _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpNonce                 & \define & \txnDataRlpNonce                         _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpValue                 & \define & \txnDataRlpValue                         _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpNumberOfZeroBytes     & \define & \txnDataRlpNumberOfZeroBytes             _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpNumberOfNonzeroBytes  & \define & \txnDataRlpNumberOfNonzeroBytes          _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpGasLimit              & \define & \txnDataRlpGasLimit                      _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpGasPrice              & \define & \txnDataRlpGasPrice                      _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpMaxPriorityFee        & \define & \txnDataRlpMaxPriorityFeePerGas          _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpMaxFee                & \define & \txnDataRlpMaxFeePerGas                  _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpNumKeys               & \define & \txnDataRlpNumberOfAccessListStorageKeys _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		\locRlpNumAddr               & \define & \txnDataRlpNumberOfAccessListAddresses   _{i + \rlpViewRowOffset} \vspace{1mm} \\
+		% \locRlpNumAccountDelegations & \define & \txnDataRlpNumAccountDelegations         _{i + \rlpViewRowOffset} \\ TODO: re-enable for Prague 7702
+	\end{array} \right.
+\]
+we further set
+\[
+	\locRlpIsMessageCall \define 1 - \locRlpIsDeployment
+\]
+We further set
+\[
+	\left\{ \begin{array}{lcrcr}
+		\locPayloadSize       & \define & \locRlpNumberOfZeroBytes & + &         \locRlpNumberOfNonzeroBytes \\
+		\locWeightedByteCount & \define & \locRlpNumberOfZeroBytes & + & 4 \cdot \locRlpNumberOfNonzeroBytes \\
+	\end{array} \right.
+\]
+and
+\[
+	\left\{ \begin{array}{lcrcl}
+		\locPayloadCost      & \define & \standardTokenCost & \cdot & \locWeightedByteCount \\
+		\locPayloadFloorCost & \define & \floorTokenCost    & \cdot & \locWeightedByteCount \\
+	\end{array} \right.
+\]
+where
+\[
+	\left\{ \begin{array}{lcl}
+		\standardTokenCost & \define & \standardTokenCostValue \\
+		\floorTokenCost    & \define & \floorTokenCostValue    \\
+	\end{array} \right.
+\]
+\saNote{}
+The \locWeightedByteCount{} shorthand thus corresponds to
+\[
+	\locWeightedByteCount
+	\equiv
+	\sum_{i \in T_\textbf{i}, T_\textbf{d}} ~
+	\begin{cases}
+		~ 1 & \text{if } i =    0 \\
+		~ 4 & \text{otherwise}    \\
+	\end{cases}
+\]
+Where we use \cite{EYP-Shanghai} notations:
+the call data $T_\textbf{d}$ for message call transactions and
+the init code $T_\textbf{i}$ for deployment transactions.

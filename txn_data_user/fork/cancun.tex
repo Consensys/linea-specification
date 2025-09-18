@@ -1,0 +1,34 @@
+When the underlying network runs the \textsc{Cancun} \evm{} we impose the following restrictions:
+\begin{description}
+	\item[\underline{\sysi{} transactions:}] 
+		the only initial system transactions are
+		\cite{EIP-4788} transactions,
+		we therefore impose that
+		\begin{enumerate}
+			\item
+				\If   $\sysi _{i} = \true$ \et $\isUserTxnHubView _{i} = \true$
+				\Then $\txnDataHubEipBeaconRoot _{i} = \true$
+		\end{enumerate}
+	\item[\underline{\sysf{} transactions:}]
+		no such transactions are supported,
+		we therefore impose that
+		\begin{enumerate}
+			\item
+				\If   $\sysi _{i} = \true$ and $\isUserTxnHubView _{i} = \true$
+				\Then $\txnDataHubNoopSystemTransaction _{i} = \true$
+		\end{enumerate}
+	\item[\underline{Transaction order:}]
+		we impose that
+		\begin{enumerate}
+			\item
+				\If $\sysi _{i - 1} = \false$ \et $\sysi _{i} = \true$
+				\Then
+				\[
+					\left\{ \begin{array}{lclr}
+						\isUserTxnHubView        _{i}                                         & = & \true               & (\sanityCheck) \\
+						\txnDataHubEipBeaconRoot _{i}                                         & = & \true \vspace{2mm} \\
+						\user _{i + \nRowsSysiBeaconRoot} + \sysf _{i + \nRowsSysiBeaconRoot} & = & \true              \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+\end{description}

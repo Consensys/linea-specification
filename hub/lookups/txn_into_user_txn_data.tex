@@ -1,78 +1,82 @@
 The present section describes the lookup between the \hubMod{} and the \userTxnDataMod{} module.
 \begin{description}
-	\item[Selector column:] we use the following selector: $\col{sel} \define \user \cdot \peekTransaction$
+	\item[Selector column:] we use the following source selector: $\col{src\_sel} _{i} \define \peekTransaction _{i}$
 	\item[Source columns:] ---
-		\begin{multicols}{3}
-			\begin{enumerate}
-					% numbers
-				\item $\userTransactionNumber$
-				\item $\blockNumber$
-					% addresses
-				\item $\txFrom\high$
-				\item $\txFrom\low$
-				\item $\txTo\high$
-				\item $\txTo\low$
-				\item $\txCoinbase\high$
-				\item $\txCoinbase\low$
-					% tx values
-				\item $\txNonce$
-				\item $\txValue$
-				\item $\txIsDeployment$
-				\item $\txIsTypeTwo$
-				\item $\txGasPrice$
-				\item $\txGasLimit$
-				\item $\txPriorityFeePerGas$
-				\item $\txBasefee$
-				\item $\txCallDataSize$
-				\item $\txInitCodeSize$
-					% directly relevant to hub
-				\item $\txInitialGas$
-				\item $\txInitialBalance$
-				\item $\txRequiresEvmExecution$
-				\item $\txCopyTxcd$
-					% end of tx extracted data
-				\item $\txStatusCode$
-				\item $\txLeftoverGas$
-				\item $\txFinalRefundCounter$
-				\item $\txEffectiveRefund$
-					% \item $\cfi$
-			\end{enumerate}
-		\end{multicols}
-	\item[Target columns:] ---
-		\begin{multicols}{3}
-			\begin{enumerate}
-					% numbers
-				\item $\absTxNum$
-				\item $\txBlockNum$
-					% addresses
-				\item $\txFrom\high$
-				\item $\txFrom\low$
-				\item $\txTo\high$
-				\item $\txTo\low$
-				\item $\txCoinbase\high$
-				\item $\txCoinbase\low$
-					% tx values
-				\item $\txNonce$
-				\item $\txValue$
-				\item $\txIsDeployment$
-				\item $\txIsTypeTwo$
-				\item $\txGasPrice$
-				\item $\txGasLimit$
-				\item $\txPriorityFeePerGas$
-				\item $\txBasefee$
-				\item $\txCallDataSize$
-				\item $\txInitCodeSize$
-					% directly relevant to hub
-				\item $\txInitialGas$
-				\item $\txInitialBalance$
-				\item $\txRequiresEvmExecution$
-				\item $\txCopyTxcd$
-					% end of tx prediction
-				\item $\txStatusCode$
-				\item $\txLeftoverGas$
-				\item $\txFinalRefundCounter$
-				\item $\txEffectiveRefund$
-					% \item $\cfi$
-			\end{enumerate}
-		\end{multicols}
+		\begin{enumerate}
+				% numbers
+			\item $\totalTransactionNumber _{i}$
+			\item $\blockNumber            _{i}$
+				% addresses
+			\item $\user _{i} \cdot \txFrom\high            _{i}$
+			\item $\user _{i} \cdot \txFrom\low             _{i}$
+			\item $\user _{i} \cdot \txTo\high              _{i}$
+			\item $\user _{i} \cdot \txTo\low               _{i}$
+			\item $\user _{i} \cdot \txCoinbase\high        _{i}$
+			\item $\user _{i} \cdot \txCoinbase\low         _{i}$
+				% transaction parameters
+			\item $\user _{i} \cdot \txNonce                _{i}$
+			\item $\user _{i} \cdot \txValue                _{i}$
+			\item $\user _{i} \cdot \txIsDeployment         _{i}$
+			\item $\user _{i} \cdot \txIsTypeTwo            _{i}$
+			\item $\user _{i} \cdot \txGasPrice             _{i}$
+			\item $\user _{i} \cdot \txGasLimit             _{i}$
+			\item $\user _{i} \cdot \txPriorityFeePerGas    _{i}$
+			\item $\user _{i} \cdot \txBasefee              _{i}$
+			\item $\user _{i} \cdot \txCallDataSize         _{i}$
+			\item $\user _{i} \cdot \txInitCodeSize         _{i}$
+				% start of transaction data
+			\item $\user _{i} \cdot \txInitialGas           _{i}$
+			\item $\user _{i} \cdot \txInitialBalance       _{i}$
+			\item $\user _{i} \cdot \txRequiresEvmExecution _{i}$
+			\item $\user _{i} \cdot \txCopyTxcd             _{i}$
+				% end of transaction data
+			\item $\user _{i} \cdot \txStatusCode           _{i}$
+			\item $\user _{i} \cdot \txLeftoverGas          _{i}$
+			\item $\user _{i} \cdot \txFinalRefundCounter   _{i}$
+			\item $\user _{i} \cdot \txEffectiveRefund      _{i}$
+				% system transaction stuff
+			\item $\txnSystemTransactionNoop          _{i}$
+			\item $\txnSystemTransactionEipBeaconRoot _{i}$
+			\item $\txnSystemTransactionEipBlockHash  _{i}$
+			\item $\txnSystemTransactionDataCol{k}    _{i}$, $1 \leq k \leq \txnDataHubNumberOfDataColumns$:
+		\end{enumerate}
+	\item[Target columns:] we use the following target selector: $\col{tgt\_sel} _{j} \define \isUserTxnHubView _{j}$
+		\begin{enumerate}
+				% numbers
+			\item $\totalTransactionNumber          _{j}$
+			\item $\blockNumber                     _{j}$
+				% addresses
+			\item $\user _{j} \cdot \txnDataHubFromHi               _{j}$
+			\item $\user _{j} \cdot \txnDataHubFromLo               _{j}$
+			\item $\user _{j} \cdot \txnDataHubToHi                 _{j}$
+			\item $\user _{j} \cdot \txnDataHubToLo                 _{j}$
+			\item $\user _{j} \cdot \txnDataHubCoinbaseHi           _{j}$
+			\item $\user _{j} \cdot \txnDataHubCoinbaseLo           _{j}$
+				% tx values
+			\item $\user _{j} \cdot \txnDataHubNonce                _{j}$
+			\item $\user _{j} \cdot \txnDataHubValue                _{j}$
+			\item $\user _{j} \cdot \txnDataHubIsDeployment         _{j}$
+			\item $\user _{j} \cdot \txnDataHubIsTypeTwo            _{j}$
+			\item $\user _{j} \cdot \txnDataHubGasPrice             _{j}$
+			\item $\user _{j} \cdot \txnDataHubGasLimit             _{j}$
+			\item $\user _{j} \cdot \big(\txnDataHubGasPrice        _{j} - \txnDataHubBasefee _{j}\big)$
+			\item $\user _{j} \cdot \txnDataHubBasefee              _{j}$
+			\item $\user _{j} \cdot \txnDataHubCallDataSize         _{j}$
+			\item $\user _{j} \cdot \txnDataHubInitCodeSize         _{j}$
+				% directly relevant to hub
+			\item $\user _{j} \cdot \txnDataHubInitialGas           _{j}$
+			\item $\user _{j} \cdot \txnDataHubInitialBalance       _{j}$
+			\item $\user _{j} \cdot \txnDataHubRequiresEvmExecution _{j}$
+			\item $\user _{j} \cdot \txnDataHubCopyTxcd             _{j}$
+				% end of tx prediction
+			\item $\user _{j} \cdot \txnDataHubStatusCode           _{j}$
+			\item $\user _{j} \cdot \txnDataHubLeftoverGas          _{j}$
+			\item $\user _{j} \cdot \txnDataHubFinalRefundCounter   _{j}$
+			\item $\user _{j} \cdot \txnDataHubEffectiveRefund      _{j}$
+				% \item $\cfi _{j}$
+			\item $\txnDataHubNoopSystemTransaction _{j}$
+			\item $\txnDataHubEipBeaconRoot         _{j}$
+			\item $\txnDataHubEipBlockHash          _{j}$
+			\item $\txnDataHubDataCol{k}            _{j}$, $k = 1, \dots, \txnDataHubNumberOfDataColumns$:
+		\end{enumerate}
 \end{description}
