@@ -39,14 +39,15 @@ we impose
     If call_ec_recover ≡ <false> Then AUTHORITY_RECOVERY_SUCCESS ≡ false
     If call_ec_recover ≡ <true>  Then AUTHORITY_RECOVERY_SUCCESS ≡ <prover / gnark defined>
 
-- at this point all constraints will be written assuming "If AUTHORITY_RECOVERY_SUCCESS ≡ <true>"
-- also the fields
-```go
-macro/AUTHORITY_NONCE        
-macro/AUTHORITY_HAS_CODE     
-macro/AUTHORITY_IS_DELEGATED 
-```
-must be meaningful. This could be done more directly through a lookup `RLP_AUTH → HUB.account/`.
+at this point all constraints will be written assuming "If AUTHORITY_RECOVERY_SUCCESS ≡ <true>"
+also the fields
+
+    macro/AUTHORITY_NONCE
+    macro/AUTHORITY_HAS_CODE
+    macro/AUTHORITY_IS_DELEGATED
+
+must be meaningful.
+This could be done directly through a lookup `RLP_AUTH → HUB.account/`.
 We may want to impose a sanity check constraints setting them to 0 otherwise, histoire de fixer les idées.
 
 |---------------------------------------------|-------|------------------------------------------------------|--------------|-------------------------------------------------------|
@@ -286,3 +287,17 @@ The `HUB` should operate under the same order as the transaction has its stuff R
 | rlp_auth.macro/AUTHORITY_IS_DELEGATED       | hub.delegation/IS_DELEGATED                          | hub.account/IS_DELEGATED_NEW will also exist          |
 |---------------------------------------------|------------------------------------------------------|-------------------------------------------------------|
 
+## Counting [SENDER ≡ AUTHORITY]
+
+We should have the standard couple
+- SENDER_IS_AUTHORITY_BIT → lives in a single rlp_auth.macro/ row, must be something like `rlp_auth.MACRO ∙ rlp_auth.macro/PROCEED_WITH_DELEGATION ∙ sender_is_authority`
+- SENDER_IS_AUTHORITY_ACC → as follows
+    - initialized at 0 (when `rlp_auth.USER_TRANSACTION_NUMBER` just changed)
+    - is `AUTHORITY_LIST_ITEM`-constant
+    - gets updated by the BIT otherwise
+- SENDER_IS_AUTHORITY_TOT
+
+## Unique sorting of transactions
+
+We could either prove monotonicity of `rlp_auth.USER_TRANSACTION_NUMBER` (don't like it)
+We could alternatively have two regimes: `rlp_auth.TXN_SUPPORTS_AUTHORITY_LIST` vs `rlp_auth.TXN_DOESNT_SUPPORT_AUTHORITY_LIST` and deal with all transaction in the present module
