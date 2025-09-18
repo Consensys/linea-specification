@@ -96,11 +96,9 @@ The goals of this lookup are to
 - justify the transaction FROM address
 - this is required so that we can justify `SENDER_IS_AUTHORITY`
 
-```go
-// selector
-rlp_auth.MACRO 
+- selector: `rlp_auth.MACRO`
+- correspondence:
 
-// correspondence
 |-----------------------------|------------------------------|
 | `RLP_AUTH` columns          | `TXN_DATA` columns           |
 |-----------------------------|------------------------------|
@@ -110,18 +108,15 @@ rlp_auth.MACRO
 | rlp_auth.macro/AUTHORITY_HI | rlp_data.hub/FROM_ADDRESS_HI |
 | rlp_auth.macro/AUTHORITY_LO | rlp_data.hub/FROM_ADDRESS_LO |
 |-----------------------------|------------------------------|
-```
 
 ## Lookup RLP_AUTH → RLP_TXN
 
 This lookup ensures that the `RLP_AUTH` module does not deal with more authorization list tuples than required.
 Unclear at the moment whether this is necessary.
 
-```go
-// selector
-rlp_auth.MACRO 
+- selector: `rlp_auth.MACRO`
+- correspondence:
 
-// correspondence
 |--------------------------------|-------------------------------|
 | `RLP_AUTH` columns             | `RLP_TXN` columns             |
 |--------------------------------|-------------------------------|
@@ -129,17 +124,14 @@ rlp_auth.MACRO
 | rlp_auth.USER_TXN_NUMBER       | rlp_txn.USER_TXN_NUMBER       |
 | rlp_auth.AUTHORITY_TUPLE_INDEX | rlp_txn.AUTHORITY_TUPLE_INDEX |
 |--------------------------------|-------------------------------|
-```
 
 ## Lookup RLP_TXN → RLP_AUTH
 
 This lookup provides the `RLP_AUTH` with its instructions.
 
-```go
-// seletor:
-rlp_txn.AUTH // the AUTH "subperspective" is yet to be specified
+- selector: `rlp_txn.AUTH`, the AUTH "subperspective" is yet to be specified
+- correspondence:
 
-// correspondence
 |-------------------------------------------|---------------------------------------------|------------------------------|
 | `RLP_TXN` columns                         | `RLP_AUTH` columns                          | notes                        |
 |-------------------------------------------|---------------------------------------------|------------------------------|
@@ -174,7 +166,6 @@ rlp_txn.AUTH // the AUTH "subperspective" is yet to be specified
 | rlp_txn.auth/POTENTIALLY_NEW_CODE_HASH_HI | rlp_auth.macro/POTENTIALLY_NEW_CODE_HASH_HI | either empty code hash       |
 | rlp_txn.auth/POTENTIALLY_NEW_CODE_HASH_LO | rlp_auth.macro/POTENTIALLY_NEW_CODE_HASH_LO | or KEC( ef0100 ∙ <address> ) |
 |-------------------------------------------|---------------------------------------------|------------------------------|
-```
 
 ## Lookup RLP_TXN -> HUB
 
@@ -183,12 +174,9 @@ The `HUB` should operate under the same order as the transaction has its stuff R
 1. access list
 2. authorization list
 
-```go
-// selector
-sel ≡ rlp_txn.AUTH ∙ rlp_txn.auth/AUTHORITY_RECOVERY_SUCCESS
+- selector: `sel ≡ rlp_txn.AUTH ∙ rlp_txn.auth/AUTHORITY_RECOVERY_SUCCESS`
+- correspondence:
 
-
-// correspondence
 |-------------------------------------------|------------------------------------------------|-------------------------------------------------------|
 | RLP_TXN columns                           | HUB columns                                    | notes                                                 |
 |-------------------------------------------|------------------------------------------------|-------------------------------------------------------|
@@ -208,23 +196,4 @@ sel ≡ rlp_txn.AUTH ∙ rlp_txn.auth/AUTHORITY_RECOVERY_SUCCESS
 | rlp_txn.auth/AUTHORITY_HAS_CODE           | hub.account/HAS_CODE                           |                                                       |
 | rlp_txn.auth/AUTHORITY_IS_DELEGATED       | hub.account/IS_DELEGATED                       | hub.account/IS_DELEGATED_NEW will also exist          |
 |-------------------------------------------|------------------------------------------------|-------------------------------------------------------|
-```
 
-## Semantics of INTERNAL_CHECKS_PASSED
-
-The idea is that `INTERNAL_CHECKS_PASSED ≡ <true>` should happen if all checks, save for the nonce equality, should be ok:
-```python
-## must hold unconditionally: we only deal with well-formed transactions
-assert auth.chain_id < 2**256
-assert auth.nonce < 2**64
-assert len(auth.address) == 20
-assert auth.y_parity < 2**8
-assert auth.r < 2**256
-assert auth.s < 2**256
-
-##
-chainId ∈ { 0 , β } ## β is the network chain ID
-nonce < 2**64 - 1
-ecrecover(...) ≠ ∅  ⇒  authority
-authority.HAS_CODE = <false> or authority.IS_DELEGATED = <true>
-```
