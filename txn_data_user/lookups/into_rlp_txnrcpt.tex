@@ -1,22 +1,56 @@
-The present lookup relation connects the \userTxnDataMod{} to the \rlpTxnRcptMod{}. Its purpose is to give to \rlpTxnRcptMod{} the $\col{TYPE}$ of the transaction, $\txCumulativeConsumedGas$ and teh $\txStatusCode$.
+The present lookup relation connects the \txnDataMod{} to the \rlpTxnRcptMod{}.
+Its purpose is to give to \rlpTxnRcptMod{} the $\col{TYPE}$ of the transaction,
+$\cumulativeConsumedGas$ and the $\txnDataHubStatusCode$.
 \begin{description}
-	\item[\underline{Selector:}] $\phaseNumRlpTxnRcpt_{i} \neq 0$
+	\item[\underline{Selector:}] we use
+		\[
+			\col{rlptxnrcpt\_selector} _{i} \define \user _{i}
+		\]
 	\item[\underline{Source columns:}] ---
 		\begin{multicols}{2}
 			\begin{enumerate}
-				\item $\locAbsMax_{i}$
-				\item $\locAbs_{i}$
-				\item $\phaseNumRlpTxnRcpt_{i}$
-				\item $\outgoingTxrcpt_{i}$
+				\item $\userTransactionNumber _{i}$
+				\item $\locRlpTxnRcptPhaseSum _{i}$
+				\item $\locRlpTxnRcptOutgoing _{i}$
 			\end{enumerate}
 		\end{multicols}
+		where we have used the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locRlpTxnRcptPhaseSum _{i} & \define &
+				\left[ \begin{array}{clcl}
+					+ & \isUserTxnRlpView     _{i} & \cdot & \subPhaseTypeName       \\
+					+ & \isUserTxnHubView     _{i} & \cdot & \subPhaseStatusCodeName \\
+					+ & \isUserTxnComputation _{i} & \cdot & \subPhaseCumulGasName   \\
+				\end{array} \right]
+				\vspace{2mm}
+				\\
+				\locRlpTxnRcptOutgoing _{i} & \define &
+				\left[ \begin{array}{clcl}
+					+ & \isUserTxnRlpView     _{i} & \cdot & \txnDataRlpTxType      _{i} \\
+					+ & \isUserTxnHubView     _{i} & \cdot & \txnDataHubStatusCode  _{i} \\
+					+ & \isUserTxnComputation _{i} & \cdot & \cumulativeConsumedGas _{i} \\
+				\end{array} \right]
+				\\
+			\end{array} \right.
+		\]
+		where
+		\[
+			\left\{ \begin{array}{lcl}
+				\subPhaseTypeName       & \define & \subPhaseIdType        \\
+				\subPhaseStatusCodeName & \define & \subPhaseIdStatusCode  \\
+				\subPhaseCumulGasName   & \define & \subPhaseIdCumulGas    \\
+			\end{array} \right.
+		\]
 	\item[\underline{Target columns:}] ---
 		\begin{multicols}{2}
 			\begin{enumerate}
-				\item $\locAbsMax_{j}$
-				\item $\locAbs_{j}$
-				\item $\Phase_{j}$
-				\item $\Input{1}_{j}$
+				\item $\locAbs    _{j}$
+				\item $\Phase     _{j}$
+				\item $\Input{1}  _{j}$
 			\end{enumerate}
 		\end{multicols}
 \end{description}
+
+
+

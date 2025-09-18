@@ -1,0 +1,32 @@
+\item[\underline{\underline{Row n$°(i + \initCodePricingRowOffset)$: \cite{EIP-3860} mandated init code pricing:}}]
+	we impose that
+	\[
+		\eucCall {
+			anchorRow = i                                    ,
+			relOffset = \initCodePricingRowOffset            ,
+			argOne    = \locHubInitCodeSize + \evmWordSizeMO ,
+			argTwo    = \evmWordSize                         ,
+		}
+	\]
+	and we unconditionally define the following shorthand
+	\[
+		\left\{ \begin{array}{lcl}
+			\locInitCodeWords & \define & \txnDataCmptnEucQuotient _{i + \initCodePricingRowOffset} \\
+			\locInitCodeCost  & \define & G_{\text{initcodeword}} \cdot \locInitCodeWords           \\
+		\end{array} \right.
+	\]
+	where
+	\[
+		G_{\text{initcodeword}} \define 2
+	\]
+
+	\saNote{}
+	The above corresponds to the computation of $R(\| T _ \textbf{i} \|)$ where
+	\[
+		R(x) \define G_{\text{initcodeword}} \cdot \left\lceil \frac{x}{\evmWordSize} \right\rceil
+	\]
+	see \cite{EYP-Shanghai} for notations.
+
+	\saNote{} \label{user txn data: processing: user: common computations: init code cost vanishes for message calls}
+	Message calls satisfy $\locHubInitCodeSize \equiv 0$, and therefore $\locInitCodeCost \equiv 0$.
+	see constraint~(\ref{user txn data: processing: user: data transafer hub to rlp: call data size and init code size}).

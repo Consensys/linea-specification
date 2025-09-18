@@ -1,0 +1,65 @@
+\begin{center}
+	\boxed{\text{The constraints below assume that } \userTransactionStandingHypothesis }
+\end{center}
+The present section transfers certain values
+extracted from the \rlpTxnMod{} module (and thus present in the $\isUserTxnRlpView$ presepective) to
+values passed on to the \hubMod{} module (and thus present in the $\isUserTxnHubView$ presepective.)
+
+Constraints are conditional to the following standing hypothesis:
+\begin{description}
+	\item[\underline{Deployment bit, nonce and value:}]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\locHubIsDeployment & = & \locRlpIsDeployment \\
+				\locHubValue        & = & \locRlpValue        \\
+				\locHubNonce        & = & \locRlpNonce        \\
+				\locHubGasLimit     & = & \locRlpGasLimit     \\
+			\end{array} \right.
+		\]
+	\item[\underline{Call data and init code size:}] \label{user txn data: processing: user: data transafer hub to rlp: call data size and init code size}
+		we impose
+		\[
+			\left\{ \begin{array}{lcrcl}
+				\locHubCallDataSize & = & \locRlpIsMessageCall & \cdot & \locPayloadSize \\
+				\locHubInitCodeSize & = & \locRlpIsDeployment  & \cdot & \locPayloadSize \\
+			\end{array} \right.
+		\]
+	\item[\underline{(Conditionally) set the \tt{gas price}:}]
+		we impose
+		\begin{enumerate}
+		        \item
+				\If
+				$\locTransactionWithFixedGasPrice = 1$ \Then
+				\[
+					\locHubGasPrice _{i + \hubViewRowOffset}
+					=
+					\locRlpGasPrice
+				\]
+			\item
+				\If $\locTransactionSansFixedGasPrice = 1$ \Then see
+				section \specTodo{}
+		\end{enumerate}
+	\item[\underline{(Conditionally) set the \tt{to} address:}]
+		we impose
+		\begin{enumerate}
+			\item
+				\If $\locRlpIsMessageCall = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\txnDataHubToHi _{i + \hubViewRowOffset} & = & \locRlpToAddrHi \\
+						\txnDataHubToLo _{i + \hubViewRowOffset} & = & \locRlpToAddrLo \\
+					\end{array} \right.
+				\]
+			\item
+				\If $\locRlpIsDeployment = 1$ \Then see
+				section~(\ref{user txn data: lookups: addr rlp}).
+		\end{enumerate}
+	\item[\underline{Marking transactions following \cite{EIP-1559} gas semantics:}]
+		we impose
+		\[
+			\locHubHasEipFifteenFiftyNineGasSemantics
+			=
+			\locTransactionSansFixedGasPrice
+		\]
+\end{description}

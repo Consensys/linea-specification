@@ -1,0 +1,38 @@
+\item[\underline{\underline{Row n$^\circ(i + \balanceRowOffset)$: initial balance must cover value and gas:}}]
+	we impose that
+	\[
+		\left\{\begin{array}{l}
+			\smallCallToLeq {
+				anchorRow = i                     ,
+				relOffset = \balanceRowOffset     ,
+				argOneLo  = \locMaxCostInWei      ,
+				argTwoLo  = \locHubInitialBalance ,
+			}
+			\vspace{2mm}
+			\\
+			\resultMustBeTrue {
+				anchorRow = i                 ,
+				relOffset = \balanceRowOffset ,
+			}
+			\\
+		\end{array}\right.
+	\]
+	where
+	\[
+		\left\{ \begin{array}{lcl}
+			\locMaxCostInWei & \define &
+			\left[ \begin{array}{clcl}
+				+ & \locRlpValue    \\
+				+ & \locRlpGasLimit  & \cdot & \locMaxGasPrice \\
+			\end{array} \right]
+			\vspace{2mm}
+			\\
+			\locMaxGasPrice  & \define &
+			\left[ \begin{array}{clcl}
+				+ & \locTransactionWithFixedGasPrice & \cdot & \locRlpGasPrice \\
+				+ & \locTransactionSansFixedGasPrice & \cdot & \locRlpMaxFee   \\
+			\end{array} \right]
+			\\
+		\end{array} \right.
+	\]
+	In other words we require that $\locMaxCostInWei \leq \locHubInitialBalance$.
