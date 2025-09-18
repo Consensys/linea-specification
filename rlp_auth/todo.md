@@ -2,22 +2,104 @@
 
 A likely good structure for the module is
 
-|-----------|--------|-----------|---------------------------|
-|           |        |   CT_MAX  | notes                     |
-|-----------|--------|:---------:|---------------------------|
-| WCP       | rows * | <determ.> |
-|-----------|--------|:---------:|
+|-----------|--------|-----------|--------------------------------|
+|           |        |   CT_MAX  | notes                          |
+|-----------|--------|:---------:|--------------------------------|
+| WCP       | rows * | <determ.> |                                |
+|           |        |           | This comprises both            |
+|           |        |           | .   MANDATORY PRECONDITIONS    |
+|           |        |           | .   VALIDITY CHECK COMPARISONS |
+|-----------|--------|:---------:|--------------------------------|
 | MACRO     | row    |     0     |
-|-----------|--------|:---------:|---------------------------|
-| RLP_UTILS | rows * | <determ.> |                           |
-|           |        |           | processing phase columns: |
-|           |        |           | .   IS_GLOBAL_PREFIX      |
-|           |        |           | .   IS_CHAIN_ID           |
-|           |        |           | .   IS_ADDRESS            |
-|           |        |           | .   IS_Y_PARITY           |
-|           |        |           | .   IS_R                  |
-|           |        |           | .   IS_S                  |
-|-----------|--------|-----------|---------------------------|
+|-----------|--------|:---------:|--------------------------------|
+| RLP_UTILS | rows * | <determ.> |                                |
+|           |        |           | processing phase columns:      |
+|           |        |           | .   IS_MAGIC                   |
+|           |        |           | .   IS_GLOBAL_PREFIX           |
+|           |        |           | .   IS_CHAIN_ID                |
+|           |        |           | .   IS_ADDRESS                 |
+|-----------|--------|-----------|--------------------------------|-------------------------|
+| ∅         | ∅      |     ∅     | <!-- .   IS_Y_PARITY -->       | Not part of the message |
+|           |        |           | <!-- .   IS_R -->              |                         |
+|           |        |           | <!-- .   IS_S -->              |                         |
+|-----------|--------|-----------|--------------------------------|-------------------------|
+
+The idea is to carry out all steps of the above
+- we do the MANDATORY PRECONDITIONS WCP CHECKS
+- we do the VALIDITY WCP CHECKS
+
+we then define
+
+    valid_chain_id     ≡ chain_id_is_0 ∨ chain_id_is_β
+    call_ec_recover    ≡ valid_chain_id ∧ valid_nonce_bound
+    call_keccak_on_rlp ≡ call_ec_recover
+
+we impose
+
+    If call_ec_recover ≡ <false> Then AUTHORITY_RECOVERY_SUCCESS ≡ false
+    If call_ec_recover ≡ <true>  Then AUTHORITY_RECOVERY_SUCCESS ≡ <prover / gnark defined>
+
+- at this point all constraints will be written assuming "If AUTHORITY_RECOVERY_SUCCESS ≡ <true>"
+- also the fields
+```go
+macro/AUTHORITY_NONCE        
+macro/AUTHORITY_HAS_CODE     
+macro/AUTHORITY_IS_DELEGATED 
+```
+must be meaningful. This could be done more directly through a lookup `RLP_AUTH → HUB.account/`.
+We may want to impose a sanity check constraints setting them to 0 otherwise, histoire de fixer les idées.
+
+|---------------------------------------------|-------|------------------------------------------------------|--------------|-------------------------------------------------------|
+| `RLP_AUTH` columns                          | notes | `HUB` columns                                        |     notes    |                                                       |
+|---------------------------------------------|:-----:|------------------------------------------------------|:------------:|-------------------------------------------------------|
+| 1                                           |       | hub.DELEGATION                                       |              |                                                       |
+| rlp_auth.USER_TXN_NUMBER                    |   ✓   | hub.USER_TXN_NUMBER                                  |              |                                                       |
+| rlp_auth.macro/AUTHORITY_TUPLE_INDEX        |   ✓   | hub.delegation/AUTHORITY_TUPLE_INDEX                 |              |                                                       |
+| rlp_auth.macro/AUTHORITY_RECOVERY_SUCCESS   |   ✓   | hub.delegation/AUTHORITY_RECOVERY_SUCCESS            |              | defines whether to load account next or not           |
+|---------------------------------------------|:-----:|------------------------------------------------------|:------------:|-------------------------------------------------------|
+| rlp_auth.macro/AUTHORITY_HI                 |   ✓   | hub.delegation/AUTHORITY_HI                          |              |                                                       |
+| rlp_auth.macro/AUTHORITY_LO                 |   ✓   | hub.delegation/AUTHORITY_LO                          |              |                                                       |
+| rlp_auth.macro/ADDRESS_HI                   |   ✓   | hub.delegation/POTENTIALLY_NEW_DELEGATION_ADDRESS_HI |              | hub.account/DELEGATION_ADDRESS_HI_NEW will also exist |
+| rlp_auth.macro/ADDRESS_LO                   |   ✓   | hub.delegation/POTENTIALLY_NEW_DELEGATION_ADDRESS_LO |              | hub.account/DELEGATION_ADDRESS_LO_NEW                 |
+| rlp_auth.macro/ADDRESS_IS_ZERO_ADDRESS      |   ✓   | hub.delegation/POTENTIALLY_RESET_DELEGATION          |              |                                                       |
+| rlp_auth.macro/POTENTIALLY_NEW_CODE_HASH_HI |   ✓   | hub.delegation/POTENTIALLY_NEW_CODE_HASH_HI          |              | new columns: place where to write potential updated   |
+| rlp_auth.macro/POTENTIALLY_NEW_CODE_HASH_LO |   ✓   | hub.delegation/POTENTIALLY_NEW_CODE_HASH_LO          |              | code hash                                             |
+|---------------------------------------------|:-----:|------------------------------------------------------|--------------|-------------------------------------------------------|
+| rlp_auth.macro/AUTHORITY_NONCE              | ⟦ π ⟧ | hub.delegation/AUTHORITY_NONCE                       | justif. here | read off (potential) upcoming account/ row            |
+| rlp_auth.macro/AUTHORITY_HAS_CODE           | ⟦ π ⟧ | hub.delegation/AUTHORITY_HAS_CODE                    | justif. here |                                                       |
+| rlp_auth.macro/AUTHORITY_IS_DELEGATED       | ⟦ π ⟧ | hub.delegation/AUTHORITY_IS_DELEGATED                | justif. here |                                                       |
+|---------------------------------------------|:-----:|------------------------------------------------------|--------------|-------------------------------------------------------|
+| rlp_auth.macro/PROCEED_WITH_DELEGATION      | mixed | hub.delegation/PROCEED_WITH_DELEGATION               |              | used to decide whether to do something or not         |
+|---------------------------------------------|-------|------------------------------------------------------|--------------|-------------------------------------------------------|
+
+One way to do it in the HUB is as follows:
+
+| perspective | AUTHORITY_RECOVERY_SUCCESS | notes                      |
+|-------------|:--------------------------:|----------------------------|
+| DELEGATION  |           <false>          | no address, no account row |
+|-------------|----------------------------|----------------------------|
+| DELEGATION  |           <true>           |                            |
+| ACCOUNT     |                            | load account               |
+|-------------|----------------------------|----------------------------|
+| DELEGATION  |           <true>           |                            |
+| ACCOUNT     |                            | load account               |
+|-------------|----------------------------|----------------------------|
+| DELEGATION  |           <false>          |                            |
+|-------------|----------------------------|----------------------------|
+| DELEGATION  |           <false>          |                            |
+|-------------|----------------------------|----------------------------|
+| DELEGATION  |           <true>           |                            |
+| ACCOUNT     |                            | load account               |
+|-------------|----------------------------|----------------------------|
+
+This way we don't have to create this effective index (AUTHORITY_RECOVERY_SUCCESS_ACCUMULATOR).
+
+Now that we have the currently true nonce and other information such as whether the account is delegated or not we proceed:
+
+    authority_code_is_empty_or_already_delegated ≡ (1 - macro/AUTHORITY_HAS_CODE) ∨ macro/AUTHORITY_IS_DELEGATED
+    proceed_with_delegation ≡ authority_code_is_empty_or_already_delegated ∧ nonce_agreement
+
+    rlp_auth.macro/PROCEED_WITH_DELEGATION ≡ proceed_with_delegation
 
 # Lookups
 
@@ -36,7 +118,7 @@ We need comparisons (ali ≡ authority list item) to verify MANDATORY PRECONDITI
 |-----------------|--------------|----------|-----|-----------------------|
 
 
-We also need comparisons that are ALLOWED TO FAIL
+We also need comparisons that are VALIDITY CHECK COMPARISONS (that are ALLOWED TO FAIL)
 
 |-----------------|---------------|------------------|-------------------------|--------------------------------------------------------------------|
 | WCP instruction | arg1          | arg2             | res                     | note                                                               |
@@ -44,7 +126,7 @@ We also need comparisons that are ALLOWED TO FAIL
 | ISZERO          | ali.chain_id  |                  | chain_id_is_0           |                                                                    |
 | EQ              | ali.chain_id  | β                | chain_id_is_β           |                                                                    |
 | LT              | ali.nonce     | (2 << 64) - 1    | valid_nonce_bound       |                                                                    |
-| LT              | ali.s         | secp256k1 / 2    | valid_s                 |                                                                    |
+| LT              | ali.s         | secp256k1 / 2    | valid_s_bound           |                                                                    |
 | EQ              | ali.nonce     | hub.acc/NONCE    | nonce_agreement         | potentially compare ali.nonce with acc/nonce + SENDER_IS_AUTHORITY |
 | EQ              | ali.authority | txndata.hub/FROM | sender_is_authority     |                                                                    |
 | ISZERO          | ali.address   |                  | address_is_zero_address |                                                                    |
@@ -55,8 +137,8 @@ We also need comparisons that are ALLOWED TO FAIL
 
 We need to RLP-ize the authority list. Recall that these are of the form
 
-    authority_list ≡ [ authority_item, authority_item...]
-    authority_item ≡ [ chain_id, address, nonce, y_parity, r, s ]
+authority_list ≡ [ authority_item, authority_item...]
+authority_item ≡ [ chain_id, address, nonce, y_parity, r, s ]
 
 With
 - chain_id ≡ integer, 32B at most, rlp-ization: 1B to 33B
@@ -68,12 +150,12 @@ With
 
 so that
 
-    ζ ≡ RLP( chain_id ) ∙ RLP( address ) ∙ RLP( nonce ) ∙ RLP( y_parity ) ∙ RLP( r ) ∙ RLP( s ) ∈ B_k
+ζ ≡ RLP( chain_id ) ∙ RLP( address ) ∙ RLP( nonce ) ∙ RLP( y_parity ) ∙ RLP( r ) ∙ RLP( s ) ∈ B_k
 
 where k ∈ {25, ..., 122}. So that
 
-    RLP( authority_item ) ≡ RLP( ζ )
-                          ≡ <rlp_prefix> ∙ ζ
+RLP( authority_item ) ≡ RLP( ζ )
+≡ <rlp_prefix> ∙ ζ
 
 and so we must call `RLP_UTILS` for
 
@@ -91,7 +173,7 @@ and so we must call `RLP_UTILS` for
 
 and for the whole list
 
-    RLP( authority_list ) ≡ <rlp_prefix> ∙ RLP( item_1 ) ∙ RLP( item_2 ) ∙ ⋯ ∙ RLP( item_n )
+RLP( authority_list ) ≡ <rlp_prefix> ∙ RLP( item_1 ) ∙ RLP( item_2 ) ∙ ⋯ ∙ RLP( item_n )
 
 ## Lookup to BLOCK_DATA
 
@@ -157,7 +239,7 @@ This lookup provides the `RLP_AUTH` with its instructions.
 | rlp_txn.auth/SIGNATURE_S_HI               | rlp_auth.macro/SIGNATURE_S_HI               |                              |
 | rlp_txn.auth/SIGNATURE_S_LO               | rlp_auth.macro/SIGNATURE_S_LO               |                              |
 |-------------------------------------------|---------------------------------------------|------------------------------|
-| rlp_txn.auth/IS_VALID_TUPLE               | rlp_auth.macro/IS_VALID_TUPLE               |                              |
+| rlp_txn.auth/PROCEED_WITH_DELEGATION      | rlp_auth.macro/PROCEED_WITH_DELEGATION      |                              |
 |-------------------------------------------|---------------------------------------------|------------------------------|
 | rlp_txn.auth/AUTHORITY_RECOVERY_SUCCESS   | rlp_auth.macro/AUTHORITY_RECOVERY_SUCCESS   |                              |
 | rlp_txn.auth/AUTHORITY_HI                 | rlp_auth.macro/AUTHORITY_HI                 |                              |
@@ -174,7 +256,7 @@ This lookup provides the `RLP_AUTH` with its instructions.
 | rlp_txn.auth/POTENTIALLY_NEW_CODE_HASH_LO | rlp_auth.macro/POTENTIALLY_NEW_CODE_HASH_LO | or KEC( ef0100 ∙ <address> ) |
 |-------------------------------------------|---------------------------------------------|------------------------------|
 
-## Lookup RLP_TXN -> HUB
+## Lookup RLP_AUTH -> HUB
 
 To transmit to transmit the access list tuple to the HUB. It also
 The `HUB` should operate under the same order as the transaction has its stuff RLP-ized:
@@ -184,23 +266,23 @@ The `HUB` should operate under the same order as the transaction has its stuff R
 - selector: `sel ≡ rlp_txn.AUTH ∙ rlp_txn.auth/AUTHORITY_RECOVERY_SUCCESS`
 - correspondence:
 
-|-------------------------------------------|------------------------------------------------|-------------------------------------------------------|
-| RLP_TXN columns                           | HUB columns                                    | notes                                                 |
-|-------------------------------------------|------------------------------------------------|-------------------------------------------------------|
-| 1                                         | hub.auth                                       |                                                       |
-| rlp_txn.USER_TXN_NUMBER                   | hub.USER_TXN_NUMBER                            |                                                       |
-| rlp_txn.auth/AUTHORITY_TUPLE_INDEX        | hub.auth/AUTHORITY_TUPLE_INDEX                 |                                                       |
-| rlp_txn.auth/IS_VALID_TUPLE               | hub.auth/IS_VALID_TUPLE                        | used to decide whether to do something or not         |
-| rlp_txn.auth/ADDRESS_HI                   | hub.auth/POTENTIALLY_NEW_DELEGATION_ADDRESS_HI | hub.account/DELEGATION_ADDRESS_HI_NEW will also exist |
-| rlp_txn.auth/ADDRESS_LO                   | hub.auth/POTENTIALLY_NEW_DELEGATION_ADDRESS_LO | hub.account/DELEGATION_ADDRESS_LO_NEW                 |
-| rlp_txn.auth/ADDRESS_IS_ZERO_ADDRESS      | hub.auth/POTENTIALLY_RESET_DELEGATION          |                                                       |
-| rlp_txn.auth/POTENTIALLY_NEW_CODE_HASH_HI | hub.auth/POTENTIALLY_NEW_CODE_HASH_HI          | new columns: place where to write potential updated   |
-| rlp_txn.auth/POTENTIALLY_NEW_CODE_HASH_LO | hub.auth/POTENTIALLY_NEW_CODE_HASH_LO          | code hash                                             |
-|-------------------------------------------|------------------------------------------------|-------------------------------------------------------|
-| rlp_txn.auth/AUTHORITY_HI                 | hub.account/ADDRESS_HI                         |                                                       |
-| rlp_txn.auth/AUTHORITY_LO                 | hub.account/ADDRESS_LO                         |                                                       |
-| rlp_txn.auth/AUTHORITY_NONCE              | hub.account/NONCE                              |                                                       |
-| rlp_txn.auth/AUTHORITY_HAS_CODE           | hub.account/HAS_CODE                           |                                                       |
-| rlp_txn.auth/AUTHORITY_IS_DELEGATED       | hub.account/IS_DELEGATED                       | hub.account/IS_DELEGATED_NEW will also exist          |
-|-------------------------------------------|------------------------------------------------|-------------------------------------------------------|
+|---------------------------------------------|------------------------------------------------------|-------------------------------------------------------|
+| RLP_AUTH columns                            | HUB columns                                          | notes                                                 |
+|---------------------------------------------|------------------------------------------------------|-------------------------------------------------------|
+| 1                                           | hub.auth                                             |                                                       |
+| rlp_auth.USER_TXN_NUMBER                    | hub.USER_TXN_NUMBER                                  |                                                       |
+| rlp_auth.macro/AUTHORITY_TUPLE_INDEX        | hub.delegation/AUTHORITY_TUPLE_INDEX                 |                                                       |
+| rlp_auth.macro/PROCEED_WITH_DELEGATION      | hub.delegation/PROCEED_WITH_DELEGATION               | used to decide whether to do something or not         |
+| rlp_auth.macro/ADDRESS_HI                   | hub.delegation/POTENTIALLY_NEW_DELEGATION_ADDRESS_HI | hub.account/DELEGATION_ADDRESS_HI_NEW will also exist |
+| rlp_auth.macro/ADDRESS_LO                   | hub.delegation/POTENTIALLY_NEW_DELEGATION_ADDRESS_LO | hub.account/DELEGATION_ADDRESS_LO_NEW                 |
+| rlp_auth.macro/ADDRESS_IS_ZERO_ADDRESS      | hub.delegation/POTENTIALLY_RESET_DELEGATION          |                                                       |
+| rlp_auth.macro/POTENTIALLY_NEW_CODE_HASH_HI | hub.delegation/POTENTIALLY_NEW_CODE_HASH_HI          | new columns: place where to write potential updated   |
+| rlp_auth.macro/POTENTIALLY_NEW_CODE_HASH_LO | hub.delegation/POTENTIALLY_NEW_CODE_HASH_LO          | code hash                                             |
+|---------------------------------------------|------------------------------------------------------|-------------------------------------------------------|
+| rlp_auth.macro/AUTHORITY_HI                 | hub.delegation/ADDRESS_HI                            |                                                       |
+| rlp_auth.macro/AUTHORITY_LO                 | hub.delegation/ADDRESS_LO                            |                                                       |
+| rlp_auth.macro/AUTHORITY_NONCE              | hub.delegation/NONCE                                 |                                                       |
+| rlp_auth.macro/AUTHORITY_HAS_CODE           | hub.delegation/HAS_CODE                              |                                                       |
+| rlp_auth.macro/AUTHORITY_IS_DELEGATED       | hub.delegation/IS_DELEGATED                          | hub.account/IS_DELEGATED_NEW will also exist          |
+|---------------------------------------------|------------------------------------------------------|-------------------------------------------------------|
 
