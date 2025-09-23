@@ -18,15 +18,20 @@
 			we impose $\accNonce_{i + \roffTxSkipUserSenderAccount} = \txNonce_{i + \roffTxSkipUserTransaction}$;
 		\item[\underline{Justifying $\txLeftoverGas$:}]
 			we impose that $\txLeftoverGas _{i + \roffTxSkipUserTransaction} = \txInitialGas _{i + \roffTxSkipUserTransaction}$
-		% TODO: delete the following for Prague, as this relationship won't be true anymore,
-		% due to the floor price of call data, see https://eips.ethereum.org/EIPS/eip-7623.
-		% Instead add the following stand alone note:
-		%
-		% \saNote{}
-		% Starting with \cite{EIP-7623} (which is part of the \textsc{Prague} \evm{}, and imposes a floor price on call data),
-		% the \txEffectiveRefund{} may may no longer coincide with \txLeftoverGas{} for transactions which don't require EVM
-		% execution.
-		\item[\underline{(Optional) justifying $\txEffectiveRefund$:}]
-			we may optionnally impose
-			\[ \txEffectiveRefund _{i + \roffTxSkipUserTransaction} = \txLeftoverGas _{i + \roffTxSkipUserTransaction} \quad (\trash) \]
+			% TODO: delete the following for Prague, as this relationship won't be true anymore,
+			% due to the floor price of call data, see https://eips.ethereum.org/EIPS/eip-7623.
+			% Instead add the following stand alone note:
+			%
+			% \saNote{}
+			% Starting with \cite{EIP-7623} (which is part of the \textsc{Prague} \evm{}, and imposes a floor price on call data),
+			% the \txEffectiveRefund{} may may no longer coincide with \txLeftoverGas{} for transactions which don't require EVM
+			% execution.
+	\end{description}
+	The following constraint is true up to the \textsc{Cancun} hardfork, but fails starting with the \textsc{Prague} hardfork,
+	specifically with \cite{EIP-7623}.
+	\begin{description}
+		\item[\underline{Justifying $\txEffectiveRefund$:}]
+			if the network runs on the \textsc{Cancun}-\evm{},
+			we may impose the followign sanity check constraint:
+			\[ \txEffectiveRefund _{i + \roffTxSkipUserTransaction} = \txLeftoverGas _{i + \roffTxSkipUserTransaction} \quad (\sanityCheck) \]
 	\end{description}
