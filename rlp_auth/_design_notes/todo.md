@@ -111,6 +111,7 @@ We need comparisons (ali ≡ authority list item) to verify MANDATORY PRECONDITI
 |-----------------|--------------|----------|-----|-----------------------|
 | WCP instruction | arg1         | arg2     | res | note                  |
 |-----------------|--------------|----------|-----|-----------------------|
+| GEQ             | ali.chain_id | 0        |     | result must be <true> |
 | LT              | ali.nonce    | 1 << 64  |     | result must be <true> |
 | LT              | ali.address  | 1 << 20  |     | result must be <true> |
 | LT              | ali.y_parity | 1 << 8   |     | result must be <true> |
