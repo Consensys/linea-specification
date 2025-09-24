@@ -1,28 +1,28 @@
 \def\locUtilsFlagSum  {\loc{utils\_flag\_sum}}
 
 % mandatory checks
-\def\roffCompMandatoryChainId                       {\yellowm{(-13)}}
-\def\roffCompMandatoryNonce                         {\yellowm{(-12)}}
-\def\roffCompMandatoryAddress                       {\yellowm{(-11)}}
-\def\roffCompMandatoryYparity                       {\yellowm{(-10)}}
-\def\roffCompMandatorySignatureRwellformed          {\yellowm{(-9)}}
-\def\roffCompMandatorySignatureSwellformed          {\yellowm{(-8)}}
+\def\roffCompMandatoryChainId                       {\roffConstYellow{(-13)}}
+\def\roffCompMandatoryNonce                         {\roffConstYellow{(-12)}}
+\def\roffCompMandatoryAddress                       {\roffConstYellow{(-11)}}
+\def\roffCompMandatoryYparity                       {\roffConstYellow{(-10)}}
+\def\roffCompMandatorySignatureRwellformed          {\roffConstYellow{(-9)}}
+\def\roffCompMandatorySignatureSwellformed          {\roffConstYellow{(-8)}}
 % validity checks
-\def\roffCompValidityChainIdIszero                  {\yellowm{(-7)}}
-\def\roffCompValidityChainIdVsNetworkChainId        {\yellowm{(-6)}}
-\def\roffCompValidityNonceEipBound                  {\yellowm{(-5)}}
-\def\roffCompValiditySignatureSnonMalleabilityBound {\yellowm{(-4)}}
-\def\roffCompValidityNonceVsAccountNonce            {\yellowm{(-3)}}
-\def\roffCompValidityAuthorityVsSender              {\yellowm{(-2)}}
-\def\roffCompValidityAddressIszero                  {\yellowm{(-1)}}
+\def\roffCompValidityChainIdIszero                  {\roffConstYellow{(-7)}}
+\def\roffCompValidityChainIdVsNetworkChainId        {\roffConstYellow{(-6)}}
+\def\roffCompValidityNonceEipBound                  {\roffConstYellow{(-5)}}
+\def\roffCompValiditySignatureSnonMalleabilityBound {\roffConstYellow{(-4)}}
+\def\roffCompValidityNonceVsAccountNonce            {\roffConstYellow{(-3)}}
+\def\roffCompValidityAuthorityVsSender              {\roffConstYellow{(-2)}}
+\def\roffCompValidityAddressIszero                  {\roffConstYellow{(-1)}}
 % macro instruction
-\def\roffCompMacroRow                               {\yellowm{0}}
+\def\roffCompMacroRow                               {\roffConstYellow{0}}
 % RLP_UTILS calls
-\def\roffRlpUtilsMagic                              {\yellowm{TBD}}
-\def\roffRlpUtilsPrefix                             {\yellowm{TBD}}
-\def\roffRlpUtilsChainId                            {\yellowm{TBD}}
-\def\roffRlpUtilsAddress                            {\yellowm{TBD}}
-\def\roffRlpUtilsNonce                              {\yellowm{TBD}}
+\def\roffRlpUtilsMagic                              {\roffConstYellow{1}}
+\def\roffRlpUtilsPrefix                             {\roffConstYellow{2}}
+\def\roffRlpUtilsChainId                            {\roffConstYellow{3}}
+\def\roffRlpUtilsAddress                            {\roffConstYellow{6}}
+\def\roffRlpUtilsNonce                              {\roffConstYellow{9}}
 
 
 \def\locHi                              {\loc{\_hi}}
@@ -56,7 +56,6 @@
 \def\locSecpPrimeOverTwo                {\locSecpPrime\loc{\_over\_2}}
 \def\locSecpPrimeOverTwoHi              {\locSecpPrimeOverTwo\locHi}
 \def\locSecpPrimeOverTwoLo              {\locSecpPrimeOverTwo\locLo}
-\def\locAuthorityNonce                  {\locAuthority\loc{\_}\locNonce}
 \def\locNonceEqualsAuthorityNonce       {\locNonce\loc{\_equals\_}\locAuthority\loc{\_}\locNonce}
 \def\locFromAddress                     {\loc{from\_address}}
 \def\locFromAddressHi                   {\locFromAddress\locHi}
@@ -64,6 +63,8 @@
 \def\locAddressIsZero                   {\locAddress\loc{\_is\_zero}}
 \def\locAuthorityIsSender               {\locAuthority\loc{\_is\_sender}}
 \def\locAuthorityTupleIsValidExpression {\locAuthority\loc{\_tuple\_is\_valid}}
+\def\locCtMaxSum                        {\loc{ct\_max\_sum}}
+\def\locWeightedPerspectiveSum          {\loc{wght\_persp\_sum}}
 
 
 \def\locChainIdIszero            {\locChainId\loc{\_is\_zero}}
@@ -136,3 +137,32 @@
 		}
 	\end{center}
 }
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\def\magicRlpPrefixStandingHypothesis{
+	\begin{center}
+		\boxed{\text{The constraints below assume that }
+		\left\{ \begin{array}{lcl}
+			\macro                     _{i + \roffCompMacroRow} & = & \true \\
+			\rlpAuthMacroCallEcrecover _{i + \roffCompMacroRow} & = & \true \\
+		\end{array} \right.
+		}
+	\end{center}
+}
+\def\rlpPrefixStandingHypothesis    {\magicRlpPrefixStandingHypothesis}
+\def\tupleChainIdStandingHypothesis {\magicRlpPrefixStandingHypothesis}
+\def\tupleAddressStandingHypothesis {\magicRlpPrefixStandingHypothesis}
+\def\tupleNonceStandingHypothesis   {\magicRlpPrefixStandingHypothesis}
+
+
+
+\def\rlpAuthCtmaxComputation {\numConst{ct\_max\_computation}} \def\rlpAuthCtmaxComputationValue {\numConst{12}}
+\def\rlpAuthCtmaxMacro       {\numConst{ct\_max\_macro}}       \def\rlpAuthCtmaxMacroValue       {\numConst{0}}
+\def\rlpAuthCtmaxUtils       {\numConst{ct\_max\_utils}}       \def\rlpAuthCtmaxUtilsValue       {\numConst{11}}
