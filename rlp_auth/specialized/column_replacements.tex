@@ -1,0 +1,72 @@
+We will use constraint systems defined originally in
+the \rlpTxnMod{} module, specifically
+in section~(\ref{rlptxn: specialized}).
+In order to do so we have to do various columns replacements.
+\[
+	\renewcommand{\arraystretch}{1.3}
+	\begin{array}{|l|l|}
+		\hline
+		\text{\rlpTxnMod{}-columns}                 & \text{\rlpAuthMod{}-columns}           \\ \hline\hline
+		\maxCt                                      & \maxCt                                 \\ \hline      
+		\lc                                         & \rlpAuthUtilsColumnLimbBit             \\ \hline      
+		\rlpTxnComputationColumnLimb                & \rlpAuthUtilsColumnLimb                \\ \hline      
+		\rlpTxnComputationColumnLimbSize            & \rlpAuthUtilsColumnLimbSize            \\ \hline      
+		\rlpTxnComputationColumnExoDataColumn{1}    & \rlpAuthUtilsColumnExoDataColumn{1}    \\ \hline      
+		\rlpTxnComputationColumnExoDataColumn{2}    & \rlpAuthUtilsColumnExoDataColumn{2}    \\ \hline      
+		\rlpTxnComputationColumnExoDataColumn{3}    & \rlpAuthUtilsColumnExoDataColumn{3}    \\ \hline      
+		\rlpTxnComputationColumnExoDataColumn{4}    & \rlpAuthUtilsColumnExoDataColumn{4}    \\ \hline      
+		\rlpTxnComputationColumnExoDataColumn{5}    & \rlpAuthUtilsColumnExoDataColumn{5}    \\ \hline      
+		\rlpTxnComputationColumnExoDataColumn{6}    & \rlpAuthUtilsColumnExoDataColumn{6}    \\ \hline      
+		\rlpTxnComputationColumnExoDataColumn{7}    & \rlpAuthUtilsColumnExoDataColumn{7}    \\ \hline      
+		\rlpTxnComputationColumnExoDataColumn{8}    & \rlpAuthUtilsColumnExoDataColumn{8}    \\ \hline      
+		\rlpTxnComputationColumnRlpUtilsFlag        & \rlpAuthUtilsColumnRlpUtilsFlag        \\ \hline      
+		\rlpTxnComputationColumnRlpUtilsInstruction & \rlpAuthUtilsColumnRlpUtilsInstruction \\ \hline      
+	\end{array}
+\]
+With the following caveats:
+\begin{enumerate}
+	\item
+		we remove the \rlpTxnComputationColumnTrmFlag{} constraint from \rlpProcessAddressName{};
+		well-formedness of the \address{} is a given considering
+		section~(\ref{rlp auth: comparisons: mandatory: address bound});
+	\item
+		we remove any and all constraints involving the \rlpTxnMod{}-column \phaseEnd{};
+\end{enumerate}
+In what follows we freely re-use the following constraint systems,
+switching the column names as indicated above,
+and dropping constraints as explained above if necessary.
+\begin{description}
+	\item[\underline{Limb setting constraints:}] 
+		\begin{enumerate}
+			\item
+				\setLimbName{},
+				see section~(\ref{rlp txn v2: specialized: limb setting: potentially set limb})
+			\item
+				\conditionallySetLimbName{},
+				see section~(\ref{rlp txn v2: specialized: limb setting: finalize limb})
+			\item
+				\discardLimbName{},
+				see section~(\ref{rlp txn v2: specialized: limb setting: dismiss limb})
+		\end{enumerate}
+	\item[\underline{\rlpUtilsMod{}-calls:}]
+		\begin{enumerate}
+			\item
+				\rlpUtilsInstCallByteStringPrefixName{},
+				see section~(\ref{rlp txn v2: specialized: utils calls: integer})
+			\item
+				\rlpUtilsInstCallIntegerName{},
+				see section~(\ref{rlp txn v2: specialized: utils calls: byte string prefix})
+		\end{enumerate}
+	\item[\underline{Processing constraints:}]
+		\begin{enumerate}
+			\item
+				\rlpProcessIntegerName{},
+				see section~(\ref{rlp txn v2: specialized: processing: integer})
+			\item
+				\rlpProcessByteStringName{},
+				see section~(\ref{rlp txn v2: specialized: processing: byte string prefix})
+			\item
+				\rlpProcessAddressName{},
+				see section~(\ref{rlp txn v2: specialized: processing: address})
+		\end{enumerate}
+\end{description}
