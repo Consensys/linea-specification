@@ -1,20 +1,20 @@
 \def\locUtilsFlagSum  {\loc{utils\_flag\_sum}}
 
 % mandatory checks
-\def\roffCompMandatoryChainId                       {\yellowm{-13}}
-\def\roffCompMandatoryNonce                         {\yellowm{-12}}
-\def\roffCompMandatoryAddress                       {\yellowm{-11}}
-\def\roffCompMandatoryYparity                       {\yellowm{-10}}
-\def\roffCompMandatorySignatureRwellformed          {\yellowm{-9}}
-\def\roffCompMandatorySignatureSwellformed          {\yellowm{-8}}
+\def\roffCompMandatoryChainId                       {\yellowm{(-13)}}
+\def\roffCompMandatoryNonce                         {\yellowm{(-12)}}
+\def\roffCompMandatoryAddress                       {\yellowm{(-11)}}
+\def\roffCompMandatoryYparity                       {\yellowm{(-10)}}
+\def\roffCompMandatorySignatureRwellformed          {\yellowm{(-9)}}
+\def\roffCompMandatorySignatureSwellformed          {\yellowm{(-8)}}
 % validity checks
-\def\roffCompValidityChainIdIszero                  {\yellowm{-7}}
-\def\roffCompValidityChainIdVsNetworkChainId        {\yellowm{-6}}
-\def\roffCompValidityNonceEipBound                  {\yellowm{-5}}
-\def\roffCompValiditySignatureSnonMalleabilityBound {\yellowm{-4}}
-\def\roffCompValidityNonceVsAccountNonce            {\yellowm{-3}}
-\def\roffCompValidityAuthorityVsSender              {\yellowm{-2}}
-\def\roffCompValidityAddressIszero                  {\yellowm{-1}}
+\def\roffCompValidityChainIdIszero                  {\yellowm{(-7)}}
+\def\roffCompValidityChainIdVsNetworkChainId        {\yellowm{(-6)}}
+\def\roffCompValidityNonceEipBound                  {\yellowm{(-5)}}
+\def\roffCompValiditySignatureSnonMalleabilityBound {\yellowm{(-4)}}
+\def\roffCompValidityNonceVsAccountNonce            {\yellowm{(-3)}}
+\def\roffCompValidityAuthorityVsSender              {\yellowm{(-2)}}
+\def\roffCompValidityAddressIszero                  {\yellowm{(-1)}}
 % macro instruction
 \def\roffCompMacroRow                               {\yellowm{0}}
 % RLP_UTILS calls
@@ -25,33 +25,114 @@
 \def\roffRlpUtilsNonce                              {\yellowm{TBD}}
 
 
-\def\locHi             {\loc{\_hi}}
-\def\locLo             {\loc{\_lo}}
-\def\locChainId        {\loc{chain\_id}}
-\def\locChainIdHi      {\locChainId\locHi}
-\def\locChainIdLo      {\locChainId\locLo}
-\def\locAddress        {\loc{address}}
-\def\locAddressHi      {\locAddress\locHi}
-\def\locAddressLo      {\locAddress\locLo}
-\def\locSignature      {\loc{sig\_}}
-\def\locSignatureR     {\locSignature\loc{r}}
-\def\locSignatureS     {\locSignature\loc{s}}
-\def\locSignatureY     {\locSignature\loc{y\_parity}}
-\def\locSignatureRhi   {\locSignatureR\locHi}
-\def\locSignatureRlo   {\locSignatureR\locLo}
-\def\locSignatureShi   {\locSignatureS\locHi}
-\def\locSignatureSlo   {\locSignatureS\locLo}
-\def\locAuthority      {\loc{authority}}
-\def\locNonce          {\loc{nonce}}
-\def\locAuthorityNonce {\locAuthority\loc{\_}\locNonce}
-\def\locSenderAddress  {\loc{sender\_address}}
-\def\locMagic          {\loc{MAGIC}}
+\def\locHi                              {\loc{\_hi}}
+\def\locLo                              {\loc{\_lo}}
+\def\locChainId                         {\loc{chain\_id}}
+\def\locChainIdHi                       {\locChainId\locHi}
+\def\locChainIdLo                       {\locChainId\locLo}
+\def\locNetworkChainId                  {\loc{network\_}\locChainId}
+\def\locNetworkChainIdHi                {\locNetworkChainId\locHi}
+\def\locNetworkChainIdLo                {\locNetworkChainId\locLo}
+\def\locAddress                         {\loc{address}}
+\def\locAddressHi                       {\locAddress\locHi}
+\def\locAddressLo                       {\locAddress\locLo}
+\def\locSignature                       {\loc{sig\_}}
+\def\locSignatureR                      {\locSignature\loc{r}}
+\def\locSignatureS                      {\locSignature\loc{s}}
+\def\locSignatureY                      {\locSignature\loc{y\_parity}}
+\def\locSignatureRhi                    {\locSignatureR\locHi}
+\def\locSignatureRlo                    {\locSignatureR\locLo}
+\def\locSignatureShi                    {\locSignatureS\locHi}
+\def\locSignatureSlo                    {\locSignatureS\locLo}
+\def\locAuthority                       {\loc{authority}}
+\def\locAuthorityAddress                {\locAuthority\loc{\_}\locAddress}
+\def\locAuthorityAddressHi              {\locAuthorityAddress\locHi}
+\def\locAuthorityAddressLo              {\locAuthorityAddress\locLo}
+\def\locNonce                           {\loc{nonce}}
+\def\locAuthorityNonce                  {\locAuthority\loc{\_}\locNonce}
+\def\locSenderAddress                   {\loc{sender\_address}}
+\def\locMagic                           {\loc{MAGIC}}
+\def\locSecpPrime                       {\loc{secpk1n\_prime}}
+\def\locSecpPrimeOverTwo                {\locSecpPrime\loc{\_over\_2}}
+\def\locSecpPrimeOverTwoHi              {\locSecpPrimeOverTwo\locHi}
+\def\locSecpPrimeOverTwoLo              {\locSecpPrimeOverTwo\locLo}
+\def\locAuthorityNonce                  {\locAuthority\loc{\_}\locNonce}
+\def\locNonceEqualsAuthorityNonce       {\locNonce\loc{\_equals\_}\locAuthority\loc{\_}\locNonce}
+\def\locFromAddress                     {\loc{from\_address}}
+\def\locFromAddressHi                   {\locFromAddress\locHi}
+\def\locFromAddressLo                   {\locFromAddress\locLo}
+\def\locAddressIsZero                   {\locAddress\loc{\_is\_zero}}
+\def\locAuthorityIsSender               {\locAuthority\loc{\_is\_sender}}
+\def\locAuthorityTupleIsValidExpression {\locAuthority\loc{\_tuple\_is\_valid}}
 
 
-\def\mandatoryComparisonsStandingHypothesis {%
+\def\locChainIdIszero            {\locChainId\loc{\_is\_zero}}
+\def\locChainIdIsNetworkChainId  {\locChainId\loc{\_is\_beta}}
+\def\locChainIdIsZeroOrBeta      {\locChainId\loc{\_is\_zero\_or\_beta}}
+\def\locNonceSatisfiesEipBound   {\locNonce\loc{\_satisfies\_EIP-2681\_bound}}
+\def\locSignatureSisNonMalleable {\locSignatureS\loc{\_is\_non\_malleable}}
+\def\locCallEcrecoverExpression  {\loc{call\_ecrecover\_expression}}
+
+\def\mandatoryComparisonsStandingHypothesis {
 	\begin{center}
 		\boxed{\text{The constraints below assume that }
-			\macro _{i + \roffCompMacroRow} = 1
+		\macro _{i + \roffCompMacroRow} = 1
 		}
 	\end{center}
-	}
+}
+
+\def\chainIdIsZeroStandingHypothesis{
+	\begin{center}
+		\boxed{\text{The constraints below assume that }
+		\macro _{i + \roffCompMacroRow} = 1
+		}
+	\end{center}
+}
+
+\def\chainIdIsNetworkChainIdStandingHypothesis{
+	\begin{center}
+		\boxed{\text{The constraints below assume that }
+		\macro _{i + \roffCompMacroRow} = 1
+		}
+	\end{center}
+}
+
+\def\nonceEipCheckStandingHypothesis{
+	\begin{center}
+		\boxed{\text{The constraints below assume that }
+		\macro _{i + \roffCompMacroRow} = 1
+		}
+	\end{center}
+}
+
+\def\stringentSignatureSCheckStandingHypothesis{
+	\begin{center}
+		\boxed{\text{The constraints below assume that }
+		\macro _{i + \roffCompMacroRow} = 1
+		}
+	\end{center}
+}
+
+\def\nonceAgreementStandingHypothesis{
+	\begin{center}
+		\boxed{\text{The constraints below assume that }
+		\macro _{i + \roffCompMacroRow} = 1
+		}
+	\end{center}
+}
+
+\def\authorityIsSenderStandingHypothesis{
+	\begin{center}
+		\boxed{\text{The constraints below assume that }
+		\macro _{i + \roffCompMacroRow} = 1
+		}
+	\end{center}
+}
+
+\def\addressIsZeroStandingHypothesis{
+	\begin{center}
+		\boxed{\text{The constraints below assume that }
+		\macro _{i + \roffCompMacroRow} = 1
+		}
+	\end{center}
+}
