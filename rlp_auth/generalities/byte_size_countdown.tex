@@ -1,0 +1,28 @@
+The above describes the behaviour of the \rlpAuthUtilsColumnSizeCountdown{} column.
+This column, which belongs to the \utils{} perspetive is initialized, on the first
+row of any \utils{}-row block, to some value.
+Then, with every completed limb ($\rlpAuthUtilsColumnLimbBit \equiv \true$)
+it decrements by \rlpAuthUtilsColumnLimbSize{}.
+At the end of any \utils{}-row block it must reach the value of zero.
+\begin{enumerate}
+	\item \If $\utils _{i - 1} = \true$ \et $\utils _{i} = \true$ \Then we impose
+		\[
+			\rlpAuthUtilsColumnSizeCountdown _{i}
+			=
+			\rlpAuthUtilsColumnSizeCountdown _{i - 1}
+			-
+			\left[ \begin{array}{cl}
+				\cdot & \rlpAuthUtilsColumnLimbBit  _{i} \\
+				\cdot & \rlpAuthUtilsColumnLimbSize _{i} \\
+			\end{array} \right]
+		\]
+	\item \If $\utils _{i} = \true$ \et $\utils _{i + 1} = \false$ \Then $\rlpAuthUtilsColumnSizeCountdown _{i} = 0$
+	\item \If $\utils _{N} = \true$ \Then we impose $\rlpAuthUtilsColumnSizeCountdown _{N} = 0$
+\end{enumerate}
+\saNote{}
+The first value it takes on any \utils{}-row block is the length of
+\[
+	\rlp\Big( \locChainId \Big) \cdot
+	\rlp\Big( \locAddress \Big) \cdot
+	\rlp\Big( \locNonce \Big)
+\]

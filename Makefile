@@ -33,6 +33,7 @@ mxp_v3:          view-mxp_v3
 oob:             view-oob
 prc:             view-prc
 rlp_addr:        view-rlp_addr
+rlp_auth:        view-rlp_auth
 rlp_patterns:    view-rlp_patterns
 rlp_patterns_v2: view-rlp_patterns_v2
 rlp_txn:         view-rlp_txn
@@ -75,6 +76,7 @@ rmxp_v3:          recompile-mxp_v3
 roob:             recompile-oob
 rprc:             recompile-prc
 rrlp_addr:        recompile-rlp_addr
+rrlp_auth:        recompile-rlp_auth
 rrlp_patterns:    recompile-rlp_patterns
 rrlp_patterns_v2: recompile-rlp_patterns_v2
 rrlp_txn:         recompile-rlp_txn
