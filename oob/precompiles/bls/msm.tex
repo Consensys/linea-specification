@@ -46,32 +46,32 @@ where
 \]
 We impose the following constraints:
 \begin{description}
-	\item[\underline{Row n°$(i + 2)$:}]
+	\item[\underline{Row n°$(i + \roffBlsMsmCallDataSizeDivisionByMinSize)$:}]
 		we impose that
 		\[
 			\oobCallToMod
-			{i}{2}
+			{i}{\roffBlsMsmCallDataSizeDivisionByMinSize}
 			{0}{\locCds}
 			{0}{\locMinMsmSize}
 		\]
 		and we define the following shorthand
 		\[
-			\locRemainder \define \outgoingResLo_{i + 2}
+			\locRemainder \define \outgoingResLo_{i + \roffBlsMsmCallDataSizeDivisionByMinSize}
 		\]
-	\item[\underline{Row n°$(i + 3)$:}]
+	\item[\underline{Row n°$(i + \roffBlsMsmDetectingWhenCallDataSizeIsCleanMultipleOfMinSize)$:}]
 		we impose that
 		\[
 			\wcpCallToIszero {
-				anchorRow = i             ,
-				relOffset = 3             ,
-				argOneHi  = 0             ,
-				argOneLo  = \locRemainder ,
+				anchorRow = i                                                            ,
+				relOffset = \roffBlsMsmDetectingWhenCallDataSizeIsCleanMultipleOfMinSize ,
+				argOneHi  = 0                                                            ,
+				argOneLo  = \locRemainder                                                ,
 			}
 		\]
 		and we define the following shorthand
 		\[
 			\left\{ \begin{array}{lcl}
-				\locCdsIsMultipleOfMinMsmSize & \define & \outgoingResLo_{i + 3} \\
+				\locCdsIsMultipleOfMinMsmSize & \define & \outgoingResLo_{i + \roffBlsMsmDetectingWhenCallDataSizeIsCleanMultipleOfMinSize} \\
 				\locNumberOfInputs            & \define & \locCds / \locMinMsmSize  \\
 			\end{array} \right.
 		\]
@@ -79,46 +79,46 @@ We impose the following constraints:
 		The shorthand \locNumberOfInputs{} was defined using a division by \locMinMsmSize{}.
 		Whenever this shorthand is used in the constraints, we can replace the division by \locMinMsmSize{} with a multiplication by the same number through same basic algebra.
 		This is the approach taken in the implementation to avoid division.
-	\item[\underline{Row n°$(i + 4)$:}]
+	\item[\underline{Row n°$(i + \roffBlsMsmDetectingWhetherTheNumberOfInputsIsGtOneTwoEight)$:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locCdsIsMultipleOfMinMsmSize = 0$ \Then we impose $\oobNoCall{i}{4}$.
+			\item \If $\locCdsIsMultipleOfMinMsmSize = 0$ \Then we impose $\oobNoCall{i}{\roffBlsMsmDetectingWhetherTheNumberOfInputsIsGtOneTwoEight}$.
 			\item \If $\locCdsIsMultipleOfMinMsmSize = 1$ \Then we impose that
 				\[
 					\wcpCallToGt {
-						anchorRow = i                  ,
-						relOffset = 4                  ,
-						argOneHi  = 0                  ,
-						argOneLo  = \locNumberOfInputs ,
-						argTwoHi  = 0                  ,
-						argTwoLo  = 128                ,
+						anchorRow = i                                                           ,
+						relOffset = \roffBlsMsmDetectingWhetherTheNumberOfInputsIsGtOneTwoEight ,
+						argOneHi  = 0                                                           ,
+						argOneLo  = \locNumberOfInputs                                          ,
+						argTwoHi  = 0                                                           ,
+						argTwoLo  = 128                                                         ,
 					}
 				\]
 				and we define the following shorthand
 				\[
 					\left\{ \begin{array}{lcl}
-						\locNumberOfMsmInputsGtThreshold  & \define & \outgoingResLo_{i + 4} \\
+						\locNumberOfMsmInputsGtThreshold  & \define & \outgoingResLo_{i + \roffBlsMsmDetectingWhetherTheNumberOfInputsIsGtOneTwoEight} \\
 						\locNumberOfMsmInputsLeqThreshold & \define & 1 - \locNumberOfMsmInputsGtThreshold \\
 					\end{array} \right.
 				\]
 		\end{enumerate}
-	\item[\underline{Row n°$(i + 5)$:}]
+	\item[\underline{Row n°$(i + \roffBlsMsmOptionallyRetrievingDiscountFromBlsRefTable)$:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locCdsIsMultipleOfMinMsmSize = 0$ \Then we impose $\oobNoCall{i}{5}$.
+			\item \If $\locCdsIsMultipleOfMinMsmSize = 0$ \Then we impose $\oobNoCall{i}{\roffBlsMsmOptionallyRetrievingDiscountFromBlsRefTable}$.
 			\item \If $\locCdsIsMultipleOfMinMsmSize = 1$ \Then we impose that
 				\begin{enumerate}
 					\item \If $\locNumberOfMsmInputsLeqThreshold = 1$ \Then we impose that
 						\[
 							\oobCallToBlsRefTable
-							{i}{5}
+							{i}{\roffBlsMsmOptionallyRetrievingDiscountFromBlsRefTable}
 							{\weightedPrcFlagSumBls_{i}}{\locNumberOfInputs}
 						\]
 						and we define the following shorthand
 						\[
-							\locDiscount \define \outgoingResLo_{i + 5}
+							\locDiscount \define \outgoingResLo_{i + \roffBlsMsmOptionallyRetrievingDiscountFromBlsRefTable}
 						\]
-					\item \If $\locNumberOfMsmInputsLeqThreshold = 0$ \Then we impose $\oobNoCall{i}{5}$
+					\item \If $\locNumberOfMsmInputsLeqThreshold = 0$ \Then we impose $\oobNoCall{i}{\roffBlsMsmOptionallyRetrievingDiscountFromBlsRefTable}$
 						and we define the following shorthand
 						\[
 							\locDiscount \define \locMaxDiscount
@@ -126,29 +126,56 @@ We impose the following constraints:
 				\end{enumerate}
 
 		\end{enumerate}
-	\item[\underline{Row n°$(i + 6)$:}]
+	\item[\underline{Row n°$(i + \roffBlsMsmComputingPrecompileCostByIntegerDivision)$:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locCdsIsMultipleOfMinMsmSize = 0$ \Then we impose $\oobNoCall{i}{6}$.
+			\item \If $\locCdsIsMultipleOfMinMsmSize = 0$ \Then we impose $\oobNoCall{i}{\roffBlsMsmComputingPrecompileCostByIntegerDivision}$.
+			\item \If $\locCdsIsMultipleOfMinMsmSize = 1$ \Then we impose that
+				we impose that
+				\[
+					\oobCallToDiv
+					{i}{\roffBlsMsmComputingPrecompileCostByIntegerDivision}
+					{0}{\locMsmCostNumerator}
+					{0}{\prcBlsMultiplicationMultiplier}
+				\]
+				where
+				\[
+					\locMsmCostNumerator \define
+					\left[ \begin{array}{cl}
+						\cdot & \locNumberOfInputs        \\
+						\cdot & \locMsmMultiplicationCost \\
+						\cdot & \locDiscount              \\
+					\end{array} \right]
+				\]
+				and we define the following shorthand
+				\[
+					\locPrecompileCost \define \outgoingResLo_{i + \roffBlsMsmComputingPrecompileCostByIntegerDivision}
+				\]
+				\saNote{}
+				Thus \locPrecompileCost{} corresponds to the integer division
+				\[
+					\locMsmCostNumerator ~ /\!/ ~ \prcBlsMultiplicationMultiplier
+				\]
+		\end{enumerate}
+	\item[\underline{Row n°$(i + \roffBlsMsmComparingPrecompileCostVsCalleeGas)$:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\locCdsIsMultipleOfMinMsmSize = 0$ \Then we impose $\oobNoCall{i}{\roffBlsMsmComparingPrecompileCostVsCalleeGas}$.
 			\item \If $\locCdsIsMultipleOfMinMsmSize = 1$ \Then we impose that
 				\[
 					\wcpCallToLt  {
-						anchorRow = i                  ,
-						relOffset = 6                  ,
-						argOneHi  = 0                  ,
-						argOneLo  = \locCalleeGas      ,
-						argTwoHi  = 0                  ,
-						argTwoLo  = \locPrecompileCost ,
+						anchorRow = i                                             ,
+						relOffset = \roffBlsMsmComparingPrecompileCostVsCalleeGas ,
+						argOneHi  = 0                                             ,
+						argOneLo  = \locCalleeGas                                 ,
+						argTwoHi  = 0                                             ,
+						argTwoLo  = \locPrecompileCost                            ,
 					}
-				\]
-				where we use the following shorthand
-				\[
-					\locPrecompileCost \define \locNumberOfInputs \cdot \locMsmMultiplicationCost \cdot \frac{\locDiscount}{\prcBlsMultiplicationMultiplier}
 				\]
 				we further introduce the following shorthand
 				\[
 					\left\{ \begin{array}{lcl}
-						\locInsufficientGas & \define & \outgoingResLo_{i + 6}  \\
+						\locInsufficientGas & \define & \outgoingResLo_{i + \roffBlsMsmComparingPrecompileCostVsCalleeGas}  \\
 						\locSufficientGas   & \define & 1 - \locInsufficientGas \\
 					\end{array} \right.
 				\]
