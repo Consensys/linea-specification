@@ -1,21 +1,32 @@
-We introduce binary columns labeling the various phases of processing.
-\begin{multicols}{2}
-	\begin{enumerate}
-		\item \rlpAuthUtilsColumnIsMagic{}:
-		\item \rlpAuthUtilsColumnIsPrefix{}:
-		\item \rlpAuthUtilsColumnIsChainId{}:
-		\item \rlpAuthUtilsColumnIsAddress{}:
-		\item \rlpAuthUtilsColumnIsNonce{}:
-		\item[\vspace{\fill}]
-	\end{enumerate}
-\end{multicols}
-We introduce the remaining columns
+% We introduce binary columns labeling the various phases of processing.
+% \begin{multicols}{2}
+% 	\begin{enumerate}
+% 		\item \rlpAuthUtilsColumnIsMagic{}:
+% 		\item \rlpAuthUtilsColumnIsPrefix{}:
+% 		\item \rlpAuthUtilsColumnIsChainId{}:
+% 		\item \rlpAuthUtilsColumnIsAddress{}:
+% 		\item \rlpAuthUtilsColumnIsNonce{}:
+% 		\item[\vspace{\fill}]
+% 	\end{enumerate}
+% \end{multicols}
+We introduce the following columns
 \begin{enumerate}
 	\item \rlpAuthUtilsColumnLimbBit:
+		binary column;
+		turns on along \utils{}-rows containing a (nontrivial, finished) \limb{};
 	\item \rlpAuthUtilsColumnLimb:
+		contains limbs which together make up the \rlp{}-string
+		\[
+			\rlp\Big( \locChainId \Big) \cdot
+			\rlp\Big( \locAddress \Big) \cdot
+			\rlp\Big( \locNonce \Big)
+		\]
 	\item \rlpAuthUtilsColumnLimbSize:
+		contains the size in byte of \rlpAuthUtilsColumnLimb{};
 	\item \rlpAuthUtilsColumnExoDataColumn{k}, for $k = 1, \dots, \numberOfRlpUtilsDataColumns$:
 	\item \rlpAuthUtilsColumnRlpUtilsFlag:
 	\item \rlpAuthUtilsColumnRlpUtilsInstruction:
 	\item \rlpAuthUtilsColumnSizeCountdown:
 \end{enumerate}
+\saNote{}
+As per usual, \limb{}'s are \textbf{left aligned on the $\llarge$-th byte}.
