@@ -2,8 +2,10 @@
 \newcommand{\computationPerspectivePrefix}      {\col{computation}}
 \newcommand{\macro}                             {\col{MACRO}}
 \newcommand{\macroPerspectivePrefix}            {\col{macro}}
+\newcommand{\extern}                            {\col{XTERN}}
+\newcommand{\externPerspectivePrefix}           {\col{xtern}}
 \newcommand{\utils}                             {\col{UTILS}}
-\newcommand{\utilsPerspectivePrefix}         {\col{utils}}
+\newcommand{\utilsPerspectivePrefix}            {\col{utils}}
 \newcommand{\authority}                         {\col{AUTHORITY}}
 \newcommand{\address}                           {\col{ADDRESS}}
 \newcommand{\signature}                         {\col{SIGNATURE}}
@@ -12,15 +14,16 @@
 \newcommand{\signatureS}                        {\col{\signature\_S}}
 \newcommand{\transactionFromAddress}            {\col{TXN\_FROM\_}\address}
 \newcommand{\authorityTupleIndex}               {\authority\col{\_TUPLE\_INDEX}}
-\newcommand{\authorityRecovery}                 {\authority\col{\_RECOVERY\_SUCCESS}}
+\newcommand{\tuple}                             {TUPLE}
+\newcommand{\isValidTupleName}                  {\authority\col{\_\tuple\_IS\_VALID}}
+\newcommand{\authorityEcrecoverAttempt}         {\authority\col{\_ECRECOVER\_ATTEMPT}}
+\newcommand{\authorityEcrecoverSuccess}         {\authority\col{\_ECRECOVER\_SUCCESS}}
 \newcommand{\senderIsAuthority}                 {\col{SENDER\_IS\_}\authority}
 \newcommand{\addressIsZeroAddress}              {\col{ADDRESS\_IS\_ZERO\_ADDRESS}}
 \newcommand{\transactionTypeWithAuthorityLists} {\col{TXN\_WITH\_AUTHORITY\_LIST}}
 \newcommand{\transactionTypeSansAuthorityLists} {\col{TXN\_SANS\_AUTHORITY\_LIST}}
 
 
-\newcommand{\tuple}                    {TUPLE}
-\newcommand{\isValidTupleName}         {\authority\_\tuple\_IS\_VALID}
 \newcommand{\chainIdHiName}            {\chainId\_HI}
 \newcommand{\chainIdLoName}            {\chainId\_LO}
 \newcommand{\addressHiName}            {\address\_HI}
@@ -36,18 +39,17 @@
 \newcommand{\transactionFromAddressLo} {\transactionFromAddress\_LO}
 \newcommand{\authorityNonce}           {\authority\_NONCE}
 \newcommand{\authorizationTupleNonce}  {\tuple\_NONCE}
-\newcommand{\callEcrecover}            {CALL\_ECRECOVER}
 \newcommand{\networkChainId}           {NETWORK\_\chainId}
 \newcommand{\networkChainIdHi}         {\networkChainId\_HI}
 \newcommand{\networkChainIdLo}         {\networkChainId\_LO}
 
 
 \newcommand{\rlpAuthMacroColumn}[1]                  {\macroPerspectivePrefix\separator\col{#1}}
-\newcommand{\rlpAuthMacroAuthorityTupleIsValid}      {\rlpAuthMacroColumn{\isValidTupleName}}
 \newcommand{\rlpAuthMacroChainIdHi}                  {\rlpAuthMacroColumn{\tuple\_\chainIdHiName}}
 \newcommand{\rlpAuthMacroChainIdLo}                  {\rlpAuthMacroColumn{\tuple\_\chainIdLoName}}
 \newcommand{\rlpAuthMacroAddressHi}                  {\rlpAuthMacroColumn{\tuple\_\addressHiName}}
 \newcommand{\rlpAuthMacroAddressLo}                  {\rlpAuthMacroColumn{\tuple\_\addressLoName}}
+\newcommand{\rlpAuthMacroNonce}                      {\rlpAuthMacroColumn{\authorizationTupleNonce}}
 \newcommand{\rlpAuthMacroSignatureYparity}           {\rlpAuthMacroColumn{\tuple\_\yparityName}}
 \newcommand{\rlpAuthMacroSignatureRhi}               {\rlpAuthMacroColumn{\tuple\_\rhiName}}
 \newcommand{\rlpAuthMacroSignatureRlo}               {\rlpAuthMacroColumn{\tuple\_\rloName}}
@@ -55,17 +57,20 @@
 \newcommand{\rlpAuthMacroSignatureSlo}               {\rlpAuthMacroColumn{\tuple\_\sloName}}
 \newcommand{\rlpAuthMacroAuthorityHi}                {\rlpAuthMacroColumn{\authorityHiName}}
 \newcommand{\rlpAuthMacroAuthorityLo}                {\rlpAuthMacroColumn{\authorityLoName}}
-\newcommand{\rlpAuthMacroTransactionFromAddressHi}   {\rlpAuthMacroColumn{\transactionFromAddressHi}}
-\newcommand{\rlpAuthMacroTransactionFromAddressLo}   {\rlpAuthMacroColumn{\transactionFromAddressLo}}
-\newcommand{\rlpAuthMacroAuthorityRecovery}          {\rlpAuthMacroColumn{\authorityRecovery}}
-\newcommand{\rlpAuthMacroSenderIsAuthority}          {\rlpAuthMacroColumn{\senderIsAuthority}}
-\newcommand{\rlpAuthMacroAddressIsZeroAddress}       {\rlpAuthMacroColumn{\addressIsZeroAddress}}
-\newcommand{\rlpAuthMacroAuthorityNonce}             {\rlpAuthMacroColumn{\authorityNonce}}
-\newcommand{\rlpAuthMacroNonce}                      {\rlpAuthMacroColumn{\authorizationTupleNonce}}
 \newcommand{\rlpAuthMacroAuthorityTupleIndex}        {\rlpAuthMacroColumn{\authorityTupleIndex}}
-\newcommand{\rlpAuthMacroCallEcrecover}              {\rlpAuthMacroColumn{\callEcrecover}}
-\newcommand{\rlpAuthMacroNetworkChainIdHi}           {\rlpAuthMacroColumn{\networkChainIdHi}}
-\newcommand{\rlpAuthMacroNetworkChainIdLo}           {\rlpAuthMacroColumn{\networkChainIdLo}}
+
+
+\newcommand{\rlpAuthExternColumn}[1]                 {\externPerspectivePrefix\separator\col{#1}}
+\newcommand{\rlpAuthMacroCallEcrecover}              {\rlpAuthExternColumn{\authorityEcrecoverAttempt}}
+\newcommand{\rlpAuthMacroAuthorityRecovery}          {\rlpAuthExternColumn{\authorityEcrecoverSuccess}}
+\newcommand{\rlpAuthMacroAuthorityTupleIsValid}      {\rlpAuthExternColumn{\isValidTupleName}}
+\newcommand{\rlpAuthMacroTransactionFromAddressHi}   {\rlpAuthExternColumn{\transactionFromAddressHi}}
+\newcommand{\rlpAuthMacroTransactionFromAddressLo}   {\rlpAuthExternColumn{\transactionFromAddressLo}}
+\newcommand{\rlpAuthMacroSenderIsAuthority}          {\rlpAuthExternColumn{\senderIsAuthority}}
+\newcommand{\rlpAuthMacroAddressIsZeroAddress}       {\rlpAuthExternColumn{\addressIsZeroAddress}}
+\newcommand{\rlpAuthMacroAuthorityNonce}             {\rlpAuthExternColumn{\authorityNonce}}
+\newcommand{\rlpAuthMacroNetworkChainIdHi}           {\rlpAuthExternColumn{\networkChainIdHi}}
+\newcommand{\rlpAuthMacroNetworkChainIdLo}           {\rlpAuthExternColumn{\networkChainIdLo}}
 
 
 \newcommand{\rlpAuthUtilsColumn}[1]                 {\utilsPerspectivePrefix\separator\col{#1}}
