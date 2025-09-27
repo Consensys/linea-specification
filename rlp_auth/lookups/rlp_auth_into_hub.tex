@@ -3,3 +3,36 @@ Furthermore, this lookup is the means by which the \hubMod{} learns about author
 % TODO: @OLIVIER: we need an inverse lookup from HUB to RLP_AUTH to make sure we don't add extra delegations
 % TODO: @OLIVIER: we need a new transaction execution phase in the HUB, which we should name TXN_AUTH (like TXN_WARM) to deal with authorization tuples
 % TODO: @OLIVIER: we need an indexing mechanism for tuples for which ecrecovery was successful to prevent "double authorizations" or what not (likely impossible but ok) in the HUB
+\begin{description}
+	\item[\underline{Selector:}]
+		we use
+		\[
+			\col{hub\_selector} _{i}
+			\define
+			\extern _{i} \cdot \rlpAuthMacroAuthorityRecovery _{i}
+		\]
+	\item[\underline{Source columns:}] ---
+		\begin{multicols}{2}
+			\begin{enumerate}
+				\item $1$
+				\item $1$
+				\item $\rlpAuthMacroAuthorityHi             _{i}$
+				\item $\rlpAuthMacroAuthorityLo             _{i}$
+				\item $\rlpAuthMacroSenderIsAuthority       _{i}$
+				\item $\rlpAuthMacroAddressIsZeroAddress    _{i}$
+				\item $\rlpAuthMacroAuthorityNonce          _{i}$
+				\item $\rlpAuthExternPotentialNewCodeHashHi _{i}$
+				\item $\rlpAuthExternPotentialNewCodeHashLo _{i}$
+				\item $\rlpAuthMacroAddressHi               _{i - 1}$
+				\item $\rlpAuthMacroAddressLo               _{i - 1}$
+			\end{enumerate}
+		\end{multicols}
+	\item[\underline{Target columns:}] ---
+		\begin{multicols}{2}
+			\begin{enumerate}
+				\item "\col{TX\_AUTH}" % \txAuth % transaction processing phase
+				\item "\col{PEEK\_AT\_AUTH}" % \peekAuth % perspective
+				\item various \col{authorization/XXX} columns of the "\col{PEEK\_AT\_AUTH}" perspective
+			\end{enumerate}
+		\end{multicols}
+\end{description}
