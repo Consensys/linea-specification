@@ -2,7 +2,29 @@ We impose that
 \begin{enumerate}
 	\item \computation{}, \macro{}, \extern{} and \utils{} are binary (\sanityCheck)
 	\item \computation{}, \macro{}, \extern{} and \utils{} are counter-constant
+	\item $\iomf _{i} = \computation _{i} + \macro _{i} + \extern _{i} + \utils _{i}$
+	\item \If $\userTransactionNumber _{i + 1} \neq \userTransactionNumber _{i}$ \Then $\computation _{i + 1} = 1$
+	\item \If $\authorityTupleIndex   _{i + 1} \neq \authorityTupleIndex   _{i}$ \Then $\computation _{i + 1} = 1$
+	\item
+		we impose certain transitions
+		\[
+			\left[ \begin{array}{llllllllllll}
+				+ \!\!\!& \computation _{i} \!\!\!& \cdot \!\!& \Big[ \!\!\!& \computation _{i + 1} \!\!\!& + \!\!\!& \macro _{i + 1} \!\!\!&   \!\!\!&                  \!\!\!&   \!\!\!&                       & \!\!\! \Big] \vspace{2mm} \\
+				+ \!\!\!& \macro       _{i} \!\!\!& \cdot \!\!& \Big[ \!\!\!&                       \!\!\!&   \!\!\!&                 \!\!\!& + \!\!\!& \extern _{i + 1} \!\!\!&   \!\!\!&                 \!\!\!& \!\!\! \Big] \vspace{2mm} \\
+				+ \!\!\!& \extern      _{i} \!\!\!& \cdot \!\!& \Big[ \!\!\!& \computation _{i + 1} \!\!\!&   \!\!\!&                 \!\!\!&   \!\!\!&                  \!\!\!& + \!\!\!& \utils _{i + 1} \!\!\!& \!\!\! \Big] \vspace{2mm} \\
+				+ \!\!\!& \utils       _{i} \!\!\!& \cdot \!\!& \Big[ \!\!\!& \computation _{i + 1} \!\!\!&   \!\!\!&                 \!\!\!&   \!\!\!&                  \!\!\!& + \!\!\!& \utils _{i + 1} \!\!\!& \!\!\! \Big]              \\
+			\end{array} \right]
+			= \iomf _{i}
+		\]
 \end{enumerate}
+We make the above more precise in what follows
+\begin{enumerate}[resume]
+        \item \If $\macro _{i} = \true$ \Then $\extern _{i + 1} = \rlpAuthExternAuthorityEcrecoverAttempt _{i}$
+\end{enumerate}
+\saNote{}
+The above imposes binary exclusivity on
+\computation{}, \macro{} and \utils{}.
+
 \saNote{}
 The counter-constancy of
 \computation{}, \macro{}, \extern{} and \utils{}
@@ -18,27 +40,3 @@ may be implemented as the counter-constancy of the following weighted sum
 	\end{array} \right]
 \]
 be \textbf{counter-constant}.
-\begin{enumerate}[resume]
-	\item $\iomf _{i} = \computation _{i} + \macro _{i} + \extern _{i} + \utils _{i}$
-	\item \If $\iomf _{i} = 0$ \Then $\iomf _{i + 1} = \computation _{i + 1}$
-\end{enumerate}
-\saNote{}
-The above imposes binary exclusivity on
-\computation{}, \macro{} and \utils{}.
-\begin{enumerate}[resume]
-	\item
-		we impose certain transitions
-		\[
-			\left[ \begin{array}{llllllllllll}
-				+ \!\!\!& \computation _{i} \!\!\!& \cdot \!\!& \Big[ \!\!\!& \computation _{i + 1} \!\!\!& + \!\!\!& \macro _{i + 1} \!\!\!&   \!\!\!&                  \!\!\!&   \!\!\!&                       & \!\!\! \Big] \vspace{2mm} \\
-				+ \!\!\!& \macro       _{i} \!\!\!& \cdot \!\!& \Big[ \!\!\!&                       \!\!\!&   \!\!\!&                 \!\!\!& + \!\!\!& \extern _{i + 1} \!\!\!&   \!\!\!&                 \!\!\!& \!\!\! \Big] \vspace{2mm} \\
-				+ \!\!\!& \extern      _{i} \!\!\!& \cdot \!\!& \Big[ \!\!\!& \computation _{i + 1} \!\!\!&   \!\!\!&                 \!\!\!&   \!\!\!&                  \!\!\!& + \!\!\!& \utils _{i + 1} \!\!\!& \!\!\! \Big] \vspace{2mm} \\
-				+ \!\!\!& \utils       _{i} \!\!\!& \cdot \!\!& \Big[ \!\!\!& \computation _{i + 1} \!\!\!&   \!\!\!&                 \!\!\!&   \!\!\!&                  \!\!\!& + \!\!\!& \utils _{i + 1} \!\!\!& \!\!\! \Big]              \\
-			\end{array} \right]
-			= \iomf _{i}
-		\]
-\end{enumerate}
-We make the above more precise in what follows
-\begin{enumerate}[resume]
-        \item \If $\macro _{i} = \true$ \Then $\utils _{i + 1} = \rlpAuthExternAuthorityEcrecoverAttempt _{i}$
-\end{enumerate}

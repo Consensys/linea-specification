@@ -2,18 +2,21 @@ We impose that
 \begin{enumerate}
 	\item
 		\If $\iomf _{i} = 0$
-		\Then $\rlpAuthMacroAuthorityTupleIndex _{i} = 0$ (\trash)
+		\Then $\authorityTupleIndex _{i} = 0$ (\trash)
         \item
 		\If $\userTransactionNumber _{i} \neq  \userTransactionNumber _{i - 1}$
-		\Then $\rlpAuthMacroAuthorityTupleIndex _{i} = 0$
+		\Then $\authorityTupleIndex _{i} = 0$
         \item
 		\If   $\userTransactionNumber           _{i + 1} \neq 1 + \userTransactionNumber _{i}$
-		\Then $\rlpAuthMacroAuthorityTupleIndex _{i + 1} = \rlpAuthMacroAuthorityTupleIndex _{i} + \utils _{i} \cdot \computation _{i + 1}$
+		\Then $\authorityTupleIndex _{i + 1} = \authorityTupleIndex _{i} + \utils _{i} \cdot \computation _{i + 1}$
+	\item
+		\If   $\authorityTupleIndex _{i + 1} \neq \authorityTupleIndex _{i}$
+		\Then
 		\[
-			\left\{ \begin{array}{lcl}
-				\utils                     _{i} & = & \true  \\
-				\rlpAuthUtilsColumnIsNonce _{i} & = & \true  \\
-				\ct                        _{i} & = & \maxCt _{i} \\
+			\left\{ \begin{array}{lclr}
+				\utils                     _{i} & = & \true       & (\sanityCheck) \\
+				\rlpAuthUtilsColumnIsNonce _{i} & = & \true       & (\sanityCheck) \\
+				\ct                        _{i} & = & \maxCt _{i} & (\sanityCheck) \\
 			\end{array} \right.
 		\]
 \end{enumerate}
