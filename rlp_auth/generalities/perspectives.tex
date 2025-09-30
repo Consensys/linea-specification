@@ -16,10 +16,42 @@ We impose that
 			\end{array} \right]
 			= \iomf _{i}
 		\]
+	\item
+		\If $\transactionTypeWithAuthorityLists _{i} = 1$ \et $\ct _{i} = \maxCt _{i}$ \Then
+		\[
+			\left[ \begin{array}{llllllllllll}
+				+ \!\!\!& \computation _{i} \!\!\!& \cdot \!\!& \Big[ \!\!\!&                       \!\!\!& + \!\!\!& \macro _{i + 1} \!\!\!&   \!\!\!&                  \!\!\!&   \!\!\!&                       & \!\!\! \Big] \vspace{2mm} \\
+				+ \!\!\!& \macro       _{i} \!\!\!& \cdot \!\!& \Big[ \!\!\!&                       \!\!\!&   \!\!\!&                 \!\!\!& + \!\!\!& \extern _{i + 1} \!\!\!&   \!\!\!&                 \!\!\!& \!\!\! \Big] \vspace{2mm} \\
+				+ \!\!\!& \extern      _{i} \!\!\!& \cdot \!\!& \Big[ \!\!\!& \computation _{i + 1} \!\!\!&   \!\!\!&                 \!\!\!&   \!\!\!&                  \!\!\!& + \!\!\!& \utils _{i + 1} \!\!\!& \!\!\! \Big] \vspace{2mm} \\
+				+ \!\!\!& \utils       _{i} \!\!\!& \cdot \!\!& \Big[ \!\!\!& \computation _{i + 1} \!\!\!&   \!\!\!&                 \!\!\!&   \!\!\!&                  \!\!\!&   \!\!\!&                 \!\!\!& \!\!\! \Big]              \\
+			\end{array} \right]
+			= 1
+		\]
+	\item
+		\If $\transactionTypeWithAuthorityLists _{i} = 1$ \et $\ct _{i} \neq \maxCt _{i}$ \Then
+		\[
+			\left[ \begin{array}{llllllllllll}
+				+ \!\!\!& \computation _{i} \!\!\!& \cdot \!\!& \Big[ \!\!\!& \computation _{i + 1} \!\!\!&   \!\!\!&   \!\!\!&   \!\!\!&   \!\!\!&   \!\!\!&                 \!\!\!& \!\!\! \Big] \vspace{2mm} \\
+				+ \!\!\!& \macro       _{i} \!\!\!& \cdot \!\!& \Big[ \!\!\!&                       \!\!\!&   \!\!\!& 0 \!\!\!&   \!\!\!&   \!\!\!&   \!\!\!&                 \!\!\!& \!\!\! \Big] \vspace{2mm} \\
+				+ \!\!\!& \extern      _{i} \!\!\!& \cdot \!\!& \Big[ \!\!\!&                       \!\!\!&   \!\!\!&   \!\!\!&   \!\!\!& 0 \!\!\!&   \!\!\!&                 \!\!\!& \!\!\! \Big] \vspace{2mm} \\
+				+ \!\!\!& \utils       _{i} \!\!\!& \cdot \!\!& \Big[ \!\!\!&                       \!\!\!&   \!\!\!&   \!\!\!&   \!\!\!&   \!\!\!&   \!\!\!& \utils _{i + 1} \!\!\!& \!\!\! \Big]              \\
+			\end{array} \right]
+			= 1
+			\quad (\sanityCheck)
+		\]
+	\item
+		\If $\transactionTypeSansAuthorityLists _{i} = 1$
+		\[
+			\left[ \begin{array}{llllllllllll}
+				+ & \computation _{i} & \!\!\!\cdot \!\!& \computation _{i + 1} \vspace{2mm} \\
+			\end{array} \right]
+			= 1
+			\quad (\sanityCheck)
+		\]
 \end{enumerate}
 We make the above more precise in what follows
 \begin{enumerate}[resume]
-        \item \If $\macro _{i} = \true$ \Then $\extern _{i + 1} = \rlpAuthExternAuthorityEcrecoverAttempt _{i}$
+        \item \If $\extern _{i} = \true$ \Then $\utils _{i + 1} = \rlpAuthExternAuthorityEcrecoverAttempt _{i}$
 \end{enumerate}
 \saNote{}
 The above imposes binary exclusivity on
