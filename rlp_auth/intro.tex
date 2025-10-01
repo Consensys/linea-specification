@@ -1,4 +1,67 @@
 The \rlpAuthMod{} module carries out the analysis of individual
-\textbf{authorization typles} of \textbf{set code transactions}
+\textbf{authorization tuples} of \textbf{set code transactions}
+(i.e. $\typeFourTx$ transactions)
 as specified in \cite{EIP-7702}
 and as required by the \rlpTxnMod{} module.
+
+The present module parses \textbf{all} \user{}-transactions regardless of their (transaction) type.
+Transactions whose underlying type doesn't support \textbf{authorization lists}
+($\transactionTypeSansAuthorityLists{} \equiv 1$)
+have ``trivial'' processing,
+while those that do
+($\transactionTypeWithAuthorityLists{} \equiv 1$)
+have more involved processing.
+Unsurprisingly we deal with authorization lists by
+dealing with their authorization tuples sequentially.
+The processing of any one authorization tuple
+takes place over a block of contiguous rows.
+Processing involves various \textbf{mandatory} comparisons,
+as well as other \textbf{validity} checks.
+These checks determine
+\begin{description}
+	\item[\underline{\underline{Determining \rlpAuthExternAuthorityEcrecoverAttempt{}:}}]
+		several of the \textbf{validity} checks, taken together, determine the
+		\rlpAuthExternAuthorityEcrecoverAttempt{} bit.
+	\item[\underline{\underline{Attempting \macroEcrecover{}:}}]
+		whenever $\rlpAuthExternAuthorityEcrecoverAttempt \equiv \true$
+		the module attempts to \macroEcrecover{} the \locAuthority{} address;
+		this requires computing the following byte string
+		\[
+			\begin{array}{lcl}
+				\texttt{msg} & \equiv &
+				\locMagicByte
+				~ \cdot ~
+				\rlp\Big( \big[ \locChainId, \locAddress, \locNonce \big] \Big) \vspace{2mm} \\
+				& \equiv &
+				\locMagicByte
+				~ \cdot ~
+				\rlp\Big(
+				\rlp\big( \locChainId \big) \, \cdot \,
+				\rlp\big( \locAddress \big) \, \cdot \,
+				\rlp\big( \locNonce   \big)
+				\Big)
+				\\
+			\end{array}
+		\]
+		which is supposedly signed in the authority tuple.
+		The success (or failure) of this attempt is recorded in
+		\rlpAuthExternAuthorityRecoverySuccess{};
+		if address recovery failed no meaningful \locAuthority{} address exists.
+	\item[\underline{\underline{Extracting \hubMod{} information:}}]
+		whenever $\rlpAuthExternAuthorityRecoverySuccess \equiv \true$, the
+		\locAuthorityAddress{} is meaningful and the present module queries the \hubMod{}
+		to extract the associated \locAuthorityNonce{}.
+		At this point the module can check the validity of the authority tuple \locNonce{}
+		and thus compute \rlpAuthExternAuthorityTupleIsValid{}
+	\item[\underline{\underline{Computing the new ``\codeHash{}'':}}]
+		if $\rlpAuthExternAuthorityTupleIsValid \equiv \true$ then the \locAuthority{}'s
+		``code'' and \codeHash{} must be updated as well as its code hash;
+		\[
+			\col{code}
+			\equiv
+			\locAthorizationCodePrefix
+			~ \cdot ~
+			\address
+		\]
+\end{description}
+
