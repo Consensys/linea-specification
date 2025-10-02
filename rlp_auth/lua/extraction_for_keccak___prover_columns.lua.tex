@@ -1,0 +1,157 @@
+% !TeX TS-program = lualatex
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback ("emojifallback", { "NotoColorEmoji:mode=harf;" })}
+
+\setmonofont{JetBrains Mono NL Regular}[RawFeature={fallback=emojifallback}]
+
+\usepackage{../../pkg/draculatheme}
+
+\begin{document}
+\begin{verbatim}
+
+██\    ██\                      ██\     ██\                    ██\ ██\                           ██\
+██ |   ██ |                     ██ |    \__|                   ██ |\__|                          ██ |
+██ |   ██ | ██████\   ██████\ ██████\   ██\  ███████\ ██████\  ██ |██\ ████████\  ██████\   ███████ |
+\██\  ██  |██  __██\ ██  __██\\_██  _|  ██ |██  _____|\____██\ ██ |██ |\____██  |██  __██\ ██  __██ |
+ \██\██  / ████████ |██ |  \__| ██ |    ██ |██ /      ███████ |██ |██ |  ████ _/ ████████ |██ /  ██ |
+  \███  /  ██   ____|██ |       ██ |██\ ██ |██ |     ██  __██ |██ |██ | ██  _/   ██   ____|██ |  ██ |
+   \█  /   \███████\ ██ |       \████  |██ |\███████\\███████ |██ |██ |████████\ \███████\ \███████ |
+    \_/     \_______|\__|        \____/ \__| \_______|\_______|\__|\__|\________| \_______| \_______|
+
+
+
+██\   ██\ ████████\  ██████\   ██████\   ██████\  ██\   ██\
+██ | ██  |██  _____|██  __██\ ██  __██\ ██  __██\ ██ | ██  |
+██ |██  / ██ |      ██ /  \__|██ /  \__|██ /  ██ |██ |██  /
+█████  /  █████\    ██ |      ██ |      ████████ |█████  /
+██  ██<   ██  __|   ██ |      ██ |      ██  __██ |██  ██<
+██ |\██\  ██ |      ██ |  ██\ ██ |  ██\ ██ |  ██ |██ |\██\
+██ | \██\ ████████\ \██████  |\██████  |██ |  ██ |██ | \██\
+\__|  \__|\________| \______/  \______/ \__|  \__|\__|  \__|
+
+
+
+                    ██\
+                    ██ |
+ ███████\  ██████\  ██ |██\   ██\ ██████\████\  ███████\
+██  _____|██  __██\ ██ |██ |  ██ |██  _██  _██\ ██  __██\
+██ /      ██ /  ██ |██ |██ |  ██ |██ / ██ / ██ |██ |  ██ |
+██ |      ██ |  ██ |██ |██ |  ██ |██ | ██ | ██ |██ |  ██ |
+\███████\ \██████  |██ |\██████  |██ | ██ | ██ |██ |  ██ |
+ \_______| \______/ \__| \______/ \__| \__| \__|\__|  \__|
+
+
+
+       ██\            ██████\  ██\           ██\   ██\     ██\
+      ██ |          ██  __██\ \__|          \__|  ██ |    \__|
+ ███████ | ██████\  ██ /  \__|██\ ███████\  ██\ ██████\   ██\  ██████\  ███████\   ███████\
+██  __██ |██  __██\ ████\     ██ |██  __██\ ██ |\_██  _|  ██ |██  __██\ ██  __██\ ██  _____|
+██ /  ██ |████████ |██  _|    ██ |██ |  ██ |██ |  ██ |    ██ |██ /  ██ |██ |  ██ |\██████\
+██ |  ██ |██   ____|██ |      ██ |██ |  ██ |██ |  ██ |██\ ██ |██ |  ██ |██ |  ██ | \____██\
+\███████ |\███████\ ██ |      ██ |██ |  ██ |██ |  \████  |██ |\██████  |██ |  ██ |███████  |
+ \_______| \_______|\__|      \__|\__|  \__|\__|   \____/ \__| \______/ \__|  \__|\_______/
+
+
+
+
+##########################################################################################
+
+NOTE. The following defines columns in the arithmetization which extract the data required
+by the prover to handle the KECCAK calls associated with a particular authority list tuple.
+Such attempts are made whenever
+
+        xtern/AUTHORITY_RECOVERY_SUCCESS ≡ <true>
+
+##########################################################################################
+
+
+
+(module rlpauth)
+
+(defun (rlpauth-keccak-trigger) (*  XTERN  xtern/AUTHORITY_ECRECOVER_SUCCESS))
+
+(defconst
+
+  DELEGATION_PREFIX                   0xef0100
+
+  ROFF___PREFIX                              4
+  ROFF___ADDRESS_HI                          3
+  ROFF___ADDRESS_LO                          2
+  ROFF___KECCAK_HI                           1
+  ROFF___KECCAK_LO                           0
+
+  LIMB_SIZE___DELEGATION_PREFIX              3
+  LIMB_SIZE___ADDRESS_HI                     4
+  LIMB_SIZE___ADDRESS_LO                    16
+
+  SHIFT_FACTOR___PREFIX        (^  256  (-  16  LIMB_SIZE___DELEGATION_PREFIX ))
+  SHIFT_FACTOR___ADDRESS_HI    (^  256  (-  16  LIMB_SIZE___ADDRESS_HI        ))
+  SHIFT_FACTOR___ADDRESS_LO    (^  256  (-  16  LIMB_SIZE___ADDRESS_LO        ))
+  )
+
+(defun   (prefix-selector)                (shift   (rlpauth-keccak-trigger)   ROFF___PREFIX     ))
+(defun   (macro-selector---address-hi)    (shift   (rlpauth-keccak-trigger)   ROFF___ADDRESS_HI ))
+(defun   (macro-selector---address-lo)    (shift   (rlpauth-keccak-trigger)   ROFF___ADDRESS_LO ))
+(defun   (xtern-selector---keccak-hi)     (shift   (rlpauth-keccak-trigger)   ROFF___KECCAK_HI  ))
+(defun   (xtern-selector---keccak-lo)     (shift   (rlpauth-keccak-trigger)   ROFF___KECCAK_LO  ))
+
+
+(defun   (keccak-limb---input---left-shifted-prefix)       (*            DELEGATION_PREFIX                                        SHIFT_FACTOR___DELEGATION_PREFIX ) )
+(defun   (keccak-limb---input---left-shifted-address-hi)   (*   (shift   macro/ADDRESS_HI                   ROFF___ADDRESS_HI )   SHIFT_FACTOR___ADDRESS_HI        ) )
+(defun   (keccak-limb---input---left-shifted-address-lo)   (*   (shift   macro/ADDRESS_LO                   ROFF___ADDRESS_LO )   SHIFT_FACTOR___ADDRESS_LO        ) )
+(defun   (keccak-limb---rsult---keccak-hi)                      (shift   xtern/AUTHORITY_RECOVERY_SUCCESS   ROFF___KECCAK_HI  )                                      )
+(defun   (keccak-limb---rsult---keccak-lo)                      (shift   xtern/AUTHORITY_RECOVERY_SUCCESS   ROFF___KECCAK_LO  )                                      )
+
+
+(defcomputed    (keccak-extraction---IS_DATA)
+                (+   (prefix-selector)             
+                     (macro-selector---address-hi) 
+                     (macro-selector---address-lo) 
+                     ))
+
+(defcomputed    (keccak-extraction---IS_RESULT)
+                (+   (xtern-selector---keccak-hi)  
+                     (xtern-selector---keccak-lo)  
+                     ))
+
+(defcomputed    (keccak-extraction---USER_TXN_NUMBER)
+                (*   (+  (keccak-extraction---IS_DATA)
+                         (keccak-extraction---IS_RESULT))
+                     USER_TXN_NUMBER
+                     ))
+
+(defcomputed    (keccak-extraction---TUPLE_INDEX)
+                (*   (+  (keccak-extraction---IS_DATA)
+                         (keccak-extraction---IS_RESULT))
+                     TUPLE_INDEX
+                     ))
+
+(defcomputed    (keccak-extraction---LIMB)
+                (+  (*   (prefix-selector)               (keccak-limb---input---left-shifted-prefix)              )
+                    (*   (macro-selector---address-hi)   (keccak-limb---input---left-shifted-address-hi)          )
+                    (*   (macro-selector---address-lo)   (keccak-limb---input---left-shifted-address-lo)          )
+                    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                    (*   (xtern-selector---keccak-hi)    (keccak-limb---rsult---keccak-hi)                        )
+                    (*   (xtern-selector---keccak-lo)    (keccak-limb---rsult---keccak-lo)                        )
+                    ))
+
+(defcomputed    (keccak-extraction---LIMB_SIZE)
+                (+  (*   (prefix-selector)               LIMB_SIZE___DELEGATION_PREFIX   )
+                    (*   (macro-selector---address-hi)   LIMB_SIZE___ADDRESS_HI          )
+                    (*   (macro-selector---address-lo)   LIMB_SIZE___ADDRESS_LO          )
+                    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                    ))
+
+(defcomputed    (keccak-extraction---LIMB_INDEX)
+                (+  (*   (prefix-selector)               0   )
+                    (*   (macro-selector---address-hi)   1   )
+                    (*   (macro-selector---address-lo)   2   )
+                    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                    (*   (xtern-selector---keccak-hi)    0   )
+                    (*   (xtern-selector---keccak-lo)    1   )
+                    ))
+
+\end{verbatim}
+\end{document}
