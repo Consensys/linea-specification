@@ -70,7 +70,7 @@ tuple. Such attempts are made whenever
 
 (module rlpauth)
 
-(defun (rlpauth-keccak-trigger) (*  XTERN  xtern/AUTHORITY_ECRECOVER_ATTEMPT))
+(defun (rlpauth-ecrecover-trigger) (*  XTERN  xtern/AUTHORITY_ECRECOVER_ATTEMPT))
 
 (defconst
   ROFF___Y         7
@@ -83,14 +83,14 @@ tuple. Such attempts are made whenever
   ROFF___SUC_BIT   0
   )
 
-(defun   (macro-selector---y-parity)      (shift   (rlpauth-keccak-trigger)   ROFF___Y       ))
-(defun   (macro-selector---r-hi)          (shift   (rlpauth-keccak-trigger)   ROFF___R_HI    ))
-(defun   (macro-selector---r-lo)          (shift   (rlpauth-keccak-trigger)   ROFF___R_LO    ))
-(defun   (macro-selector---s-hi)          (shift   (rlpauth-keccak-trigger)   ROFF___S_HI    ))
-(defun   (macro-selector---s-lo)          (shift   (rlpauth-keccak-trigger)   ROFF___S_LO    ))
-(defun   (xtern-selector---address-hi)    (shift   (rlpauth-keccak-trigger)   ROFF___ADDR_HI ))
-(defun   (xtern-selector---address-lo)    (shift   (rlpauth-keccak-trigger)   ROFF___ADDR_LO ))
-(defun   (xtern-selector---success-bit)   (shift   (rlpauth-keccak-trigger)   ROFF___SUC_BIT ))
+(defun   (macro-selector---y-parity)      (shift   (rlpauth-ecrecover-trigger)   ROFF___Y       ))
+(defun   (macro-selector---r-hi)          (shift   (rlpauth-ecrecover-trigger)   ROFF___R_HI    ))
+(defun   (macro-selector---r-lo)          (shift   (rlpauth-ecrecover-trigger)   ROFF___R_LO    ))
+(defun   (macro-selector---s-hi)          (shift   (rlpauth-ecrecover-trigger)   ROFF___S_HI    ))
+(defun   (macro-selector---s-lo)          (shift   (rlpauth-ecrecover-trigger)   ROFF___S_LO    ))
+(defun   (xtern-selector---address-hi)    (shift   (rlpauth-ecrecover-trigger)   ROFF___ADDR_HI ))
+(defun   (xtern-selector---address-lo)    (shift   (rlpauth-ecrecover-trigger)   ROFF___ADDR_LO ))
+(defun   (xtern-selector---success-bit)   (shift   (rlpauth-ecrecover-trigger)   ROFF___SUC_BIT ))
 (defun   (message-selector)               (*  UTILS  utils/LIMB_BIT))
 
 
@@ -104,7 +104,7 @@ tuple. Such attempts are made whenever
 (defun   (ecrecover-limb---success-bit)   (shift   xtern/AUTHORITY_RECOVERY_SUCCESS       ROFF___SUC_BIT      ))
 
 
-(defcomputed    (keccak-extraction---IS_SIGNATURE)
+(defcomputed    (ecrecover-extraction---IS_SIGNATURE)
                 (+   (macro-selector---y-parity)
                      (macro-selector---r-hi)
                      (macro-selector---r-lo)
@@ -112,60 +112,60 @@ tuple. Such attempts are made whenever
                      (macro-selector---s-lo)
                      ))
 
-(defcomputed    (keccak-extraction---IS_RESULT)
+(defcomputed    (ecrecover-extraction---IS_RESULT)
                 (+   (xtern-selector---address-hi)
                      (xtern-selector---address-lo)
                      (xtern-selector---success-bit)
                      ))
 
-(defcomputed    (keccak-extraction---IS_MESSAGE)
+(defcomputed    (ecrecover-extraction---IS_MESSAGE)
                 (message-selector)
                 )
 
-(defcomputed    (keccak-extraction---USER_TXN_NUMBER)
-                (*   (+  (keccak-extraction---IS_SIGNATURE)
-                         (keccak-extraction---IS_RESULT)
-                         (keccak-extraction---IS_MESSAGE))
+(defcomputed    (ecrecover-extraction---USER_TXN_NUMBER)
+                (*   (+  (ecrecover-extraction---IS_SIGNATURE)
+                         (ecrecover-extraction---IS_RESULT)
+                         (ecrecover-extraction---IS_MESSAGE))
                      USER_TXN_NUMBER
                      ))
 
-(defcomputed    (keccak-extraction---TUPLE_INDEX)
-                (*   (+  (keccak-extraction---IS_SIGNATURE)
-                         (keccak-extraction---IS_RESULT)
-                         (keccak-extraction---IS_MESSAGE))
+(defcomputed    (ecrecover-extraction---TUPLE_INDEX)
+                (*   (+  (ecrecover-extraction---IS_SIGNATURE)
+                         (ecrecover-extraction---IS_RESULT)
+                         (ecrecover-extraction---IS_MESSAGE))
                      TUPLE_INDEX
                      ))
 
-(defcomputed    (keccak-extraction---LIMB)
-                (+  (*  (macro-selector---y-parity)        (ecrecover-limb---y-parity)        )
-                    (*  (macro-selector---r-hi)            (ecrecover-limb---r-hi)            )
-                    (*  (macro-selector---r-lo)            (ecrecover-limb---r-lo)            )
-                    (*  (macro-selector---s-hi)            (ecrecover-limb---s-hi)            )
-                    (*  (macro-selector---s-lo)            (ecrecover-limb---s-lo)            )
-                    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                    (*  (xtern-selector---address-hi)         (ecrecover-limb---address-hi)   )
-                    (*  (xtern-selector---address-lo)         (ecrecover-limb---address-lo)   )
-                    (*  (xtern-selector---success-bit)        (ecrecover-limb---success-bit)  )
-                    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                    (*  (keccak-extraction---IS_MESSAGE)         utils/LIMB_INDEX             )
+(defcomputed    (ecrecover-extraction---LIMB)
+                (+  (*  (macro-selector---y-parity)        (ecrecover-limb---y-parity)           )
+                    (*  (macro-selector---r-hi)            (ecrecover-limb---r-hi)               )
+                    (*  (macro-selector---r-lo)            (ecrecover-limb---r-lo)               )
+                    (*  (macro-selector---s-hi)            (ecrecover-limb---s-hi)               )
+                    (*  (macro-selector---s-lo)            (ecrecover-limb---s-lo)               )
+                    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                    (*  (xtern-selector---address-hi)         (ecrecover-limb---address-hi)      )
+                    (*  (xtern-selector---address-lo)         (ecrecover-limb---address-lo)      )
+                    (*  (xtern-selector---success-bit)        (ecrecover-limb---success-bit)     )
+                    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                    (*  (ecrecover-extraction---IS_MESSAGE)         utils/LIMB_INDEX             )
                     ))
 
-(defcomputed    (keccak-extraction---LIMB_SIZE)
-                (*  (keccak-extraction---IS_MESSAGE) utils/LIMB_SIZE)
+(defcomputed    (ecrecover-extraction---LIMB_SIZE)
+                (*  (ecrecover-extraction---IS_MESSAGE) utils/LIMB_SIZE)
                 )
 
-(defcomputed    (keccak-extraction---LIMB_INDEX)
-                (+  (*  (macro-selector---y-parity)        0                      )
-                    (*  (macro-selector---r-hi)            1                      )
-                    (*  (macro-selector---r-lo)            2                      )
-                    (*  (macro-selector---s-hi)            3                      )
-                    (*  (macro-selector---s-lo)            4                      )
-                    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                    (*  (xtern-selector---address-hi)         0                   )
-                    (*  (xtern-selector---address-lo)         1                   )
-                    (*  (xtern-selector---success-bit)        2                   )
-                    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                    (*  (keccak-extraction---IS_MESSAGE)         utils/LIMB_INDEX )
+(defcomputed    (ecrecover-extraction---LIMB_INDEX)
+                (+  (*  (macro-selector---y-parity)        0                         )
+                    (*  (macro-selector---r-hi)            1                         )
+                    (*  (macro-selector---r-lo)            2                         )
+                    (*  (macro-selector---s-hi)            3                         )
+                    (*  (macro-selector---s-lo)            4                         )
+                    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                    (*  (xtern-selector---address-hi)         0                      )
+                    (*  (xtern-selector---address-lo)         1                      )
+                    (*  (xtern-selector---success-bit)        2                      )
+                    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                    (*  (ecrecover-extraction---IS_MESSAGE)         utils/LIMB_INDEX )
                     ))
 
 \end{verbatim}
