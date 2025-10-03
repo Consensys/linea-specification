@@ -1,0 +1,33 @@
+\rlpPrefixStandingHypothesis{}
+We impose
+\[
+	\rlpProcessByteString {
+		anchorRow        = i                                     ,
+		relOffset        = \roffRlpUtilsPrefix                   ,
+		byteStringLength = \rlpAuthUtilsColumnSizeCountdown _{i} ,
+		firstByte        = \nothing                              ,
+		isList           = \true                                 ,
+		mustBeNontrivial = \true                                 ,
+	}
+\]
+\saNote{}
+The byte string whose \rlp{} prefix the above is tasked with computing contains
+at least $1 + (1 + \addressSize) + 1 = 23$ bytes
+and at most $(1 + \evmWordSize) + (1 + \addressSize) + (1 + 8) = 63$ bytes.
+\[
+	\underbrace{
+		\overbrace{\rlp\Big( \locChainId \Big)} ^ {\text{1 to }(1 + \evmWordSize)\text{ bytes}} \cdot
+		\overbrace{\rlp\Big( \locAddress \Big)} ^ {(1 + \addressSize) \text{ bytes}} \cdot
+		\overbrace{\rlp\Big( \locNonce   \Big)} ^ {\text{1 to }(1 + 8)\text{ bytes}}
+	}_\text{23 to 63 bytes}
+	\in
+	\mathbb{B} ^ *
+\]
+Its leading byte (which only matters if the byte string has length 1)
+is therefore irrelevant in computing its prefix and we can not explicitly set it ($\nothing$).
+
+\saNote{}
+The value of $\rlpAuthUtilsColumnSizeCountdown _{i}$
+is the right one as it has already been decremented
+by the current $\rlpAuthUtilsColumnLimbSize _{i}$,
+which is the size of the byte prefix of the above byte string.

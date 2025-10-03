@@ -1,0 +1,184 @@
+\def\locUtilsFlagSum  {\loc{utils\_flag\_sum}}
+
+% mandatory checks
+\def\roffCompMandatoryChainId                       {\roffConstYellow{(-13)}}
+\def\roffCompMandatoryNonce                         {\roffConstYellow{(-12)}}
+\def\roffCompMandatoryAddress                       {\roffConstYellow{(-11)}}
+\def\roffCompMandatoryYparity                       {\roffConstYellow{(-10)}}
+\def\roffCompMandatorySignatureRwellformed          {\roffConstYellow{(-9)}}
+\def\roffCompMandatorySignatureSwellformed          {\roffConstYellow{(-8)}}
+% validity checks
+\def\roffCompValidityChainIdIszero                  {\roffConstYellow{(-7)}}
+\def\roffCompValidityChainIdVsNetworkChainId        {\roffConstYellow{(-6)}}
+\def\roffCompValidityNonceEipBound                  {\roffConstYellow{(-5)}}
+\def\roffCompValiditySignatureSnonMalleabilityBound {\roffConstYellow{(-4)}}
+\def\roffCompValidityNonceVsAccountNonce            {\roffConstYellow{(-3)}}
+\def\roffCompValidityAuthorityVsSender              {\roffConstYellow{(-2)}}
+\def\roffCompValidityAddressIszero                  {\roffConstYellow{(-1)}}
+% macro instruction
+\def\roffCompMacroRow                               {\roffConstYellow{0}}
+% extern row
+\def\roffCompExternRow                              {\roffConstYellow{1}}
+% RLP_UTILS calls
+\def\roffRlpUtilsMagic                              {\roffConstYellow{2}}
+\def\roffRlpUtilsPrefix                             {\roffConstYellow{3}}
+\def\roffRlpUtilsChainId                            {\roffConstYellow{4}}
+\def\roffRlpUtilsAddress                            {\roffConstYellow{7}}
+\def\roffRlpUtilsNonce                              {\roffConstYellow{10}}
+
+\def\locMagicByte                   {\numConst{MAGIC}}
+\def\locMagicByteValue              {\numConst{0x05}}
+\def\locAthorizationCodePrefixValue {\numConst{0xef0001}}
+\def\locAthorizationCodePrefix      {\numConst{code\_prefix}}
+
+
+\def\locHi                              {\loc{\_hi}}
+\def\locLo                              {\loc{\_lo}}
+\def\locChainId                         {\loc{chain\_id}}
+\def\locChainIdHi                       {\locChainId\locHi}
+\def\locChainIdLo                       {\locChainId\locLo}
+\def\locNetworkChainId                  {\loc{network\_}\locChainId}
+\def\locNetworkChainIdHi                {\locNetworkChainId\locHi}
+\def\locNetworkChainIdLo                {\locNetworkChainId\locLo}
+\def\locAddress                         {\loc{address}}
+\def\locAddressHi                       {\locAddress\locHi}
+\def\locAddressLo                       {\locAddress\locLo}
+\def\locSignature                       {\loc{sig\_}}
+\def\locSignatureR                      {\locSignature\loc{r}}
+\def\locSignatureS                      {\locSignature\loc{s}}
+\def\locSignatureY                      {\locSignature\loc{y\_parity}}
+\def\locSignatureRhi                    {\locSignatureR\locHi}
+\def\locSignatureRlo                    {\locSignatureR\locLo}
+\def\locSignatureShi                    {\locSignatureS\locHi}
+\def\locSignatureSlo                    {\locSignatureS\locLo}
+\def\locAuthority                       {\loc{authority}}
+\def\locAuthorityAddress                {\locAuthority\loc{\_}\locAddress}
+\def\locAuthorityAddressHi              {\locAuthorityAddress\locHi}
+\def\locAuthorityAddressLo              {\locAuthorityAddress\locLo}
+\def\locNonce                           {\loc{nonce}}
+\def\locAuthorityNonce                  {\locAuthority\loc{\_}\locNonce}
+\def\locSenderAddress                   {\loc{sender\_address}}
+\def\locMagic                           {\loc{MAGIC}}
+\def\locSecpPrime                       {\loc{secpk1n\_prime}}
+\def\locSecpPrimeOverTwo                {\locSecpPrime\loc{\_over\_2}}
+\def\locSecpPrimeOverTwoHi              {\locSecpPrimeOverTwo\locHi}
+\def\locSecpPrimeOverTwoLo              {\locSecpPrimeOverTwo\locLo}
+\def\locNonceEqualsAuthorityNonce       {\locNonce\loc{\_equals\_}\locAuthority\loc{\_}\locNonce}
+\def\locFromAddress                     {\loc{from\_address}}
+\def\locFromAddressHi                   {\locFromAddress\locHi}
+\def\locFromAddressLo                   {\locFromAddress\locLo}
+\def\locAddressIsZero                   {\locAddress\loc{\_is\_zero}}
+\def\locAuthorityIsSender               {\locAuthority\loc{\_is\_sender}}
+\def\locAuthorityTupleIsValidExpression {\locAuthority\loc{\_tuple\_is\_valid}}
+\def\locCtMaxSum                        {\loc{ct\_max\_sum}}
+\def\locWeightedPerspectiveSum          {\loc{wght\_persp\_sum}}
+
+
+\def\locChainIdIszero            {\locChainId\loc{\_is\_zero}}
+\def\locChainIdIsNetworkChainId  {\locChainId\loc{\_is\_beta}}
+\def\locChainIdIsZeroOrBeta      {\locChainId\loc{\_is\_zero\_or\_beta}}
+\def\locNonceSatisfiesEipBound   {\locNonce\loc{\_satisfies\_EIP-2681\_bound}}
+\def\locSignatureSisNonMalleable {\locSignatureS\loc{\_is\_non\_malleable}}
+\def\locCallEcrecoverExpression  {\loc{call\_ecrecover\_expression}}
+
+\def\mandatoryComparisonsStandingHypothesis {
+	\begin{center}
+		\boxed{\text{The constraints below assume that }
+		\macro _{i + \roffCompMacroRow} = 1
+		}
+	\end{center}
+}
+
+\def\chainIdIsZeroStandingHypothesis{
+	\begin{center}
+		\boxed{\text{The constraints below assume that }
+		\macro _{i + \roffCompMacroRow} = 1
+		}
+	\end{center}
+}
+
+\def\chainIdIsNetworkChainIdStandingHypothesis{
+	\begin{center}
+		\boxed{\text{The constraints below assume that }
+		\macro _{i + \roffCompMacroRow} = 1
+		}
+	\end{center}
+}
+
+\def\nonceEipCheckStandingHypothesis{
+	\begin{center}
+		\boxed{\text{The constraints below assume that }
+		\macro _{i + \roffCompMacroRow} = 1
+		}
+	\end{center}
+}
+
+\def\stringentSignatureSCheckStandingHypothesis{
+	\begin{center}
+		\boxed{\text{The constraints below assume that }
+		\macro _{i + \roffCompMacroRow} = 1
+		}
+	\end{center}
+}
+
+\def\nonceAgreementStandingHypothesis{
+	\begin{center}
+		\boxed{\text{The constraints below assume that }
+		\macro _{i + \roffCompMacroRow} = 1
+		}
+	\end{center}
+}
+
+\def\authorityIsSenderStandingHypothesis{
+	\begin{center}
+		\boxed{\text{The constraints below assume that }
+		\macro _{i + \roffCompMacroRow} = 1
+		}
+	\end{center}
+}
+
+\def\addressIsZeroStandingHypothesis{
+	\begin{center}
+		\boxed{\text{The constraints below assume that }
+		\macro _{i + \roffCompMacroRow} = 1
+		}
+	\end{center}
+}
+
+\def\shorthandsStandingHypothesis{
+	\begin{center}
+		\boxed{\text{The shorthands defined below require }
+		\macro _{i + \roffCompMacroRow} = 1
+		}
+	\end{center}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\def\magicRlpPrefixStandingHypothesis{
+	\begin{center}
+		\boxed{\text{The constraints below assume that }
+		\left\{ \begin{array}{lcl}
+			\macro                                  _{i + \roffCompMacroRow} & = & \true \\
+			\rlpAuthExternAuthorityEcrecoverAttempt _{i + \roffCompMacroRow} & = & \true \\
+		\end{array} \right.
+		}
+	\end{center}
+}
+\def\rlpPrefixStandingHypothesis    {\magicRlpPrefixStandingHypothesis}
+\def\tupleChainIdStandingHypothesis {\magicRlpPrefixStandingHypothesis}
+\def\tupleAddressStandingHypothesis {\magicRlpPrefixStandingHypothesis}
+\def\tupleNonceStandingHypothesis   {\magicRlpPrefixStandingHypothesis}
+
+
+
+\def\rlpAuthCtmaxComputation      {\numConst{ct\_max\_computation}}   \def\rlpAuthNrowsComputationValue {\numConst{13}}   \def\rlpAuthCtmaxComputationValue {\rlpAuthNrowsComputationValue - 1}
+\def\rlpAuthCtmaxMacro            {\numConst{ct\_max\_macro}}         \def\rlpAuthNrowsMacroValue       {\numConst{1}}    \def\rlpAuthCtmaxMacroValue       {\rlpAuthNrowsMacroValue       - 1}
+\def\rlpAuthCtmaxExtern           {\numConst{ct\_max\_extern}}        \def\rlpAuthNrowsExternValue      {\numConst{1}}    \def\rlpAuthCtmaxExternValue      {\rlpAuthNrowsExternValue      - 1}
+\def\rlpAuthCtmaxUtils            {\numConst{ct\_max\_utils}}         \def\rlpAuthNrowsUtilsValue       {\numConst{12}}   \def\rlpAuthCtmaxUtilsValue       {\rlpAuthNrowsUtilsValue       - 1}
+\def\rlpAuthCtmaxNoop             {\numConst{ct\_max\_noop}}          \def\rlpAuthNrowsNoopValue        {\numConst{1}}    \def\rlpAuthCtmaxNoopValue        {\rlpAuthNrowsNoopValue        - 1}

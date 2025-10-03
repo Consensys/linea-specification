@@ -1,0 +1,36 @@
+\nonceAgreementStandingHypothesis{}
+
+We impose that
+\[
+	\left\{ \begin{array}{lcl}
+		\wcpCallToEq  {
+			anchorRow = i                                          ,
+			relOffset = \roffCompValidityNonceVsAccountNonce       ,
+			argOneHi  = 0                                          ,
+			argOneLo  = \locNonce                                  ,
+			argTwoHi  = 0                                          ,
+			argTwoLo  = \locAuthorityNonce + \locAuthorityIsSender ,
+		}
+		\vspace{2mm}
+		\\
+		\locNonceEqualsAuthorityNonce \define \rlpAuthComputationRes _{i + \roffCompValidityNonceVsAccountNonce}
+	\end{array} \right.
+\]
+\saNote{}\label{rlp auth: comparisons: validity: nonce vs account nonce: when authority is sender}
+Thus we have
+\begin{enumerate}
+        \item \If $\locAuthorityIsSender = \false$ \Then \[ \locNonceEqualsAuthorityNonce = \true ~\iff~ \locNonce = \locAuthorityNonce \]
+        \item \If $\locAuthorityIsSender = \true$  \Then \[ \locNonceEqualsAuthorityNonce = \true ~\iff~ \locNonce = \locAuthorityNonce + 1 \]
+\end{enumerate}
+We provide some background for this particular constraint.
+We first point out that our processing of authority lists in the \hubMod{} module happens \textbf{before} the transaction induced
+incrementation of the sender nonce.
+We next recall that, as per \cite{EIP-7702},
+the processing the authority list should happen \textbf{after} the transaction induced sender nonce update.
+This poses a difficulty if the authority-list transaction includes authority tuples signed by the transaction's sender.
+For such a tuple to be valid it is necessary that the (tuple's) nonce be greater by one
+than the nonce in the sender's account at the time of processing of said tuple \textbf{in the \hubMod{} module}.
+We note furthermore that the sender's nonce continuously updates in the \hubMod{} with every valid
+authority tuple (for which the sender is the \authority{}).
+Therefore the sender's nonce will only every lag behind by $1$ in the processing of valid authority tuples
+(for which the sender is the \authority{}).
