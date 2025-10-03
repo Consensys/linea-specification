@@ -29,7 +29,6 @@ mmio:            view-mmio
 modexp:          view-modexp_data
 mmu:             view-mmu
 mxp:             view-mxp
-mxp_v3:          view-mxp_v3
 oob:             view-oob
 prc:             view-prc
 rlp_addr:        view-rlp_addr
@@ -71,7 +70,6 @@ rmmio:            recompile-mmio
 rmodexp:          recompile-modexp_data
 rmmu:             recompile-mmu
 rmxp:             recompile-mxp
-rmxp_v3:          recompile-mxp_v3
 roob:             recompile-oob
 rprc:             recompile-prc
 rrlp_addr:        recompile-rlp_addr
