@@ -1,113 +1,111 @@
 \begin{center}
-\boxed{\text{In all this section, it is assumed that $\phaseBeta_{i}=1$.}}
+    \boxed{\text{In all this section, it is assumed that
+    $
+    \left\{ \begin{array}{lcl}
+        \phaseBeta _{i} = 1 \\
+        \isTxn     _{i} = 1 \\
+    \end{array} \right.
+    $
+    }}
 \end{center}
-
-We first compute $\mathtt{RLP}(w)$ which is in $\widetilde{L}_{\mathrm{T}}(T)$ only:
+We use the following shorthands:
+\[
+    \left\{ \begin{array}{lcl}
+        \locReplayProtection & \define & \rlpTxnCommonColumnReplayProtection _{i} \\
+        \locChainId          & \define & \rlpTxnTransactionColumnChainId     _{i} \\
+        \locYparity          & \define & \rlpTxnCommonColumnYparity          _{i} \\
+    \end{array} \right.
+\]
+we further define a \locTwScalar{} shorthand for what the \cite{EYP-Shanghai} calls
+``\textbf{w}: A scalar value encoding Y parity and possibly chain ID.
+Formally $T_\text{w}$.
+$T_\text{w} = 27 + T_\text{y}$ or $T_\text{w} = 2\beta + 35 + T_\text{y}$'':
 \begin{enumerate}
-    \item \If $\phaseBeta_{i-1}=0$ \Then:
-	\begin{enumerate}
-	    \item $\lt_{i}=1$
-	    \item $\lx_{i}=0$
-	    \item $\nbstep_{i}=8$
-	\end{enumerate} 
-    \item \If ($\lt_{i}=1$ \et $\lx_{i}=0$)
-	\begin{enumerate}
-	    \item
-		\[
-		    \rlpPrefixInt_{i}
-		    \left( \begin{array}{r}
-			\Input{1},
-			\ct,
-			\nbstep,
-			\done; \\
-			\byteCol{1},
-			\acc{1},
-			\accsize,
-			\Power,
-			\genBit,
-			\genBit; \\
-			\limb,
-			\lc,
-			\limbsize; \\
-		    \end{array} \right)
-		\]
-	    \item \If $\done_{i}=1$ \Then:
-		\begin{enumerate}
-		    \item 
-			\[
-			    \limbShifting
-			    \left( \begin{array}{r}
-				\Input 1_{i},
-				\Power_{i},
-				\accsize_{i}; \\
-				\limb_{i},
-				\limbsize_{i}; \\
-			    \end{array} \right)
-			\]
-		    \item $\ispadding_{i}=0$
-		    \item \If $\Input 1_{i} = \unprotectedV $ \Or $\Input 1_{i} = \unprotectedVPO $ \footnote{It is implemented \If $(\Input 1 _{i} - \unprotectedV)^{2} = (\Input 1 _{i} - \unprotectedV)$ \Then:} \Then:
-			\begin{enumerate}
-			    \item $\phaseEnd_{i}=1$ 
-			\end{enumerate}
-		    \item \If $\Input 1_{i} \neq \unprotectedV$ \et $\Input 1_{i} \neq \unprotectedVPO$ \Then:
-			\begin{enumerate}
-			    \item $\phaseEnd_{i}=0$
-			    \item $\lt_{i+1}=0$
-			    \item $\lx_{i+1}=1$
-			    \item $\isPrefix_{i+1}=1$
-			    \item $\Input{1}_{i} = 2 \cdot \Input{1}_{i+1} + \protectedBaseV$ \Or $\Input{1}_{i} = 2 \cdot \Input{1}_{i+1} + \protectedBaseVPO$ 
-			    \footnote{It is implemented $(\Input{1}_{i} - 2 \cdot \Input{1}_{i+1} - \protectedBaseV)^{2} = (\Input{1}_{i} - 2 \cdot \Input{1}_{i+1} - \protectedBaseV)$}
-			\end{enumerate}
-		\end{enumerate}
-	\end{enumerate}
+    \item \If $\locReplayProtection = 0$ \Then $\locTwScalar \define \unprotectedV + \locYparity$
+    \item \If $\locReplayProtection = 1$ \Then $\locTwScalar \define 2 \cdot \locChainId + \protectedBaseV + \locYparity$
 \end{enumerate}
-We now compute the postfix of $\widetilde{L}_{\mathrm{X}}(T)$ which is $\mathtt{RLP}(\beta) \cdot \mathtt{RLP}(\varnothing) \cdot \mathtt{RLP}(\varnothing)$  when $\beta = ChainId$ is specified (equivalently $w \notin \{\unprotectedV , \unprotectedVPO \}$.)
-\begin{enumerate}[resume]
-    \item \If ($\lx_{i}=1$ \et $\isPrefix_{i}=1$) \Then:
-	\begin{enumerate}
-	    \item $\nbstep_{i}=8$
-	    \item
-		\[
-		    \rlpPrefixInt_{i}
-		    \left( \begin{array}{r}
-			\Input{1},
-			\ct,
-			\nbstep,
-			\done; \\
-			\byteCol{1},
-			\acc{1},
-			\accsize,
-			\Power,
-			\genBit,
-			\genBitAcc; \\
-			\limb,
-			\lc,
-			\limbsize; \\
-		    \end{array} \right)
-		\]
-	    \item \If $\done_{i}=1$ \Then:
-		\begin{enumerate}
-		    \item 
-			\[
-			    \limbShifting
-			    \left( \begin{array}{r}
-				\Input 1_{i},
-				\Power_{i},
-				\accsize_{i}; \\
-				\limb_{i},
-				\limbsize_{i}; \\
-			    \end{array} \right)
-			\]
-		    \item $\ispadding_{i}=0$
-		    \item $\phaseEnd_{i}=0$
-		    \item $\isPrefix_{i+1}=0$
-		    \item $\nbstep_{i+1}=1$
-		    \item $\lt_{i+1}=0$
-		    \item $\lx_{i+1}=1$
-		    \item $\ispadding_{i+1}=0$
-		    \item $\limb_{i+1}=\rlprefixShortInt \cdot 256^{15} + \rlprefixShortInt \cdot 256^{14}$
-		    \item $\limbsize_{i+1}=2$ 
-		    \item $\phaseEnd_{i+1}=1$ 
-		\end{enumerate}
-	\end{enumerate}
-\end{enumerate}
+We first compute $\rlp(\textbf{w})$ which is in $\locLtTilde$ only:
+\begin{description}
+    \item[\underline{\underline{\rlp{}-ization of $T_\text{w}$:}}]
+        we impose that
+        \begin{enumerate}
+            \item $\limbBelongsToLtOnly {
+                    anchorRow = i ,
+                    relOffset = 1 ,
+                }$
+            \item
+                \[
+                    \rlpProcessInteger {
+                        anchorRow  = i                ,
+                        relOffset  = 1                ,
+                        integerHi  = 0                ,
+                        integerLo  = \locTwScalar     ,
+                        endOfPhase = \locIsEndOfPhase ,
+                    }
+                \]
+                where
+                \[
+                    \locIsEndOfPhase \define 1 - \locReplayProtection
+                \]
+        \end{enumerate}
+\end{description}
+\saNote{}
+We explain our choice for \locIsEndOfPhase{}.
+If $\locReplayProtection \equiv 0 \equiv \false$ we are done.
+If $\locReplayProtection \equiv 1 \equiv \true$ we must still compute the postfix of
+$\locLxTilde$ which is $\mathtt{RLP}(\beta) \cdot \mathtt{RLP}(\varnothing) \cdot \mathtt{RLP}(\varnothing)$  where the chain ID $\beta$ is specified (equivalently $\textbf{w} \notin \{\unprotectedV , \unprotectedVPO \}$.)
+
+\begin{center}
+    \boxed{\text{Until the end of this section, it is assumed that
+    $
+    \left\{ \begin{array}{lcl}
+        \phaseBeta _{i}      & = & 1 \\
+        \isTxn     _{i}      & = & 1 \\
+        \locReplayProtection & = & 1 \\
+    \end{array} \right.
+    $
+    }}
+\end{center}
+The constraints that follow pertain to the \rlp{}-ization of the aforementioned postfix.
+\begin{description}
+    \item[\underline{\underline{\rlp{}-ization of the (transaction's) \textbf{ChainId} $T_\text{w}$:}}]
+        we impose
+        \begin{enumerate}[resume]
+            \item
+                $\limbBelongsToLxOnly {
+                    anchorRow = i                         ,
+                    relOffset = \rlpIntegerInstNbRows + 1 ,
+                }$
+            \item
+                \[
+                    \rlpProcessInteger {
+                        anchorRow  = i                         ,
+                        relOffset  = \rlpIntegerInstNbRows + 1 ,
+                        integerHi  = 0                         ,
+                        integerLo  = \locChainId               ,
+                        endOfPhase = \false                    ,
+                    }
+                \]
+        \end{enumerate}
+    \item[\underline{\underline{Accounting for $\mathtt{RLP}(\varnothing) \cdot \mathtt{RLP}(\varnothing)$ in the \rlp{} string:}}]
+        we impose
+        \begin{enumerate}[resume]
+            \item
+                $\limbBelongsToLxOnly {
+                    anchorRow = i                                                 ,
+                    relOffset = \rlpIntegerInstNbRows + \rlpIntegerInstNbRows + 1 ,
+                }$
+            \item
+                we set
+                \[
+                    \setLimb{
+                        anchorRow = i                                                                   ,
+                        relOffset = \rlpIntegerInstNbRows + \rlpIntegerInstNbRows + 1                   ,
+                        limb      = \rlprefixShortInt \cdot 256^{15} + \rlprefixShortInt \cdot 256^{14} ,
+                        nBytes    = 2                                                                   ,
+                    }
+                \]
+            \item
+                we impose $\phaseEnd _{i + \rlpIntegerInstNbRows + \rlpIntegerInstNbRows + 1} = 1$ 
+        \end{enumerate}
+\end{description}
