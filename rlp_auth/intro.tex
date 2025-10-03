@@ -34,7 +34,7 @@ The precise sequence of events goes as follows:
 		\rlpAuthExternAuthorityEcrecoverAttempt{} bit.
 		This bit, as the name suggests, dictates whether an attempt is made
 		at \macroEcrecover{}'ing the \locAuthorityAddress{}.
-		This explains the lookup from
+		It is therfore the main trigger for the lookup of
 		section~(\ref{rlp auth: lookup: extraction for ecrecover}).
 	\item[\underline{\underline{Attempting \macroEcrecover{}:}}]
 		whenever $\rlpAuthExternAuthorityEcrecoverAttempt \equiv \true$
@@ -63,17 +63,18 @@ The precise sequence of events goes as follows:
 		along \utils{}-rows.
 
 		The success (or failure) of this attempt is recorded in
-		\rlpAuthExternAuthorityRecoverySuccess{};
-		if address recovery failed no meaningful \locAuthority{} address exists.
+		\rlpAuthExternAuthorityRecoverySuccess{}.
+		If address recovery failed, the shorthand \locAuthorityAddress{} carries no meaningful value.
 	\item[\underline{\underline{Extracting \hubMod{} information:}}]
 		whenever $\rlpAuthExternAuthorityRecoverySuccess \equiv \true$, the
 		\locAuthorityAddress{} is meaningful and the present module queries the \hubMod{}
 		to extract the associated \locAuthorityNonce{}.
 		At this point the module can check the validity of the authority tuple \locNonce{}
-		and thus compute \rlpAuthExternAuthorityTupleIsValid{}
+		and thus compute \rlpAuthExternAuthorityTupleIsValid{}.
+		State changes will be enacted in the \hubMod{} module accordingly.
 
 		Special care has to be taken in case the \loc{sender\_address} and \locAuthorityAddress{}
-		are the same, specifically with respect to comparing the \locNonce{} and \locAuthorityNonce{},
+		coincide, specifically with respect to comparing the \locNonce{} and \locAuthorityNonce{},
 		see note~(\ref{rlp auth: comparisons: validity: nonce vs account nonce: when authority is sender}).
 	\item[\underline{\underline{Computing the new ``\codeHash{}'':}}]
 		if $\rlpAuthExternAuthorityTupleIsValid \equiv \true$ then the \locAuthority{}'s
