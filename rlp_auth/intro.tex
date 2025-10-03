@@ -11,20 +11,34 @@ have ``trivial'' processing,
 while those that do
 ($\transactionTypeWithAuthorityLists{} \equiv 1$)
 have more involved processing.
-Unsurprisingly we deal with authorization lists by
-dealing with their authorization tuples sequentially.
-The processing of any one authorization tuple
-takes place over a block of contiguous rows.
-Processing involves various \textbf{mandatory} comparisons,
-as well as other \textbf{validity} checks.
-These checks determine
+
+We deal with authorization lists by
+dealing with their authorization tuples sequentially,
+and the processing of any one authorization tuple
+takes place over a block of contiguous, perspectivized rows.
+The ``authority tuple data'' is read off of a single \macro{}-row.
+Processing involves various \textbf{mandatory} comparisons, which mustn't fail,
+as well as other \textbf{validity} checks, which may or may not hold.
+The ultimate goal of processing as a whole is to determine
+\rlpAuthExternAuthorityTupleIsValid{}
+which is the determining factor as to whether or not
+an authority tuple leads to a state change in the
+\locAuthority{} account.
+Whenever $\rlpAuthExternAuthorityTupleIsValid \equiv \true$, the
+\hubMod{} module will carry out the relevant account changes.
+
+The precise sequence of events goes as follows:
 \begin{description}
 	\item[\underline{\underline{Determining \rlpAuthExternAuthorityEcrecoverAttempt{}:}}]
 		several of the \textbf{validity} checks, taken together, determine the
 		\rlpAuthExternAuthorityEcrecoverAttempt{} bit.
+		This bit, as the name suggests, dictates whether an attempt is made
+		at \macroEcrecover{}'ing the \locAuthorityAddress{}.
+		This explains the lookup from
+		section~(\ref{rlp auth: lookup: extraction for ecrecover}).
 	\item[\underline{\underline{Attempting \macroEcrecover{}:}}]
 		whenever $\rlpAuthExternAuthorityEcrecoverAttempt \equiv \true$
-		the module attempts to \macroEcrecover{} the \locAuthority{} address;
+		the module attempts to \macroEcrecover{} the \locAuthorityAddress{};
 		this requires computing the following byte string
 		\[
 			\begin{array}{lcl}
@@ -44,6 +58,10 @@ These checks determine
 			\end{array}
 		\]
 		which is supposedly signed in the authority tuple.
+		This \rlp{}-ization of those data,
+		which are available on the \macro{}-row, takes place
+		along \utils{}-rows.
+
 		The success (or failure) of this attempt is recorded in
 		\rlpAuthExternAuthorityRecoverySuccess{};
 		if address recovery failed no meaningful \locAuthority{} address exists.
@@ -53,15 +71,22 @@ These checks determine
 		to extract the associated \locAuthorityNonce{}.
 		At this point the module can check the validity of the authority tuple \locNonce{}
 		and thus compute \rlpAuthExternAuthorityTupleIsValid{}
+
+		Special care has to be taken in case the \loc{sender\_address} and \locAuthorityAddress{}
+		are the same, specifically with respect to comparing the \locNonce{} and \locAuthorityNonce{},
+		see note~(\ref{rlp auth: comparisons: validity: nonce vs account nonce: when authority is sender}).
 	\item[\underline{\underline{Computing the new ``\codeHash{}'':}}]
 		if $\rlpAuthExternAuthorityTupleIsValid \equiv \true$ then the \locAuthority{}'s
-		``code'' and \codeHash{} must be updated as well as its code hash;
+		``code'' and \codeHash{} must be updated as well as its code hash.
+		This requires computing
 		\[
-			\col{code}
-			\equiv
-			\locAthorizationCodePrefix
-			~ \cdot ~
-			\address
+			\left\{ \begin{array}{lcl}
+				\texttt{KECCAK}(\loc{code}) \vspace{2mm} \\
+				\loc{code}                  \define      \locAthorizationCodePrefix ~ \cdot ~ \locAddress \\
+
+			\end{array} \right.
 		\]
+		and is the reason for the lookup in
+		section~(\ref{rlp auth: lookup: extraction for keccak}).
 \end{description}
 
