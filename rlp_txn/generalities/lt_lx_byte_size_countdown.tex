@@ -1,18 +1,18 @@
 We impose
 \begin{description}
     \item[\underline{\underline{Initialization:}}]
-        both \ltByteSizeCountDown{} and \lxByteSizeCountDown{} are \textbf{implicitly} initialized,
-        see section~(\ref{rlp txn v2: phase constraints: rlp prefix}),
+        both \ltByteSizeCountdown{} and \lxByteSizeCountdown{} are \textbf{implicitly} initialized,
+        see section~(\ref{rlp txn: phase constraints: rlp prefix}),
         during the ``$\phaseRlpPrefix _{i} = \true$'' rows.
     \item[\underline{\underline{Updates:}}]
         \If $\phaseRlpPrefix _{i} = \false$ \Then
         \begin{enumerate}
-            \item $\ltByteSizeCountDown _{i} = \ltByteSizeCountDown _{i - 1} - \lc _{i} \cdot \lt _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}$
-            \item $\lxByteSizeCountDown _{i} = \lxByteSizeCountDown _{i - 1} - \lc _{i} \cdot \lx _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}$
+            \item $\ltByteSizeCountdown _{i} = \ltByteSizeCountdown _{i - 1} - \lc _{i} \cdot \lt _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}$
+            \item $\lxByteSizeCountdown _{i} = \lxByteSizeCountdown _{i - 1} - \lc _{i} \cdot \lx _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}$
         \end{enumerate}
         \saNote{}
         Recall that by
-        constraint~(\ref{rlp txn v2: generalities: lc lt and lx constraints: lc vanishes outside of computation rows}),
+        constraint~(\ref{rlp txn: generalities: lc lt and lx constraints: lc vanishes outside of computation rows}),
         $\lc$ vanishes outside of \textbf{computation-rows}.
         This enforces that the above ``update constraints''
         only apply along \textbf{computation-rows},
@@ -22,8 +22,8 @@ We impose
     \item[\underline{\underline{Finalization:}}]
         \If $\phaseS _{i} = \true$ \et $\phaseEnd _{i} = \true$ \Then
         \begin{enumerate}
-            \item $\ltByteSizeCountDown _{i} = 0$
-            \item $\lxByteSizeCountDown _{i} = 0$
+            \item $\ltByteSizeCountdown _{i} = 0$
+            \item $\lxByteSizeCountdown _{i} = 0$
         \end{enumerate}
     \item[\underline{\underline{\toHashByProver{} definition:}}]
         $\toHashByProver _{i} = \lc _{i} \cdot \lx _{i}$
