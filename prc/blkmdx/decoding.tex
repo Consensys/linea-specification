@@ -23,13 +23,13 @@ We define the following shorthand
 		\end{array} \right] \vspace{2mm} \\
 		\indexMaxFlagSum _{i} & \define &
 		\left[ \begin{array}{crcl}
-			+ & ( 32 - 1 ) & \!\!\!\cdot\!\!\! & \isModexpBase      _{i} \\
-			+ & ( 32 - 1 ) & \!\!\!\cdot\!\!\! & \isModexpExponent  _{i} \\
-			+ & ( 32 - 1 ) & \!\!\!\cdot\!\!\! & \isModexpModulus   _{i} \\
-			+ & ( 32 - 1 ) & \!\!\!\cdot\!\!\! & \isModexpResult    _{i} \\
-			+ & ( 13 - 1 ) & \!\!\!\cdot\!\!\! & \isBlakeData       _{i} \\
-			+ & (  2 - 1 ) & \!\!\!\cdot\!\!\! & \isBlakeParams     _{i} \\
-			+ & (  4 - 1 ) & \!\!\!\cdot\!\!\! & \isBlakeResult     _{i} \\
+			+ & ( \numberOfLimbsForModexpArgumentsAndResult - 1 ) & \!\!\!\cdot\!\!\! & \isModexpBase     _{i} \\
+			+ & ( \numberOfLimbsForModexpArgumentsAndResult - 1 ) & \!\!\!\cdot\!\!\! & \isModexpExponent _{i} \\
+			+ & ( \numberOfLimbsForModexpArgumentsAndResult - 1 ) & \!\!\!\cdot\!\!\! & \isModexpModulus  _{i} \\
+			+ & ( \numberOfLimbsForModexpArgumentsAndResult - 1 ) & \!\!\!\cdot\!\!\! & \isModexpResult   _{i} \\
+			+ & ( \numberOfLimbsForBlakeData                - 1 ) & \!\!\!\cdot\!\!\! & \isBlakeData      _{i} \\
+			+ & ( \numberOfLimbsForBlakeParams              - 1 ) & \!\!\!\cdot\!\!\! & \isBlakeParams    _{i} \\
+			+ & ( \numberOfLimbsForBlakeResults             - 1 ) & \!\!\!\cdot\!\!\! & \isBlakeResult    _{i} \\
 		\end{array} \right] \vspace{2mm} \\
 	\end{array} \right.
 \]
@@ -62,3 +62,11 @@ $\phaseModexpBase$,
 $\phaseModexpExponent$, \dots,
 is that they be \textbf{pairwise distinct and nonzero}.
 See note~(\ref{blake + modexp: constancies: implied index constancy of the binary flags}).
+
+\saNote{}
+As of \cite{EIP-7823}, arguments of \macroModexp{} calls must be of (byte) size at most
+\[
+	\modexpMaxByteSizeName \define \modexpMaxByteSizeValue
+\]
+With a \limb{} column of $\llarge{}$-byte limb capacity, this amounts to (at most) \numberOfLimbsForModexpArgumentsAndResult{}
+rows per input and per result.
