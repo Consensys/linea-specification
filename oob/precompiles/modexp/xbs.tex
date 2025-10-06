@@ -2,26 +2,26 @@
 	\boxed{\text{All constraints in this subsection further assume } \oobInstIsModexpXbs_{i} = 1}
 \]
 The present instruction is used thrice within every single call to the \instModexp{} precompile.
-With every invokation it checks whether the ``\locXbs'' byte size argument is $\leq \modexpMaxByteSize$ or not,
+With every invocation it checks whether the ``\locXbs'' byte size argument is $\leq \modexpMaxByteSizeName$ or not,
 where
 \[
-	\modexpMaxByteSize \define \modexpMaxByteSizeValue
+	\modexpMaxByteSizeName \define \modexpMaxByteSizeValue
 \]
 It may also perform further computations if required.
 We use the shorthands defined below:
 \[
 	\left\{ \begin{array}{lclr}
-		\locXbsHi         & \define & \oobDataCol  {1} _{i}  \\
-		\locXbsLo         & \define & \oobDataCol  {2} _{i}  \\
-		\locYbsLo         & \define & \oobDataCol  {3} _{i}  \\
-		\locComputeMax    & \define & \oobDataCol  {4} _{i}  \\
+		\locXbsHi      & \define & \oobDataCol {1} _{i} \\
+		\locXbsLo      & \define & \oobDataCol {2} _{i} \\
+		\locYbsLo      & \define & \oobDataCol {3} _{i} \\
+		\locComputeMax & \define & \oobDataCol {4} _{i} \\
 	\end{array} \right.
 	\quad\text{and}\quad
 	\left\{ \begin{array}{lclr}
-		\locWithinBounds  & \define & \oobDataCol  {5} _{i} & \prediction \\
-		\locOutOfBounds   & \define & \oobDataCol  {6} _{i} & \prediction \\
-		\locMax           & \define & \oobDataCol  {7} _{i} & \prediction \\
-		\locXbsNonzero    & \define & \oobDataCol  {8} _{i} & \prediction \\
+		\locMax          & \define & \oobDataCol {7}  _{i} & \prediction \\
+		\locXbsNonzero   & \define & \oobDataCol {8}  _{i} & \prediction \\
+		\locWithinBounds & \define & \oobDataCol {9}  _{i} & \prediction \\
+		\locOutOfBounds  & \define & \oobDataCol {10} _{i} & \prediction \\
 	\end{array} \right.
 \]
 \hubPredictionDecoratorBlurb{}
@@ -36,11 +36,11 @@ The use case for this comparison is to compute the maxium $\max\{ \locBbs, \locM
 		\[
 			\left\{ \begin{array}{l}
 				\wcpCallToLt {
-					anchorRow = i                      ,
-					relOffset = 0                      ,
-					argOneHi  = \locXbsHi              ,
-					argOneLo  = \locXbsLo              ,
-					argTwoHi  = 0                      ,
+					anchorRow = i                           ,
+					relOffset = 0                           ,
+					argOneHi  = \locXbsHi                   ,
+					argOneLo  = \locXbsLo                   ,
+					argTwoHi  = 0                           ,
 					argTwoLo  = \modexpMaxByteSizeValue + 1 ,
 				}
 				\vspace{2mm} \\
@@ -61,18 +61,12 @@ The use case for this comparison is to compute the maxium $\max\{ \locBbs, \locM
 				}
 			\end{array} \right.
 		\]
-		we further impose the following constraints
-		\[
-			\left\{ \begin{array}{lclr}
-				\locComputeMax \cdot (1 - \locComputeMax) & = & 0      \\
-				\locCompToFiveTwelve                      & = & 1      \\
-			\end{array} \right.
-		\]
-		where we further define the shorthands
+		we further define the shorthands
 		\[
 			\left\{ \begin{array}{lcl}
-				\locCompToFiveTwelve & \define & \outgoingResLo    _{i    } \\
-				\locCmp              & \define & \outgoingResLo    _{i + 1} \\
+				\locXbsIsLeqModexpMaxByteSize & \define & \outgoingResLo    _{i    }        \\
+				\locXbsIsGtModexpMaxByteSize  & \define & 1 - \locXbsIsLeqModexpMaxByteSize \\
+				\locResultOfComparison        & \define & \outgoingResLo    _{i + 1}        \\
 			\end{array} \right.
 		\]
 		\saNote{} The value \locComputeMax{}, along with the other inputs, is provided to the \hubMod{} module and will be binary in all applications.
@@ -81,18 +75,26 @@ The use case for this comparison is to compute the maxium $\max\{ \locBbs, \locM
 	\item[\underline{Justifying \hubMod{} predictions:}] we impose
 		we further impose that
 		\begin{enumerate}
-			\item \If $\locComputeMax = 0$ \Then 
+			\item \locComputeMax{} is binary
+			\item \If $\locComputeMax = \false$ \Then 
 				\[
 					\left\{ \begin{array}{lcl}
 						\locMax        & = & 0 \\
 						\locXbsNonzero & = & 0 \\
 					\end{array} \right.
 				\]
-			\item \If $\locComputeMax = 1$ \Then
+			\item \If $\locComputeMax = \true$ \Then
 				\begin{enumerate}
 					\item $\locXbsNonzero = 1 - \outgoingResLo_{i + 2}$
-					\item \If $\locCmp = 0$ \Then $\locMax = \locXbsLo$
-					\item \If $\locCmp = 1$ \Then $\locMax = \locYbsLo$
+					\item \If $\locResultOfComparison = \false $ \Then $\locMax = \locXbsLo$
+					\item \If $\locResultOfComparison = \true  $ \Then $\locMax = \locYbsLo$
 				\end{enumerate}
+			\item we set
+				\[
+					\left\{ \begin{array}{lcl}
+						\locWithinBounds & = & \locXbsIsLeqModexpMaxByteSize \\
+						\locOutOfBounds  & = & \locXbsIsGtModexpMaxByteSize  \\
+					\end{array} \right.
+				\]
 		\end{enumerate}
 \end{description}
