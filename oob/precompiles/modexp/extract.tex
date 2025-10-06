@@ -66,17 +66,23 @@ We use the shorthands defined below:
 		we impose that
 		\[
 			\left\{ \begin{array}{lcrcl}
-				\locExtractModulus     & = & \locCallDataExtendsBeyondExponent  & \!\!\!\cdot\!\!\! & (1 - \locMbsIsZero) \\ 
-				\locExtractBase        & = & \locExtractModulus              & \!\!\!\cdot\!\!\! & (1 - \locBbsIsZero) \\ 
-				\locExtractExponent    & = & \locExtractModulus              & \!\!\!\cdot\!\!\! & (1 - \locEbsIsZero) \\ 
+				\locExtractModulus  & = & \locCallDataExtendsBeyondExponent & \!\!\!\cdot\!\!\! & (1 - \locMbsIsZero) \\
+				\locExtractBase     & = & \locExtractModulus                & \!\!\!\cdot\!\!\! & (1 - \locBbsIsZero) \\
+				\locExtractExponent & = & \locExtractModulus                & \!\!\!\cdot\!\!\! & (1 - \locEbsIsZero) \\
 			\end{array} \right.
 		\]
 \end{description}
-\saNote{} By construction \( 0 \leq \locExtractXxx \leq \locExtractModulus \leq 1)$ for $\col{xxx} = \col{base}, \col{exponent}, \col{modulus}$.
+\saNote{}
+By construction \( 0 \leq \locExtractXxx \leq \locExtractModulus \leq 1)$ for $\col{xxx} = \col{base}, \col{exponent}, \col{modulus}$.
 
-\saNote{} We provide some explanations.
+\saNote{}
+We provide some explanations.
 The condition ``$\locExtractModulus \equiv 0$'' amounts to either $\locMbs \equiv 0$ or $\locCds \leq 96 + \locBbs + \locEbs$.
-In either case the \textbf{modulus} of the underlying \instModexp{} call is $\bm{0}$ and so is the \textbf{result} (though, importantly, the \RDS{} \emph{post-call} is \locMbs{} which can be anything in the range $\{ 0, 1, \dots, 512 \}$.)
+In either case the \textbf{modulus} of the underlying \instModexp{} call is $\bm{0}$
+and so is the \textbf{result}.
+(Though, importantly, the \RDS{} \emph{post-call} is \locMbs{} which,
+starting with \cite{EIP-7823},
+can be anything in the range $\{ 0, 1, \dots, \modexpMaxByteSize \}$.)
 In this case there is no reason to extract any of the base, exponent or modulus.
 On the other hand when $\locExtractModulus \equiv 1$ it is necessary to extract base, exponent and modulus.
 It may still happen that $\locBbs \equiv 0$ or $\locEbs \equiv 0$.

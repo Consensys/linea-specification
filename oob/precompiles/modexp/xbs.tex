@@ -2,7 +2,8 @@
 	\boxed{\text{All constraints in this subsection further assume } \oobInstIsModexpXbs_{i} = 1}
 \]
 The present instruction is used thrice within every single call to the \instModexp{} precompile.
-It ensures that the byte size arguments are $\leq 512$.
+With every invokation it checks whether the ``\locXbs'' byte size argument is $\leq \modexpMaxByteSize$ or not.
+It may also perform further computations if required.
 We use the shorthands defined below:
 \[
 	\left\{ \begin{array}{lclr}
@@ -20,7 +21,7 @@ We use the shorthands defined below:
 
 For the present instruction the \oobMod{} expects the value of \locComputeMax{} to be binary.
 In applications the value of \locXbs{} is either \locBbs{}, \locEbs{} or \locMbs{}.
-The first step is to compare \locXbs{} to $512$.
+The first step is to compare \locXbs{} to $\modexpMaxByteSize$.
 If \locComputeMax{} is set we compute the maximum of \locYbsLo{} and \locXbs{}.
 The use case for this comparison is to compute the maxium $\max\{ \locBbs, \locMbs \}$ as required by the pricing of the \instModexp{} precompile.
 \begin{description}
@@ -28,12 +29,12 @@ The use case for this comparison is to compute the maxium $\max\{ \locBbs, \locM
 		\[
 			\left\{ \begin{array}{l}
 				\wcpCallToLt {
-					anchorRow = i         ,
-					relOffset = 0         ,
-					argOneHi  = \locXbsHi ,
-					argOneLo  = \locXbsLo ,
-					argTwoHi  = 0         ,
-					argTwoLo  = 512 + 1   ,
+					anchorRow = i                      ,
+					relOffset = 0                      ,
+					argOneHi  = \locXbsHi              ,
+					argOneLo  = \locXbsLo              ,
+					argTwoHi  = 0                      ,
+					argTwoLo  = \modexpMaxByteSize + 1 ,
 				}
 				\vspace{2mm} \\
 				\wcpCallToLt {
@@ -69,7 +70,7 @@ The use case for this comparison is to compute the maxium $\max\{ \locBbs, \locM
 		\]
 		\saNote{} The value \locComputeMax{}, along with the other inputs, is provided to the \hubMod{} module and will be binary in all applications.
 		
-		\saNote{} The constraint $\outgoingResLo_{i} = 1$ enforces that the comparison ``$\locXbs < 512 + 1$'' i.e. ``$\locXbs \leq 512$'' return \texttt{true}.
+		\saNote{} The constraint $\outgoingResLo_{i} = 1$ enforces that the comparison ``$\locXbs < \modexpMaxByteSize + 1$'' i.e. ``$\locXbs \leq \modexpMaxByteSize$'' return \texttt{true}.
 	\item[\underline{Justifying \hubMod{} predictions:}] we impose
 		we further impose that
 		\begin{enumerate}
