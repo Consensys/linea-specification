@@ -69,7 +69,7 @@
 |   ✓   |       |       |       |        |                                    |           |                                    | .   ≡ ✅                               |
 |-------+-------+-------+-------+--------+------------------------------------+-----------+------------------------------------+----------------------------------------|
 | CMPTN |       |       |       | i - 3  | tuple.nonce == authority.nonce     |           | ✨  nonce_equals_authority_nonce   |                                        |
-| CMPTN |       |       |       | i - 2  | tuple.address == from_address      |           | ✨  authority_is_sender            |                                        |
+| CMPTN |       |       |       | i - 2  | tuple.address == sender_address    |           | ✨  authority_is_sender            |                                        |
 | CMPTN |       |       |       | i - 1  | tuple.address == Address.ZERO      |           | ✨  address_is_zero                |                                        |
 |-------+-------+-------+-------+--------+------------------------------------+-----------+------------------------------------+----------------------------------------|
 |       | MACRO |       |       | i      | ∅                                  |
@@ -84,11 +84,11 @@
 |       |       | XTERN |       | i + 1  | ∅                                  |
 |-------+-------+-------+-------+--------+------------------------------------+-----------+------------------------------------+----------------------------------------+----------------------|
 |       |       |   ✓   |       |        |                                    |           |                                    |                                        | ✅  network_chain_id |
-|       |       |   ✓   |       |        |                                    |           |                                    |                                        | ✅  from_address     |
+|       |       |   ✓   |       |        |                                    |           |                                    |                                        | ✅  sender_address   |
 |       |       |   ✓   |       |        |                                    |           |                                    | ✨  ecrecover_attempt                  |                      |
 |       |       |   ✓   |       |        |                                    |           |                                    | .      ← ecrecover_attempt_expression  |                      |
 |       |       |   ✓   |       |        |                                    |           |                                    |                                        | ✅  authority.nonce  |
-|       |       |   ✓   |       |        |                                    |           |                                    |                                        | ✅  from_address     |
+|       |       |   ✓   |       |        |                                    |           |                                    |                                        | ✅  sender_address   |
 |       |       |   ✓   |       |        |                                    |           |                                    | ✨  potential_new_code_hash            |                      |
 |-------+-------+-------+-------+--------+------------------------------------+-----------+------------------------------------+----------------------------------------+----------------------|
 |       |       |   ✓   |       |        |                                    |           |                                    | ecrecover_attempt        ≡ ✅          |                      |
@@ -123,7 +123,7 @@ Notes.
 - ecrecover_success ≡ ✅ means that that attempt is successful
 - a HUB call is made ≡ ✅ and the following comparisons become MEANINGFUL
         - tuple.nonce == authority.nonce
-        - tuple.address == from_address 
+        - tuple.address == sender_address 
 
 - a KECCAK call is made for the new code hash
 
