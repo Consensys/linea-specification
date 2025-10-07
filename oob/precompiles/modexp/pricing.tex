@@ -23,37 +23,37 @@ The value of \locExponentLog{} will be computed in the \expMod{} module using a 
 We impose the following:
 \begin{description}
 	\item[\underline{Rows n°$(i)$, $n^\circ(i + 1)$ and $n^\circ(i + 2)$:}] we impose
-	      we impose that
-	      \[
-		      \left\{ \begin{array}{l}
-			      \wcpCallToIszero {
-				      anchorRow = i       ,
-				      relOffset = 0       ,
-				      argOneHi  = 0       ,
-				      argOneLo  = \locRac ,
-			      }
-			      \vspace{2mm} \\
-			      \wcpCallToIszero {
-				      anchorRow = i               ,
-				      relOffset = 1               ,
-				      argOneHi  = 0               ,
-				      argOneLo  = \locExponentLog ,
-			      }
-			      \vspace{2mm} \\
-			      \oobCallToDiv
-			      {i}{2}
-			      {0}{\locMax + 7}
-			      {0}{8}
-			      \\
-		      \end{array} \right.
-	      \]
-	      we define the following associated shorthands
-	      \[
-		      \left\{ \begin{array}{lcl}
-			      \locExponentLogIsZero & \define & \outgoingResLo_{i + 1} \\
-			      \locFOfMax            & \define & \outgoingResLo_{i + 2} \cdot \outgoingResLo_{i + 2}\\
-		      \end{array} \right.
-	      \]
+		we impose that
+		\[
+			\left\{ \begin{array}{l}
+				\wcpCallToIszero {
+					anchorRow = i       ,
+					relOffset = 0       ,
+					argOneHi  = 0       ,
+					argOneLo  = \locRac ,
+				}
+				\vspace{2mm} \\
+				\wcpCallToIszero {
+					anchorRow = i               ,
+					relOffset = 1               ,
+					argOneHi  = 0               ,
+					argOneLo  = \locExponentLog ,
+				}
+				\vspace{2mm} \\
+				\oobCallToDiv
+				{i}{2}
+				{0}{\locMax + 7}
+				{0}{8}
+				\\
+			\end{array} \right.
+		\]
+		we define the following associated shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locExponentLogIsZero & \define & \outgoingResLo_{i + 1} \\
+				\locFOfMax            & \define & \outgoingResLo_{i + 2} \cdot \outgoingResLo_{i + 2}\\
+			\end{array} \right.
+		\]
 \end{description}
 \saNote{} $\locFOfMax$ computes $\displaystyle f\big(\max(\locBase, \locModulus)\big) = \left\lceil\frac{\max(\locBase, \locModulus)}{8}\right\rceil^2$.
 \begin{description}
@@ -84,38 +84,38 @@ It follows that $\locBigQuotient$ computes
 \]
 \begin{description}
 	\item[\underline{Rows $n^°(i + 4)$ and $n^°(i + 5)$:}]
-	      we impose that
-	      \[
-		      \left\{ \begin{array}{l}
-			      \wcpCallToLt {
-				      anchorRow = i               ,
-				      relOffset = 4               ,
-				      argOneHi  = 0               ,
-				      argOneLo  = \locBigQuotient ,
-				      argTwoHi  = 0               ,
-				      argTwoLo  = 200             ,
-			      }
-			      \vspace{2mm} \\
-			      \wcpCallToLt {
-				      anchorRow = i                  ,
-				      relOffset = 5                  ,
-				      argOneHi  = 0                  ,
-				      argOneLo  = \locCalleeGas      ,
-				      argTwoHi  = 0                  ,
-				      argTwoLo  = \locPrecompileCost ,
-			      }
-			      \\
-		      \end{array} \right.
-	      \]
-	      we define the \locBigQuotientLtTwoHundred{} shorthand
-	      \[
-		      \locBigQuotientLtTwoHundred \define \outgoingResLo_{i + 4}
-	      \]
-	      from which we define the \locPrecompileCost{} shorthand used above
-	      \begin{enumerate}
-		      \item \If \locBigQuotientLtTwoHundred = 0 \Then $\locPrecompileCost \define \locBigQuotient$
-		      \item \If \locBigQuotientLtTwoHundred = 1 \Then $\locPrecompileCost \define 200$
-	      \end{enumerate}
+		we impose that
+		\[
+			\left\{ \begin{array}{l}
+				\wcpCallToLt {
+					anchorRow = i               ,
+					relOffset = 4               ,
+					argOneHi  = 0               ,
+					argOneLo  = \locBigQuotient ,
+					argTwoHi  = 0               ,
+					argTwoLo  = 200             ,
+				}
+				\vspace{2mm} \\
+				\wcpCallToLt {
+					anchorRow = i                  ,
+					relOffset = 5                  ,
+					argOneHi  = 0                  ,
+					argOneLo  = \locCalleeGas      ,
+					argTwoHi  = 0                  ,
+					argTwoLo  = \locPrecompileCost ,
+				}
+				\\
+			\end{array} \right.
+		\]
+		we define the \locBigQuotientLtTwoHundred{} shorthand
+		\[
+			\locBigQuotientLtTwoHundred \define \outgoingResLo_{i + 4}
+		\]
+		from which we define the \locPrecompileCost{} shorthand used above
+		\begin{enumerate}
+			\item \If \locBigQuotientLtTwoHundred = 0 \Then $\locPrecompileCost \define \locBigQuotient$
+			\item \If \locBigQuotientLtTwoHundred = 1 \Then $\locPrecompileCost \define 200$
+		\end{enumerate}
 	\item[\underline{Justifying \hubMod{} predictions:}] we impose that
 		\begin{description}
 			\item[{Constraining \locRamSuccess:}]
