@@ -258,7 +258,7 @@ The above thus either extracts some data from \textsc{ram} and serves it to the 
 						relOffset = \prcModexpSuccessTransferResultRowOffset ,
 						sourceId  = 1 + \hubStamp_{i}                        ,
 						targetId  = 1 + \hubStamp_{i}                        ,
-						size      = 512                                      ,
+						size      = \modexpMaxByteSizeValue                  ,
 						exoSum    = \exoWeightBlakeModexp                    ,
 						phase     = \phaseModexpResult                       ,
 						}
@@ -301,8 +301,8 @@ The above thus either extracts some data from \textsc{ram} and serves it to the 
 						anchorRow       = i                                              ,
 						relOffset       = \prcModexpSuccessPartialCopyOfResultsRowOffset ,
 						sourceId        = 1 + \hubStamp_{i}                              ,
-						targetId        = \cn_{i}                                        ,
-						sourceOffsetLo  = 512 - \locMbs                                  ,
+						targetId        = \cn _{i}                                       ,
+						sourceOffsetLo  = \modexpMaxByteSizeValue - \locMbs              ,
 						size            = \locMbs                                        ,
 						referenceOffset = \locPrcRao                                     ,
 						referenceSize   = \locPrcRac                                     ,
@@ -313,12 +313,12 @@ The above thus either extracts some data from \textsc{ram} and serves it to the 
 		we impose that
 		\[
 			\provideReturnData {
-				anchorRow          = i                    ,
-				relOffset          = \prcModexpSuccessUpdatingCallerReturnData              ,
-				returnDataReceiver = \cn_{i}              ,
-				returnDataProvider = 1    + \hubStamp_{i} ,
-				returnDataOffset   = 512  - \locMbs       ,
-				returnDataSize     = \locMbs              ,
+				anchorRow          = i                                         ,
+				relOffset          = \prcModexpSuccessUpdatingCallerReturnData ,
+				returnDataReceiver = \cn _{i}                                  ,
+				returnDataProvider = 1 + \hubStamp_{i}                         ,
+				returnDataOffset   = \modexpMaxByteSizeValue  - \locMbs        ,
+				returnDataSize     = \locMbs                                   ,
 			}
 		\]
 \end{description}

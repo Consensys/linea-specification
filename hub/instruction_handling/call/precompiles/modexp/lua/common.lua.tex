@@ -30,161 +30,169 @@
 
 
 
-|-------+--------+-------------------------------------------------+------------------------------------------+-------------------------------------------------------|
-| Row   | Persp. |                                                 |                                          |                                                       |
-|-------+--------+-------------------------------------------------+------------------------------------------+-------------------------------------------------------|
-| i     | SCEN   | here:                                           |                                          |                                                       |
-|       |        | * SCEN/MODEXP                                   |                                          |                                                       |
-|-------+--------+-------------------------------------------------+------------------------------------------+-------------------------------------------------------|
-| i + 1 | MISC   | MMU🏴 = 0                                       | EXP🏴 = 0                                | OOB🏴 = 1                                             |
-|       |        |                                                 |                                          | OOB_INST = ⟦OOB_INST_modexp_cds⟧                      |
-|       |        |                                                 |                                          |                                                       |
-|       |        |                                                 |                                          | TRUSTED INPUTS:                                       |
-|       |        |                                                 |                                          | * cds                                                 |
-|       |        |                                                 |                                          |                                                       |
-|       |        |                                                 |                                          | JUSTIFICATION FOR:                                    |
-|       |        |                                                 |                                          | * extract_bbs ≡ [cds >  0]                            |
-|       |        |                                                 |                                          | * extract_ebs ≡ [cds > 32]                            |
-|       |        |                                                 |                                          | * extract_mbs ≡ [cds > 64]                            |
-|-------+--------+-------------------------------------------------+------------------------------------------+-------------------------------------------------------|
-| i + 2 | MISC   | MMU🏴    = extract_bbs                          | EXP🏴 = 0                                |                                                       |
-|       |        | MMU_INST = ⟦MMU_INST_rightPaddedWordExtraction⟧ |                                          |                                                       |
-|       |        |                                                 |                                          |                                                       |
-|       |        | TRUSTED INPUTS:                                 |                                          |                                                       |
-|       |        | * SRC_ID         = cn                           |                                          |                                                       |
-|       |        | * SRC_OFFSET_LO  = 0                            |                                          |                                                       |
-|       |        | * REF_OFFSET     = cdo                          |                                          |                                                       |
-|       |        | * REF_SIZE       = cds                          |                                          |                                                       |
-|       |        |                                                 |                                          |                                                       |
-|       |        | JUSTIFICATION FOR:                              |                                          |                                                       |
-|       |        | * bbs_hi                                        |                                          |                                                       |
-|       |        | * bbs_lo                                        |                                          |                                                       |
-|       |        |                                                 |                                          |                                                       |
-|       |        |                                                 |                                          | OOB🏴 = 1                                             |
-|       |        |                                                 |                                          | OOB_INST = ⟦OOB_INST_modexp_xbs⟧                      |
-|       |        |                                                 |                                          |                                                       |
-|       |        |                                                 |                                          | TRUSTED INPUTS:                                       |
-|       |        |                                                 |                                          | * bbs_hi                                              |
-|       |        |                                                 |                                          | * bbs_lo                                              |
-|       |        |                                                 |                                          | * 0                                                   |
-|       |        |                                                 |                                          | * do_compute_max = 0                                  |
-|       |        |                                                 |                                          |                                                       |
-|       |        |                                                 |                                          | JUSTIFICATION FOR:                                    |
-|       |        |                                                 |                                          | * (implicit check) bbs ≤ 512                          |
-|-------+--------+-------------------------------------------------+------------------------------------------+-------------------------------------------------------|
-| i + 3 | MISC   | MMU🏴 = extract_ebs                             | EXP🏴 = 0                                |                                                       |
-|       |        | MMU_INST = ⟦MMU_INST_rightPaddedWordExtraction⟧ |                                          |                                                       |
-|       |        |                                                 |                                          |                                                       |
-|       |        | TRUSTED INPUTS:                                 |                                          |                                                       |
-|       |        | * SRC_ID         = cn                           |                                          |                                                       |
-|       |        | * SRC_OFFSET_LO  = 32                           |                                          |                                                       |
-|       |        | * REF_OFFSET     = cdo                          |                                          |                                                       |
-|       |        | * REF_SIZE       = cds                          |                                          |                                                       |
-|       |        |                                                 |                                          |                                                       |
-|       |        | JUSTIFICATION FOR:                              |                                          |                                                       |
-|       |        | * ebs_hi                                        |                                          |                                                       |
-|       |        | * ebs_lo                                        |                                          |                                                       |
-|       |        |                                                 |                                          |                                                       |
-|       |        |                                                 |                                          | OOB🏴 = 1                                             |
-|       |        |                                                 |                                          | OOB_INST = ⟦OOB_INST_modexp_xbs⟧                      |
-|       |        |                                                 |                                          |                                                       |
-|       |        |                                                 |                                          | TRUSTED INPUTS:                                       |
-|       |        |                                                 |                                          | * ebs_hi                                              |
-|       |        |                                                 |                                          | * ebs_lo                                              |
-|       |        |                                                 |                                          | * 0                                                   |
-|       |        |                                                 |                                          | * do_compute_max = 0                                  |
-|       |        |                                                 |                                          |                                                       |
-|       |        |                                                 |                                          | JUSTIFICATION FOR:                                    |
-|       |        |                                                 |                                          | * (implicit check) ebs ≤ 512                          |
-|-------+--------+-------------------------------------------------+------------------------------------------+-------------------------------------------------------|
-| i + 4 | MISC   | MMU🏴    = extract_mbs                          | EXP🏴 = 0                                |                                                       |
-|       |        | MMU_INST ≡ ⟦MMU_INST_rightPaddedWordExtraction⟧ |                                          |                                                       |
-|       |        |                                                 |                                          |                                                       |
-|       |        | TRUSTED INPUTS:                                 |                                          |                                                       |
-|       |        | * SRC_ID         = cn                           |                                          |                                                       |
-|       |        | * SRC_OFFSET_LO  = 64                           |                                          |                                                       |
-|       |        | * REF_OFFSET     = cdo                          |                                          |                                                       |
-|       |        | * REF_SIZE       = cds                          |                                          |                                                       |
-|       |        |                                                 |                                          |                                                       |
-|       |        | JUSTIFICATION FOR:                              |                                          |                                                       |
-|       |        | * ebs_hi                                        |                                          |                                                       |
-|       |        | * ebs_lo                                        |                                          |                                                       |
-|       |        |                                                 |                                          |                                                       |
-|       |        |                                                 |                                          | OOB🏴 = 1                                             |
-|       |        |                                                 |                                          | OOB_INST = ⟦OOB_INST_modexp_xbs⟧                      |
-|       |        |                                                 |                                          |                                                       |
-|       |        |                                                 |                                          | TRUSTED INPUTS:                                       |
-|       |        |                                                 |                                          | * mbs_hi                                              |
-|       |        |                                                 |                                          | * mbs_lo                                              |
-|       |        |                                                 |                                          | * bbs_lo                                              |
-|       |        |                                                 |                                          | * do_compute_max = 1                                  |
-|       |        |                                                 |                                          |                                                       |
-|       |        |                                                 |                                          | JUSTIFICATION FOR:                                    |
-|       |        |                                                 |                                          | * max_bbs_mbs ≡ bbs ∨ mbs                             |
-|       |        |                                                 |                                          | * mbs_nonzero ≡ [mbs ≠ 0]                             |
-|       |        |                                                 |                                          | * (implicit check) mbs ≤ 512                          |
-|-------+--------+-------------------------------------------------+------------------------------------------+-------------------------------------------------------|
-| i + 5 | MISC   |                                                 |                                          | OOB🏴 = 1                                             |
-|       |        |                                                 |                                          | OOB_INST = ⟦OOB_INST_modexp_lead⟧                     |
-|       |        |                                                 |                                          |                                                       |
-|       |        |                                                 |                                          | TRUSTED INPUTS:                                       |
-|       |        |                                                 |                                          | * bbs_lo                                              |
-|       |        |                                                 |                                          | * cds                                                 |
-|       |        |                                                 |                                          | * ebs_lo                                              |
-|       |        |                                                 |                                          |                                                       |
-|       |        |                                                 |                                          |                                                       |
-|       |        |                                                 |                                          | JUSTIFICATION FOR:                                    |
-|       |        |                                                 |                                          | * load_lead           ≡ [cds > 96 + bbs] ∧ [ebs ≠ 0]  |
-|       |        |                                                 |                                          | * lead_calldata_bytes ≡ 32 ∧ [0 ∨ [cds - (96 + bbs)]] |
-|       |        |                                                 |                                          | * lead_exponent_bytes ≡ 32 ∧ ebs                      |
-|       |        |                                                 |                                          | * ebs_sub_32          ≡  0 ∨ [ebs - 32]               |
-|       |        |                                                 |                                          |                                                       |
-|       |        | MMU🏴    = load_lead                            |                                          |                                                       |
-|       |        | MMU_INST = MLOAD                                |                                          |                                                       |
-|       |        |                                                 |                                          |                                                       |
-|       |        | TRUSTED INPUTS:                                 |                                          |                                                       |
-|       |        | * SRC_ID        = cn                            |                                          |                                                       |
-|       |        | * SRC_OFFSET_LO = cdo + 96 + bbs                |                                          |                                                       |
-|       |        |                                                 |                                          |                                                       |
-|       |        | JUSTIFICATION FOR:                              |                                          |                                                       |
-|       |        | * raw_leading_word_of_exponent_hi               |                                          |                                                       |
-|       |        | * raw_leading_word_of_exponent_lo               |                                          |                                                       |
-|       |        |                                                 |                                          |                                                       |
-|       |        |                                                 | EXP🏴    = load_lead                     |                                                       |
-|       |        |                                                 | EXP_INST = ⟦EXP_INST_modexpLog⟧          |                                                       |
-|       |        |                                                 |                                          |                                                       |
-|       |        |                                                 | TRUSTED INPUTS:                          |                                                       |
-|       |        |                                                 | * raw_leading_word_of_exponent_hi        |                                                       |
-|       |        |                                                 | * raw_leading_word_of_exponent_lo        |                                                       |
-|       |        |                                                 | * lead_exponent_bytes                    |                                                       |
-|       |        |                                                 | * lead_calldata_bytes                    |                                                       |
-|       |        |                                                 |                                          |                                                       |
-|       |        |                                                 | JUSTIFICATION FOR:                       |                                                       |
-|       |        |                                                 | * lead_log ≡                             |                                                       |
-|       |        |                                                 | .    ⌊ log_2(leading_word_of_exponent) ⌋ |                                                       |
-|       |        |                                                 |                                          |                                                       |
-|-------+--------+-------------------------------------------------+------------------------------------------+-------------------------------------------------------|
-| i + 6 | MISC   | MMU🏴 = 0                                       | EXP🏴 = 0                                | OOB🏴 = 1                                             |
-|       |        |                                                 |                                          | OOB_INST = ⟦OOB_INST_modexp_pricing⟧                  |
-|       |        |                                                 |                                          |                                                       |
-|       |        |                                                 |                                          | TRUSTED INPUTS:                                       |
-|       |        |                                                 |                                          | * call_gas                                            |
-|       |        |                                                 |                                          | * r@c                                                 |
-|       |        |                                                 |                                          | * lead_log                                            |
-|       |        |                                                 |                                          | * max_bbs_mbs                                         |
-|       |        |                                                 |                                          |                                                       |
-|       |        |                                                 |                                          | JUSTIFICATION FOR:                                    |
-|       |        |                                                 |                                          | * ram_success                                         |
-|       |        |                                                 |                                          | * return_gas                                          |
-|       |        |                                                 |                                          | * r@c_nonzero ≡ [r@c ≠ 0]                             |
-|       |        |                                                 |                                          |                                                       |
-|       |        |                                                 |                                          | WE IMPOSE:                                            |
-|       |        |                                                 |                                          | * SCEN/SUCCESS = ram_success                          |
-|       |        |                                                 |                                          |                                                       |
-|       |        |                                                 |                                          | Thus                                                  |
-|       |        |                                                 |                                          | * ram_success = 0         (⛔ ⟵ FAILURE)              |
-|       |        |                                                 |                                          | * ram_success = 1         (✅ ⟵ SUCCESS)              |
-|-------+--------+-------------------------------------------------+------------------------------------------+-------------------------------------------------------|
+|-------+--------+-------------------------------------------------+------------------------------------------+-----------------------------------------------------------|
+| Row   | Persp. |                                                 |                                          |                                                           |
+|-------+--------+-------------------------------------------------+------------------------------------------+-----------------------------------------------------------|
+| i     | SCEN   | here:                                           |                                          |                                                           |
+|       |        | * SCEN/MODEXP                                   |                                          |                                                           |
+|-------+--------+-------------------------------------------------+------------------------------------------+-----------------------------------------------------------|
+| i + 1 | MISC   | MMU🏴 = 0                                       | EXP🏴 = 0                                | OOB🏴 = 1                                                 |
+|       |        |                                                 |                                          | OOB_INST = ⟦OOB_INST_modexp_cds⟧                          |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 |                                          | TRUSTED INPUTS:                                           |
+|       |        |                                                 |                                          | * cds                                                     |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 |                                          | JUSTIFICATION FOR:                                        |
+|       |        |                                                 |                                          | * extract_bbs ≡ [cds >  0]                                |
+|       |        |                                                 |                                          | * extract_ebs ≡ [cds > 32]                                |
+|       |        |                                                 |                                          | * extract_mbs ≡ [cds > 64]                                |
+|-------+--------+-------------------------------------------------+------------------------------------------+-----------------------------------------------------------|
+| i + 2 | MISC   | MMU🏴    = extract_bbs                          | EXP🏴 = 0                                |                                                           |
+|       |        | MMU_INST = ⟦MMU_INST_rightPaddedWordExtraction⟧ |                                          |                                                           |
+|       |        |                                                 |                                          |                                                           |
+|       |        | TRUSTED INPUTS:                                 |                                          |                                                           |
+|       |        | * SRC_ID         = cn                           |                                          |                                                           |
+|       |        | * SRC_OFFSET_LO  = 0                            |                                          |                                                           |
+|       |        | * REF_OFFSET     = cdo                          |                                          |                                                           |
+|       |        | * REF_SIZE       = cds                          |                                          |                                                           |
+|       |        |                                                 |                                          |                                                           |
+|       |        | JUSTIFICATION FOR:                              |                                          |                                                           |
+|       |        | * bbs_hi                                        |                                          |                                                           |
+|       |        | * bbs_lo                                        |                                          |                                                           |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 |                                          | OOB🏴 = 1                                                 |
+|       |        |                                                 |                                          | OOB_INST = ⟦OOB_INST_modexp_xbs⟧                          |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 |                                          | TRUSTED INPUTS:                                           |
+|       |        |                                                 |                                          | * bbs_hi                                                  |
+|       |        |                                                 |                                          | * bbs_lo                                                  |
+|       |        |                                                 |                                          | * 0                                                       |
+|       |        |                                                 |                                          | * do_compute_max = 0                                      |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 |                                          | JUSTIFICATION FOR:                                        |
+|       |        |                                                 |                                          | * bbs_within_bounds  ⇔  [bbs ≤ 1024]                      |
+|       |        |                                                 |                                          | * bbs_out_of_bounds  ⇔  [bbs > 1024]                      |
+|-------+--------+-------------------------------------------------+------------------------------------------+-----------------------------------------------------------|
+| i + 3 | MISC   | MMU🏴 = extract_ebs                             | EXP🏴 = 0                                |                                                           |
+|       |        | MMU_INST = ⟦MMU_INST_rightPaddedWordExtraction⟧ |                                          |                                                           |
+|       |        |                                                 |                                          |                                                           |
+|       |        | TRUSTED INPUTS:                                 |                                          |                                                           |
+|       |        | * SRC_ID         = cn                           |                                          |                                                           |
+|       |        | * SRC_OFFSET_LO  = 32                           |                                          |                                                           |
+|       |        | * REF_OFFSET     = cdo                          |                                          |                                                           |
+|       |        | * REF_SIZE       = cds                          |                                          |                                                           |
+|       |        |                                                 |                                          |                                                           |
+|       |        | JUSTIFICATION FOR:                              |                                          |                                                           |
+|       |        | * ebs_hi                                        |                                          |                                                           |
+|       |        | * ebs_lo                                        |                                          |                                                           |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 |                                          | OOB🏴 = 1                                                 |
+|       |        |                                                 |                                          | OOB_INST = ⟦OOB_INST_modexp_xbs⟧                          |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 |                                          | TRUSTED INPUTS:                                           |
+|       |        |                                                 |                                          | * ebs_hi                                                  |
+|       |        |                                                 |                                          | * ebs_lo                                                  |
+|       |        |                                                 |                                          | * 0                                                       |
+|       |        |                                                 |                                          | * do_compute_max ≡ 0                                      |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 |                                          | JUSTIFICATION FOR:                                        |
+|       |        |                                                 |                                          | * ebs_is_within_bounds  ⇔  [ebs ≤ 1024]                   |
+|       |        |                                                 |                                          | * ebs_is_out_of_bounds  ⇔  [ebs > 1024]                   |
+|-------+--------+-------------------------------------------------+------------------------------------------+-----------------------------------------------------------|
+| i + 4 | MISC   | MMU🏴    = extract_mbs                          | EXP🏴 = 0                                |                                                           |
+|       |        | MMU_INST ≡ ⟦MMU_INST_rightPaddedWordExtraction⟧ |                                          |                                                           |
+|       |        |                                                 |                                          |                                                           |
+|       |        | TRUSTED INPUTS:                                 |                                          |                                                           |
+|       |        | * SRC_ID         = cn                           |                                          |                                                           |
+|       |        | * SRC_OFFSET_LO  = 64                           |                                          |                                                           |
+|       |        | * REF_OFFSET     = cdo                          |                                          |                                                           |
+|       |        | * REF_SIZE       = cds                          |                                          |                                                           |
+|       |        |                                                 |                                          |                                                           |
+|       |        | JUSTIFICATION FOR:                              |                                          |                                                           |
+|       |        | * ebs_hi                                        |                                          |                                                           |
+|       |        | * ebs_lo                                        |                                          |                                                           |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 |                                          | OOB🏴 = 1                                                 |
+|       |        |                                                 |                                          | OOB_INST = ⟦OOB_INST_modexp_xbs⟧                          |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 |                                          | TRUSTED INPUTS:                                           |
+|       |        |                                                 |                                          | * mbs_hi                                                  |
+|       |        |                                                 |                                          | * mbs_lo                                                  |
+|       |        |                                                 |                                          | * bbs_lo                                                  |
+|       |        |                                                 |                                          | * do_compute_max ≡ 1                                      |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 |                                          | JUSTIFICATION FOR:                                        |
+|       |        |                                                 |                                          | * max_bbs_mbs ≡ bbs ∨ mbs                                 |
+|       |        |                                                 |                                          | * mbs_nonzero ≡ [mbs ≠ 0]                                 |
+|       |        |                                                 |                                          | * mbs_is_within_bounds  ⇔  [mbs ≤ 1024]                   |
+|       |        |                                                 |                                          | * mbs_is_out_of_bounds  ⇔  [mbs > 1024]                   |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 |                                          | DEFINE:                                                   |
+|       |        |                                                 |                                          | * all_byte_sizes_are_in_bounds ≡  bbs_is_within_bounds    |
+|       |        |                                                 |                                          | .                                 ∧  ebs_is_within_bounds |
+|       |        |                                                 |                                          | .                                 ∧  mbs_is_within_bounds |
+|-------+--------+-------------------------------------------------+------------------------------------------+-----------------------------------------------------------|
+| i + 5 | MISC   |                                                 |                                          | OOB🏴    = all_byte_sizes_are_in_bounds                   |
+|       |        |                                                 |                                          | OOB_INST = ⟦OOB_INST_modexp_lead⟧                         |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 |                                          | TRUSTED INPUTS:                                           |
+|       |        |                                                 |                                          | * bbs_lo                                                  |
+|       |        |                                                 |                                          | * cds                                                     |
+|       |        |                                                 |                                          | * ebs_lo                                                  |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 |                                          | JUSTIFICATION FOR:                                        |
+|       |        |                                                 |                                          | * load_lead           ≡ [cds > 96 + bbs] ∧ [ebs ≠ 0]      |
+|       |        |                                                 |                                          | * lead_calldata_bytes ≡ 32 ∧ [0 ∨ [cds - (96 + bbs)]]     |
+|       |        |                                                 |                                          | * lead_exponent_bytes ≡ 32 ∧ ebs                          |
+|       |        |                                                 |                                          | * ebs_sub_32          ≡  0 ∨ [ebs - 32]                   |
+|       |        |                                                 |                                          |                                                           |
+|       |        | MMU🏴    = OOB🏴 ∧ load_lead                    |                                          |                                                           |
+|       |        | MMU_INST = MLOAD                                |                                          |                                                           |
+|       |        |                                                 |                                          |                                                           |
+|       |        | TRUSTED INPUTS:                                 |                                          |                                                           |
+|       |        | * SRC_ID        = cn                            |                                          |                                                           |
+|       |        | * SRC_OFFSET_LO = cdo + 96 + bbs                |                                          |                                                           |
+|       |        |                                                 |                                          |                                                           |
+|       |        | JUSTIFICATION FOR:                              |                                          |                                                           |
+|       |        | * raw_leading_word_of_exponent_hi               |                                          |                                                           |
+|       |        | * raw_leading_word_of_exponent_lo               |                                          |                                                           |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 | EXP🏴    = OOB🏴 ∧ load_lead             |                                                           |
+|       |        |                                                 | EXP_INST = ⟦EXP_INST_modexpLog⟧          |                                                           |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 | TRUSTED INPUTS:                          |                                                           |
+|       |        |                                                 | * raw_leading_word_of_exponent_hi        |                                                           |
+|       |        |                                                 | * raw_leading_word_of_exponent_lo        |                                                           |
+|       |        |                                                 | * lead_exponent_bytes                    |                                                           |
+|       |        |                                                 | * lead_calldata_bytes                    |                                                           |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 | JUSTIFICATION FOR:                       |                                                           |
+|       |        |                                                 | * lead_log ≡                             |                                                           |
+|       |        |                                                 | .    ⌊ log_2(leading_word_of_exponent) ⌋ |                                                           |
+|       |        |                                                 |                                          |                                                           |
+|-------+--------+-------------------------------------------------+------------------------------------------+-----------------------------------------------------------|
+| i + 6 | MISC   | MMU🏴 = 0                                       | EXP🏴 = 0                                | OOB🏴    = all_byte_sizes_are_in_bounds                   |
+|       |        |                                                 |                                          | OOB_INST = ⟦OOB_INST_modexp_pricing⟧                      |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 |                                          | TRUSTED INPUTS:                                           |
+|       |        |                                                 |                                          | * call_gas                                                |
+|       |        |                                                 |                                          | * r@c                                                     |
+|       |        |                                                 |                                          | * lead_log                                                |
+|       |        |                                                 |                                          | * max_bbs_mbs                                             |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 |                                          | JUSTIFICATION FOR:                                        |
+|       |        |                                                 |                                          | * ram_success                                             |
+|       |        |                                                 |                                          | * return_gas                                              |
+|       |        |                                                 |                                          | * r@c_nonzero ≡ [r@c ≠ 0]                                 |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 |                                          | WE IMPOSE:                                                |
+|       |        |                                                 |                                          | * SCEN/SUCCESS = OOB🏴 ∧ ram_success                      |
+|       |        |                                                 |                                          |                                                           |
+|       |        |                                                 |                                          | Thus                                                      |
+|       |        |                                                 |                                          | * ram_success = 0         (⛔ ⟵ FAILURE)                  |
+|       |        |                                                 |                                          | * ram_success = 1         (✅ ⟵ SUCCESS)                  |
+|-------+--------+-------------------------------------------------+------------------------------------------+-----------------------------------------------------------|
 \end{verbatim}
 \end{document}
 
