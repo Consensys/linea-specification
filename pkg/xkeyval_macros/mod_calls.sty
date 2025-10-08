@@ -1,0 +1,64 @@
+\makeatletter
+ 
+\define@cmdkey [MOD] {var} {anchorRow}  {}
+\define@cmdkey [MOD] {var} {relOffset}  {}
+\define@cmdkey [MOD] {var} {dividendHi} {}
+\define@cmdkey [MOD] {var} {dividendLo} {}
+\define@cmdkey [MOD] {var} {divisorHi}  {}
+\define@cmdkey [MOD] {var} {divisorLo}  {}
+
+\presetkeys    [MOD] {var} {
+	anchorRow  = \missingParameter ,
+	relOffset  = \missingParameter ,
+        dividendHi = \missingParameter ,
+        dividendLo = \missingParameter ,
+        divisorHi  = \missingParameter ,
+        divisorLo  = \missingParameter ,
+}{}
+
+
+% "call to MOD" macro
+\newcommand{\callToModName} {\texttt{callMOD}}
+\newcommand{\callToMod} [1] {
+	\setkeys[MOD]{var}{#1}
+	\callToModName _{\cmdMOD@var@anchorRow}
+	\left[ \begin{array}{ll}
+			\utt{Rel. row offset:} & \cmdMOD@var@relOffset  \\
+			\utt{Dividend hi:}     & \cmdMOD@var@dividendHi \\
+			\utt{Dividend lo:}     & \cmdMOD@var@dividendLo \\
+			\utt{Divisor hi:}      & \cmdMOD@var@divisorHi  \\
+			\utt{Divisor lo:}      & \cmdMOD@var@divisorLo  \\
+		\end{array} \right]
+}
+% \callToMod {
+% 	anchorRow  =  ,
+% 	relOffset  =  ,
+% 	dividendHi =  ,
+% 	dividendLo =  ,
+% 	divisorHi  =  ,
+% 	divisorLo  =  ,
+% 	}
+
+% "call to DIV" macro
+\newcommand{\callToDivName} {\texttt{callDIV}}
+\newcommand{\callToDiv} [1] {
+	\setkeys[MOD]{var}{#1}
+	\callToDivName _{\cmdMOD@var@anchorRow}
+	\left[ \begin{array}{ll}
+			\utt{Rel. row offset:} & \cmdMOD@var@relOffset  \\
+			\utt{Dividend hi:}     & \cmdMOD@var@dividendHi \\
+			\utt{Dividend lo:}     & \cmdMOD@var@dividendLo \\
+			\utt{Divisor hi:}      & \cmdMOD@var@divisorHi  \\
+			\utt{Divisor lo:}      & \cmdMOD@var@divisorLo  \\
+		\end{array} \right]
+}
+% \callToDiv {
+% 	anchorRow  = i ,
+% 	relOffset  =  ,
+% 	dividendHi =  ,
+% 	dividendLo =  ,
+% 	divisorHi  =  ,
+% 	divisorLo  =  ,
+% 	}
+
+\makeatother
