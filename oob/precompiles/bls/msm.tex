@@ -75,6 +75,22 @@ We impose the following constraints:
 				\locNumberOfInputs            & \define & \locCds / \locMinMsmSize  \\
 			\end{array} \right.
 		\]
+		Furthermore, we introduce the following shorthand
+		\[
+			\locValidCds
+			\define
+			\left[ \begin{array}{cl}
+				\cdot & \locCdsIsNonZero              \\
+				\cdot & \locCdsIsMultipleOfMinMsmSize \\
+			\end{array} \right]
+		\]
+		\saNote{}
+		Recall from \cite{EIP-2537} that calls to the \macroBlsGOneMsm{} and \macroBlsGTwoMsm{} are expected
+		to provide \textbf{nonempty} call data whose size is a \textbf{(nonzero) multiple} of 
+		\prcBlsGOneMsmSize {} and \prcBlsGTwoMsmSize {}
+		respectively.
+		This condition is captured by \locValidCds{}.
+
 		\saNote{}
 		The shorthand \locNumberOfInputs{} was defined using a division by \locMinMsmSize{}.
 		Whenever this shorthand is used in the constraints, we can replace the division by \locMinMsmSize{} with a multiplication by the same number through same basic algebra.
@@ -82,8 +98,8 @@ We impose the following constraints:
 	\item[\underline{Row n°$(i + \roffBlsMsmDetectingWhetherTheNumberOfInputsIsGtOneTwoEight)$:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locCdsIsMultipleOfMinMsmSize = 0$ \Then we impose $\oobNoCall{i}{\roffBlsMsmDetectingWhetherTheNumberOfInputsIsGtOneTwoEight}$.
-			\item \If $\locCdsIsMultipleOfMinMsmSize = 1$ \Then we impose that
+			\item \If $\locValidCds = 0$ \Then we impose $\oobNoCall{i}{\roffBlsMsmDetectingWhetherTheNumberOfInputsIsGtOneTwoEight}$.
+			\item \If $\locValidCds = 1$ \Then we impose that
 				\[
 					\wcpCallToGt {
 						anchorRow = i                                                           ,
@@ -105,8 +121,8 @@ We impose the following constraints:
 	\item[\underline{Row n°$(i + \roffBlsMsmOptionallyRetrievingDiscountFromBlsRefTable)$:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locCdsIsMultipleOfMinMsmSize = 0$ \Then we impose $\oobNoCall{i}{\roffBlsMsmOptionallyRetrievingDiscountFromBlsRefTable}$.
-			\item \If $\locCdsIsMultipleOfMinMsmSize = 1$ \Then we impose that
+			\item \If $\locValidCds = 0$ \Then we impose $\oobNoCall{i}{\roffBlsMsmOptionallyRetrievingDiscountFromBlsRefTable}$.
+			\item \If $\locValidCds = 1$ \Then we impose that
 				\begin{enumerate}
 					\item \If $\locNumberOfMsmInputsLeqThreshold = 1$ \Then we impose that
 						\[
@@ -129,8 +145,8 @@ We impose the following constraints:
 	\item[\underline{Row n°$(i + \roffBlsMsmComputingPrecompileCostByIntegerDivision)$:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locCdsIsMultipleOfMinMsmSize = 0$ \Then we impose $\oobNoCall{i}{\roffBlsMsmComputingPrecompileCostByIntegerDivision}$.
-			\item \If $\locCdsIsMultipleOfMinMsmSize = 1$ \Then we impose that
+			\item \If $\locValidCds = 0$ \Then we impose $\oobNoCall{i}{\roffBlsMsmComputingPrecompileCostByIntegerDivision}$.
+			\item \If $\locValidCds = 1$ \Then we impose that
 				we impose that
 				\[
 					\oobCallToDiv
@@ -160,8 +176,8 @@ We impose the following constraints:
 	\item[\underline{Row n°$(i + \roffBlsMsmComparingPrecompileCostVsCalleeGas)$:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locCdsIsMultipleOfMinMsmSize = 0$ \Then we impose $\oobNoCall{i}{\roffBlsMsmComparingPrecompileCostVsCalleeGas}$.
-			\item \If $\locCdsIsMultipleOfMinMsmSize = 1$ \Then we impose that
+			\item \If $\locValidCds = 0$ \Then we impose $\oobNoCall{i}{\roffBlsMsmComparingPrecompileCostVsCalleeGas}$.
+			\item \If $\locValidCds = 1$ \Then we impose that
 				\[
 					\wcpCallToLt  {
 						anchorRow = i                                             ,
@@ -187,9 +203,8 @@ We impose the following constraints:
 		\[
 			\locHubSuccess \define
 			\left[  \begin{array}{cl}
-				\cdot & \locCdsIsNonZero              \\
-				\cdot & \locCdsIsMultipleOfMinMsmSize \\
-				\cdot & \locSufficientGas             \\
+				\cdot & \locValidCds      \\
+				\cdot & \locSufficientGas \\
 			\end{array} \right]
 		\]
 		we further impose that

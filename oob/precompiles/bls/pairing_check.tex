@@ -39,11 +39,20 @@ We impose the following constraints:
 		\[
 			\locCdsIsMultipleOfMinBlsPairingCheckSize \define \outgoingResLo_{i + 3}
 		\]
+		We further define the following shorthand
+		\[
+			\locValidCds
+			\define
+			\left[ \begin{array}{cl}
+				\cdot & \locCdsIsNonZero                          \\
+				\cdot & \locCdsIsMultipleOfMinBlsPairingCheckSize \\
+			\end{array} \right]
+		\]
 	\item[\underline{Row n°$(i + 4)$:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locCdsIsMultipleOfMinBlsPairingCheckSize = 0$ \Then we impose $\oobNoCall{i}{4}$.
-			\item \If $\locCdsIsMultipleOfMinBlsPairingCheckSize = 1$ \Then we impose that
+			\item \If $\locValidCds = 0$ \Then we impose $\oobNoCall{i}{4}$.
+			\item \If $\locValidCds = 1$ \Then we impose that
 				\[
 					\wcpCallToLt  {
 						anchorRow = i                  ,
@@ -74,9 +83,8 @@ We impose the following constraints:
 		\[
 			\locHubSuccess \define
 			\left[  \begin{array}{cl}
-				\cdot & \locCdsIsNonZero                          \\
-				\cdot & \locCdsIsMultipleOfMinBlsPairingCheckSize \\
-				\cdot & \locSufficientGas                         \\
+				\cdot & \locValidCds      \\
+				\cdot & \locSufficientGas \\
 			\end{array} \right]
 		\]
 		we further impose that
