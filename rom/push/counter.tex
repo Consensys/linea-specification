@@ -1,36 +1,36 @@
 We connect $(\PP, \cp)$ to $(\IP, \IPD)$:
 \begin{enumerate}
     \item
-        \If $\IP_{i} + \IPD_{i} = 0$ \Then
+        \If $\IP _{i} + \IPD _{i} = 0$ \Then
         \[
             \left\{ \begin{array}{lcl}
-                \PP_{i} & = & 0 \\
-                \cp_{i} & = & 0 \\
+                \PP _{i} & = & 0 \\
+                \cp _{i} & = & 0 \\
             \end{array} \right.
         \]
     \item
         \label{rom: push: counter: setting nontrivial PUSH_CT_MAX values}
-        \If $\IP  _{i} = 1$ \Then
+        \If $\IP   _{i} = 1$ \Then
         \[
             \left\{ \begin{array}{lcl}
-                \PP_{i} & = & \opc_{i} - \inst{PUSH1} + 1 \\
-                \cp_{i} & = & 0                           \\
+                \PP _{i} & = & \opc _{i} - \inst{PUSH0} \\
+                \cp _{i} & = & 0                        \\
             \end{array} \right.
         \]
     \item
         \If $\IPD _{i} = 1$ \Then
         \[
             \left\{ \begin{array}{lcl}
-                \PP_{i} & = & \PP_{i - 1}      \\
-                \cp_{i} & = & 1 + \cp _{i - 1} \\
+                \PP _{i} & = & \PP _{i - 1}      \\
+                \cp _{i} & = & 1 + \cp _{i - 1} \\
             \end{array} \right.
         \]
     \item
         \label{rom: push: counter: no early resets for IS_PUSH_BYTE}
-        \If $\cp_{i} \neq \PP_{i}$ \Then $\IPD _{i + 1} = 1$
+        \If $\cp _{i} \neq \PP _{i}$ \Then $\IPD _{i + 1} = 1$
     \item
         \label{rom: push: counter: IS_PUSH_BYTE resets when CT reaches MAX}
-        \If $\cp_{i} =    \PP_{i}$ \Then $\IPD _{i + 1} = 0$
+        \If $\cp _{i} =    \PP _{i}$ \Then $\IPD _{i + 1} = 0$
 \end{enumerate}
 \saNote{}
 It follows from
