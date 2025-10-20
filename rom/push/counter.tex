@@ -1,7 +1,7 @@
-We connect $(\PP, \cp)$ to $(\IP, \IPD)$:
+We connect $(\PP, \cp)$ to $(\romColumnOpcodeIsPush, \romColumnClaimedByPush)$:
 \begin{enumerate}
     \item
-        \If $\IP _{i} + \IPD _{i} = 0$ \Then
+        \If $\romColumnOpcodeIsPush _{i} + \romColumnClaimedByPush _{i} = 0$ \Then
         \[
             \left\{ \begin{array}{lcl}
                 \PP _{i} & = & 0 \\
@@ -10,15 +10,15 @@ We connect $(\PP, \cp)$ to $(\IP, \IPD)$:
         \]
     \item
         \label{rom: push: counter: setting nontrivial PUSH_CT_MAX values}
-        \If $\IP   _{i} = 1$ \Then
+        \If $\romColumnOpcodeIsPush   _{i} = 1$ \Then
         \[
             \left\{ \begin{array}{lcl}
-                \PP _{i} & = & \opc _{i} - \inst{PUSH0} \\
+                \PP _{i} & = & \romColumnOpcode _{i} - \inst{PUSH0} \\
                 \cp _{i} & = & 0                        \\
             \end{array} \right.
         \]
     \item
-        \If $\IPD _{i} = 1$ \Then
+        \If $\romColumnClaimedByPush _{i} = 1$ \Then
         \[
             \left\{ \begin{array}{lcl}
                 \PP _{i} & = & \PP _{i - 1}      \\
@@ -27,10 +27,10 @@ We connect $(\PP, \cp)$ to $(\IP, \IPD)$:
         \]
     \item
         \label{rom: push: counter: no early resets for IS_PUSH_BYTE}
-        \If $\cp _{i} \neq \PP _{i}$ \Then $\IPD _{i + 1} = 1$
+        \If $\cp _{i} \neq \PP _{i}$ \Then $\romColumnClaimedByPush _{i + 1} = 1$
     \item
         \label{rom: push: counter: IS_PUSH_BYTE resets when CT reaches MAX}
-        \If $\cp _{i} =    \PP _{i}$ \Then $\IPD _{i + 1} = 0$
+        \If $\cp _{i} =    \PP _{i}$ \Then $\romColumnClaimedByPush _{i + 1} = 0$
 \end{enumerate}
 \saNote{}
 It follows from
@@ -44,7 +44,7 @@ The only other value that $\PP$ may take is $0$.
 
 \saNote{}
 The purpose of
-constraint~(\ref{rom: push: counter: no early resets for IS_PUSH_BYTE}) is to prevent $\IPD$ from ``resetting early.''
+constraint~(\ref{rom: push: counter: no early resets for IS_PUSH_BYTE}) is to prevent $\romColumnClaimedByPush$ from ``resetting early.''
 On the other hand the purpose of 
-constraint~(\ref{rom: push: counter: IS_PUSH_BYTE resets when CT reaches MAX}) is to force $\IPD$ to ``reset'' at the appropriate time,
+constraint~(\ref{rom: push: counter: IS_PUSH_BYTE resets when CT reaches MAX}) is to force $\romColumnClaimedByPush$ to ``reset'' at the appropriate time,
 i.e. when $\cp$ catches up with $\PP$.
