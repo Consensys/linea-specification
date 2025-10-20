@@ -14,22 +14,31 @@ And we require that these columns satisfy the following constraints:
         \item[$\proverColumnRelativeUserTransactionNumber {}$ constraints:]
                 we impose
                 \begin{enumerate}
-                        \item \proverColB{} is \textbf{block-constant}
+                        \item \proverColB{} is \textbf{transaction-constant}
                         \item \If $\perspectiveSum _{i} = 0$ \Then $\proverColB _{i} = 0$
                         \item \If $\blockNumber _{i + 1} \neq     \blockNumber _{i}$ \Then $\proverColB _{i + 1} = 0$
-                        \item \If $\blockNumber _{i + 1} \neq 1 + \blockNumber _{i}$ \Then $\proverColB _{i + 1} = \proverColB _{i} + (\userTransactionNumber _{i + 1} - \userTransactionNumber _{i}$
+                        \item \If $\blockNumber _{i + 1} \neq 1 + \blockNumber _{i}$ \Then
+                                \[
+                                        \proverColB _{i + 1}
+                                        =
+                                        \user _{i + 1} \cdot
+                                        \left[ \begin{array}{cl}
+                                                + & \proverColB _{i}                                                \\
+                                                + & (\userTransactionNumber _{i + 1} - \userTransactionNumber _{i}) \\
+                                        \end{array} \right]
+                                \]
                 \end{enumerate}
                 \saNote{}
                 In other words,
                 \proverColB{} resets to $0$ with every new block,
                 and increases by $1$ with every new \user{}-transaction
-                of a block.
+                within a block.
         \item[$\proverColumnRelativeUserTransactionNumberMax {}$ constraints:]
                 we impose
                 \begin{enumerate}
                         \item \proverColC{} is \textbf{block-constant}
                         \item \If $\perspectiveSum _{i} = 0$ \Then $\proverColC _{i} = 0$
-                        \item \If $\sysf _{i} = 1$ \Then $\proverColC _{i} = \proverColB _{i}$
+                        \item \If $\sysf _{i - 1} = 0$ \et $\sysf _{i} = 1$ \Then $\proverColC _{i - 1} = \proverColB _{i - 1}$
                 \end{enumerate}
                 \saNote{}
                 In other words,
