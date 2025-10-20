@@ -1,1 +1,1 @@
-previously called `rlp_txn_v2`
+`rlp_txn_v2`
