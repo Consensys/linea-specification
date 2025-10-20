@@ -65,9 +65,9 @@ If the \textsc{Ethereum} network configuration is at the \textsc{Cancun} hard fo
 \[
 	\locFlagSumNewPraguePrecompiles _{i} + \locFlagSumNewOsakaPrecompiles _{i} = 0 \qquad (\sanityCheck)
 \]
-thereby preventing \textsc{Prague}-specific \texttt{BLS} precompiles to be executed.
-This isn't strictly speaking necessary, as the \trmMod{} won't recognize addresses in the range
-$[\texttt{0x\,0b}..\texttt{0x\,11}]$
+thereby preventing \textsc{Prague}-specific \texttt{BLS} and \textsc{Osaka}-specific precompiles to be executed.
+This isn't strictly speaking necessary, as the \trmMod{} won't recognize addresses in the set
+$[\texttt{0x\,0b}..\texttt{0x\,11}] \cup [\texttt{0x\,100}]$
 as precompile addresses, hence the sanity check mark.
 
 we also set
@@ -112,7 +112,8 @@ and
 			+ & \oobInstEcadd     & \cdot & \oobInstIsEcadd     _{i} \\
 			+ & \oobInstEcmul     & \cdot & \oobInstIsEcmul     _{i} \\
 			+ & \oobInstEcpairing & \cdot & \oobInstIsEcpairing _{i} \\
-			+ & \weightedPrcFlagSumBls _{i} \\
+			+ & \weightedPrcFlagSumBls _{i}                          \\
+			+ & \weightedPrcFlagSumNewCancunPrecompiles _{i}         \\ 
 		\end{array} \right] \vspace{2mm} \\
 		\weightedPrcFlagSumBlake _{i} & \define &
 		\left[ \begin{array}{crcl}
@@ -139,6 +140,8 @@ and
 			+ & \oobInstBlsMapFpToGOne    & \cdot & \oobInstIsBlsMapFpToGOne    _{i} \\
 			+ & \oobInstBlsMapFpTwoToGTwo & \cdot & \oobInstIsBlsMapFpTwoToGTwo _{i} \\
 		\end{array} \right] \vspace{2mm} \\
+		\weightedPrcFlagSumNewOsakaPrecompiles _{i} & \define & \oobInstPVerify \cdot \oobInstIsPVerify _{i} \\
+		\vspace{2mm} \\
 		\weightedPrcFlagSumBls _{i} & \define &
 		\left[ \begin{array}{cl}
 			+ & \weightedPrcFlagSumNewCancunPrecompiles _{i} \\
@@ -212,6 +215,10 @@ and
 		\oobInstBlsMapFpTwoToGTwo & \define & \oxBlsMapFpTwoToGTwo \\
 	\end{array} \right.
 \]
+and
+\[
+	\oobInstPVerify \define \oxPVerify   \\
+\]
 \saNote{}
 In the above we use the notation $\oxXcall$, $\oxCall$, $\oxXcreate$, $\oxCreate$, $\oxEcrecover$, \dots, $\oxBlakeParams$ as \textbf{placeholders} for some actual, fixed values.
 The only requirement for these constants must satisfy is that all constants defined above be \textbf{nonzero} and \textbf{pairwise distinct}.
@@ -243,6 +250,7 @@ We further set
 			+ & \oobCtMaxEcmul     & \cdot & \oobInstIsEcmul     _{i} \\
 			+ & \oobCtMaxEcpairing & \cdot & \oobInstIsEcpairing _{i} \\
 			+ & \maxCtFlagSumPrcBls _{i} \\
+			+ & \maxCtFlagSumPrcNewOsakaPrecompiles _{i} \\
 		\end{array} \right] \vspace{2mm} \\
 		\maxCtFlagSumPrcBlake _{i} & \define &
 		\left[ \begin{array}{clcl}
@@ -269,6 +277,8 @@ We further set
 			+ & \oobCtMaxBlsMapFpToGOne    & \cdot & \oobInstIsBlsMapFpToGOne    _{i} \\
 			+ & \oobCtMaxBlsMapFpTwoToGTwo & \cdot & \oobInstIsBlsMapFpTwoToGTwo _{i} \\
 		\end{array} \right] \vspace{2mm} \\
+		\maxCtFlagSumPrcNewOsakaPrecompiles _{i} & \define & \oobCtMaxPVerify \cdot \oobInstIsPVerify _{i} \\
+		\vspace{2mm} \\
 		\maxCtFlagSumPrcBls _{i} & \define &
 		\left[ \begin{array}{cl}
 			+ & \maxCtFlagSumPrcNewCancunPrecompiles _{i} \\
@@ -338,7 +348,8 @@ where
 			\oobCtMaxBlsPairingCheck   & \define &  4 \\
 			\oobCtMaxBlsMapFpToGOne    & \define &  3 \\
 			\oobCtMaxBlsMapFpTwoToGTwo & \define &  3 \\ 
-		\end{array} \right.
+		\end{array} \right. \vspace{2mm} \\
+		\oobCtMaxPVerify \define 3 \\
 	\end{array}
 \] 
 
