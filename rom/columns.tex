@@ -12,7 +12,7 @@ The following column is used for book-keeping of different code fragments within
 	a code-fragment-constant column containing the code size of the bytecode currently being loaded into \romMod{} module;
 	abbreviated to \romColumnCodeSize{};
     \item \romColumnPadding{}:
-	a binary column that equals $0$ at the onset of a given bytecode and reaches 1 at the point where $\romColumnProgramCounter_i=\romColumnCodeSize_i$;
+	a binary column that equals $0$ at the onset of a given bytecode and reaches 1 at the point where $\romColumnProgramCounter _{i} = \romColumnCodeSize _{i}$;
     \item \romColumnProgramCounter{}:
 	program counter (i.e. index of the byte in the current bytecode);
     \item \ct{}:
@@ -30,7 +30,6 @@ The following column is used for book-keeping of different code fragments within
     \item \romColumnLimbByte{}:
 	raw byte from the \romColumnLimb{};
 	the \romColumnLimbByte{} column lists the bytes from said bytecode one by one as well as some extraneous \texttt{0x00}'s beyond the \romColumnCodeSize{} (padding);
-	abbreviated to \romColumnLimbByte{};
     \item \romColumnLimbByteSize{}:
 	number of non-padded bytes of the \romColumnLimb;
     \item \romColumnLimbByteSizeAcc{}:
@@ -42,7 +41,7 @@ These are the columns that the \romMod{} extracts from it:
 \begin{enumerate}[resume]
     \item \romColumnOpcode{}:
 	the opcode associated to the \romColumnLimbByte{};
-	depends on the the context i.e. on whether the byte is shadowed by a \inst{PUSH} instruction (i.e. \( \romColumnClaimedByPush{}=1 \)) and whether the \romColumnPadding{} flag is on (at which point we impose $\romColumnLimbByte=\romColumnOpcode=\texttt{0x00}$);
+	depends on the the context i.e. on whether the byte is shadowed by a \inst{PUSH} instruction (i.e. \( \romColumnClaimedByPush{} = 1 \)) and whether the \romColumnPadding{} flag is on (at which point we impose $\romColumnLimbByte = \romColumnOpcode = \texttt{0x00}$);
 	in all other circumstances \( \romColumnOpcode{} = \romColumnLimbByte{} \);
     \item \romColumnOpcodeIsPush{}:
 	lights up precisely when

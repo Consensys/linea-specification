@@ -1,0 +1,53 @@
+\documentclass[varwidth=\maxdimen,margin=0.5cm,multi={verbatim}]{standalone}
+
+\usepackage{fontspec}
+\directlua{luaotfload.add_fallback
+   ("emojifallback",
+    {
+      "NotoColorEmoji:mode=harf;"
+    }
+   )}
+
+\setmonofont{JetBrains Mono NL Regular}[
+  RawFeature={fallback=emojifallback}
+]
+
+\usepackage{../../pkg/draculatheme}
+
+\begin{document}
+\begin{verbatim}
+
+
+When the byte code contains X bytes following a PUSHX instruction:
+
+          PUSH11
+             ↓
+... ??  ??  6a  11  22  33  44  55  66  77  88  99  aa  bb  ??  ??
+               │                                          │
+               ├──────────────────────────────────────────┘
+               │    PUSH bytes
+               │
+               └───────────────────────────────────────────────────  ∙∙∙
+                    bytes belonging to the byte code proper
+
+
+
+When the byte code contains fewer than X bytes following a PUSHX instruction:
+
+          PUSH20                                  final byte of byte code
+             ↓                                               ↓
+... ??  ??  73  11  22  33  44  55  66  77  88  99  aa  bb  cc  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..
+               │                                              │                               │
+               ├──────────────────────────────────────────────┘                               │
+               │    bytes belonging to the byte code proper                                   │
+               │                                                                              │
+               └──────────────────────────────────────────────────────────────────────────────┘
+                    PUSH bytes (".." stand for 00)
+
+
+NOTE. What we call "PUSH bytes" are the bytes use to build the PUSH_VALUE, i.e.
+      the X bytes of the (zero padded) byte code following a PUSHX instruction.
+
+\end{verbatim}
+\end{document}
+
