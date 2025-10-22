@@ -33,10 +33,10 @@ $\displaystyle f\big(\max(\locBase, \locModulus)\big) = \left\lceil\frac{\max(\l
 We impose the following:
 \begin{description}
 	\item[\underline{Rows
-		$n^\circ(i + \roffModexpPricingRacZeronessTest              )$,
-		$n^\circ(i + \roffModexpPricingExponentLogZeronessTest      )$,
-		$n^\circ(i + \roffModexpPricingMaxMbsBbsCeilingComputation  )$ and
-		$n^\circ(i + \roffModexpPricingMaxMbsBbsVsSixteenComparison )$:}] we impose
+		$n^\circ(i + \roffModexpPricingRacZeronessTest               )$,
+		$n^\circ(i + \roffModexpPricingExponentLogZeronessTest       )$,
+		$n^\circ(i + \roffModexpPricingMaxMbsBbsCeilingComputation   )$    and
+		$n^\circ(i + \roffModexpPricingMaxMbsBbsVsWordSizeComparison )$:}] we impose
 		we impose that
 		\[
 			\left\{ \begin{array}{l}
@@ -64,12 +64,12 @@ We impose the following:
 				}
 				\vspace{2mm} \\
 				\wcpCallToLt {
-					anchorRow = i                                              ,
-					relOffset = \roffModexpPricingMaxMbsBbsVsSixteenComparison ,
-					argOneHi  = 0                                              ,
-					argOneLo  = \evmWordSize                                   ,
-					argTwoHi  = 0                                              ,
-					argTwoLo  = \locMaxMbsBbs                                  ,
+					anchorRow = i                                               ,
+					relOffset = \roffModexpPricingMaxMbsBbsVsWordSizeComparison ,
+					argOneHi  = 0                                               ,
+					argOneLo  = \evmWordSize                                    ,
+					argTwoHi  = 0                                               ,
+					argTwoLo  = \locMaxMbsBbs                                   ,
 				}
 				\\
 			\end{array} \right.
@@ -77,18 +77,18 @@ We impose the following:
 		we define the following associated shorthands
 		\[
 			\left\{ \begin{array}{lcl}
-				\locRacIsZero             & \define & \outgoingResLo _{i + \roffModexpPricingRacZeronessTest              } \\
-				\locExponentLogIsZero     & \define & \outgoingResLo _{i + \roffModexpPricingExponentLogZeronessTest      } \\
-				\locCeilingOfMaxOverEight & \define & \outgoingResLo _{i + \roffModexpPricingMaxMbsBbsCeilingComputation  } \\
-				\locWordCostDominates     & \define & \outgoingResLo _{i + \roffModexpPricingMaxMbsBbsVsSixteenComparison } \\
+				\locRacIsZero             & \define & \outgoingResLo _{i + \roffModexpPricingRacZeronessTest               } \\
+				\locExponentLogIsZero     & \define & \outgoingResLo _{i + \roffModexpPricingExponentLogZeronessTest       } \\
+				\locCeilingOfMaxOverEight & \define & \outgoingResLo _{i + \roffModexpPricingMaxMbsBbsCeilingComputation   } \\
+				\locWordCostDominates     & \define & \outgoingResLo _{i + \roffModexpPricingMaxMbsBbsVsWordSizeComparison } \\
 			\end{array} \right.
 		\]
 		Thus, by definition
 		\begin{enumerate}
 			\item $\locRacIsZero             = \true$ \emph{iff} $\locRac         = 0$
-		        \item $\locExponentLogIsZero     = \true$ \emph{iff} $\locExponentLog = 0$
-		        \item $\locCeilingOfMaxOverEight        $ computes   $\displaystyle \left\lceil\frac{\locMaxMbsBbs}{8}\right\rceil$
-		        \item $\locWordCostDominates     = \true$ \emph{iff} $\evmWordSize    < \locMaxMbsBbs$
+			\item $\locExponentLogIsZero     = \true$ \emph{iff} $\locExponentLog = 0$
+			\item $\locCeilingOfMaxOverEight        $ computes   $\displaystyle \left\lceil\frac{\locMaxMbsBbs}{8}\right\rceil$
+			\item $\locWordCostDominates     = \true$ \emph{iff} $\evmWordSize    < \locMaxMbsBbs$
 		\end{enumerate}
 		We further set
 		\begin{enumerate}
@@ -98,32 +98,45 @@ We impose the following:
 			\item \If $\locExponentLogIsZero = \false $ \Then \( \locIterationCountOrOne      \define \locExponentLog                      \)
 			\item \If $\locExponentLogIsZero = \true  $ \Then \( \locIterationCountOrOne      \define \locMinIterationCountValue           \)
 		\end{enumerate}
-\end{description}
-We define
-\[
-	\locRawPrice
-	\define
-	\left[ \begin{array}{cl}
-		\cdot & \locMultiplicationComplexity \\
-		\cdot & \locIterationCountOrOne      \\
-	\end{array} \right]
-\]
-\begin{description}
-	\item[\underline{Rows
-		$n^°(i + \roffModexpPricingComparisonToFiveHundred      )$ and
-		$n^°(i + \roffModexpPricingGasCostVsCalleeGasComparison )$:}]
-		we impose that
-		\[
-			\left\{ \begin{array}{l}
+	\end{description}
+	We define
+	\[
+		\locRawPrice
+		\define
+		\left[ \begin{array}{cl}
+			\cdot & \locMultiplicationComplexity \\
+			\cdot & \locIterationCountOrOne      \\
+		\end{array} \right]
+	\]
+	\begin{description}
+		\item[\underline{Row $n^°(i + \roffModexpPricingComparisonToMinModexpCost )$:}]
+			we impose that
+			\[
 				\wcpCallToLt {
-					anchorRow = i                                         ,
-					relOffset = \roffModexpPricingComparisonToFiveHundred ,
-					argOneHi  = 0                                         ,
-					argOneLo  = \locRawPrice         ,
-					argTwoHi  = 0                                         ,
-					argTwoLo  = 500                                       ,
+					anchorRow = i                                           ,
+					relOffset = \roffModexpPricingComparisonToMinModexpCost ,
+					argOneHi  = 0                                           ,
+					argOneLo  = \locRawPrice                                ,
+					argTwoHi  = 0                                           ,
+					argTwoLo  = \minModexpCostName                          ,
 				}
-				\vspace{2mm} \\
+			\]
+			where
+			\[
+				\minModexpCostName \define \minModexpCostValue
+			\]
+			and we define the \locRawPriceLtMinModexpCost{} shorthand
+			\[
+				\locRawPriceLtMinModexpCost \define \outgoingResLo _{i + \roffModexpPricingComparisonToMinModexpCost}
+			\]
+			from which we define the \locPrecompileCost{} shorthand used above
+			\begin{enumerate}
+				\item \If $\locRawPriceLtMinModexpCost = 0$ \Then $\locPrecompileCost \define \locRawPrice$
+				\item \If $\locRawPriceLtMinModexpCost = 1$ \Then $\locPrecompileCost \define \minModexpCostName$
+			\end{enumerate}
+		\item[\underline{Row $n^°(i + \roffModexpPricingGasCostVsCalleeGasComparison )$:}]
+			we impose
+			\[
 				\wcpCallToLt {
 					anchorRow = i                                              ,
 					relOffset = \roffModexpPricingGasCostVsCalleeGasComparison ,
@@ -132,35 +145,28 @@ We define
 					argTwoHi  = 0                                              ,
 					argTwoLo  = \locPrecompileCost                             ,
 				}
-				\\
-			\end{array} \right.
-		\]
-		we define the \locRawPriceLtFiveHundred{} shorthand
-		\[
-			\locRawPriceLtFiveHundred \define \outgoingResLo _{i + \roffModexpPricingComparisonToFiveHundred}
-		\]
-		from which we define the \locPrecompileCost{} shorthand used above
-		\begin{enumerate}
-			\item \If $\locRawPriceLtFiveHundred = 0$ \Then $\locPrecompileCost \define \locBigQuotient$
-			\item \If $\locRawPriceLtFiveHundred = 1$ \Then $\locPrecompileCost \define 500$
-		\end{enumerate}
-	\item[\underline{Justifying \hubMod{} predictions:}] we impose that
-		\begin{description}
-			\item[{Constraining \locRamSuccess:}]
-				we impose that
-				\[
-					\locRamSuccess = 1 - \outgoingResLo _{i + \roffModexpPricingGasCostVsCalleeGasComparison}
-				\]
-			\item[{Constraining \locReturnGas:}]
-				we impose that
-				\begin{enumerate}
-					\item \If $\locRamSuccess = 0$ \Then $\locReturnGas = 0$
-					\item \If $\locRamSuccess = 1$ \Then $\locReturnGas = \locCalleeGas - \locPrecompileCost$
-				\end{enumerate}
-			\item[{Constraining \locRacIsNonzero:}]
-				we impose that
-				\[
-					\locRacIsNonzero = 1 - \locRacIsZero
-				\]
-		\end{description}
-\end{description}
+			\]
+			we define the \locRawPriceLtMinModexpCost{} shorthand
+			\[
+				\locCalleeGasLtPrecompileCost \define \outgoingResLo _{i + \roffModexpPricingGasCostVsCalleeGasComparison}
+			\]
+		\item[\underline{Justifying \hubMod{} predictions:}] we impose that
+			\begin{description}
+				\item[{Constraining \locRamSuccess:}]
+					we impose that
+					\[
+						\locRamSuccess = 1 - \locCalleeGasLtPrecompileCost
+					\]
+				\item[{Constraining \locReturnGas:}]
+					we impose that
+					\begin{enumerate}
+						\item \If $\locRamSuccess = 0$ \Then $\locReturnGas = 0$
+						\item \If $\locRamSuccess = 1$ \Then $\locReturnGas = \locCalleeGas - \locPrecompileCost$
+					\end{enumerate}
+				\item[{Constraining \locRacIsNonzero:}]
+					we impose that
+					\[
+						\locRacIsNonzero = 1 - \locRacIsZero
+					\]
+			\end{description}
+	\end{description}
