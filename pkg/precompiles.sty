@@ -112,9 +112,34 @@
 \newcommand{\bnOuterPrimeLo}                      {\bnOuterPrime\texttt{\_LO}}
 \newcommand{\secpkNHi}                            {\secpkN\texttt{\_HI}}
 \newcommand{\secpkNLo}                            {\secpkN\texttt{\_LO}}
+
 \newcommand{\secprN}                              {\texttt{SECP256R1N}}
 \newcommand{\secprNHi}                            {\secprN\texttt{\_HI}}
 \newcommand{\secprNLo}                            {\secprN\texttt{\_LO}}
+\newcommand{\secprNHex}                           {\red{\texttt{0x\,ffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551}}}
+\newcommand{\secprNHexHi}                         {\red{\texttt{0x\,ffffffff00000000ffffffffffffffff}}}
+\newcommand{\secprNHexLo}                         {\red{\texttt{0x\,bce6faada7179e84f3b9cac2fc632551}}}
+
+\newcommand{\rOnePrime}                           {\texttt{P\_R1}}
+\newcommand{\rOnePrimeHi}                         {\rOnePrime\texttt{\_HI}}
+\newcommand{\rOnePrimeLo}                         {\rOnePrime\texttt{\_LO}}
+\newcommand{\rOnePrimeHex}                        {\red{\texttt{0x\,ffffffff00000001000000000000000000000000ffffffffffffffffffffffff}}}
+\newcommand{\rOnePrimeHexHi}                      {\red{\texttt{0x\,ffffffff000000010000000000000000}}}
+\newcommand{\rOnePrimeHexLo}                      {\red{\texttt{0x\,00000000ffffffffffffffffffffffff}}}
+
+\newcommand{\rOneACoefficient}                    {\texttt{A\_COEFF\_R1}}
+\newcommand{\rOneACoefficientHi}                  {\rOneACoefficient\texttt{\_HI}}
+\newcommand{\rOneACoefficientLo}                  {\rOneACoefficient\texttt{\_LO}}
+\newcommand{\rOneACoefficientHex}                 {\red{\texttt{0x\,ffffffff00000001000000000000000000000000fffffffffffffffffffffffc}}}
+\newcommand{\rOneACoefficientHexHi}               {\red{\texttt{0x\,ffffffff000000010000000000000000}}}
+\newcommand{\rOneACoefficientHexLo}               {\red{\texttt{0x\,00000000fffffffffffffffffffffffc}}}
+
+\newcommand{\rOneBCoefficient}                    {\texttt{B\_COEFF\_R1}}
+\newcommand{\rOneBCoefficientHi}                  {\rOneBCoefficient\texttt{\_HI}}
+\newcommand{\rOneBCoefficientLo}                  {\rOneBCoefficient\texttt{\_LO}}
+\newcommand{\rOneBCoefficientHex}                 {\red{\texttt{0x\,5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b}}}
+\newcommand{\rOneBCoefficientHexHi}               {\red{\texttt{0x\,5ac635d8aa3a93e7b3ebbd55769886bc}}}
+\newcommand{\rOneBCoefficientHexLo}               {\red{\texttt{0x\,651d06b0cc53b0f63bce3c3e27d2604b}}}
 
 \newcommand{\pePrime}                             {\texttt{POINT\_EVALUATION\_PRIME}}
 \newcommand{\pePrimeHi}                           {\pePrime\texttt{\_HI}}
@@ -237,7 +262,7 @@
             \utt{LHS of (E) lo:}   & \cmdECDATA@var@ySquareLo           \\
             \utt{RHS of (E) hi:}   & \cmdECDATA@var@xCubePlusThreeHi    \\
             \utt{RHS of (E) lo:}   & \cmdECDATA@var@xCubePlusThreeLo    \\
-            \utt{Where (E) is:}    & y^2 = x^3 + 3 
+            \utt{Where (E) is:}    & \tty^2 = \ttx^3 + 3
         \end{array} \right]}
 
 \newcommand{\callCOneMembershipEXT}             {\texttt{callToC1MembershipEXT}}
@@ -273,7 +298,55 @@
             \utt{y coord. real hi:}        & \cmdECDATA@var@yReHi        \\
             \utt{y coord. real lo:}        & \cmdECDATA@var@yReLo        \\
         \end{array} \right]}
+%
+\newcommand{\callROneMembership}             {\texttt{callToR1Membership}}
 
+\newcommand{\callToROneMembership}[1]{
+    \setkeys[ECDATA]{var}{#1}
+    \callROneMembership_{\cmdECDATA@var@anchorRow}
+    \left[ \begin{array}{ll}
+            \utt{Rel. row offset:} & \cmdECDATA@var@relOffset           \\
+            \utt{x coord. hi:}     & \cmdECDATA@var@xHi                 \\
+            \utt{x coord. lo:}     & \cmdECDATA@var@xLo                 \\
+            \utt{y coord. hi:}     & \cmdECDATA@var@yHi                 \\
+            \utt{y coord. lo:}     & \cmdECDATA@var@yLo                 \\
+        \end{array} \right]}
+
+\newcommand{\callROneMembershipWCP}             {\texttt{callToR1MembershipWCP}}
+
+\newcommand{\callToROneMembershipWCP}[1]{
+    \setkeys[ECDATA]{var}{#1}
+    \callROneMembershipWCP_{\cmdECDATA@var@anchorRow}
+    \left[ \begin{array}{ll}
+            \utt{Rel. row offset:} & \cmdECDATA@var@relOffset           \\
+            \utt{x coord. hi:}     & \cmdECDATA@var@xHi                 \\
+            \utt{x coord. lo:}     & \cmdECDATA@var@xLo                 \\
+            \utt{y coord. hi:}     & \cmdECDATA@var@yHi                 \\
+            \utt{y coord. lo:}     & \cmdECDATA@var@yLo                 \\
+            \utt{LHS of (E) hi:}   & \cmdECDATA@var@ySquareHi           \\
+            \utt{LHS of (E) lo:}   & \cmdECDATA@var@ySquareLo           \\
+            \utt{RHS of (E) hi:}   & \cmdECDATA@var@xCubePlusThreeHi    \\
+            \utt{RHS of (E) lo:}   & \cmdECDATA@var@xCubePlusThreeLo    \\
+            \utt{Where (E) is:}    & \tty^2 = \ttx^3 + \rOneACoefficient \cdot \ttx + \rOneBCoefficient   
+        \end{array} \right]}
+
+\newcommand{\callROneMembershipEXT}             {\texttt{callToR1MembershipEXT}}
+
+\newcommand{\callToROneMembershipEXT}[1]{
+    \setkeys[ECDATA]{var}{#1}
+    \callROneMembershipEXT_{\cmdECDATA@var@anchorRow}
+    \left[ \begin{array}{ll}
+            \utt{Rel. row offset:}                & \cmdECDATA@var@relOffset    \\
+            \utt{x coord. hi:}                    & \cmdECDATA@var@xHi          \\
+            \utt{x coord. lo:}                    & \cmdECDATA@var@xLo          \\
+            \utt{y coord. hi:}                    & \cmdECDATA@var@yHi          \\
+            \utt{y coord. lo:}                    & \cmdECDATA@var@yLo          \\
+            \utt{square of x coord. hi:}          & \cmdECDATA@var@xSquareHi    \\
+            \utt{square of x coord. lo:}          & \cmdECDATA@var@xSquareLo    \\
+            \utt{cube of x coord. hi:}            & \cmdECDATA@var@xCubeHi      \\
+            \utt{cube of x coord. lo:}            & \cmdECDATA@var@xCubeLo      \\
+        \end{array} \right]}
+%
 \newcommand{\ttx}                 {\texttt{x}}
 \newcommand{\tty}                 {\texttt{y}}
 \newcommand{\PRECOMPILESUCCEDES}              {\col{PRECOMPILE\_SUCCEDES}}

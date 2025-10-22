@@ -94,12 +94,26 @@ We set the following constraints:
         \[
             \locSIsPositive \define \wcpRes _{i + 3}
         \]
-
-
+        \item[\underline{Row $n^°(i+4)$:}]
+        we impose
+        \[
+              \callToCOneMembership {
+                  anchorRow        = i                      ,
+                  relOffset        = 4                      ,
+                  xHi              = \locQXHi               ,
+                  xLo              = \locQXLo               ,
+                  yHi              = \locQYHi               ,
+                  yLo              = \locQYLo               ,
+              }
+        \]
+        as well as define the shorthand
+        \[
+            \locROneMembership  \define \hurdle_{i+4}
+        \]
     \item[\underline{Justifying the \ecdataSuccessBit{}:}]
         we define the following shorthand
         \[
-            \locInternalChecksPassed \define \hurdle _{i + \indexMaxEcrecoverData} \\
+            \locInternalChecksPassed \define \hurdle _{i + \indexMaxPVerifyData} \\
         \]
         and impose the following constraints
         \[
@@ -107,8 +121,7 @@ We set the following constraints:
                 \hurdle _{i}                 & = & \locRIsInRange \cdot \locRIsPositive                                \\
                 \hurdle _{i + 1}             & = & \locSIsInRange  \cdot \locSIsPositive                               \\
                 \hurdle _{i + 2}             & = & \hurdle _{i} \cdot \hurdle _{i + 1}                                 \\
-                % TODO: adjust this given the missing checks
-                \locInternalChecksPassed     & = & ...  \\
+                \locInternalChecksPassed     & = & \locROneMembership \cdot \hurdle _{i + 2}                           \\
                 \If \locInternalChecksPassed & = & 0 ~ \Then \ecdataSuccessBit _{i} = 0                                \\
                 \If \locInternalChecksPassed & = & 1 ~ \Then \ecdataSuccessBit _{i} \equiv \justifiedByExternalCircuit \\
             \end{array} \right.

@@ -1,6 +1,6 @@
 \[
     \left\{ \begin{array}{l}
-        \callToCOneMembership {
+        \callToROneMembership {
             anchorRow        = i                      ,
             relOffset        = \relof                 ,
             xHi              = \locPXHi               ,
@@ -10,7 +10,7 @@
         } \vspace{4mm} \\
         \qquad \qquad \iff
         \left\{ \begin{array}{l}
-                    \callToCOneMembershipWCP {
+                    \callToROneMembershipWCP {
                         anchorRow        = i                      ,
                         relOffset        = \relof                 ,
                         xHi              = \locPXHi               ,
@@ -27,7 +27,7 @@
                     \locPSatisfiesCubic   \define \wcpRes_{i+\relof+2}                                      \\
                     \vspace{1mm}                                                                            \\
                     %            
-                    \callToCOneMembershipEXT {
+                    \callToROneMembershipEXT {
                         anchorRow  = i                      ,
                         relOffset  = \relof                 ,
                         xHi        = \locPXHi               ,
@@ -50,11 +50,11 @@
                     \locPXCubePlusThreeLo \define \extResLo_{i+\relof+3}                                    \\
                     \vspace{1mm}                                                                            \\
                     \locPIsInRange     \define \hurdle_{i + \relof + 1}                                     \\
-                    \locCOneMembership \define \hurdle_{i + \relof}                                         \\
+                    \locROneMembership \define \hurdle_{i + \relof}                                         \\
                     \vspace{1mm}                                                                            \\
                     %
                     \locPIsInRange =  \locPXIsInRange \cdot \locPYIsInRange                                 \\
-                    \locCOneMembership =  \locPIsInRange \cdot (\locPXpYIsInfinity + \locPSatisfiesCubic  ) \\
+                    \locROneMembership =  \locPIsInRange \cdot (1 - \locPXpYIsInfinity) \cdot \locPSatisfiesCubic \\
                     \vspace{1mm}                                                                            \\
                     %
                     \locLargeSum \define
@@ -73,9 +73,11 @@
 
 \saNote{} $\hurdle_{i + \relof}$ is expected to contain the final result. Intermediate results are contained in the subsequents rows, potentially up to $\relof + 2$.
 
+% TODO: note that we have 2 more EXT operations, that fit as we call this constraint system 2 rows before the lines of the point start
+
 \[
     \left\{ \begin{array}{l}
-        \callToCOneMembershipWCP {
+        \callToROneMembershipWCP {
             anchorRow        = i                      ,
             relOffset        = \relof                 ,
             xHi              = \locPXHi               ,
@@ -89,13 +91,14 @@
         } \vspace{4mm} \\
         \qquad \qquad \iff
         \left\{ \begin{array}{lcl}
+
                     \wcpCallToLt {
                         anchorRow = i                     ,
                         relOffset = \relof                ,
                         argOneHi  = \locPXHi              ,
                         argOneLo  = \locPXLo              ,
-                        argTwoHi  = \bnOuterPrimeHi  ,
-                        argTwoLo  = \bnOuterPrimeLo   ,
+                        argTwoHi  = \rOnePrimeHi          ,
+                        argTwoLo  = \rOnePrimeLo          ,
                     } \\
 
                     \wcpCallToLt {
@@ -103,8 +106,8 @@
                         relOffset = \relof+1              ,
                         argOneHi  = \locPYHi              ,
                         argOneLo  = \locPYLo              ,
-                        argTwoHi  = \bnOuterPrimeHi  ,
-                        argTwoLo  = \bnOuterPrimeLo   ,
+                        argTwoHi  = \rOnePrimeHi          ,
+                        argTwoLo  = \rOnePrimeLo          ,
                     } \\
 
                     \wcpCallToEq {
@@ -121,7 +124,7 @@
 
 \[
     \left\{ \begin{array}{l}
-        \callToCOneMembershipEXT {
+        \callToROneMembershipEXT {
             anchorRow  = i                      ,
             relOffset  = \relof                 ,
             xHi        = \locPXHi               ,
@@ -142,8 +145,8 @@
                         argOneLo  = \locPYLo               ,
                         argTwoHi  = \locPYHi               ,
                         argTwoLo  = \locPYLo               ,
-                        argThreeHi  = \bnOuterPrimeHi ,
-                        argThreeLo = \bnOuterPrimeLo   ,
+                        argThreeHi  = \rOnePrimeHi         ,
+                        argThreeLo = \rOnePrimeLo          ,
                     } \\
 
                     \extCallToMulMod {
@@ -153,8 +156,8 @@
                         argOneLo  = \locPXLo               ,
                         argTwoHi  = \locPXHi               ,
                         argTwoLo  = \locPXLo               ,
-                        argThreeHi  = \bnOuterPrimeHi ,
-                        argThreeLo = \bnOuterPrimeLo   ,
+                        argThreeHi  = \rOnePrimeHi         ,
+                        argThreeLo = \rOnePrimeLo          ,
                     } \\
 
                     \extCallToMulMod {
@@ -164,8 +167,8 @@
                         argOneLo  = \locPXSquareLo         ,
                         argTwoHi  = \locPXHi               ,
                         argTwoLo  = \locPXLo               ,
-                        argThreeHi  = \bnOuterPrimeHi ,
-                        argThreeLo = \bnOuterPrimeLo   ,
+                        argThreeHi  = \rOnePrimeHi         ,
+                        argThreeLo = \rOnePrimeLo          ,
                     } \\
 
                     \extCallToAddMod {
@@ -175,8 +178,8 @@
                         argOneLo  = \locPXCubeLo           ,
                         argTwoHi  = 0                      ,
                         argTwoLo  = 3                      ,
-                        argThreeHi  = \bnOuterPrimeHi ,
-                        argThreeLo = \bnOuterPrimeLo   ,
+                        argThreeHi  = \rOnePrimeHi         ,
+                        argThreeLo = \rOnePrimeLo          ,
                     }
                 \end{array} \right.
     \end{array} \right.
