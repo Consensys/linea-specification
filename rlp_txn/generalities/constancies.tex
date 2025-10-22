@@ -1,46 +1,27 @@
 The current section defines various constancy conditions for columns.
-We shall say that a column \col{X} is
+Below \col{X} may represent either a column or an algebraic expression derived from columns.
 \begin{description}
-	\item[block-constant:]
-		\If $\absTxNum_{i} \neq 0$ \Then $col{X}_{i} = col{X}_{i + 1}$ \et \If $\absTxNum_{i} = 0$ \Then $col{X}_{i} = 0$
-	\item[transaction-constant:]
-		\If $\absTxNum_{i} = \absTxNum_{i-1}$ \Then $\col{X}_{i} = \col{X}_{i-1}$
-	\item[counter-constant:]
-		\If $\ct_{i} \neq 0$ \Then $\col{X}_{i} = \col{X}_{i-1}$
-	\item[$\phase{k}$-constant:]
-		\If $\phase{k}_{i-1} + \phase{k}_{i} = 2$ \Then $\col{X}_{i} = \col{X}_{i-1}$.
+	\item[Transaction-constancy:]
+		\col{X} is said to be
+		\textbf{transaction-constant} if it satisfies
+		\[
+			\If \userTransactionNumber _{i} \neq 1 + \userTransactionNumber _{i - 1} ~
+			\Then \col{X} _{i} = \col{X} _{i - 1}
+		\]
+	\item[Counter-constancy:]
+		\col{X} is said to be
+		\textbf{counter-constant} if it satisfies
+		\[
+			\If \ct _{i} \neq 0 ~
+			\Then \col{X} _{i} = \col{X} _{i - 1}
+		\]
 \end{description}
-We further define monotony constraints for a columns.
-We shall say that a column \col{X} is
-\begin{description}
-	\item[counter-incrementing:]
-		\If $\ct_{i} \neq 0$ \Then $\col{X}_{i} \in \{\col{X}_{i-1}; \col{X}_{i-1} + 1 \}$. If \col{X} is a bit column, it implies $\col{X}_{i} \in \{\col{X}_{i-1}; 1 \}$.
-	\item[$\phase{k}$-incrementing:]
-		\If $\phase{k}_{i-1} + \phase{k}_{i} = 2$ \Then $\col{X}_{i} \in \{\col{X}_{i-1}; \col{X}_{i-1} + 1 \}$. If \col{X} is a bit column, it implies $\col{X}_{i} \in \{\col{X}_{i-1}; 1 \}$.
-	\item[$\phase{k}$-decrementing:]
-		\If $\phase{k}_{i-1} + \phase{k}_{i} = 2$ \Then $\col{X}_{i} \in \{\col{X}_{i-1} -1; \col{X}_{i-1} \}$. If \col{X} is a bit column, it implies $\col{X}_{i} \in \{0 ; \col{X}_{i-1}\}$.
-\end{description}
-
-Given the above definitions we require that
-\begin{enumerate}
-	\item \txType{}, \txRequiresEvmExecution{} and \CFI{} are transaction-constant. 
-	\item $\Input k$ (for $k = 1, 2$), $\nbstep$, $\lt$, $\lx$, $\isprefix$, $\nbAddr$, $\nStorageKeysInAccessList$, $\nStorageKeysInAccessEntry$, and $\Depth k$ (for $k = 1, 2$) are counter-constant.
-	\item $\ispadding$ is counter-incrementing.
-	\item \If $\phaseData{}_{i} = 0$ \Or $\isprefix_{i} = 0$ \Then $\lc$ is counter-incrementing.
-	\item $\rlptsize$ and $\rlpxsize$ are $\phaseRlpPrefix{}$-constant.
-	\item $\isprefix$ is $\phaseData$-decrementing.
-	\item $\outgoingDataSymb\high$ and $\outgoingDataSymb\low$ are $\phase{k}$-constant for $k \in \{ \phaseRlpPrefixValue \} \cup [\![ \phaseNonceValue ; \phaseAccessListValue ]\!] $
-	\item $\absTxNumInfty$ is block-constant.
-\end{enumerate}
-We draw the attention of the reader to the fact that the following constraints hold by construction of the relevant columns.
-There is therefore no reason to explicitly include the following constraints in the implementation.
-\begin{enumerate}[resume]
-	\item $\ispadding$ is $\phaseRlpPrefix$-decrementing; \quad (\trash)
-	\item $\done$ and $\accsize$ are $\ct$-incrementing; \quad (\trash)
-	\item $\phasend$ is $\phase{k}$-incrementing; \quad (\trash)
-	\item \indexData{} is $\phaseData{}$-incrementing; \quad (\trash)
-	\item $\phasesize$ is \phaseData{} and \phaseAccessList{}-decreasing; \quad (\trash)
-	\item $\rlptsize$ and $\rlpxsize$ are transaction-decreasing; \quad (\trash)
-	\item $\indext$ and $\indexx$ are transaction-incrementing; \quad (\trash)
-\end{enumerate}
-
+We require that
+\begin{multicols}{3}
+	\begin{enumerate}
+		\item \CFI
+		\item \rlpTxnCommonColumnReplayProtection
+		\item \rlpTxnCommonColumnYparity
+	\end{enumerate}
+\end{multicols}
+\noindent be \textbf{transaction-constant}.

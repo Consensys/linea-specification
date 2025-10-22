@@ -1,0 +1,88 @@
+\begin{center}
+	\boxed{\text{In all this section, it is assumed that }
+	\locIsPayloadSizeAnalysisRow _{i} = \true
+	}
+\end{center}
+The present section performs an analysis of the transaction's payload size.
+This is required to justify the \rlp{}-prefix associated with \rlp{}-izing the payload
+$\textbf{p} \in \mathbb{B}$:
+\label{rlp txn: phase constraints: payload: payload size analysis: definition of payload in terms of transaction fields}
+\[
+	\textbf{p} \equiv
+	\begin{cases}
+		T_\textbf{i} & \text{if } T_t \equiv \varnothing \\
+		T_\textbf{d} & \text{otherwise }                 \\
+	\end{cases}
+\]
+We impose the following constraints
+\begin{enumerate}
+	\item we impose
+		\[
+			\rlpProcessByteString {
+				anchorRow        = i                          ,
+				relOffset        = 0                          ,
+				byteStringLength = \locTransactionPayloadSize ,
+				firstByte        = \locFirstByteOrZero        ,
+				isList           = \false                     ,
+				mustBeNontrivial = \false                     ,
+			}
+		\]
+		and we introduce the following shorthands, some of which we already used:
+		\[
+			\left\{ \begin{array}{lcl}
+				\locTransactionPayloadSize & \define &
+				\left[ \begin{array}{cl}
+					+ & \locZerosInPayload \\
+					+ & \locNonzsInPayload \\
+				\end{array} \right] \\
+				\locZerosInPayload             & \define & \rlpTxnTransactionColumnNumberOfZero    _{i - 1} \\
+				\locNonzsInPayload             & \define & \rlpTxnTransactionColumnNumberOfNonZero _{i - 1} \\
+			\end{array} \right.
+		\]
+		and
+		\[
+			\left\{ \begin{array}{lcl}
+				\locFirstByteOrZero            & \define &
+				\left[ \begin{array}{cl}
+					\cdot & \locPayloadIsNonempty          \\
+					\cdot & \locMaybeFirstByteOfByteString \\
+				\end{array} \right] \\
+				\locMaybeFirstByteOfByteString & \define & \rlpTxnComputationColumnExoDataColumn{8} _{i + 1} \\
+				\locPayloadIsNonempty          & \define & \rlpTxnComputationColumnExoDataColumn{4} _{i}     \\
+				\locPayloadIsEmpty             & \define & 1 - \locPayloadIsNonempty  \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		The above \textbf{defines} one of the \textbf{inputs} of the \rlpUtilsMod{} module instruction (\locFirstByteOrZero)
+		in terms of one of the same instruction's \textbf{outputs} (\locPayloadIsNonempty).
+		This may seem ill-defined but it is not:
+		inspection of the relevant \rlpUtilsMod{} instruction
+		reveals that the relevant output is (a bit which is) logically equivalent to
+		\[
+			[\, \locTransactionPayloadSize \neq 0 \,]
+		\]
+		see section~(\ref{rlp utils: instructions: byte string processing}).
+		In particular it only depends on \locTransactionPayloadSize{}.
+		If the payload is empty (which again only depends on \locTransactionPayloadSize{})
+		the ``byte argument'' is irrelevant to the \rlpUtilsMod{} module instruction and to the present computation.
+
+		\saNote{}
+		Inspection of the next row also reveals that, whenever $\locPayloadIsNonempty \equiv \true$,
+		the value contained in $\locMaybeFirstByteOfByteString$
+		will be the first byte of the payload.
+	\item we initialize the ``number of bytes countdown'' columns
+		\[
+			\left\{ \begin{array}{lcl}
+				\locZeroBytesCountdown    _{i} & = & \locZerosInPayload \\
+				\locNonzeroBytesCountdown _{i} & = & \locNonzsInPayload \\
+			\end{array} \right.
+		\]
+	\item \If $\locPayloadIsEmpty = \true$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\locZerosInPayload & = & 0 \\
+				\locNonzsInPayload & = & 0 \\
+			\end{array} \right.
+		\]
+	\item $\phaseEnd _{i} = \locPayloadIsEmpty$
+\end{enumerate}

@@ -11,12 +11,12 @@ We outline the preprocessing rows
 \begin{description}
 	\item[\underline{Admissible phases:}]
 		we impose that $\locPhase \in \{ \phaseModexpBase, \phaseModexpExponent, \phaseModexpModulus \}$ (\trash).
-	\item[\underline{Number of preprocessing rows:}] \label{mmu: instructions: modexpdata: preprocessing: tot = 32 initially}
-		we impose $\ppTot_{i} = 32$;
+	\item[\underline{Number of preprocessing rows:}] \label{mmu: instructions: modexpdata: preprocessing: tot equals 64 initially}
+		we impose $\ppTot_{i} = \numberOfLimbsForModexpArgumentsAndResult$;
 	\item[\underline{Preprocessing row $\bm{n^\circ 1}$:}] 
 		we define the following shorthand
 		\[
-			\locNleftPaddingBytes \define 512 - \locModexpParamByteSize
+			\locNleftPaddingBytes \define \modexpMaxByteSizeValue - \locModexpParamByteSize
 		\]
 		and we impose that
 		\[
@@ -58,7 +58,7 @@ We outline the preprocessing rows
 		\[
 			\left\{ \begin{array}{lclr}
 			        \ppTotRZ  _{i}   & =       & \ppEucQuot _{i + 2} \\
-			        \ppTotNT  _{i}   & =       & 32 - \ppTotLZ_{i} - \ppTotRZ_{i} & (\trash) \\
+			        \ppTotNT  _{i}   & =       & \numberOfLimbsForModexpArgumentsAndResult - \ppTotLZ_{i} - \ppTotRZ_{i} & (\trash) \\
 			\end{array} \right.
 		\]
 		(the second constraint is an implicit consequence of others and need not be implemented);

@@ -1,9 +1,31 @@
+The first few columns distinguish between system transactions and user transactions.
 \begin{enumerate}
-	\item \absTxNum{}: monotone column containing the \ABSTXNUM{};
-	\item \relativeBlockNumber{}: transaction-constant, monotone column containing the \RELATIVEBLOCKNUMBER{};
+	\item \sysi{}:
+		binary column;
+		lights up precisely along \textsc{initial system transaction} processing rows;
+	\item \user{}:
+		binary column;
+		lights up precisely along \textsc{user transaction} processing rows;
+	\item \sysf{}:
+		binary column;
+		lights up precisely along \textsc{final system transaction} processing rows;
 \end{enumerate}
-\saNote{} The \relativeBlockNumber{} is extracted through a lookup to the \textbf{transaction data} module, see section~\ref{hub: heartbeat: absTxNum and relativeBlockNumber}.
-
+The next few columns pertain to block and transaction accounting.
+These block and transaction numbers are relative to the current conflation of blocks.
+\begin{enumerate}[resume]
+	\item \blockNumber:
+		contains the relative block number currently being processed;
+		this block number is relative to the current conflation of blocks and does not necessarily represent the
+		block number as output by e.g. the \inst{NUMBER} opcode;
+	\item \totalTransactionNumber:
+		contains the total number of system and user transactions which have been processed or are currently processing;
+	\item \sysiTransactionNumber:
+		contains the total number of initial system transactions which have been processed or are currently processing;
+	\item \userTransactionNumber:
+		contains the total number of user transactions which have been processed or are currently processing;
+	\item \sysfTransactionNumber:
+		contains the total number of final system transactions which have been processed or are currently processing;
+\end{enumerate}
 \noindent The following are binary colums indicating the transaction processing phase currently unfolding.
 \begin{enumerate}[resume]
 	\item \TXSKIP{}:
@@ -95,9 +117,10 @@ The following binary columns serve as indicators of what data is on display on a
 (\emph{b}) \textbf{context-rows} display \textbf{context data};                                             they are characterized by $\peekContext     \equiv 1$
 (\emph{c}) \textbf{miscellaneous-rows} log data to be externalized for further processing to other modules; they are characterized by $\peekMisc        \equiv 1$
 (\emph{d}) \textbf{scenario-rows} are used to simplify the control flow of complex instructions;            they are characterized by $\peekScenario    \equiv 1$
-(\emph{e}) \textbf{stack rows} display \textbf{stack data};                                                 they are characterized by $\peekStack       \equiv 1$
+(\emph{e}) \textbf{stack-rows} display \textbf{stack data};                                                 they are characterized by $\peekStack       \equiv 1$
 (\emph{f}) \textbf{storage-rows} display \textbf{storage data};                                             they are characterized by $\peekStorage     \equiv 1$
 (\emph{g}) \textbf{transaction-rows} display \textbf{transaction data};                                     they are characterized by $\peekTransaction \equiv 1$.
+(\emph{h}) \textbf{transient-storage-rows} display \textbf{transient storage data};                         they are characterized by $\peekTransient   \equiv 1$.
 \begin{enumerate}[resume]
 	\item $\PEEKACCOUNT$:
 		binary column which switches on \emph{if and only if} the current row peeks into account data (from which we \emph{exclude} storage data); 
@@ -120,6 +143,9 @@ The following binary columns serve as indicators of what data is on display on a
 	\item $\PEEKTRANSACTION$:
 		binary column which switches on \emph{if and only if} the current row peeks into transaction data; 
 		abbreviated to $\peekTransaction$;
+	\item $\PEEKTRANSIENT$:
+		binary column which switches on \emph{if and only if} the current row peeks into transient storage data;
+		abbreviated to $\peekTransient$;
 \end{enumerate}
 \noindent We list some gas columns:
 \begin{enumerate}[resume]
@@ -163,19 +189,19 @@ We further note that it is the perview of the \stpMod{} module to compute the \g
 
 Note that the "the reprisal of execution" case is also when $\gasExpected$ may differ from $\gasActual$, as this is when ``remaining gas refunds'' can be added to $\gasExpected$.
 
-The following are two sets of ``counter/maximal counter value'' columns. Within execution rows the counters $\ct$ and $\nonStackRowsCounter$ impose at what point the \hubStamp{} changes (i.e. increases by $1$.)
+The following are two sets of ``counter/maximal counter value'' columns. Within execution rows the counters $\tliCounter$ and $\nonStackRowsCounter$ impose at what point the \hubStamp{} changes (i.e. increases by $1$.)
 \begin{enumerate}[resume]
 	\item $\tli{}$:
 		hub-stamp-constant binary column;
-	\item $\ct$:
+	\item $\tliCounter$:
 		binary counter column;
 	\item $\nonStackRows$:
 		hub-stamp-constant column containing the number of non stack-rows required for the present instruction;
 	\item $\nonStackRowsCounter$:
-		counter; remains constant while $\ct\neq\tli$ and the counts up until $\nonStackRows$;
+		counter; remains constant while $\tliCounter \neq \tli$ and the counts up until $\nonStackRows$;
 \end{enumerate}
 The pairs
-$\ct$/$\tli$ and
+$\tliCounter$/$\tli$ and
 $\nonStackRowsCounter$/$\nonStackRows$
 only matter along execution rows.
 Along execution rows an instruction occupies precisely
@@ -185,7 +211,7 @@ Along execution rows an instruction occupies precisely
 individual rows.
 $\tli$ is instruction decoded (on stack rows.)
 It indicates whether dealing with the instruction requires one stack row or two.
-Thus, along stack rows $\ct$ counts from $0$ to $\tli$.
+Thus, along stack rows $\tliCounter$ counts from $0$ to $\tli$.
 $\nonStackRows$ is constructed by hand on stack rows ($\tli$ is shorthand for $\TLI{}$.)
 It indicates how many (if any) non stack-rows are required to deal with the instruction at hand.
-As soon as $\ct$ reaches $\tli$ the $\nonStackRowsCounter$ column starts counting up from $1$ to $\nonStackRows$.
+As soon as $\tliCounter$ reaches $\tli$ the $\nonStackRowsCounter$ column starts counting up from $1$ to $\nonStackRows$.

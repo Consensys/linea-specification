@@ -7,9 +7,9 @@ It furthermore produces the message whose hash along with the signature are prov
 We provide more details below.
 
 Recall that there are two \rlp{} strings of interest associated with a transaction $\locTransaction$.
-There is the ``full'' \rlp{} encoding of a transaction, $\locLtTildeOfT$ as defined in the \cite{EYP}.
+There is the ``full'' \rlp{} encoding of a transaction, $\locLtTildeOfT$ as defined in the \cite{EYP-London}.
 This contains all the functional fields of the transaction as well as the signature.
-Then there is the \rlp{} string obtained by \rlp{} encoding the ``functional fields'' of a transaction, $\locLxTildeOfT$ as defined in the \cite{EYP}.
+Then there is the \rlp{} string obtained by \rlp{} encoding the ``functional fields'' of a transaction, $\locLxTildeOfT$ as defined in the \cite{EYP-London}.
 This defines the message whose hash is (supposedly) signed in the full transaction.
 
 The present module thus does the following two things.
@@ -18,7 +18,7 @@ It verifies that this string is of the form $\locLtTildeOfT$ for some well-forme
 In the process it extracts the fields of that transaction (\texttt{gasPrice}, \texttt{nonce}, \texttt{accessList}, etc\dots{}).
 Any such ``extraction step'' comprises one of the various ``\textbf{phases}'' of the arithmetization presented here.
 Note that this \textbf{does not} include the verification of the validity of these fields (e.g. \texttt{value}, \texttt{gasPrice}, \texttt{nonce}, \dots) against account data.
-The associated checks are performed in the \txnDataMod{} and \hubMod{} modules.
+The associated checks are performed in the \userTxnDataMod{} and \hubMod{} modules.
 Second, it performs the \rlp{} \textbf{encoding} of the relevant data to construct $\locLxTildeOfT$.
 
 Since the layout of the fields of a transaction varies according to the \textbf{transaction type} our arithmetization distinguishes between
@@ -36,36 +36,51 @@ Note that the method described below does not produce a single byte string.
 Rather it produces a series of chunks of bytes which, when correctly identified and assembled, yield $\locLtTildeOfT$ (resp. $\locLxTildeOfT$.)
 
 We now provide slightly more detail on the procedure.
-First of all we recall that, in the \zkEvm{} in general, and in this module in particular, transactions are identified with their absolute transaction number $\absTxNum$.
-The reader will find more information on this in the \txnDataMod{} module.
-We therefore consider a (well-formed) transaction $\locTransaction$ with $\absTxNum \equiv \col{a}$.
-The goal is that, considering exactly those rows $i$ where
+First of all we recall that, in the \zkEvm{} in general, and in this module in particular,
+\emph{user transactions} are identified with their user transaction number
+$\userTransactionNumber$.
+The reader will find more information on this in the \userTxnDataMod{} module.
+We therefore consider a (well-formed) transaction $\locTransaction$ with $\userTransactionNumber \equiv \loc{a}$.
+
+The goal is that the byte string $\locLtTildeOfT$
+of the \loc{a}-th transaction
+should be recoverable from data concentrated along rows
+(with row-index $i$) satisfying
 \begin{multicols}{3}
 	\begin{itemize}
-		\item $\absTxNum_{i} \equiv \col{a}$
-		\item $\lc_{i} \equiv 1$
-		\item $\lt_{i} \equiv 1$
+		\item $\userTransactionNumber _{i} \equiv \loc{a}$
+		\item $\lc                    _{i} \equiv 1$
+		\item $\lt                    _{i} \equiv 1$
 	\end{itemize}
 \end{multicols}
-\noindent in ascending order of $\indext$\footnote{starting from zero},
+The present module provides, along such rows,
+pairs
+$(\rlpTxnComputationColumnLimb _{i},
+\rlpTxnComputationColumnLimbSize _{i})$
+which must be interpreted as in the diagram below
+
+\includepdf[fitpaper=true, pages={1}]{lua/limb_and_limb_size.pdf}
+
+in ascending order of $\indext$\footnote{starting from zero},
 the concatenation of the most significant 
-$\limbsize _{i}$ bytes of $\limb _{i}$ should produce $\locLtTildeOfT$.
+$\rlpTxnComputationColumnLimbSize _{i}$ bytes of $\rlpTxnComputationColumnLimb _{i}$ should produce $\locLtTildeOfT$.
 
 Similarly, considering exactly those rows $i$ where
 \begin{multicols}{3}
 	\begin{itemize}
-		\item $\absTxNum_{i} \equiv \col{a}$
-		\item $\lc_{i} \equiv 1$
-		\item $\lx_{i} \equiv 1$
+		\item $\userTransactionNumber _{i} \equiv \loc{a}$
+		\item $\lc                    _{i} \equiv 1$
+		\item $\lx                    _{i} \equiv 1$
 	\end{itemize}
 \end{multicols}
 \noindent in ascending order of $\indexx$\footnote{starting from zero},
 the concatenation of the most significant 
-$\limbsize _{i}$ bytes of $\limb _{i}$ should give $\locLtTildeOfT$.
+$\rlpTxnComputationColumnLimbSize _{i}$ bytes of $\rlpTxnComputationColumnLimb _{i}$ should give $\locLtTildeOfT$.
 
-\saNote{} For a given transaction $\locTransaction$,
-the concatenation of the
-$\limb$ when
-$\phaseData_{i}=1$ \et{}
-$\isprefix_{i}=0$, indexed by
-$\indexData$ gives the input data of the transaction.
+% \saNote{}
+% For a given transaction $\locTransaction$,
+% the concatenation of the
+% $\rlpTxnComputationColumnLimb$ when
+% $\phaseData _{i} = 1$ \et{}
+% $\rlpTxnSharedColumnIsPrefix _{i} = 0$, indexed by
+% $\indexData$ gives the input data of the transaction.

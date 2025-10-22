@@ -8,8 +8,8 @@
 		\end{array} \right.
 		}
 \end{center}
-We are thus considering the first row of the second phase of the \hubMod{}'s processing of a \inst{CALL} to the \inst{BLAKE2f} precompile.
-We are further assuming that the \hubMod{} module didn't detect an exceptional \inst{CALL} to the \inst{BLAKE2f} precompile (i.e. $\cds = \locBlakeCallDataSize$.)
+We are thus considering the first row of the second phase of the \hubMod{}'s processing of a \inst{CALL} to the \instBlake{} precompile.
+We are further assuming that the \hubMod{} module didn't detect an exceptional \inst{CALL} to the \instBlake{} precompile (i.e. $\cds = \locBlakeCallDataSize$.)
 The call may still fail in \textsc{ram} (or succeed.)
 We fix the behaviour of the next row, i.e. row $n^°(i + \prcBlakeSecondMiscRowOffset)$:
 \begin{description}
@@ -18,28 +18,30 @@ We fix the behaviour of the next row, i.e. row $n^°(i + \prcBlakeSecondMiscRowO
 		\begin{description}
 			\item[\underline{Setting lookup flags:}]
 				we impose
+				One may, in the implemementation, compress the above into fewer constraints like so:
 				\[
-					\weightedMiscFlagSum
-					{i}{\prcBlakeSecondMiscRowOffset}
-					=
-					\left[ \begin{array}{crcl}
-						+ & \miscMmuWeight  & \!\!\! \cdot \!\!\! & \locOobResultRamSuccess \\
-						+ & \miscOobWeight \\
-					\end{array} \right]
+					\left\{ \begin{array}{lclr}
+						\weightedMiscFlagSumSansMmu {
+							anchorRow = i                            ,
+							relOffset = \prcBlakeSecondMiscRowOffset ,
+						}                                                & = & \miscOobWeight                               \vspace{2mm} \\
+						\miscMmuFlag _{i + \prcBlakeSecondMiscRowOffset} & = & \undefinedStar \quad \locOobResultRamSuccess              \\
+					\end{array} \right.
 				\]
 				in other words
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + \prcBlakeSecondMiscRowOffset} & = & \gZero                                       & (\trash) \\
-						\miscMmuFlag _{i + \prcBlakeSecondMiscRowOffset} & = & \undefinedStar \quad \locOobResultRamSuccess & (\trash) \\
-						\miscMxpFlag _{i + \prcBlakeSecondMiscRowOffset} & = & \rZero                                       & (\trash) \\
-						\miscOobFlag _{i + \prcBlakeSecondMiscRowOffset} & = & \one                                         & (\trash) \\
-						\miscStpFlag _{i + \prcBlakeSecondMiscRowOffset} & = & \gZero                                       & (\trash) \\
+						\miscExpFlag _{i + \prcBlakeSecondMiscRowOffset} & = & \gZero                                       & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcBlakeSecondMiscRowOffset} & = & \undefinedStar \quad \locOobResultRamSuccess & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcBlakeSecondMiscRowOffset} & = & \rZero                                       & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcBlakeSecondMiscRowOffset} & = & \one                                         & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcBlakeSecondMiscRowOffset} & = & \gZero                                       & (\sanityCheck) \\
 					\end{array} \right.
 				\]
 				We are thus always calling the \oobMod{} and only calling the \mmuMod{} if the call to the \oobMod{} 
 
-				\saNote{} The shorthand \locOobResultRamSuccess{} which we label with $\undefinedStar$ will be set below.
+				\saNote{}
+				The shorthand \locOobResultRamSuccess{} which we label with $\undefinedStar$ will be set below.
 			\item[\underline{Setting \oobMod{} values and shorthands:}] 
 				we impose the following constraints
 				\[
@@ -65,10 +67,12 @@ We fix the behaviour of the next row, i.e. row $n^°(i + \prcBlakeSecondMiscRowO
 						% \locOobResultNonzeroRac      & \define & \miscOobDataCol{8}_{i + \prcBlakeSecondMiscRowOffset} \\
 					\end{array} \right.
 				\]
-				\saNote{} We have, by construction and by the computation in the \oobMod{} module, the following relations:
+				\saNote{}
+				We have, by construction and by the computation in the \oobMod{} module, the following relations:
 				\[
-					\locOobResultRamSuccess \equiv \text{binary} 
+					\locOobResultRamSuccess \equiv \text{provably binary} 
 				\]
+				conditional to the fact that the \oobMod{} call was indeed triggered.
 			\item[\underline{Setting \mmuMod{} values:}]
 				\If $\miscMmuFlag_{i + \prcBlakeSecondMiscRowOffset} = 1$ \Then
 				\[
@@ -86,7 +90,7 @@ We fix the behaviour of the next row, i.e. row $n^°(i + \prcBlakeSecondMiscRowO
 						phase           = \phaseBlakeData                  ,
 					}
 				\]
-				\saNote{} Recall that the \inst{BLAKE2f} precompile fails unless $\cds \equiv \locBlakeCallDataSize$.
+				\saNote{} Recall that the \instBlake{} precompile fails unless $\cds \equiv \locBlakeCallDataSize$.
 				Also $\locBlakeCallDataSize = \locBlakeRparamSize + \locBlakeHmtDataSize + \locBlakeFparamSize$, with
 				the ``rounds'' parameter occupying the first $\locBlakeRparamSize$ bytes and
 				the ``f''      parameter occupying the last  $\locBlakeFparamSize$ bytes, i.e. the final byte.

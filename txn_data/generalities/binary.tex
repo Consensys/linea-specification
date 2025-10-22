@@ -1,0 +1,53 @@
+We impose binary constraints.
+\begin{enumerate}
+	\item
+		The following columns are \emph{de facto} binary given the lookup from
+		note~(\ref{user txn data: lookups: into hub: purpose and consequences}):
+		\begin{enumerate}
+			\item \sysi{} \quad (\sanityCheck)
+			\item \user{} \quad (\sanityCheck)
+			\item \sysf{} \quad (\sanityCheck)
+		\end{enumerate}
+	\item
+		Perspective flags are required to be binary:
+		\begin{enumerate}
+			\item $\isUserTxnComputation$
+			\item $\isUserTxnHubView$
+			\item $\isUserTxnRlpView$
+		\end{enumerate}
+	\item
+		The flags labeling
+		\textbf{legacy transactions}             ($\txnDataRlpIsLegacyTransaction            \equiv 1$),
+		\textbf{access list transactions}        ($\txnDataRlpIsAccessSetTransaction         \equiv 1$), and
+		\textbf{\cite{EIP-1559} transactions}    ($\txnDataRlpIsTypeTwoTransaction           \equiv 1$),
+		\textbf{blob transactions}               ($\txnDataRlpIsBlobTransaction              \equiv 1$),
+		\textbf{account delegation transactions} ($\txnDataRlpIsAccountDelegationTransaction \equiv 1$),
+		are required to be binary:
+		\begin{enumerate}
+			\item $\txnDataRlpIsLegacyTransaction            $
+			\item $\txnDataRlpIsAccessSetTransaction         $
+			\item $\txnDataRlpIsTypeTwoTransaction           $
+			\item $\txnDataRlpIsBlobTransaction              $
+			\item $\txnDataRlpIsAccountDelegationTransaction $
+		\end{enumerate}
+	\item
+		The following columns provide further ``boolean'' information on transactions:
+		\begin{enumerate}
+			\item \txnDataHubIsDeployment           {}
+			\item \txnDataHubHasTypeTwoGasSemantics {}
+			\item \txnDataHubRequiresEvmExecution   {}
+			\item \txnDataHubCopyTxcd               {}
+			\item \txnDataHubStatusCode             {}
+			\item \txnDataHubEipBeaconRoot          {}
+			\item \txnDataHubEipBlockHash           {}
+		\end{enumerate}
+	\item
+		The following flags trigger lookups and are similarly required to be binary:
+		\begin{enumerate}
+			\item \txnDataCmptnEucFlag{}
+			\item \txnDataCmptnWcpFlag{}
+				%\item[\vspace{\fill}]
+		\end{enumerate}
+\end{enumerate}
+\saNote{}
+There is in reality no reason to require (by constraint) that \txnDataHubCopyTxcd{} be binary as it will be enforced through value assignment.

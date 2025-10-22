@@ -1,0 +1,28 @@
+\item[\underline{\underline{Row n$°(i + \initCodeSizeLimitRowOffset )$: \cite{EIP-3860} mandated init code size check:}}]
+	we impose that
+	\[
+		\left\{\begin{array}{l}
+			\smallCallToLeq {
+				anchorRow = i                           ,
+				relOffset = \initCodeSizeLimitRowOffset ,
+				argOneLo  = \locHubInitCodeSize         ,
+				argTwoLo  = \maxInitCodeSize            ,
+			}
+			\vspace{2mm}
+			\\
+			\resultMustBeTrue {
+				anchorRow = i                           ,
+				relOffset = \initCodeSizeLimitRowOffset ,
+			}
+			\\
+		\end{array}\right.
+	\]
+	where, as per \cite{EIP-3860},
+	\[
+		\maxInitCodeSize \define \maxInitCodeSizeValue
+	\]
+	In other words, deployments must satisfy $\locHubInitCodeSize \leq \maxInitCodeSizeValue$.
+
+	\saNote{} \label{user txn data: processing: user: common computations: max init code size check}
+	Message calls satisfy $\locHubInitCodeSize \equiv 0$,
+	see constraint~(\ref{user txn data: processing: user: data transafer hub to rlp: call data size and init code size}).

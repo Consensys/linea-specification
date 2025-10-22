@@ -1,0 +1,41 @@
+We define the following shorthand
+\[
+    \begin{array}{l}
+        \locAboutToExitPhase _{i} \vspace{2mm} \\
+        \qquad \define
+        \left[ \begin{array}{clcl}
+            + & \phaseRlpPrefix            _{i} & \!\!\!\cdot\!\!\! & (1 - \phaseRlpPrefix            _{i + 1}) \\
+            + & \phaseChainId              _{i} & \!\!\!\cdot\!\!\! & (1 - \phaseChainId              _{i + 1}) \\
+            + & \phaseNonce                _{i} & \!\!\!\cdot\!\!\! & (1 - \phaseNonce                _{i + 1}) \\
+            + & \phaseGasPrice             _{i} & \!\!\!\cdot\!\!\! & (1 - \phaseGasPrice             _{i + 1}) \\
+            + & \phaseMaxPriorityFeePerGas _{i} & \!\!\!\cdot\!\!\! & (1 - \phaseMaxPriorityFeePerGas _{i + 1}) \\
+            + & \phaseMaxFeePerGas         _{i} & \!\!\!\cdot\!\!\! & (1 - \phaseMaxFeePerGas         _{i + 1}) \\
+            + & \phaseGasLimit             _{i} & \!\!\!\cdot\!\!\! & (1 - \phaseGasLimit             _{i + 1}) \\
+            + & \phaseTo                   _{i} & \!\!\!\cdot\!\!\! & (1 - \phaseTo                   _{i + 1}) \\
+            + & \phaseValue                _{i} & \!\!\!\cdot\!\!\! & (1 - \phaseValue                _{i + 1}) \\
+            + & \phaseData                 _{i} & \!\!\!\cdot\!\!\! & (1 - \phaseData                 _{i + 1}) \\
+            + & \phaseAccessList           _{i} & \!\!\!\cdot\!\!\! & (1 - \phaseAccessList           _{i + 1}) \\
+            + & \phaseBeta                 _{i} & \!\!\!\cdot\!\!\! & (1 - \phaseBeta                 _{i + 1}) \\
+            + & \phaseY                    _{i} & \!\!\!\cdot\!\!\! & (1 - \phaseY                    _{i + 1}) \\
+            + & \phaseR                    _{i} & \!\!\!\cdot\!\!\! & (1 - \phaseR                    _{i + 1}) \\
+            + & \phaseS                    _{i} & \!\!\!\cdot\!\!\! & (1 - \phaseS                    _{i + 1}) \\
+        \end{array} \right]
+    \end{array}
+\]
+and we impose the following:
+\begin{enumerate}
+    \item
+        $\locAboutToExitPhase _{i}$ is binary \quad (\sanityCheck)
+    \item \label{rlp txn: generalities: PHASE_END constraints}
+        $\phaseEnd_{i} = \locAboutToExitPhase _{i}$
+\end{enumerate}
+\saNote{}
+The above constraint~(\ref{rlp txn: generalities: PHASE_END constraints})
+must be understood as follows: rather than \textbf{constraining} \phaseEnd{},
+the constraints will often times \textbf{set} the value of \phaseEnd{} and thereby force a phase transition upon the module.
+
+\saNote{}
+The two shorthands $\locAboutToExitPhase$ and $\locAboutToEnterNewPhase$
+agree, except that $\locAboutToEnterNewPhase$ turns on at the threshold between
+padding-rows and non-padding-rows while $\locAboutToExitPhase$ does not.
+On all other rows the two shorthands evaluate to the same (binary) value.

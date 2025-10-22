@@ -17,9 +17,10 @@
 			\item \If $\locIsSstore = 1$ \Then $\xAhoy_{i} = \stackStaticx_{i} + \stackSstorex_{i} + \stackOogx_{i}$ \quad (\trash)
 		\end{enumerate}
 		\saNote{} Given section~(\ref{hub: generalities: exceptions: automatic vanishing})
-		\inst{SSLOAD} may only raise stack exceptions or \oogxSH{}
+		\inst{SLOAD} may only raise stack exceptions or \oogxSH{}
 		while \inst{SSTORE} may raise stack exceptions, \staticxSH{}, \sstorexSH{} or \oogxSH{}.
 	\item[\underline{Setting $\nonStackRows$ and peeking flags:}]
+		\label{hub: instruction handling: storage: non stack rows and peeking flags}
 		storage operations can provoke exceptions in multiple ways and are rollback sensitive;
 		they thus have some inherent complexity;
 		we impose the following:
@@ -67,7 +68,7 @@
 					\nonStackRows_{i}
 				\]
 		\end{enumerate}
-	\item[\underline{The first context row:}]
+	\item[\underline{The first context-row:}]
 		we \textbf{unconditionally} impose that $\readContextData {i}{\locFirstCon}{\cn_{i}}$
 	\item[\underline{Setting \stackStaticx{} flag:}]
 		we impose that
@@ -75,24 +76,31 @@
 
 		\saNote{} Recall that (among instructions raising the $\stackDecStoFlag$ flag) only \inst{SSTORE} may raise a \staticxSH{}.
 	\item[\underline{Setting the miscellaneous-row:}]
-		\If $\peekMisc_{i + \locMiscRowOffset} = 1$ \Then 
+		\If $\peekMisc_{i + \locMiscRowOffset} = 1$ \Then
 		\begin{enumerate}
 			\item we impose that \inst{SSTORE} instructions trigger the \oobMod{}
 				\[
-					\weightedMiscFlagSum {i}{\locMiscRowOffset}
+					\weightedMiscFlagSum {
+						anchorRow = i                 ,
+						relOffset = \locMiscRowOffset ,
+					}
 					=
 					\miscOobWeight \cdot \locIsSstore
+					% OK
 				\]
 				in other words	
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \gZero       & (\trash) \\
-						\miscMmuFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \rZero       & (\trash) \\
-						\miscMxpFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \rZero       & (\trash) \\
-						\miscOobFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \locIsSstore & (\trash) \\
-						\miscStpFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \gZero       & (\trash) \\
+						\miscExpFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \gZero       & (\sanityCheck) \\
+						\miscMmuFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \rZero       & (\sanityCheck) \\
+						\miscMxpFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \rZero       & (\sanityCheck) \\
+						\miscOobFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \locIsSstore & (\sanityCheck) \\
+						\miscStpFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \gZero       & (\sanityCheck) \\
 					\end{array} \right.
 				\]
+				\saNote{}
+				Recall that \locIsSstore{} is provably binary,
+				see note~(\ref{hub: instruction handling: storage: shorthands: provable binary note}).
 			\item \If $\locIsSstore = 1$ \Then we further impose that
 				\[
 					\setOobInstructionSstore {i}{\locMiscRowOffset}
@@ -103,7 +111,7 @@
 		\end{enumerate}
 	\item[\underline{Justifying the \stackSstorex{} flag:}]
 		\begin{enumerate}
-		\If $\peekMisc_{i + \locMiscRowOffset} = 1$ \Then 
+		\If $\peekMisc_{i + \locMiscRowOffset} = 1$ \Then
 			\item \If $\locIsSstore = 1$ \Then we impose that $\stackSstorex_{i} = \miscOobDataCol{7}_{i + \locMiscRowOffset}$
 		\end{enumerate}
 \end{description}
@@ -144,28 +152,46 @@ Note however that in case of an exception triggered by the present instruction o
 					% \standardDomSubStamps {i}{\locFirstStoRowOffset}{0}  } \\
 			\end{array} \right.
 		\]
+		Furthermore, we log the underlying storage-operation:
+		\[
+			\left\{ \begin{array}{lcl}
+				\stoSloadOperation  _{i + \locFirstStoRowOffset} & = & \locIsSload  \\
+				\stoSstoreOperation _{i + \locFirstStoRowOffset} & = & \locIsSstore \\
+			\end{array} \right.
+		\]
 	\item[\underline{Defining storage value operations:}]
-		\If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \Then
+		we impose that
 		\begin{description}
 			\item[\underline{The \inst{SLOAD} case:}]
 				\If $\locIsSload = 1$ \Then
-				\[
-					\left\{ \begin{array}{lcl}
-						\multicolumn{3}{l}{\storageReading{i}{\locFirstStoRowOffset}} \\
-						\locLoadedValueHi & \!\!\! = \!\!\! & \stoCurrValueHi_{i + \locFirstStoRowOffset} \\
-						\locLoadedValueLo & \!\!\! = \!\!\! & \stoCurrValueLo_{i + \locFirstStoRowOffset} \\
-					\end{array} \right.
-				\]
+				\begin{enumerate}
+				        \item \If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \Then $\storageReading{i}{\locFirstStoRowOffset}$
+				        \item \If $(1 - \xAhoy_{i}) = 1$ \Then
+						\[
+							\left\{ \begin{array}{lcl}
+								\locLoadedValueHi & \!\!\! = \!\!\! & \stoCurrValueHi_{i + \locFirstStoRowOffset} \\
+								\locLoadedValueLo & \!\!\! = \!\!\! & \stoCurrValueLo_{i + \locFirstStoRowOffset} \\
+							\end{array} \right.
+						\]
+				\end{enumerate}
+				\saNote{}
+				In other words: \inst{SLOAD} instructions that lead to the production of \textbf{storage-rows}, as witnessed by
+				$\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$, see (\ref{hub: instruction handling: storage: non stack rows and peeking flags}),
+				(\emph{a}) don't modify the value in storage and
+				(\emph{b}) if unexceptional, as witnessed by $(1 - \xAhoy_{i}) = 1$, write the value in storage to the stack.
 			\item[\underline{The \inst{SSTORE} case:}]
 				\If $\locIsSstore = 1$ \Then
-				\[
-					\left\{ \begin{array}{lcl}
-						\stoNextValueHi _{i + \locFirstStoRowOffset} & \!\!\! = \!\!\! & \locValueToStoreHi \\
-						\stoNextValueLo _{i + \locFirstStoRowOffset} & \!\!\! = \!\!\! & \locValueToStoreLo \\
-					\end{array} \right.
-				\]
+				\begin{enumerate}
+					\item \If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \Then
+						\[
+							\left\{ \begin{array}{lcl}
+								\stoNextValueHi _{i + \locFirstStoRowOffset} & \!\!\! = \!\!\! & \locValueToStoreHi \\
+								\stoNextValueLo _{i + \locFirstStoRowOffset} & \!\!\! = \!\!\! & \locValueToStoreLo \\
+							\end{array} \right.
+						\]
+				\end{enumerate}
 			\item[\underline{The inverse, undoing operation:}]
-				\If $\cnWillRev_{i} = 1$ \Then 
+				\If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \et $\cnWillRev_{i} = 1$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
 						\stoSameStorageSlot          {i}{\locSecondStoRowOffset}{\locFirstStoRowOffset} \\
@@ -176,6 +202,13 @@ Note however that in case of an exception triggered by the present instruction o
 							subOffset        = 0,
 							} \\
 						% {i}{\locSecondStoRowOffset}{0} \\
+					\end{array} \right.
+				\]
+				Again, we log the underlying storage-operation:
+				\[
+					\left\{ \begin{array}{lcl}
+						\stoSloadOperation  _{i + \locSecondStoRowOffset} & = & \locIsSload  \\
+						\stoSstoreOperation _{i + \locSecondStoRowOffset} & = & \locIsSstore \\
 					\end{array} \right.
 				\]
 		\end{description}
@@ -201,7 +234,7 @@ We will use the following shorthands:
 		\locNextNotCurr & \!\!\! \define \!\!\! & 1 - \locNextIsCurr \\
 	\end{array} \right.
 \]
-\begin{description} 
+\begin{description}
 	\item[\underline{Setting the gas cost:}]
 		\If $\stackOogx_{i} + (1 - \xAhoy_{i}) = 1$ \Then
 		\begin{description}
@@ -246,7 +279,7 @@ We will use the following shorthands:
 		where $\locCleanClear$, $\locDirtyClear$, $\locDirtyReset$ are shorthands which we define below.
 		
 		\saNote{}
-		In the explanations provided below we use notations from the \cite{EYP} whereby
+		In the explanations provided below we use notations from the \cite{EYP-London} whereby
 		$v_0$ stands for the value originally in storage,
 		$v$ for the value currently in storage,
 		$v'$ for the value we are attempting to store:
@@ -277,7 +310,7 @@ We will use the following shorthands:
 					\end{array} \right]
 					\cdot
 					\locOrigNotZero
-					\cdot 
+					\cdot
 					\left[ \begin{array}{cr}
 						- & \locCurrIsZero \\
 						+ & \locNextIsZero \\
@@ -300,7 +333,7 @@ We will use the following shorthands:
 					\end{array} \right]
 					\cdot
 					\locNextIsOrig
-					\cdot 
+					\cdot
 					\left[ \begin{array}{crcl}
 						+ & \locOrigIsZero  & \cdot & \big(G_\text{sset}   - G_\text{warmaccess}\big) \\
 						+ & \locOrigNotZero & \cdot & \big(G_\text{sreset} - G_\text{warmaccess}\big) \\

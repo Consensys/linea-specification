@@ -1,0 +1,79 @@
+\begin{description}
+	\item[\underline{\underline{Generalities:}}]
+		we impose the following
+		\begin{enumerate}
+			\item $\transientFirstInTransaction$ is binary
+			\item $\transientAgainInTransaction$ is binary
+			\item we unconditionally impose that
+				\[
+					\order{\peekTransient} _{i}
+					=
+					\transientFirstInTransaction   _{i} + \transientAgainInTransaction   _{i}
+				\]
+		\end{enumerate}
+% \end{description}
+% We define the following shorthand:
+% \[
+% 	\locTransientTransitionTransaction \define \transientFinalInTransaction _{i - 1} + \transientFirstInTransaction _{i}
+% \]
+% \begin{description}
+	\item[\underline{\underline{First transient row:}}]
+		\If $\order{\peekTransient} _{i - 1} = 0$ \Then $\order{\peekTransient} _{i} = \transientFirstInTransaction _{i}$
+	\item[\underline{\underline{Repeat transient row:}}] 
+		we impose that
+		\If
+		\[
+			\left\{ \begin{array}{lclc}
+				\order{\peekTransient} _{i - 1} & = & 1  & \et \\
+				\order{\peekTransient} _{i}     & = & 1 \\
+			\end{array} \right.
+		\]
+		\Then we impose that
+		\begin{enumerate}
+			\item \If $\locTransientFullAddress _{i - 1} \neq \locTransientFullAddress _{i}$ \Then
+				\[
+					\left\{ \begin{array}{lclr}
+					        \transientFirstInTransaction _{i} & = & 1 \\
+						\transientAgainInTransaction _{i} & = & 0  & (\sanityCheck) \\
+					\end{array} \right.
+				\]
+			\item \If $\order{\transKeyHi}      _{i - 1} \neq \order{\transKeyHi}      _{i}$ \Then
+				\[
+					\left\{ \begin{array}{lclr}
+					        \transientFirstInTransaction _{i} & = & 1 \\
+						\transientAgainInTransaction _{i} & = & 0  & (\sanityCheck) \\
+					\end{array} \right.
+				\]
+			\item \If $\order{\transKeyLo}      _{i - 1} \neq \order{\transKeyLo}      _{i}$ \Then
+				\[
+					\left\{ \begin{array}{lclr}
+					        \transientFirstInTransaction _{i} & = & 1 \\
+						\transientAgainInTransaction _{i} & = & 0  & (\sanityCheck) \\
+					\end{array} \right.
+				\]
+			\item \If $\order{\totalTransactionNumber}        _{i - 1} \neq \order{\totalTransactionNumber}        _{i}$ \Then
+				\[
+					\left\{ \begin{array}{lclr}
+					        \transientFirstInTransaction _{i} & = & 1 \\
+						\transientAgainInTransaction _{i} & = & 0  & (\sanityCheck) \\
+					\end{array} \right.
+				\]
+			\item \If 
+				\[
+					\left\{ \begin{array}{lclc}
+						\locTransientFullAddress        _{i - 1} & \!\!\! = \!\!\! & \locTransientFullAddress        _{i} & \et \\
+						\order{\transKeyHi}             _{i - 1} & \!\!\! = \!\!\! & \order{\transKeyHi}             _{i} & \et \\
+						\order{\transKeyLo}             _{i - 1} & \!\!\! = \!\!\! & \order{\transKeyLo}             _{i} & \et \\
+						\order{\totalTransactionNumber} _{i - 1} & \!\!\! = \!\!\! & \order{\totalTransactionNumber} _{i} \\
+					\end{array} \right.
+				\]
+				\Then
+				\[
+					\left\{ \begin{array}{lclr}
+					        \transientFirstInTransaction _{i} & = & 0 & (\sanityCheck) \\
+						\transientAgainInTransaction _{i} & = & 1 \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+\end{description}
+

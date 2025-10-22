@@ -13,6 +13,7 @@ full_names = {
 	"gas": "gas",
 	"hub": "hub",
 	"kec": "kec",
+	"mcopy": "mcopy",
 	"log": "log Info",
 	"mmu": "mmu",
 	"mmio": "mmio",
@@ -44,14 +45,19 @@ full_names = {
 	"blake": "blake",
 	"ecData": "ec Data",
 	"precInfo": "prec Info",
-	"txnData": "txn Data",
+	"txnData": "transaction Data",
+	"bls": "bls Data",
+	"userTxnData": "user Transaction Data",
+	"systTxnData": "system Transaction Data",
 	"txnComp": "txn Comp",
 	"romLex": "rom Lex",
 	"shakira": "shakira",
 	"ripSha": "rip Sha",
 	"blkMdx": "blk Mdx",
+	"blsData": "bls Data",
 	# flags
 	"txn": "txn",
+	"trans": "trans Storage",
 	"stackRam": "stack Ram",
 	"machineState": "machine State",
 	"pushPop": "push Pop",
@@ -59,11 +65,14 @@ full_names = {
 	"swap": "swap",
 	"invalid": "invalid",
 	# rlp modules
-	"rlpAddr": "address Rlp",		# I'm taking out the d for readability
+	"rlpAddr": "address Rlp",
+	"rlpAuth": "authorization Rlp",
 	"rlpTxn": "transaction Rlp",
 	"rlpTxnRcpt": "transaction Receipt Rlp",
+	"rlpUtils": "rlp Utils",
 	# instruction decoder
 	"id": "instruction Decoder",
+	"blsRefTable": "bls Reference Table"
 }
 
 def module_list():

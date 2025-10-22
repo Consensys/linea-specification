@@ -1,0 +1,40 @@
+\begin{center}
+    \boxed{\text{All constraints are written under the assumption that } \isMxpScenario _{i} = 1.}
+\end{center}
+We introduce some general constraints pertaining to scenario-rows.
+\begin{enumerate}
+    \item
+        \label{mxp: computations: generalities: scenario: scenario exclusivity}
+        $\locScenarioSum _{i} = 1$
+    \item
+        \label{mxp: computations: generalities: scenario: setting scn/MSIZE}
+        $\mxpScenarioMsize _{i} = \mxpDecoderIsMsize _{i - \locScenarioToDecoderRowOffset}$
+    \item
+        \label{mxp: computations: generalities: scenario: setting scn/MXPX}
+        $\mxpScenarioMxpx  _{i} = \mxpMacroMxpx      _{i - \locScenarioToMacroRowOffset}$
+    \item
+        \label{mxp: computations: generalities: scenario: no change in WORDS or CMEM if no state change scenario}
+        \If $\locMxpScenarioNoStateUpdate _{i} = 1$ \Then
+        \[
+            \left\{ \begin{array}{lcl}
+                \mxpScenarioWordsNew _{i} & = & \mxpScenarioWords _{i} \\
+                \mxpScenarioCmemNew  _{i} & = & \mxpScenarioCmem  _{i} \\
+            \end{array} \right.
+        \]
+    \item
+        \label{mxp: computations: generalities: scenario: no state change scenario yields zero cost}
+        \If $\locMxpScenarioNoStateUpdate _{i} = 1$ \Then
+        \[
+            \mxpMacroGasMxp _{i - \locScenarioToMacroRowOffset}
+            =
+            0
+        \]
+\end{enumerate}
+\saNote{}
+The above imposes
+scenario exclusivity (\ref{mxp: computations: generalities: scenario: scenario exclusivity}) i.e. that on every scenario-row, precisely one scenario is active,
+it unconditionally sets both
+$\mxpScenarioMsize$ (\ref{mxp: computations: generalities: scenario: setting scn/MSIZE}) and
+$\mxpScenarioMxpx$  (\ref{mxp: computations: generalities: scenario: setting scn/MXPX})
+and imposes ``no state change'' constraints in case of $\locMxpScenarioNoStateUpdate$,
+(\ref{mxp: computations: generalities: scenario: no change in WORDS or CMEM if no state change scenario}).

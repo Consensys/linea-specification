@@ -1,0 +1,55 @@
+\begin{center}
+	\boxed{\text{The constraints below assume that }
+	\left\{ \begin{array}{lcl}
+	        \totalTransactionNumber _{i} & \neq & \totalTransactionNumber _{i - 1} \\
+		\sysi                   _{i} & =    & 1                                \\
+	\end{array} \right.
+	}
+\end{center}
+We impose preliminary constraints that apply to the processing of any type of user transaction.
+\begin{description}
+	\item[\underline{Setting the first few perspectives:}]
+		we impose that
+		\[
+			\left[ \begin{array}{cr}
+				+ & \isUserTxnHubView     _{i + \hubViewRowOffset                            } \\
+				+ & \isUserTxnComputation _{i + \firtComputationOfSystemTransactionRowOffset } \\
+			\end{array} \right]
+			=
+			\yellowm{2}
+		\]
+	\item[\underline{Imposing a scenario:}]
+		we impose that
+		\[
+			\left[ \begin{array}{clcl}
+				+ & \txnDataHubNoopSystemTransaction _{i + \hubViewRowOffset} \\
+				+ & \txnDataHubEipBeaconRoot         _{i + \hubViewRowOffset} \\
+				+ & \txnDataHubEipBlockHash          _{i + \hubViewRowOffset} \\
+			\end{array} \right]
+			= 1
+		\]
+	\item[\underline{Setting \maxCt{}:}]
+		we impose the following
+		\[
+			\maxCt _{i} = \locMaxCtSysiSum _{i}
+		\]
+		where
+		\[
+			\locMaxCtSysiSum _{i}
+			\define
+			\left[ \begin{array}{clcl}
+				+ & \maxCtForSysiNoop       & \!\!\!\cdot\!\!\! & \txnDataHubNoopSystemTransaction _{i + \hubViewRowOffset} \\
+				+ & \maxCtForSysiBeaconRoot & \!\!\!\cdot\!\!\! & \txnDataHubEipBeaconRoot         _{i + \hubViewRowOffset} \\
+				+ & \maxCtForSysiBlockHash  & \!\!\!\cdot\!\!\! & \txnDataHubEipBlockHash          _{i + \hubViewRowOffset} \\
+			\end{array} \right]
+		\]
+	\item[\underline{Disallowing \cite{EIP-2935} for \textsc{Cancun}:}]
+		\label{txn data: processing: sysi: prelude: Cancun vs Prague}
+		the \textsc{Cancun} hardfork supports only \cite{EIP-4788}, while
+		the \textsc{Prague} hardfork supports both \cite{EIP-4788} and \cite{EIP-2935};
+		as a consequence, if the network runs the \textsc{Cancun} \evm{},
+		we further impose
+		\[
+			\txnDataHubEipBlockHash   _{i + \hubViewRowOffset} = \false
+		\]
+\end{description}

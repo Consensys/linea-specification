@@ -9,8 +9,8 @@
 We use the following shorthand
 \[
 	\left\{ \begin{array}{lcl}
-		\currTimeStampHi & \define & \currDataHi \\
-		\currTimeStampLo & \define & \currDataLo \\
+		\currTimestampHi & \define & \currDataHi \\
+		\currTimestampLo & \define & \currDataLo \\
 	\end{array} \right.
 	\quad
 	\left\{ \begin{array}{lcl}
@@ -20,8 +20,14 @@ We use the following shorthand
 \]
 And we impose the following constraints
 \begin{description}
-	\item[\underline{\underline{Setting \inst{TIMESTAMP}:}}]
-		we cannot \emph{a priori} constrain \inst{TIMESTAMP};
+	\item[\underline{\underline{Horizontalization of \inst{TIMESTAMP}:}}]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\currTimestampHi & = & 0               \\
+				\currTimestampLo & = & \timestamp _{i} \\
+			\end{array} \right.
+		\]
 	\item[\underline{\underline{\inst{TIMESTAMP} upper bound:}}]
 		\def\rowOffset{\yellowm{0}}
 		we impose that
@@ -29,10 +35,10 @@ And we impose the following constraints
 			\wcpCallToLt{
 				anchorRow = i                ,
 				relOffset = \rowOffset       ,
-				argOneHi  = \currTimeStampHi ,
-				argOneLo  = \currTimeStampLo ,
+				argOneHi  = \currTimestampHi ,
+				argOneLo  = \currTimestampLo ,
 				argTwoHi  = 0                ,
-				argTwoLo  = 256^\medium      ,
+				argTwoLo  = 256^\yellowm{8}  ,
 			}
 		\]
 		\saNote{}
@@ -45,8 +51,8 @@ And we impose the following constraints
 			\wcpCallToGt{
 				anchorRow = i                ,
 				relOffset = \rowOffset       ,
-				argOneHi  = \currTimeStampHi ,
-				argOneLo  = \currTimeStampLo ,
+				argOneHi  = \currTimestampHi ,
+				argOneLo  = \currTimestampLo ,
 				argTwoHi  = \prevTimeStampHi ,
 				argTwoLo  = \prevTimeStampLo ,
 			}

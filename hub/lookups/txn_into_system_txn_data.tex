@@ -1,0 +1,52 @@
+The present section describes the lookup between the \hubMod{} and the \userTxnDataMod{} module.
+\begin{description}
+	\item[Selector column:] we use the following selector: $\col{sel} \define (\sysi + \sysf) \cdot \peekTransaction$
+	\item[Source columns:] ---
+		\begin{multicols}{4}
+			\begin{enumerate}
+				\item $1$
+				\item[\vspace{\fill}]
+				\item[\vspace{\fill}]
+					% numbers
+				\item $\blockNumber$
+				\item $\sysi$
+				\item $\sysf$
+					% tx nature
+				\item $\txnSystemTransactionNoop$
+				\item $\txnSystemTransactionEipBeaconRoot$
+				\item $\txnSystemTransactionEipBlockHash$
+					% tx values
+				\item $\txnSystemTransactionDataCol{k}$
+				\item[\vspace{\fill}]
+				\item[\vspace{\fill}]
+			\end{enumerate}
+		\end{multicols}
+		where we let $k$ range over $1 \leq k \leq \txnSystemTransactionNumberOfDataColumns$.
+	\item[Target columns:] ---
+		\begin{multicols}{4}
+			\begin{enumerate}
+				\item $\isMacro$
+				\item[\vspace{\fill}]
+				\item[\vspace{\fill}]
+					% numbers
+				\item $\blockNumber$
+				\item $\macroSystemSysi$
+				\item $\macroSystemSysf$
+					% tx nature
+				\item $\macroSystemTxnNoop$
+				\item $\macroSystemTxnEipBeaconRoot$
+				\item $\macroSystemTxnEipBlockHash$
+					% tx values
+				\item $\macroSystemTxnDataCol{k}$
+				\item[\vspace{\fill}]
+				\item[\vspace{\fill}]
+			\end{enumerate}
+		\end{multicols}
+		where we let $k$ range over $1 \leq k \leq \txnSystemTransactionNumberOfDataColumns$.
+\end{description}
+\saNote{}
+We draw attention to the fact that the number of
+$\txnSystemTransactionDataCol{k}$ columns in the \hubMod{} module and
+$\macroSystemTxnDataCol{k}$ columns in the \systTxnDataMod{} module
+isn't the same,
+see note~(\ref{system transactions: lookups: hub: not the same number of data columns in hub vs system txn data}).

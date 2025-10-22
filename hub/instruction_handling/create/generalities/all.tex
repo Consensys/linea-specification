@@ -47,38 +47,27 @@ The present section deals with generalities pertaining to \inst{CREATE}-type ins
 		\[
 			\locStaticx = \locIsStatic
 		\]
-	\item[\underline{Setting the module flags of miscellaneous-row $n^°(i + \createMiscRowOffset)$::}]
+	\item[\underline{Setting the module flags of miscellaneous-row $n^°(i + \createMiscRowOffset)$:}]
 		every processing path for \inst{CREATE}-type instructions contains a single \textbf{miscellaneous-row}
 		\[
-			\weightedMiscFlagSum
-			{i}{\createMiscRowOffset}
-			=
-			\left[ \begin{array}{lcl}
-				\miscMmuWeight & \cdot & \locTriggerMmu \\
-				\miscMxpWeight & \cdot & \locTriggerMxp \\
-				\miscOobWeight & \cdot & \locTriggerOob \\
-				\miscStpWeight & \cdot & \locTriggerStp \\
-			\end{array} \right]
-		\]
-		in other words
-		\[
 			\left\{ \begin{array}{lclr}
-				\miscExpFlag _{i + \createMiscRowOffset} & = & \gZero         & (\trash) \\
-				\miscMmuFlag _{i + \createMiscRowOffset} & = & \locTriggerMmu & (\trash) \\
-				\miscMxpFlag _{i + \createMiscRowOffset} & = & \locTriggerMxp & (\trash) \\
-				\miscOobFlag _{i + \createMiscRowOffset} & = & \locTriggerOob & (\trash) \\
-				\miscStpFlag _{i + \createMiscRowOffset} & = & \locTriggerStp & (\trash) \\
+				\miscExpFlag _{i + \createMiscRowOffset} & = & \gZero         \\
+				\miscMmuFlag _{i + \createMiscRowOffset} & = & \locTriggerMmu \\
+				\miscMxpFlag _{i + \createMiscRowOffset} & = & \locTriggerMxp \\
+				\miscOobFlag _{i + \createMiscRowOffset} & = & \locTriggerOob \\
+				\miscStpFlag _{i + \createMiscRowOffset} & = & \locTriggerStp \\
 			\end{array} \right.
+			% OK
 		\]
 	\item[\underline{Setting the \mxpMod{} instruction:}]
 		we impose \If $\miscMxpFlag_{i + \createMiscRowOffset} = 1$ \Then
 		\[
-			\setMxpInstructionTypeFour
+			\setMxpInstructionOneOffset
 			{
 				anchorRow    = i                    ,
 				relOffset    = \createMiscRowOffset ,
 				instruction  = \locInst             ,
-				deploys      = 0                    ,
+				deploys      = \varnothing          ,
 				offsetHi     = \locOffsetHi         ,
 				offsetLo     = \locOffsetLo         ,
 				sizeHi       = \locSizeHi           ,
@@ -111,8 +100,39 @@ The present section deals with generalities pertaining to \inst{CREATE}-type ins
 			\item \If $\miscStpFlag_{i + \createMiscRowOffset} = 0$ \Then $\locOogx = 0$ \quad (\trash)
 			\item \If $\miscStpFlag_{i + \createMiscRowOffset} = 1$ \Then $\locOogx = \locStpOogx$
 		\end{enumerate}
-	\item[\underline{Setting the \oobMod{} instruction:}]
-		we impose \If $\miscOobFlag_{i + \createMiscRowOffset} = 1$ \Then
+	\item[\underline{Setting the \oobMod{} instruction: exceptional case:}]
+		\If $\locTriggerOobX = 1$ \Then
+		we impose
+		\[
+			\setOobInstructionXcreate {
+				anchorRow      = i                    ,
+				relOffset      = \createMiscRowOffset ,
+				initCodeSizeHi = \locInitCodeSizeHi   ,
+				initCodeSizeLo = \locInitCodeSizeLo   ,
+			}
+		\]
+		\saNote{}
+		This check takes place
+		whenever $\locTriggerOobX = 1$ i.e.
+		whenever $\locMaxcsx      = 1$,
+		see section~(\ref{hub: instruction handling: create: trigger: oob}).
+		\emph{There is, in this case, no smallness guarantee} for the initialization code size stack argument,
+		which is why we provide the \oobMod{} isntruction with both its high and low parts.
+
+
+		\saNote{}
+		Recall that $\oobInstXcreate$ performs a \textbf{passive check} that
+		\[
+			\big[ \locInitCodeSizeHi \,:\, \locInitCodeSizeLo \big] > \maxInitCodeSize
+		\]
+		where here (and here only) we write
+		$\big[ \col{x\_hi} \,:\, \col{x\_lo} \big]$
+		for the $\evmWordSize$-byte integer $\col{x}$
+		whose high and low parts are $\col{x\_hi}$, $\col{x\_lo}$ respectively.
+		See section~(\ref{oob: populating: opcodes: xcreate}) for details.
+	\item[\underline{Setting the \oobMod{} instruction: unexceptional case:}]
+		\If $\locTriggerOobU = 1$ \Then
+		we impose
 		\[
 			\setOobInstructionCreate {
 				anchorRow      = i                    ,
@@ -124,6 +144,7 @@ The present section deals with generalities pertaining to \inst{CREATE}-type ins
 				hasCode        = \locCreateeHasCode   ,
 				callStackDepth = \locCsd              ,
 				creatorNonce   = \locCreatorNonce     ,
+				initCodeSize   = \locInitCodeSize     ,
 			}
 		\]
 		where we define the following shorthands:
@@ -140,7 +161,8 @@ The present section deals with generalities pertaining to \inst{CREATE}-type ins
 				\left\{ \begin{array}{lclc}
 					\locCreateeNonce   & = & 0 \\
 					\locCreateeHasCode & = & 0 \\
-				\end{array} \right. \\
+				\end{array} \right.
+				\vspace{2mm} \\
 				\If \scenCreateLoadCreatee _{i} = 1 ~ \Then
 				\left\{ \begin{array}{lclc}
 					\locCreateeNonce   & = & \accNonce    _{i + \createFirstCreateeAccountRowOffset} \\
@@ -151,7 +173,29 @@ The present section deals with generalities pertaining to \inst{CREATE}-type ins
 		\saNote{}
 		We explain the conditional definitions of \locCreateeNonce{} and \locCreateeHasCode{} by the fact that
 		the \zkEvm{} is granted access to the account of the createe \emph{iff} $\scenCreateLoadCreatee \equiv 1$.
+
+		\saNote{}
+		This \oobMod{} instruction is requested
+		whenever $\locTriggerOobU           \equiv 1$
+		i.e. whenever $\scenCreateUnexceptional  \equiv 1$, see section~(\ref{hub: instruction handling: create: trigger: oob}),
+		i.e. whenever $\xAhoy                    \equiv 0$, see section~(\ref{hub: instruction handling: create: generalities: refining the CREATE scenario}).
+		\emph{There is, in this case, a smallness guarantee} for the initialization code size stack argument,
+		as no \mxpxSH{} was detected in the \mxpMod{} module.
+		In particular we know that
+		$\locInitCodeSizeHi \equiv 0$ and
+		$\locInitCodeSizeLo$ is (relatively speaking) \emph{small} and represents the initialization code size stack argument.
+		As a consequence we are not required to feed the \oobMod{} instructions both the
+		$\locInitCodeSizeHi$ and $\locInitCodeSizeLo$,
+		and we only provide its low part (i.e. $\locInitCodeSize$.)
+
+		\saNote{}
+		Recall that $\oobInstCreate$ performs a \textbf{passive check} that
+		\[
+			\locInitCodeSize \leq \maxInitCodeSize
+		\]
+		see section~(\ref{oob: populating: opcodes: create}).
 	\item[\underline{Setting the \inst{CREATE}-scenario:}]
+		\label{hub: instruction handling: create: generalities: refining the CREATE scenario}
 		we impose the following
 		\begin{enumerate}
 			\item we unconditionally impose $\scenCreateException_{i} = \xAhoy_{i}$ \label{create: setting exceptional scenario}
@@ -173,7 +217,7 @@ The present section deals with generalities pertaining to \inst{CREATE}-type ins
 				\[
 					\scenCreateExecutionNonEmptyInitCode _{i}
 					=
-					\locMxpMtntop
+					\locMxpSizeOneNonzeroAndNoMxpx
 				\]
 			\item \If $\scenCreateExecutionNonEmptyInitCode _{i} = 1$ \Then
 				\[

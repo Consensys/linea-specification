@@ -1,3 +1,4 @@
+
 \newcommand{\MEMEXPSTAMP}              {\col{MEMORY\_EXPANSION\_STAMP}}
 \newcommand{\memExpStamp}              {\col{MX}\square}
 \newcommand{\iMEMEXPSTAMP}             {\imported{\MEMEXPSTAMP}}
@@ -107,8 +108,95 @@
 \newcommand{\byteCost}                 {\col{GBYTE}}
 \newcommand{\decByteCost}              {\decoded{\byteCost}}
 
-\newcommand{\YNMO}                     {\col{TYPE\_4\_INSTRUCTION\_MAY\_TRIGGER\_NONTRIVIAL\_MMU\_OPERATION}}
-\newcommand{\mayTriggerNonTrivialOperation}                     {\col{T4MTNTOP}}
+\newcommand{\YNMO}                            {\col{TYPE\_4\_INSTRUCTION\_MAY\_TRIGGER\_NONTRIVIAL\_MMU\_OPERATION}}
+\newcommand{\mayTriggerNonTrivialOperation}   {\col{T4MTNTOP}}
 
 \newcol{\sizeOneNonzeroNoMxpx}         {S1NZNOMXPX}  {SIZE\_1\_NONZERO\_NO\_MXPX}
 \newcol{\sizeTwoNonzeroNoMxpx}         {S2NZNOMXPX}  {SIZE\_2\_NONZERO\_NO\_MXPX}
+
+
+\newcommand{\mxpxThreshold}                     {\texttt{MXPX\_THRESHOLD}}
+\newcommand{\mxpxThresholdExponent}             {\redm{4}}
+
+% Macros for perspectives
+\newcommand{\mxpComputationSymbol}                     {\col{CMPTN}}
+\newcommand{\mxpInstructionDecoderSymbol}              {\col{DECDR}}
+\newcommand{\mxpMacroSymbol}                           {\col{MACRO}}
+\newcommand{\mxpScenarioSymbol}                        {\col{SCNRI}}
+%
+\newcommand{\mxpComputationColumn}             [1]          {\mxpComputationSymbol\separator{\col{#1}}}
+\newcommand{\mxpInstructionDecoderColumn}      [1]          {\mxpInstructionDecoderSymbol\separator{\col{#1}}}
+\newcommand{\mxpMacroColumn}                   [1]          {\mxpMacroSymbol\separator{\col{#1}}}
+\newcommand{\mxpScenarioColumn}                [1]          {\mxpScenarioSymbol\separator{\col{#1}}}
+
+% Shared columns
+\newcommand{\mxpContextNumber}                             {\cn}
+\newcommand{\isMxpComputation}                             {\mxpComputationSymbol        ^\eye}
+\newcommand{\isMxpInstructionDecoder}                      {\mxpInstructionDecoderSymbol ^\eye}
+\newcommand{\isMxpMacro}                                   {\mxpMacroSymbol              ^\eye}
+\newcommand{\isMxpScenario}                                {\mxpScenarioSymbol           ^\eye}
+
+% Instruction decoder columns
+\newcommand{\mxpDecoderInst                  } {\mxpInstructionDecoderColumn{\idInst                  }}
+\newcommand{\mxpDecoderIsWordPricing         } {\mxpInstructionDecoderColumn{\idIsWordPricing         }}
+\newcommand{\mxpDecoderIsBytePricing         } {\mxpInstructionDecoderColumn{\idIsBytePricing         }}
+\newcommand{\mxpDecoderIsMsize               } {\mxpInstructionDecoderColumn{\idIsMsize               }}
+\newcommand{\mxpDecoderIsFixedSizeThirtyTwo  } {\mxpInstructionDecoderColumn{\idIsFixedSizeThirtyTwo  }}
+\newcommand{\mxpDecoderIsFixedSizeOne        } {\mxpInstructionDecoderColumn{\idIsFixedSizeOne        }}
+\newcommand{\mxpDecoderIsReturn              } {\mxpInstructionDecoderColumn{\idIsReturn              }}
+\newcommand{\mxpDecoderIsRevert              } {\mxpInstructionDecoderColumn{\idIsRevert              }}
+\newcommand{\mxpDecoderIsCall                } {\mxpInstructionDecoderColumn{\idIsCall                }}
+\newcommand{\mxpDecoderIsMcopy               } {\mxpInstructionDecoderColumn{\idIsMcopy               }}
+\newcommand{\mxpDecoderIsSingleMaxOffset     } {\mxpInstructionDecoderColumn{\idIsSingleMaxOffset     }}
+\newcommand{\mxpDecoderIsDoubleMaxOffset     } {\mxpInstructionDecoderColumn{\idIsDoubleMaxOffset     }}
+\newcommand{\mxpDecoderGWord                 } {\mxpInstructionDecoderColumn{\idGWord                 }}
+\newcommand{\mxpDecoderGByte                 } {\mxpInstructionDecoderColumn{\idGByte                 }}
+
+% Scenario columns
+\newcommand{\mxpScenarioTrivialOperation              } {\mxpScenarioColumn{TRIVIAL}}
+\newcommand{\mxpScenarioMxpx                          } {\mxpScenarioColumn{MXPX}}
+\newcommand{\mxpScenarioMsize                         } {\mxpScenarioColumn{MSIZE}}
+\newcommand{\mxpScenarioSingleMaxOffsetAndWordPricing } {\mxpScenarioColumn{SINGLE\_MAX\_OFFSET\_AND\_WORD\_PRICING}}
+\newcommand{\mxpScenarioSingleMaxOffsetAndBytePricing } {\mxpScenarioColumn{SINGLE\_MAX\_OFFSET\_AND\_BYTE\_PRICING}}
+\newcommand{\mxpScenarioDoubleMaxOffsetAndWordPricing } {\mxpScenarioColumn{DOUBLE\_MAX\_OFFSET\_AND\_WORD\_PRICING}}
+\newcommand{\mxpScenarioDoubleMaxOffsetAndBytePricing } {\mxpScenarioColumn{DOUBLE\_MAX\_OFFSET\_AND\_BYTE\_PRICING}}
+\newcommand{\mxpScenarioStateUpdateWordPricing        } {\mxpScenarioColumn{STATE\_UPDATE\_WORD\_PRICING}}
+\newcommand{\mxpScenarioStateUpdateBytePricing        } {\mxpScenarioColumn{STATE\_UPDATE\_BYTE\_PRICING}}
+
+\newcommand{\mxpScenarioWords                         } {\mxpScenarioColumn{\mxpWords}}
+\newcommand{\mxpScenarioWordsNew                      } {\mxpScenarioColumn{\mxpWordsNew}}
+\newcommand{\mxpScenarioCmem                          } {\mxpScenarioColumn{\mxpCmem}}
+\newcommand{\mxpScenarioCmemNew                       } {\mxpScenarioColumn{\mxpCmemNew}}
+
+\newcommand{\mxpWords                                 } {\col{WORDS}}
+\newcommand{\mxpWordsNew                              } {\col{WORDS\_NEW}}
+\newcommand{\mxpCmem                                  } {\col{C\_MEM}}
+\newcommand{\mxpCmemNew                               } {\col{C\_MEM\_NEW}}
+
+% Macro columns
+\newcommand{\mxpMacroInst                             } {\mxpMacroColumn{INST}}
+\newcommand{\mxpMacroOffsetOneHi                      } {\mxpMacroColumn{OFFSET\_1\_HI}}
+\newcommand{\mxpMacroOffsetOneLo                      } {\mxpMacroColumn{OFFSET\_1\_LO}}
+\newcommand{\mxpMacroOffsetTwoHi                      } {\mxpMacroColumn{OFFSET\_2\_HI}}
+\newcommand{\mxpMacroOffsetTwoLo                      } {\mxpMacroColumn{OFFSET\_2\_LO}}
+\newcommand{\mxpMacroSizeOneHi                        } {\mxpMacroColumn{SIZE\_1\_HI}}
+\newcommand{\mxpMacroSizeOneLo                        } {\mxpMacroColumn{SIZE\_1\_LO}}
+\newcommand{\mxpMacroSizeTwoHi                        } {\mxpMacroColumn{SIZE\_2\_HI}}
+\newcommand{\mxpMacroSizeTwoLo                        } {\mxpMacroColumn{SIZE\_2\_LO}}
+\newcommand{\mxpMacroDeploying                        } {\mxpMacroColumn{DEPLOYING}}
+\newcommand{\mxpMacroRes                              } {\mxpMacroColumn{RES}}
+\newcommand{\mxpMacroMxpx                             } {\mxpMacroColumn{MXPX}}
+\newcommand{\mxpMacroGasMxp                           } {\mxpMacroColumn{GAS\_MXP}}
+\newcommand{\mxpMacroSOneNzNoMxpx                     } {\mxpMacroColumn{S1NZNOMXPX}}
+\newcommand{\mxpMacroSTwoNzNoMxpx                     } {\mxpMacroColumn{S2NZNOMXPX}}
+
+% Computation columns
+\newcommand{\mxpComputationExoInst  } {\mxpComputationColumn{EXO\_INST}}
+\newcommand{\mxpComputationWcpFlag  } {\mxpComputationColumn{WCP\_FLAG}}
+\newcommand{\mxpComputationEucFlag  } {\mxpComputationColumn{EUC\_FLAG}}
+\newcommand{\mxpComputationArgOneHi } {\mxpComputationColumn{ARG\_1\_HI}}
+\newcommand{\mxpComputationArgOneLo } {\mxpComputationColumn{ARG\_1\_LO}}
+\newcommand{\mxpComputationArgTwoHi } {\mxpComputationColumn{ARG\_2\_HI}}
+\newcommand{\mxpComputationArgTwoLo } {\mxpComputationColumn{ARG\_2\_LO}}
+\newcommand{\mxpComputationResA     } {\mxpComputationColumn{RES\_A}}
+\newcommand{\mxpComputationResB     } {\mxpComputationColumn{RES\_B}}

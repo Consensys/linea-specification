@@ -1,0 +1,59 @@
+\[
+    \boxed{\text{All constraints in this subsection assume that }
+    \left\{ \begin{array}{lcl}
+        \isMxpScenario                     _{i} & = & 1 \\
+        \mxpScenarioStateUpdateWordPricing _{i} & = & 1 \\
+    \end{array} \right. }
+\]
+\noindent
+The present section describes the computation for the $\mxpScenarioDoubleMaxOffsetAndWordPricing$ case.
+We impose:
+\begin{description}
+    \def\nRows{\yellowm{11}}\item[\underline{\underline{Computing the number of input words:}}] 
+        we impose that
+        \[
+            \eucCall {
+                anchorRow = i             ,
+                relOffset = \nRows        ,
+                argOne    = \locSizeOneLo ,
+                argTwo    = \evmWordSize  ,
+            }
+        \]
+        and we define the following shorthand
+        \[
+            % \left\{ \begin{array}{lcl}
+            %     \col{size\_1}     & \define & \mxpMacroSizeOneLo  _{i - \locScenarioToMacroRowOffset} \\
+            %     \locNumberOfWords & \define & \mxpComputationResB _{i + \nRows}                      \\
+            % \end{array} \right.
+            \locNumberOfWords \define \mxpComputationResB _{i + \nRows}
+        \]
+        \saNote{}
+        The computation above produces
+        \[
+            \left\lceil
+            \frac{\locSizeOneLo}{\evmWordSize}
+            \right\rceil
+        \]
+        Every instruction that requires ``word pricing'' uses a single size parameter (including \inst{MCOPY} which requires two offsets.)
+        This explains why we use $\mxpMacroSizeOneLo$.
+    \item[\underline{\underline{Computing the word-linear gas cost:}}]
+        we impose that
+        \[
+            \left\{ \begin{array}{lcl}
+                \locWordPrice     & \define & \mxpDecoderGWord    _{i - \locScenarioToDecoderRowOffset} \vspace{2mm} \\
+                \locExtraWordCost & \define & \locNumberOfWords \cdot \locWordPrice                                  \\
+            \end{array} \right.
+        \]
+    \item[\underline{\underline{Justifying the memory expansion gas:}}]
+        we impose
+        \[
+            \mxpMacroGasMxp _{i - \locScenarioToMacroRowOffset}
+            =
+            \left[ \begin{array}{cr}
+                + & \mxpScenarioCmemNew _{i} - \mxpScenarioCmem _{i} \\
+                + & \locExtraWordCost                                \\
+            \end{array} \right]
+        \]
+\end{description}
+
+\includepdf[fitpaper=true,pages={1}]{lua/state_update_word_pricing.pdf}

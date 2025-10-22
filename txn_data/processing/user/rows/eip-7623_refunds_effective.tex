@@ -1,0 +1,48 @@
+\item[\underline{\underline{Row n$°(i + \effectiveRefundRowOffset)$: Effective refund:}}]
+	we impose that
+	\[
+		\smallCallToLt {
+			anchorRow = i                         ,
+			relOffset = \effectiveRefundRowOffset ,
+			argOneLo  = \locHubFinalRefundCounter ,
+			argTwoLo  = \locRefundLimit           ,
+		}
+	\]
+	We further define the following shorthands:
+	\begin{enumerate}
+		\item $\locAccruedRefundsAreLtRefundLimit \define \res_{i + \effectiveRefundRowOffset}$
+
+			\saNote{}
+			The interpretation is as follows:
+			\[
+				\begin{array}{l}
+					\locAccruedRefundsAreLtRefundLimit = \true \vspace{2mm}                                                                          \\
+					\qquad \iff ~ \locHubFinalRefundCounter < \locRefundLimit                                                                        \\
+					\qquad \iff ~ \locHubFinalRefundCounter < \left\lfloor\frac{\locRlpGasLimit - \locHubLeftoverGas}\maxRefundQuotient\right\rfloor \\
+				\end{array}
+			\]
+		\item \If $\locAccruedRefundsAreLtRefundLimit = 0$ \Then
+			\[
+				\locLeftoverGasPlusRefunds \define
+				\left[ \begin{array}{cr}
+					+ & \locHubLeftoverGas \\
+					+ & \locRefundLimit    \\
+				\end{array} \right]
+			\]
+		\item \If $\locAccruedRefundsAreLtRefundLimit = 1$ \Then
+			\[
+				\locLeftoverGasPlusRefunds \define
+				\left[ \begin{array}{cl}
+					+ & \locHubLeftoverGas        \\
+					+ & \locHubFinalRefundCounter \\
+				\end{array} \right]
+			\]
+		\item we define
+			\[
+				\locConsumedGasAfterRefunds \define
+				\left[ \begin{array}{cl}
+					+ & \locRlpGasLimit            \\
+					- & \locLeftoverGasPlusRefunds \\
+				\end{array} \right]
+			\]
+	\end{enumerate}

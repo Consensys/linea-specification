@@ -5,13 +5,18 @@ We impose the following:
 	\item[\underline{Progression:}] \label{mmu: instructions: modexpdata: micro instruction writing: tlo progression}
 		we impose generally \If $\isMicro_{i} = 1$ \Then $\stdProgression_{i}\Big[\isMicro, \microTlo \Big]$
 \end{description}
-\saNote{} \label{mmu: modexData: microTLO explanation} Recall that in the present case (\mmuInstFlagModexpData{} instruction) the we have
-initially\footnote{i.e. during the pre-processing phase} $\ppTot \equiv 32$,
-see~(\ref{mmu: instructions: modexpdata: preprocessing: tot = 32 initially}),
+\saNote{} \label{mmu: modexData: microTLO explanation}
+Recall that in the present case (\mmuInstFlagModexpData{} instruction) the we have
+initially\footnote{i.e. during the pre-processing phase} $\ppTot \equiv \numberOfLimbsForModexpArgumentsAndResult$,
+see~(\ref{mmu: instructions: modexpdata: preprocessing: tot equals 64 initially}),
 and intially\footnote{i.e. on the first micro-instruction-writing row}, again, $\microTlo \equiv 0$,
 see~(\ref{mmu: instructions: modexpdata: initialize: tlo is initially 0}).
-The above therefore enforces that \microTlo{} will count monotonically and without gaps from $0$ to $31$ during the micro-instruction-writing phase.
-And indeed the goal of the present \mmuMod{}-instruction is to copy over up to $512 = 32 \times \llarge$ (potentially left and/or right zero padded) bytes of data i.e. $32$ data limbs.
+The above therefore enforces that \microTlo{} will count monotonically,
+and without gaps, from $0$ to $\numberOfLimbsForModexpArgumentsAndResult - 1$
+during the micro-instruction-writing phase.
+And indeed the goal of the present \mmuMod{}-instruction is to copy up to
+$\modexpMaxByteSizeValue = \numberOfLimbsForModexpArgumentsAndResult \times \llarge$,
+potentially left and/or right zero padded, bytes of data i.e. $\numberOfLimbsForModexpArgumentsAndResult$ data limbs.
 \begin{description}
 	\item[\underline{Zero padding rows:}] 
 		\If $\isZero_{i} = 1$ \Then

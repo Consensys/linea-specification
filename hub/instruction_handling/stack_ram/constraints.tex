@@ -80,32 +80,49 @@
 					\item \If $\locMxpx = 1$ \Then \( \gasCost_{i} = 0 \)
 				\end{enumerate}
 		\end{enumerate}
-	\item[\underline{Miscellaneous-row $n^°(i + \stackramMiscRowOffset)$: flags:}] we impose
+	\item[\underline{Miscellaneous-row $n^°(i + \stackramMiscRowOffset)$: flags:}]
+		we impose
 		\[
-			\weightedMiscFlagSum {i}{\stackramMiscRowOffset}
-			=
-			\left[ \begin{array}{crcl}
-				+ & \miscMmuWeight & \!\!\! \cdot \!\!\! & \locTriggerMmu \\
-				+ & \miscMxpWeight & \!\!\! \cdot \!\!\! & \locTriggerMxp \\
-				+ & \miscOobWeight & \!\!\! \cdot \!\!\! & \locTriggerOob \\
-			\end{array} \right]
-		\]
-		in other words we impose
-		\[
-			\left\{ \begin{array}{lclr}
-				\miscExpFlag  _{i + \stackramMiscRowOffset} & = & \gZero         & (\trash) \\
-				\miscMmuFlag  _{i + \stackramMiscRowOffset} & = & \locTriggerMmu & (\trash) \\
-				\miscMxpFlag  _{i + \stackramMiscRowOffset} & = & \locTriggerMxp & (\trash) \\
-				\miscOobFlag  _{i + \stackramMiscRowOffset} & = & \locTriggerOob & (\trash) \\
-				\miscStpFlag  _{i + \stackramMiscRowOffset} & = & \gZero         & (\trash) \\
+			\left\{ \begin{array}{lcl}
+				\weightedMiscFlagSumSansMmu {
+					anchorRow = i                      ,
+					relOffset = \stackramMiscRowOffset ,
+				}
+				& = &
+				\left[ \begin{array}{crcl}
+					+ & \miscMxpWeight & \!\!\! \cdot \!\!\! & \undefinedStar \quad \locTriggerMxp \\
+					+ & \miscOobWeight & \!\!\! \cdot \!\!\! & \undefinedStar \quad \locTriggerOob \\
+				\end{array} \right] \vspace{2mm} \\
+				\miscMmuFlag _{i + \stackramMiscRowOffset} & = & \undefinedStar \quad \locTriggerMmu \\
 			\end{array} \right.
 		\]
-		\saNote{} The binary flags ``\locTriggerXxx{}'' will be defined below.
-	\item[\underline{Defining \locTriggerMxp{}:}] we define
+		in other words
+		\[
+			\left\{ \begin{array}{lclr}
+				\miscExpFlag _{i + \stackramMiscRowOffset} & = & \gZero         & (\sanityCheck) \\
+				\miscMmuFlag _{i + \stackramMiscRowOffset} & = & \locTriggerMmu & (\sanityCheck) \\
+				\miscMxpFlag _{i + \stackramMiscRowOffset} & = & \locTriggerMxp & (\sanityCheck) \\
+				\miscOobFlag _{i + \stackramMiscRowOffset} & = & \locTriggerOob & (\sanityCheck) \\
+				\miscStpFlag _{i + \stackramMiscRowOffset} & = & \gZero         & (\sanityCheck) \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		The binary flags ``\locTriggerXxx{}'' will be defined below.
+		They are indeed provably binary.
+	\item[\underline{Defining \locTriggerMxp{}:}]
+		we define
 		$\locTriggerMxp \define \locIsMSomething$.
-	\item[\underline{Defining \locTriggerOob{}:}] we define
+
+		\saNote{}
+		\locTriggerMxp{} is \textbf{unconditionally binary}.
+	\item[\underline{Defining \locTriggerOob{}:}]
+		we define
 		$\locTriggerOob \define \locIsCallDataLoad$.
-	\item[\underline{Defining \locTriggerMmu{}:}] we define \locTriggerMmu{} as follows:
+
+		\saNote{}
+		\locTriggerOob{} is \textbf{unconditionally binary}.
+	\item[\underline{Defining \locTriggerMmu{}:}]
+		we define \locTriggerMmu{} as follows:
 		\begin{enumerate}
 			\item \If $\locIsCallDataLoad = 1$ \Then
 				\(
@@ -124,6 +141,10 @@
 		Therefore, in case of a \inst{CALLDATALOAD} instruction,
 		the \zkEvm{} activates the \mmuMod{} \emph{if and only if}
 		the instruction is unexceptional and the instruction's offset does not land within the ``$0$-padding'' of call data.
+
+		\saNote{}
+		\locTriggerMmu{} is \textbf{provably binary},
+		given that the \oobMod{} module was called.
 	\item[\underline{Miscellaneous-row $n°(i + \stackramMiscRowOffset)$: \oobMod{} data:}]
 		\If $\miscOobFlag _{i + \stackramMiscRowOffset} = 1$ \Then we impose
 		\[
@@ -157,29 +178,29 @@
 	\item[\underline{Miscellaneous-row $n^°(i + \stackramMiscRowOffset)$: \mxpMod{} data:}]
 		\If $\miscMxpFlag _{i + \stackramMiscRowOffset} = 1$
 		\Then we compute memory expansion cost:
-		\begin{enumerate}
-			\item
-				\If $\locIsMload + \locIsMstore = 1$ \Then
-				\[
-					\setMxpInstructionTypeTwo{
-						anchorRow   = i                      ,
-						relOffset   = \stackramMiscRowOffset ,
-						instruction = \locInst               ,
-						offsetHi    = \locOffsetHi           ,
-						offsetLo    = \locOffsetLo           ,
-					}
-				\]
-			\item
-				\If $\locIsMstoreEight = 1$ \Then
-				\[
-					\setMxpInstructionTypeThree{
-						anchorRow = i                      ,
-						relOffset = \stackramMiscRowOffset ,
-						offsetHi  = \locOffsetHi           ,
-						offsetLo  = \locOffsetLo           ,
-					}
-				\]
-		\end{enumerate}
+		\[
+			\setMxpInstructionOneOffset
+			{
+				anchorRow   = i                      ,
+				relOffset   = \stackramMiscRowOffset ,
+				instruction = \locInst               ,
+				deploys     = \nothing               ,
+				offsetHi    = \locOffsetHi           ,
+				offsetLo    = \locOffsetLo           ,
+				sizeHi      = 0                      ,
+				sizeLo      = \locFixedSize          ,
+			}
+		\]
+		where
+		\[
+			\locFixedSize
+			\define
+			\left[ \begin{array}{crcl}
+				+ & \redm{32} & \!\!\!\cdot\!\!\! & \locIsMload       \\
+				+ & \redm{32} & \!\!\!\cdot\!\!\! & \locIsMstore      \\
+				+ & \redm{ 1} & \!\!\!\cdot\!\!\! & \locIsMstoreEight \\
+			\end{array} \right]
+		\]
 	\item[\underline{Miscellaneous-row $n^°(i + \stackramMiscRowOffset)$: \mmuMod{} data:}]
 		\If $\miscMmuFlag _{i + \stackramMiscRowOffset} = 1$ \Then
 		we impose

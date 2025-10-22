@@ -1,0 +1,51 @@
+and we further define the following shorthands
+\[
+	\left\{ \begin{array}{lcl}
+		\locIsData_{i} & \define &  
+		\left[ \begin{array}{cl}
+			+ & \isPointEvaluationData  _{i}   \\
+            + & \isBlsGOneAddData  _{i}        \\
+			+ & \isBlsGOneMsmData  _{i}        \\
+			+ & \isBlsGTwoAddData  _{i}        \\
+			+ & \isBlsGTwoMsmData  _{i}        \\
+			+ & \isBlsPairingCheckData  _{i}   \\
+			+ & \isBlsMapFpToGOneData  _{i}    \\
+			+ & \isBlsMapFpTwoToGTwoData  _{i} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locIsResult_{i} & \define &  
+		\left[ \begin{array}{cl}
+			+ & \isPointEvaluationResult  _{i}   \\
+			+ & \isBlsGOneAddResult  _{i}        \\
+			+ & \isBlsGOneMsmResult  _{i}        \\
+			+ & \isBlsGTwoAddResult  _{i}        \\
+			+ & \isBlsGTwoMsmResult  _{i}        \\
+			+ & \isBlsPairingCheckResult  _{i}   \\
+			+ & \isBlsMapFpToGOneResult  _{i}    \\
+			+ & \isBlsMapFpTwoToGTwoResult  _{i} \\
+		\end{array} \right] \\
+	\end{array} \right.
+\]
+and
+\[
+        \left\{ \begin{array}{lcrcl}
+                \locTransitionToData   _{i} & \define & (1 - \locIsData   _{i}) & \cdot & \locIsData   _{i + 1} \\
+                \locTransitionToResult _{i} & \define & (1 - \locIsResult _{i}) & \cdot & \locIsResult _{i + 1} \vspace{2mm} \\
+                \locTransitionBit      _{i} & \define &
+		\multicolumn{3}{l}{
+			\left[ \begin{array}{cl}
+				+ & \locTransitionToData   _{i} \\
+				+ & \locTransitionToResult _{i} \\
+			\end{array} \right]}
+		\\				
+        \end{array} \right.
+\]
+\saNote{} The quantity $\locTransitionBit$ is indeed a bit.
+
+\saNote{} \label{bls: shorthands: everything is binary}
+All shorthands defined in the above are binary.
+This follows from the binarity of the various data and result flags, 
+see section~(\ref{bls: generalities: binary})
+and their exclusivity, 
+see section~(\ref{bls: generalities: flag sum}).

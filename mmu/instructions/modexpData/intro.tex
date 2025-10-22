@@ -1,4 +1,4 @@
-The present instruction is used by the \hubMod{} to extract a \textbf{potentially nontrivial} base, exponent or modulus parameter for the \inst{MODEXP} precompile.
+The present instruction is used by the \hubMod{} to extract a \textbf{potentially nontrivial} base, exponent or modulus parameter for the \instModexp{} precompile.
 What follows is, depending on the case, the desired interpretation of some of the fields of the macro-instruction:
 \begin{description}
 	\item[\underline{General values:}]
@@ -37,7 +37,8 @@ What follows is, depending on the case, the desired interpretation of some of th
 Using shorthands introduced in section~(\ref{mmu: instructions: modexpdata: shorthands}) we will furthermore be guaranteed that
 \[
 	\left\{ \begin{array}{l}
-		0 < \locModexpParamByteSize \leq 512    \\
-		0 < \locModexpParamOffset        \ll 256^4 \\
+		0 < \locModexpParamByteSize \leq \modexpMaxByteSizeName             \\
+		\modexpMaxByteSizeName \define \modexpMaxByteSizeValue \vspace{2mm} \\
+		0 < \locModexpParamOffset   <    \mxpxThreshold                     \\
 	\end{array} \right.
 \]

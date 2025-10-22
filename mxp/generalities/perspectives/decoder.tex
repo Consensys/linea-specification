@@ -1,0 +1,65 @@
+\begin{center}
+	\boxed{\text{All constraints are written under the assumption that } \isMxpInstructionDecoder _{i} = 1.}
+\end{center}
+\begin{enumerate}
+	\item \If $\mxpDecoderIsMsize _{i} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lcll}
+				\mxpMacroOffsetOneHi  _{i + \locDecoderToMacroRowOffset} & = & 0 & \quad \sanityCheck \\
+				\mxpMacroOffsetOneLo  _{i + \locDecoderToMacroRowOffset} & = & 0 & \quad \sanityCheck \\
+				\mxpMacroSizeOneHi    _{i + \locDecoderToMacroRowOffset} & = & 0 & \quad \sanityCheck \\
+				\mxpMacroSizeOneLo    _{i + \locDecoderToMacroRowOffset} & = & 0 & \quad \sanityCheck \\
+				\mxpMacroSOneNzNoMxpx _{i + \locDecoderToMacroRowOffset} & = & 0 & \quad \sanityCheck \\
+			\end{array} \right.
+			\quad\text{and}\quad
+			\left\{ \begin{array}{lcll}
+				\mxpMacroOffsetTwoHi  _{i + \locDecoderToMacroRowOffset} & = & 0 & \quad \sanityCheck \\
+				\mxpMacroOffsetTwoLo  _{i + \locDecoderToMacroRowOffset} & = & 0 & \quad \sanityCheck \\
+				\mxpMacroSizeTwoHi    _{i + \locDecoderToMacroRowOffset} & = & 0 & \quad \sanityCheck \\
+				\mxpMacroSizeTwoLo    _{i + \locDecoderToMacroRowOffset} & = & 0 & \quad \sanityCheck \\
+				\mxpMacroSTwoNzNoMxpx _{i + \locDecoderToMacroRowOffset} & = & 0 & \quad \sanityCheck \\
+			\end{array} \right.
+		\]
+		and
+		\[
+			\left\{ \begin{array}{lcll}
+				\mxpMacroMxpx                             _{i + \locDecoderToMacroRowOffset} & = & 0 & \quad \sanityCheck \\
+				\mxpMacroGasMxp                           _{i + \locDecoderToMacroRowOffset} & = & 0 & \quad \sanityCheck \\
+			\end{array} \right.
+		\]
+	\item \If $\mxpDecoderIsMsize _{i} = 0$ \Then
+		\[
+			\mxpMacroRes _{i + \locDecoderToMacroRowOffset} = 0 \quad \sanityCheck
+		\]
+	\item \If $\mxpDecoderIsFixedSizeThirtyTwo _{i} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\mxpMacroSizeOneHi _{i + \locDecoderToMacroRowOffset} & = & 0            \\
+				\mxpMacroSizeOneLo _{i + \locDecoderToMacroRowOffset} & = & \evmWordSize \\
+			\end{array} \right.
+		\]
+	\item \If $\mxpDecoderIsFixedSizeOne _{i} = 1$
+		\[
+			\left\{ \begin{array}{lcl}
+				\mxpMacroSizeOneHi   _{i + \locDecoderToMacroRowOffset} & = & 0     \\
+				\mxpMacroSizeOneLo   _{i + \locDecoderToMacroRowOffset} & = & \rOne \\
+			\end{array} \right.
+		\]
+	\item \If $\mxpDecoderIsDoubleMaxOffset _{i} = 0$
+		\[
+			\left\{ \begin{array}{lclr}
+				\mxpMacroOffsetTwoHi  _{i + \locDecoderToMacroRowOffset} & = & 0 & \quad \sanityCheck \\
+				\mxpMacroOffsetTwoLo  _{i + \locDecoderToMacroRowOffset} & = & 0 & \quad \sanityCheck \\
+				\mxpMacroSizeTwoHi    _{i + \locDecoderToMacroRowOffset} & = & 0 & \quad \sanityCheck \\
+				\mxpMacroSizeTwoLo    _{i + \locDecoderToMacroRowOffset} & = & 0 & \quad \sanityCheck \\
+				\mxpMacroSTwoNzNoMxpx _{i + \locDecoderToMacroRowOffset} & = & 0 & \quad \sanityCheck \\
+			\end{array} \right.
+		\]
+	\item \If $\mxpDecoderIsMcopy _{i} = 1$
+		\[
+			\left\{ \begin{array}{lcl}
+				\mxpMacroSizeOneHi _{i + \locDecoderToMacroRowOffset} & = & \mxpMacroSizeTwoHi _{i + \locDecoderToMacroRowOffset} \\
+				\mxpMacroSizeOneLo _{i + \locDecoderToMacroRowOffset} & = & \mxpMacroSizeTwoLo _{i + \locDecoderToMacroRowOffset} \\
+			\end{array} \right.
+		\]
+\end{enumerate}

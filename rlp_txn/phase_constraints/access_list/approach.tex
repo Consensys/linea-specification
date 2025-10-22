@@ -1,0 +1,58 @@
+The present section deals with the \rlp{}-ization of access lists.
+The transaction types which feature access lists can be read off of
+table~(\ref{rlp txn: phase constraints: definitions: table}).
+Recall that, if applicable, the access list $T_\textbf{A}$ of a transaction $T$ is a tuple
+\[
+    \left\{ \begin{array}{lcl}
+	T_\textbf{A}                       & \equiv & \text{list of access list items}                                 \\
+                                           & \equiv & (E, E', \dots)                                      \vspace{2mm} \\
+	E, E', \dots                       & \equiv & \text{access list items}                                         \\
+                                           & \equiv & (E_a, E_\textbf{s})                                 \vspace{2mm} \\
+	E_a                                & \equiv & \text{address } \in \mathbb{B}_{\addressSize}       \vspace{2mm} \\
+	E_\textbf{s}                       & \equiv & \text{list of storage keys}                                      \\
+                                           & \equiv & (\texttt{key}, \texttt{key'}, \dots)                \vspace{2mm} \\
+	\texttt{key}, \texttt{key'}, \dots & \equiv & \text{storage keys } \in \mathbb{B}_{\evmWordSize}               \\
+    \end{array} \right.
+\]
+Recall furthermore that
+(\emph{a}) $T_\textbf{A}$ may be empty
+(\emph{b}) any list of storage keys $E_\textbf{s}$ may be empty, too.
+
+\rlp{}-izing an access list $T_\textbf{A}$ requires
+\begin{enumerate}
+    \item
+	computing the \rlp{}-prefix of the whole access list;
+	each access list is \rlp{}-ized as a \textbf{list};
+\end{enumerate}
+We do this along \locAccessListPrefix{}-rows.
+If the access list is nonempty the next step is to loop over the access list items.
+For each access list item we
+\begin{enumerate}[resume]
+    \item 
+	compute the \rlp{}-prefix of the access list item;
+	each access list item is \rlp{}-ized as a \textbf{list};
+	such rows are characterized by
+	\[
+	    \rlpTxnSharedColumnIsPrefixOfAccessListItem \equiv \true
+	\]	
+    \item
+	\rlp{}-ize each address $E_a$;
+	such rows are characterized by
+	\[
+		\rlpTxnSharedColumnIsAccessListAddress \equiv \true
+	\]
+    \item
+	compute the \rlp{}-prefix of the storage key list $E_\textbf{s}$;
+	each storage key list is \rlp{}-ized as a \textbf{list};
+	such rows are characterized by
+	\[
+		\rlpTxnSharedColumnIsPrefixOfStorageKeyList \equiv \true
+	\]
+    \item
+	\rlp{}-ize each address $\texttt{key} \in \mathbb{B} _{\evmWordSize}$;
+	such rows are characterized by
+	\[
+		\rlpTxnSharedColumnIsAccessListStorageKey \equiv \true
+	\]
+\end{enumerate}
+We do this along \locAccessListData{}-rows.
