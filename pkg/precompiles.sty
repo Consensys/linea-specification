@@ -150,56 +150,118 @@
 \newcol{\trivialPairing}         {TRIVIAL\_PAIRING}   {OVERALL\_TRIVIAL\_PAIRING}
 
 % System of constraints
+\define@cmdkey [ECDATA] {var} {anchorRow}        {}
+\define@cmdkey [ECDATA] {var} {relOffset}        {}
+\define@cmdkey [ECDATA] {var} {xHi}              {}
+\define@cmdkey [ECDATA] {var} {xLo}              {}
+\define@cmdkey [ECDATA] {var} {yHi}              {}
+\define@cmdkey [ECDATA] {var} {yLo}              {}
+\define@cmdkey [ECDATA] {var} {xSquareHi}        {}
+\define@cmdkey [ECDATA] {var} {xSquareLo}        {}
+\define@cmdkey [ECDATA] {var} {ySquareHi}        {}
+\define@cmdkey [ECDATA] {var} {ySquareLo}        {}
+\define@cmdkey [ECDATA] {var} {xCubeHi}          {}
+\define@cmdkey [ECDATA] {var} {xCubeLo}          {}
+\define@cmdkey [ECDATA] {var} {xCubePlusThreeHi} {}
+\define@cmdkey [ECDATA] {var} {xCubePlusThreeLo} {}
+\define@cmdkey [ECDATA] {var} {xImHi}            {}
+\define@cmdkey [ECDATA] {var} {xImLo}            {}
+\define@cmdkey [ECDATA] {var} {xReHi}            {}
+\define@cmdkey [ECDATA] {var} {xReLo}            {}
+\define@cmdkey [ECDATA] {var} {yImHi}            {}
+\define@cmdkey [ECDATA] {var} {yImLo}            {}
+\define@cmdkey [ECDATA] {var} {yReHi}            {}
+\define@cmdkey [ECDATA] {var} {yReLo}            {}
+
+\presetkeys [ECDATA] {var} {
+	anchorRow = \missingParameter       ,
+	relOffset = \missingParameter       ,
+    xHi = \missingParameter             ,
+    xLo = \missingParameter             ,
+    yHi = \missingParameter             ,
+    yLo = \missingParameter             ,
+    xSquareHi = \missingParameter       ,
+    xSquareLo = \missingParameter       ,
+    ySquareHi = \missingParameter       ,
+    ySquareLo = \missingParameter       ,
+    xCubeHi = \missingParameter         ,
+    xCubeLo = \missingParameter         ,
+    xCubePlusThreeHi = \missingParameter,
+    xCubePlusThreeLo = \missingParameter,
+    xImHi = \missingParameter           ,
+    xImLo = \missingParameter           ,
+    xReHi = \missingParameter           ,
+    xReLo = \missingParameter           ,
+    yImHi = \missingParameter           ,
+    yImLo = \missingParameter           ,
+    yReHi = \missingParameter           ,
+    yReLo = \missingParameter
+}{}
+
+
 \newcommand{\callCOneMembership}             {\texttt{callToC1Membership}}
 
-\newcommand{\callToCOneMembership}[6]{
-    \callCOneMembership_{#1}
+\newcommand{\callToCOneMembership}[1]{
+    \setkeys[ECDATA]{var}{#1}
+    \callCOneMembership_{\cmdECDATA@var@anchorRow}
     \left[ \begin{array}{ll}
-            \utt{Rel. row offset:}        & #2       \\
-            \utt{First argument (high):}  & \col{#3} \\
-            \utt{First argument (low):}   & \col{#4} \\
-            \utt{Second argument (high):} & \col{#5} \\
-            \utt{Second argument (low):}  & \col{#6} \\
+            \utt{Rel. row offset:} & \cmdECDATA@var@relOffset           \\
+            \utt{x coord. hi:}     & \cmdECDATA@var@xHi                 \\
+            \utt{x coord. lo:}     & \cmdECDATA@var@xLo                 \\
+            \utt{y coord. hi:}     & \cmdECDATA@var@yHi                 \\
+            \utt{y coord. lo:}     & \cmdECDATA@var@yLo                 \\
         \end{array} \right]}
 
 \newcommand{\callCOneMembershipWCP}             {\texttt{callToC1MembershipWCP}}
 
-\newcommand{\callToCOneMembershipWCP}[6]{
-    \callCOneMembershipWCP_{#1}
+\newcommand{\callToCOneMembershipWCP}[1]{
+    \setkeys[ECDATA]{var}{#1}
+    \callCOneMembershipWCP_{\cmdECDATA@var@anchorRow}
     \left[ \begin{array}{ll}
-            \utt{Rel. row offset:}        & #2       \\
-            \utt{First argument (high):}  & \col{#3} \\
-            \utt{First argument (low):}   & \col{#4} \\
-            \utt{Second argument (high):} & \col{#5} \\
-            \utt{Second argument (low):}  & \col{#6} \\
+            \utt{Rel. row offset:} & \cmdECDATA@var@relOffset           \\
+            \utt{x coord. hi:}     & \cmdECDATA@var@xHi                 \\
+            \utt{x coord. lo:}     & \cmdECDATA@var@xLo                 \\
+            \utt{y coord. hi:}     & \cmdECDATA@var@yHi                 \\
+            \utt{y coord. lo:}     & \cmdECDATA@var@yLo                 \\
+            \utt{LHS of (E) hi:}   & \cmdECDATA@var@ySquareHi           \\
+            \utt{LHS of (E) lo:}   & \cmdECDATA@var@ySquareLo           \\
+            \utt{RHS of (E) hi:}   & \cmdECDATA@var@xCubePlusThreeHi    \\
+            \utt{RHS of (E) lo:}   & \cmdECDATA@var@xCubePlusThreeLo    \\
+            \utt{Where (E) is:}    & y^2 = x^3 + 3 
         \end{array} \right]}
 
 \newcommand{\callCOneMembershipEXT}             {\texttt{callToC1MembershipEXT}}
 
-\newcommand{\callToCOneMembershipEXT}[6]{
-    \callCOneMembershipEXT_{#1}
+\newcommand{\callToCOneMembershipEXT}[1]{
+    \setkeys[ECDATA]{var}{#1}
+    \callCOneMembershipEXT_{\cmdECDATA@var@anchorRow}
     \left[ \begin{array}{ll}
-            \utt{Rel. row offset:}        & #2       \\
-            \utt{First argument (high):}  & \col{#3} \\
-            \utt{First argument (low):}   & \col{#4} \\
-            \utt{Second argument (high):} & \col{#5} \\
-            \utt{Second argument (low):}  & \col{#6} \\
+            \utt{Rel. row offset:}                & \cmdECDATA@var@relOffset    \\
+            \utt{x coord. hi:}                    & \cmdECDATA@var@xHi          \\
+            \utt{x coord. lo:}                    & \cmdECDATA@var@xLo          \\
+            \utt{y coord. hi:}                    & \cmdECDATA@var@yHi          \\
+            \utt{y coord. lo:}                    & \cmdECDATA@var@yLo          \\
+            \utt{square of x coord. hi:}          & \cmdECDATA@var@xSquareHi    \\
+            \utt{square of x coord. lo:}          & \cmdECDATA@var@xSquareLo    \\
+            \utt{cube of x coord. hi:}            & \cmdECDATA@var@xCubeHi      \\
+            \utt{cube of x coord. lo:}            & \cmdECDATA@var@xCubeLo      \\
         \end{array} \right]}
 
 \newcommand{\callWellFormedCoordinates}             {\texttt{callToWellFormedCoordinates}}
 
-\newcommand{\callToWellFormedCoordinates}[9]{ % TODO: a standard macro cannot have more than 9 arguments, thus here 'i' is hardcoded: use xkeyval
-    \callWellFormedCoordinates_{i}
+\newcommand{\callToWellFormedCoordinates}[1]{ 
+    \setkeys[ECDATA]{var}{#1}
+    \callWellFormedCoordinates_{\cmdECDATA@var@anchorRow}
     \left[ \begin{array}{ll}
-            \utt{Rel. row offset:}        & #1       \\
-            \utt{First argument (high):}  & \col{#2} \\
-            \utt{First argument (low):}   & \col{#3} \\
-            \utt{Second argument (high):} & \col{#4} \\
-            \utt{Second argument (low):}  & \col{#5} \\
-            \utt{Third argument (high):}  & \col{#6} \\
-            \utt{Third argument (low):}   & \col{#7} \\
-            \utt{Fourth argument (high):} & \col{#8} \\
-            \utt{Fourth argument (low):}  & \col{#9} \\
+            \utt{Rel. row offset:}         & \cmdECDATA@var@relOffset    \\
+            \utt{x coord. imaginary hi:}   & \cmdECDATA@var@xImHi        \\
+            \utt{x coord. imaginary lo:}   & \cmdECDATA@var@xImLo        \\
+            \utt{x coord. real hi:}        & \cmdECDATA@var@xReHi        \\
+            \utt{x coord. real lo:}        & \cmdECDATA@var@xReLo        \\
+            \utt{y coord. imaginary hi:}   & \cmdECDATA@var@yImHi        \\
+            \utt{y coord. imaginary lo:}   & \cmdECDATA@var@yImLo        \\
+            \utt{y coord. real hi:}        & \cmdECDATA@var@yReHi        \\
+            \utt{y coord. real lo:}        & \cmdECDATA@var@yReLo        \\
         \end{array} \right]}
 
 \newcommand{\ttx}                 {\texttt{x}}
