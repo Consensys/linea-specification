@@ -102,14 +102,14 @@ We furthermore use the \oobMod{} for the pricing of certain precompiles and the 
 				\text{for }\instIdentity{} : & \locCalleeGas \leq g_\text{r} & := & 15  & + & 3   \cdot \locCeil  \\
 			\end{array} \right.
 		\]
-	\item[\underline{\inst{BLS\_G1MSM} and \inst{BLS\_G2MSM}:}]
+	\item[\underline{\instBlsGOneMsm{} and \instBlsGTwoMsm{}:}]
 		verifies that $\| I_\textbf{d} \| \equiv 0 \mod \locMinMsmSize$ and performs the comparison 
 		\[ \locCalleeGas \leq g_\text{r} := \frac{\| I_\textbf{d} \|}{\locMinMsmSize} \cdot \locMsmMultiplicationCost \cdot \frac{\locDiscount}{\prcBlsMultiplicationMultiplier} \]
 		See section~(\ref{oob: generalities: shorthands}) for the definition of \locMinMsmSize{}, \locMsmMultiplicationCost{} and \prcBlsMultiplicationMultiplier{} and section~(\ref{oob: precompiles: bls: msm}) for the definition of \locDiscount{}.
 	\item[\underline{\instEcpairing{}:}]
 		verifies that $\| I_\textbf{d} \| \equiv 0 \mod 192$ and performs the comparison 
 		\[ \locCalleeGas \leq g_\text{r} := 34000 \cdot \frac{\| I_\textbf{d} \|}{192} + 45000 \]
-	\item[\underline{\inst{BLS\_PAIRING\_CHECK}:}]
+	\item[\underline{\instBlsPairingCheck{}:}]
 		verifies that $\| I_\textbf{d} \| \equiv 0 \mod 384$ and performs the comparison 
 		\[ \locCalleeGas \leq g_\text{r} := 32600 \cdot \frac{\| I_\textbf{d} \|}{384} + 37700 \]
 \end{description}
@@ -119,4 +119,7 @@ We furthermore use the \oobMod{} for the pricing of certain precompiles and the 
 The present module is only a preliminary step toward detecting exceptions related to those precompiles.
 
 \saNote{}
-The pricing of \instModexp{} and \instBlake{} requires excavating values stored in \texttt{ram}. Their pricing is \emph{not} dealt with in the present module. 
+The pricing of \instModexp{} and \instBlake{} requires excavating values stored in \texttt{ram}.
+Their extraction is \emph{not} dealt with in the present module.
+But the pricing itself, taking those \texttt{ram} parameters as \godGiven{} inputs,
+does happen in the present \oobMod{} module.
