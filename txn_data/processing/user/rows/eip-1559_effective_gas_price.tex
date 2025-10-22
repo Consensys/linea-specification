@@ -1,0 +1,34 @@
+\item[\underline{\underline{Row n$°(i + \effectiveGasPriceRowOffset)$: computing the effective gas price:}}]
+	we impose that
+	\[
+		\smallCallToLeq {
+			anchorRow = i ,
+			relOffset = \effectiveGasPriceRowOffset  ,
+			argOneLo  = \locRlpMaxPriorityFee + \locHubBasefee  ,
+			argTwoLo  = \locRlpMaxFee  ,
+		}
+	\]
+	and we define the following shorthand
+	\[
+		\locGetFullTip \define \res_{i + \effectiveGasPriceRowOffset}
+	\]
+	We further set
+	\begin{enumerate}
+		\item \If $\locGetFullTip = \true$  \Then
+			\[
+				\locHubGasPrice
+				=
+				\locRlpMaxPriorityFee + \locHubBasefee
+			\]
+		\item \If $\locGetFullTip = \false$ \Then
+			\[
+				\locHubGasPrice
+				=
+				\locRlpMaxFee
+			\]
+	\end{enumerate}
+	\saNote{}
+	By construction
+	\[
+		\locGetFullTip = \true \iff \locRlpMaxPriorityFee + \locHubBasefee \leq \locRlpMaxFee
+	\]

@@ -1,0 +1,192 @@
+\[
+	\boxed{\text{All constraints in this subsection assume that }
+	\left\{ \begin{array}{lcl}
+		\isMxpScenario             _{i} & = & 1 \\
+		\locMxpScenarioStateUpdate _{i} & = & 1 \\
+	\end{array} \right. }
+\]
+\noindent
+The present section describes the computation for the $\locMxpScenarioStateUpdate$ case.
+We impose the following
+\begin{description}
+	\item[\underline{\underline{Justifying the scenario:}}]
+		we define the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locSingleOffsetOpcode & \define & \mxpDecoderIsSingleMaxOffset _{i - \locScenarioToDecoderRowOffset} \\
+				\locDoubleOffsetOpcode & \define & \mxpDecoderIsDoubleMaxOffset _{i - \locScenarioToDecoderRowOffset} \\
+				\locWordPricingOpcode  & \define & \mxpDecoderIsWordPricing     _{i - \locScenarioToDecoderRowOffset} \\
+				\locBytePricingOpcode  & \define & \mxpDecoderIsBytePricing     _{i - \locScenarioToDecoderRowOffset} \\
+			\end{array} \right.
+		\]
+		we can now finish justifying the scenario
+		\[
+			\left\{ \begin{array}{lcl}
+				\mxpScenarioStateUpdateWordPricing _{i} & = & \locWordPricingOpcode \vspace{2mm} \\
+				\mxpScenarioStateUpdateBytePricing _{i} & = & \locBytePricingOpcode              \\
+			\end{array} \right.
+		\]
+\end{description}
+\saNote{}
+We may alternatively encode the above in a single degree one constraint as follows:
+\[
+	\begin{array}{l}
+		\left[ \begin{array}{lcl}
+			+ ~ 1 & \!\!\!\cdot\!\!\! & \mxpScenarioStateUpdateBytePricing _{i} \\
+			+ ~ 2 & \!\!\!\cdot\!\!\! & \mxpScenarioStateUpdateWordPricing _{i} \\
+		\end{array} \right] \vspace{2mm} \\
+		\qquad\qquad =
+		\left[ \begin{array}{lcl}
+			+ ~ 1 & \!\!\!\cdot\!\!\! & \locWordPricingOpcode  \\
+			+ ~ 2 & \!\!\!\cdot\!\!\! & \locBytePricingOpcode  \\
+		\end{array} \right] \\
+	\end{array}
+\]
+This works due to flag exclusivity properties in the present \mxpMod{} module and in the \idMod{} module.
+\begin{description}
+	\def\nRows{\yellowm{7}}\item[\underline{\underline{Comparing max offsets:}}] 
+		we introduce the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locMaxOne       & \define & \locSizeOneIsNonZero \cdot (\locOffsetOneLo + \locSizeOneLo) \\
+				\locMaxTwo       & \define & \locSizeTwoIsNonZero \cdot (\locOffsetTwoLo + \locSizeTwoLo) \\
+			\end{array} \right.
+		\]
+		we impose that
+		\[
+			\wcpCallToLt{
+				anchorRow = i                                       ,
+				relOffset = \nRows                                  ,
+				argOneHi  = 0                                       ,
+				argOneLo  = \locDoubleOffsetOpcode \cdot \locMaxOne ,
+				argTwoHi  = 0                                       ,
+				argTwoLo  = \locDoubleOffsetOpcode \cdot \locMaxTwo ,
+			} 
+		\]
+		and we define the following shorthand
+		\[
+			\left\{ \begin{array}{lcl}
+				\locUseParameterSetTwo & \define & \mxpComputationResA _{i + \nRows} \\
+				\locUseParameterSetOne & \define & 1 - \locUseParameterSetTwo        \\
+			\end{array} \right.
+		\]
+		and we finally set
+		\[
+			\left\{ \begin{array}{lcl}
+				\locMaxOffset    & \define &
+				\left[ \begin{array}{clcl}
+					+ & \locUseParameterSetOne & \cdot & \locMaxOffsetOne \\
+					+ & \locUseParameterSetTwo & \cdot & \locMaxOffsetTwo \\
+				\end{array} \right] \vspace{2mm} \\
+				\locMaxOffsetOne & \define & \locMaxOne - 1 \\
+				\locMaxOffsetTwo & \define & \locMaxTwo - 1 \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		We filter the \wcpMod{}-arguments by $\locDoubleOffsetOpcode$ to prevent unnecesary comparisons when $\locSingleOffsetOpcode \equiv 1$.
+
+		\saNote{}
+		When defining
+		\locMaxOne{} and
+		\locMaxTwo{}
+		we must be careful to disregard ``max offsets'' associated to ``zero sizes''.
+		We achieve this by filtering their expressions through the corresponding \locSizeKIsNonZero{}.
+		Here is our rationale for this.
+		When entering the present scenario
+		($\locMxpScenarioStateUpdate \equiv \true$)
+		we are ensured that \textbf{at least one size parameter is nonzero},
+		see section~(\ref{mxp: computation: non msize: the trivial scenario corresponds to zero sizes}).
+		For instructions taking \textbf{two} size parameters
+		($\locDoubleOffsetOpcode \equiv \true$)
+		\textbf{it is perfectly legal for one size parameter to be zero}.
+		(Note that this cannot happen for \inst{MCOPY}.)
+		No memory expansion should be associated with the corresponding offset and (zero) size.
+		The associated ``offset $=$ offset $+$ 0'' value may, however, be nonzero
+		and potentially larger than the other, and only relevant, ``offset $+$ size'' value.
+		By filtering this value using $\locSizeKIsNonZero$ we ensure that the corresponding \locMaxK{} is set to zero
+		and that it does not pollute the definition of \locMaxOffset{} given later on.
+	\def\nRows{\yellowm{8}}\item[\underline{\underline{Computing the floor of the division of \locMaxOffset{} by $\evmWordSize$:}}] 
+		we impose that
+		\[
+			\eucCall {
+				anchorRow = i             ,
+				relOffset = \nRows        ,
+				argOne    = \locMaxOffset ,
+				argTwo    = \evmWordSize  ,
+			}
+		\]
+		and we define the following shorthand
+		\[
+			\left\{ \begin{array}{lcl}
+				\locFloor & \define & \mxpComputationResA _{i+\nRows} \\
+				\locEypA  & \define & \locFloor + 1                   \\
+			\end{array} \right.
+		\]
+	\def\nRows{\yellowm{9}}\item[\underline{\underline{Computing the floor of the division of $\locEypA \cdot \locEypA$ and 512:}}] 
+		we impose that
+		\[
+			\eucCall {
+				anchorRow = i                       ,
+				relOffset = \nRows                  ,
+				argOne    = \locEypA \cdot \locEypA ,
+				argTwo    = 512                     ,
+			}
+		\]
+		and we define the following shorthand
+		\[
+			\left\{ \begin{array}{lcl}
+				\locCmemQuadPart & \define & \mxpComputationResA _{i + \nRows} \\
+				\locCmemLinrPart & \define & G_\text{memory} \cdot \locEypA    \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		The above correspond to
+		\[
+			\left\{ \begin{array}{lcl}
+				\locCmemQuadPart & \leftrightsquigarrow & \displaystyle \left\lfloor \frac{a^2}{512} \right\rfloor \\
+				\locCmemLinrPart & \leftrightsquigarrow & G_\text{memory} \cdot a                                  \\
+			\end{array} \right.
+		\]
+		where $a$ corresponds to $\locEypA$.
+	\def\nRows{\yellowm{10}}\item[\underline{\underline{Comparing \locWords{} and \locEypA{}:}}] 
+		we impose that
+		\[
+			\wcpCallToLt{
+				anchorRow = i         ,
+				relOffset = \nRows    ,
+				argOneHi  = 0         ,
+				argOneLo  = \locWords ,
+				argTwoHi  = 0         ,
+				argTwoLo  = \locEypA  ,
+			} 
+		\]
+		and we define the following shorthand
+		\[
+			\left\{ \begin{array}{lcl}
+				\locUpdateInternalState & \define & \mxpComputationResA _{i + \nRows} \\
+				\locWords       & \define & \mxpScenarioWords   _{i}          \\
+			\end{array} \right.
+		\]
+	\item[\underline{\underline{Updating the state:}}] 
+		we impose that
+		\begin{description}
+			\item[\underline{No state update:}]
+				\If $\locUpdateInternalState = 0$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\mxpScenarioWordsNew _{i} & = & \mxpScenarioWords _{i} \\
+						\mxpScenarioCmemNew  _{i} & = & \mxpScenarioCmem  _{i} \\
+					\end{array} \right.
+				\]
+			\item[\underline{State update:}]
+				\If $\locUpdateInternalState = 1$ \Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\mxpScenarioWordsNew _{i} & = & \locEypA                            \\
+						\mxpScenarioCmemNew  _{i} & = & \locCmemLinrPart + \locCmemQuadPart \\
+					\end{array} \right.
+				\]
+		\end{description}
+\end{description}
+
+\includepdf[fitpaper=true,pages={1}]{lua/state_update.pdf}

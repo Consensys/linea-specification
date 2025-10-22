@@ -12,14 +12,17 @@
 		account code hash and its updated value;
 	\item $\accHasCode$ and $\accHasCode\new$:
 		binary columns indicating whether the account has empty code;
+	\item $\accHadCodeInitially$:
+		binary column used to log whether the account had nonempty bytecode at the start of the transaction;
+		used in \inst{SELFDESTRUCT} instruction processing after \cite{EIP-6780};
 	\item $\accCfi$:
 		the \CFI{} of the account's code; only listed if necessary;
 	\item $\accRomLexFlag$:
 		binary column which lights up whenever the account's \CFI{} is required;
 \end{enumerate}
-% \saNote{} $\accCodehash$ and $\accCodehash\new$ are (both) split into high and low parts.
 
-\saNote{} The constraints will implement $\accHasCode = 1 \iff \accCodehash \neq \emptyKeccak$ i.e. we don't use the $\accCodesize$; recall that while a contract is deploying its code is empty from the point of view of the world state yet its code size is that of the initialization code.
+\saNote{}
+The constraints will implement $\accHasCode = 1 \iff \accCodehash \neq \emptyKeccak$ i.e. we don't use the $\accCodesize$; recall that while a contract is deploying its code is empty from the point of view of the world state yet its code size is that of the initialization code.
 \begin{enumerate}[resume]
 	\item $\accExists$ and $\accExists\new$:
 		binary columns indicating the account's existence and its updated value;
@@ -34,7 +37,7 @@ its code is empty i.e. $\sigma[\textsf{a}]_\text{c} = \texttt{KEC}\big((~)\big)$
 The above columns track the address' \emph{warmth} (which impacts the pricing of certain opcodes.)
 We furthermore introduce a binary column which will allow us to recognize addresses that were marked for \inst{SELFDESTRUCT} within a given transaction.
 \begin{enumerate}[resume]
-	\item $\accMarkedForSelfdestruct$ and $\accMarkedForSelfdestruct\new$:
+	\item $\accMarkedForDeletion$ and $\accMarkedForDeletion\new$:
 		binary columns;
 		track whether an address was successfullly marked for selfdestruction within a given transaction;
 \end{enumerate}
@@ -47,18 +50,6 @@ The following columns are \textsc{zk-evm} specific columns. We explain their pur
 \end{enumerate}
 The following columns are used when an account has its balance decremented either at the onset of a transaction or when performing a \inst{CALL}-type or \inst{CREATE}-type transaction.
 The following column turns on \emph{if and only if} the account on the present row is about to create a new address either at the beginning of transaction processing (if $T_\text{t} = \varnothing$ i.e. $\txIsDeployment = 1$) or through a \inst{CREATE} instruction. \ob{TODO: for the \inst{CREATE2} path we can surely do it in terms of the create flag and flag 1.}
-\begin{enumerate}[resume]
-	\item \ob{TODO: unconstrained as of yet}$\accDeploymentNumber^\infty$ and $\accExists^\infty$:
-		address-constant columns;
-\end{enumerate}
-These are $\accAddress$-constant columns that contain, respectively, the largest deployment number of that address and its final existence status attained in the processing of a given conflation of blocks.
-Note that $\accExists^\infty \equiv 1$ means that an account will exist at that address at the end of processing of the conflation of blocks.
-Both are set the very last time the address is ``seen in the trace.''
-They exist for one reason and one reason only: for \emph{storage-rows} to have access to that information.
-Indeed one needs to distinguish between values written in storage during a failed previous attempt of deployment vs others \dots{} \red{I think this may be useless after all.
-Failed attempts are reverted, and so are the changes that would have applied to that address's storage \dots{} Phew, this means that this may just end up being useless after all \dots}
-\ob{TODO: CORRECTION: These account-columns aren't useless \emph{at all} ! We use them in the storage.
-The only storage values to be committed are those for accounts with $\accExists^\infty \equiv 1$ and only for those values that are committed at $\accDeploymentNumber = \accDeploymentNumber^\infty$.}
 
 The next set of columns allow us to perform certain operations using as inputs fields from an account or stack arguments.
 We start with columns required for dealing with stack items which ought to be interpreted as addresses.
@@ -71,7 +62,8 @@ of their leading $12$ bytes.
 		binary column which $=1$ if and only if the address is that of a precompile\footnote{i.e. $\accAddress \in \{1, 2, \dots, 9 \}$};
 		disjoint binary columns that turn on for accounts which raise the \accTrmIsPrecompile{} flag; they are used when dealing with \inst{CALL}-type instructions to precompiles;
 \end{enumerate}
-\saNote{} The \trmMod{} module requires the following inputs from the \hubMod{}:
+\saNote{}
+The \trmMod{} module requires the following inputs from the \hubMod{}:
 $\rawAddrHi$ and $\rawAddrLo$,
 $\trmAddrHi$,
 $\isPrecompile$.
@@ -90,4 +82,5 @@ The next collection of columns is required for computing deployment addresses of
 	\item $\accRlpAddrKecHi$ and $\accRlpAddrKecLo$:
 		high and low part of the hash of initialization code (if relevant);
 \end{enumerate}
-\saNote{} The \rlpAddrMod{} module further requires the creator address' (high and low parts) and the current nonce (pre-deployment); these fields are already present on the current account row.
+\saNote{}
+The \rlpAddrMod{} module further requires the creator address' (high and low parts) and the current nonce (pre-deployment); these fields are already present on the current account row.

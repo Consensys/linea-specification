@@ -17,7 +17,7 @@
 			\item \If $\locIsSstore = 1$ \Then $\xAhoy_{i} = \stackStaticx_{i} + \stackSstorex_{i} + \stackOogx_{i}$ \quad (\trash)
 		\end{enumerate}
 		\saNote{} Given section~(\ref{hub: generalities: exceptions: automatic vanishing})
-		\inst{SSLOAD} may only raise stack exceptions or \oogxSH{}
+		\inst{SLOAD} may only raise stack exceptions or \oogxSH{}
 		while \inst{SSTORE} may raise stack exceptions, \staticxSH{}, \sstorexSH{} or \oogxSH{}.
 	\item[\underline{Setting $\nonStackRows$ and peeking flags:}]
 		\label{hub: instruction handling: storage: non stack rows and peeking flags}
@@ -68,7 +68,7 @@
 					\nonStackRows_{i}
 				\]
 		\end{enumerate}
-	\item[\underline{The first context row:}]
+	\item[\underline{The first context-row:}]
 		we \textbf{unconditionally} impose that $\readContextData {i}{\locFirstCon}{\cn_{i}}$
 	\item[\underline{Setting \stackStaticx{} flag:}]
 		we impose that
@@ -80,20 +80,27 @@
 		\begin{enumerate}
 			\item we impose that \inst{SSTORE} instructions trigger the \oobMod{}
 				\[
-					\weightedMiscFlagSum {i}{\locMiscRowOffset}
+					\weightedMiscFlagSum {
+						anchorRow = i                 ,
+						relOffset = \locMiscRowOffset ,
+					}
 					=
 					\miscOobWeight \cdot \locIsSstore
+					% OK
 				\]
 				in other words	
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \gZero       & (\trash) \\
-						\miscMmuFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \rZero       & (\trash) \\
-						\miscMxpFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \rZero       & (\trash) \\
-						\miscOobFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \locIsSstore & (\trash) \\
-						\miscStpFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \gZero       & (\trash) \\
+						\miscExpFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \gZero       & (\sanityCheck) \\
+						\miscMmuFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \rZero       & (\sanityCheck) \\
+						\miscMxpFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \rZero       & (\sanityCheck) \\
+						\miscOobFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \locIsSstore & (\sanityCheck) \\
+						\miscStpFlag  _{i + \locMiscRowOffset} & \!\!\!=\!\!\! & \gZero       & (\sanityCheck) \\
 					\end{array} \right.
 				\]
+				\saNote{}
+				Recall that \locIsSstore{} is provably binary,
+				see note~(\ref{hub: instruction handling: storage: shorthands: provable binary note}).
 			\item \If $\locIsSstore = 1$ \Then we further impose that
 				\[
 					\setOobInstructionSstore {i}{\locMiscRowOffset}
@@ -145,6 +152,13 @@ Note however that in case of an exception triggered by the present instruction o
 					% \standardDomSubStamps {i}{\locFirstStoRowOffset}{0}  } \\
 			\end{array} \right.
 		\]
+		Furthermore, we log the underlying storage-operation:
+		\[
+			\left\{ \begin{array}{lcl}
+				\stoSloadOperation  _{i + \locFirstStoRowOffset} & = & \locIsSload  \\
+				\stoSstoreOperation _{i + \locFirstStoRowOffset} & = & \locIsSstore \\
+			\end{array} \right.
+		\]
 	\item[\underline{Defining storage value operations:}]
 		we impose that
 		\begin{description}
@@ -188,6 +202,13 @@ Note however that in case of an exception triggered by the present instruction o
 							subOffset        = 0,
 							} \\
 						% {i}{\locSecondStoRowOffset}{0} \\
+					\end{array} \right.
+				\]
+				Again, we log the underlying storage-operation:
+				\[
+					\left\{ \begin{array}{lcl}
+						\stoSloadOperation  _{i + \locSecondStoRowOffset} & = & \locIsSload  \\
+						\stoSstoreOperation _{i + \locSecondStoRowOffset} & = & \locIsSstore \\
 					\end{array} \right.
 				\]
 		\end{description}
@@ -258,7 +279,7 @@ We will use the following shorthands:
 		where $\locCleanClear$, $\locDirtyClear$, $\locDirtyReset$ are shorthands which we define below.
 		
 		\saNote{}
-		In the explanations provided below we use notations from the \cite{EYP} whereby
+		In the explanations provided below we use notations from the \cite{EYP-London} whereby
 		$v_0$ stands for the value originally in storage,
 		$v$ for the value currently in storage,
 		$v'$ for the value we are attempting to store:

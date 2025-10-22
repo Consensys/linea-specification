@@ -9,7 +9,7 @@
     }
    )}
 
-\setmonofont{JetBrains Mono NF Regular}[
+\setmonofont{JetBrains Mono NL Regular}[
   RawFeature={fallback=emojifallback}
 ]
 
@@ -41,128 +41,129 @@
           _|   \__,_| _| _| \__,_| _|   \___|     _/          \_/\_/   _| _| _|     _|   \___|   \_/  \___| _|    \__|
 
 
-|-----------+--------+----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
-| Row index | Persp. | Actions                                            | Notes                                                       | DOM_STAMP          | SUB_STAMP |
-|:---------:+--------+----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
-|   i - 2   | STACK  |                                                    | required:                                                   |
-|   i - 1   | STACK  |                                                    | * stack/STATICX ≡ 0                                         |
-|           |        |                                                    | * stack/MXPX    ≡ 0                                         |
-|           |        |                                                    | * stack/OOGX    ≡ 0                                         |
-|           |        |                                                    | .      => XAHOY ≡ 0                                         |
-|-----------+--------+----------------------------------------------------+-------------------------------------------------------------|
-|     i     | SCEN   |  CREATE/ABORT ≡ 1                                 |                                                             |
-|           |        |                                                    |                                                             |
-|           |        |                                                    | Impose that:                                                |
-|           |        |                                                    | .    CREATE/EXCEPTION         ≡ XAHOY ≡ 0                  |
-|           |        |                                                    | .    CREATE/ABORT             ≡ OOB_aborting_condition     |
-|           |        |                                                    | .    CREATE/failure_condition ≡ OOB_failure_condition      |
-|-----------+--------+----------------------------------------------------+-------------------------------------------------------------|
-|   i + 1   | CON    | readContextData( current context )                 |                                                             |
-|           |        |                                                    |                                                             |
-|           |        | Impose that:                                       |                                                             |
-|           |        | .    context/IS_STATIC = stack/STATICX             |                                                             |
-|           |        |                                                    | Provides:                                                   |
-|           |        |                                                    | * con/CALL_STACK_DEPTH                                      |
-|           |        |                                                    | * con/ACCOUNT_ADDRESS  (I_a)                                |
-|           |        |                                                    |                                                             |
-|           |        |                                                    | Implicitly:                                                 |
-|           |        |                                                    | .   context/IS_STATIC = 0                                   |
-|-----------+--------+----------------------------------------------------+-------------------------------------------------------------|
-|   i + 2   | MISC   | misc/MXP🚩 ≡ 1                                     |                                                             |
-|           |        |                                                    | Provides:                                                   |
-|           |        |                                                    | * mxp/MXPX                                                  |
-|           |        |                                                    | * mxp/MXP_GAS                                               |
-|           |        |                                                    | * mxp/MXP_MTNTOP                                            |
-|           |        | misc/STP🚩 ≡ 1                                     |                                                             |
-|           |        |                                                    | Provides:                                                   |
-|           |        |                                                    | * stp/OOGX                                                  |
-|           |        |                                                    | * stp/UPFRONT_GAS_COST                                      |
-|           |        |                                                    | * stp/63_64_ths                                             |
-|           |        | misc/OOB🚩 ≡ 1                                     |                                                             |
-|           |        |                                                    | Provides:                                                   |
-|           |        |                                                    | * OOB_aborting_condition                                    |
-|           |        |                                                    | * OOB_failure_condition                                     |
-|           |        | misc/MMU🚩  ≡ 1                                    |                                                             |
-|           |        |                                                    |                                                             |
-|           |        | Impose that:                                       |                                                             |
-|           |        | .    misc/mxp/MXPX = stack/MXPX                    |                                                             |
-|           |        | .    misc/stp/OOGX = stack/OOGX                    |                                                             |
-|           |        |                                                    |                                                             |
-|           |        |                                                    | Implicitly:                                                 |
-|           |        |                                                    | .   misc/mxp/MXPX = 0                                       |
-|           |        |                                                    | .   misc/stp/OOGX = 0                                       |
-|           |        |                                                    | .   OOB_aborting_condition = 0                              |
-|           |        |                                                    | .   OOB_failure_condition  = 0                              |
-|           |        |                                                    | .   mxp/MXP_MTNTOP = 0  (i.e. size == 0)                    |
-|-----------+--------+----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
-|   i + 3   | ACC    | Load account with address I_a                      |                                                             | τ ∙ h + 0          | 0         |
-|           |        | Compute deployment address                         |                                                             |                    |           |
-|           |        | ⤴️incrementNonce (i.e. nonce += 1)                 |                                                             |                    |           |
-|           |        | ⤴️decrementBalance (i.e. balance -= value)         |                                                             |                    |           |
-|           |        |                                                    | Provides:                                                   |                    |           |
-|           |        |                                                    | * acc/BALANCE                                               |                    |           |
-|           |        |                                                    | * acc/DEPLOYMENT_ADDRESS ≡ δ                                |                    |           |
-|           |        |                                                    |                                                             |                    |           |
-|           |        |                                                    | Implicitly:                                                 |                    |           |
-|           |        |                                                    | .   [con/CALL_STACK_DEPTH ≠ 1024]  ∧  [acc/BALANCE ≥ value] |                    |           |
-|           |        |                                                    | .   (<== this triggers OOB_aborting_condition ≡ 0)          |                    |           |
-|-----------+--------+----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
-|   i + 4   | ACC    | Read account with address δ                        |                                                             | τ ∙ h + 1          | 0         |
-|           |        | ⤴️incrementNonce            (i.e. nonce: 0 → 1)    |                                                             |                    |           |
-|           |        | ⤴️incrementBalance          (i.e. balance += value)|                                                             |                    |           |
-|           |        | ⤴️incrementDeploymentNumber (i.e. depNumber += 1)  |                                                             |                    |           |
-|           |        | ⤴️turnOnWarmth              (i.e. warmth ↑)        |                                                             |                    |           |
-|           |        |                                                    | Provides:                                                   |                    |           |
-|           |        |                                                    | * acc/NONCE                                                 |                    |           |
-|           |        |                                                    | * acc/HAS_CODE                                              |                    |           |
-|           |        |                                                    |                                                             |                    |           |
-|           |        |                                                    | Implicitly:                                                 |                    |           |
-|           |        |                                                    | .   acc/NONCE    = 0                                        |                    |           |
-|           |        |                                                    | .   acc/HAS_CODE = 0                                        |                    |           |
-|           |        |                                                    | .   (<== this triggers OOB_failure_condition ≡ 0)           |                    |           |
-|-----------+--------+----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
-|   i + 5   | ACC    | Load account with address I_a                      |                                                             | τ ∙ ρ_chld + ε_rev | τ ∙ h + 2 |
-|           |        | ♻️sameAddress[5,3]                                 |                                                             |                    |           |
-|           |        | ♻️sameNonce[5]                                     |                                                             |                    |           |
-|           |        | ⏪undoBalanceUpdate[5,3]                           |                                                             |                    |           |
-|           |        |                                                    | Provides:                                                   |                    |           |
-|           |        |                                                    | * acc/BALANCE                                               |                    |           |
-|           |        |                                                    | * acc/DEPLOYMENT_ADDRESS ≡ δ                                |                    |           |
-|-----------+--------+----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
-|   i + 6   | ACC    | Read account with address δ                        |                                                             | τ ∙ ρ_chld + ε_rev | τ ∙ h + 3 |
-|           |        | ♻️sameAddress[6,4]                                 |                                                             |                    |           |
-|           |        | ⏪undoNonceUpdate[6,4]                             |                                                             |                    |           |
-|           |        | ⏪undoBalanceUpdate[6,4]                           |                                                             |                    |           |
-|           |        | ⏪undoDeploymentNumberAndStatus[6,4]               |                                                             |                    |           |
-|           |        | ♻️sameWarmth[6]                                    |                                                             |                    |           |
-|           |        | ⏪undoCodeUpdate[6,4]                              |                                                             |                    |           |
-|           |        |                                                    | Provides:                                                   |                    |           |
-|           |        |                                                    | * acc/NONCE                                                 |                    |           |
-|           |        |                                                    | * acc/HAS_CODE                                              |                    |           |
-|-----------+--------+----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
-|   i + 7   | ACC    | Load account with address I_a                      |                                                             | τ ∙ ρ_curr + ε_rev | τ ∙ h + 4 |
-|           |        | ♻️sameAddress[7,5]                                 |                                                             |                    |           |
-|           |        | ⏪undoNonceUpdate[7,5]                             |                                                             |                    |           |
-|           |        | ♻️sameBalance[7]                                   |                                                             |                    |           |
-|           |        |                                                    | Provides:                                                   |                    |           |
-|           |        |                                                    | * acc/BALANCE                                               |                    |           |
-|           |        |                                                    | * acc/DEPLOYMENT_ADDRESS ≡ δ                                |                    |           |
-|-----------+--------+----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
-|   i + 8   | ACC    | Read account with address δ                        |                                                             | τ ∙ ρ_curr + ε_rev | τ ∙ h + 5 |
-|           |        | ♻️sameAddress[8,6]                                 |                                                             |                    |           |
-|           |        | ♻️sameNonce[8]                                     |                                                             |                    |           |
-|           |        | ♻️sameBalance[8]                                   |                                                             |                    |           |
-|           |        | ♻️sameDeploymentNumberAndStatus[8]                 |                                                             |                    |           |
-|           |        | ⏪undoWarmthUpdate[8,6]                            |                                                             |                    |           |
-|           |        | ♻️sameCode[8]                                      |                                                             |                    |           |
-|           |        |                                                    | Provides:                                                   |                    |           |
-|           |        |                                                    | * acc/NONCE                                                 |                    |           |
-|           |        |                                                    | * acc/HAS_CODE                                              |                    |           |
-|-----------+--------+----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
-|   i + 9   | CON    | initializeDeploymentContext( next context )        |
-|           |        | firstRowOfDeploymentContext( next context )        |
-|           |        | justifyCreateeRevertData( next context )           |
-|-----------+--------+----------------------------------------------------|
+|-----------+--------+-----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
+| Row index | Persp. | Actions                                             | Notes                                                       | DOM_STAMP          | SUB_STAMP |
+|:---------:+--------+-----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
+|   i - 2   | STACK  |                                                     | required:                                                   |
+|   i - 1   | STACK  |                                                     | * stack/STATICX ≡ 0                                         |
+|           |        |                                                     | * stack/MAXCSX  ≡ 0                                         |
+|           |        |                                                     | * stack/MXPX    ≡ 0                                         |
+|           |        |                                                     | * stack/OOGX    ≡ 0                                         |
+|           |        |                                                     | .      => XAHOY ≡ 0                                         |
+|-----------+--------+-----------------------------------------------------+-------------------------------------------------------------|
+|     i     | SCEN   |  CREATE/ABORT ≡ 1                                  |                                                             |
+|           |        |                                                     |                                                             |
+|           |        |                                                     | Impose that:                                                |
+|           |        |                                                     | .    CREATE/EXCEPTION         ≡ XAHOY ≡ 0                  |
+|           |        |                                                     | .    CREATE/ABORT             ≡ OOB_aborting_condition     |
+|           |        |                                                     | .    CREATE/failure_condition ≡ OOB_failure_condition      |
+|-----------+--------+-----------------------------------------------------+-------------------------------------------------------------|
+|   i + 1   | CON    | readContextData( current context )                  |                                                             |
+|           |        |                                                     |                                                             |
+|           |        | Impose that:                                        |                                                             |
+|           |        | .    context/IS_STATIC = stack/STATICX              |                                                             |
+|           |        |                                                     | Provides:                                                   |
+|           |        |                                                     | * con/CALL_STACK_DEPTH                                      |
+|           |        |                                                     | * con/ACCOUNT_ADDRESS  (I_a)                                |
+|           |        |                                                     |                                                             |
+|           |        |                                                     | Implicitly:                                                 |
+|           |        |                                                     | .   context/IS_STATIC = 0                                   |
+|-----------+--------+-----------------------------------------------------+-------------------------------------------------------------|
+|   i + 2   | MISC   | misc/MXP🚩 ≡ 1                                      |                                                             |
+|           |        |                                                     | Provides:                                                   |
+|           |        |                                                     | * mxp/MXPX                                                  |
+|           |        |                                                     | * mxp/MXP_GAS                                               |
+|           |        |                                                     | * mxp/MXP_S1NZNOMXPX                                        |
+|           |        | misc/STP🚩 ≡ 1                                      |                                                             |
+|           |        |                                                     | Provides:                                                   |
+|           |        |                                                     | * stp/OOGX                                                  |
+|           |        |                                                     | * stp/UPFRONT_GAS_COST                                      |
+|           |        |                                                     | * stp/63_64_ths                                             |
+|           |        | misc/OOB🚩 ≡ 1                                      |                                                             |
+|           |        |                                                     | Provides:                                                   |
+|           |        |                                                     | * OOB_aborting_condition                                    |
+|           |        |                                                     | * OOB_failure_condition                                     |
+|           |        | misc/MMU🚩  ≡ 1                                     |                                                             |
+|           |        |                                                     |                                                             |
+|           |        | Impose that:                                        |                                                             |
+|           |        | .    misc/mxp/MXPX = stack/MXPX                     |                                                             |
+|           |        | .    misc/stp/OOGX = stack/OOGX                     |                                                             |
+|           |        |                                                     |                                                             |
+|           |        |                                                     | Implicitly:                                                 |
+|           |        |                                                     | .   misc/mxp/MXPX = 0                                       |
+|           |        |                                                     | .   misc/stp/OOGX = 0                                       |
+|           |        |                                                     | .   OOB_aborting_condition = 0                              |
+|           |        |                                                     | .   OOB_failure_condition  = 0                              |
+|           |        |                                                     | .   mxp/MXP_S1NZNOMXPX = 0  (i.e. size == 0)                |
+|-----------+--------+-----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
+|   i + 3   | ACC    | Load account with address I_a                       |                                                             | τ ∙ h + 0          | 0         |
+|           |        | Compute deployment address                          |                                                             |                    |           |
+|           |        | 🔥incrementNonce (i.e. nonce += 1)                  |                                                             |                    |           |
+|           |        | 🔥decrementBalance (i.e. balance -= value)          |                                                             |                    |           |
+|           |        |                                                     | Provides:                                                   |                    |           |
+|           |        |                                                     | * acc/BALANCE                                               |                    |           |
+|           |        |                                                     | * acc/DEPLOYMENT_ADDRESS ≡ δ                                |                    |           |
+|           |        |                                                     |                                                             |                    |           |
+|           |        |                                                     | Implicitly:                                                 |                    |           |
+|           |        |                                                     | .   [con/CALL_STACK_DEPTH ≠ 1024]  ∧  [acc/BALANCE ≥ value] |                    |           |
+|           |        |                                                     | .   (<== this triggers OOB_aborting_condition ≡ 0)          |                    |           |
+|-----------+--------+-----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
+|   i + 4   | ACC    | Read account with address δ                         |                                                             | τ ∙ h + 1          | 0         |
+|           |        | 🔥incrementNonce            (i.e. nonce: 0 → 1)     |                                                             |                    |           |
+|           |        | 🔥incrementBalance          (i.e. balance += value) |                                                             |                    |           |
+|           |        | 🔥incrementDeploymentNumber (i.e. depNumber += 1)   |                                                             |                    |           |
+|           |        | 🔥turnOnWarmth              (i.e. warmth ↑)         |                                                             |                    |           |
+|           |        |                                                     | Provides:                                                   |                    |           |
+|           |        |                                                     | * acc/NONCE                                                 |                    |           |
+|           |        |                                                     | * acc/HAS_CODE                                              |                    |           |
+|           |        |                                                     |                                                             |                    |           |
+|           |        |                                                     | Implicitly:                                                 |                    |           |
+|           |        |                                                     | .   acc/NONCE    = 0                                        |                    |           |
+|           |        |                                                     | .   acc/HAS_CODE = 0                                        |                    |           |
+|           |        |                                                     | .   (<== this triggers OOB_failure_condition ≡ 0)           |                    |           |
+|-----------+--------+-----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
+|   i + 5   | ACC    | Load account with address I_a                       |                                                             | τ ∙ ρ_chld + ε_rev | τ ∙ h + 2 |
+|           |        | 🍀sameAddress[5,3]                                  |                                                             |                    |           |
+|           |        | 🍀sameNonce[5]                                      |                                                             |                    |           |
+|           |        | ⏪undoBalanceUpdate[5,3]                            |                                                             |                    |           |
+|           |        |                                                     | Provides:                                                   |                    |           |
+|           |        |                                                     | * acc/BALANCE                                               |                    |           |
+|           |        |                                                     | * acc/DEPLOYMENT_ADDRESS ≡ δ                                |                    |           |
+|-----------+--------+-----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
+|   i + 6   | ACC    | Read account with address δ                         |                                                             | τ ∙ ρ_chld + ε_rev | τ ∙ h + 3 |
+|           |        | 🍀sameAddress[6,4]                                  |                                                             |                    |           |
+|           |        | ⏪undoNonceUpdate[6,4]                              |                                                             |                    |           |
+|           |        | ⏪undoBalanceUpdate[6,4]                            |                                                             |                    |           |
+|           |        | ⏪undoDeploymentNumberAndStatus[6,4]                |                                                             |                    |           |
+|           |        | 🍀sameWarmth[6]                                     |                                                             |                    |           |
+|           |        | ⏪undoCodeUpdate[6,4]                               |                                                             |                    |           |
+|           |        |                                                     | Provides:                                                   |                    |           |
+|           |        |                                                     | * acc/NONCE                                                 |                    |           |
+|           |        |                                                     | * acc/HAS_CODE                                              |                    |           |
+|-----------+--------+-----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
+|   i + 7   | ACC    | Load account with address I_a                       |                                                             | τ ∙ ρ_curr + ε_rev | τ ∙ h + 4 |
+|           |        | 🍀sameAddress[7,5]                                  |                                                             |                    |           |
+|           |        | ⏪undoNonceUpdate[7,5]                              |                                                             |                    |           |
+|           |        | 🍀sameBalance[7]                                    |                                                             |                    |           |
+|           |        |                                                     | Provides:                                                   |                    |           |
+|           |        |                                                     | * acc/BALANCE                                               |                    |           |
+|           |        |                                                     | * acc/DEPLOYMENT_ADDRESS ≡ δ                                |                    |           |
+|-----------+--------+-----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
+|   i + 8   | ACC    | Read account with address δ                         |                                                             | τ ∙ ρ_curr + ε_rev | τ ∙ h + 5 |
+|           |        | 🍀sameAddress[8,6]                                  |                                                             |                    |           |
+|           |        | 🍀sameNonce[8]                                      |                                                             |                    |           |
+|           |        | 🍀sameBalance[8]                                    |                                                             |                    |           |
+|           |        | 🍀sameDeploymentNumberAndStatus[8]                  |                                                             |                    |           |
+|           |        | ⏪undoWarmthUpdate[8,6]                             |                                                             |                    |           |
+|           |        | 🍀sameCode[8]                                       |                                                             |                    |           |
+|           |        |                                                     | Provides:                                                   |                    |           |
+|           |        |                                                     | * acc/NONCE                                                 |                    |           |
+|           |        |                                                     | * acc/HAS_CODE                                              |                    |           |
+|-----------+--------+-----------------------------------------------------+-------------------------------------------------------------+--------------------+-----------|
+|   i + 9   | CON    | initializeDeploymentContext( next context )         |
+|           |        | firstRowOfDeploymentContext( next context )         |
+|           |        | justifyCreateeRevertData( next context )            |
+|-----------+--------+-----------------------------------------------------|
 
 NOTE. We use the following shorthands
 

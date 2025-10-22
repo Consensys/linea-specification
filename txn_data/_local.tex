@@ -6,70 +6,220 @@
 \def\rZero {\redm{0}}
 \def\rOne  {\redm{1}}
 
-\def\MAX                              {\col{\_MAX}}
-\def\locAbs                           {\col{ABS}}
-\def\locAbsMax                        {\col{ABS}^\infty}
-\def\block                            {\col{BLK}}
-\def\locRel                           {\col{REL}}
-\def\locRelMax                        {\col{REL}^\infty}
-\def\locTxType                        {\col{tx\_type}}
-\def\locToAddrHi                      {\col{[is\_dep ? 0 : to\_hi]}}
-\def\locToAddrLo                      {\col{[is\_dep ? 0 : to\_lo]}}
-\def\locNonce                         {\col{nonce}}
-\def\locValue                         {\col{value}}
-\def\locDataSize                      {\col{data\_size}}
-\def\locDataCost                      {\col{data\_cost}}
-\def\locGasLimit                      {\col{gas\_limit}}
-\def\locIsDep                         {\col{is\_dep}}
-\def\locGasPrice                      {\col{gas\_price}}
-\def\locMaxFee                        {\col{max\_fee}}
-\def\locMaximalGasPrice               {\col{maximal\_gas\_price}}
-\def\locGetFullTip                    {\col{get\_full\_tip}}
-\def\locMaxPriorityFee                {\col{max\_priority\_fee}}
-\def\locNumAddr                       {\col{num\_addr}}
-\def\locNumKeys                       {\col{num\_keys}}
-\def\locUpfrontGasCost                {\col{upfront\_gas\_cost}}
-\def\locLegacyUpfrontGasCost          {\col{legacy\_\locUpfrontGasCost}}
-\def\locAccessUpfrontGasCost          {\col{access\_\locUpfrontGasCost}}
-\def\locXxxUpfrontGasCost             {\col{xxx\_\locUpfrontGasCost}}
-\def\locRefundLimit                   {\col{refund\_limit}}
-\def\locGetFullRefund                 {\col{get\_full\_refund}}
-\def\locExecutionGasCost              {\col{execution\_gas\_cost}}
-\def\locNonzeroDataSize               {\col{nonzero\_data\_size}}
-\def\fillCell                         {\cellcolor{gray}}
+\def\aboutToStartBlock                     {\loc{about\_to\_start\_block}}
+\def\aboutToStartBlockWithUserTransactions {\aboutToStartBlock\loc{\_with\_user\_txns}}
+\def\aboutToStartBlockSansUserTransactions {\aboutToStartBlock\loc{\_sans\_user\_txns}}
 
-\def\locTypeSum                       {\col{type\_sum}}
+\def\transactionFlagSumName            {\loc{txn\_flag\_sum}}
+\def\perspectiveSumName                {\loc{perspective\_sum}}
+\def\transactionFlagSum                {\hdef{\transactionFlagSumName     }{user txn data: generalities: block level: flags}}
+\def\perspectiveSum                    {\hdef{\perspectiveSumName         }{user txn data: generalities: block level: flags}}
+\def\weightedBinarySum                 {\hdef{\loc{weighted\_binary\_sum} }{user txn data: generalities: block level: flags}}
 
-\def\nonceRowOffset                   {\yellowm{0}}
-\def\balanceRowOffset                 {\yellowm{1}}
-\def\gasLimitRowOffset                {\yellowm{2}}
-\def\maxRefundRowOffset               {\yellowm{3}}
-\def\effectiveRefundRowOffset         {\yellowm{4}}
-\def\detectingEmptyCallDataRowOffset  {\yellowm{5}}
-\def\maxFeeVsBaseFeeRowOffset         {\yellowm{6}}
-\def\maxFeeVsMaxPriorityFee           {\yellowm{7}}
-\def\effectiveGasPriceRowOffset       {\yellowm{8}}
+\def\MAX                                {\col{\_MAX}}
+\def\locAbs                             {\col{ABS}}
+\def\locAbsMax                          {\col{ABS}^\infty}
+\def\locBlock                           {\loc{blk\_num}}
+\def\locRel                             {\loc{txn\_num}}
+\def\locRelMax                          {\col{REL}^\infty}
+
+\def\locTxType                          {tx\_type}
+\def\locToAddrHi                        {[is\_dep ? 0 : to\_hi]}
+\def\locToAddrLo                        {[is\_dep ? 0 : to\_lo]}
+\def\locNonce                           {nonce}
+\def\locValue                           {value}
+\def\locPayloadSize                     {\loc{payload\_size}}
+\def\locPayloadCost                     {\loc{payload\_cost}}
+\def\locNumberOfZeroBytes               {num\_zero\_bytes}
+\def\locNumberOfNonzeroBytes            {num\_nonzero\_bytes}
+\def\locGasLimit                        {gas\_limit}
+\def\locIsDep                           {is\_dep}
+\def\locGasPrice                        {gas\_price}
+\def\locMaximalGasPrice                 {maximal\_gas\_price}
+\def\locGetFullTip                      {\loc{get\_full\_tip}}
+\def\locMaxPriorityFee                  {max\_priority\_fee}
+\def\locMaxFee                          {max\_fee}
+\def\locNumAddr                         {num\_addr}
+\def\locNumKeys                         {num\_keys}
+\def\locNumAccountDelegations           {num\_delegations}
+\def\locUpfrontGasCost                  {\loc{upfront\_gas\_cost}}
+\def\locLegacyUpfrontGasCost            {\loc{legacy\_\locUpfrontGasCost}}
+\def\locAccessUpfrontGasCost            {\loc{access\_\locUpfrontGasCost}}
+\def\locAccountDelegationUpfrontGasCost {\loc{delegation\_\locUpfrontGasCost}}
+\def\locXxxUpfrontGasCost               {xxx\_\locUpfrontGasCost}
+\def\locRefundLimit                     {\loc{refund\_limit}}
+\def\locAccruedRefundsAreLtRefundLimit  {\loc{accrued\_refunds\_are\_LT\_refund\_limit}}
+\def\locRefundFromTransactionProcessing {\loc{leftover\_gas\_plus\_refunds}}
+\def\locLeftoverGasPlusRefunds          {\loc{leftover\_gas\_plus\_refunds}}
+\def\locConsumedGasAfterRefunds         {\loc{consumed\_gas\_after\_refunds}}
+\def\locGasPaidAfterRefunds             {\loc{gas\_paid\_after\_refunds}}
+\def\locPayFloorCost                    {\loc{pay\_floor\_cost}}
+\def\locExecutionGasCost                {\loc{execution\_gas\_cost}}
+\def\locNonzeroDataSize                 {\loc{nonzero\_data\_size}}
+\def\fillCell                           {gray}
+\def\locInitCodeWords                   {\loc{init\_code\_words}}
+\def\locInitCodeCost                    {\loc{init\_code\_cost}}
+\def\locTypeSum                         {type\_sum}
+\def\weightedTokenCount                 {\loc{wght\_token\_count}}
+\def\locRefundFromTransactionFloorCost  {\loc{refund\_of\_floor\_cost}}
+\def\locMaxCtSysiSum                    {\loc{ct\_max\_\sysi\_sum}}
+\def\locMaxCtUserSum                    {\loc{ct\_max\_\user\_sum}}
+\def\locMaxCtSysfSum                    {\loc{ct\_max\_\sysf\_sum}}
+\def\locTransactionTypeFlagSum          {\loc{tx\_type\_flag\_sum}}
+\def\locTransactionTypeWeightedFlagSum  {\loc{tx\_type\_wght\_sum}}
+\def\locMaxGasPrice                     {\loc{max\_gas\_price}}
+\def\locMaxCostInWei                    {\loc{max\_cost\_in\_wei}}
+
+\def\locTransactionWithFixedGasPrice {\hdef{\loc{tx\_type\_with\_fixed\_gas\_price}} {user txn data: processing: user: transaction decoding}}
+\def\locTransactionSansFixedGasPrice {\hdef{\loc{tx\_type\_sans\_fixed\_gas\_price}} {user txn data: processing: user: transaction decoding}}
+\def\locTransactionSansAccessList    {\hdef{\loc{tx\_type\_sans\_access\_set}}       {user txn data: processing: user: transaction decoding}}
+\def\locTransactionWithAccessList    {\hdef{\loc{tx\_type\_with\_access\_set}}       {user txn data: processing: user: transaction decoding}}
+\def\locTransactionSansDelegation    {\hdef{\loc{tx\_type\_sans\_delegation}}        {user txn data: processing: user: transaction decoding}}
+\def\locTransactionWithDelegation    {\hdef{\loc{tx\_type\_with\_delegation}}        {user txn data: processing: user: transaction decoding}}
 
 
-\newcommand{\smallCallToLt}  [4]  {
-        \texttt{smallCallToLT} _{#1}
-        \left[ \begin{array}{ll}
-                \utt{Row offset:} & #2 \\
-                \utt{Argument 1:} & #3 \\
-                \utt{Argument 2:} & #4 \\
-        \end{array} \right]}
+\def\locBasefee                            {basefee}
+\def\locNonce                              {nonce}
+\def\locInitialBalance                     {initial\_balance}
+\def\locGasLimit                           {gas\_limit}
+\def\locBlockGasLimit                      {block\_gas\_limit}
+\def\locGasPrice                           {gas\_price}
+\def\locInitialGas                         {initial\_gas}
+\def\locInitialGasCost                     {initial\_gas\_cost}
+\def\locPriorityFeePerGas                  {priority\_fee\_per\_gas}
+\def\locValue                              {value}
+\def\locIsDeployment                       {is\_deployment}
+\def\locIsMessageCall                      {is\_message\_call}
+\def\locType                               {type}
+\def\locCallDataSize                       {call\_data\_size}
+\def\locInitCodeSize                       {init\_code\_size}
+\def\locIsTypeTwo                          {is\_type\_two}
+\def\locHasEipFifteenFiftyNineGasSemantics {has\_EIP-1559\_gas\_semantics}
+\def\locRequiresEvmExecution               {requires\_EVM\_execution}
+\def\locCopyTxcd                           {copy\_txcd}
+\def\locStatusCode                         {status\_code}
+\def\locLeftoverGas                        {leftover\_gas}
+\def\locFinalRefundCounter                 {refund\_counter\_final}
+\def\locEffectiveRefund                    {refund\_effective}
+\def\locWeightedByteCount                  {\loc{weighted\_byte\_count}}
+\def\locPayloadFloorCost                   {\loc{payload\_floor\_cost}}
+\def\locTransactionFloorCost               {\loc{transaction\_floor\_cost}}
+\def\locBeaconRoot                         {\loc{beacon\_root}}
+\def\locPrevBlockNumber                    {\loc{prev\_block\_number}}
+\def\locPrevBlockHash                      {\loc{prev\_block\_hash}}
+\def\locBlockNumberIsZero                  {\loc{block\_number\_is\_zero}}
 
-\newcommand{\smallCallToLeq}  [4]  {
-        \texttt{smallCallToLEQ} _{#1}
-        \left[ \begin{array}{ll}
-                \utt{Row offset:} & #2 \\
-                \utt{Argument 1:} & #3 \\
-                \utt{Argument 2:} & #4 \\
-        \end{array} \right]}
+\def\locBlockNumber                 {\loc{block\_number}}
+\def\locCurrentBlockIsGenesisBlock  {\loc{current\_block\_is\_genesis\_block}}
+\def\locTimestamp                   {\loc{timestamp}}
+\def\locTimestampIsGeqForkTimestamp {\loc{timestamp\_is\_geq\_FORK\_TIMESTAMP}}
 
-\newcommand{\smallCallToIszero}  [3]  { 
-        \texttt{smallCallToISZERO} _{#1}
-        \left[ \begin{array}{ll}
-                \utt{Row offset:} & #2 \\
-                \utt{Argument 1:} & #3 \\
-        \end{array} \right]}
+
+\newcommand{\localHubVariable}         [1]    {\loc{hub/#1}}
+
+\def\locHubBasefee                            {\hdef {\localHubVariable{\locBasefee                            }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubNonce                              {\hdef {\localHubVariable{\locNonce                              }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubInitialBalance                     {\hdef {\localHubVariable{\locInitialBalance                     }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubGasLimit                           {\hdef {\localHubVariable{\locGasLimit                           }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubGasPrice                           {\hdef {\localHubVariable{\locGasPrice                           }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubInitialGas                         {\hdef {\localHubVariable{\locInitialGas                         }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubInitialGasCost                     {\hdef {\localHubVariable{\locInitialGasCost                     }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubPriorityFeePerGas                  {\hdef {\localHubVariable{\locPriorityFeePerGas                  }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubValue                              {\hdef {\localHubVariable{\locValue                              }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubIsDeployment                       {\hdef {\localHubVariable{\locIsDeployment                       }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubIsMessageCall                      {\hdef {\localHubVariable{\locIsMessageCall                      }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubType                               {\hdef {\localHubVariable{\locType                               }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubDataSize                           {\hdef {\localHubVariable{\locPayloadSize                        }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubCallDataSize                       {\hdef {\localHubVariable{\locCallDataSize                       }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubInitCodeSize                       {\hdef {\localHubVariable{\locInitCodeSize                       }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubDataCost                           {\hdef {\localHubVariable{\locPayloadCost                        }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubHasEipFifteenFiftyNineGasSemantics {\hdef {\localHubVariable{\locHasEipFifteenFiftyNineGasSemantics }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubRequiresEvmExecution               {\hdef {\localHubVariable{\locRequiresEvmExecution               }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubCopyTxcd                           {\hdef {\localHubVariable{\locCopyTxcd                           }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubStatusCode                         {\hdef {\localHubVariable{\locStatusCode                         }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubLeftoverGas                        {\hdef {\localHubVariable{\locLeftoverGas                        }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubFinalRefundCounter                 {\hdef {\localHubVariable{\locFinalRefundCounter                 }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubEffectiveRefund                    {\hdef {\localHubVariable{\locEffectiveRefund                    }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubWeightedByteCount                  {\hdef {\localHubVariable{\locWeightedByteCount                  }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubDataCost                           {\hdef {\localHubVariable{\locPayloadCost                        }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubDataFloorCost                      {\hdef {\localHubVariable{\locPayloadFloorCost                   }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubBlockGasLimit                      {\hdef {\localHubVariable{\locBlockGasLimit                      }} {user txn data: processing: user: hub view shorthands} }
+
+\newcommand{\localRlpVariable} [1] {\loc{rlp/#1}}
+
+\def\locRlpBasefee               {\hdef {\localRlpVariable{\locBasefee                            }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpNonce                 {\hdef {\localRlpVariable{\locNonce                              }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpInitialBalance        {\hdef {\localRlpVariable{\locInitialBalance                     }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpGasLimit              {\hdef {\localRlpVariable{\locGasLimit                           }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpGasPrice              {\hdef {\localRlpVariable{\locGasPrice                           }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpInitialGas            {\hdef {\localRlpVariable{\locInitialGas                         }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpInitialGasCost        {\hdef {\localRlpVariable{\locInitialGasCost                     }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpPriorityFeePerGas     {\hdef {\localRlpVariable{\locPriorityFeePerGas                  }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpValue                 {\hdef {\localRlpVariable{\locValue                              }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpIsDeployment          {\hdef {\localRlpVariable{\locIsDeployment                       }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpIsMessageCall         {\hdef {\localRlpVariable{\locIsMessageCall                      }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpType                  {\hdef {\localRlpVariable{\locType                               }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpDataSize              {\hdef {\localRlpVariable{\locPayloadSize                        }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpCallDataSize          {\hdef {\localRlpVariable{\locCallDataSize                       }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpInitCodeSize          {\hdef {\localRlpVariable{\locInitCodeSize                       }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpDataCost              {\hdef {\localRlpVariable{\locPayloadCost                        }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpIsTypeTwo             {\hdef {\localRlpVariable{\locHasEipFifteenFiftyNineGasSemantics }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpRequiresEvmExecution  {\hdef {\localRlpVariable{\locRequiresEvmExecution               }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpCopyTxcd              {\hdef {\localRlpVariable{\locCopyTxcd                           }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpStatusCode            {\hdef {\localRlpVariable{\locStatusCode                         }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpLeftoverGas           {\hdef {\localRlpVariable{\locLeftoverGas                        }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpFinalRefundCounter    {\hdef {\localRlpVariable{\locFinalRefundCounter                 }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpEffectiveRefund       {\hdef {\localRlpVariable{\locEffectiveRefund                    }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpWeightedByteCount     {\hdef {\localRlpVariable{\locWeightedByteCount                  }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpDataCost              {\hdef {\localRlpVariable{\locPayloadCost                        }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpDataFloorCost         {\hdef {\localRlpVariable{\locPayloadFloorCost                   }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpTxType                {\hdef {\localRlpVariable{\locTxType                             }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpToAddrHi              {\hdef {\localRlpVariable{\locToAddrHi                           }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpToAddrLo              {\hdef {\localRlpVariable{\locToAddrLo                           }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpNumberOfZeroBytes     {\hdef {\localRlpVariable{\locNumberOfZeroBytes                  }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpNumberOfNonzeroBytes  {\hdef {\localRlpVariable{\locNumberOfNonzeroBytes               }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpMaxPriorityFee        {\hdef {\localRlpVariable{\locMaxPriorityFee                     }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpMaxFee                {\hdef {\localRlpVariable{\locMaxFee                             }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpNumAddr               {\hdef {\localRlpVariable{\locNumAddr                            }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpNumKeys               {\hdef {\localRlpVariable{\locNumKeys                            }} {user txn data: processing: user: rlp view shorthands} }
+\def\locRlpNumAccountDelegations {\hdef {\localRlpVariable{\locNumAccountDelegations              }} {user txn data: processing: user: rlp view shorthands} }
+
+
+
+% \newcommand{\standardTokenCost}      {\red{\col{STANDARD\_TOKEN\_COST}}}
+% \newcommand{\totlaCostFloorPerToken} {\red{\col{TOTAL\_COST\_FLOOR\_PER\_TOKEN}}}
+
+
+\def\firtComputationOfSystemTransactionRowOffset    {\roffConstYellow{1}}
+\def\hubViewRowOffset                               {\roffConstYellow{0}}
+\def\rlpViewRowOffset                               {\roffConstYellow{1}}
+\def\nonceRowOffset                                 {\roffConstYellow{2}}
+\def\balanceRowOffset                               {\roffConstYellow{3}}
+\def\initCodeSizeLimitRowOffset                     {\roffConstYellow{4}}
+\def\initCodePricingRowOffset                       {\roffConstYellow{5}}
+\def\gasLimitRowOffset                              {\roffConstYellow{6}}
+\def\transactionGasLimitCapRowOffset                {\roffConstYellow{7}}
+\def\transactionFloorCostRowOffset                  {\roffConstYellow{8}}
+\def\maxRefundRowOffset                             {\roffConstYellow{9}}
+\def\effectiveRefundRowOffset                       {\roffConstYellow{10}}
+\def\effectiveRefundVsTransactionFloorCostRowOffset {\roffConstYellow{11}}
+\def\detectingEmptyCallDataRowOffset                {\roffConstYellow{12}}
+\def\maxFeeVsBaseFeeRowOffset                       {\roffConstYellow{13}}
+\def\cumulativeGasVsBlockGasLimitRowOffset          {\roffConstYellow{14}}
+\def\maxFeeVsMaxPriorityFeeRowOffset                {\roffConstYellow{15}}
+\def\effectiveGasPriceRowOffset                     {\roffConstYellow{16}}
+
+\def\nRowsSysiBeaconRoot {\roffConstYellow{3}}  \def\maxCtForSysiBeaconRoot {(\nRowsSysiBeaconRoot - 1)}
+\def\nRowsSysiBlockHash  {\roffConstYellow{3}}  \def\maxCtForSysiBlockHash  {(\nRowsSysiBlockHash  - 1)}
+\def\nRowsSysiNoop       {\roffConstYellow{2}}  \def\maxCtForSysiNoop       {(\nRowsSysiNoop       - 1)}
+
+\def\nRowsTypeZero       {\roffConstYellow{15}} \def\maxCtForTypeZero       {(\nRowsTypeZero       - 1)}
+\def\nRowsTypeOne        {\roffConstYellow{15}} \def\maxCtForTypeOne        {(\nRowsTypeOne        - 1)}
+\def\nRowsTypeTwo        {\roffConstYellow{17}} \def\maxCtForTypeTwo        {(\nRowsTypeTwo        - 1)}
+\def\nRowsTypeThree      {\roffConstYellow{17}} \def\maxCtForTypeThree      {(\nRowsTypeThree      - 1)}
+\def\nRowsTypeFour       {\roffConstYellow{17}} \def\maxCtForTypeFour       {(\nRowsTypeFour       - 1)}
+
+\def\nRowsSysfNoop       {\roffConstYellow{2}} \def\maxCtForSysfNoop       {(\nRowsSysfNoop       - 1)}
+
+\def\locRlpTxnRcptPhaseSum {\loc{RLP\_TXN\_RCPT\_phase\_sum}}
+\def\locRlpTxnRcptOutgoing {\loc{RLP\_TXN\_RCPT\_outgoing}}

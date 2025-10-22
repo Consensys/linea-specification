@@ -30,8 +30,9 @@ The relevant data stores that these instructions extract data from are byte rang
 		a ``success bit'' that some instructions provide;
 \end{enumerate}
 The above is for instance used by precompiles which may e.g. fail due to their call data being malformed.
-Examples include \inst{ECADD}, \inst{ECMUL}, \inst{ECPAIRING} but also \inst{ECRECOVER}\footnote{\inst{ECRECOVER} won't \emph{fail} per se if provided with invalid inputs, but will return empty return data.}.
-Another usecase is that of (nonempty) bytecode deployments where the first byte of the code to deploy has to be tested against \texttt{0x\,EF}.
+Examples include \instEcadd{}, \instEcmul{}, \instEcpairing{} but also \instEcrecover{}\footnote{\instEcrecover{} won't \emph{fail} per se if provided with invalid inputs, but will return empty return data.}.
+Another usecase is that of (nonempty) bytecode deployments where the first byte of the code to deploy has to be tested against \texttt{0x\,EF},
+see \cite{EIP-3541}.
 The result of this (\hubMod{}) prediction is sent along with the \mmuMod{} instruction.
 \begin{enumerate}[resume]
 	\item \macroLimbOne{} and \macroLimbTwo{}:
@@ -42,7 +43,7 @@ The above are used e.g. by
 \inst{MSTORE},
 \inst{MSTORE8},
 \inst{CALLDATALOAD}
-but also by the \inst{BLAKE2f} precompile (to transit the ``rounds'' and ``f'' parameter)
+but also by the \instBlake{} precompile (to transit the ``rounds'' and ``f'' parameter)
 and deployment \inst{RETURN}'s.
 
 The following fields provide further (more granular) identification for fetching or sending data to e.g. precompile data stores 

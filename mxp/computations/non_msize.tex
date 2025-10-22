@@ -1,0 +1,95 @@
+\[
+	\boxed{\text{All constraints in this subsection assume that }
+	\left\{ \begin{array}{lcl}
+		\isMxpScenario          _{i} & = & 1 \\
+		\locMxpScenarioNotMsize _{i} & = & 1 \\
+	\end{array} \right.}
+\]
+We use the following shorthands:
+\[
+	\left\{ \begin{array}{lclr}
+		\locOffsetOneHi & \define & \mxpMacroOffsetOneHi _{i - \locScenarioToMacroRowOffset} \\
+		\locOffsetOneLo & \define & \mxpMacroOffsetOneLo _{i - \locScenarioToMacroRowOffset} \\
+		\locSizeOneHi   & \define & \mxpMacroSizeOneHi   _{i - \locScenarioToMacroRowOffset} \\
+		\locSizeOneLo   & \define & \mxpMacroSizeOneLo   _{i - \locScenarioToMacroRowOffset} \\
+	\end{array} \right.
+	\quad\text{and}\quad
+	\left\{ \begin{array}{lcl}
+		\locOffsetTwoHi & \define & \mxpMacroOffsetTwoHi _{i - \locScenarioToMacroRowOffset} \\
+		\locOffsetTwoLo & \define & \mxpMacroOffsetTwoLo _{i - \locScenarioToMacroRowOffset} \\
+		\locSizeTwoHi   & \define & \mxpMacroSizeTwoHi   _{i - \locScenarioToMacroRowOffset} \\
+		\locSizeTwoLo   & \define & \mxpMacroSizeTwoLo   _{i - \locScenarioToMacroRowOffset} \\
+	\end{array} \right.
+\]
+We impose:
+\begin{description}
+	\def\nRows{\yellowm{1}}\item[\underline{\underline{Testing for zeroness of the first size parameter:}}]
+		we impose that
+		\[
+			\wcpCallToIszero {
+				anchorRow = i                      ,
+				relOffset = \nRows                 ,
+				argOneHi  = \locSizeOneHi          ,
+				argOneLo  = \locSizeOneLo          ,
+			}
+		\]
+		and we define the following shorthand
+		\[
+			\left\{ \begin{array}{lcl}
+				\locSizeOneIsZero    & \define & \mxpComputationResA _{i + \nRows} \\
+				\locSizeOneIsNonZero & \define & 1 - \locSizeOneIsZero             \\
+			\end{array} \right.
+		\]
+	\def\nRows{\yellowm{2}}\item[\underline{\underline{Testing for zeroness of the second size parameter:}}]
+		we impose that
+		\[
+			\wcpCallToIszero {
+				anchorRow = i                      ,
+				relOffset = \nRows                 ,
+				argOneHi  = \locSizeTwoHi          ,
+				argOneLo  = \locSizeTwoLo          ,
+			}
+		\]
+		and we define the following shorthand
+		\[
+			\left\{ \begin{array}{lcl}
+				\locSizeTwoIsZero    & \define & \mxpComputationResA _{i + \nRows} \\
+				\locSizeTwoIsNonZero & \define & 1 - \locSizeTwoIsZero             \\
+			\end{array} \right.
+		\]
+	\item[\underline{\underline{Further justifying the scenario:}}]
+		\label{mxp: computation: non msize: justifying the trivial operation scenario}
+		we impose that
+		\[
+			\mxpScenarioTrivialOperation _{i} =
+			\left[ \begin{array}{cr}
+				\cdot & \locSizeOneIsZero \\
+				\cdot & \locSizeTwoIsZero \\
+			\end{array} \right]
+		\]
+		\saNote{} \label{mxp: computation: non msize: the trivial scenario corresponds to zero sizes}
+		In other words, and given the standing assumptions of this section, in particular $\locMxpScenarioNotMsize \equiv 1$,
+		the $\mxpScenarioTrivialOperation$ scenario is chosen whenever both size parameters are zero.
+		By that same token,
+		and given the definitions of section~(\ref{mxp: columns: scenario: shorthands}),
+		we are also (implicitly) setting that,
+		under the same assumptions,
+		\[
+			\locMxpScenarioNotMsizeNorTrivial _{i} = 1 -
+			\left[ \begin{array}{cr}
+				\cdot & \locSizeOneIsZero \\
+				\cdot & \locSizeTwoIsZero \\
+			\end{array} \right]
+			\quad
+			(\sanityCheck)
+		\]
+		i.e. $\locMxpScenarioNotMsizeNorTrivial \equiv 1$ \emph{iff} at least one of the size parameters is nonzero.
+	\item[\underline{\underline{Justifying \hubMod{} predictions:}}]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\mxpMacroSOneNzNoMxpx                     _{i - \locScenarioToMacroRowOffset} & = & \locSizeOneIsNonZero \cdot (1 - \mxpScenarioMxpx _{i}) \\
+				\mxpMacroSTwoNzNoMxpx                     _{i - \locScenarioToMacroRowOffset} & = & \locSizeTwoIsNonZero \cdot (1 - \mxpScenarioMxpx _{i}) \\
+			\end{array} \right.
+		\]
+\end{description}

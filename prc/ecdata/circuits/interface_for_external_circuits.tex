@@ -1,31 +1,47 @@
 The present section imposes the behaviour of the various circuit selectors.
 \begin{description}
-    \item[Circuit selector for the \inst{ECRECOVER} circuit:]
+    \item[Circuit selector for the \instEcrecover{} circuit:]
         $\csEcrecover_{i} = \internalChecksPassed_{i} \cdot \locIsEcrecover_{i}$
-    \item[Circuit selector for the \inst{ECADD} circuit:]
+    \item[Circuit selector for the \instEcadd{} circuit:]
         $\csEcadd_{i} = \internalChecksPassed_{i} \cdot \locIsEcadd_{i}$
-    \item[Circuit selector for the \inst{ECMUL} circuit:]
+    \item[Circuit selector for the \instEcmul{} circuit:]
         $\csEcmul_{i} = \internalChecksPassed_{i} \cdot \locIsEcmul_{i}$
-    \item[Circuit selector for the \inst{ECPAIRING} circuit:]
-        \[
-            \begin{array}{lcl}
-                \csEcpairing_{i} & \equiv &
-                \left[ \begin{array}{clcr}
-                    \wedge & \locIsEcpairing_{i}         & \equiv & \texttt{true}  \\
-                    \wedge & \internalChecksPassed_{i}   & \equiv & \texttt{true}  \\
-                    \wedge & \notOnGTwoAccMax_{i}        & \equiv & \texttt{false} \\
-                    \wedge & \acceptablePairOfPoints_{i} & \equiv & \texttt{true}  \\
-                \end{array} \right] \vspace{2mm} \\
-                & \equiv & 
-                \left[ \begin{array}{clcr}
-                    \cdot & \locIsEcpairing_{i}         \\
-                    \cdot & \internalChecksPassed_{i}   \\
-                    \cdot & (1 - \notOnGTwoAccMax_{i})  \\
-                    \cdot & \acceptablePairOfPoints_{i} \\
-                \end{array} \right] \vspace{2mm} \\
-                & =      & \acceptablePairOfPoints_{i} \\
-            \end{array}
-        \]
+    \item[Circuit selector for the \instEcpairing{} circuit:]
+    we impose the following constraints:
+        \begin {enumerate}
+            \item \If $\isEcpairingData_{i} = 1$ \Then
+                \[
+                    \begin{array}{lcl}
+                        \csEcpairing_{i} & \equiv &
+                        \left[ \begin{array}{clcr}
+                            \wedge & \isEcpairingData_{i}         & \equiv & \texttt{true}  \\
+                            \wedge & \internalChecksPassed_{i}   & \equiv & \texttt{true}  \\
+                            \wedge & \notOnGTwoAccMax_{i}        & \equiv & \texttt{false} \\
+                            \wedge & \acceptablePairOfPoints_{i} & \equiv & \texttt{true}  \\
+                        \end{array} \right] \vspace{2mm} \\
+                        & \equiv & 
+                        \left[ \begin{array}{clcr}
+                            \cdot & \isEcpairingData_{i}         \\
+                            \cdot & \internalChecksPassed_{i}   \\
+                            \cdot & (1 - \notOnGTwoAccMax_{i})  \\
+                            \cdot & \acceptablePairOfPoints_{i} \\
+                        \end{array} \right] \vspace{2mm} \\
+                        & =      & \acceptablePairOfPoints_{i} \\
+                    \end{array}
+                \]
+            \item \If $\isEcpairingResult_{i} = 1$ \Then
+                \[
+                    \begin{array}{lcl}
+                        \csEcpairing_{i} & = & \ecdataSuccessBit_{i} \cdot (1 - \trivialPairing_{i})
+                    \end{array}
+                \]
+            \item \If $\locIsEcpairing_{i} = 0$ \Then
+                \[
+                    \begin{array}{lcl}
+                        \csEcpairing_{i} & = & 0
+                    \end{array}
+                \]
+        \end{enumerate}
     \item[Circuit selector for the \inst{G2\_MEMBERSHIP\_TEST} circuit:]
         \[
             \begin{array}{lcl}
@@ -62,7 +78,7 @@ The data that should be read by external circuits are always the following:
 Whenever $\ecdataSuccessBit = 0$ then $\csEcpairing = 0$, while if $\ecdataSuccessBit = 1$ then $\csEcpairing = \acceptablePairOfPoints$.
 
 \saNote{}
-Given the \ecDataMod{} is processing \inst{ECPAIRING} instructions, the $\csGTwo$ flag lights up under two circumstances:
+Given the \ecDataMod{} is processing \instEcpairing{} instructions, the $\csGTwo$ flag lights up under two circumstances:
 \begin{enumerate} 
     \item $\internalChecksPassed = 1$, $\ecdataSuccessBit = 0$ along the rows of first large point that is predicted not to lie on the $G_2$ subgroup;
     \item $\internalChecksPassed = 1$, $\ecdataSuccessBit = 1$ along the rows of the large point of every pair of the form $(\infty, \locB)$;

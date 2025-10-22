@@ -1,0 +1,72 @@
+The following constraints establish the staggered growth behaviour of
+$\tliCounter$ and $\nonStackRowsCounter$
+in conjunction with
+$\tli$ and $\nonStackRows$.
+We start with the latter:
+\begin{enumerate}
+	\item we require that $\tli$ and $\nonStackRows$ be \hubStamp-constant
+	\item \If $\txExec _{i} = 0$ \Then
+		\[
+			\left\{ \begin{array}{lclr}
+				\tli                 _{i} & = & 0 & (\trash) \\
+				\nonStackRows        _{i} & = & 0 & (\trash) \\
+			\end{array} \right.
+		\]
+\end{enumerate}
+Setting
+$\tli$ and $\nonStackRows$
+in the ``nontrivial case'' (i.e. when $\txExec _{i} = 1$)
+requires care, especially for $\nonStackRows$,
+and will happen on an ``\evm{}-instruction per \evm{}-instruction'' basis
+in section~(\ref{hub: instruction handling}).
+
+We now venture forth with constraining
+$\tliCounter$ and $\nonStackRowsCounter$:
+\begin{enumerate}[resume]
+	\item \If $\hubStamp_{i} \neq \hubStamp_{i - 1}$ \Then 
+		\[
+			\left\{ \begin{array}{lcl}
+				\tliCounter          _{i} & = & 0 \\
+				\nonStackRowsCounter _{i} & = & 0 \\
+			\end{array} \right.
+		\]
+	\item \If $\txExec _{i} = 0$ \Then
+		\[
+			\left\{ \begin{array}{lclr}
+				\tliCounter          _{i} & = & 0 & (\trash) \\
+				\nonStackRowsCounter _{i} & = & 0 & (\trash) \\
+			\end{array} \right.
+		\]
+	\item \If $\txExec _{i} = 1$ \Then
+		\begin{enumerate}
+			\item \If $\tliCounter_{i} \neq \tli_{i}$ \Then 
+				\[
+					\left\{ \begin{array}{lclr}
+						\tliCounter          _{i + 1} & = & 1 + \tliCounter_{i}       \\
+						\nonStackRowsCounter _{i + 1} & = & \nonStackRowsCounter _{i} \\
+						\nonStackRowsCounter _{i    } & = & 0                          & (\sanityCheck) \\
+					\end{array} \right.
+				\]
+			\item \If $\tliCounter_{i} = \tli_{i}$ \Then 
+				\begin{enumerate}
+					\item \If $\nonStackRowsCounter_{i} \neq \nonStackRows_{i}$ \Then
+						\[
+							\left\{ \begin{array}{lcl}
+								\tliCounter          _{i + 1} & = & \tliCounter              _{i} \\
+								\nonStackRowsCounter _{i + 1} & = & 1 + \nonStackRowsCounter _{i} \\
+							\end{array} \right.
+						\]
+					\item \If $\nonStackRowsCounter_{i} = \nonStackRows_{i}$ \Then $\hubStamp_{i + 1} = 1 + \hubStamp_{i}$ (\sanityCheck)
+				\end{enumerate}
+		\end{enumerate}
+\end{enumerate}
+We further impose that
+\begin{enumerate}[resume]
+	\item \If $\txExec _{i} = 1$ \Then
+		\begin{enumerate}
+			\item \If $\nonStackRowsCounter _{i} =    0$ \Then $\peekStack _{i} = 1$
+			\item \If $\nonStackRowsCounter _{i} \neq 0$ \Then $\peekStack _{i} = 0$
+		\end{enumerate}
+\end{enumerate}
+\saNote{}
+We remind the reader that \col{NSR} stands for ``\textbf{n}on \textbf{s}tack \textbf{r}ow.''

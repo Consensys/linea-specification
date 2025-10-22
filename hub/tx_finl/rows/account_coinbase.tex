@@ -1,0 +1,31 @@
+\item[\underline{\underline{Coinbase account-row n$^°\bm{(i + \roffTxFinlAccCoinbase)}$:}}]
+	we impose the following on the \textbf{coinbase account}:
+	\[
+		\left\{\begin{array}{lcl}
+			\accTrimAddress
+			{i}{\roffTxFinlAccCoinbase}
+			{\locTxFinlCoinbaseAddressHi}
+			{\locTxFinlCoinbaseAddressLo} \\
+			% \accAddress\high _{i + \roffTxFinlAccCoinbase} & = & \locTxFinlCoinbaseAddressHi \\
+			% \accAddress\low  _{i + \roffTxFinlAccCoinbase} & = & \locTxFinlCoinbaseAddressLo \\
+			\multicolumn{3}{l}{\accIncrementBalance               {i}{\roffTxFinlAccCoinbase}{\locFinlCoinbaseReward}} \\
+			\multicolumn{3}{l}{\accSameNonce                      {i}{\roffTxFinlAccCoinbase}} \\
+			\multicolumn{3}{l}{\accSameCode                       {i}{\roffTxFinlAccCoinbase}} \\
+			\multicolumn{3}{l}{\accSameDeployment                 {i}{\roffTxFinlAccCoinbase}} \\
+			\multicolumn{3}{l}{\accSameWarmth                     {i}{\roffTxFinlAccCoinbase}} \\
+			\multicolumn{3}{l}{\accSameMarkedForDeletionFlag      {i}{\roffTxFinlAccCoinbase}} \\
+			\multicolumn{3}{l}{
+				\standardDomSubStamps {
+					anchorRow = i                      ,
+					relOffset = \roffTxFinlAccCoinbase ,
+					domOffset = 1                      ,
+				}
+			} \\
+		\end{array}\right.
+	\]
+	where \locFinlCoinbaseReward{} is a shorthand defined as follows:
+	\[
+		\locFinlCoinbaseReward \define
+		\Big[ \txGasLimit_{i + \roffTxFinlTxn} - \txEffectiveRefund_{i + \roffTxFinlTxn} \Big]
+		\cdot \txPriorityFeePerGas_{i + \roffTxFinlTxn}
+	\]

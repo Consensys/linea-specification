@@ -1,0 +1,126 @@
+We impose the following constraints:
+\begin{enumerate}
+    \item \csCOne{}, \csCTwo{}, \csGOne{}, \csGTwo{} are \textbf{counter-constant, binary} \quad (\trash)
+    \item we define them as
+        \[
+        \left\{ \begin{array}{lcl}
+            \csCOne _{i} & = & \malformedDataExternalBit _{i} \cdot \isBlsGOneAddData _{i} \\
+            \csCTwo _{i} & = & \malformedDataExternalBit _{i} \cdot \isBlsGTwoAddData _{i} \\
+            \csGOne _{i} & = &
+            \left[ \begin{array}{cl}
+                + & \locCsGOneForMsm               _{i} \\
+                + & \locCsGOneForPairingMalformed  _{i} \\
+                + & \locCsGOneForPairingWellformed _{i} \\
+            \end{array} \right]
+            \vspace{2mm}
+            \\
+            \csGTwo _{i} & = &
+            \left[ \begin{array}{cl}
+                + & \locCsGTwoForMsm               _{i} \\
+                + & \locCsGTwoForPairingMalformed  _{i} \\
+                + & \locCsGTwoForPairingWellformed _{i} \\
+            \end{array} \right]
+            \\
+        \end{array} \right.
+        \]
+        where we set
+        \[
+            \left\{ \begin{array}{lcl}
+                \locCsGOneForMsm _{i} & \define &
+                \left[ \begin{array}{cl}
+                    \cdot & \isBlsGOneMsmData         _{i} \\
+                    \cdot & \isFirstInput             _{i} \\
+                    \cdot & \malformedDataExternalBit _{i} \\
+                \end{array} \right]
+                \vspace{2mm}
+                \\
+                \locCsGTwoForMsm _{i} & \define &
+                \left[ \begin{array}{cl}
+                    \cdot & \isBlsGTwoMsmData         _{i} \\
+                    \cdot & \isFirstInput             _{i} \\
+                    \cdot & \malformedDataExternalBit _{i} \\
+                \end{array} \right]
+                \\
+            \end{array} \right.
+        \]
+        and
+        \[
+            \left\{ \begin{array}{lcl}
+                \locCsGOneForPairingMalformed  _{i} & \define &
+                \left[ \begin{array}{cl}
+                    \cdot & \isBlsPairingCheckData    _{i} \\
+                    \cdot & \isFirstInput             _{i} \\
+                    \cdot & \malformedDataExternalBit _{i} \\
+                \end{array} \right]
+                \vspace{2mm}
+                \\
+                \locCsGTwoForPairingMalformed  _{i} & \define &
+                \left[ \begin{array}{cl}
+                    \cdot & \isBlsPairingCheckData    _{i} \\
+                    \cdot & \isSecondInput            _{i} \\
+                    \cdot & \malformedDataExternalBit _{i} \\
+                \end{array} \right]
+                \\
+            \end{array} \right.
+        \]
+        and
+        \[
+            \left\{ \begin{array}{lcl}
+                \locCsGOneForPairingWellformed _{i} & \define &
+                \left[ \begin{array}{cl}
+                    \cdot & \isBlsPairingCheckData          _{i}  \\
+                    \cdot & \isFirstInput                   _{i}  \\
+                    \cdot & (1 - \nontrivialPairOfPointsBit _{i}) \\
+                    \cdot & (1 - \isInfinity                _{i}) \\
+                    \cdot & \locWellformedData              _{i}  \\
+                \end{array} \right]
+                \vspace{2mm}
+                \\
+                \locCsGTwoForPairingWellformed _{i} & \define &
+                \left[ \begin{array}{cl}
+                    \cdot & \isBlsPairingCheckData          _{i}  \\
+                    \cdot & \isSecondInput                  _{i}  \\
+                    \cdot & (1 - \nontrivialPairOfPointsBit _{i}) \\
+                    \cdot & (1 - \isInfinity                _{i}) \\
+                    \cdot & \locWellformedData              _{i}  \\
+                \end{array} \right]
+            \end{array} \right.
+        \]
+\end{enumerate}
+We now define the behaviour of the various circuit selectors.
+\begin{description}
+    \item[\underline{Circuit selectors:}]
+        we impose
+        \[
+            \left\{ \begin{array}{lcrcl}
+                \csPointEvaluation _{i}        & = & \wellformedDataNontrivial _{i} & \cdot & \locIsPointEvaluation                    _{i} \\
+                \csPointEvaluationFailure _{i} & = & \malformedDataExternalTot _{i} & \cdot & \locIsPointEvaluation                    _{i} \\
+                \csGOneAdd         _{i}        & = & \wellformedDataNontrivial _{i} & \cdot & \locIsBlsGOneAdd                         _{i} \\
+                \csGOneMsm         _{i}        & = & \wellformedDataNontrivial _{i} & \cdot & \locIsBlsGOneMsm                         _{i} \\
+                \csGTwoAdd         _{i}        & = & \wellformedDataNontrivial _{i} & \cdot & \locIsBlsGTwoAdd                         _{i} \\
+                \csGTwoMsm         _{i}        & = & \wellformedDataNontrivial _{i} & \cdot & \locIsBlsGTwoMsm                         _{i} \\
+                \csPairing         _{i}        & = & \wellformedDataNontrivial _{i} & \cdot & \locIsBlsIsNontrivialPairingDataOrResult _{i} \\
+                \csMapFpToGOne     _{i}        & = & \wellformedDataNontrivial _{i} & \cdot & \locIsBlsMapFpToGOne                     _{i} \\
+                \csMapFpTwoToGTwo  _{i}        & = & \wellformedDataNontrivial _{i} & \cdot & \locIsBlsMapFpTwoToGTwo                  _{i} \\
+            \end{array} \right.
+        \]
+        where
+        \[
+            \locIsBlsIsNontrivialPairingDataOrResult _{i}
+            \define
+            \left[ \begin{array}{crcl}
+                + & \isBlsPairingCheckData   _{i} & \cdot & \nontrivialPairOfPointsBit _{i} \\
+                + & \isBlsPairingCheckResult _{i} \\
+            \end{array} \right]
+        \]
+\end{description}
+Note that, given flag exclusivity constraints,
+see section~(\ref{bls: generalities: flag sum}),
+at most one of the circuit selectors may light up for a given row.
+The data which gets passed on to external circuits is always the following:
+\begin{enumerate}
+    \item \blsId{}
+    \item \blsIndex{}
+    \item \blsLimb{}
+    \item \blsSuccessBit{}
+\end{enumerate}

@@ -1,0 +1,29 @@
+The purpose of the present lookup is to justify the
+\transactionFromAddress{}.
+\begin{description}
+	\item[\underline{Selector:}]
+		we use
+		\[
+			\col{txn\_data\_selector} _{i} \define
+			\left[ \begin{array}{cl}
+				\cdot & \macro                                 _{i} \\
+				\cdot & \rlpAuthExternAuthorityRecoverySuccess _{i} \\
+			\end{array} \right]
+		\]
+	\item[\underline{Column correspondence:}]
+		\[
+			\renewcommand{\arraystretch}{1.5}
+			\begin{array}{|l|c|l|}
+				\hline
+				\text{\rlpAuthMod{}-columns}                &                  & \text{\txnDataMod{}-columns}                                 \\ \hline\hline
+				\blockNumber                           _{i} & \rightsquigarrow & \blockNumber                              _{j}               \\ \hline
+				\userTransactionNumber                 _{i} & \rightsquigarrow & \userTransactionNumber                    _{j}               \\ \hline
+				1                                           & \rightsquigarrow & \user                                     _{j}               \\ \hline
+				1                                           & \rightsquigarrow & \isUserTxnHubView                         _{j}               \\ \hline
+				1                                           & \rightsquigarrow & \txnDataRlpIsAccountDelegationTransaction _{j - \yellowm{1}} \\ \hline
+				\rlpAuthExternTransactionFromAddressHi _{i} & \rightsquigarrow & \txnDataHubFromHi                         _{j}               \\ \hline
+				\rlpAuthExternTransactionFromAddressLo _{i} & \rightsquigarrow & \txnDataHubFromLo                         _{j}               \\ \hline
+				\authorityIsSenderTot                  _{i} & \rightsquigarrow & \red{@Olivier: TODO !}                                       \\ \hline
+			\end{array}
+		\]
+\end{description}

@@ -8,32 +8,38 @@
 		\end{array} \right.
 		}
 \end{center}
-We are thus assuming that the present row is the first of the second phase of dealing with the \inst{ECRECOVER} precompile.
+We are thus assuming that the present row is the first of the second phase of dealing with the \instEcrecover{} precompile.
 We are also assuming that $\scenPrcSuccess \equiv 1$.
-We remind the reader that success of the \inst{ECRECOVER} precompile only means that it was provided with sufficient gas, not that an address was effectively recovered.
+We remind the reader that success of the \instEcrecover{} precompile only means that it was provided with sufficient gas, not that an address was effectively recovered.
 \begin{description}
 	\item[\underline{Miscellaneous-row $n^°(i + \prcStandardSuccessSecondMiscRowOffset)$:}]
 		\begin{description}
 			\item[\underline{Setting lookup flags:}]
 				we impose
 				\[
-					\weightedMiscFlagSum
-					{i}{\prcStandardSuccessSecondMiscRowOffset}
+					\weightedMiscFlagSum {
+						anchorRow = i                                      ,
+						relOffset = \prcStandardSuccessSecondMiscRowOffset ,
+					}
 					=
 					\miscMmuWeight \cdot \locAddressRecoverySuccess
+					% OK
 				\]
 				in other words
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\trash) \\
-						\miscMmuFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locAddressRecoverySuccess & (\trash) \\
-						\miscMxpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\trash) \\
-						\miscOobFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\trash) \\
-						\miscStpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\trash) \\
+						\miscExpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locAddressRecoverySuccess & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\sanityCheck) \\
 					\end{array} \right.
 				\]
+				\saNote{}
+				\locAddressRecoverySuccess{} is provably binary,
+				see note~(\ref{hub: instruction handling: call: precompiles: common: generalities: ecrecover recovery success failure flags are provably binary}).
 		\end{description}
-		\saNote{} In other words the ``result transfer'' step of a call to the \inst{ECRECOVER} only required if the call is
+		\saNote{} In other words the ``result transfer'' step of a call to the \instEcrecover{} only required if the call is
 		(\emph{a}) is successful (i.e. is given sufficient gas) and
 		(\emph{b}) is successful in recovering an address (as measured by $\locAddressRecoverySuccess \equiv 1$.)
 		\begin{description}
@@ -50,15 +56,17 @@ We remind the reader that success of the \inst{ECRECOVER} precompile only means 
 						phase     = \phaseEcrecoverResult                 ,
 						}
 				\]
-				\saNote{} Recall that the return data \textbf{o} of a successful call to the \inst{ECRECOVER} precompile which successfully recovers an address is a $\evmWordSize$ byte string $\textbf{o} \in \mathbb{B}_{\evmWordSize}$ is a string of composed of 12 (leading) zero bytes followed by 20 bytes making up the recovered Ethereum public address.
+				\saNote{} Recall that the return data \textbf{o} of a successful call to the \instEcrecover{} precompile which successfully recovers an address is a $\evmWordSize$ byte string $\textbf{o} \in \mathbb{B}_{\evmWordSize}$ is a string of composed of 12 (leading) zero bytes followed by 20 bytes making up the recovered Ethereum public address.
 		\end{description}
 	\item[\underline{Miscellaneous-row $n^°(i + \prcStandardSuccessThirdMiscRowOffset)$:}]
 		\begin{description}
 			\item[\underline{Setting lookup flags:}]
 				we impose
 				\[
-					\weightedMiscFlagSum
-					{i}{\prcStandardSuccessThirdMiscRowOffset}
+					\weightedMiscFlagSum {
+						anchorRow = i                                     ,
+						relOffset = \prcStandardSuccessThirdMiscRowOffset ,
+					}
 					=
 					\miscMmuWeight
 					\cdot
@@ -66,19 +74,22 @@ We remind the reader that success of the \inst{ECRECOVER} precompile only means 
 						\cdot \; \locAddressRecoverySuccess   \\
 						\cdot \; \locOobResultNonzeroRac      \\
 					\end{array} \right]
+					% OK
 				\]
 				in other words
 				\[
 					\left\{ \begin{array}{lclc}
-						\miscExpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                                                   & (\trash) \\
-						\miscMmuFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \locAddressRecoverySuccess \cdot \locOobResultNonzeroRac & (\trash) \\
-						\miscMxpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                                                   & (\trash) \\
-						\miscOobFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                                                   & (\trash) \\
-						\miscStpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                                                   & (\trash) \\
+						\miscExpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                                                   & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \locAddressRecoverySuccess \cdot \locOobResultNonzeroRac & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                                                   & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                                                   & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                                                   & (\sanityCheck) \\
 					\end{array} \right.
 				\]
+				\saNote{}
+				\locAddressRecoverySuccess{} and \locOobResultNonzeroRac{} are provably binary, and so is their product.
 		\end{description}
-		\saNote{} In other words the ``result transfer'' step of a call to the \inst{ECRECOVER} only required if the call is
+		\saNote{} In other words the ``result transfer'' step of a call to the \instEcrecover{} only required if the call is
 		(\emph{a}) is successful (i.e. is given sufficient gas) and
 		(\emph{b}) is successful in recovering an address (as measured by $\locAddressRecoverySuccess \equiv 1$.)
 		\begin{description}
@@ -96,24 +107,18 @@ We remind the reader that success of the \inst{ECRECOVER} precompile only means 
 						referenceSize   = \locPrcRac                            ,
 						}
 				\]
-				\saNote{} Recall that the return data \textbf{o} of a successful call to the \inst{ECRECOVER} precompile which successfully recovers an address is a $\redm{\evmWordSize}$ byte string $\textbf{o} \in \mathbb{B}_{\evmWordSize}$ composed of 12 (leading) zero bytes followed by 20 bytes making up the recovered Ethereum public address.
+				\saNote{} Recall that the return data \textbf{o} of a successful call to the \instEcrecover{} precompile which successfully recovers an address is a $\redm{\evmWordSize}$ byte string $\textbf{o} \in \mathbb{B}_{\evmWordSize}$ composed of 12 (leading) zero bytes followed by 20 bytes making up the recovered Ethereum public address.
 		\end{description}
 	\item[\underline{Context-row $n^°(i + \prcStandardSuccessCallerContextRowRowOffset)$:}] 
 		we impose
 		\[
 			\provideReturnData {
-				anchorRow          = i                                            ,
-				relOffset          = \prcStandardSuccessCallerContextRowRowOffset ,
-				returnDataReceiver = \cn_{i}                                      ,
-				returnDataProvider = 1 + \hubStamp_{i}                            ,
-				returnDataOffset   = 0                                            ,
-				returnDataSize     = \evmWordSize \cdot \locAddressRecoverySuccess   ,
+				anchorRow          = i                                             ,
+				relOffset          = \prcStandardSuccessCallerContextRowRowOffset  ,
+				returnDataReceiver = \cn_{i}                                       ,
+				returnDataProvider = 1 + \hubStamp_{i}                             ,
+				returnDataOffset   = 0                                             ,
+				returnDataSize     = \evmWordSize \cdot \locAddressRecoverySuccess ,
 			}
-			% \provideReturnData
-			% {i}{4} 
-			% {\cn_{i}                                   }         % Return data receiver
-			% {1 + \hubStamp_{i}                         }         % Return data provider
-			% {0                                         }         % Return data offset
-			% {\evmWordSize \cdot \locAddressRecoverySuccess}         % Return data size 
 		\]
 \end{description}

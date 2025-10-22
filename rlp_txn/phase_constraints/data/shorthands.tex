@@ -1,0 +1,29 @@
+\begin{center}
+	\boxed{\text{The shorthands defined below only make sense given that $\phaseData _{i} = 1$.}}
+\end{center}
+We define the following shorthands
+\[
+	\left\{ \begin{array}{lcl}
+		\locZeroBytesCountdown       _{i} & \define & \rlpTxnComputationColumnAuxiliaryData{1} _{i} \\
+		\locNonzeroBytesCountdown    _{i} & \define & \rlpTxnComputationColumnAuxiliaryData{2} _{i} \\
+	\end{array} \right.
+\]
+and
+\[
+	\left\{ \begin{array}{lcrcrcr}
+		\locIsPayloadSizeAnalysisRow _{i} & \define & \isTxn _{i - 1} &       &             & \cdot & \phaseData _{i} \\
+		\locIsLimbContentAnalysisRow _{i} & \define & \isCmp _{i - 1} & \cdot & \isCmp _{i} & \cdot & \phaseData _{i} \\
+	\end{array} \right.
+\]
+\saNote{} \label{rlp txn: phase constraints: payload: asymmetry between row nature bits}
+There is (seemingly) an asymmetry between the definitions of
+\locIsPayloadSizeAnalysisRow{} and
+\locIsLimbContentAnalysisRow{}.
+However, in light of
+constraint~(\ref{rlp txn: generalities: perspectives: perspective columns are fully constrained and every transaction row is followed by at least one computation row}),
+we have
+\[
+	\isTxn _{i - 1} \equiv 1
+	\iff \isTxn _{i - 1} \cdot \isCmp _{i} \equiv 1
+\]
+

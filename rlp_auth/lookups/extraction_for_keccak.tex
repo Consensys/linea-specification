@@ -1,0 +1,59 @@
+The present section describes how to extract the message to hash defining the ``delegation'' code hash.
+Recall that this is defined as the \texttt{KECCAK} hash of
+\[
+	\underbrace{\locAthorizationCodePrefix}_{\in \mathbb{B} _{3}} ~ \cdot ~ \underbrace{\locAddress}_{\in \mathbb{B} _{\addressSize}} \in \mathbb{B} _{23}
+\]
+where $\locAthorizationCodePrefix \define \locAthorizationCodePrefixValue$
+and for the purposes of the arithmetization it is broken up into three chunks
+\[
+	\underbrace{\locAthorizationCodePrefix}_{\in \mathbb{B} _{3}}
+	~ \cdot ~ \underbrace{\locAddress\loc{[:4]}}_{\in \mathbb{B} _{4}}
+	~ \cdot ~ \underbrace{\locAddress\loc{[4:]}}_{\in \mathbb{B} _{\llarge}}
+	\in \mathbb{B} _{23}
+\]
+\begin{description}
+	\item[\underline{Selector:}]
+		we use
+		\[
+			\loc{code\_hash\_selector} _{i}
+			\define
+			\left[ \begin{array}{cl}
+				\cdot & \extern                             _{i} \\
+				\cdot & \rlpAuthExternAuthorityTupleIsValid _{i} \\
+			\end{array} \right]
+		\]
+	\item[\underline{Columns:}]
+		we use the following expressions
+		\begin{enumerate}
+			\item $1$
+			\item $\userTransactionNumber _{i}$
+			\item $\authorityTupleIndex   _{i}$
+			\item $\locAthorizationCodePrefix        \cdot 256 ^ \numConst{13}$
+			\item $\rlpAuthExternTupleAddressHi _{i} \cdot 256 ^ \numConst{12}$
+			\item $\rlpAuthExternTupleAddressLo _{i} \cdot 256 ^ \numConst{0}$
+			\item $\rlpAuthExternPotentialNewCodeHashHi _{i}$
+			\item $\rlpAuthExternPotentialNewCodeHashLo _{i}$
+		\end{enumerate}
+\end{description}
+Where
+\[
+	\left\{ \begin{array}{l}
+		\locAthorizationCodePrefixValue   \in \mathbb{B} _{3}       \\
+		\rlpAuthExternTupleAddressHi _{i} \in \mathbb{B} _{4}       \\
+		\rlpAuthExternTupleAddressLo _{i} \in \mathbb{B} _{\llarge} \\
+	\end{array} \right.
+	\quad\text{and}\quad
+	\left\{ \begin{array}{lcl}
+		\numConst{13} & \equiv & \llarge - 3       \vspace{2mm} \\
+		\numConst{12} & \equiv & \llarge - 4       \\
+		\numConst{0}  & \equiv & \llarge - \llarge \\
+	\end{array} \right.
+\]
+\saNote{}
+We do not provide byte sizes for the three (left aligned) limbs making up the message to hash
+as they are known to be $3$, $4$ and $\llarge$.
+
+\includepdf[fitpaper=true, pages={1}]{lua/extraction_for_keccak___pre_verticalization.pdf}
+\includepdf[fitpaper=true, pages={1}]{lua/extraction_for_keccak___verticalized.pdf}
+\includepdf[fitpaper=true, pages={1}]{lua/extraction_for_keccak___prover_columns.pdf}
+

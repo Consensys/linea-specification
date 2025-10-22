@@ -1,0 +1,31 @@
+\item[\underline{\underline{Coinbase account-row n$^°~\bm{(i + \roffTxSkipUserCoinbaseAccount)}$:}}]
+	we pay the \textsc{coinbase} address in transaction fees:
+	\[
+		\left\{ \begin{array}{lcl}
+			\accAddress    \high _{i + \roffTxSkipUserCoinbaseAccount} & = & \txCoinbase  \high  _{i + \roffTxSkipUserTransaction}              \\
+			\accAddress    \low  _{i + \roffTxSkipUserCoinbaseAccount} & = & \txCoinbase  \low   _{i + \roffTxSkipUserTransaction} \vspace{2mm} \\
+			\multicolumn{3}{l}{\accIncrementBalance                  {i}{\roffTxSkipUserCoinbaseAccount}{\locCoinbaseFee}} \\
+			\multicolumn{3}{l}{\accSameNonce                         {i}{\roffTxSkipUserCoinbaseAccount}      } \\
+			\multicolumn{3}{l}{\accSameCode                          {i}{\roffTxSkipUserCoinbaseAccount}} \\
+			\multicolumn{3}{l}{\accSameDeployment                    {i}{\roffTxSkipUserCoinbaseAccount}} \\
+			\multicolumn{3}{l}{\accSameWarmth                        {i}{\roffTxSkipUserCoinbaseAccount}} \\
+			\multicolumn{3}{l}{\accSameMarkedForDeletionFlag         {i}{\roffTxSkipUserCoinbaseAccount}} \\
+			\multicolumn{3}{l}{
+				\standardDomSubStamps {
+					anchorRow = i                              ,
+					relOffset = \roffTxSkipUserCoinbaseAccount ,
+					domOffset = \roffTxSkipUserCoinbaseAccount ,
+				}
+			} \\
+		\end{array} \right.
+	\]
+	where we define the \locCoinbaseFee{} shorthand as follows:
+	\[
+		\locCoinbaseFee \define
+		\left[ \begin{array}{cl}
+			\cdot & \txPriorityFeePerGas_{i + \roffTxSkipUserTransaction}                                                    \\
+			\cdot & (\txGasLimit_{i + \roffTxSkipUserTransaction} - \txEffectiveRefund_{i + \roffTxSkipUserTransaction}) \\
+		\end{array} \right]
+	\]
+	\saNote{}
+	\specTodo{}, the definition of \locCoinbaseFee{} likely to change due to call data floor price.

@@ -1,4 +1,4 @@
-The present section describes the remaining computations required for \inst{ECPAIRING}.
+The present section describes the remaining computations required for \instEcpairing{}.
 As such:
 \[
 	\boxed{\text{All constraints in this subsection further assume }
@@ -9,10 +9,14 @@ Besides verifying whether the precompile was provided with sufficient gas we mus
 	\item[\underline{Row n°$(i + 2)$:}]
 		we impose that
 		\[
-			\oobCallToMod
-			{i}{2}
-			{0}{\locCds}
-			{0}{192}
+			\callToMod {
+				anchorRow  = i       ,
+				relOffset  = 2       ,
+				dividendHi = 0       ,
+				dividendLo = \locCds ,
+				divisorHi  = 0       ,
+				divisorLo  = 192     ,
+			}
 		\]
 		and we define the following shorthand
 		\[
@@ -21,9 +25,12 @@ Besides verifying whether the precompile was provided with sufficient gas we mus
 	\item[\underline{Row n°$(i + 3)$:}]
 		we impose that
 		\[
-			\oobCallToIszero
-			{i}{3}
-			{0}{\locRemainder}
+			\wcpCallToIszero {
+				anchorRow = i             ,
+				relOffset = 3             ,
+				argOneHi  = 0             ,
+				argOneLo  = \locRemainder ,
+			}
 		\]
 		and we define the following shorthand
 		\[
@@ -32,13 +39,17 @@ Besides verifying whether the precompile was provided with sufficient gas we mus
 	\item[\underline{Row n°$(i + 4)$:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locPairingSizeIsMultiple = 0$ \Then we impose $\oobNoCall{4}{i}$.
+			\item \If $\locPairingSizeIsMultiple = 0$ \Then we impose $\oobNoCall{i}{4}$.
 			\item \If $\locPairingSizeIsMultiple = 1$ \Then we impose that
 				\[
-					\oobCallToLt
-					{i}{4}
-					{0}{\locCalleeGas}
-					{0}{\locPrecompileCost}
+					\wcpCallToLt {
+						anchorRow = i                  ,
+						relOffset = 4                  ,
+						argOneHi  = 0                  ,
+						argOneLo  = \locCalleeGas      ,
+						argTwoHi  = 0                  ,
+						argTwoLo  = \locPrecompileCost ,
+					}
 				\]
 				where we use the following shorthand
 				\[
@@ -50,7 +61,7 @@ Besides verifying whether the precompile was provided with sufficient gas we mus
 				\]
 				It follows that $\locCalleeGas < \locPrecompileCost \iff \locInsufficientGas = 1$.
 		\end{enumerate}
-	\saNote{} The shorthand \locPrecompileCost{} was defined using a division by 192. Whenever this shorthand is used in the constraints, we can replace the division by 192 with a multiplication by the same number through same basic algebra. This is the approach taken in the implementation to avoid division.
+		\saNote{} The shorthand \locPrecompileCost{} was defined using a division by 192. Whenever this shorthand is used in the constraints, we can replace the division by 192 with a multiplication by the same number through same basic algebra. This is the approach taken in the implementation to avoid division.
 	\item[\underline{Justifying the remaining \hubMod{} predictions:}]
 		we impose that
 		\[

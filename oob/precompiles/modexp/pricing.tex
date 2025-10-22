@@ -1,124 +1,172 @@
 \[
-	\boxed{\text{All constraints in this subsection further assume } \oobInstIsModexpPricing_{i} = 1}
+	\boxed{\text{All constraints in this subsection further assume } \oobInstIsModexpPricing _{i} = 1}
 \]
+The purpose of the present \oobMod{} instruction is to compute the pricing of the
+\instModexp{} precompile.
+We follow the pricing model of \cite{EIP-7883}.
 We use the shorthands defined below:
 \[
 	\left\{ \begin{array}{lclr}
-		\locCalleeGas      & \define & \oobDataCol{1}_{i}                     \\
-		% \locCds                 & \define & \oobDataCol{2}_{i} \\
-		\locRac                 & \define & \oobDataCol{3}_{i} \\
-		\locRamSuccess          & \define & \oobDataCol{4}_{i} & \quad \prediction \\
-		\locReturnGas           & \define & \oobDataCol{5}_{i} & \quad \prediction \\
-		\locExponentLog         & \define & \oobDataCol{6}_{i} \\
-		\locMaxMbsBbs           & \define & \oobDataCol{7}_{i} \\
-		\locRacIsNonzero        & \define & \oobDataCol{8}_{i} & \quad \prediction \\
+		\locCalleeGas    & \define & \oobDataCol{1} _{i} \\
+		% \locCds        & \define & \oobDataCol{2} _{i} \\
+		\locRac          & \define & \oobDataCol{3} _{i} \\
+		\locRamSuccess   & \define & \oobDataCol{4} _{i}  & \quad \prediction \\
+		\locReturnGas    & \define & \oobDataCol{5} _{i}  & \quad \prediction \\
+		\locExponentLog  & \define & \oobDataCol{6} _{i} \\
+		\locMaxMbsBbs    & \define & \oobDataCol{7} _{i} \\
+		\locRacIsNonzero & \define & \oobDataCol{8} _{i}  & \quad \prediction \\
 	\end{array} \right.
 \]
-\saNote{} The decorator `` $\prediction{}$ '' stands for ``\hubMod{} prediction.''
+\hubPredictionDecoratorBlurb{}
 
 \saNote{}
-The intended interpretation is that $\locExponentLog$ contain $\locExponentLogEYP$ as defined in the \cite{EYP}.
-The value of \locExponentLog{} will be computed in the \expMod{} module using a specialized instruction.
+The intended interpretation is that $\locExponentLog$ contain $\locExponentLogEYP$ as defined in \cite{EIP-7883}.
+The value of \locExponentLog{} is partly computed in the \expMod{} module using a specialized instruction,
+and ``completed'' in the \hubMod{},
+see~(\ref{hub: instruction handling: call: precompiles: modexp: common constraints}).
+
+\saNote{}
+The intended interpretation of \locMaxMbsBbs{} is $\max(\locBase, \locModulus)$.
+As such \locFOfMax{}, which will be defined below, computes
+$\displaystyle f\big(\max(\locBase, \locModulus)\big) = \left\lceil\frac{\max(\locBase, \locModulus)}{8}\right\rceil^2$.
 
 We impose the following:
 \begin{description}
-	\item[\underline{Rows n°$(i)$, $n^\circ(i + 1)$ and $n^\circ(i + 2)$:}] we impose
-	      we impose that
-	      \[
-		      \left\{ \begin{array}{l}
-			      \oobCallToIszero
-			      {i}{0}
-			      {0}{\locRac}
-			      \vspace{2mm} \\
-			      \oobCallToIszero
-			      {i}{1}
-			      {0}{\locExponentLog}
-			      \vspace{2mm} \\
-			      \oobCallToDiv
-			      {i}{2}
-			      {0}{\locMax + 7}
-			      {0}{8}
-			      \\
-		      \end{array} \right.
-	      \]
-	      we define the following associated shorthands
-	      \[
-		      \left\{ \begin{array}{lcl}
-			      \locExponentLogIsZero & \define & \outgoingResLo_{i + 1} \\
-			      \locFOfMax            & \define & \outgoingResLo_{i + 2} \cdot \outgoingResLo_{i + 2}\\
-		      \end{array} \right.
-	      \]
-\end{description}
-\saNote{} $\locFOfMax$ computes $\displaystyle f\big(\max(\locBase, \locModulus)\big) = \left\lceil\frac{\max(\locBase, \locModulus)}{8}\right\rceil^2$.
-\begin{description}
-	\item[\underline{Row $n^°(i + 3)$:}]
+	\item[\underline{Rows
+		$n^\circ(i + \roffModexpPricingRacZeronessTest               )$,
+		$n^\circ(i + \roffModexpPricingExponentLogZeronessTest       )$,
+		$n^\circ(i + \roffModexpPricingMaxMbsBbsCeilingComputation   )$    and
+		$n^\circ(i + \roffModexpPricingMaxMbsBbsVsWordSizeComparison )$:}] we impose
 		we impose that
 		\[
-			\oobCallToDiv
-			{i}{3}
-			{0}{\locProduct}
-			{0}{G_\text{quaddivisor}}
-		\]
-		where $G_\text{quaddivisor} = 3$ and we have used the following shorthand
-		\[
-			\left\{ \begin{array}{lcl}
-				\locProduct & \define &
-				\begin{cases}
-					\If \locExponentLogIsZero = 0 ~ \Then : & \locFOfMax \cdot \locExponentLog \\
-					\If \locExponentLogIsZero = 1 ~ \Then : & \locFOfMax
-				\end{cases}  \\
-				\locBigQuotient & \define & \outgoingResLo_{i + 3} \\
+			\left\{ \begin{array}{l}
+				\wcpCallToIszero {
+					anchorRow = i                                 ,
+					relOffset = \roffModexpPricingRacZeronessTest ,
+					argOneHi  = 0                                 ,
+					argOneLo  = \locRac                           ,
+				}
+				\vspace{2mm} \\
+				\wcpCallToIszero {
+					anchorRow = i                                         ,
+					relOffset = \roffModexpPricingExponentLogZeronessTest ,
+					argOneHi  = 0                                         ,
+					argOneLo  = \locExponentLog                           ,
+				}
+				\vspace{2mm} \\
+				\callToDiv {
+					anchorRow  = i                                             ,
+					relOffset  = \roffModexpPricingMaxMbsBbsCeilingComputation ,
+					dividendHi = 0                                             ,
+					dividendLo = \locMaxMbsBbs + 7                             ,
+					divisorHi  = 0                                             ,
+					divisorLo  = 8                                             ,
+				}
+				\vspace{2mm} \\
+				\wcpCallToLt {
+					anchorRow = i                                               ,
+					relOffset = \roffModexpPricingMaxMbsBbsVsWordSizeComparison ,
+					argOneHi  = 0                                               ,
+					argOneLo  = \evmWordSize                                    ,
+					argTwoHi  = 0                                               ,
+					argTwoLo  = \locMaxMbsBbs                                   ,
+				}
+				\\
 			\end{array} \right.
 		\]
-\end{description}
-\saNote{} Thus $\locProduct$ computes, in the notations of the \cite{EYP}, $\displaystyle f\big(\max(\locBase, \locModulus)\big) \cdot \max(\locExponentLogEYP, 1)$.
-It follows that $\locBigQuotient$ computes
-\[
-	\left\lfloor\frac{f\big(\max(\locBase, \locModulus)\big) \cdot \max(\locExponentLogEYP, 1)}{G_\text{quaddivisor}}\right\rfloor.
-\]
-\begin{description}
-	\item[\underline{Rows $n^°(i + 4)$ and $n^°(i + 5)$:}]
-	      we impose that
-	      \[
-		      \left\{ \begin{array}{l}
-			      \oobCallToLt
-			      {i}{4}
-			      {0}{\locBigQuotient}
-			      {0}{200}
-			      \vspace{2mm} \\
-			      \oobCallToLt
-			      {i}{5}
-			      {0}{\locCalleeGas}
-			      {0}{\locPrecompileCost}
-			      \\
-		      \end{array} \right.
-	      \]
-	      we define the \locBigQuotientLtTwoHundred{} shorthand
-	      \[
-		      \locBigQuotientLtTwoHundred \define \outgoingResLo_{i + 4}
-	      \]
-	      from which we define the \locPrecompileCost{} shorthand used above
-	      \begin{enumerate}
-		      \item \If \locBigQuotientLtTwoHundred = 0 \Then $\locPrecompileCost \define \locBigQuotient$
-		      \item \If \locBigQuotientLtTwoHundred = 1 \Then $\locPrecompileCost \define 200$
-	      \end{enumerate}
-	\item[\underline{Justifying \hubMod{} predictions:}] we impose that
-		\begin{description}
-			\item[{Constraining \locRamSuccess:}]
-				we impose that
-				\[
-					\locRamSuccess = 1 - \outgoingResLo_{i + 5}
-				\]
-			\item[{Constraining \locReturnGas:}]
-				we impose that
-				\begin{enumerate}
-					\item \If $\locRamSuccess = 0$ \Then $\locReturnGas = 0$
-					\item \If $\locRamSuccess = 1$ \Then $\locReturnGas = \locCalleeGas - \locPrecompileCost$
-				\end{enumerate}
-			\item[{Constraining \locRacIsNonzero:}]
-				we impose that
-				\[
-					\locRacIsNonzero = 1 - \outgoingResLo_{i}
-				\]
-		\end{description}
-\end{description}
+		we define the following associated shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locRacIsZero             & \define & \outgoingResLo _{i + \roffModexpPricingRacZeronessTest               } \\
+				\locExponentLogIsZero     & \define & \outgoingResLo _{i + \roffModexpPricingExponentLogZeronessTest       } \\
+				\locCeilingOfMaxOverEight & \define & \outgoingResLo _{i + \roffModexpPricingMaxMbsBbsCeilingComputation   } \\
+				\locWordCostDominates     & \define & \outgoingResLo _{i + \roffModexpPricingMaxMbsBbsVsWordSizeComparison } \\
+			\end{array} \right.
+		\]
+		Thus, by definition
+		\begin{enumerate}
+			\item $\locRacIsZero             = \true$ \emph{iff} $\locRac         = 0$
+			\item $\locExponentLogIsZero     = \true$ \emph{iff} $\locExponentLog = 0$
+			\item $\locCeilingOfMaxOverEight        $ computes   $\displaystyle \left\lceil\frac{\locMaxMbsBbs}{8}\right\rceil$
+			\item $\locWordCostDominates     = \true$ \emph{iff} $\evmWordSize    < \locMaxMbsBbs$
+		\end{enumerate}
+		We further set
+		\begin{enumerate}
+			\item $\locFOfMax \define \locCeilingOfMaxOverEight \cdot \locCeilingOfMaxOverEight$
+			\item \If $\locWordCostDominates = \false $ \Then \( \locMultiplicationComplexity \define \locMinMultiplicationComplexityValue \)
+			\item \If $\locWordCostDominates = \true  $ \Then \( \locMultiplicationComplexity \define 2 \cdot \locFOfMax                   \)
+			\item \If $\locExponentLogIsZero = \false $ \Then \( \locIterationCountOrOne      \define \locExponentLog                      \)
+			\item \If $\locExponentLogIsZero = \true  $ \Then \( \locIterationCountOrOne      \define \locMinIterationCountValue           \)
+		\end{enumerate}
+	\end{description}
+	We define
+	\[
+		\locRawPrice
+		\define
+		\left[ \begin{array}{cl}
+			\cdot & \locMultiplicationComplexity \\
+			\cdot & \locIterationCountOrOne      \\
+		\end{array} \right]
+	\]
+	\begin{description}
+		\item[\underline{Row $n^°(i + \roffModexpPricingComparisonToMinModexpCost )$:}]
+			we impose that
+			\[
+				\wcpCallToLt {
+					anchorRow = i                                           ,
+					relOffset = \roffModexpPricingComparisonToMinModexpCost ,
+					argOneHi  = 0                                           ,
+					argOneLo  = \locRawPrice                                ,
+					argTwoHi  = 0                                           ,
+					argTwoLo  = \minModexpCostName                          ,
+				}
+			\]
+			where
+			\[
+				\minModexpCostName \define \minModexpCostValue
+			\]
+			and we define the \locRawPriceLtMinModexpCost{} shorthand
+			\[
+				\locRawPriceLtMinModexpCost \define \outgoingResLo _{i + \roffModexpPricingComparisonToMinModexpCost}
+			\]
+			from which we define the \locPrecompileCost{} shorthand used above
+			\begin{enumerate}
+				\item \If $\locRawPriceLtMinModexpCost = 0$ \Then $\locPrecompileCost \define \locRawPrice$
+				\item \If $\locRawPriceLtMinModexpCost = 1$ \Then $\locPrecompileCost \define \minModexpCostName$
+			\end{enumerate}
+		\item[\underline{Row $n^°(i + \roffModexpPricingGasCostVsCalleeGasComparison )$:}]
+			we impose
+			\[
+				\wcpCallToLt {
+					anchorRow = i                                              ,
+					relOffset = \roffModexpPricingGasCostVsCalleeGasComparison ,
+					argOneHi  = 0                                              ,
+					argOneLo  = \locCalleeGas                                  ,
+					argTwoHi  = 0                                              ,
+					argTwoLo  = \locPrecompileCost                             ,
+				}
+			\]
+			we define the \locRawPriceLtMinModexpCost{} shorthand
+			\[
+				\locCalleeGasLtPrecompileCost \define \outgoingResLo _{i + \roffModexpPricingGasCostVsCalleeGasComparison}
+			\]
+		\item[\underline{Justifying \hubMod{} predictions:}] we impose that
+			\begin{description}
+				\item[{Constraining \locRamSuccess:}]
+					we impose that
+					\[
+						\locRamSuccess = 1 - \locCalleeGasLtPrecompileCost
+					\]
+				\item[{Constraining \locReturnGas:}]
+					we impose that
+					\begin{enumerate}
+						\item \If $\locRamSuccess = 0$ \Then $\locReturnGas = 0$
+						\item \If $\locRamSuccess = 1$ \Then $\locReturnGas = \locCalleeGas - \locPrecompileCost$
+					\end{enumerate}
+				\item[{Constraining \locRacIsNonzero:}]
+					we impose that
+					\[
+						\locRacIsNonzero = 1 - \locRacIsZero
+					\]
+			\end{description}
+	\end{description}

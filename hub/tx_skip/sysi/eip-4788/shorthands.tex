@@ -1,0 +1,39 @@
+We define the following shorthands
+\[
+	\left\{ \begin{array}{lcl}
+		\locBeaconRootAccountHasCode   & \define & \accHasCode          _{i + \roffTxSkipSysiBeaconRootSystemContractAccount} \vspace{2mm} \\
+		\locLineaTimestamp             & \define & \txnSystemTransactionDataCol{1} _{i + \roffTxSkipSysiBeaconRootTransaction}                        \\
+		\locLineaTimestampModuloPrime  & \define & \txnSystemTransactionDataCol{2} _{i + \roffTxSkipSysiBeaconRootTransaction}                        \\
+		\locBeaconRootHi               & \define & \txnSystemTransactionDataCol{3} _{i + \roffTxSkipSysiBeaconRootTransaction}                        \\
+		\locBeaconRootLo               & \define & \txnSystemTransactionDataCol{4} _{i + \roffTxSkipSysiBeaconRootTransaction}                        \\
+		\locCurrentBlockIsGenesisBlock & \define & \txnSystemTransactionDataCol{5} _{i + \roffTxSkipSysiBeaconRootTransaction}                        \\
+	\end{array} \right.
+\]
+and we deduce the following shorthand from it
+\[
+	\left\{ \begin{array}{lcl}
+		\locBeaconRootSystemTransactionIsNontrivial & \define &
+		\left[ \begin{array}{cl}
+			\cdot & \locBeaconRootAccountHasCode         \\
+			\cdot & (1 - \locCurrentBlockIsGenesisBlock) \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locBeaconRootSystemTransactionIsTrivial      & \define & 1 - \locBeaconRootSystemTransactionIsNontrivial                                  \\
+	\end{array} \right.
+\]
+\saNote{}
+\locBeaconRootSystemTransactionIsNontrivial{}
+is therefore logically equivalent to the
+the conjunction of
+(\emph{a}) the account at address \beaconRootAddress{} having nonempty byte code
+(\emph{b}) the current block not being the genesis block.
+
+\saNote{}
+The above is well-defined given the
+unconditional constraint~(\ref{hub: tx skip: sysi: eip 4788: peeking flags: the first two rows are txn and acc rows}).
+
+\saNote{}
+Compare this to
+section~(\ref{system transactions: computations: eip 4788: shorthands}).
+

@@ -11,7 +11,7 @@
 
 \usepackage{../../../../../../pkg/draculatheme}
 
-\setmonofont{JetBrains Mono NF Regular}[
+\setmonofont{JetBrains Mono NL Regular}[
   RawFeature={fallback=emojifallback}
 ]
 
@@ -40,106 +40,109 @@
                        \_______/  \______/  \_______| \_______| \_______|\_______/ \_______/
                        
 
-|--------+--------+-------------------------------------------+--------------------------------------|
-| Row    | Persp. |                                           |                                      |
-|--------+--------+-------------------------------------------+--------------------------------------|
-| i      | SCEN   | SCEN/MODEXP                               | SUCCESS ✅                           |
-|--------+--------+-------------------------------------------+--------------------------------------|
-|        |        | common constraints                        |                                      |
-|--------+--------+-------------------------------------------+--------------------------------------|
-|--------+--------+-------------------------------------------+--------------------------------------|
-| i + 7  | MISC   |                                           | OOB🏴 = 1                            |
-|        |        |                                           | OOB_INST = ⟦OOB_INST_modexp_extract⟧ |
-|        |        |                                           |                                      |
-|        |        |                                           | TRUSTED INPUTS:                      |
-|        |        |                                           | * cds                                |
-|        |        |                                           | * bbs_lo                             |
-|        |        |                                           | * ebs_lo                             |
-|        |        |                                           | * mbs_lo                             |
-|        |        |                                           |                                      |
-|        |        |                                           | JUSTIFICATION FOR:                   |
-|        |        |                                           | * extract_base                       |
-|        |        |                                           | * extract_exponent                   |
-|        |        |                                           | * extract_modulus                    |
-|        |        |                                           |                                      |
-|        |        | MMU🏴 = extract_modulus                   |                                      |
-|        |        |                                           |                                      |
-|        |        | If extract_base = 1:                      |                                      |
-|        |        | MMU_INST = ⟦MMU_INST_modexpData⟧          |                                      |
-|        |        |                                           |                                      |
-|        |        | If extract_base = 0:                      |                                      |
-|        |        | MMU_INST = ⟦MMU_INST_modexpZero⟧          |                                      |
-|        |        |                                           |                                      |
-|        |        | SRC_ID        = cn                        |                                      |
-|        |        | SRC_OFFSET_LO = 96                        |                                      |
-|        |        | SIZE          = bbs_lo                    |                                      |
-|        |        | TGT_ID        = 1 + HUB_                 |                                      |
-|        |        | TGT_OFFSET_LO = 0                         |                                      |
-|        |        | EXO_SUM       = ⟦1 << modexpdata⟧         |                                      |
-|        |        | PHASE         = Φ_base                    |                                      |
-|--------+--------+-------------------------------------------+--------------------------------------|
-| i + 8  | MISC   | MMU🏴 = extract_modulus                   | OOB🏴 = 0                            |
-|        |        |                                           |                                      |
-|        |        | If extract_exponent = 1:                  |                                      |
-|        |        | MMU_INST = ⟦MMU_INST_modexpData⟧          |                                      |
-|        |        |                                           |                                      |
-|        |        | If extract_exponent = 0:                  |                                      |
-|        |        | MMU_INST = ⟦MMU_INST_modexpZero⟧          |                                      |
-|        |        |                                           |                                      |
-|        |        | SRC_ID        = cn                        |                                      |
-|        |        | SRC_OFFSET_LO = 96 + bbs_lo               |                                      |
-|        |        | SIZE          = ebs_lo                    |                                      |
-|        |        | TGT_ID        = 1 + HUB_                 |                                      |
-|        |        | TGT_OFFSET_LO = 0                         |                                      |
-|        |        | EXO_SUM       = ⟦1 << modexpdata⟧         |                                      |
-|        |        | PHASE         = Φ_exponent                |                                      |
-|--------+--------+-------------------------------------------+--------------------------------------|
-| i + 9  | MISC   | MMU🏴 = extract_modulus                   | OOB🏴 = 0                            |
-|        |        |                                           |                                      |
-|        |        | If extract_modulus = 1:                   |                                      |
-|        |        | MMU_INST = ⟦MMU_INST_modexpData⟧          |                                      |
-|        |        |                                           |                                      |
-|        |        | If extract_modulus = 0:                   |                                      |
-|        |        | MMU_INST = ⟦MMU_INST_modexpZero⟧          |                                      |
-|        |        |                                           |                                      |
-|        |        | SRC_ID        = cn                        |                                      |
-|        |        | SRC_OFFSET_LO = 96 + bbs_lo + ebs_lo      |                                      |
-|        |        | SIZE          = mbs_lo                    |                                      |
-|        |        | TGT_ID        = 1 + HUB_                 |                                      |
-|        |        | TGT_OFFSET_LO = 0                         |                                      |
-|        |        | EXO_SUM       = ⟦1 << modexpdata⟧         |                                      |
-|        |        | PHASE         = Φ_modulus                 |                                      |
-|--------+--------+-------------------------------------------+--------------------------------------|
-| i + 10 | MISC   | MMU🏴 = extract_modulus                   | OOB🏴 = 0                            |
-|        |        | MMU_INST = ⟦MMU_INST_exoToRamTransplants⟧ |                                      |
-|        |        |                                           |                                      |
-|        |        | SRC_ID  = 1 + HUB_                       |                                      |
-|        |        | TGT_ID  = 1 + HUB_                       |                                      |
-|        |        | SIZE    = 512                             |                                      |
-|        |        | PHASE   = Φ_modexp_res                    |                                      |
-|        |        | EXO_SUM = ⟦1 << modexpdata⟧               |                                      |
-|--------+--------+-------------------------------------------+--------------------------------------|
-| i + 11 | MISC   | MMU🏴 = mbs_nonzero ∧ r@c_nonzero         | OOB🏴 = 0                            |
-|        |        | MMU_INST = MODEXP_copy_partial_result     |                                      |
-|        |        |                                           |                                      |
-|        |        | SRC_ID = 1 + HUB_                        |                                      |
-|        |        | TGT_ID = CN                               |                                      |
-|        |        |                                           |                                      |
-|        |        | OFFSET_1    = r@o                         |                                      |
-|        |        | SIZE_1      = r@c                         |                                      |
-|        |        | REF_OFFSET  = 512 - mbs                   |                                      |
-|        |        | REF_SIZE    = mbs                         |                                      |
-|--------+--------+-------------------------------------------+--------------------------------------|
-| i + 12 | CON    | updateReturnData()                        |
-|        |        |                                           |
-|        |        | RETURNER           = 1 + HUB_            |
-|        |        | RETURN_DATA_OFFSET = 512 - mbs            |
-|        |        | RETURN_DATA_SIZE   = mbs                  |
-|        |        |                                           |
-|        |        | Note: this works ALWAYS.                  |
-|--------+--------+-------------------------------------------|
+|--------+--------+-----------------------------------------------+--------------------------------------|
+| Row    | Persp. |                                               |                                      |
+|--------+--------+-----------------------------------------------+--------------------------------------|
+| i      | SCEN   | SCEN/MODEXP                                   | SUCCESS ✅                           |
+|--------+--------+-----------------------------------------------+--------------------------------------|
+|        |        | common constraints                            |                                      |
+|--------+--------+-----------------------------------------------+--------------------------------------|
+|--------+--------+-----------------------------------------------+--------------------------------------|
+| i + 7  | MISC   |                                               | OOB🏴 = 1                            |
+|        |        |                                               | OOB_INST = ⟦OOB_INST_modexp_extract⟧ |
+|        |        |                                               |                                      |
+|        |        |                                               | TRUSTED INPUTS:                      |
+|        |        |                                               | * cds                                |
+|        |        |                                               | * bbs_lo                             |
+|        |        |                                               | * ebs_lo                             |
+|        |        |                                               | * mbs_lo                             |
+|        |        |                                               |                                      |
+|        |        |                                               | JUSTIFICATION FOR:                   |
+|        |        |                                               | * extract_base                       |
+|        |        |                                               | * extract_exponent                   |
+|        |        |                                               | * extract_modulus                    |
+|        |        |                                               |                                      |
+|        |        | MMU🏴 = extract_modulus                       |                                      |
+|        |        |                                               |                                      |
+|        |        | If extract_base = 1:                          |                                      |
+|        |        | mmu/MMU_INST = ⟦MMU_INST_modexpData⟧          |                                      |
+|        |        |                                               |                                      |
+|        |        | If extract_base = 0:                          |                                      |
+|        |        | mmu/MMU_INST = ⟦MMU_INST_modexpZero⟧          |                                      |
+|        |        |                                               |                                      |
+|        |        | mmu/SRC_ID        = cn                        |                                      |
+|        |        | mmu/SRC_OFFSET_LO = 96                        |                                      |
+|        |        | mmu/SIZE          = bbs_lo                    |                                      |
+|        |        | mmu/TGT_ID        = 1 + ħ                     |                                      |
+|        |        | mmu/TGT_OFFSET_LO = 0                         |                                      |
+|        |        | mmu/EXO_SUM       = ⟦1 << modexpdata⟧         |                                      |
+|        |        | mmu/PHASE         = Φ_base                    |                                      |
+|--------+--------+-----------------------------------------------+--------------------------------------|
+| i + 8  | MISC   | MMU🏴 = extract_modulus                       | OOB🏴 = 0                            |
+|        |        |                                               |                                      |
+|        |        | If extract_exponent = 1:                      |                                      |
+|        |        | mmu/MMU_INST = ⟦MMU_INST_modexpData⟧          |                                      |
+|        |        |                                               |                                      |
+|        |        | If extract_exponent = 0:                      |                                      |
+|        |        | mmu/MMU_INST = ⟦MMU_INST_modexpZero⟧          |                                      |
+|        |        |                                               |                                      |
+|        |        | mmu/SRC_ID        = cn                        |                                      |
+|        |        | mmu/SRC_OFFSET_LO = 96 + bbs_lo               |                                      |
+|        |        | mmu/SIZE          = ebs_lo                    |                                      |
+|        |        | mmu/TGT_ID        = 1 + ħ                     |                                      |
+|        |        | mmu/TGT_OFFSET_LO = 0                         |                                      |
+|        |        | mmu/EXO_SUM       = ⟦1 << modexpdata⟧         |                                      |
+|        |        | mmu/PHASE         = Φ_exponent                |                                      |
+|--------+--------+-----------------------------------------------+--------------------------------------|
+| i + 9  | MISC   | MMU🏴 = extract_modulus                       | OOB🏴 = 0                            |
+|        |        |                                               |                                      |
+|        |        | If extract_modulus = 1:                       |                                      |
+|        |        | mmu/MMU_INST = ⟦MMU_INST_modexpData⟧          |                                      |
+|        |        |                                               |                                      |
+|        |        | If extract_modulus = 0:                       |                                      |
+|        |        | mmu/MMU_INST = ⟦MMU_INST_modexpZero⟧          |                                      |
+|        |        |                                               |                                      |
+|        |        | mmu/SRC_ID        = cn                        |                                      |
+|        |        | mmu/SRC_OFFSET_LO = 96 + bbs_lo + ebs_lo      |                                      |
+|        |        | mmu/SIZE          = mbs_lo                    |                                      |
+|        |        | mmu/TGT_ID        = 1 + ħ                     |                                      |
+|        |        | mmu/TGT_OFFSET_LO = 0                         |                                      |
+|        |        | mmu/EXO_SUM       = ⟦1 << modexpdata⟧         |                                      |
+|        |        | mmu/PHASE         = Φ_modulus                 |                                      |
+|--------+--------+-----------------------------------------------+--------------------------------------|
+| i + 10 | MISC   | MMU🏴 = extract_modulus                       | OOB🏴 = 0                            |
+|        |        | mmu/MMU_INST = ⟦MMU_INST_exoToRamTransplants⟧ |                                      |
+|        |        |                                               |                                      |
+|        |        | mmu/SRC_ID  = 1 + ħ                           |                                      |
+|        |        | mmu/TGT_ID  = 1 + ħ                           |                                      |
+|        |        | mmu/SIZE    = 1024                            |                                      |
+|        |        | mmu/PHASE   = Φ_modexp_res                    |                                      |
+|        |        | mmu/EXO_SUM = ⟦1 << modexpdata⟧               |                                      |
+|--------+--------+-----------------------------------------------+--------------------------------------|
+| i + 11 | MISC   | MMU🏴 = mbs_nonzero ∧ r@c_nonzero             | OOB🏴 = 0                            |
+|        |        | mmu/MMU_INST = MODEXP_copy_partial_result     |                                      |
+|        |        |                                               |                                      |
+|        |        | mmu/SRC_ID = 1 + ħ                            |                                      |
+|        |        | mmu/TGT_ID = CN                               |                                      |
+|        |        |                                               |                                      |
+|        |        | mmu/OFFSET_1    = r@o                         |                                      |
+|        |        | mmu/SIZE_1      = r@c                         |                                      |
+|        |        | mmu/REF_OFFSET  = 1024 - mbs                  |                                      |
+|        |        | mmu/REF_SIZE    = mbs                         |                                      |
+|--------+--------+-----------------------------------------------+--------------------------------------|
+| i + 12 | CON    | updateReturnData()                            |
+|        |        |                                               |
+|        |        | con/RETURNER           = 1 + ħ                |
+|        |        | con/RETURN_DATA_OFFSET = 1024 - mbs           |
+|        |        | con/RETURN_DATA_SIZE   = mbs                  |
+|        |        |                                               |
+|        |        | Note: this works ALWAYS.                      |
+|--------+--------+-----------------------------------------------|
+
+
+NOTE. We use the shorthand
+
+        ħ ≡ HUB_STAMP
+
 \end{verbatim}
 \end{document}
-Φ_base     
-Φ_exponent 
-Φ_modulus  

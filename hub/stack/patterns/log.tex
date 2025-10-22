@@ -9,7 +9,7 @@ We collect under the moniker
 	\logSP_{i}
 	\big[ \col{param}; \col{b}_{1}, \col{b}_{2}, \col{b}_{3}, \col{b}_{4} \big]
 \]
-the following collection of constraints (which spans two rows.) The first lot of constraints pertains to the first row (i.e. $\ct_{i} = 0$). This row contains offset and size parameters.
+the following collection of constraints (which spans two rows.) The first lot of constraints pertains to the first row (i.e. $\tliCounter_{i} = 0$). This row contains offset and size parameters.
 \begin{description}
 	\item[\underline{Bit exclusivity:}]
 		we expect all $\col{b}_\ell$ to be bits and for their sum $\sum_{\ell = 1}^4\col{b}_{\ell}$ to be binary, too;
@@ -39,7 +39,7 @@ the following collection of constraints (which spans two rows.) The first lot of
 			\item[\underline{Height update:}] $\stackHeight{}\new{}_{i} = \stackHeight{}_{i} - (\col{param} + 2)$ \quad (\sanityCheck);
 \end{description}
 
-The second lot of constraints pertains to the second row (i.e. $\ct_{i + 1} = 1$). This row contains topics. To simplify notations we will use the following shorthands:
+The second lot of constraints pertains to the second row (i.e. $\tliCounter_{i + 1} = 1$). This row contains topics. To simplify notations we will use the following shorthands:
 \[
 	\bSum_{k} := \sum_{\ell = k}^{4} \col{b}_{\ell}
 \]
@@ -92,7 +92,7 @@ $\decFlag{1}_{i}$, $\decFlag{2}_{i}$, $\decFlag{3}_{i}$ and $\decFlag{4}_{i}$ re
 \[
 	\begin{array}{|l|r|r|c|c|}
 	\cline{2-5}
-	\multicolumn{1}{c|}{(\ct_{i} = 0)}              & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  \\
+	\multicolumn{1}{c|}{(\tliCounter_{i} = 0)}      & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  \\
 	\multicolumn{1}{c|}{}                           & \multicolumn{1}{c|}{\text{Item 1}} & \multicolumn{1}{c|}{\text{Item 2}} & \multicolumn{1}{c|}{\text{Item 3}} & \multicolumn{1}{c|}{\text{Item 4}} \\ \hline
 	\stackItemHeight{k}_{i}                         & \col{h}                            & \col{h} - 1                        & \nothing                           & \nothing                           \\ \hline 
 	\stackItemValHi{k}_{i} / \stackItemValLo{k}_{i} & \col{offset}                       & \col{size}                         & \nothing                           & \nothing                           \\ \hline
@@ -101,14 +101,14 @@ $\decFlag{1}_{i}$, $\decFlag{2}_{i}$, $\decFlag{3}_{i}$ and $\decFlag{4}_{i}$ re
 	\end{array}	
 \]
 \caption{%
-Representation of the first row ($\ct_{i} = 0$) of $\logSP\big[\col{param}; \col{b}_{1}, \col{b}_{2}, \col{b}_{3}, \col{b}_{4} \big]_{i}$.
+Representation of the first row ($\tliCounter_{i} = 0$) of $\logSP\big[\col{param}; \col{b}_{1}, \col{b}_{2}, \col{b}_{3}, \col{b}_{4} \big]_{i}$.
 The first row is independent of $\col{param}$, $\col{b}_{1}$, $\col{b}_{2}$, $\col{b}_{3},$ and $ \col{b}_{4}$.
 We write $\col{h} := \stackHeight_{i}$ and $\col{st} := \hubStamp_{i}$.}
 \end{figure}
 \begin{figure}[h!]
 \[
 	\begin{array}{|l|c|c|c|c|} \cline{2-5}
-	\multicolumn{1}{c|}{(\ct_{i + 1} = 1)}                     & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}} \\
+	\multicolumn{1}{c|}{(\tliCounter_{i + 1} = 1)}             & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}} \\
 	\multicolumn{1}{c|}{}                                      & \multicolumn{1}{c|}{\text{Item 1}} & \multicolumn{1}{c|}{\text{Item 2}} & \multicolumn{1}{c|}{\text{Item 3}} & \multicolumn{1}{c|}{\text{Item 4}} \\ \hline
 	\stackItemHeight{k}_{i + 1}                                & \nothing                           & \nothing                           & \nothing                           & \nothing \\ \hline 
 	\stackItemValHi{k}_{i + 1} / \stackItemValLo{k}_{i + 1}    & \nothing                           & \nothing                           & \nothing                           & \nothing \\ \hline
@@ -117,10 +117,10 @@ We write $\col{h} := \stackHeight_{i}$ and $\col{st} := \hubStamp_{i}$.}
 	\end{array}
 \]
 \caption{%
-This table represents the stack pattern of the second row ($\ct_{i + 1} = 1$) of a \inst{LOG0} instruction.}
+This table represents the stack pattern of the second row ($\tliCounter_{i + 1} = 1$) of a \inst{LOG0} instruction.}
 \[
 	\begin{array}{|l|r|r|r|c|} \cline{2-5}
-	\multicolumn{1}{c|}{(\ct_{i + 1} = 1)}                  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  \\
+	\multicolumn{1}{c|}{(\tliCounter_{i + 1} = 1)}          & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  & \multicolumn{1}{c|}{\text{Stack}}  \\
 	\multicolumn{1}{c|}{}                                   & \multicolumn{1}{c|}{\text{Item 1}} & \multicolumn{1}{c|}{\text{Item 2}} & \multicolumn{1}{c|}{\text{Item 3}} & \multicolumn{1}{c|}{\text{Item 4}} \\ \hline
 	\stackItemHeight{k}_{i + 1}                             & \col{h} - 2                        & \col{h} - 3                        & \col{h} - 4                        & \nothing                           \\ \hline 
 	\stackItemValHi{k}_{i + 1} / \stackItemValLo{k}_{i + 1} & \col{topic1}                       & \col{topic2}                       & \col{topic3}                       & \nothing                           \\ \hline
@@ -129,7 +129,7 @@ This table represents the stack pattern of the second row ($\ct_{i + 1} = 1$) of
 	\end{array}	
 \]
 \caption{%
-By way of example, representation of the second row ($\ct_{i + 1} = 1$) of $\logSP\big[\col{param}; \col{b}_1, \col{b}_2, \col{b}_3, \col{b}_4\big]_{i}$ with
+By way of example, representation of the second row ($\tliCounter_{i + 1} = 1$) of $\logSP\big[\col{param}; \col{b}_1, \col{b}_2, \col{b}_3, \col{b}_4\big]_{i}$ with
 $\col{b}_1 = 0$,
 $\col{b}_2 = 0$,
 $\col{b}_3 = 1$ and

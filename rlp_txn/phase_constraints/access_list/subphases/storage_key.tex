@@ -1,0 +1,45 @@
+\begin{center}
+	\boxed{\text{Throughout this section it is assumed that }
+	\left\{ \begin{array}{lcl}
+		\rlpTxnSharedColumnIsAccessListStorageKey _{i}     & = & \true \\
+		\done                                     _{i - 1} & = & \true \\
+	\end{array} \right.
+	}
+\end{center}
+We impose the following constraints:
+\begin{description}
+	\item[\underline{Calling the \rlpUtilsMod{} module:}]
+		we impose
+		\[
+			\rlpProcessBytesThirtyTwo {
+				anchorRow = i                      ,
+				relOffset = 0                      ,
+				dataHi    = \loc{storage\_key\_hi} ,
+				dataLo    = \loc{storage\_key\_lo} ,
+			}
+		\]
+		where
+		\[
+			\left\{ \begin{array}{lcl}
+				\loc{storage\_key\_hi} & \define & \rlpTxnComputationColumnExoDataColumn{1} _{i} \\
+				\loc{storage\_key\_lo} & \define & \rlpTxnComputationColumnExoDataColumn{2} _{i} \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		The above is, as it pertains to setting the storage key parameters,
+		tautological, in that, given the definitions of
+		\loc{storage\_key\_hi} / \loc{storage\_key\_lo}
+		$\rlpProcessBytesThirtyTwoName$ will end up equating
+		$\rlpTxnComputationColumnExoDataColumn{k}$ with itself for $k = 1, 2$.
+		The intent is that $\rlpTxnComputationColumnExoDataColumn{k}$
+		should contain the correct data to begin with.
+\item[\underline{Setting the next step:}] ---
+		\begin{enumerate}
+			\item \If $\locStorageKeyListCountdown _{i} \neq 0$ \Then \[ \rlpTxnSharedColumnIsAccessListStorageKey _{i + 3} = \true \]
+			\item \If $\locStorageKeyListCountdown _{i} =    0$ \Then
+				\begin{enumerate}
+					\item \If $\locAccessListItemCountdown _{i} \neq 0$ \Then \[ \rlpTxnSharedColumnIsPrefixOfAccessListItem _{i + 3} = \true \]
+					\item \If $\locAccessListItemCountdown _{i} =    0$ \Then \[ \phaseEnd _{i + 2} = \true \]
+				\end{enumerate}
+		\end{enumerate}
+\end{description}
