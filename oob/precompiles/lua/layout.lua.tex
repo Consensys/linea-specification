@@ -47,7 +47,7 @@
 | ⟦OOB_INST_ecpairing⟧       | callee_gas | cds        | r@c           | hub_success ≡             | return_gas ≡                  | extract_call_data ≡        | empty_call_data ≡          | r@c_nonzero ≡              |                     |                     |
 | ⟦OOB_INST_pointevaluation⟧ |            |            |               | . [gas_cost ≤ callee_gas] | . 0 ∨ [callee_gas - gas_cost] | .   hub_success            | .   hub_success            | .   [r@c ≠ 0]              |                     |                     |
 | ⟦OOB_INST_bls_*⟧           |            |            |               | . ∧ [cds is valid]        | . (if hub_success ≡ true)     | .   ∧ [cds ≠ 0]            | .   ∧ [cds = 0]            |                            |                     |                     |
-| ⟦OOB_INST_p256verify⟧      |            |            |               |                           |                               |                            |                            |                            |                     |                     |
+| ⟦OOB_INST_p256 verify⟧     |            |            |               |                           |                               |                            |                            |                            |                     |                     |
 |                            | ✓ trusted  | ✓ trusted  | ✓ trusted     | ⟦ π ⟧                     | ⟦ π ⟧                         | ⟦ π ⟧                      | ⟦ π ⟧                      | ⟦ π ⟧                      |                     |                     |
 |----------------------------+------------+------------+---------------+---------------------------+-------------------------------+----------------------------+----------------------------+----------------------------+---------------------+---------------------|
 |----------------------------+------------+------------+---------------+---------------------------+-------------------------------+----------------------------+----------------------------+----------------------------+---------------------+---------------------|
@@ -105,12 +105,12 @@ NOTES.
         * ⟦OOB_INST_bls_g2add⟧:          [cds = 512]
         * ⟦OOB_INST_bls_map_fp_to_g1⟧:   [cds =  64]
         * ⟦OOB_INST_bls_map_fp2_to_g2⟧:  [cds = 128]
-        * ⟦OOB_INST_p256verify⟧:         [cds = 160]
+        * ⟦OOB_INST_p256_verify⟧:        [cds = 160]
         * ⟦OOB_INST_bls_g1msm⟧:          [cds ≡ 0 mod 160]
         * ⟦OOB_INST_bls_g2msm⟧:          [cds ≡ 0 mod 288]
         * ⟦OOB_INST_bls_pairing_check⟧:  [cds ≡ 0 mod 384]
 - the data layout for
-        * ⟦OOB_ecrecover⟧        * ⟦OOB_sha2-256⟧         * ⟦OOB_ecpairing⟧              * ⟦OOB_INST_p256verify⟧
+        * ⟦OOB_ecrecover⟧        * ⟦OOB_sha2-256⟧         * ⟦OOB_ecpairing⟧              * ⟦OOB_INST_p256_verify⟧
         * ⟦OOB_ecadd⟧            * ⟦OOB_ripemd-160⟧       * ⟦OOB_INST_pointevaluation⟧
         * ⟦OOB_ecmul⟧            * ⟦OOB_identity⟧         * ⟦OOB_INST_bls_*⟧
   is precisely the same;
