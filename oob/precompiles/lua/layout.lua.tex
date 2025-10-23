@@ -17,20 +17,20 @@
 
 \begin{document}
 \begin{verbatim}
-                   ██\   ██\ ██\   ██\ ███████\              ██\        ██████\   ██████\  ███████\        ██\            ██\                          ██████\                               
-                   ██ |  ██ |██ |  ██ |██  __██\            ██  |      ██  __██\ ██  __██\ ██  __██\       \__|           ██ |                        ██  __██\                              
-                   ██ |  ██ |██ |  ██ |██ |  ██ |          ██  /       ██ /  ██ |██ /  ██ |██ |  ██ |      ██\ ███████\ ██████\    ██████\   ██████\  ██ /  \__|██████\   ███████\  ██████\  
-                   ████████ |██ |  ██ |███████\ |         ██  /        ██ |  ██ |██ |  ██ |███████\ |      ██ |██  __██\\_██  _|  ██  __██\ ██  __██\ ████\     \____██\ ██  _____|██  __██\ 
+                   ██\   ██\ ██\   ██\ ███████\              ██\        ██████\   ██████\  ███████\        ██\            ██\                          ██████\
+                   ██ |  ██ |██ |  ██ |██  __██\            ██  |      ██  __██\ ██  __██\ ██  __██\       \__|           ██ |                        ██  __██\
+                   ██ |  ██ |██ |  ██ |██ |  ██ |          ██  /       ██ /  ██ |██ /  ██ |██ |  ██ |      ██\ ███████\ ██████\    ██████\   ██████\  ██ /  \__|██████\   ███████\  ██████\
+                   ████████ |██ |  ██ |███████\ |         ██  /        ██ |  ██ |██ |  ██ |███████\ |      ██ |██  __██\\_██  _|  ██  __██\ ██  __██\ ████\     \____██\ ██  _____|██  __██\
                    ██  __██ |██ |  ██ |██  __██\         ██  /         ██ |  ██ |██ |  ██ |██  __██\       ██ |██ |  ██ | ██ |    ████████ |██ |  \__|██  _|    ███████ |██ /      ████████ |
                    ██ |  ██ |██ |  ██ |██ |  ██ |       ██  /          ██ |  ██ |██ |  ██ |██ |  ██ |      ██ |██ |  ██ | ██ |██\ ██   ____|██ |      ██ |     ██  __██ |██ |      ██   ____|
-                   ██ |  ██ |\██████  |███████  |      ██  /            ██████  | ██████  |███████  |      ██ |██ |  ██ | \████  |\███████\ ██ |      ██ |     \███████ |\███████\ \███████\ 
+                   ██ |  ██ |\██████  |███████  |      ██  /            ██████  | ██████  |███████  |      ██ |██ |  ██ | \████  |\███████\ ██ |      ██ |     \███████ |\███████\ \███████\
                    \__|  \__| \______/ \_______/       \__/             \______/  \______/ \_______/       \__|\__|  \__|  \____/  \_______|\__|      \__|      \_______| \_______| \_______|
 
 
-                                                                                                                _)  |             
-                                                                __ \    __|  _ \   __|   _ \   __ `__ \   __ \   |  |   _ \   __| 
-                                                                |   |  |     __/  (     (   |  |   |   |  |   |  |  |   __/ \__ \ 
-                                                                .__/  _|   \___| \___| \___/  _|  _|  _|  .__/  _| _| \___| ____/ 
+                                                                                                                _)  |
+                                                                __ \    __|  _ \   __|   _ \   __ `__ \   __ \   |  |   _ \   __|
+                                                                |   |  |     __/  (     (   |  |   |   |  |   |  |  |   __/ \__ \
+                                                                .__/  _|   \___| \___| \___/  _|  _|  _|  .__/  _| _| \___| ____/
                                                                _|                                        _|
 
 |----------------------------+------------+------------+---------------+---------------------------+-------------------------------+----------------------------+----------------------------+----------------------------+---------------------+---------------------|
@@ -93,27 +93,38 @@
 |                            | ✓ trusted  |            |               | ⟦ π ⟧                     | ⟦ π ⟧                         | ✓ trusted                  | ✓ trusted                  |                            |                     |                     |
 |----------------------------+------------+------------+---------------+---------------------------+-------------------------------+----------------------------+----------------------------+----------------------------+---------------------+---------------------|
 
-Comments: 
+
+NOTES.
 - callee_gas, cds and r@c always occupy the same columns (when present);
-- return_gas, r@c_nonzero and hub_success/ram_success always occupy the same columns (when present);
+- return_gas, r@c_nonzero and hub_success / ram_success always occupy the same columns (when present);
 - ⟦OOB_INST_bls_*⟧ is a placeholder for all BLS-* precompiles;
 - [cds is valid] is a placeholder for the validity of cds and it is instruction dependent:
-        * ⟦OOB_INST_ecpairing⟧: [cds ≡ 0 mod 192]
-        * ⟦OOB_INST_pointevaluation⟧, ⟦OOB_INST_bls_g1add⟧, ⟦OOB_INST_bls_g2add⟧, ⟦OOB_INST_bls_map_fp_to_g1⟧, ⟦OOB_INST_bls_map_fp2_to_g2⟧, ⟦OOB_INST_p256verify⟧: [cds = fixed_size] where fixed_size = 192, 256, 512, 64, 128, 160 respectively  
-        * ⟦OOB_INST_bls_g1msm⟧, ⟦OOB_INST_bls_g2msm⟧: [cds ≡ 0 mod msm_size] where msm_size = 160, 288 respectively
-        * ⟦OOB_INST_bls_pairing_check⟧: [cds ≡ 0 mod 384]
+        * ⟦OOB_INST_ecpairing⟧:          [cds ≡ 0 mod 192]
+        * ⟦OOB_INST_pointevaluation⟧:    [cds = 192]
+        * ⟦OOB_INST_bls_g1add⟧:          [cds = 256]
+        * ⟦OOB_INST_bls_g2add⟧:          [cds = 512]
+        * ⟦OOB_INST_bls_map_fp_to_g1⟧:   [cds =  64]
+        * ⟦OOB_INST_bls_map_fp2_to_g2⟧:  [cds = 128]
+        * ⟦OOB_INST_p256verify⟧:         [cds = 160]
+        * ⟦OOB_INST_bls_g1msm⟧:          [cds ≡ 0 mod 160]
+        * ⟦OOB_INST_bls_g2msm⟧:          [cds ≡ 0 mod 288]
+        * ⟦OOB_INST_bls_pairing_check⟧:  [cds ≡ 0 mod 384]
 - the data layout for
-        * ⟦OOB_ecrecover⟧        * ⟦OOB_sha2-256⟧         * ⟦OOB_ecpairing⟧              * ⟦OOB_INST_p256verify⟧ 
-        * ⟦OOB_ecadd⟧            * ⟦OOB_ripemd-160⟧       * ⟦OOB_INST_pointevaluation⟧           
+        * ⟦OOB_ecrecover⟧        * ⟦OOB_sha2-256⟧         * ⟦OOB_ecpairing⟧              * ⟦OOB_INST_p256verify⟧
+        * ⟦OOB_ecadd⟧            * ⟦OOB_ripemd-160⟧       * ⟦OOB_INST_pointevaluation⟧
         * ⟦OOB_ecmul⟧            * ⟦OOB_identity⟧         * ⟦OOB_INST_bls_*⟧
   is precisely the same;
 - the ``⟦ π ⟧'' label applies to HUB-module PREDICTIONS which the OOB module is tasked with justifying;
+- the ``✓ trusted'' label applies to "God-Given" input columns;
+
 
 While the data layout is the same the underlying computations performed by the OOB module are distinct
 - the "gas_cost" computation are precompile specific;
 - the "hub_success" condition are always just [callee_gas ≤ gas_cost] except for ⟦OOB_ecpairing⟧ which also requires a congruence condition.
 
+
 NOTE. ECADD, ECMUL and ECPAIRING can have hard failures unrelated to insufficient gas induced by MALFORMED DATA.
-Detection of these, however, requires reading input data from RAM. Such failures will be detected by the SCEN/PRC_FAILURE_KNOWN_TO_RAM 
+Detection of these, however, requires reading input data from RAM. Such failures will be detected by the SCEN/PRC_FAILURE_KNOWN_TO_RAM
+
 \end{verbatim}
 \end{document}
