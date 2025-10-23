@@ -1,0 +1,29 @@
+The purpose of this lookup is to ensure consistancy between what we store in the EIP2935 contract storage, and what is stored in the \blockHashMod{} module. 
+\begin{description}
+	\item[\underline{Source Selector:}]
+		we use
+		\[
+			\col{hub\_selector} _{i}
+			\define
+			\sysi _{i} \cdot \txnSystemTransactionEipBlockHash _{i} \cdot \peekTransaction _{i} \cdot (1 - \txnSystemTransactionDataCol{5} _{i})
+		\]
+	\item[\underline{Target Selector:}]
+		we use
+		\[
+			\col{blockhash\_selector} _{i}
+			\define
+			\isMacro _{i}
+		\]
+	\item[\underline{Column correspondence:}]
+		\[
+			\renewcommand{\arraystretch}{1.5}
+			\begin{array}{|l|c|l|}
+				\hline
+				\text{\hubMod{}-columns}                      &                  & \text{\blockHashMod{}-columns}  \\ \hline\hline
+				0                                             & \rightsquigarrow & \blockHashArgument\high   _{j}  \\ \hline
+				\txnSystemTransactionDataCol{1}      _{i}     & \rightsquigarrow & \blockHashArgument\low    _{j}  \\ \hline
+				\txnSystemTransactionDataCol{3}      _{i}     & \rightsquigarrow & \blockHashValue\high      _{j}  \\ \hline
+				\txnSystemTransactionDataCol{4}      _{i}     & \rightsquigarrow & \blockHashValue\low       _{j}  \\ \hline
+			\end{array}
+		\]
+\end{description}
