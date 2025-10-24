@@ -111,3 +111,30 @@
     \end{adjustwidth}
     \caption{Behaviour of \hurdle ~ in the context of a call to \instEcpairing{}, with 2 pairings. The different background colors emphasise the rows corresponding to the different pairings. For each pairing, the corresponding constraints are defined considering its first row as $i$. For each pairing after the first one, $\locPreviousInternalChecksPassed$ is used to compute $\locInternalChecksPassed$.}
 \end{figure}
+
+\begin{figure}[h!]
+    \[
+        \centering
+        \begin{array}{|c|c|c|c|c|c|c|}
+            \hline
+            \rotatebox{90}{\ecdataId} & \rotatebox{90}{\isPVerifyData \quad}   & \rotatebox{90}{\isPVerifyResult \quad}   & \rotatebox{90}{\index} & \limb                & \hurdle                                                                                     \\ \hline
+            12                        & \hdots                                 & \hdots                                   & \hdots                 & \hdots               & \hdots                                                                                      \\ \hline
+            18                        & 1                                      & 0                                        & 0                      & \locHHi              & \hurdle_{i} = \locRIsInRange \cdot \locRIsPositive                                          \\ \hline
+            18                        & 1                                      & 0                                        & 1                      & \locHLo              & \hurdle_{i+1} = \locSIsInRange  \cdot \locSIsPositive                                       \\ \hline
+            18                        & 1                                      & 0                                        & 2                      & \locRHi              & \hurdle_{i+2} = \hurdle_{i} \cdot \hurdle_{i+1}                                             \\ \hline
+            18                        & 1                                      & 0                                        & 3                      & \locRLo              &                                                                                             \\ \hline
+            18                        & 1                                      & 0                                        & 4                      & \locSHi              & \locROneMembership = \locQIsInRange \cdot (1 -\locQXqYIsInfinity) \cdot \locQSatisfiesCubic \\ \hline
+            18                        & 1                                      & 0                                        & 5                      & \locSLo              & \locQIsInRange =  \locQXIsInRange \cdot \locQYIsInRange                                     \\ \hline
+            18                        & 1                                      & 0                                        & 6                      & \locQXHi             &                                                                                             \\ \hline
+            18                        & 1                                      & 0                                        & 7                      & \locQXLo             &                                                                                             \\ \hline
+            18                        & 1                                      & 0                                        & 8                      & \locQYHi             &                                                                                             \\ \hline
+            18                        & 1                                      & 0                                        & \redm{9}               & \locQYLo             & \locInternalChecksPassed = \locROneMembership \cdot \hurdle_{i+2}                           \\ \hline
+            18                        & 0                                      & 1                                        & 0                      & \locPVerifyResultHi  & \hdots                                                                                      \\ \hline
+            18                        & 0                                      & 1                                        & \redm{1}               & \locPVerifyResultLo  & \hdots                                                                                      \\ \hline
+        \end{array}
+    \]
+    \caption{Behaviour of \hurdle ~ in the context of a call to \instPVerify{}.}
+\end{figure}
+
+% TODO: complete P256VERIFY table and make tables fit
+
