@@ -24,7 +24,7 @@ We use the following shorthands
 			+ & \oobInstIsEcmul     _{i}            \\
 			+ & \oobInstIsEcpairing _{i}            \\
 			+ & \locPrcFlagSumBls   _{i}            \\
-			+ & \locFlagSumNewOsakaPrecompiles _{i} \\
+			+ & \locFlagSumOsakaPrecompiles _{i} \\
 		\end{array} \right] \vspace{2mm} \\
 		\locPrcFlagSumBlake _{i} & \define &
 		\left[ \begin{array}{cl}
@@ -39,9 +39,9 @@ We use the following shorthands
 			+ & \oobInstIsModexpPricing _{i} \\
 			+ & \oobInstIsModexpExtract _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\locFlagSumNewCancunPrecompiles _{i} & \define & \oobInstIsPointEvaluation _{i} \\
+		\locFlagSumCancunPrecompiles _{i} & \define & \oobInstIsPointEvaluation _{i} \\
 		\vspace{2mm} \\
-		\locFlagSumNewPraguePrecompiles _{i} & \define &
+		\locFlagSumPraguePrecompiles _{i} & \define &
 		\left[ \begin{array}{cl}
 			+ & \oobInstIsBlsGOneAdd        _{i}  \\
 			+ & \oobInstIsBlsGOneMsm        _{i}  \\
@@ -51,19 +51,19 @@ We use the following shorthands
 			+ & \oobInstIsBlsMapFpToGOne    _{i}  \\
 			+ & \oobInstIsBlsMapFpTwoToGTwo _{i}  \\
 		\end{array} \right] \vspace{2mm} \\
-		\locFlagSumNewOsakaPrecompiles _{i} & \define & \oobInstIsPVerify _{i} \\
+		\locFlagSumOsakaPrecompiles _{i} & \define & \oobInstIsPVerify _{i} \\
 		\vspace{2mm} \\
 		\locPrcFlagSumBls _{i} & \define &
 		\left[ \begin{array}{cl}
-			+ & \locFlagSumNewCancunPrecompiles _{i} \\
-			+ & \locFlagSumNewPraguePrecompiles _{i} \\
+			+ & \locFlagSumCancunPrecompiles _{i} \\
+			+ & \locFlagSumPraguePrecompiles _{i} \\
 		\end{array} \right] \vspace{2mm} \\
 	\end{array} \right.
 \]
 \saNote{} 
 If the \textsc{Ethereum} network configuration is at the \textsc{Cancun} hard fork, one \emph{may} further impose
 \[
-	\locFlagSumNewPraguePrecompiles _{i} + \locFlagSumNewOsakaPrecompiles _{i} = 0 \qquad (\sanityCheck)
+	\locFlagSumPraguePrecompiles _{i} + \locFlagSumOsakaPrecompiles _{i} = 0 \qquad (\sanityCheck)
 \]
 thereby preventing \textsc{Prague}-specific \texttt{BLS} and \textsc{Osaka}-specific precompiles to be executed.
 This isn't strictly speaking necessary, as the \trmMod{} won't recognize addresses in the set
@@ -113,7 +113,7 @@ and
 			+ & \oobInstEcmul     & \cdot & \oobInstIsEcmul     _{i} \\
 			+ & \oobInstEcpairing & \cdot & \oobInstIsEcpairing _{i} \\
 			+ & \weightedPrcFlagSumBls _{i}                          \\
-			+ & \weightedPrcFlagSumNewOsakaPrecompiles _{i}          \\ 
+			+ & \weightedPrcFlagSumOsakaPrecompiles _{i}          \\ 
 		\end{array} \right] \vspace{2mm} \\
 		\weightedPrcFlagSumBlake _{i} & \define &
 		\left[ \begin{array}{crcl}
@@ -128,9 +128,9 @@ and
 			+ & \oobInstModexpPricing & \cdot & \oobInstIsModexpPricing _{i} \\
 			+ & \oobInstModexpExtract & \cdot & \oobInstIsModexpExtract _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\weightedPrcFlagSumNewCancunPrecompiles _{i} & \define & \oobInstPointEvaluation \cdot \oobInstIsPointEvaluation _{i} \\
+		\weightedPrcFlagSumCancunPrecompiles _{i} & \define & \oobInstPointEvaluation \cdot \oobInstIsPointEvaluation _{i} \\
 		\vspace{2mm} \\
-		\weightedPrcFlagSumNewPraguePrecompiles _{i} & \define &
+		\weightedPrcFlagSumPraguePrecompiles _{i} & \define &
 		\left[ \begin{array}{crcl}
 			+ & \oobInstBlsGOneAdd        & \cdot & \oobInstIsBlsGOneAdd        _{i} \\
 			+ & \oobInstBlsGOneMsm        & \cdot & \oobInstIsBlsGOneMsm        _{i} \\
@@ -140,12 +140,12 @@ and
 			+ & \oobInstBlsMapFpToGOne    & \cdot & \oobInstIsBlsMapFpToGOne    _{i} \\
 			+ & \oobInstBlsMapFpTwoToGTwo & \cdot & \oobInstIsBlsMapFpTwoToGTwo _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\weightedPrcFlagSumNewOsakaPrecompiles _{i} & \define & \oobInstPVerify \cdot \oobInstIsPVerify _{i} \\
+		\weightedPrcFlagSumOsakaPrecompiles _{i} & \define & \oobInstPVerify \cdot \oobInstIsPVerify _{i} \\
 		\vspace{2mm} \\
 		\weightedPrcFlagSumBls _{i} & \define &
 		\left[ \begin{array}{cl}
-			+ & \weightedPrcFlagSumNewCancunPrecompiles _{i} \\
-			+ & \weightedPrcFlagSumNewPraguePrecompiles _{i} \\
+			+ & \weightedPrcFlagSumCancunPrecompiles _{i} \\
+			+ & \weightedPrcFlagSumPraguePrecompiles _{i} \\
 		\end{array} \right]
 	\end{array} \right.
 \]
@@ -250,7 +250,7 @@ We further set
 			+ & \oobCtMaxEcmul     & \cdot & \oobInstIsEcmul     _{i} \\
 			+ & \oobCtMaxEcpairing & \cdot & \oobInstIsEcpairing _{i} \\
 			+ & \maxCtFlagSumPrcBls _{i} \\
-			+ & \maxCtFlagSumPrcNewOsakaPrecompiles _{i} \\
+			+ & \maxCtFlagSumPrcOsakaPrecompiles _{i} \\
 		\end{array} \right] \vspace{2mm} \\
 		\maxCtFlagSumPrcBlake _{i} & \define &
 		\left[ \begin{array}{clcl}
@@ -265,9 +265,9 @@ We further set
 			+ & \oobCtMaxModexpPricing & \cdot & \oobInstIsModexpPricing _{i} \\
 			+ & \oobCtMaxModexpExtract & \cdot & \oobInstIsModexpExtract _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\maxCtFlagSumPrcNewCancunPrecompiles _{i} & \define & \oobCtMaxPointEvaluation \cdot \oobInstIsPointEvaluation _{i} \\
+		\maxCtFlagSumPrcCancunPrecompiles _{i} & \define & \oobCtMaxPointEvaluation \cdot \oobInstIsPointEvaluation _{i} \\
 		\vspace{2mm} \\
-		\maxCtFlagSumPrcNewPraguePrecompiles _{i} & \define &
+		\maxCtFlagSumPrcPraguePrecompiles _{i} & \define &
 		\left[ \begin{array}{crcl}
 			+ & \oobCtMaxBlsGOneAdd        & \cdot & \oobInstIsBlsGOneAdd        _{i} \\
 			+ & \oobCtMaxBlsGOneMsm        & \cdot & \oobInstIsBlsGOneMsm        _{i} \\
@@ -277,12 +277,12 @@ We further set
 			+ & \oobCtMaxBlsMapFpToGOne    & \cdot & \oobInstIsBlsMapFpToGOne    _{i} \\
 			+ & \oobCtMaxBlsMapFpTwoToGTwo & \cdot & \oobInstIsBlsMapFpTwoToGTwo _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\maxCtFlagSumPrcNewOsakaPrecompiles _{i} & \define & \oobCtMaxPVerify \cdot \oobInstIsPVerify _{i} \\
+		\maxCtFlagSumPrcOsakaPrecompiles _{i} & \define & \oobCtMaxPVerify \cdot \oobInstIsPVerify _{i} \\
 		\vspace{2mm} \\
 		\maxCtFlagSumPrcBls _{i} & \define &
 		\left[ \begin{array}{cl}
-			+ & \maxCtFlagSumPrcNewCancunPrecompiles _{i} \\
-			+ & \maxCtFlagSumPrcNewPraguePrecompiles _{i} \\
+			+ & \maxCtFlagSumPrcCancunPrecompiles _{i} \\
+			+ & \maxCtFlagSumPrcPraguePrecompiles _{i} \\
 		\end{array} \right]
 	\end{array} \right.
 \]
