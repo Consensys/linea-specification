@@ -2,9 +2,9 @@ The program counter \romColumnProgramCounter{} is local to a code fragment index
 It starts at $0$ and increases by $1$ with every byte in the code fragment (i.e. padded bytecode).
 This includes the padding bytes, which are all $\texttt{0x\,}\utt{00}$, that follow the actual byte code.
 \begin{enumerate}
-    \item \If $\cfi _{i} = 0$ \Then $\romColumnProgramCounter _{i} = 0$;
-    \item \If $\cfi _{i + 1} \neq \cfi _{i}$ \Then $\romColumnProgramCounter _{i + 1} = 0$
-    \item \If \Big($\cfi _{i} \neq 0$ \et $\cfi _{i + 1} \neq 1 + \cfi _{i}$\Big) \Then $\romColumnProgramCounter _{i + 1} = 1 + \romColumnProgramCounter _{i}$;
+    \item \If $\romColumnCfi _{i} = 0$ \Then $\romColumnProgramCounter _{i} = 0$;
+    \item \If $\romColumnCfi _{i + 1} \neq \romColumnCfi _{i}$ \Then $\romColumnProgramCounter _{i + 1} = 0$
+    \item \If \Big($\romColumnCfi _{i} \neq 0$ \et $\romColumnCfi _{i + 1} \neq 1 + \romColumnCfi _{i}$\Big) \Then $\romColumnProgramCounter _{i + 1} = 1 + \romColumnProgramCounter _{i}$;
 \end{enumerate}
 \saNote{}
-\romColumnProgramCounter{} is \emph{de facto} \cfi-incrementing.
+\romColumnProgramCounter{} is \emph{de facto} \romColumnCfi-incrementing.
