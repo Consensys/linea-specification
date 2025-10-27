@@ -1,51 +1,66 @@
 The following column is used for book-keeping of different code fragments within the \romMod{} module.
 \begin{enumerate}
-    \item \CFI{}:
+    \item \romColumnEmptyCode{} and \romColumnNonemptyCode{}:
+	code-fragment-index-constant binary columns;
+    \item \romColumnCFI{}:
 	code-fragment-constant column;
 	an unique (block)-identifier of a code fragment;
-	abbreviated to \cfi{};
-    \item $\cfiMax$:
+	abbreviated to \romColumnCfi{};
+    \item $\romColumnCFImax$:
 	conflation-wide maximal code fragment index;
-    \item \CS{}:
+	abbreviated to
+	$\romColumnCfiMax$;
+    \item \romColumnCodeSize{}:
 	a code-fragment-constant column containing the code size of the bytecode currently being loaded into \romMod{} module;
-	abbreviated to \cs{};
-    \item \CSR{}:
-	a binary column that equals $0$ at the onset of a given bytecode and reaches 1 at the point where $\pc_i=\CS_i$;
-	abbreviated to \csr{};
-    \item \pc{}:
+	abbreviated to \romColumnCodeSize{};
+    \item \romColumnPadding{}:
+	a binary column that equals $0$ at the onset of a given bytecode and reaches 1 at the point where $\romColumnProgramCounter _{i} = \romColumnCodeSize _{i}$;
+    \item \romColumnProgramCounter{}:
 	program counter (i.e. index of the byte in the current bytecode);
-    \item \index{}:
-	contains the index of the current \limb{};
-	starts counting at $0$;
+    \item \done{}:
+	binary column marking the final row of a given byte code;
     \item \ct{}:
 	a periodic counter;
 	it counts up from $0$ to \ctMax{} in increments of 1 and resets;
     \item \ctMax{}:
 	a \ct{}-constant colomn, gives the high bound of \ct{};
-    \item \limb{}:
-	contains $\llarge$-byte slices of (right zero padded) bytecode;
-    \item \nBytes{}:
-	number of non-padded bytes of the \limb;
-    \item \nBytesAcc{}:
-	an accumulator for \nBytes{};
-    \item \ACC{}:
-	accumulate the \pbcb{} bytes;
+    \item \romColumnLimbIndex{}:
+	contains the index of the current \romColumnLimb{};
+	starts counting at $0$;
+    \item \romColumnLimb{}:
+	contains $\llarge$-byte slices of (left aligned and right zero padded) bytecode;
+    \item \romColumnLimbAcc{}:
+	accumulate the \romColumnLimbByte{} bytes;
+    \item \romColumnLimbByte{}:
+	raw byte from the \romColumnLimb{};
+	the \romColumnLimbByte{} column lists the bytes from said bytecode one by one as well as some extraneous \texttt{0x00}'s beyond the \romColumnCodeSize{} (padding);
+    \item \romColumnLimbByteSize{}:
+	number of non-padded bytes of the \romColumnLimb;
+    \item \romColumnLimbByteSizeAcc{}:
+	an accumulator for \romColumnLimbByteSize{};
 \end{enumerate}
-The \pbcb{} column gets instruction decoded in the \idMod{} module.
+The \romColumnLimbByte{} column contains the raw bytes that make up byte code.
+The \romColumnOpcode{} column is deduced from that and gets instruction decoded in the \idMod{} module.
 These are the columns that the \romMod{} extracts from it:
 \begin{enumerate}[resume]
-    \item \PBCB{}:
-	raw byte from the \limb{};
-	the \pbcb{} column lists the bytes from said bytecode one by one as well as some extraneous \texttt{0x00}'s beyond the \CS{} (padding);
-	abbreviated to \pbcb{};
-    \item \IRP{}:
-	instruction decoded binary flag;
-	lights up for every \pbcb{} whose numeric value matches that of a \inst{PUSHX} instructions\footnote{that is, is in the range $[\![\, \texttt{0x60} , ~ \texttt{0x7f} \,]\!]$};
-	abbreviated to \irp{};
-    \item \IRJD{}:
-	instruction decoded binary flag;
-	lights up for every \pbcb{} whose numeric value matches that of the \inst{JUMPDEST} instruction\footnote{that is, \texttt{0x5b}};
-	abbreviated to \irjd{};
+    \item \romColumnOpcode{}:
+	the opcode associated to the \romColumnLimbByte{};
+	depends on the the context i.e. on whether the byte is shadowed by a \inst{PUSH} instruction (i.e. \( \romColumnClaimedByPush{} = 1 \)) and whether the \romColumnPadding{} flag is on (at which point we impose $\romColumnLimbByte = \romColumnOpcode = \texttt{0x00}$);
+	in all other circumstances \( \romColumnOpcode{} = \romColumnLimbByte{} \);
+    \item \romColumnOpcodeIsPush{}:
+	lights up precisely when
+	$\romColumnOpcode \equiv \inst{PUSHX}$\footnote{Recall our convention~(\ref{rom: intro: convention: PUSHX implicitly refers to PUSH1 through PUSH32 but not PUSH0})}
+	for some $\inst{X}$;
+	abbreviated to \ip{};
+    \item \romColumnOpcodeIsJumpDest{}:
+	lights up precisely when $\romColumnOpcode \equiv \inst{JUMPDEST}$;
+	abbreviated to \isValidJumpDestination{};
+    \item \romColumnClaimedByPush{}:
+	binary flag;
+	lights up for the $\inst{X}$ rows following a \inst{PUSHX} instruction;
+	selects those bytes from the bytecode that contribute to the \inst{PUSH} instruction's $\romColumnPushValueHi$ or $\romColumnPushValueLo$;
+	also sets the \romColumnOpcode{} of said lines to \inst{INVALID};
+	abbreviated to \romColumnClaimedByPush{};
 \end{enumerate}
 The following columns relate to the processing of \inst{PUSHX} instructions.
 \begin{enumerate}[resume]
@@ -55,41 +70,21 @@ The following columns relate to the processing of \inst{PUSHX} instructions.
     \item \CP{}:
 	counter which counts from $1$ to \PP{} while processing a \inst{PUSHX} instruction;
 	otherwise its value is $0$;
-    \item \PV\HIGH{} and \PV\LOW{}:
+    \item \romColumnPushValueHi{} and \romColumnPushValueLo{}
 	high and low part of the value that a push instruction pushes on stack;
 	abbreviated to $\pv\high$ and $\pv\low$ respectively;
     \item \PVA:
-	``accumulator'' variables used to construct $\PV\HIGH$ and $\PV\LOW$ byte by byte out of ``data carrying bytes'';
+	``accumulator'' variables used to construct $\romColumnPushValueHi$ and $\romColumnPushValueLo$ byte by byte out of ``data carrying bytes'';
 	abbreviated to $\pva$;
     \item \PFB{}:
-	a binary flag that matters for correctly contructing \PV\HIGH{} and \PV\LOW{};
+	a binary flag that matters for correctly contructing \romColumnPushValueHi{} and \romColumnPushValueLo{};
 	abbreviated to \pfb{};
 \end{enumerate}
-
 The columns below are related to the bytecode itself: the bytes that make it up, how to interpret them (i.e. do they code for instructions or are they data carriers for a \inst{PUSHX} instruction?), how much to pad with \texttt{0x00}'s etc\dots:
-\begin{enumerate}[resume]
-    \item \opc{}:
-	the opcode associated to the \pbcb{};
-	depends on the the context i.e. on whether the byte is shadowed by a \inst{PUSH} instruction (i.e. \( \ipd{}=1 \)) and whether the \CSR{} flag is on (at which point we impose $\pbcb=\opc=\texttt{0x00}$);
-	in all other circumstances \( \opc{} = \PBCB{} \);
-    \item \IP{}:
-	lights up precisely when
-	$\opc \equiv \inst{PUSHX}$\footnote{Recall our convention~(\ref{rom: intro: convention: PUSHX implicitly refers to PUSH1 through PUSH32 but not PUSH0})}
-	for some $\inst{X}$;
-	abbreviated to \ip{};
-    \item \IPD{}:
-	binary flag;
-	lights up for the $\inst{X}$ rows following a \inst{PUSHX} instruction;
-	selects those bytes from the bytecode that contribute to the \inst{PUSH} instruction's $\PV\HIGH$ or $\PV\LOW$;
-	also sets the \opc{} of said lines to \inst{INVALID};
-	abbreviated to \ipd{};
-    \item \ISVALIDJUMPDESTINATION{}:
-	lights up precisely when $\opc \equiv \inst{JUMPDEST}$;
-	abbreviated to \isValidJumpDestination{};
-\end{enumerate}
+
 \saNote{}
-The \opc{} and \pbcb{} columns differ in that bytes that are ``obscured'' by a previous \inst{PUSHX} opcode
-will appear unaltered in the \pbcb{} column, but altered to \inst{INVALID} in the \opc{} column, see section~(\ref{rom: opcode: opcode from padded byte code byte}).
+The \romColumnOpcode{} and \romColumnLimbByte{} columns differ in that bytes that are ``obscured'' by a previous \inst{PUSHX} opcode
+will appear unaltered in the \romColumnLimbByte{} column, but altered to \inst{INVALID} in the \romColumnOpcode{} column, see section~(\ref{rom: opcode: opcode from padded byte code byte}).
 As such the above precisely recognizes valid jump destinations as specified in the \cite{EYP-London}.
 
 \saNote{}
@@ -98,7 +93,7 @@ We draw attention to the fact that the \romMod{} module
 doesn't deal with the \inst{PUSH0} instruction of \cite{EIP-3855} as it does with
 \inst{PUSHX} instructions\footnote{Recall our convention~(\ref{rom: intro: convention: PUSHX implicitly refers to PUSH1 through PUSH32 but not PUSH0})}.
 For one, it doesn't construct a ``push value'' for \inst{PUSH0} instructions.
-As a consequence, the \inst{PUSH0} opcode \textbf{does not raise} the \IP{} flag while the other \inst{PUSHX} instructions do,
+As a consequence, the \inst{PUSH0} opcode \textbf{does not raise} the \romColumnOpcodeIsPush{} flag while the other \inst{PUSHX} instructions do,
 see diagram~(\ref{rom: instruction decoding: relevant portion of ID module}).
 
 \saNote{}
@@ -106,5 +101,5 @@ see diagram~(\ref{rom: instruction decoding: relevant portion of ID module}).
 Given that the ``push value'' of a \inst{PUSH0} instruction is zero by definition,
 the \hubMod{} module knows to push \inst{0x\,00} to the stack for that opcode,
 see section~(\ref{hub: instruction handling: push pop: setting result to zero for PUSH0}).
-For \inst{PUSHX} instructions the \hubMod{} module is reliant on the $\PV$ constructed in the present module,
+For \inst{PUSHX} instructions the \hubMod{} module is reliant on the $\romColumnPushValue$ constructed in the present module,
 see section~(\ref{hub: instruction handling: push pop: setting result to push value for PUSHX}).

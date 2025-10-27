@@ -1,0 +1,28 @@
+As already mentioned numerous times,
+the \romMod{}-module only processes \textbf{nonempty} byte code.
+This byte code is systematically right-padded with anywhere from $\evmWordSize$ to $\evmWordSize + \llargeMO$
+zero bytes ($\texttt{0x00}$).
+To be precise, the present module artificially appends $\evmWordSize + r$ many zero bytes to the byte code,
+where $r \in \{ 0, 1, \dots, \llargeMO \}$ is uniquely characterized by
+the requirement that
+\[
+  \romColumnCodeSize + r \equiv 0 \mod \llarge
+\]
+Those extraneous ``padding'' bytes are useful for constructing
+$\romColumnPushValue$'s in a uniform way.
+(I.e. in the same manner whether or not \inst{PUSHX} instructions in the byte code
+are followed by $\col{X}$ bytes belonging to the byte code proper or whether
+$\col{X}$ bytes following that opcode would overflow the bytecode,
+i.e. when the bytecode terminates on a \inst{PUSHX} instruction
+followed by $0 \leq \col{Y} < \col{X}$ bytes in the byte code \emph{per se}.)
+
+\saNote{}
+Those ``padding'' bytes don't pollute the bytecode as stored in the state.
+The binary column \romColumnPadding{} serves as a means to distinguish
+between bytes belonging to the byte code and padding bytes.
+This binary column is in particular used to filter out extraneous zeros
+when the prover proceeds to \inst{KECCAK}-hash the bytecode.
+
+\includepdf[fitpaper=true, pages={1}]{lua/byte_code.pdf}
+\includepdf[fitpaper=true, pages={1}]{lua/padding_zero.pdf}
+\includepdf[fitpaper=true, pages={1}]{lua/padding_nonzero.pdf}

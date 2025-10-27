@@ -1,0 +1,31 @@
+We impose that \romColumnPadding{} equals $0$ while the \romColumnProgramCounter{} hasn't reached \romColumnCodeSize{}.
+Once it does, we impose that \romColumnPadding{} increment to $1$ and stay there until the end of the current \romColumnCfi{}.
+This (byte code) padding phase can take anywhere from $\evmWordSize$ to $\evmWordSize + \llargeMO$ rows.
+\begin{enumerate}
+    \item we impose that \romColumnPadding{} be binary (\sanityCheck{})
+    \item we impose that \romColumnPadding{} be \romColumnCfi{}-incrementing;
+    \item \If $\flagSum _{i} = 0$ \Then $\romColumnPadding _{i} = 0$;
+    \item \If $\romColumnCfi _{i} \neq \romColumnCfi _{i - 1}$ \Then $\romColumnPadding _{i} = \romColumnEmptyCode _{i}$
+    \item \If $\romColumnNonemptyCode _{i} = 1$ \et $\romColumnProgramCounter _{i} = \romColumnCodeSize _{i} - 1$ \Then
+        \[
+            \left\{ \begin{array}{lcl}
+                \romColumnPadding _{i}     & = & 0 \\
+                \romColumnPadding _{i + 1} & = & 1 \\
+            \end{array} \right.
+        \]
+\end{enumerate}
+\saNote{}
+One may compress the two constraints about ``turning on'' the \romColumnPadding{}-bit into the following alternative one:
+\[
+    \romColumnPadding _{i} + \romColumnPadding _{i + 1} = 1 \quad (\sanityCheck)
+\]
+The purpose of these constraints is to have $\romColumnPadding \equiv 0$ while ``within the byte code''
+and $\romColumnPadding \equiv 1$ as soon as the ``byte code runs out'' and one enters (byte code) padding territory.
+
+\saNote{}
+Recall that according to
+section~(\ref{rom: generalities: ct and ct max constraints}),
+for byte code that is \romColumnNonemptyCode{},
+\romColumnLimb{} are initially $\llarge$ bytes long, giving rise to a \ct{}-loops of length $\llarge$.
+After the \romColumnPadding{} switches to one the final \ct{}-loop has length $\evmWordSizeMO$.
+
