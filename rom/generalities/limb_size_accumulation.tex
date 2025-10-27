@@ -1,20 +1,29 @@
-We impose
+We impose the following
 \begin{enumerate}
-    \item \romColumnLimbByteSize{} and \romColumnLimbByteSizeAcc{} are \textbf{counter-constant}
-    \item \If $\flagSum _{i} = 0$ \Then
-	\[
-	    \left\{ \begin{array}{lcl}
-		\romColumnLimbByteSize     _{i} & = & 0 \\
-		\romColumnLimbByteSizeAcc  _{i} & = & 0 \\
-	    \end{array} \right.
-	\]
-    \item \If $\flagSum _{i} = 1$ \Then
-	\begin{enumerate}
-	    \item \If $\romColumnCfi _{i - 1} \neq \romColumnCfi _{i}$ \Then $\romColumnLimbByteSize _{i} = \romColumnLimbByteSizeAcc  _{i}$
-	    \item \If $\romColumnCfi _{i - 1} \neq \romColumnCfi _{i}$ \Then $\romColumnLimbByteSize _{i} = \romColumnLimbByteSizeAcc  _{i}$
-	\end{enumerate}
-    \item \If $\ct _{i} =    0$           \Then $\romColumnLimbAcc _{i} = \romColumnLimbByte _{i}$
-    \item \If $\ct _{i} \neq 0$           \Then $\romColumnLimbAcc _{i} = 256 \cdot \romColumnLimbAcc _{i - 1} + \romColumnLimbByte _{i}$
-    \item \If $\ct _{i} =    \ctMax _{i}$ \Then $\romColumnLimbAcc _{i} = \romColumnLimb _{i}$
+	\item \romColumnLimbByteSize{} is \textbf{counter-constant}
+	\item \If $\romColumnNonemptyCode _{i} = \false$ \Then
+		\[
+			\left\{ \begin{array}{lclr}
+				\romColumnLimbByteSize     _{i} & = & 0 & (\trash) \\
+				\romColumnLimbByteSizeAcc  _{i} & = & 0 & (\trash) \\
+			\end{array} \right.
+		\]
+	\item \If $\romColumnNonemptyCode _{i} = \true$ \Then:
+		\begin{enumerate}
+			\item \If $\ct _{i} = 0$ \Then:
+				\begin{enumerate}
+					\item \If $\romColumnPadding _{i} = 0$ \Then $\romColumnLimbByteSizeAcc _{i} = 1$
+					\item \If $\romColumnPadding _{i} = 1$ \Then $\romColumnLimbByteSizeAcc _{i} = 0$
+				\end{enumerate}
+			\item \If $\ct _{i} \neq 0$ \Then:
+				\begin{enumerate}
+					\item \If $\romColumnPadding _{i} = 0$ \Then $\romColumnLimbByteSizeAcc _{i} = \romColumnLimbByteSizeAcc _{i - 1}+1$
+					\item \If $\romColumnPadding _{i} = 1$ \Then $\romColumnLimbByteSizeAcc _{i} = \romColumnLimbByteSizeAcc _{i - 1}$
+				\end{enumerate}
+		\end{enumerate}
+	\item \If $\ct _{i} = \ctMax _{i}$ \Then $\romColumnLimbByteSizeAcc _{i} = \romColumnLimbByteSize _{i}$
 \end{enumerate}
-
+\saNote{} By construction:
+\begin{enumerate}[resume]
+	\item \romColumnLimbByteSizeAcc{} is \ct-incrementing \quad (\sanityCheck)
+\end{enumerate}
