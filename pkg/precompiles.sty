@@ -15,10 +15,12 @@
 \newcommand{\indexMaxEcaddData}              {\numConst{index\_max\_ecadd\_data}}
 \newcommand{\indexMaxEcmulData}              {\numConst{index\_max\_ecmul\_data}}
 \newcommand{\indexMaxEcPairingDataMin}       {\numConst{index\_max\_ecpairing\_data\_min}}
+\newcommand{\indexMaxPVerifyData}            {\numConst{index\_max\_p256\_verify\_data}}
 \newcommand{\indexMaxEcrecoverResult}        {\numConst{index\_max\_ecrecover\_result}}
 \newcommand{\indexMaxEcaddResult}            {\numConst{index\_max\_ecadd\_result}}
 \newcommand{\indexMaxEcmulResult}            {\numConst{index\_max\_ecmul\_result}}
 \newcommand{\indexMaxEcpairingResult}        {\numConst{index\_max\_ecpairing\_result}}
+\newcommand{\indexMaxPVerifyResult}          {\numConst{index\_max\_p256\_verify\_result}}
 %
 \newcommand{\ctMaxPointEvaluation }  {\ctMaxConst{point\_evaluation}}
 \newcommand{\ctMaxSmallPoint      }  {\ctMaxConst{small\_point}}
@@ -32,10 +34,12 @@
 \newcommand{\totalSizeEcaddData}        {\numConst{total\_size\_ecadd\_data}}
 \newcommand{\totalSizeEcmulData}        {\numConst{total\_size\_ecmul\_data}}
 \newcommand{\totalSizeEcpairingDataMin} {\numConst{total\_size\_ecpairing\_data\_min}}
+\newcommand{\totalSizePVerifyData}      {\numConst{total\_size\_p256\_verify\_data}}
 \newcommand{\totalSizeEcrecoverResult}  {\numConst{total\_size\_ecrecover\_result}}
 \newcommand{\totalSizeEcaddResult}      {\numConst{total\_size\_ecadd\_result}}
 \newcommand{\totalSizeEcmulResult}      {\numConst{total\_size\_ecmul\_result}}
 \newcommand{\totalSizeEcpairingResult}  {\numConst{total\_size\_ecpairing\_result}}
+\newcommand{\totalSizePVerifyResult}    {\numConst{total\_size\_p256\_verify\_result}}
 %
 \newcommand{\gms}                       {\col{STAMP}} % Generic Module Stamp
 \newcommand{\addressLo}                 {\col{ADDR\_LO}}
@@ -51,6 +55,8 @@
 \newcommand{\isEcmulResult}             {\col{IS\_ECMUL\_RESULT}\flag}
 \newcommand{\isEcpairingData}           {\col{IS\_ECPAIRING\_DATA}\flag}
 \newcommand{\isEcpairingResult}         {\col{IS\_ECPAIRING\_RESULT}\flag}
+\newcommand{\isPVerifyData}             {\col{IS\_P256\_VERIFY\_DATA}\flag}
+\newcommand{\isPVerifyResult}           {\col{IS\_P256\_VERIFY\_RESULT}\flag}
 %
 \newcommand{\totalPairings}             {\col{TOTAL\_PAIRINGS}}
 \newcommand{\accPairings}               {\col{ACC\_PAIRINGS}}
@@ -101,11 +107,39 @@
 \newcommand{\isInfinity}                          {\col{IS\_INFINITY}}
 \newcommand{\selector}                            {\col{sel}}
 \newcommand{\bnOuterPrime}                        {\texttt{P\_BN}}
-\newcommand{\secpN}                               {\texttt{SECP256K1N}}
+\newcommand{\secpkN}                              {\texttt{SECP256K1N}}
 \newcommand{\bnOuterPrimeHi}                      {\bnOuterPrime\texttt{\_HI}}
 \newcommand{\bnOuterPrimeLo}                      {\bnOuterPrime\texttt{\_LO}}
-\newcommand{\secpNHi}                             {\secpN\texttt{\_HI}}
-\newcommand{\secpNLo}                             {\secpN\texttt{\_LO}}
+\newcommand{\secpkNHi}                            {\secpkN\texttt{\_HI}}
+\newcommand{\secpkNLo}                            {\secpkN\texttt{\_LO}}
+
+\newcommand{\secprN}                              {\texttt{SECP256R1N}}
+\newcommand{\secprNHi}                            {\secprN\texttt{\_HI}}
+\newcommand{\secprNLo}                            {\secprN\texttt{\_LO}}
+\newcommand{\secprNHex}                           {\red{\texttt{0x\,ffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551}}}
+\newcommand{\secprNHexHi}                         {\red{\texttt{0x\,ffffffff00000000ffffffffffffffff}}}
+\newcommand{\secprNHexLo}                         {\red{\texttt{0x\,bce6faada7179e84f3b9cac2fc632551}}}
+
+\newcommand{\rOnePrime}                           {\texttt{P\_R1}}
+\newcommand{\rOnePrimeHi}                         {\rOnePrime\texttt{\_HI}}
+\newcommand{\rOnePrimeLo}                         {\rOnePrime\texttt{\_LO}}
+\newcommand{\rOnePrimeHex}                        {\red{\texttt{0x\,ffffffff00000001000000000000000000000000ffffffffffffffffffffffff}}}
+\newcommand{\rOnePrimeHexHi}                      {\red{\texttt{0x\,ffffffff000000010000000000000000}}}
+\newcommand{\rOnePrimeHexLo}                      {\red{\texttt{0x\,00000000ffffffffffffffffffffffff}}}
+
+\newcommand{\rOneACoefficient}                    {\texttt{A\_COEFF\_R1}}
+\newcommand{\rOneACoefficientHi}                  {\rOneACoefficient\texttt{\_HI}}
+\newcommand{\rOneACoefficientLo}                  {\rOneACoefficient\texttt{\_LO}}
+\newcommand{\rOneACoefficientHex}                 {\red{\texttt{0x\,ffffffff00000001000000000000000000000000fffffffffffffffffffffffc}}}
+\newcommand{\rOneACoefficientHexHi}               {\red{\texttt{0x\,ffffffff000000010000000000000000}}}
+\newcommand{\rOneACoefficientHexLo}               {\red{\texttt{0x\,00000000fffffffffffffffffffffffc}}}
+
+\newcommand{\rOneBCoefficient}                    {\texttt{B\_COEFF\_R1}}
+\newcommand{\rOneBCoefficientHi}                  {\rOneBCoefficient\texttt{\_HI}}
+\newcommand{\rOneBCoefficientLo}                  {\rOneBCoefficient\texttt{\_LO}}
+\newcommand{\rOneBCoefficientHex}                 {\red{\texttt{0x\,5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b}}}
+\newcommand{\rOneBCoefficientHexHi}               {\red{\texttt{0x\,5ac635d8aa3a93e7b3ebbd55769886bc}}}
+\newcommand{\rOneBCoefficientHexLo}               {\red{\texttt{0x\,651d06b0cc53b0f63bce3c3e27d2604b}}}
 
 \newcommand{\pePrime}                             {\texttt{POINT\_EVALUATION\_PRIME}}
 \newcommand{\pePrimeHi}                           {\pePrime\texttt{\_HI}}
@@ -133,9 +167,9 @@
 \newcommand{\bnOuterPrimeHexHi}                   {\red{\texttt{0x\,30644e72e131a029b85045b68181585d}}}
 \newcommand{\bnOuterPrimeHexLo}                   {\red{\texttt{0x\,97816a916871ca8d3c208c16d87cfd47}}}
 
-\newcommand{\secpNHex}                            {\red{\texttt{0x\,fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f}}}
-\newcommand{\secpNHexHi}                          {\red{\texttt{0x\,ffffffffffffffffffffffffffffffff}}}
-\newcommand{\secpNHexLo}                          {\red{\texttt{0x\,fffffffffffffffffffffffefffffc2f}}}
+\newcommand{\secpkNHex}                           {\red{\texttt{0x\,fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f}}}
+\newcommand{\secpkNHexHi}                         {\red{\texttt{0x\,ffffffffffffffffffffffffffffffff}}}
+\newcommand{\secpkNHexLo}                         {\red{\texttt{0x\,fffffffffffffffffffffffefffffc2f}}}
 
 \newcommand{\isSmallPoint}              {\col{IS\_SMALL\_POINT}}
 \newcommand{\isLargePoint}              {\col{IS\_LARGE\_POINT}}
@@ -146,56 +180,69 @@
 \newcol{\csEcadd}                {CS\_ECADD}          {CIRCUIT\_SELECTOR\_ECADD}
 \newcol{\csEcmul}                {CS\_ECMUL}          {CIRCUIT\_SELECTOR\_ECMUL}
 \newcol{\csEcpairing}            {CS\_ECPAIRING}      {CIRCUIT\_SELECTOR\_ECPAIRING}
+\newcol{\csPVerify}              {CS\_P256\_VERIFY}   {CIRCUIT\_SELECTOR\_P256\_VERIFY}
 \newcol{\csGTwo}                 {CS\_G2\_MEMBERSHIP} {CIRCUIT\_SELECTOR\_G2\_MEMBERSHIP}
 \newcol{\trivialPairing}         {TRIVIAL\_PAIRING}   {OVERALL\_TRIVIAL\_PAIRING}
 
 % System of constraints
-\define@cmdkey [ECDATA] {var} {anchorRow}        {}
-\define@cmdkey [ECDATA] {var} {relOffset}        {}
-\define@cmdkey [ECDATA] {var} {xHi}              {}
-\define@cmdkey [ECDATA] {var} {xLo}              {}
-\define@cmdkey [ECDATA] {var} {yHi}              {}
-\define@cmdkey [ECDATA] {var} {yLo}              {}
-\define@cmdkey [ECDATA] {var} {xSquareHi}        {}
-\define@cmdkey [ECDATA] {var} {xSquareLo}        {}
-\define@cmdkey [ECDATA] {var} {ySquareHi}        {}
-\define@cmdkey [ECDATA] {var} {ySquareLo}        {}
-\define@cmdkey [ECDATA] {var} {xCubeHi}          {}
-\define@cmdkey [ECDATA] {var} {xCubeLo}          {}
-\define@cmdkey [ECDATA] {var} {xCubePlusThreeHi} {}
-\define@cmdkey [ECDATA] {var} {xCubePlusThreeLo} {}
-\define@cmdkey [ECDATA] {var} {xImHi}            {}
-\define@cmdkey [ECDATA] {var} {xImLo}            {}
-\define@cmdkey [ECDATA] {var} {xReHi}            {}
-\define@cmdkey [ECDATA] {var} {xReLo}            {}
-\define@cmdkey [ECDATA] {var} {yImHi}            {}
-\define@cmdkey [ECDATA] {var} {yImLo}            {}
-\define@cmdkey [ECDATA] {var} {yReHi}            {}
-\define@cmdkey [ECDATA] {var} {yReLo}            {}
+\define@cmdkey [ECDATA] {var} {anchorRow}                {}
+\define@cmdkey [ECDATA] {var} {relOffset}                {}
+\define@cmdkey [ECDATA] {var} {xHi}                      {}
+\define@cmdkey [ECDATA] {var} {xLo}                      {}
+\define@cmdkey [ECDATA] {var} {yHi}                      {}
+\define@cmdkey [ECDATA] {var} {yLo}                      {}
+\define@cmdkey [ECDATA] {var} {xSquareHi}                {}
+\define@cmdkey [ECDATA] {var} {xSquareLo}                {}
+\define@cmdkey [ECDATA] {var} {ySquareHi}                {}
+\define@cmdkey [ECDATA] {var} {ySquareLo}                {}
+\define@cmdkey [ECDATA] {var} {xCubeHi}                  {}
+\define@cmdkey [ECDATA] {var} {xCubeLo}                  {}
+\define@cmdkey [ECDATA] {var} {xCubePlusThreeHi}         {}
+\define@cmdkey [ECDATA] {var} {xCubePlusThreeLo}         {}
+\define@cmdkey [ECDATA] {var} {xImHi}                    {}
+\define@cmdkey [ECDATA] {var} {xImLo}                    {}
+\define@cmdkey [ECDATA] {var} {xReHi}                    {}
+\define@cmdkey [ECDATA] {var} {xReLo}                    {}
+\define@cmdkey [ECDATA] {var} {yImHi}                    {}
+\define@cmdkey [ECDATA] {var} {yImLo}                    {}
+\define@cmdkey [ECDATA] {var} {yReHi}                    {}
+\define@cmdkey [ECDATA] {var} {yReLo}                    {}
+\define@cmdkey [ECDATA] {var} {aTimesPXHi}               {}
+\define@cmdkey [ECDATA] {var} {aTimesPXLo}               {}
+\define@cmdkey [ECDATA] {var} {xCubePlusATimesPXHi} {}
+\define@cmdkey [ECDATA] {var} {xCubePlusATimesPXLo} {}
+\define@cmdkey [ECDATA] {var} {xCubePlusATimesPXPlusBHi} {}
+\define@cmdkey [ECDATA] {var} {xCubePlusATimesPXPlusBLo} {}
 
 \presetkeys [ECDATA] {var} {
-	anchorRow = \missingParameter       ,
-	relOffset = \missingParameter       ,
-    xHi = \missingParameter             ,
-    xLo = \missingParameter             ,
-    yHi = \missingParameter             ,
-    yLo = \missingParameter             ,
-    xSquareHi = \missingParameter       ,
-    xSquareLo = \missingParameter       ,
-    ySquareHi = \missingParameter       ,
-    ySquareLo = \missingParameter       ,
-    xCubeHi = \missingParameter         ,
-    xCubeLo = \missingParameter         ,
-    xCubePlusThreeHi = \missingParameter,
-    xCubePlusThreeLo = \missingParameter,
-    xImHi = \missingParameter           ,
-    xImLo = \missingParameter           ,
-    xReHi = \missingParameter           ,
-    xReLo = \missingParameter           ,
-    yImHi = \missingParameter           ,
-    yImLo = \missingParameter           ,
-    yReHi = \missingParameter           ,
-    yReLo = \missingParameter
+	anchorRow = \missingParameter                ,
+	relOffset = \missingParameter                ,
+    xHi = \missingParameter                      ,
+    xLo = \missingParameter                      ,
+    yHi = \missingParameter                      ,
+    yLo = \missingParameter                      ,
+    xSquareHi = \missingParameter                ,
+    xSquareLo = \missingParameter                ,
+    ySquareHi = \missingParameter                ,
+    ySquareLo = \missingParameter                ,
+    xCubeHi = \missingParameter                  ,
+    xCubeLo = \missingParameter                  ,
+    xCubePlusThreeHi = \missingParameter         ,
+    xCubePlusThreeLo = \missingParameter         ,
+    xImHi = \missingParameter                    ,
+    xImLo = \missingParameter                    ,
+    xReHi = \missingParameter                    ,
+    xReLo = \missingParameter                    ,
+    yImHi = \missingParameter                    ,
+    yImLo = \missingParameter                    ,
+    yReHi = \missingParameter                    ,
+    yReLo = \missingParameter                    ,
+    aTimesPXHi = \missingParameter               ,
+    aTimesPXLo = \missingParameter               ,
+    xCubePlusATimesPXHi = \missingParameter      ,
+    xCubePlusATimesPXLo = \missingParameter      ,
+    xCubePlusATimesPXPlusBHi = \missingParameter ,
+    xCubePlusATimesPXPlusBLo = \missingParameter ,
 }{}
 
 
@@ -227,7 +274,7 @@
             \utt{LHS of (E) lo:}   & \cmdECDATA@var@ySquareLo           \\
             \utt{RHS of (E) hi:}   & \cmdECDATA@var@xCubePlusThreeHi    \\
             \utt{RHS of (E) lo:}   & \cmdECDATA@var@xCubePlusThreeLo    \\
-            \utt{Where (E) is:}    & y^2 = x^3 + 3 
+            \utt{Where (E) is:}    & \tty^2 = \ttx^3 + 3
         \end{array} \right]}
 
 \newcommand{\callCOneMembershipEXT}             {\texttt{callToC1MembershipEXT}}
@@ -263,7 +310,59 @@
             \utt{y coord. real hi:}        & \cmdECDATA@var@yReHi        \\
             \utt{y coord. real lo:}        & \cmdECDATA@var@yReLo        \\
         \end{array} \right]}
+%
+\newcommand{\callROneMembership}             {\texttt{callToR1Membership}}
 
+\newcommand{\callToROneMembership}[1]{
+    \setkeys[ECDATA]{var}{#1}
+    \callROneMembership_{\cmdECDATA@var@anchorRow}
+    \left[ \begin{array}{ll}
+            \utt{Rel. row offset:} & \cmdECDATA@var@relOffset           \\
+            \utt{x coord. hi:}     & \cmdECDATA@var@xHi                 \\
+            \utt{x coord. lo:}     & \cmdECDATA@var@xLo                 \\
+            \utt{y coord. hi:}     & \cmdECDATA@var@yHi                 \\
+            \utt{y coord. lo:}     & \cmdECDATA@var@yLo                 \\
+        \end{array} \right]}
+
+\newcommand{\callROneMembershipWCP}             {\texttt{callToR1MembershipWCP}}
+
+\newcommand{\callToROneMembershipWCP}[1]{
+    \setkeys[ECDATA]{var}{#1}
+    \callROneMembershipWCP_{\cmdECDATA@var@anchorRow}
+    \left[ \begin{array}{ll}
+            \utt{Rel. row offset:} & \cmdECDATA@var@relOffset                   \\
+            \utt{x coord. hi:}     & \cmdECDATA@var@xHi                         \\
+            \utt{x coord. lo:}     & \cmdECDATA@var@xLo                         \\
+            \utt{y coord. hi:}     & \cmdECDATA@var@yHi                         \\
+            \utt{y coord. lo:}     & \cmdECDATA@var@yLo                         \\
+            \utt{LHS of (E) hi:}   & \cmdECDATA@var@ySquareHi                   \\
+            \utt{LHS of (E) lo:}   & \cmdECDATA@var@ySquareLo                   \\
+            \utt{RHS of (E) hi:}   & \cmdECDATA@var@xCubePlusATimesPXPlusBHi    \\
+            \utt{RHS of (E) lo:}   & \cmdECDATA@var@xCubePlusATimesPXPlusBLo    \\
+            \utt{Where (E) is:}    & \tty^2 = \ttx^3 + \rOneACoefficient \cdot \ttx + \rOneBCoefficient   
+        \end{array} \right]}
+
+\newcommand{\callROneMembershipEXT}             {\texttt{callToR1MembershipEXT}}
+
+\newcommand{\callToROneMembershipEXT}[1]{
+    \setkeys[ECDATA]{var}{#1}
+    \callROneMembershipEXT_{\cmdECDATA@var@anchorRow}
+    \left[ \begin{array}{ll}
+            \utt{Rel. row offset:}                & \cmdECDATA@var@relOffset    \\
+            \utt{x coord. hi:}                    & \cmdECDATA@var@xHi          \\
+            \utt{x coord. lo:}                    & \cmdECDATA@var@xLo          \\
+            \utt{y coord. hi:}                    & \cmdECDATA@var@yHi          \\
+            \utt{y coord. lo:}                    & \cmdECDATA@var@yLo          \\
+            \utt{square of x coord. hi:}          & \cmdECDATA@var@xSquareHi    \\
+            \utt{square of x coord. lo:}          & \cmdECDATA@var@xSquareLo    \\
+            \utt{cube of x coord. hi:}            & \cmdECDATA@var@xCubeHi      \\
+            \utt{cube of x coord. lo:}            & \cmdECDATA@var@xCubeLo      \\
+            \utt{a times x coord. hi:}            & \cmdECDATA@var@aTimesPXHi   \\
+            \utt{a times x coord. lo:}            & \cmdECDATA@var@aTimesPXLo   \\
+            \utt{cube plus a times x coord. hi:}  & \cmdECDATA@var@xCubePlusATimesPXHi \\
+            \utt{cube plus a times x coord. lo:}  & \cmdECDATA@var@xCubePlusATimesPXLo \\
+        \end{array} \right]}
+%
 \newcommand{\ttx}                 {\texttt{x}}
 \newcommand{\tty}                 {\texttt{y}}
 \newcommand{\PRECOMPILESUCCEDES}              {\col{PRECOMPILE\_SUCCEDES}}
@@ -376,8 +475,9 @@
 \newcommand{\weightedPrcFlagSumModexp}               {\weightedPrcFlagSum\loc{\_modexp}}
 \newcommand{\weightedPrcFlagSumBls}                  {\weightedPrcFlagSum\loc{\_bls}}
 
-\newcommand{\weightedPrcFlagSumNewCancunPrecompiles}    {\weightedPrcFlagSum\loc{\_new\_cancun\_precompiles}}
-\newcommand{\weightedPrcFlagSumNewPraguePrecompiles}    {\weightedPrcFlagSum\loc{\_new\_prague\_precompiles}}
+\newcommand{\weightedPrcFlagSumCancunPrecompiles}    {\weightedPrcFlagSum\loc{\_cancun\_precompiles}}
+\newcommand{\weightedPrcFlagSumPraguePrecompiles}    {\weightedPrcFlagSum\loc{\_prague\_precompiles}}
+\newcommand{\weightedPrcFlagSumOsakaPrecompiles}     {\weightedPrcFlagSum\loc{\_osaka\_precompiles}}
 
 \newcommand{\maxCtFlagSum}                           {\loc{ct\_max\_sum}}
 \newcommand{\maxCtFlagSumInst}                       {\maxCtFlagSum\loc{\_inst}}
@@ -387,8 +487,9 @@
 \newcommand{\maxCtFlagSumPrcModexp}                  {\maxCtFlagSumPrc\loc{\_modexp}}
 \newcommand{\maxCtFlagSumPrcBls}                     {\maxCtFlagSumPrc\loc{\_bls}}
 
-\newcommand{\maxCtFlagSumPrcNewCancunPrecompiles}    {\maxCtFlagSumPrc\loc{\_new\_cancun\_precompiles}}
-\newcommand{\maxCtFlagSumPrcNewPraguePrecompiles}    {\maxCtFlagSumPrc\loc{\_new\_prague\_precompiles}}
+\newcommand{\maxCtFlagSumPrcCancunPrecompiles}    {\maxCtFlagSumPrc\loc{\_cancun\_precompiles}}
+\newcommand{\maxCtFlagSumPrcPraguePrecompiles}    {\maxCtFlagSumPrc\loc{\_prague\_precompiles}}
+\newcommand{\maxCtFlagSumPrcOsakaPrecompiles}     {\maxCtFlagSumPrc\loc{\_osaka\_precompiles}}
 
 \newcommand{\hubMmuMmioEcDataPrediction}     {\colorbox{solarized-orange}{\textbf{~~$\hubMod \rightarrow \mmuMod \rightarrow \mmioMod \rightarrow \ecDataMod$ prediction~~}}}
 \newcommand{\hubMmuMmioBlsPrediction}        {\colorbox{solarized-orange}{\textbf{~~$\hubMod \rightarrow \mmuMod \rightarrow \mmioMod \rightarrow \blsDataMod$ prediction~~}}}
@@ -511,3 +612,42 @@
 \newcommand{\resultSizeInBytesBlsPairingCheck}      {\numConst{32}}
 \newcommand{\resultSizeInBytesBlsMapFpToGOne}       {\numConst{128}}
 \newcommand{\resultSizeInBytesBlsMapFpTwoToGTwo}    {\numConst{256}}
+
+% prc addresses
+\newcommand{\prcAddressEcRecoverValue}           {\redm{0x01}}
+\newcommand{\prcAddressShaValue}                 {\redm{0x02}}
+\newcommand{\prcAddressRipemdValue}              {\redm{0x03}}
+\newcommand{\prcAddressIdentityValue}            {\redm{0x04}}
+\newcommand{\prcAddressModexpValue}              {\redm{0x05}}
+\newcommand{\prcAddressEcAddValue}               {\redm{0x06}}
+\newcommand{\prcAddressEcMulValue}               {\redm{0x07}}
+\newcommand{\prcAddressEcPairingValue}           {\redm{0x08}}
+\newcommand{\prcAddressBlakeValue}               {\redm{0x09}}
+\newcommand{\prcAddressPointEvaluationValue}     {\redm{0x0a}}
+\newcommand{\prcAddressBlsGOneAddValue}          {\redm{0x0b}}
+\newcommand{\prcAddressBlsGOneMsmValue}          {\redm{0x0c}}
+\newcommand{\prcAddressBlsGTwoAddValue}          {\redm{0x0d}}
+\newcommand{\prcAddressBlsGTwoMsmValue}          {\redm{0x0e}}
+\newcommand{\prcAddressBlsPairingCheckValue}     {\redm{0x0f}}
+\newcommand{\prcAddressBlsMapFpToGOneValue}      {\redm{0x10}}
+\newcommand{\prcAddressBlsMapFpTwoToGTwoValue}   {\redm{0x11}}
+\newcommand{\prcAddressPVerifyValue}             {\redm{0x100}}
+
+\newcommand{\prcAddressEcRecover}                {\numConst{prc\_address\_ecrecover}}        
+\newcommand{\prcAddressSha}                      {\numConst{prc\_address\_sha256}}
+\newcommand{\prcAddressRipemd}                   {\numConst{prc\_address\_ripemd160}}
+\newcommand{\prcAddressIdentity}                 {\numConst{prc\_address\_identity}}
+\newcommand{\prcAddressModexp}                   {\numConst{prc\_address\_modexp}}
+\newcommand{\prcAddressEcAdd}                    {\numConst{prc\_address\_ecadd}}
+\newcommand{\prcAddressEcMul}                    {\numConst{prc\_address\_ecmul}}
+\newcommand{\prcAddressEcPairing}                {\numConst{prc\_address\_ecpairing}}
+\newcommand{\prcAddressBlake}                    {\numConst{prc\_address\_blake2f}}
+\newcommand{\prcAddressPointEvaluation}          {\numConst{prc\_address\_point\_evaluation}}
+\newcommand{\prcAddressBlsGOneAdd}               {\numConst{prc\_address\_bls\_g1\_add}}
+\newcommand{\prcAddressBlsGOneMsm}               {\numConst{prc\_address\_bls\_g1\_msm}}
+\newcommand{\prcAddressBlsGTwoAdd}               {\numConst{prc\_address\_bls\_g2\_add}}
+\newcommand{\prcAddressBlsGTwoMsm}               {\numConst{prc\_address\_bls\_g2\_msm}}
+\newcommand{\prcAddressBlsPairingCheck}          {\numConst{prc\_address\_bls\_pairing\_check}}
+\newcommand{\prcAddressBlsMapFpToGOne}           {\numConst{prc\_address\_bls\_map\_fp\_to\_g1}}
+\newcommand{\prcAddressBlsMapFpTwoToGTwo}        {\numConst{prc\_address\_bls\_map\_fp2\_to\_g2}}
+\newcommand{\prcAddressPVerify}                  {\numConst{prc\_address\_p256\_verify}}

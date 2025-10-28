@@ -11,6 +11,8 @@ We define the following module constants:
         \totalSizeEcaddResult      & \!\!\! \define \!\!\! & \redm{64}  \\
         \totalSizeEcmulResult      & \!\!\! \define \!\!\! & \redm{64}  \\
         \totalSizeEcpairingResult  & \!\!\! \define \!\!\! & \redm{32}  \\
+        \totalSizePVerifyData      & \!\!\! \define \!\!\! & \redm{160} \\
+        \totalSizePVerifyResult    & \!\!\! \define \!\!\! & \redm{32}  \\
     \end{array} \right.
 \]
 Thus we impose the following constraints:
@@ -18,14 +20,16 @@ Thus we impose the following constraints:
     \ecdataTotalSize _{i}
     =
     \left[ \begin{array}{crcccl}
-        + & \isEcrecoverData   _{i} & \cdot & \totalSizeEcrecoverData    \\
-        + & \isEcaddData       _{i} & \cdot & \totalSizeEcaddData        \\
-        + & \isEcmulData       _{i} & \cdot & \totalSizeEcmulData        \\
+        + & \isEcrecoverData   _{i} & \cdot & \totalSizeEcrecoverData                                      \\
+        + & \isEcaddData       _{i} & \cdot & \totalSizeEcaddData                                          \\
+        + & \isEcmulData       _{i} & \cdot & \totalSizeEcmulData                                          \\
         + & \isEcpairingData   _{i} & \cdot & \totalSizeEcpairingDataMin  & \cdot & \totalPairings    _{i} \\
+        + & \isPVerifyData     _{i} & \cdot & \totalSizePVerifyData      \vspace{1mm}                      \\
         + & \isEcrecoverResult _{i} & \cdot & \totalSizeEcrecoverResult   & \cdot & \ecdataSuccessBit _{i} \\
         + & \isEcaddResult     _{i} & \cdot & \totalSizeEcaddResult       & \cdot & \ecdataSuccessBit _{i} \\
         + & \isEcmulResult     _{i} & \cdot & \totalSizeEcmulResult       & \cdot & \ecdataSuccessBit _{i} \\
         + & \isEcpairingResult _{i} & \cdot & \totalSizeEcpairingResult   & \cdot & \ecdataSuccessBit _{i} \\
+        + & \isPVerifyResult   _{i} & \cdot & \totalSizePVerifyResult     & \cdot & \ecdataSuccessBit _{i} \\
     \end{array} \right]
 \]
 \saNote{} We use the name $\totalSizeEcpairingDataMin$ for homogeneity reasons, but it is important to note that:
