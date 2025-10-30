@@ -40,6 +40,8 @@ In particular we explain which precompiles may raise the $\scenPrcFailureKnownTo
                                                   & $\vee~\cds \neq  64$                           &                           &                                                                   &                                                  \\ \cline{1-4}
 		\instBlsMapFpTwoToGTwo{}          & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                    &                                                  \\
                                                   & $\vee~\cds \neq 128$                           &                           &                                                                   &                                                  \\ \hline
+	    \instP256Verify{}                 & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                    & \multirow{2}{*}{\text{\cite{EIP-7951}, Osaka}}  \\
+												  & $\vee~\cds \neq 160$                           &                           &                                                                   &                                                  \\ \hline \hline
 	\end{tabular}
 	\label{hub: instruction handling: call: precompiles: table classifying failures known to the HUB vs. to RAM}
 	\caption{All justifications for \scenPrcFailureKnownToHub{}'s are done through the \oobMod{} module. Notations such as ``$x = \varnothing$'' are from the \cite{EYP-London}.}
@@ -194,3 +196,9 @@ The next precompiles were introduced in the \textsc{Prague} hardfork, specifical
 		\locBlsPrecompileFailureReasonSize, with $\locImposedCallDataSizeForBlsPrecompiles \equiv 128$,
 		\locBlsPrecompileFailureReasonData;
 \end{description}
+The next precompiles was introduced in the \textsc{Osaka} hardfork, specifically with \cite{EIP-7951}:
+\item[\instPVerify{}:]
+	can fail due to:
+	\locBlsPrecompileFailureReasonGas,
+	\locBlsPrecompileFailureReasonSize, with $\locImposedCallDataSizeForBlsPrecompiles \equiv 160$,
+	\locBlsPrecompileFailureReasonData;
