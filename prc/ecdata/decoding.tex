@@ -20,6 +20,11 @@ We define the usual shorthands
 		\left[ \begin{array}{cr}
 			+ & \isEcpairingData   _{i} \\
 			+ & \isEcpairingResult _{i} \\
+		\end{array} \right] \vspace{2mm} \\
+		\locIsPVerify_{i} & \define &
+		\left[ \begin{array}{cr}
+			+ & \isPVerifyData   _{i} \\
+			+ & \isPVerifyResult _{i} \\
 		\end{array} \right] \\
 	\end{array} \right.
 \]
@@ -32,15 +37,27 @@ and
 			+ & \locIsEcadd       _{i} \\
 			+ & \locIsEcmul       _{i} \\
 			+ & \locIsEcpairing   _{i} \\
+			+ & \locIsPVerify     _{i} \\
 		\end{array} \right] \vspace{2mm} \\
 		\locAddressSum_{i} & \define &
 		\left[ \begin{array}{crcl}
-			+ & 1 & \!\!\!\cdot\!\!\! & \locIsEcrecover   _{i} \\
-			+ & 6 & \!\!\!\cdot\!\!\! & \locIsEcadd       _{i} \\
-			+ & 7 & \!\!\!\cdot\!\!\! & \locIsEcmul       _{i} \\
-			+ & 8 & \!\!\!\cdot\!\!\! & \locIsEcpairing   _{i} \\
+			+ & \prcAddressEcRecover & \!\!\!\cdot\!\!\! & \locIsEcrecover   _{i} \\
+			+ & \prcAddressEcAdd & \!\!\!\cdot\!\!\! & \locIsEcadd       _{i} \\
+			+ & \prcAddressEcMul & \!\!\!\cdot\!\!\! & \locIsEcmul       _{i} \\
+			+ & \prcAddressEcPairing & \!\!\!\cdot\!\!\! & \locIsEcpairing   _{i} \\
+			+ & \prcAddressPVerify & \!\!\!\cdot\!\!\! & \locIsPVerify     _{i} \\
 		\end{array} \right] \\
 	\end{array} \right.
+\]
+where
+\[
+	\left[ \begin{array}{rcl}
+		\prcAddressEcRecover & \!\!\!\define\!\!\! & \prcAddressEcRecoverValue \\
+		\prcAddressEcAdd     & \!\!\!\define\!\!\! & \prcAddressEcAddValue     \\
+		\prcAddressEcMul     & \!\!\!\define\!\!\! & \prcAddressEcMulValue     \\
+		\prcAddressEcPairing & \!\!\!\define\!\!\! & \prcAddressEcPairingValue \\
+		\prcAddressPVerify   & \!\!\!\define\!\!\! & \prcAddressPVerifyValue   \\
+	\end{array} \right] \\
 \]
 and
 \[
@@ -54,6 +71,8 @@ and
 		+ & \phaseEcmulResult     & \!\!\!\cdot\!\!\! & \isEcmulResult     _{i} \\
 		+ & \phaseEcpairingData   & \!\!\!\cdot\!\!\! & \isEcpairingData   _{i} \\
 		+ & \phaseEcpairingResult & \!\!\!\cdot\!\!\! & \isEcpairingResult _{i} \\
+		+ & \phasePVerifyData     & \!\!\!\cdot\!\!\! & \isPVerifyData     _{i} \\
+		+ & \phasePVerifyResult   & \!\!\!\cdot\!\!\! & \isPVerifyResult   _{i} \\
 	\end{array} \right] \\
 \]
 and we further define the following shorthands
@@ -65,21 +84,15 @@ and we further define the following shorthands
 			+ & \isEcaddData       _{i} \\
 			+ & \isEcmulData       _{i} \\
 			+ & \isEcpairingData   _{i} \\
-			% + & \isEcrecoverResult _{i} \\
-			% + & \isEcaddResult     _{i} \\
-			% + & \isEcmulResult     _{i} \\
-			% + & \isEcpairingResult _{i} \\
+			+ & \isPVerifyData     _{i} \\
 		\end{array} \right] \vspace{2mm} \\
 		\locIsResult_{i} & \define &  
 		\left[ \begin{array}{crcl}
-			% + & \isEcrecoverData   _{i} \\
-			% + & \isEcaddData       _{i} \\
-			% + & \isEcmulData       _{i} \\
-			% + & \isEcpairingData   _{i} \\
 			+ & \isEcrecoverResult _{i} \\
 			+ & \isEcaddResult     _{i} \\
 			+ & \isEcmulResult     _{i} \\
 			+ & \isEcpairingResult _{i} \\
+			+ & \isPVerifyResult   _{i} \\
 		\end{array} \right] \\
 	\end{array} \right.
 \]
@@ -118,6 +131,7 @@ and
 		\item \locIsEcadd{}
 		\item \locIsEcmul{}
 		\item \locIsEcpairing{}
+		\item \locIsPVerify{}
 		\item \locFlagSum{}
 		\item[\vspace{\fill}]
 	\end{enumerate}

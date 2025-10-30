@@ -16,14 +16,15 @@ We use the following shorthands
 		\end{array} \right] \vspace{2mm} \\
 		\locPrcFlagSumCommon _{i} & \define &
 		\left[ \begin{array}{cl}
-			+ & \oobInstIsEcrecover _{i} \\
-			+ & \oobInstIsShaTwo    _{i} \\
-			+ & \oobInstIsRipemd    _{i} \\
-			+ & \oobInstIsIdentity  _{i} \\
-			+ & \oobInstIsEcadd     _{i} \\
-			+ & \oobInstIsEcmul     _{i} \\
-			+ & \oobInstIsEcpairing _{i} \\
-			+ & \locPrcFlagSumBls   _{i} \\
+			+ & \oobInstIsEcrecover _{i}            \\
+			+ & \oobInstIsShaTwo    _{i}            \\
+			+ & \oobInstIsRipemd    _{i}            \\
+			+ & \oobInstIsIdentity  _{i}            \\
+			+ & \oobInstIsEcadd     _{i}            \\
+			+ & \oobInstIsEcmul     _{i}            \\
+			+ & \oobInstIsEcpairing _{i}            \\
+			+ & \locPrcFlagSumBls   _{i}            \\
+			+ & \locFlagSumOsakaPrecompiles _{i} \\
 		\end{array} \right] \vspace{2mm} \\
 		\locPrcFlagSumBlake _{i} & \define &
 		\left[ \begin{array}{cl}
@@ -38,9 +39,9 @@ We use the following shorthands
 			+ & \oobInstIsModexpPricing _{i} \\
 			+ & \oobInstIsModexpExtract _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\locFlagSumNewCancunPrecompiles _{i} & \define & \oobInstIsPointEvaluation _{i} \\
+		\locFlagSumCancunPrecompiles _{i} & \define & \oobInstIsPointEvaluation _{i} \\
 		\vspace{2mm} \\
-		\locFlagSumNewPraguePrecompiles _{i} & \define &
+		\locFlagSumPraguePrecompiles _{i} & \define &
 		\left[ \begin{array}{cl}
 			+ & \oobInstIsBlsGOneAdd        _{i}  \\
 			+ & \oobInstIsBlsGOneMsm        _{i}  \\
@@ -50,21 +51,23 @@ We use the following shorthands
 			+ & \oobInstIsBlsMapFpToGOne    _{i}  \\
 			+ & \oobInstIsBlsMapFpTwoToGTwo _{i}  \\
 		\end{array} \right] \vspace{2mm} \\
+		\locFlagSumOsakaPrecompiles _{i} & \define & \oobInstIsPVerify _{i} \\
+		\vspace{2mm} \\
 		\locPrcFlagSumBls _{i} & \define &
 		\left[ \begin{array}{cl}
-			+ & \locFlagSumNewCancunPrecompiles _{i} \\
-			+ & \locFlagSumNewPraguePrecompiles _{i} \\
+			+ & \locFlagSumCancunPrecompiles _{i} \\
+			+ & \locFlagSumPraguePrecompiles _{i} \\
 		\end{array} \right] \vspace{2mm} \\
 	\end{array} \right.
 \]
 \saNote{} 
-If the \textsc{Ethereum} network configuration is at the \textsc{Cancun} hard fork, one \emph{may} further impose
+If the \textsc{Ethereum} network configuration is at the \textsc{XXX} hard fork, one \emph{may} further impose
 \[
-	\locFlagSumNewPraguePrecompiles _{i} = 0 \qquad (\sanityCheck)
+	\locFlagSumYYYPrecompiles _{i} = 0 \qquad (\sanityCheck)
 \]
-thereby preventing \textsc{Prague}-specific \texttt{BLS} precompiles to be executed.
-This isn't strictly speaking necessary, as the \trmMod{} won't recognize addresses in the range
-$[\texttt{0x\,0b}..\texttt{0x\,11}]$
+thereby preventing \textsc{YYY}-specific precompiles to be executed, where \textsc{YYY} is every fork that is beyond \textsc{XXX}.
+This isn't strictly speaking necessary, as the \trmMod{} won't recognize addresses in the set
+$[\texttt{0x\,0b}..\texttt{0x\,11}] \cup [\texttt{0x\,100}]$
 as precompile addresses, hence the sanity check mark.
 
 we also set
@@ -109,7 +112,8 @@ and
 			+ & \oobInstEcadd     & \cdot & \oobInstIsEcadd     _{i} \\
 			+ & \oobInstEcmul     & \cdot & \oobInstIsEcmul     _{i} \\
 			+ & \oobInstEcpairing & \cdot & \oobInstIsEcpairing _{i} \\
-			+ & \weightedPrcFlagSumBls _{i} \\
+			+ & \weightedPrcFlagSumBls _{i}                          \\
+			+ & \weightedPrcFlagSumOsakaPrecompiles _{i}          \\ 
 		\end{array} \right] \vspace{2mm} \\
 		\weightedPrcFlagSumBlake _{i} & \define &
 		\left[ \begin{array}{crcl}
@@ -124,9 +128,9 @@ and
 			+ & \oobInstModexpPricing & \cdot & \oobInstIsModexpPricing _{i} \\
 			+ & \oobInstModexpExtract & \cdot & \oobInstIsModexpExtract _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\weightedPrcFlagSumNewCancunPrecompiles _{i} & \define & \oobInstPointEvaluation \cdot \oobInstIsPointEvaluation _{i} \\
+		\weightedPrcFlagSumCancunPrecompiles _{i} & \define & \oobInstPointEvaluation \cdot \oobInstIsPointEvaluation _{i} \\
 		\vspace{2mm} \\
-		\weightedPrcFlagSumNewPraguePrecompiles _{i} & \define &
+		\weightedPrcFlagSumPraguePrecompiles _{i} & \define &
 		\left[ \begin{array}{crcl}
 			+ & \oobInstBlsGOneAdd        & \cdot & \oobInstIsBlsGOneAdd        _{i} \\
 			+ & \oobInstBlsGOneMsm        & \cdot & \oobInstIsBlsGOneMsm        _{i} \\
@@ -136,10 +140,12 @@ and
 			+ & \oobInstBlsMapFpToGOne    & \cdot & \oobInstIsBlsMapFpToGOne    _{i} \\
 			+ & \oobInstBlsMapFpTwoToGTwo & \cdot & \oobInstIsBlsMapFpTwoToGTwo _{i} \\
 		\end{array} \right] \vspace{2mm} \\
+		\weightedPrcFlagSumOsakaPrecompiles _{i} & \define & \oobInstPVerify \cdot \oobInstIsPVerify _{i} \\
+		\vspace{2mm} \\
 		\weightedPrcFlagSumBls _{i} & \define &
 		\left[ \begin{array}{cl}
-			+ & \weightedPrcFlagSumNewCancunPrecompiles _{i} \\
-			+ & \weightedPrcFlagSumNewPraguePrecompiles _{i} \\
+			+ & \weightedPrcFlagSumCancunPrecompiles _{i} \\
+			+ & \weightedPrcFlagSumPraguePrecompiles _{i} \\
 		\end{array} \right]
 	\end{array} \right.
 \]
@@ -209,6 +215,10 @@ and
 		\oobInstBlsMapFpTwoToGTwo & \define & \oxBlsMapFpTwoToGTwo \\
 	\end{array} \right.
 \]
+and
+\[
+	\oobInstPVerify \define \oxPVerify   \\
+\]
 \saNote{}
 In the above we use the notation $\oxXcall$, $\oxCall$, $\oxXcreate$, $\oxCreate$, $\oxEcrecover$, \dots, $\oxBlakeParams$ as \textbf{placeholders} for some actual, fixed values.
 The only requirement for these constants must satisfy is that all constants defined above be \textbf{nonzero} and \textbf{pairwise distinct}.
@@ -240,6 +250,7 @@ We further set
 			+ & \oobCtMaxEcmul     & \cdot & \oobInstIsEcmul     _{i} \\
 			+ & \oobCtMaxEcpairing & \cdot & \oobInstIsEcpairing _{i} \\
 			+ & \maxCtFlagSumPrcBls _{i} \\
+			+ & \maxCtFlagSumPrcOsakaPrecompiles _{i} \\
 		\end{array} \right] \vspace{2mm} \\
 		\maxCtFlagSumPrcBlake _{i} & \define &
 		\left[ \begin{array}{clcl}
@@ -254,9 +265,9 @@ We further set
 			+ & \oobCtMaxModexpPricing & \cdot & \oobInstIsModexpPricing _{i} \\
 			+ & \oobCtMaxModexpExtract & \cdot & \oobInstIsModexpExtract _{i} \\
 		\end{array} \right] \vspace{2mm} \\
-		\maxCtFlagSumPrcNewCancunPrecompiles _{i} & \define & \oobCtMaxPointEvaluation \cdot \oobInstIsPointEvaluation _{i} \\
+		\maxCtFlagSumPrcCancunPrecompiles _{i} & \define & \oobCtMaxPointEvaluation \cdot \oobInstIsPointEvaluation _{i} \\
 		\vspace{2mm} \\
-		\maxCtFlagSumPrcNewPraguePrecompiles _{i} & \define &
+		\maxCtFlagSumPrcPraguePrecompiles _{i} & \define &
 		\left[ \begin{array}{crcl}
 			+ & \oobCtMaxBlsGOneAdd        & \cdot & \oobInstIsBlsGOneAdd        _{i} \\
 			+ & \oobCtMaxBlsGOneMsm        & \cdot & \oobInstIsBlsGOneMsm        _{i} \\
@@ -266,10 +277,12 @@ We further set
 			+ & \oobCtMaxBlsMapFpToGOne    & \cdot & \oobInstIsBlsMapFpToGOne    _{i} \\
 			+ & \oobCtMaxBlsMapFpTwoToGTwo & \cdot & \oobInstIsBlsMapFpTwoToGTwo _{i} \\
 		\end{array} \right] \vspace{2mm} \\
+		\maxCtFlagSumPrcOsakaPrecompiles _{i} & \define & \oobCtMaxPVerify \cdot \oobInstIsPVerify _{i} \\
+		\vspace{2mm} \\
 		\maxCtFlagSumPrcBls _{i} & \define &
 		\left[ \begin{array}{cl}
-			+ & \maxCtFlagSumPrcNewCancunPrecompiles _{i} \\
-			+ & \maxCtFlagSumPrcNewPraguePrecompiles _{i} \\
+			+ & \maxCtFlagSumPrcCancunPrecompiles _{i} \\
+			+ & \maxCtFlagSumPrcPraguePrecompiles _{i} \\
 		\end{array} \right]
 	\end{array} \right.
 \]
@@ -335,7 +348,8 @@ where
 			\oobCtMaxBlsPairingCheck   & \define &  4 \\
 			\oobCtMaxBlsMapFpToGOne    & \define &  3 \\
 			\oobCtMaxBlsMapFpTwoToGTwo & \define &  3 \\ 
-		\end{array} \right.
+		\end{array} \right. \vspace{2mm} \\
+		\oobCtMaxPVerify \define 3 \\
 	\end{array}
 \] 
 
