@@ -101,7 +101,7 @@ We impose the following:
 	\end{description}
 	We define
 	\[
-		\locRawPrice
+		\locRawCost
 		\define
 		\left[ \begin{array}{cl}
 			\cdot & \locMultiplicationComplexity \\
@@ -116,7 +116,7 @@ We impose the following:
 					anchorRow = i                                           ,
 					relOffset = \roffModexpPricingComparisonToMinModexpCost ,
 					argOneHi  = 0                                           ,
-					argOneLo  = \locRawPrice                                ,
+					argOneLo  = \locRawCost                                 ,
 					argTwoHi  = 0                                           ,
 					argTwoLo  = \minModexpCostName                          ,
 				}
@@ -125,14 +125,14 @@ We impose the following:
 			\[
 				\minModexpCostName \define \minModexpCostValue
 			\]
-			and we define the \locRawPriceLtMinModexpCost{} shorthand
+			and we define the \locRawCostLtMinModexpCost{} shorthand
 			\[
-				\locRawPriceLtMinModexpCost \define \outgoingResLo _{i + \roffModexpPricingComparisonToMinModexpCost}
+				\locRawCostLtMinModexpCost \define \outgoingResLo _{i + \roffModexpPricingComparisonToMinModexpCost}
 			\]
 			from which we define the \locPrecompileCost{} shorthand used above
 			\begin{enumerate}
-				\item \If $\locRawPriceLtMinModexpCost = 0$ \Then $\locPrecompileCost \define \locRawPrice$
-				\item \If $\locRawPriceLtMinModexpCost = 1$ \Then $\locPrecompileCost \define \minModexpCostName$
+				\item \If $\locRawCostLtMinModexpCost = \false $ \Then $\locPrecompileCost \define \locRawCost$
+				\item \If $\locRawCostLtMinModexpCost = \true  $ \Then $\locPrecompileCost \define \minModexpCostName$
 			\end{enumerate}
 		\item[\underline{Row $n^°(i + \roffModexpPricingGasCostVsCalleeGasComparison )$:}]
 			we impose
@@ -146,7 +146,7 @@ We impose the following:
 					argTwoLo  = \locPrecompileCost                             ,
 				}
 			\]
-			we define the \locRawPriceLtMinModexpCost{} shorthand
+			we define the \locCalleeGasLtPrecompileCost{} shorthand
 			\[
 				\locCalleeGasLtPrecompileCost \define \outgoingResLo _{i + \roffModexpPricingGasCostVsCalleeGasComparison}
 			\]
