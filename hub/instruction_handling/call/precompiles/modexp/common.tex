@@ -150,7 +150,8 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 				\[
 					\left\{ \begin{array}{lcl}
 						\locBbsIsWithinBounds & \define & \miscOobDataCol{9}  _{i + \prcModexpFirstXbsRowOffset} \\
-						\locBbsIsOutOfBounds  & \define & \miscOobDataCol{10} _{i + \prcModexpFirstXbsRowOffset} \\
+						\locBbsIsOutOfBounds  & \define & \miscOobDataCol{10} _{i + \prcModexpFirstXbsRowOffset} \vspace{2mm} \\
+						\locBbsNormalized     & \define & \locBbsLo \cdot \locBbsIsWithinBounds \\
 					\end{array} \right.
 				\]
 		\end{description}
@@ -222,7 +223,8 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 				\[
 					\left\{ \begin{array}{lcl}
 						\locEbsIsWithinBounds & \define & \miscOobDataCol{9}  _{i + \prcModexpSecondXbsRowOffset} \\
-						\locEbsIsOutOfBounds  & \define & \miscOobDataCol{10} _{i + \prcModexpSecondXbsRowOffset} \\
+						\locEbsIsOutOfBounds  & \define & \miscOobDataCol{10} _{i + \prcModexpSecondXbsRowOffset} \vspace{2mm} \\
+						\locEbsNormalized     & \define & \locEbsLo \cdot \locEbsIsWithinBounds \\
 					\end{array} \right.
 				\]
 		\end{description}
@@ -261,7 +263,7 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 					\setMmuInstructionParametersRightPaddedWordExtraction {
 						anchorRow       = i                           ,
 						relOffset       = \prcModexpThirdXbsRowOffset ,
-						sourceId        = \cn_{i}                     ,
+						sourceId        = \cn _{i}                    ,
 						sourceOffsetLo  = 64                          ,
 						referenceOffset = \locPrcCdo                  ,
 						referenceSize   = \locPrcCds                  ,
@@ -273,8 +275,8 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 				we impose
 				\[
 					\left\{ \begin{array}{lcl}
-						\locMbsHi & \define & \miscMmuLimbOne   _{i + \prcModexpThirdXbsRowOffset} \\
-						\locMbsLo & \define & \miscMmuLimbTwo   _{i + \prcModexpThirdXbsRowOffset} \\
+						\locMbsHi & \define & \miscMmuLimbOne _{i + \prcModexpThirdXbsRowOffset} \\
+						\locMbsLo & \define & \miscMmuLimbTwo _{i + \prcModexpThirdXbsRowOffset} \\
 					\end{array} \right.
 				\]
 				\saNote{}
@@ -286,7 +288,7 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 						relOffset  = \prcModexpThirdXbsRowOffset ,
 						xbsHi      = \locMbsHi                   ,
 						xbsLo      = \locMbsLo                   ,
-						ybsLo      = \locBbsLo                   ,
+						ybsLo      = \locBbsNormalized           ,
 						computeMax = \locBbsIsWithinBounds       ,
 					}
 				\]
@@ -296,7 +298,8 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 						\locMaxMbsBbs         & \define & \miscOobDataCol{7}  _{i + \prcModexpThirdXbsRowOffset} \\
 						\locMbsIsNonzero      & \define & \miscOobDataCol{8}  _{i + \prcModexpThirdXbsRowOffset} \\
 						\locMbsIsWithinBounds & \define & \miscOobDataCol{9}  _{i + \prcModexpThirdXbsRowOffset} \\
-						\locMbsIsOutOfBounds  & \define & \miscOobDataCol{10} _{i + \prcModexpThirdXbsRowOffset} \\
+						\locMbsIsOutOfBounds  & \define & \miscOobDataCol{10} _{i + \prcModexpThirdXbsRowOffset} \vspace{2mm} \\
+						\locMbsNormalized     & \define & \locMbsLo \cdot \locMbsIsWithinBounds \\
 					\end{array} \right.
 				\]
 				\saNote{}
@@ -354,8 +357,8 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 							\miscOobFlag _{i + \prcModexpLeadRowOffset} & = & \rOne                                    \\
 							\multicolumn{3}{l}{
 								\left[ \begin{array}{cl}
-									+\!\!\! & \miscMxpFlag _{i + \prcModexpLeadRowOffset} \\
-									+\!\!\! & \miscStpFlag _{i + \prcModexpLeadRowOffset} \\
+									+ \!\!\! & \miscMxpFlag _{i + \prcModexpLeadRowOffset} \\
+									+ \!\!\! & \miscStpFlag _{i + \prcModexpLeadRowOffset} \\
 								\end{array} \right] = 0} \\
 						\end{array} \right.
 					\]
@@ -366,19 +369,17 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 						\left\{ \begin{array}{lcl}
 							\locCallExpForModexpLead & \define & \miscExpFlag _{i + \prcModexpLeadRowOffset} \\
 							\locCallMmuForModexpLead & \define & \miscMmuFlag _{i + \prcModexpLeadRowOffset} \\
-							\locCallOobForModexpLead & \define & \miscOobFlag _{i + \prcModexpLeadRowOffset} \\
 						\end{array} \right.
 					\]
-					Note that \textbf{by value} we have $\locCallOobForModexpLead \equiv \rOne$.
 				\item[\underline{Setting \oobMod{} values:}]
-					\If $\locCallOobForModexpLead = 1$ we impose
+					we impose
 					\[
 						\setOobInstructionModexpLead {
 							anchorRow    = i                       ,
 							relOffset    = \prcModexpLeadRowOffset ,
-							bbsLo        = \locBbsLo               ,
+							bbsLo        = \locBbsNormalized       ,
 							callDataSize = \locPrcCds              ,
-							ebsLo        = \locEbsLo               ,
+							ebsLo        = \locEbsNormalized       ,
 						}
 					\]
 				\item[\underline{Setting some shorthands:}]
@@ -395,12 +396,12 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 					\If $\locCallMmuForModexpLead = 1$ \Then we impose
 					\[
 						\setMmuInstructionParametersMload {
-							anchorRow      = i                           ,
-							relOffset      = \prcModexpLeadRowOffset     ,
-							sourceId       = \cn_{i}                     ,
-							sourceOffsetLo = \locPrcCdo + 96 + \locBbsLo ,
-							limbOne        = \relevantValue              ,
-							limbTwo        = \relevantValue              ,
+							anchorRow      = i                                   ,
+							relOffset      = \prcModexpLeadRowOffset             ,
+							sourceId       = \cn _{i}                            ,
+							sourceOffsetLo = \locPrcCdo + 96 + \locBbsNormalized ,
+							limbOne        = \relevantValue                      ,
+							limbTwo        = \relevantValue                      ,
 						}
 					\]
 				\item[\underline{Setting some shorthands:}]
@@ -468,14 +469,8 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 								\miscStpFlag _{i + \prcModexpPricingRowOffset} & = & \gZero & (\sanityCheck) \\
 							\end{array} \right.
 						\]
-						\saNote{}
-						We define the following shorthand
-						\[
-							\locCallOobForModexpPricing \define \miscOobFlag _{i + \prcModexpPricingRowOffset}
-						\]
-						Note that \textbf{by value} we have $\locCallOobForModexpPricing \equiv \rOne$.
 					\item[\underline{Setting \oobMod{} values:}]
-						\If $\locCallOobForModexpPricing = 1$ \Then we impose
+						we impose
 						\[
 							\setOobInstructionModexpPricing {
 								anchorRow        = i                          ,
