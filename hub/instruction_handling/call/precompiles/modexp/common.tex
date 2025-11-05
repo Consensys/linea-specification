@@ -134,7 +134,9 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 					\end{array} \right.
 				\]
 				\saNote{}
-				This imposes that $\locBbs{} \equiv 0$ conditions in case of $\locExtractBbs \equiv \false$ i.e. in case of empty call data (size $\leq 0 \cdot \evmWordSize$).
+				In light of section~(\ref{hub: miscellaneous constraints: automatic vanishing}),
+				this definition implicitly imposes $\locBbs{} \equiv 0$ whenever $\locExtractBbs \equiv \false$
+				i.e. in case of empty call data (size $\leq 0 \cdot \evmWordSize$).
 			\item[\underline{Setting \oobMod{} values and defining shorthands:}]
 				\[
 					\setOobInstructionModexpXbs {
@@ -154,6 +156,16 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 						\locBbsNormalized     & \define & \locBbsLo \cdot \locBbsIsWithinBounds \\
 					\end{array} \right.
 				\]
+				\saNote{}\label{hub: instruction handling: call: precompiles: modexp: common constraints: normalized bbs}
+				By definition of the \oobInstModexpXbs{} instruction,
+				see section~(\ref{oob: precompiles: modexp: xbs check and max}),
+				\[
+					\left\{ \begin{array}{lcl}
+						\locBbsIsWithinBounds \equiv \true & \iff & \locBbs \leq \modexpMaxByteSizeValue \\
+						\locBbsIsOutOfBounds  \equiv \true & \iff & \locBbs >    \modexpMaxByteSizeValue \\
+					\end{array} \right.
+				\]
+				As a consequence $\locBbsNormalized \equiv 0$ whenever $\locBbsIsOutOfBounds \equiv \true$.
 		\end{description}
 	\item[\underline{\underline{Miscellaneous row $n^°(i +  \prcModexpSecondXbsRowOffset)$: \locEbs{} extraction row:}}] we impose
 		\begin{description}
@@ -207,7 +219,9 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 					\end{array} \right.
 				\]
 				\saNote{}
-				This imposes that $\locEbs{} \equiv 0$ conditions in case of $\locExtractEbs \equiv \false$ i.e. in case of short call data i.e. in case of call data of size $\leq 1 \cdot \evmWordSize$.
+				In light of section~(\ref{hub: miscellaneous constraints: automatic vanishing}),
+				this imposes that $\locEbs{} \equiv 0$ whenever $\locExtractEbs \equiv \false$
+				i.e. whenever the call data is of size $\leq 1 \cdot \evmWordSize$.
 			\item[\underline{Setting \oobMod{} values and defining shorthands:}]
 				\[
 					\setOobInstructionModexpXbs {
@@ -227,6 +241,10 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 						\locEbsNormalized     & \define & \locEbsLo \cdot \locEbsIsWithinBounds \\
 					\end{array} \right.
 				\]
+				\saNote{}
+				Similar comments apply as in
+				note~(\ref{hub: instruction handling: call: precompiles: modexp: common constraints: normalized bbs}),
+				and $\locEbsNormalized \equiv 0$ whenever $\locEbsIsOutOfBounds \equiv \true$.
 		\end{description}
 	\item[\underline{\underline{Miscellaneous row $n^°(i +  \prcModexpThirdXbsRowOffset)$: \locMbs{} extraction row:}}] we impose
 		\begin{description}
@@ -280,7 +298,9 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 					\end{array} \right.
 				\]
 				\saNote{}
-				This imposes that $\locMbs{} \equiv 0$ conditions in case of $\locExtractMbs \equiv \false$ i.e. in case of short call data i.e. in case of call data of size $\leq 2 \cdot \evmWordSize$.
+				In light of section~(\ref{hub: miscellaneous constraints: automatic vanishing}),
+				this imposes that $\locMbs{} \equiv 0$ whenever $\locExtractMbs \equiv \false$
+				i.e. whenever the call data of size is $\leq 2 \cdot \evmWordSize$.
 			\item[\underline{Setting \oobMod{} values and defining shorthands:}]
 				\[
 					\setOobInstructionModexpXbs {
@@ -302,9 +322,6 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 						\locMbsNormalized     & \define & \locMbsLo \cdot \locMbsIsWithinBounds \\
 					\end{array} \right.
 				\]
-				\saNote{}
-				By definition \locMaxMbsBbs{} computes the maximum $\max \Big \{ \locMbs, \locBbs \Big \} $.
-
 				Finally, we also define
 				\[
 					\locAllByteSizesAreInBounds
@@ -316,7 +333,26 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 					\end{array} \right]
 				\]
 				\saNote{}
-				By definition
+				By definition \locMaxMbsBbs{} computes the maximum $\max \Big \{ \locMbs, \locBbs \Big \} $.
+
+				\saNote{}
+				Similar comments apply as in
+				note~(\ref{hub: instruction handling: call: precompiles: modexp: common constraints: normalized bbs}),
+				and $\locMbsNormalized \equiv 0$ whenever $\locMbsIsOutOfBounds \equiv \true$.
+
+				\saNote{}
+				By definition of the three \locXbsIsWithinBounds{} shorthands,
+				one has
+				\[
+					\locAllByteSizesAreInBounds \equiv \true
+					~ \iff ~
+					\left\{ \begin{array}{lcl}
+						\locBbs & \leq & \modexpMaxByteSizeValue \\
+						\locEbs & \leq & \modexpMaxByteSizeValue \\
+						\locMbs & \leq & \modexpMaxByteSizeValue \\
+					\end{array} \right.
+				\]
+				where byte sizes \locXbs{}'s are (correctly) interpreted as being right zero padded whenever call data runs out.
 		\end{description}
 	\end{description}
 	We refer the reader to section~(\ref{oob: precompiles: modexp: xbs check and max}) for the interpretation of these fields and the interface of the \oobInstModexpXbs{} instruction.
