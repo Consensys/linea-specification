@@ -130,8 +130,6 @@ Failures are due to a combination of \emph{some} the following failure condition
 			\item
 				\locBlsPrecompileFailureReasonData{}
 				malformed call data;
-				\locEcPrecompileFailureReasonData{}
-				malformed call data;
 		\end{itemize}
 \end{description}
 Conditions
@@ -143,10 +141,9 @@ can be detected with data available in the \hubMod{} module and without touching
 the \oobMod{} module carries out these preliminary checks and \scenPrcFailureKnownToHub{} records the outcome.
 Condition
 \locBlsPrecompileFailureReasonData,
-\locEcPrecompileFailureReasonData,
 on the other hand,
 requires retrieving the call data from \textsc{ram};
-the data is analyzed in a precompile specific manner in the \blsDataMod{} and \ecDataMod{} modules respectively,
+the data is analyzed in a precompile specific manner in the \blsDataMod{} module,
 with some ``data malformation'' detection steps delegated to outside circuits;
 the failure of this condition is recorded in \scenPrcFailureKnownToRam{}.
 
@@ -200,11 +197,15 @@ The next precompiles were introduced in the \textsc{Prague} hardfork, specifical
 		\locBlsPrecompileFailureReasonSize, with $\locImposedCallDataSizeForBlsPrecompiles \equiv 128$,
 		\locBlsPrecompileFailureReasonData;
 \end{description}
-The next precompile was introduced in the \textsc{Osaka} hardfork, specifically with \cite{EIP-7951}:
+
+\noindent The next precompile was introduced in the \textsc{Osaka} hardfork, specifically with \cite{EIP-7951}:
 \begin{description}
-\item[\instPVerify{}:]
-	can fail due to:
-	\locBlsPrecompileFailureReasonGas,
-	\locBlsPrecompileFailureReasonSize, with $\locImposedCallDataSizeForEcPrecompiles \equiv 160$,
-	\locEcPrecompileFailureReasonData;
+	\item[\instPVerify{}:]
+	this can fail both for reasons known to the \hubMod{} module and for reasons known to \textsc{ram};
+	(\emph{a}) whenever $\CDS \neq 160$
+	(\emph{b}) insufficient gas
+	(\emph{c}) malformed data;
+	conditions (\emph{a}) and (\emph{b}) are detected by the \scenPrcFailureKnownToHub{} flag;
+	only (\emph{c}) requires touching \textsc{ram} in order to detect;
+	it is detected by \scenPrcFailureKnownToRam{};
 \end{description}
