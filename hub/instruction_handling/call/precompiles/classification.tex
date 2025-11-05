@@ -130,6 +130,8 @@ Failures are due to a combination of \emph{some} the following failure condition
 			\item
 				\locBlsPrecompileFailureReasonData{}
 				malformed call data;
+				\locEcPrecompileFailureReasonData{}
+				malformed call data;
 		\end{itemize}
 \end{description}
 Conditions
@@ -141,13 +143,15 @@ can be detected with data available in the \hubMod{} module and without touching
 the \oobMod{} module carries out these preliminary checks and \scenPrcFailureKnownToHub{} records the outcome.
 Condition
 \locBlsPrecompileFailureReasonData,
+\locEcPrecompileFailureReasonData,
 on the other hand,
 requires retrieving the call data from \textsc{ram};
-the data is analyzed in a precompile specific manner in the \blsDataMod{} module,
+the data is analyzed in a precompile specific manner in the \blsDataMod{} and \ecDataMod{} modules respectively,
 with some ``data malformation'' detection steps delegated to outside circuits;
 the failure of this condition is recorded in \scenPrcFailureKnownToRam{}.
 
-The next precompile was introduced in the \textsc{Cancun} hardfork, specifically with \cite{EIP-4788};
+
+\noindent The next precompile was introduced in the \textsc{Cancun} hardfork, specifically with \cite{EIP-4788};
 \begin{description}
 	\item[\instPointEvaluation:]
 		can fail due to:
@@ -201,6 +205,6 @@ The next precompile was introduced in the \textsc{Osaka} hardfork, specifically 
 \item[\instPVerify{}:]
 	can fail due to:
 	\locBlsPrecompileFailureReasonGas,
-	\locBlsPrecompileFailureReasonSize, with $\locImposedCallDataSizeForBlsPrecompiles \equiv 160$,
-	\locBlsPrecompileFailureReasonData;
+	\locBlsPrecompileFailureReasonSize, with $\locImposedCallDataSizeForEcPrecompiles \equiv 160$,
+	\locEcPrecompileFailureReasonData;
 \end{description}
