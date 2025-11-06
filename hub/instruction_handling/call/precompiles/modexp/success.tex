@@ -69,11 +69,14 @@ At this point the \instModexp{} call is known to be successful and it remains to
 						anchorRow    = i                                     ,
 						relOffset    = \prcModexpSuccessExtractBaseRowOffset ,
 						callDataSize = \locPrcCds                            ,
-						bbsLo        = \locBbsLo                             ,
-						ebsLo        = \locEbsLo                             ,
-						mbsLo        = \locMbsLo                             ,
+						bbsLo        = \locBbsNormalized                     ,
+						ebsLo        = \locEbsNormalized                     ,
+						mbsLo        = \locMbsNormalized                     ,
 						}
 				\]
+				\saNote{}
+				In the present scenario ($\scenPrcSuccess _{i} \equiv 1$) the normalized \locXbsNormalized{}
+				coincide with the un-normalized \locXbsLo{}'s.
 			\item[\underline{Setting some shorthands:}] 
 				we define
 				\[
@@ -111,7 +114,7 @@ At this point the \instModexp{} call is known to be successful and it remains to
 								sourceId        = \cn_{i}                               ,
 								targetId        = 1 + \hubStamp_{i}                     ,
 								sourceOffsetLo  = 96                                    ,
-								size            = \locBbsLo                             ,
+								size            = \locBbsNormalized                     ,
 								referenceOffset = \locPrcCdo                            ,
 								referenceSize   = \locPrcCds                            ,
 								phase           = \phaseModexpBase                      ,
@@ -168,8 +171,8 @@ At this point the \instModexp{} call is known to be successful and it remains to
 								relOffset       = \prcModexpSuccessExtractExponentRowOffset ,
 								sourceId        = \cn_{i}                                   ,
 								targetId        = 1 + \hubStamp_{i}                         ,
-								sourceOffsetLo  = 96 + \locBbsLo                            ,
-								size            = \locEbsLo                                 ,
+								sourceOffsetLo  = 96 + \locBbsNormalized                    ,
+								size            = \locEbsNormalized                         ,
 								referenceOffset = \locPrcCdo                                ,
 								referenceSize   = \locPrcCds                                ,
 								phase           = \phaseModexpExponent                      ,
@@ -211,15 +214,15 @@ The above thus either extracts some data from \textsc{ram} and serves it to the 
 				\If $\miscMmuFlag_{i + \prcModexpSuccessExtractModulusRowOffset} = 1$ \Then we impose
 				\[
 					\setMmuInstructionParametersModexpData {
-						anchorRow       = i                                        ,
-						relOffset       = \prcModexpSuccessExtractModulusRowOffset ,
-						sourceId        = \cn_{i}                                  ,
-						targetId        = 1 + \hubStamp_{i}                        ,
-						sourceOffsetLo  = 96 + \locBbsLo + \locEbsLo               ,
-						size            = \locMbsLo                                ,
-						referenceOffset = \locPrcCdo                               ,
-						referenceSize   = \locPrcCds                               ,
-						phase           = \phaseModexpModulus                      ,
+						anchorRow       = i                                           ,
+						relOffset       = \prcModexpSuccessExtractModulusRowOffset    ,
+						sourceId        = \cn_{i}                                     ,
+						targetId        = 1 + \hubStamp_{i}                           ,
+						sourceOffsetLo  = 96 + \locBbsNormalized + \locEbsNormalized  ,
+						size            = \locMbsNormalized                           ,
+						referenceOffset = \locPrcCdo                                  ,
+						referenceSize   = \locPrcCds                                  ,
+						phase           = \phaseModexpModulus                         ,
 					}
 				\]
 		\end{description}
@@ -302,8 +305,8 @@ The above thus either extracts some data from \textsc{ram} and serves it to the 
 						relOffset       = \prcModexpSuccessPartialCopyOfResultsRowOffset ,
 						sourceId        = 1 + \hubStamp_{i}                              ,
 						targetId        = \cn _{i}                                       ,
-						sourceOffsetLo  = \modexpMaxByteSizeValue - \locMbs              ,
-						size            = \locMbs                                        ,
+						sourceOffsetLo  = \modexpMaxByteSizeValue - \locMbsNormalized    ,
+						size            = \locMbsNormalized                              ,
 						referenceOffset = \locPrcRao                                     ,
 						referenceSize   = \locPrcRac                                     ,
 						}
