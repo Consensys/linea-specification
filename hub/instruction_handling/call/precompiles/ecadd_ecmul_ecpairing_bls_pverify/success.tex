@@ -8,6 +8,7 @@
 				+ & \scenEcmul               _{i} \\
 				+ & \scenEcpairing           _{i} \\
 				+ & \scenPrecompileCommonBls _{i} \\
+				+ & \scenPVerify             _{i} \\
 			\end{array} \right]
 			& = & 1 \\
 			\scenPrcSuccess   _{i}      & = & 1 \\
@@ -16,7 +17,7 @@
 \end{center}
 We are thus assuming that the present row is the first of the second phase of dealing with one of the following precompiles:
 \instEcadd{}, \instEcmul{}, \instEcpairing{} or one of the
-\texttt{BLS} precompiles (including \instPointEvaluation{}).
+\texttt{BLS} precompiles (including \instPointEvaluation{}) or \instPVerify{}.
 We are also assuming that $\scenPrcSuccess \equiv 1$.
 We remind the reader that success of any of these precompiles means that the precompile was
 (\emph{a}) provided with sufficient gas
@@ -32,6 +33,7 @@ We remind the reader that success of any of these precompiles means that the pre
 				\locNontrivialMul     & \define & \locOobResultExtractCallData & \cdot & \scenEcmul     _{i} \\
 				\locNontrivialPairing & \define & \locOobResultExtractCallData & \cdot & \scenEcpairing _{i} \\
 				\locTrivialPairing    & \define & \locOobResultEmptyCallData   & \cdot & \scenEcpairing _{i} \\
+				\locNontrivialPVerify & \define & \locOobResultExtractCallData & \cdot & \scenPVerify   _{i} \\
 			\end{array} \right.
 		\]
 	\item[\underline{\underline{Miscellaneous-row $n^°(i + \prcStandardSuccessSecondMiscRowOffset)$:}}]
@@ -56,6 +58,7 @@ We remind the reader that success of any of these precompiles means that the pre
 						+ & \locNontrivialPairing         \\
 						+ & \locTrivialPairing            \\
 						+ & \scenPrecompileCommonBls _{i} \\
+						+ & \locNontrivialPVerify         \\
 					\end{array} \right]
 				\]
 				\saNote{}
@@ -81,7 +84,8 @@ We remind the reader that success of any of these precompiles means that the pre
 		\underline{\instEcadd{}     case:}     & the precompile was provided with nonempty call data \\
 		\underline{\instEcmul{}     case:}     & the precompile was provided with nonempty call data \\
 		\underline{\instEcpairing{} case:}     & in \textbf{all} cases                               \\
-		\underline{\blsDataMod{}-precompiles:} & in \textbf{all} cases                               \\ \hline
+		\underline{\blsDataMod{}-precompiles:} & in \textbf{all} cases                               \\
+		\underline{\instPVerify{}   case:}     & in \textbf{all} cases                               \\ \hline
 	\end{tabular}
 \end{center}
 We remind the reader that calling \instEcpairing{} with empty call data is a success case for that precompile.
@@ -120,6 +124,7 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 						+ & \locNontrivialMul             \\
 						+ & \locNontrivialPairing         \\
 						+ & \scenPrecompileCommonBls _{i} \\
+						+ & \locNontrivialPVerify         \\
 					\end{array} \right]
 					= 1
 				\]
@@ -151,6 +156,7 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 						+ & \resultSizeInBytesBlsPairingCheck   & \!\!\!\cdot\!\!\! & \scenBlsPairingCheck    _{i} \\
 						+ & \resultSizeInBytesBlsMapFpToGOne    & \!\!\!\cdot\!\!\! & \scenBlsMapFpToGOne     _{i} \\
 						+ & \resultSizeInBytesBlsMapFpTwoToGTwo & \!\!\!\cdot\!\!\! & \scenBlsMapFpTwoToGTwo  _{i} \\
+						+ & \resultSizeInBytesPVerify           & \!\!\!\cdot\!\!\! & \scenPVerify            _{i} \\
 					\end{array} \right]
 				\]
 				\locMmuExoSum{} determines from which ``data'' module to extract return data and is defined as
@@ -161,6 +167,7 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 						+ & \exoWeightEcdata  & \!\!\!\cdot\!\!\! & \locNontrivialMul             \\
 						+ & \exoWeightEcdata  & \!\!\!\cdot\!\!\! & \locNontrivialPairing         \\
 						+ & \exoWeightBlsdata & \!\!\!\cdot\!\!\! & \scenPrecompileCommonBls _{i} \\
+						+ & \exoWeightEcdata  & \!\!\!\cdot\!\!\! & \locNontrivialPVerify         \\
 					\end{array} \right]
 				\]
 				\locMmuPhase{} provides extra data to locate the result portion (as opposed to the input portion)
@@ -179,6 +186,7 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 						+ & \phaseBlsPairingCheckResult   & \!\!\!\cdot\!\!\! & \scenBlsPairingCheck    _{i} \\
 						+ & \phaseBlsMapFpToGOneResult    & \!\!\!\cdot\!\!\! & \scenBlsMapFpToGOne     _{i} \\
 						+ & \phaseBlsMapFpTwoToGTwoResult & \!\!\!\cdot\!\!\! & \scenBlsMapFpTwoToGTwo  _{i} \\
+						+ & \phasePVerify                 & \!\!\!\cdot\!\!\! & \scenPVerify            _{i} \\
 					\end{array} \right]
 				\]
 				\saNote{}
@@ -259,6 +267,7 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 							+ & \resultSizeInBytesBlsPairingCheck    & \!\!\!\cdot\!\!\! & \scenBlsPairingCheck   _{i} \\
 							+ & \resultSizeInBytesBlsMapFpToGOne     & \!\!\!\cdot\!\!\! & \scenBlsMapFpToGOne    _{i} \\
 							+ & \resultSizeInBytesBlsMapFpTwoToGTwo  & \!\!\!\cdot\!\!\! & \scenBlsMapFpTwoToGTwo _{i} \\
+							+ & \resultSizeInBytesPVerify           & \!\!\!\cdot\!\!\! & \scenPVerify            _{i} \\
 						\end{array} \right]
 					\]
 					\saNote{}
