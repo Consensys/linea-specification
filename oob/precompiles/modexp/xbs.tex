@@ -51,16 +51,16 @@ The use case for this comparison is to compute the maxium $\max\{ \locBbs, \locM
 					anchorRow = i                      ,
 					relOffset = \roffXbsModexpXbsVsYbs ,
 					argOneHi  = 0                      ,
-					argOneLo  = \locXbsLo              ,
+					argOneLo  = \locXbsNormalized      ,
 					argTwoHi  = 0                      ,
-					argTwoLo  = \locYbsLo              ,
+					argTwoLo  = \locYbsNormalized      ,
 				}
 				\vspace{2mm} \\
 				\wcpCallToIszero {
 					anchorRow = i                            ,
 					relOffset = \roffXbsModexpXbsIszeroCheck ,
 					argOneHi  = 0                            ,
-					argOneLo  = \locXbsLo                    ,
+					argOneLo  = \locXbsNormalized            ,
 				}
 			\end{array} \right.
 		\]
@@ -70,6 +70,8 @@ The use case for this comparison is to compute the maxium $\max\{ \locBbs, \locM
 				\locXbsIsLeqModexpMaxByteSize & \define & \outgoingResLo _{i + \roffXbsModexpXbsVsEipMaxByteSize }              \\
 				\locResultOfComparison        & \define & \outgoingResLo _{i + \roffXbsModexpXbsVsYbs            }              \\
 				\locXbsIszero                 & \define & \outgoingResLo _{i + \roffXbsModexpXbsIszeroCheck      } \vspace{2mm} \\
+				\locXbsNormalized             & \define & \locXbsLo \cdot \locXbsIsLeqModexpMaxByteSize                         \\
+				\locYbsNormalized             & \define & \locYbsLo \cdot \locXbsIsLeqModexpMaxByteSize                         \\
 				\locXbsIsGtModexpMaxByteSize  & \define & 1 - \locXbsIsLeqModexpMaxByteSize                                     \\
 			\end{array} \right.
 		\]
@@ -77,24 +79,27 @@ The use case for this comparison is to compute the maxium $\max\{ \locBbs, \locM
 	\item[\underline{Justifying \hubMod{} predictions:}] we impose
 		we further impose that
 		\begin{enumerate}
-			\item \locComputeMax{} is binary
-			\item $\locXbsNonzero = 1 - \locXbsIszero$
-			\item \If $\locComputeMax = \false$ \Then $\locMax = 0$
-			\item \If $\locComputeMax = \true$ \Then
-				\begin{enumerate}
-					\item \If $\locXbsIsLeqModexpMaxByteSize = \false $ \Then $\locMax = 0$
-					\item \If $\locXbsIsLeqModexpMaxByteSize = \true  $ \Then
-						\begin{enumerate}
-							\item \If $\locResultOfComparison = \false $ \Then $\locMax = \locXbsLo$
-							\item \If $\locResultOfComparison = \true  $ \Then $\locMax = \locYbsLo$
-						\end{enumerate}
-				\end{enumerate}
+			\item \locComputeMax{} is binary (\sanityCheck)
 			\item we set
 				\[
 					\left\{ \begin{array}{lcl}
+						\locXbsNonzero   & = & 1 - \locXbsIszero             \vspace{2mm} \\
 						\locWithinBounds & = & \locXbsIsLeqModexpMaxByteSize \\
 						\locOutOfBounds  & = & \locXbsIsGtModexpMaxByteSize  \\
 					\end{array} \right.
 				\]
+			\item we now set \locMax{}:
+				\begin{enumerate}
+					\item \If $\locComputeMax = \false$ \Then $\locMax = 0$
+					\item \If $\locComputeMax = \true$ \Then
+						\begin{enumerate}
+							\item \If $\locXbsIsLeqModexpMaxByteSize = \false $ \Then $\locMax = 0$
+							\item \If $\locXbsIsLeqModexpMaxByteSize = \true  $ \Then
+								\begin{enumerate}
+									\item \If $\locResultOfComparison = \false $ \Then $\locMax = \locXbsNormalized$
+									\item \If $\locResultOfComparison = \true  $ \Then $\locMax = \locYbsNormalized$
+								\end{enumerate}
+						\end{enumerate}
+				\end{enumerate}
 		\end{enumerate}
 \end{description}
