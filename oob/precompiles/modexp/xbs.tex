@@ -32,60 +32,56 @@ The first step is to compare \locXbs{} to $\modexpMaxByteSizeValue$.
 If \locComputeMax{} is set we compute the maximum of \locYbsLo{} and \locXbs{}.
 The use case for this comparison is to compute the maxium $\max\{ \locBbs, \locMbs \}$ as required by the pricing of the \instModexp{} precompile.
 \begin{description}
-	\item[\underline{Rows n°$(i)$, $n^\circ(i + 1)$ and $n^\circ(i + 2)$:}] we impose
+	\item[\underline{Rows
+		$n^\circ(i + \roffXbsModexpXbsVsEipMaxByteSize )$,
+		$n^\circ(i + \roffXbsModexpXbsVsYbs            )$    and
+		$n^\circ(i + \roffXbsModexpXbsIszeroCheck      )$:}] we impose
 		\[
 			\left\{ \begin{array}{l}
 				\wcpCallToLt {
-					anchorRow = i                           ,
-					relOffset = 0                           ,
-					argOneHi  = \locXbsHi                   ,
-					argOneLo  = \locXbsLo                   ,
-					argTwoHi  = 0                           ,
-					argTwoLo  = \modexpMaxByteSizeValue + 1 ,
+					anchorRow = i                                 ,
+					relOffset = \roffXbsModexpXbsVsEipMaxByteSize ,
+					argOneHi  = \locXbsHi                         ,
+					argOneLo  = \locXbsLo                         ,
+					argTwoHi  = 0                                 ,
+					argTwoLo  = \modexpMaxByteSizeValue + 1       ,
 				}
 				\vspace{2mm} \\
 				\wcpCallToLt {
-					anchorRow = i         ,
-					relOffset = 1         ,
-					argOneHi  = 0         ,
-					argOneLo  = \locXbsLo ,
-					argTwoHi  = 0         ,
-					argTwoLo  = \locYbsLo ,
+					anchorRow = i                      ,
+					relOffset = \roffXbsModexpXbsVsYbs ,
+					argOneHi  = 0                      ,
+					argOneLo  = \locXbsLo              ,
+					argTwoHi  = 0                      ,
+					argTwoLo  = \locYbsLo              ,
 				}
 				\vspace{2mm} \\
 				\wcpCallToIszero {
-					anchorRow = i         ,
-					relOffset = 2         ,
-					argOneHi  = 0         ,
-					argOneLo  = \locXbsLo ,
+					anchorRow = i                            ,
+					relOffset = \roffXbsModexpXbsIszeroCheck ,
+					argOneHi  = 0                            ,
+					argOneLo  = \locXbsLo                    ,
 				}
 			\end{array} \right.
 		\]
 		we further define the shorthands
 		\[
 			\left\{ \begin{array}{lcl}
-				\locXbsIsLeqModexpMaxByteSize & \define & \outgoingResLo    _{i    }        \\
-				\locXbsIsGtModexpMaxByteSize  & \define & 1 - \locXbsIsLeqModexpMaxByteSize \\
-				\locResultOfComparison        & \define & \outgoingResLo    _{i + 1}        \\
+				\locXbsIsLeqModexpMaxByteSize & \define & \outgoingResLo _{i + \roffXbsModexpXbsVsEipMaxByteSize }              \\
+				\locResultOfComparison        & \define & \outgoingResLo _{i + \roffXbsModexpXbsVsYbs            }              \\
+				\locXbsIszero                 & \define & \outgoingResLo _{i + \roffXbsModexpXbsIszeroCheck      } \vspace{2mm} \\
+				\locXbsIsGtModexpMaxByteSize  & \define & 1 - \locXbsIsLeqModexpMaxByteSize                                     \\
 			\end{array} \right.
 		\]
 		\saNote{} The value \locComputeMax{}, along with the other inputs, is provided to the \hubMod{} module and will be binary in all applications.
-
-		\saNote{} The constraint $\outgoingResLo_{i} = 1$ enforces that the comparison ``$\locXbs < \modexpMaxByteSizeValue + 1$'' i.e. ``$\locXbs \leq \modexpMaxByteSizeValue$'' return \texttt{true}.
 	\item[\underline{Justifying \hubMod{} predictions:}] we impose
 		we further impose that
 		\begin{enumerate}
 			\item \locComputeMax{} is binary
-			\item \If $\locComputeMax = \false$ \Then 
-				\[
-					\left\{ \begin{array}{lcl}
-						\locMax        & = & 0 \\
-						\locXbsNonzero & = & 0 \\
-					\end{array} \right.
-				\]
+			\item $\locXbsNonzero = 1 - \locXbsIszero$
+			\item \If $\locComputeMax = \false$ \Then $\locMax = 0$
 			\item \If $\locComputeMax = \true$ \Then
 				\begin{enumerate}
-					\item $\locXbsNonzero = 1 - \outgoingResLo_{i + 2}$
 					\item \If $\locResultOfComparison = \false $ \Then $\locMax = \locXbsLo$
 					\item \If $\locResultOfComparison = \true  $ \Then $\locMax = \locYbsLo$
 				\end{enumerate}
