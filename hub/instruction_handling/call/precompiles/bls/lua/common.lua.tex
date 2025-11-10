@@ -48,6 +48,7 @@
 |       |        | scen/PRC_PAIRING_CHECK            |                                                            |
 |       |        | scen/PRC_MAP_FP_TO_G1             |                                                            |
 |       |        | scen/PRC_MAP_FP_TO_G2             |                                                            |
+|       |        | scen/PRC_P256_VERIFY              |                                                            |
 |-------+--------+-----------------------------------+------------------------------------------------------------|
 | i + 1 | MISC   |                                   | OOB🚩 = 1                                                  |
 |       |        |                                   | OOB_INST =  ⟦OOB_INST_point_evaluation⟧                    |
@@ -58,6 +59,7 @@
 |       |        |                                   | .           ∨  ⟦OOB_INST_pairing_check⟧                    |
 |       |        |                                   | .           ∨  ⟦OOB_INST_map_fp_to_g1⟧                     |
 |       |        |                                   | .           ∨  ⟦OOB_INST_map_fp_to_g2⟧                     |
+|       |        |                                   | .           ∨  ⟦OOB_INST_p256_verify⟧                      |
 |       |        |                                   |                                                            |
 |       |        |                                   | TRUSTED INPUTS:                                            |
 |       |        |                                   | * cds                                                      |
@@ -99,7 +101,7 @@ NOTE. We use ∧ to denote logical conjunction ('AND'), and ∨ to denote logica
 to denote the integer that equals 'val_T' whenever 'condition' is 'true', and 'val_F' whenever 'condition' is 'false'.
 
 
-NOTE. The BLS precompiles added with
+NOTE. The BLS precompiles and P256_Verify added with
 
 + EIP-4844:
     - POINT_EVALUATION
@@ -107,7 +109,8 @@ NOTE. The BLS precompiles added with
     - G1ADD          - G2ADD          - PAIRING_CHECK
     - G1MSM          - G2MSM
     - MAP_FP_TO_G1   - MAP_FP_TO_G2
-
++ EIP-7951:
+    - P256_VERIFY
 all have the nice-to-have property that providing them with empty call data, and more generally: call data that isn't the right
 (prescribed) size in bytes or a (nonzero) multiple of some reference size, results in a failure (FAILURE_KNOWN_TO_HUB in the
 way we arithmetize things) of the precompile, and thus the precompile burning all provided gas, clearing out its caller's
