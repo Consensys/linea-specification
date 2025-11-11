@@ -1,9 +1,8 @@
 This module aims to construct the \textsc{rlp} encoding $\widetilde{L}_{\mathrm{R}}(R)$ of a give transaction receipt $R$, as defined in the Ethereum Yellow Paper. Recall that a transaction receipt contains the following data:
 \begin{enumerate}
-	\item the \texttt{status code} of the transaction $R_{\mathrm{z}}$ (0 or 1), encoded in $\phase{2}$;
-	\item the \texttt{cumulative gas} used in the block immediately after the transaction happened $R_{\text{u}}$ (assumed to be an 8 byte integer in what follows), encoded in $\phase{3}$;
-	\item a 256 byte hash $R_\textbf{b}$, encoded in $\phase{4}$;
-	\item a tuple of log entries $R_{\textbf{l}}$, encoded in $\phase{5}$; recall that a \texttt{log entry} is a tuple $(O_\text{a}, O_\textbf{t}, O_\textbf{l})$ where: 
+	\item the \texttt{status code} of the transaction $R_{\mathrm{z}}$ (0 or 1), encoded during phase $\phaseStatusCode$;
+	\item the \texttt{cumulative gas} used in the block immediately after the transaction happened $R_{\text{u}}$, encoded during phase $\phaseCumulativeGas$;
+	\item a tuple of log entries $R_{\textbf{l}}$, encoded during phase $\phaseLogEntries$; recall that a \texttt{log entry} is a tuple $(O_\text{a}, O_\textbf{t}, O_\textbf{l})$ where: 
 	\begin{enumerate}
 		\item $O_{\text{a}} \in \mathbb{B}_{20}$ is the \texttt{logger address};
 		\item $O_{\textbf{t}}$ a (possibly empty) tuple of $\inst{k}\in\{0,1,\dots,4\}$ so-called \texttt{log topics} $\in \mathbb{B}_{32}$ if the logging operation was a \inst{LOGk};
