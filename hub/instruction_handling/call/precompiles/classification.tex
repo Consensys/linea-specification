@@ -24,22 +24,24 @@ In particular we explain which precompiles may raise the $\scenPrcFailureKnownTo
 		\instPointEvaluation{}            & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                    & \multirow{2}{*}{\text{\cite{EIP-4788}, Cancun}}  \\
                                                   & $\vee~\cds \neq 192$                           &                           &                                                                   &                                                  \\ \hline \hline
 		\instBlsGOneAdd{}                 & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                    & \multirow{17}{*}{\text{\cite{EIP-2537}, Prague}} \\
-                                                  & $\vee~\cds \neq 256$                           &                           &                                                                   &                                                  \\ \cline{1-4}
-		\instBlsGOneMsm{}                 & insufficient gas                               & \multirow{3}{*}{\toOob}   & malformed data                                                    &                                                  \\
-                                                  & $\vee~\cds = 0$                                &                           &                                                                   &                                                  \\
-                                                  & $\vee~\cds \not \equiv 0 \mod 160$             &                           &                                                                   &                                                  \\ \cline{1-4}
-		\instBlsGTwoAdd{}                 & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                    &                                                  \\
-                                                  & $\vee~\cds \neq 512$                           &                           &                                                                   &                                                  \\ \cline{1-4}
-		\instBlsGTwoMsm{}                 & insufficient gas                               & \multirow{3}{*}{\toOob}   & malformed data                                                    &                                                  \\
-                                                  & $\vee~\cds = 0$                                &                           &                                                                   &                                                  \\
-                                                  & $\vee~\cds \not \equiv 0 \mod 288$             &                           &                                                                   &                                                  \\ \cline{1-4}
-		\instBlsPairingCheck{}            & insufficient gas                               & \multirow{3}{*}{\toOob}   & malformed data                                                    &                                                  \\
-                                                  & $\vee~\cds = 0$                                &                           &                                                                   &                                                  \\
-                                                  & $\vee~\cds \not \equiv 0 \mod 384$             &                           &                                                                   &                                                  \\ \cline{1-4}
-		\instBlsMapFpToGOne{}             & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                    &                                                  \\
-                                                  & $\vee~\cds \neq  64$                           &                           &                                                                   &                                                  \\ \cline{1-4}
-		\instBlsMapFpTwoToGTwo{}          & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                    &                                                  \\
-                                                  & $\vee~\cds \neq 128$                           &                           &                                                                   &                                                  \\ \hline
+                                                  & $\vee~\cds \neq 256$                           &                           &                                                                   &                                                  \\ \cline{1-4} 
+		\instBlsGOneMsm{}                 & insufficient gas                               & \multirow{3}{*}{\toOob}   & malformed data                                                            &                                                  \\
+												  & $\vee~\cds = 0$                                &                           &                                                                   &                                                  \\
+												  & $\vee~\cds \not \equiv 0 \mod 160$             &                           &                                                                   &                                                  \\ \cline{1-4}
+		\instBlsGTwoAdd{}                 & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                            &                                                  \\
+		  										  & $\vee~\cds \neq 512$                           &                           &                                                                   &                                                  \\ \cline{1-4}
+		\instBlsGTwoMsm{}                 & insufficient gas                               & \multirow{3}{*}{\toOob}   & malformed data                                                            &                                                  \\
+										  		  & $\vee~\cds = 0$                                &                           &                                                                   &                                                  \\
+										          & $\vee~\cds \not \equiv 0 \mod 288$             &                           &                                                                   &                                                  \\ \cline{1-4}
+		\instBlsPairingCheck{}            & insufficient gas                               & \multirow{3}{*}{\toOob}   & malformed data                                                            &                                                  \\
+											  	  & $\vee~\cds = 0$                                &                           &                                                                   &                                                  \\
+	  											  & $\vee~\cds \not \equiv 0 \mod 384$             &                           &                                                                   &                                                  \\ \cline{1-4}
+		\instBlsMapFpToGOne{}             & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                            &                                                  \\
+											      & $\vee~\cds \neq  64$                           &                           &                                                                   &                                                  \\ \cline{1-4}
+		\instBlsMapFpTwoToGTwo{}          & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                            &                                                  \\
+										  		  & $\vee~\cds \neq 128$                           &                           &                                                                   &                                                  \\ \hline \hline
+		\multirow{2}{*}{\instPVerify{}}   & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data 		              							   & \multirow{2}{*}{\text{\cite{EIP-7951}, Osaka}}  \\ 
+		                           				  & $\vee~\cds \neq 160$   							   &                       &                                                                   &                                                   \\ \hline
 	\end{tabular}
 	\label{hub: instruction handling: call: precompiles: table classifying failures known to the HUB vs. to RAM}
 	\caption{All justifications for \scenPrcFailureKnownToHub{}'s are done through the \oobMod{} module. Notations such as ``$x = \varnothing$'' are from the \cite{EYP-London}.}
@@ -145,7 +147,8 @@ the data is analyzed in a precompile specific manner in the \blsDataMod{} module
 with some ``data malformation'' detection steps delegated to outside circuits;
 the failure of this condition is recorded in \scenPrcFailureKnownToRam{}.
 
-The next precompile was introduced in the \textsc{Cancun} hardfork, specifically with \cite{EIP-4788};
+
+\noindent The next precompile was introduced in the \textsc{Cancun} hardfork, specifically with \cite{EIP-4788};
 \begin{description}
 	\item[\instPointEvaluation:]
 		can fail due to:
@@ -193,4 +196,17 @@ The next precompiles were introduced in the \textsc{Prague} hardfork, specifical
 		\locBlsPrecompileFailureReasonGas,
 		\locBlsPrecompileFailureReasonSize, with $\locImposedCallDataSizeForBlsPrecompiles \equiv 128$,
 		\locBlsPrecompileFailureReasonData;
+\end{description}
+
+\noindent The next precompile was introduced in the \textsc{Osaka} hardfork, specifically with \cite{EIP-7951}:
+\begin{description}
+	\item[\instPVerify{}:]
+	this can fail both for reasons known to the \hubMod{} module and for reasons known to \textsc{ram};
+	(\emph{a}) whenever $\CDS \neq 160$
+	(\emph{b}) insufficient gas
+	(\emph{c}) malformed data;
+	conditions (\emph{a}) and (\emph{b}) are detected by the \scenPrcFailureKnownToHub{} flag;
+	only (\emph{c}) requires touching \textsc{ram} in order to detect;
+	it is detected by \scenPrcFailureKnownToRam{};
+	if none of these conditions are triggered the output is a 32 byte integer slice $\textbf{o} \in \mathbb{B}_{32}$;
 \end{description}
