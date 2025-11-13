@@ -42,7 +42,6 @@ We constrain:
 
     \item $\ispadding$ is counter-incrementing;
     \item \If ($\isPrefix_{i}=0$ \Or $\isOd_{i}=0$) \Then $\lc$ is counter-incrementing;
-    \item $\isPrefix$ is $\phase 4$-decrementing;
     \item $\Depth 1$ is $\phase 5$-incrementing;
     \item $\indexlocal$ is $\isOt$-incrementing;
     \item $\logsize$ is $\phase{1}$-constant.
@@ -88,7 +87,7 @@ Constraints on the phase transition:
     \item \If $\Done_{i}=0$ \Then $\phaseEnd_{i}=0$.
     \item \If $\phasesize \neq 0$ \Then $\phaseEnd_{i}=0$
     \item \If ($\absTxNum_{i} \neq 0$ \et $\phaseEnd_{i}=0$) \Then $\sum_{k=1}^{5} k \cdot \phase{k}_{i} = \sum_{k=1}^{5} k \cdot \phase{k}_{i+1}$                             \\
-        In other words $\phase{k}_{i+1}=\phase{k}_{i}$ for every $k \in [\![ 0 ; 4 ]\!]$.
+        In other words $\phase{k}_{i+1}=\phase{k}_{i}$ for every $k \in [\![ 1 ; 5 ]\!]$.
     \item \If $\phaseEnd_{i}=1$ \Then
         \begin{enumerate}
             \item We impose phase transition constraints:
@@ -97,8 +96,7 @@ Constraints on the phase transition:
                         \begin{array}{r}
                             \phase{1}_{i} \cdot \phase{2}_{i+1}
                             + \phase{2}_{i} \cdot \phase{3}_{i+1} \\
-                            + \phase{3}_{i} \cdot \phase{4}_{i+1}
-                            + \phase{4}_{i} \cdot \phase{5}_{i+1} \\
+                            + \phase{3}_{i} \cdot \phase{5}_{i+1} 
                             + \phase{5}_{i} \cdot \phase{1}_{i+1} \\
                         \end{array}
                         \right]
@@ -108,8 +106,7 @@ Constraints on the phase transition:
                 \begin{enumerate}
                     \item \If $\phase{1}_{i}=1$ \Then $\phase{2}_{i+1}=1$
                     \item \If $\phase{2}_{i}=1$ \Then $\phase{3}_{i+1}=1$
-                    \item \If $\phase{3}_{i}=1$ \Then $\phase{4}_{i+1}=1$
-                    \item \If $\phase{4}_{i}=1$ \Then $\phase{5}_{i+1}=1$
+                    \item \If $\phase{3}_{i}=1$ \Then $\phase{5}_{i+1}=1$
                     \item \If $\phase{5}_{i}=1$ \Then $\phase{1}_{i+1}=1$
                 \end{enumerate}
             \item \If $\phase{5}_{i}=1$ \Then $\logsize_{i}=0$
@@ -172,7 +169,7 @@ We build some blind byte and bit accumulators. There are more constaints when th
         \end{enumerate}
     \item[{Updating $\phasesize$:}] the only phases that require the \phasesize{} columnms are phase 4 and phase 5. We leave the column unconstrained outside of these:
         \begin{enumerate}
-            \item \If \Big($(\phase{4}_{i}=1 \et \isPrefix_{i}=0)$ \Or $(\phase{5}_{i}=1 \et \Depth 1 _{i}=1)$\Big) \Then
+            \item \If (\phase{5}_{i}=1 \et \Depth 1 _{i}=1) \Then
                 \[ \phasesize_{i} = \phasesize_{i-1} - \lc_{i} \cdot \limbsize_{i} \]
         \end{enumerate}
 \end{description}
