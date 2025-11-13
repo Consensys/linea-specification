@@ -1,6 +1,0 @@
-## Impact
-
-## Notes
-
-## Test vectors
-

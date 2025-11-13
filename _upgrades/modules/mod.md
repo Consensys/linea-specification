@@ -1,1 +1,0 @@
-delegate to EUC small computation ?
