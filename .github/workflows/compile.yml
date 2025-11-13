@@ -31,12 +31,6 @@ jobs:
       - name: Compile Specification
         run: make ospec
 
-      - name: Upload the Specification
-        uses: actions/upload-artifact@v4
-        with:
-          name: specification.pdf
-          path: spec/_all_spec.pdf
-
       - name: Failure Notification
         if: github.ref == (failure() || cancelled())
         uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
@@ -46,3 +40,11 @@ jobs:
           payload: |
             name: "SpecCompilation"
             status: "${{ job.status }}"
+
+      - name: Upload the Specification
+        uses: actions/upload-artifact@v4
+        with:
+          name: specification.pdf
+          path: spec/_all_spec.pdf
+
+
