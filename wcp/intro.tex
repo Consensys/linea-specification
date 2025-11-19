@@ -1,19 +1,31 @@
-The \textbf{word comparison module} deals with the six word comparison instructions of the \evm{} as well as two word comparison instructions that the \zkEvm{} may use but which aren't part of the \evm{} proper:
-\begin{multicols}{4}
-\begin{itemize}
-    \item \inst{LT}
-    \item \inst{GT}
-    \item \inst{SLT}
-    \item \inst{SGT}
-    \item \inst{EQ}
-    \item \inst{ISZERO}
-    \item \inst{LEQ}
-    \item \inst{GEQ}
-\end{itemize}
-\end{multicols}
-\saNote{}
-\inst{LEQ} and \inst{GEQ} stand for 
-``\inst{Less than or EQual}'' and
-``\inst{Greater than or EQual}'' respectively.
+The \textbf{word comparison module} deals with the six word comparison instructions of the \evm{} as well as two word comparison instructions that the \zkEvm{} may use but which aren't part of the \evm{} proper.  The function is often solicited to perform miscellaneous comparisons on behalf of other modules.
 
-The present module is often solicited to perform miscellaneous comparisons on behalf of other modules.
+\subsection{Specification}
+\label{wcp: spec}
+
+The function signature for ${\tt wcp()}$ is given as follows:
+
+\begin{lstlisting}
+pub fn wcp(inst u8, arg_1 u256, arg_2 u256) -> (res u1) 
+;; REQUIRES: inst $\in$ \{ 0xE, 0xF, 0x10, \ldots, 0x15 \}
+{
+   ...
+}
+\end{lstlisting}
+
+The ${\tt wcp()}$ function implements the following specification:
+
+\begin{itemize}
+    \item \inst{LT} (${\tt inst=0x10}$) --- return ${\tt 1}$ if ${\tt arg_1 < arg_2}$, otherwise ${\tt 0}$ \textit{(unsigned)}.
+    \item \inst{GT} (${\tt inst=0x11}$) --- return ${\tt 1}$ if ${\tt arg_1 > arg_2}$, otherwise ${\tt 0}$ \textit{(unsigned)}.
+    \item \inst{SLT} (${\tt inst=0x12}$) --- return ${\tt 1}$ if ${\tt arg_1 < arg_2}$, otherwise ${\tt 0}$ \textit{(signed)}.
+    \item \inst{SGT} (${\tt inst=0x13}$) --- return ${\tt 1}$ if ${\tt arg_1 > arg_2}$, otherwise ${\tt 0}$ \textit{(signed)}.
+    \item \inst{EQ} (${\tt inst=0x14}$) --- return ${\tt 1}$ if ${\tt arg_1 == arg_2}$, otherwise ${\tt 0}$ \textit{(unsigned)}.
+    \item \inst{ISZERO} (${\tt inst=0x15}$) --- return ${\tt 1}$ if ${\tt arg_1 == 0}$, otherwise ${\tt 0}$ \textit{(unsigned)}.
+    \item \inst{LEQ} (${\tt inst=0x0E}$) --- return ${\tt 1}$ if ${\tt arg_1 \le arg_2}$, otherwise ${\tt 0}$ \textit{(unsigned)}.
+    \item \inst{GEQ} (${\tt inst=0x0F}$) --- return ${\tt 1}$ if ${\tt arg_1 \ge arg_2}$, otherwise ${\tt 0}$ \textit{(unsigned)}.
+\end{itemize}
+
+\saNote{} Signed arithmetic follows the convention of two's-complement
+arithmetic where the {\em most-significant bit} indicates the sign,
+etc.
