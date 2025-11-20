@@ -1,0 +1,136 @@
+We further define
+\[
+	\hspace*{-1cm}
+	\left\{ \begin{array}{lcl}
+		\weightedFlagSumInst _{i} & \define &
+		\left[ \begin{array}{clcl}
+			+ & \oobInstJump       & \cdot & \oobInstIsJump       _{i} \\
+			+ & \oobInstJumpI      & \cdot & \oobInstIsJumpI      _{i} \\
+			+ & \oobInstRdc        & \cdot & \oobInstIsRdc        _{i} \\
+			+ & \oobInstCdl        & \cdot & \oobInstIsCdl        _{i} \\
+			+ & \oobInstXcall      & \cdot & \oobInstIsXcall      _{i} \\
+			+ & \oobInstCall       & \cdot & \oobInstIsCall       _{i} \\
+			+ & \oobInstXcreate    & \cdot & \oobInstIsXcreate    _{i} \\
+			+ & \oobInstCreate     & \cdot & \oobInstIsCreate     _{i} \\
+			+ & \oobInstSstore     & \cdot & \oobInstIsSstore     _{i} \\
+			+ & \oobInstDeployment & \cdot & \oobInstIsDeployment _{i} \\
+		\end{array} \right] \vspace{2mm} \\
+		\weightedPrcFlagSumCommon _{i} & \define &
+		\left[ \begin{array}{crcl}
+			+ & \oobInstEcrecover & \cdot & \oobInstIsEcrecover _{i} \\
+			+ & \oobInstShaTwo    & \cdot & \oobInstIsShaTwo    _{i} \\
+			+ & \oobInstRipemd    & \cdot & \oobInstIsRipemd    _{i} \\
+			+ & \oobInstIdentity  & \cdot & \oobInstIsIdentity  _{i} \\
+			+ & \oobInstEcadd     & \cdot & \oobInstIsEcadd     _{i} \\
+			+ & \oobInstEcmul     & \cdot & \oobInstIsEcmul     _{i} \\
+			+ & \oobInstEcpairing & \cdot & \oobInstIsEcpairing _{i} \\
+			+ & \weightedPrcFlagSumBls _{i}                          \\
+			+ & \weightedPrcFlagSumOsakaPrecompiles _{i}          \\ 
+		\end{array} \right] \vspace{2mm} \\
+		\weightedPrcFlagSumBlake _{i} & \define &
+		\left[ \begin{array}{crcl}
+			+ & \oobInstBlakeCds    & \cdot & \oobInstIsBlakeCds    _{i} \\
+			+ & \oobInstBlakeParams & \cdot & \oobInstIsBlakeParams _{i} \\
+		\end{array} \right] \vspace{2mm} \\
+		\weightedPrcFlagSumModexp _{i} & \define &
+		\left[ \begin{array}{crcl}
+			+ & \oobInstModexpCds     & \cdot & \oobInstIsModexpCds     _{i} \\
+			+ & \oobInstModexpXbs     & \cdot & \oobInstIsModexpXbs     _{i} \\
+			+ & \oobInstModexpLead    & \cdot & \oobInstIsModexpLead    _{i} \\
+			+ & \oobInstModexpPricing & \cdot & \oobInstIsModexpPricing _{i} \\
+			+ & \oobInstModexpExtract & \cdot & \oobInstIsModexpExtract _{i} \\
+		\end{array} \right] \vspace{2mm} \\
+		\weightedPrcFlagSumCancunPrecompiles _{i} & \define & \oobInstPointEvaluation \cdot \oobInstIsPointEvaluation _{i} \\
+		\vspace{2mm} \\
+		\weightedPrcFlagSumPraguePrecompiles _{i} & \define &
+		\left[ \begin{array}{crcl}
+			+ & \oobInstBlsGOneAdd        & \cdot & \oobInstIsBlsGOneAdd        _{i} \\
+			+ & \oobInstBlsGOneMsm        & \cdot & \oobInstIsBlsGOneMsm        _{i} \\
+			+ & \oobInstBlsGTwoAdd        & \cdot & \oobInstIsBlsGTwoAdd        _{i} \\
+			+ & \oobInstBlsGTwoMsm        & \cdot & \oobInstIsBlsGTwoMsm        _{i} \\
+			+ & \oobInstBlsPairingCheck   & \cdot & \oobInstIsBlsPairingCheck   _{i} \\
+			+ & \oobInstBlsMapFpToGOne    & \cdot & \oobInstIsBlsMapFpToGOne    _{i} \\
+			+ & \oobInstBlsMapFpTwoToGTwo & \cdot & \oobInstIsBlsMapFpTwoToGTwo _{i} \\
+		\end{array} \right] \vspace{2mm} \\
+		\weightedPrcFlagSumOsakaPrecompiles _{i} & \define & \oobInstPVerify \cdot \oobInstIsPVerify _{i} \\
+		\vspace{2mm} \\
+		\weightedPrcFlagSumBls _{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \weightedPrcFlagSumCancunPrecompiles _{i} \\
+			+ & \weightedPrcFlagSumPraguePrecompiles _{i} \\
+		\end{array} \right]
+	\end{array} \right.
+	\]
+	and
+	\[
+		\left\{ \begin{array}{lcl}
+			\weightedPrcFlagSum _{i} & \define &
+			\left[ \begin{array}{cl}
+				+ & \weightedPrcFlagSumCommon _{i} \\
+				+ & \weightedPrcFlagSumBlake  _{i} \\
+				+ & \weightedPrcFlagSumModexp _{i} \\
+			\end{array} \right] \vspace{2mm} \\
+			\weightedFlagSum _{i}       & \define &
+			\left[ \begin{array}{cl}
+				+ & \weightedFlagSumInst _{i} \\
+				+ & \weightedPrcFlagSum  _{i} \\
+			\end{array} \right] \\
+		\end{array} \right.
+	\]
+	where
+	\[
+		\left\{ \begin{array}{lclcl}
+			\oobInstJump       & \define & \texttt{0x\,56} \\
+			\oobInstJumpI      & \define & \texttt{0x\,57} \\
+			\oobInstRdc        & \define & \texttt{0x\,3E} \\
+			\oobInstCdl        & \define & \texttt{0x\,35} \\
+			\oobInstXcall      & \define & \oxXcall        \\
+			\oobInstCall       & \define & \oxCall         \\
+			\oobInstXcreate    & \define & \oxXcreate      \\
+			\oobInstCreate     & \define & \oxCreate       \\
+			\oobInstSstore     & \define & \texttt{0x\,55} \\
+			\oobInstDeployment & \define & \texttt{0x\,F3} \\
+		\end{array} \right.
+		,
+		\left\{ \begin{array}{lclcr}
+			\oobInstEcrecover   & \define & \oxEcrecover   \\
+			\oobInstShaTwo      & \define & \oxShaTwo      \\
+			\oobInstRipemd      & \define & \oxRipemd      \\
+			\oobInstIdentity    & \define & \oxIdentity    \\
+			\oobInstEcadd       & \define & \oxEcadd       \\
+			\oobInstEcmul       & \define & \oxEcmul       \\
+			\oobInstEcpairing   & \define & \oxEcpairing   \\
+			\oobInstBlakeCds    & \define & \oxBlakeCds    \\
+			\oobInstBlakeParams & \define & \oxBlakeParams \\
+		\end{array} \right.
+	\]
+	and
+	\[
+		\left\{ \begin{array}{lclcr}
+			\oobInstModexpCds     & \define & \oxModexpCds     \\
+			\oobInstModexpXbs     & \define & \oxModexpXbs     \\
+			\oobInstModexpLead    & \define & \oxModexpLead    \\
+			\oobInstModexpPricing & \define & \oxModexpPricing \\
+			\oobInstModexpExtract & \define & \oxModexpExtract \\
+		\end{array} \right.
+	\]
+	and
+	\[
+		\left\{ \begin{array}{lclcr}
+			\oobInstPointEvaluation   & \define & \oxPointEvaluation   \\
+			\oobInstBlsGOneAdd        & \define & \oxBlsGOneAdd        \\
+			\oobInstBlsGOneMsm        & \define & \oxBlsGOneMsm        \\
+			\oobInstBlsGTwoAdd        & \define & \oxBlsGTwoAdd        \\
+			\oobInstBlsGTwoMsm        & \define & \oxBlsGTwoMsm        \\
+			\oobInstBlsPairingCheck   & \define & \oxBlsPairingCheck   \\
+			\oobInstBlsMapFpToGOne    & \define & \oxBlsMapFpToGOne    \\
+			\oobInstBlsMapFpTwoToGTwo & \define & \oxBlsMapFpTwoToGTwo \\
+		\end{array} \right.
+	\]
+	and
+	\[
+		\oobInstPVerify \define \oxPVerify   \\
+	\]
+	\saNote{}
+	In the above we use the notation $\oxXcall$, $\oxCall$, $\oxXcreate$, $\oxCreate$, $\oxEcrecover$, \dots, $\oxBlakeParams$ as \textbf{placeholders} for some actual, fixed values.
+	The only requirement for these constants must satisfy is that all constants defined above be \textbf{nonzero} and \textbf{pairwise distinct}.
