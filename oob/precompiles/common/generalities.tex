@@ -10,12 +10,12 @@ The present section describes some common constraints to the processing of all \
 		\item \instShaTwo{}
 		\item \instRipemd{}
 		\item \instIdentity{}
-		% \item {\instModexp}
+			% \item {\instModexp}
 		\item \instEcadd{}
 		\item \instEcmul{}
 		\item \instEcpairing{}
 		\item[\vspace{\fill}]
-		% \item {\instBlake}
+			% \item {\instBlake}
 		\item \instPointEvaluation{}
 		\item \instBlsGOneAdd{}
 		\item \instBlsGOneMsm{}
@@ -45,8 +45,8 @@ We impose the following constraints:
 		and we define the shorthand
 		\[
 			\left\{ \begin{array}{lcl}
-			        \locCdsIsZero    & \define & \outgoingResLo_{i} \\
-			        \locCdsIsNonZero & \define & 1 - \locCdsIsZero  \\
+				\locCdsIsZero    & \define & \outgoingResLo_{i} \\
+				\locCdsIsNonZero & \define & 1 - \locCdsIsZero  \\
 			\end{array} \right.
 		\]
 	\item[\underline{Row n°$(i + 1)$:}] we impose the following:
@@ -63,12 +63,30 @@ We impose the following constraints:
 		we impose the following relations
 		\[
 			\left\{ \begin{array}{lcl}
-				\locExtractCallData & = & \locHubSuccess \cdot (1 - \locCdsIsZero) \\
-				\locEmptyCallData   & = & \locHubSuccess \cdot \locCdsIsZero       \\
-				\locRacIsNonzero    & = & 1 - \locRacIsZero \\
+				\locExtractCallData & = & \locHubSuccess \cdot (1 - \locCdsIsZero) \cdot \locCallDataExtractionFilter _{i} \\
+				\locEmptyCallData   & = & \locHubSuccess \cdot \locCdsIsZero                                               \\
+				\locRacIsNonzero    & = & 1 - \locRacIsZero                                                                \\
 			\end{array} \right.
 		\]
-		\saNote{} We want the binary flags
+		where \locCallDataExtractionFilter{} is a further ``\loc{c}all \loc{d}ata e\loc{x}traction filter''
+		which we require so as to be able to deal with \instPVerify{} uniformly.
+		We define it as follows:
+		\[
+			\locCallDataExtractionFilter _{i}
+			\define
+			\left[ \begin{array}{crcl}
+				+ &                      1 & \cdot & \locPrcFlagSumLondonCommonPrecompiles _{i} \\
+				+ &                      1 & \cdot & \locFlagSumCancunPrecompiles          _{i} \\
+				+ &                      1 & \cdot & \locFlagSumPraguePrecompiles          _{i} \\
+				+ & \locP256VerifyValidCds & \cdot & \locFlagSumOsakaPrecompiles           _{i} \\
+			\end{array} \right]
+		\]
+		\saNote{}
+		The missing shorthand \( \locP256VerifyValidCds \) will be defined in
+		section~(\ref{oob: precompiles: bls: fixed size and cost}).
+
+		\saNote{}
+		We want the binary flags
 		\locExtractCallData{} and
 		\locEmptyCallData{}
 		to light up \textbf{only} if the underlying precompile satisfies $\locHubSuccess \equiv 1$.
