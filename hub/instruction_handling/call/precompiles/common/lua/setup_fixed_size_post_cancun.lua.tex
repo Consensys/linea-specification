@@ -49,63 +49,76 @@
         \___| \___/  _|  _|  _| _|  _|  _| \___/  _|  _|
 
 
-|-------+--------+------------------------------+------------------------------------------------------------|
-| Row   | Persp. |                              |                                                            |
-|-------+--------+------------------------------+------------------------------------------------------------|
-| i     | SCEN   | one of:                      | SCEN/PRC_FKTH + SCEN/PRC_FKTR + SCEN/PRC_SUCCESS = 1       |
-|       |        |                              |                                                            |
-|       |        | starting with Cancun:        |                                                            |
-|       |        | * SCEN/POINT_EVALUATION = 1  |                                                            |
-|       |        |                              |                                                            |
-|       |        | starting with Prague:        |                                                            |
-|       |        | * SCEN/BLS_G1ADD         = 1 |                                                            |
-|       |        | * SCEN/BLS_G2ADD         = 1 |                                                            |
-|       |        | * SCEN/BLS_MAP_FP_TO_G1  = 1 |                                                            |
-|       |        | * SCEN/BLS_MAP_FP2_TO_G2 = 1 |                                                            |
-|       |        |                              |                                                            |
-|       |        | starting with Osaka:         |                                                            |
-|       |        | * SCEN/PRC_P256_VERIFY   = 1 |                                                            |
-|-------+--------+------------------------------+------------------------------------------------------------|
-| i + 1 | MISC   |                              | OOB🚩 = 1                                                  |
-|       |        |                              | OOB_INST (case dependent)                                  |
-|       |        |                              | * ⟦OOB_INST_point_evaluation⟧                              |
-|       |        |                              | * ⟦OOB_INST_bls_g1add⟧                                     |
-|       |        |                              | * ⟦OOB_INST_bls_g2add⟧                                     |
-|       |        |                              | * ⟦OOB_INST_bls_map_fp_to_g1⟧                              |
-|       |        |                              | * ⟦OOB_INST_bls_map_fp2_to_g2⟧                             |
-|       |        |                              | * ⟦OOB_INST_p256_verify⟧                                   |
-|       |        |                              |                                                            |
-|       |        |                              | TRUSTED INPUTS:                                            |
-|       |        |                              | * cds                                                      |
-|       |        |                              | * r@c                                                      |
-|       |        |                              | * call_gas                                                 |
-|       |        |                              |                                                            |
-|       |        |                              | JUSTIFICATION FOR:                                         |
-|       |        |                              | * (implicit) compute gas_cost                              |
-|       |        |                              | * hub_success        ≡  [gas_cost ≤ call_gas]              |
-|       |        |                              | .                       ∧ [call data size = imposed_cds]   |
-|       |        |                              | * return_gas         ≡  hub_success ? [call_gas - gas_cost]|
-|       |        |                              | .                                   : 0                    |
-|       |        |                              | * extract_call_data  ≡  hub_success ∧ [cds ≠ 0]            |
-|       |        |                              | .                    ≡  hub_success                        |
-|       |        |                              | * empty_call_data    ≡  hub_success ∧ [cds = 0]            |
-|       |        |                              | .                    ≡  FALSE                              |
-|       |        |                              | * r@c_nonzero        ≡  [r@c ≠ 0]                          |
-|       |        |                              |                                                            |
-|       |        | MMU🚩 = hub_success          |                                                            |
-|       |        | MMU_INST = <RETURN_like>     |                                                            |
-|       |        |                              |                                                            |
-|       |        | ID_SCR  := CN                |                                                            |
-|       |        | SRC_OFF := CDO               |                                                            |
-|       |        | SIZE    := CDS               |                                                            |
-|       |        |                              |                                                            |
-|       |        | ID_TGT  := 1 + HUB_STAMP     |                                                            |
-|       |        | TGT_OFF := 0                 |                                                            |
-|       |        |                              |                                                            |
-|       |        | ram_success := 0 / 1         |                                                            |
-|       |        |               (prediction)   |                                                            |
-|-------+--------+------------------------------+------------------------------------------------------------|
-| ...   | ...    | ...                          | ...                                                        |
+|-------+--------+------------------------------+--------------------------------------------------------------------------|
+| Row   | Persp. |                              |                                                                          |
+|-------+--------+------------------------------+--------------------------------------------------------------------------|
+| i     | SCEN   | one of:                      | SCEN/PRC_FKTH + SCEN/PRC_FKTR + SCEN/PRC_SUCCESS = 1                     |
+|       |        |                              |                                                                          |
+|       |        | starting with Cancun:        |                                                                          |
+|       |        | * SCEN/POINT_EVALUATION = 1  |                                                                          |
+|       |        |                              |                                                                          |
+|       |        | starting with Prague:        |                                                                          |
+|       |        | * SCEN/BLS_G1ADD         = 1 |                                                                          |
+|       |        | * SCEN/BLS_G2ADD         = 1 |                                                                          |
+|       |        | * SCEN/BLS_MAP_FP_TO_G1  = 1 |                                                                          |
+|       |        | * SCEN/BLS_MAP_FP2_TO_G2 = 1 |                                                                          |
+|       |        |                              |                                                                          |
+|       |        | starting with Osaka:         |                                                                          |
+|       |        | * SCEN/PRC_P256_VERIFY   = 1 |                                                                          |
+|-------+--------+------------------------------+--------------------------------------------------------------------------|
+| i + 1 | MISC   |                              | OOB🚩 = 1                                                                |
+|       |        |                              | OOB_INST (case dependent)                                                |
+|       |        |                              | * ⟦OOB_INST_point_evaluation⟧                                            |
+|       |        |                              | * ⟦OOB_INST_bls_g1add⟧                                                   |
+|       |        |                              | * ⟦OOB_INST_bls_g2add⟧                                                   |
+|       |        |                              | * ⟦OOB_INST_bls_map_fp_to_g1⟧                                            |
+|       |        |                              | * ⟦OOB_INST_bls_map_fp2_to_g2⟧                                           |
+|       |        |                              | * ⟦OOB_INST_p256_verify⟧                                                 |
+|       |        |                              |                                                                          |
+|       |        |                              |                                                                          |
+|       |        |                              | TRUSTED INPUTS:                                                          |
+|       |        |                              | ===============                                                          |
+|       |        |                              | * cds                                                                    |
+|       |        |                              | * r@c                                                                    |
+|       |        |                              | * call_gas                                                               |
+|       |        |                              |                                                                          |
+|       |        |                              |                                                                          |
+|       |        |                              | JUSTIFICATION FOR:                                                       |
+|       |        |                              | ==================                                                       |
+|       |        |                              | * (implicit) compute gas_cost                                            |
+|       |        |                              | * hub_success  ≡  [gas_cost ≤ call_gas] ∧ [call data size = imposed_cds] |
+|       |        |                              | * return_gas   ≡  hub_success ? [call_gas - gas_cost] : 0                |
+|       |        |                              | * extract_call_data  ≡  hub_success ∧ [cds ≠ 0]                          |
+|       |        |                              | _                    ≡  hub_success                                      |
+|       |        |                              | * empty_call_data    ≡  hub_success ∧ [cds = 0]                          |
+|       |        |                              | .                    ≡  FALSE                                            |
+|       |        |                              | * r@c_nonzero        ≡  [r@c ≠ 0]                                        |
+|       |        |                              |                                                                          |
+|       |        |                              |                                                                          |
+|       |        |                              | P256_VERIFY specifics:                                                   |
+|       |        |                              | ======================                                                   |
+|       |        |                              | P256_VERIFY follows slightly different semantics                         |
+|       |        |                              | In particular hub_success is less stringent and it                       |
+|       |        |                              | introduces a [valid call data size] bit:                                 |
+|       |        |                              |                                                                          |
+|       |        |                              | * hub_success        ≡  [gas_cost ≤ call_gas]                            |
+|       |        |                              | * cds_is_valid       ≡  hub_success ∧ [call data size = imposed_cds]     |
+|       |        |                              | * extract_call_data  ≡  hub_success ∧ cds_is_valid                       |
+|       |        |                              |                                                                          |
+|       |        | MMU🚩 = hub_success          |                                                                          |
+|       |        | MMU_INST = <RETURN_like>     |                                                                          |
+|       |        |                              |                                                                          |
+|       |        | ID_SCR  := CN                |                                                                          |
+|       |        | SRC_OFF := CDO               |                                                                          |
+|       |        | SIZE    := CDS               |                                                                          |
+|       |        |                              |                                                                          |
+|       |        | ID_TGT  := 1 + HUB_STAMP     |                                                                          |
+|       |        | TGT_OFF := 0                 |                                                                          |
+|       |        |                              |                                                                          |
+|       |        | ram_success := 0 / 1         |                                                                          |
+|       |        | (prediction)                 |                                                                          |
+|-------+--------+------------------------------+--------------------------------------------------------------------------|
+| ...   | ...    | ...                          | ...                                                                      |
 
 We have used the following abbreviations:
   FKTH ≡ FAILURE_KNOWN_TO_HUB
