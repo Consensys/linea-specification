@@ -38,7 +38,7 @@ We now tackle the case of interest:
 			\end{array} \right.
 		\]
 \end{description}
-\saNote{}
+\saNote{}\label{hub: instruction handling: call: precompiles: flag sums and nsr II: the 2 distinct success scenarios for ECRECOVER}
 There are actually two fundamentally distinct ``success'' scenarios for \instEcrecover{}.
 Recall that ``success'' (i.e. $\scenPrcSuccess \equiv 1$) for \instEcrecover{} simply means that the precompile is provided with sufficient gas.
 A successfull call to the \instEcrecover{} precompile may yet lead to two very distinct scenarios:
@@ -133,10 +133,20 @@ The above explains the special value attributed to \locFlagSumIdentitySuccess{} 
 		\locBbs{},
 		\locEbs{}
 		and \locMbs{}.)
-	\item[\underline{\underline{Shorthands for \instEcadd{}, \instEcmul{}, \instEcpairing{} and \instPVerify{}:}}]
+	\item[\underline{\underline{Shorthands for \instEcadd{}, \instEcmul{}, \instEcpairing{}, \blsDataMod{} precompiles and \instPVerify{}:}}]
 		for
 		\[
-			\loc{xxx} \in \left\{ \loc{ecadd}, ~ \loc{ecmul}, ~ \loc{ecpairing}, ~ \loc{p256\_verify} \right\}
+			\loc{xxx} \in \left\{
+				\begin{array}{r}
+				\loc{ecadd},                ~ \loc{ecmul},                ~ \loc{ecpairing}, \\
+				\loc{point\_evaluation},                                                     \\
+				\loc{bls\_g1\_add},         ~ \loc{bls\_g1\_msm},                            \\
+				\loc{bls\_g2\_add},         ~ \loc{bls\_g2\_msm},                            \\
+				\loc{bls\_pairing\_check},                                                   \\
+				\loc{bls\_map\_fp\_to\_g1}, ~ \loc{bls\_map\_fp2\_to\_g2}                    \\
+				\loc{p256\_verify},                                                          \\
+				\end{array}
+				\right\}
 		\]
 		we set
 		\[
@@ -149,6 +159,10 @@ The above explains the special value attributed to \locFlagSumIdentitySuccess{} 
 				\locNsrXxxSuccess     & \define & \locStandardSuccessNsr     \\
 			\end{array} \right.
 		\]
+		\saNote{}
+		Note~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr II: the 2 distinct success scenarios for ECRECOVER})
+		on the ``two fundamentally distinct `success' scenarios for \instEcrecover{}''
+		applies with minor modification to \instPVerify{}, too.
 	\item[\underline{\underline{Shorthands for \instBlake{}:}}] the \instBlake{} precompile requires special care:
 		\[
 			\left\{ \begin{array}{lcl}
@@ -172,31 +186,6 @@ The above explains the special value attributed to \locFlagSumIdentitySuccess{} 
 				\locNsrBlakeFKTH    & \define & \locStandardFailureNsr \\
 				\locNsrBlakeFKTR    & \define & 4                      \\
 				\locNsrBlakeSuccess & \define & 6                      \\
-			\end{array} \right.
-		\]
-\end{description}
-The following shorthands pertain to \blsDataMod{}-precompiles,
-i.e. the precompiles from \cite{EIP-4788} and \cite{EIP-2537}.
-\begin{description}
-	\item[\underline{\underline{Shorthands for \blsDataMod{} precompiles:}}] 
-		for
-		\[
-			\loc{xxx} \in
-			\left\{ \begin{array}{r}
-				\loc{point\_evaluation},    ~ \loc{bls\_g1add},           ~ \loc{bls\_g1msm},          \\
-				\loc{bls\_g2add},           ~ \loc{bls\_g2msm},           ~ \loc{bls\_pairing\_check}, \\
-				\loc{bls\_map\_fp\_to\_g1}, ~ \loc{bls\_map\_fp2\_to\_g2}                              \\
-			\end{array} \right\}
-		\]
-		we set
-		\[
-			\left\{ \begin{array}{lcl}
-				\locFlagSumXxxFKTH    & \define & \locStandardFailureFlagSum \\
-				\locFlagSumXxxFKTR    & \define & \locStandardFailureFlagSum \\
-				\locFlagSumXxxSuccess & \define & \locStandardSuccessFlagSum \\
-				\locNsrXxxFKTH        & \define & \locStandardFailureNsr     \\
-				\locNsrXxxFKTR        & \define & \locStandardFailureNsr     \\
-				\locNsrXxxSuccess     & \define & \locStandardSuccessNsr     \\
 			\end{array} \right.
 		\]
 \end{description}
