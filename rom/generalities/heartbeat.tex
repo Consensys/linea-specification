@@ -1,56 +1,56 @@
-The $\CFI{}$ acts as a "stamp" of the module:
+The $\romColumnCFI{}$ acts as a ``stamp'' of the module:
 \begin{enumerate}
-	\item $\cfi_{0}=0$
-	\item $\cfi_{i + 1} \in \{ \cfi_{i}, 1 + \cfi_{i} \}$
-	\item \If $\cfi_{i}=0$ \Then 
+	\item $\romColumnCfi _{0} = 0$
+	\item $\romColumnCfi _{i + 1} \in \{ \romColumnCfi _{i}, 1 + \romColumnCfi _{i} \}$
+	\item \If $\romColumnCfi _{i} = 0$ \Then 
 		\[
 			\left\{ \begin{array}{lclr}
-				\ct_{i}    & = & 0 \\
-				\ctMax_{i} & = & 0 \\
-				\pbcb_{i}  & = & 0 \\
-				\pc_{i}    & = & 0 & (\trash) \\
-				\IP_{i}    & = & 0 & (\trash) \\
-				\IPD_{i}   & = & 0 & (\trash) \\
-				\CP        & = & 0 & (\trash) \\
-				\PP        & = & 0 & (\trash) \\
-				\PC        & = & 0 & (\trash) \\
+				\ct                      _{i} & = & 0 \\
+				\ctMax                   _{i} & = & 0 \\
+				\romColumnLimbByte       _{i} & = & 0 \\
+				\romColumnProgramCounter _{i} & = & 0 & (\trash) \\
+				\romColumnOpcodeIsPush   _{i} & = & 0 & (\trash) \\
+				\romColumnClaimedByPush  _{i} & = & 0 & (\trash) \\
+				\CP                      _{i} & = & 0 & (\trash) \\
+				\PP                      _{i} & = & 0 & (\trash) \\
+				\romColumnProgramCounter _{i} & = & 0 & (\trash) \\
 			\end{array} \right.
 		\]
-	\item \If $\cfi_{i} \neq 0$ \Then 
+	\item \If $\romColumnCfi _{i} \neq 0$ \Then 
 		\begin{enumerate}
-			\item $\ctMax_{i} \in \{ \llargeMO, \evmWordSizeMO \}$ (\trash)
-			\item \If $\ctMax_{i} = \llargeMO$ \Then $\cfi_{i + 1}=\cfi_{i}$
-			\item \If $\ct_{i} \ne \ctMax_{i}$ \Then $\cfi_{i + 1}=\cfi_{i}$
-			\item \If ($\ctMax_{i} = \evmWordSizeMO$ \et $\ct_{i} = \ctMax_{i}$) \Then $\cfi_{i + 1} = \cfi_{i}+1$
+			\item $\ctMax _{i} \in \{ \llargeMO, \evmWordSizeMO \}$ (\trash)
+			\item \If $\ctMax _{i} =   \llargeMO$   \Then $\romColumnCfi _{i + 1} = \romColumnCfi _{i}$
+			\item \If $\ct _{i}    \neq \ctMax _{i}$ \Then $\romColumnCfi _{i + 1} = \romColumnCfi _{i}$
+			\item \If ($\ctMax _{i} = \evmWordSizeMO$ \et $\ct _{i} = \ctMax _{i}$) \Then $\romColumnCfi _{i + 1} = \romColumnCfi _{i}+1$
 		\end{enumerate}
 \end{enumerate}
 
-\noindent The \CT{} column imposes cycles of \ctMax{} rows inside each \cfi{}.
+\noindent The \CT{} column imposes cycles of \ctMax{} rows inside each \romColumnCfi{}.
 \begin{enumerate}[resume]
-		% \item \If $\cfi_{i} \ne 0$ \Then
+		% \item \If $\romColumnCfi _{i} \neq 0$ \Then
 		% \begin{enumerate}
-	\item \If $\ct_{i} \neq \ctMax_{i}$ \Then $\ct_{i + 1} = \ct_{i} + 1$,
-	\item \If $\ct_{i} =    \ctMax_{i}$ \Then $\ct_{i + 1} = 0$,
+	\item \If $\ct _{i} \neq \ctMax _{i}$ \Then $\ct _{i + 1} = \ct _{i} + 1$,
+	\item \If $\ct _{i} =    \ctMax _{i}$ \Then $\ct _{i + 1} = 0$,
 		% \end{enumerate}
 \end{enumerate}
 We impose the following constraint on the \textbf{last row}:
 \begin{enumerate}[resume]
-	\item \If $\cfi_{N} \neq 0$ \Then 
-	\begin{enumerate}
-		\item $\ct   _{N} = \ctMax_{N}$
-		\item $\ctMax_{N} = \evmWordSizeMO$
-		\item $\cfi  _{N} = \cfiMax_{N}$
-		\item $\cp   _{N} = \PP_{N}$
-	\end{enumerate}
+	\item \If $\romColumnCfi _{N} \neq 0$ \Then 
+		\begin{enumerate}
+			\item $\ct    _{N} = \ctMax  _{N}$
+			\item $\ctMax _{N} = \evmWordSizeMO$
+			\item $\romColumnCfi   _{N} = \romColumnCfiMax _{N}$
+			\item $\cp    _{N} = \PP     _{N}$
+		\end{enumerate}
 \end{enumerate}
-And we impose $\cfiMax$ to be constant all along the trace, except during the padding rows:
+And we impose $\romColumnCfiMax$ to be constant all along the trace, except during the padding rows:
 \begin{enumerate}[resume]
-	\item \If $\cfi_{i} =   0$ \Then $\cfiMax_{i} = 0$
-	\item \If $\cfi_{i} \ne 0$ \Then $\cfiMax_{i} =\cfiMax_{i + 1}$ 
+	\item \If $\romColumnCfi _{i} =    0$ \Then $\romColumnCfiMax _{i} = 0$
+	\item \If $\romColumnCfi _{i} \neq 0$ \Then $\romColumnCfiMax _{i} = \romColumnCfiMax _{i + 1}$ 
 \end{enumerate}
 We build an accumulator:
 \begin{enumerate}[resume]
-	\item \If $\ct_{i}=0$ \Then $\ACC_{i} = \pbcb_{i}$
-	\item \If $\ct_{i} \ne 0$           \Then $\ACC_{i} = 256 \cdot \ACC_{i - 1} + \pbcb_{i}$
-	\item \If $\ct_{i} =   \ctMax_{i} $ \Then $\ACC_{i} = \limb_{i}$
+	\item \If $\ct _{i} =    0$           \Then $\romColumnLimbAcc _{i} = \romColumnLimbByte _{i}$
+	\item \If $\ct _{i} \neq 0$           \Then $\romColumnLimbAcc _{i} = 256 \cdot \romColumnLimbAcc _{i - 1} + \romColumnLimbByte _{i}$
+	\item \If $\ct _{i} =    \ctMax _{i}$ \Then $\romColumnLimbAcc _{i} = \romColumnLimb _{i}$
 \end{enumerate}

@@ -1,16 +1,34 @@
-The \romMod{} module compiles the \textbf{nonempty} bytecodes, initialization codes and deployed byte codes alike, used during the execution of a conflation of blocks.
-Its main role in the overall design is to provide the \hubMod{} module with the correct sequence of instructions.
-It furthermore assembles the \inst{PUSH}-values from the bytes following a \inst{PUSHX} instruction, $\inst{X} \in \{ \inst{1}, \inst{2}, \dots, \inst{32} \}$.
-It also tags (in)valid jump destinations as such, as is required by \textsc{jump destination analysis}.
+The \romMod{} module exposes and processes all pieces of (\textbf{nonempty}) byte code,
+initialization codes and deployed byte codes alike,
+required by the processing of a conflation of blocks.
+Its main role in the overall design is to provide the \hubMod{} module with the correct sequence of instructions,
+as well as related pieces of data.
+In more detail, the present module
+\textbf{performs jump destination analysis} and
+\textbf{assembles \inst{PUSH}-values} from the bytes following a \inst{PUSHX} opcode,
+for $\inst{X} \in \{ \inst{1}, \inst{2}, \dots, \evmWordSize \}$.
+Note that \inst{PUSH0}, introduced in \cite{EYP-Shanghai} with \cite{EIP-3855}, is excluded from that list.
 Most of the arithmetization below focuses on building the \romMod{} module as a seqence of padded byte codes and of extracting the correct push values from it (i.e. the $\inst{X}$-byte long arguments of actual \inst{PUSHX} instructions).
 
-There are three kinds of accesses to bytecode that the \romMod{} module  deals with, with contract deployment being subdivided into 1 or 2 phases (since deployments may fail):
+What follows is a complete list of events that trigger the \romMod{} module to incorporate byte code into its trace:
 \begin{enumerate}
-    \item loading the full bytecode of an already deployed smart contract to \inst{CALL}, \inst{CALLCODE}, \inst{STATICCALL} or \inst{DELEGATECALL} into it;
-    \item loading the full bytecode of an already deployed smart contract to \inst{EXTCODECOPY} from it;
-    \item deploying a smart contract through a deployment transaction or an (unexceptional, unaborted and no failure condition raising) \inst{CREATE(2)} instruction:
-        \begin{enumerate}
-            \item loading the initialization code into the \romMod{} module;
-            \item and for (temporarily) successful deployments loading the bytecode that will be (temporarily) deployed at the relevant address into the \romMod{} module.
-        \end{enumerate}
+    \item
+        \user{}-transaction processing whose $\loc{addr} \equiv \col{tx.toAddress()} \neq \varnothing$ has nonempty byte code;
+        the \romMod{} module loads the byte code $\mathbf{b}$ from the state,
+    where $\texttt{KECCAK}(\mathbf{b}) = \bm{\sigma}\big[ \loc{addr} \big]_c$;
+    \item
+        similarly for unexceptional \inst{CALL}'s, \inst{CALLCODE}'s, \inst{STATICCALL}'s and \inst{DELEGATECALL}'s into accounts with nonempty byte code;
+    \item
+        \user{}-transaction processing with $\loc{tx.toAddress()} = \varnothing$ and nonempty \loc{tx.payload()};
+        the \romMod{} loads the initialization code $T_\mathbf{i} \equiv \loc{tx.payload()}$ from the \rlpTxnMod{} module;
+    \item
+        similarly when initiating deployments through (unexceptional, unaborted and no failure condition raising) \inst{CREATE(2)} instructions;
+        the \romMod{} module similarly loads the initialization code from \textsc{ram}, i.e. from the \mmioMod{} module;
+    \item
+        for \emph{temporarily} successful deployments of
+        nonempty byte code, the byte code is loaded into the \romMod{} from \textsc{ram}, i.e. from the \mmioMod{} module;
+    \item
+        for nontrivial and unexceptional \inst{EXTCODECOPY} operations targeting an account with nonempty byte code;
 \end{enumerate}
+\saNote{}
+We add the qualifier \emph{temporarily} to deployments since successful deployments may get reverted later on in the same transaction.
