@@ -313,16 +313,17 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 						as well as the \inst{BLS}-precompiles (i.e. the precompiles whose flags go into the \scenPrecompileCommonBls{} shorthand) and \instPVerify{}.
 
 						\saNote{}\label{hub: instruction handling: call: precompiles: common: generalities: empty call data in well formed data shorthand for BLS precompiles and P256Verify}
-						Our definition of the \locWellFormedData{} shorthand may seem blatantly wrong, as it implies in particular that
+						Our definition of the \locWellFormedData{} shorthand may seem blatantly wrong in the case of
+						\inst{BLS}-precompiles, as it implies in particular that
 						$\locWellFormedData \equiv \true$ whenever $\locOobResultEmptyCallData \equiv \true$.
-						This would explicitly clash with the specifications of \instPointEvaluation{}, the \inst{BLS}-precompiles and \instPVerify{},
+						If this were the case, it would explicitly contradict the specifications of \instPointEvaluation{} and the \inst{BLS}-precompiles,
 						which are all required to throw an exception when called with empty call data.
-						Surely one must insist on having $\locWellFormedData{} \equiv false$ in those cases.
+						Surely one must insist on having $\locWellFormedData{} \equiv \false$ in those cases.
 						Despite appearances, this will actually be the case.
 						Indeed the \oobMod{}-module \emph{always} outputs $\locOobResultEmptyCallData \equiv \false$ for these precompiles,
 						even when their call data happens to be empty,
 						see section~(\ref{oob: precompiles: common precompiles: generalities}).
-						Thus, the inclusion of \locOobResultEmptyCallData{} as a subcase of \locWellFormedData{} is unproblematic even for these precompiles.
+						Thus, the inclusion of \locOobResultEmptyCallData{} as a subcase of \locWellFormedData{} is unproblematic for these precompiles.
 
 						\saNote{}
 						The elliptic curve precompiles
@@ -448,6 +449,7 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 							+ & \scenShaTwo      _{i} \\
 							+ & \scenRipemd      _{i} \\
 							+ & \scenIdentity    _{i} \\
+							+ & \scenPVerify     _{i} \\
 						\end{array} \right] \vspace{2mm} \\
 						+ & \locWellFormedData & \cdot &
 						\left[ \begin{array}{cl}
@@ -455,26 +457,12 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 							+ & \scenEcmul               _{i} \\
 							+ & \scenEcpairing           _{i} \\
 							+ & \scenPrecompileCommonBls _{i} \\
-							+ & \scenPVerify             _{i} \\
 						\end{array} \right] \\
 					\end{array} \right]
 				\]
 				and
 				\[
 					\scenPrcFailureKnownToHub_{i} = (1 - \locOobResultHubSuccess)
-					% \left[ \begin{array}{crcl}
-					% 	+ & (1 - \locOobResultHubSuccess) & \cdot &
-					% 	\left[ \begin{array}{cl}
-					% 		+ & \scenEcrecover           _{i} \\
-					% 		+ & \scenShaTwo              _{i} \\
-					% 		+ & \scenRipemd              _{i} \\
-					% 		+ & \scenIdentity            _{i} \\
-					% 		+ & \scenEcadd               _{i} \\
-					% 		+ & \scenEcmul               _{i} \\
-					% 		+ & \scenEcpairing           _{i} \\
-					% 		+ & \scenPrecompileCommonBls _{i} \\
-					% 	\end{array} \right] \\
-					% \end{array} \right]
 				\]
 				and
 				\[
@@ -487,6 +475,7 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 							+ & \scenShaTwo      _{i} \\
 							+ & \scenRipemd      _{i} \\
 							+ & \scenIdentity    _{i} \\
+							+ & \scenPVerify     _{i} \\
 						\end{array} \right] \vspace{2mm} \\
 						+ & \locMalFormedData & \cdot &
 						\left[ \begin{array}{cl}
@@ -494,7 +483,6 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 							+ & \scenEcmul               _{i} \\
 							+ & \scenEcpairing           _{i} \\
 							+ & \scenPrecompileCommonBls _{i} \\
-							+ & \scenPVerify             _{i} \\
 						\end{array} \right] \\
 					\end{array} \right]
 				\]
