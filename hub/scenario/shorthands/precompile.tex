@@ -2,9 +2,34 @@ We define some useful shorthands for precompiles.
 In our treatment of calls to precompiles we are able to provide a mostly unified treatment for most precompiles with the exception of \instModexp{} and \instBlake{}.
 We label all other precompiles as ``common'' precompiles.
 \[
-	\scenPrecompileCommonBls _{i}
-	\define
-	\left[ \begin{array}{l}
+\]
+and
+\[
+	\left\{ \begin{array}{lcl}
+		\scenPrecompileCommonLondon _{i} & \define &
+		\left[ \begin{array}{l}
+			+ \scenEcrecover          _{i} \\
+			+ \scenShaTwo             _{i} \\
+			+ \scenRipemd             _{i} \\
+			+ \scenIdentity           _{i} \\
+			% + \scenModexp             _{i} \\
+			+ \scenEcadd              _{i} \\
+			+ \scenEcmul              _{i} \\
+			+ \scenEcpairing          _{i} \\
+			% + \scenBlake              _{i} \\
+			% + \scenPointEvaluation    _{i} \\
+			% + \scenBlsGOneAdd         _{i} \\
+			% + \scenBlsGOneMsm         _{i} \\
+			% + \scenBlsGTwoAdd         _{i} \\
+			% + \scenBlsGTwoMsm         _{i} \\
+			% + \scenBlsPairingCheck    _{i} \\
+			% + \scenBlsMapFpToGOne     _{i} \\
+			% + \scenBlsMapFpTwoToGTwo  _{i} \\
+			% + \scenPVerify            _{i} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\scenPrecompileCommonCancun _{i} & \define &
 		% + \scenEcrecover          _{i} \\
 		% + \scenShaTwo             _{i} \\
 		% + \scenRipemd             _{i} \\
@@ -14,93 +39,7 @@ We label all other precompiles as ``common'' precompiles.
 		% + \scenEcmul              _{i} \\
 		% + \scenEcpairing          _{i} \\
 		% + \scenBlake              _{i} \\
-		+ \scenPointEvaluation    _{i} \\
-		+ \scenBlsGOneAdd         _{i} \\
-		+ \scenBlsGOneMsm         _{i} \\
-		+ \scenBlsGTwoAdd         _{i} \\
-		+ \scenBlsGTwoMsm         _{i} \\
-		+ \scenBlsPairingCheck    _{i} \\
-		+ \scenBlsMapFpToGOne     _{i} \\
-		+ \scenBlsMapFpTwoToGTwo  _{i} \\
-	\end{array} \right]
-\]
-and
-\[
-	\scenPrecompileCommonNotIdentity _{i}
-	\define
-	\left[ \begin{array}{l}
-		+ \scenEcrecover           _{i}   \\
-		+ \scenShaTwo              _{i}   \\
-		+ \scenRipemd              _{i}   \\
-		% + \scenIdentity            _{i} \\
-		% + \scenModexp              _{i} \\
-		+ \scenEcadd               _{i}   \\
-		+ \scenEcmul               _{i}   \\
-		+ \scenEcpairing           _{i}   \\
-		% + \scenBlake               _{i} \\
-		+ \scenPrecompileCommonBls _{i}   \\
-		+ \scenPVerify             _{i}   \\
-	\end{array} \right]
-\]
-and
-\[
-	\scenPrecompileCommon _{i}
-	\define
-	\left[ \begin{array}{l}
-		+ \scenPrecompileCommonNotIdentity _{i} \\
-		+ \scenIdentity                    _{i} \\
-	\end{array} \right]
-\]
-and
-\[
-	\scenPrecompileSum_{i}
-	\define
-	\left[ \begin{array}{l}
-		+ \scenPrecompileCommon _{i} \\
-		+ \scenModexp           _{i} \\
-		+ \scenBlake            _{i} \\
-	\end{array} \right]
-\]
-We further define
-\[
-	\scenPrecompileMayOnlyFailInHub _{i}
-	\define
-	\left[ \begin{array}{l}
-		+ \scenEcrecover          _{i} \\
-		+ \scenShaTwo             _{i} \\
-		+ \scenRipemd             _{i} \\
-		+ \scenIdentity           _{i} \\
-		% + \scenModexp             _{i} \\
-		% + \scenEcadd              _{i} \\
-		% + \scenEcmul              _{i} \\
-		% + \scenEcpairing          _{i} \\
-		% + \scenBlake              _{i} \\
-		% + \scenPointEvaluation    _{i} \\
-		% + \scenBlsGOneAdd         _{i} \\
-		% + \scenBlsGOneMsm         _{i} \\
-		% + \scenBlsGTwoAdd         _{i} \\
-		% + \scenBlsGTwoMsm         _{i} \\
-		% + \scenBlsPairingCheck    _{i} \\
-		% + \scenBlsMapFpToGOne     _{i} \\
-		% + \scenBlsMapFpTwoToGTwo  _{i} \\
-		+ \scenPVerify            _{i} \\
-	\end{array} \right]
-\]
-and
-\[
-	\scenPrecompileMayOnlyFailInRam _{i}
-	\define
-	\left[ \begin{array}{l}
-		% + \scenEcrecover          _{i} \\
-		% + \scenShaTwo             _{i} \\
-		% + \scenRipemd             _{i} \\
-		% + \scenIdentity           _{i} \\
-		+ \scenModexp             _{i} \\
-		% + \scenEcadd              _{i} \\
-		% + \scenEcmul              _{i} \\
-		% + \scenEcpairing          _{i} \\
-		% + \scenBlake              _{i} \\
-		% + \scenPointEvaluation    _{i} \\
+		\scenPointEvaluation    _{i}
 		% + \scenBlsGOneAdd         _{i} \\
 		% + \scenBlsGOneMsm         _{i} \\
 		% + \scenBlsGTwoAdd         _{i} \\
@@ -109,50 +48,207 @@ and
 		% + \scenBlsMapFpToGOne     _{i} \\
 		% + \scenBlsMapFpTwoToGTwo  _{i} \\
 		% + \scenPVerify            _{i} \\
-	\end{array} \right]
-\]
-and
-\[
-	\scenPrecompileWeightedSum _{i}
-	\define
-	\left[ \begin{array}{crcl}
-		+ & \prcAddressEcRecoverValue         & \cdot & \scenEcrecover         _{i} \\
-		+ & \prcAddressShaValue               & \cdot & \scenShaTwo            _{i} \\
-		+ & \prcAddressRipemdValue            & \cdot & \scenRipemd            _{i} \\
-		+ & \prcAddressIdentityValue          & \cdot & \scenIdentity          _{i} \\
-		+ & \prcAddressModexpValue            & \cdot & \scenModexp            _{i} \\
-		+ & \prcAddressEcAddValue             & \cdot & \scenEcadd             _{i} \\
-		+ & \prcAddressEcMulValue             & \cdot & \scenEcmul             _{i} \\
-		+ & \prcAddressEcPairingValue         & \cdot & \scenEcpairing         _{i} \\
-		+ & \prcAddressBlakeValue             & \cdot & \scenBlake             _{i} \\
-		+ & \prcAddressPointEvaluationValue   & \cdot & \scenPointEvaluation   _{i} \\
-		+ & \prcAddressBlsGOneAddValue        & \cdot & \scenBlsGOneAdd        _{i} \\
-		+ & \prcAddressBlsGOneMsmValue        & \cdot & \scenBlsGOneMsm        _{i} \\
-		+ & \prcAddressBlsGTwoAddValue        & \cdot & \scenBlsGTwoAdd        _{i} \\
-		+ & \prcAddressBlsGTwoMsmValue        & \cdot & \scenBlsGTwoMsm        _{i} \\
-		+ & \prcAddressBlsPairingCheckValue   & \cdot & \scenBlsPairingCheck   _{i} \\
-		+ & \prcAddressBlsMapFpToGOneValue    & \cdot & \scenBlsMapFpToGOne    _{i} \\
-		+ & \prcAddressBlsMapFpTwoToGTwoValue & \cdot & \scenBlsMapFpTwoToGTwo _{i} \\
-		+ & \prcAddressPVerifyValue           & \cdot & \scenPVerify           _{i} \\
-	\end{array} \right]
-\]
-We also define the following
-\[
-	\left\{ \begin{array}{lcl}
-		\scenPrcFailure _{i} & \define &
+		\vspace{2mm}
+		\\
+		\scenPrecompileCommonPrague _{i} & \define &
 		\left[ \begin{array}{l}
-			+ \scenPrcFailureKnownToHub _{i} \\
-			+ \scenPrcFailureKnownToRam _{i} \\
-		\end{array} \right] \vspace{2mm} \\
-		\scenPrcSuccess _{i} & \define &
+			% + \scenEcrecover          _{i} \\
+			% + \scenShaTwo             _{i} \\
+			% + \scenRipemd             _{i} \\
+			% + \scenIdentity           _{i} \\
+			% + \scenModexp             _{i} \\
+			% + \scenEcadd              _{i} \\
+			% + \scenEcmul              _{i} \\
+			% + \scenEcpairing          _{i} \\
+			% + \scenBlake              _{i} \\
+			% + \scenPointEvaluation    _{i} \\
+			+ \scenBlsGOneAdd         _{i} \\
+			+ \scenBlsGOneMsm         _{i} \\
+			+ \scenBlsGTwoAdd         _{i} \\
+			+ \scenBlsGTwoMsm         _{i} \\
+			+ \scenBlsPairingCheck    _{i} \\
+			+ \scenBlsMapFpToGOne     _{i} \\
+			+ \scenBlsMapFpTwoToGTwo  _{i} \\
+			% + \scenPVerify            _{i} \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\scenPrecompileCommonOsaka _{i} & \define &
+		% + \scenEcrecover          _{i} \\
+		% + \scenShaTwo             _{i} \\
+		% + \scenRipemd             _{i} \\
+		% + \scenIdentity           _{i} \\
+		% + \scenModexp             _{i} \\
+		% + \scenEcadd              _{i} \\
+		% + \scenEcmul              _{i} \\
+		% + \scenEcpairing          _{i} \\
+		% + \scenBlake              _{i} \\
+		% + \scenPointEvaluation    _{i} \\
+		% + \scenBlsGOneAdd         _{i} \\
+		% + \scenBlsGOneMsm         _{i} \\
+		% + \scenBlsGTwoAdd         _{i} \\
+		% + \scenBlsGTwoMsm         _{i} \\
+		% + \scenBlsPairingCheck    _{i} \\
+		% + \scenBlsMapFpToGOne     _{i} \\
+		% + \scenBlsMapFpTwoToGTwo  _{i} \\
+		\scenPVerify            _{i}
+		\vspace{2mm}
+		\\
+		\scenPrecompileCommonBls _{i} & \define &
 		\left[ \begin{array}{l}
-			+ \scenPrcSuccessWillRevert _{i} \\
-			+ \scenPrcSuccessWontRevert _{i} \\
-		\end{array} \right] \vspace{2mm} \\
-		\scenPrcScenarioSum _{i} & \define & 
-		\left[ \begin{array}{l}
-			+ \scenPrcFailure _{i} \\
-			+ \scenPrcSuccess _{i} \\
+			% + \scenEcrecover          _{i} \\
+			% + \scenShaTwo             _{i} \\
+			% + \scenRipemd             _{i} \\
+			% + \scenIdentity           _{i} \\
+			% + \scenModexp             _{i} \\
+			% + \scenEcadd              _{i} \\
+			% + \scenEcmul              _{i} \\
+			% + \scenEcpairing          _{i} \\
+			% + \scenBlake              _{i} \\
+			+ \scenPrecompileCommonCancun _{i} \\
+			+ \scenPrecompileCommonPrague _{i} \\
+			% + \scenPVerify            _{i} \\
 		\end{array} \right]
 	\end{array} \right.
-\]
+	\]
+	and
+	\[
+		\scenPrecompileCommonNotIdentity _{i}
+		\define
+		\left[ \begin{array}{l}
+			+ \scenEcrecover           _{i}   \\
+			+ \scenShaTwo              _{i}   \\
+			+ \scenRipemd              _{i}   \\
+			% + \scenIdentity            _{i} \\
+			% + \scenModexp              _{i} \\
+			+ \scenEcadd               _{i}   \\
+			+ \scenEcmul               _{i}   \\
+			+ \scenEcpairing           _{i}   \\
+			% + \scenBlake               _{i} \\
+			+ \scenPrecompileCommonBls _{i}   \\
+			+ \scenPVerify             _{i}   \\
+		\end{array} \right]
+	\]
+	and
+	\[
+		\begin{array}{lcl}
+			\scenPrecompileCommon _{i} & \define &
+			\left[ \begin{array}{l}
+				+ \scenPrecompileCommonNotIdentity _{i} \\
+				+ \scenIdentity                    _{i} \\
+			\end{array} \right]
+			\vspace{2mm} \\
+			& \define &
+			\left[ \begin{array}{l}
+				+ \scenPrecompileCommonLondon _{i} \\
+				+ \scenPrecompileCommonCancun _{i} \\
+				+ \scenPrecompileCommonPrague _{i} \\
+				+ \scenPrecompileCommonOsaka  _{i} \\
+			\end{array} \right]
+		\end{array}
+	\]
+	and
+	\[
+		\scenPrecompileSum_{i}
+		\define
+		\left[ \begin{array}{l}
+			+ \scenPrecompileCommon _{i} \\
+			+ \scenModexp           _{i} \\
+			+ \scenBlake            _{i} \\
+		\end{array} \right]
+	\]
+	We further define
+	\[
+		\scenPrecompileMayOnlyFailInHub _{i}
+		\define
+		\left[ \begin{array}{l}
+			+ \scenEcrecover          _{i} \\
+			+ \scenShaTwo             _{i} \\
+			+ \scenRipemd             _{i} \\
+			+ \scenIdentity           _{i} \\
+			% + \scenModexp             _{i} \\
+			% + \scenEcadd              _{i} \\
+			% + \scenEcmul              _{i} \\
+			% + \scenEcpairing          _{i} \\
+			% + \scenBlake              _{i} \\
+			% + \scenPointEvaluation    _{i} \\
+			% + \scenBlsGOneAdd         _{i} \\
+			% + \scenBlsGOneMsm         _{i} \\
+			% + \scenBlsGTwoAdd         _{i} \\
+			% + \scenBlsGTwoMsm         _{i} \\
+			% + \scenBlsPairingCheck    _{i} \\
+			% + \scenBlsMapFpToGOne     _{i} \\
+			% + \scenBlsMapFpTwoToGTwo  _{i} \\
+			+ \scenPVerify            _{i} \\
+		\end{array} \right]
+	\]
+	and
+	\[
+		\scenPrecompileMayOnlyFailInRam _{i}
+		\define
+		\left[ \begin{array}{l}
+			% + \scenEcrecover          _{i} \\
+			% + \scenShaTwo             _{i} \\
+			% + \scenRipemd             _{i} \\
+			% + \scenIdentity           _{i} \\
+			+ \scenModexp             _{i} \\
+			% + \scenEcadd              _{i} \\
+			% + \scenEcmul              _{i} \\
+			% + \scenEcpairing          _{i} \\
+			% + \scenBlake              _{i} \\
+			% + \scenPointEvaluation    _{i} \\
+			% + \scenBlsGOneAdd         _{i} \\
+			% + \scenBlsGOneMsm         _{i} \\
+			% + \scenBlsGTwoAdd         _{i} \\
+			% + \scenBlsGTwoMsm         _{i} \\
+			% + \scenBlsPairingCheck    _{i} \\
+			% + \scenBlsMapFpToGOne     _{i} \\
+			% + \scenBlsMapFpTwoToGTwo  _{i} \\
+			% + \scenPVerify            _{i} \\
+		\end{array} \right]
+	\]
+	and
+	\[
+		\scenPrecompileWeightedSum _{i}
+		\define
+		\left[ \begin{array}{crcl}
+			+ & \prcAddressEcRecoverValue         & \cdot & \scenEcrecover         _{i} \\
+			+ & \prcAddressShaValue               & \cdot & \scenShaTwo            _{i} \\
+			+ & \prcAddressRipemdValue            & \cdot & \scenRipemd            _{i} \\
+			+ & \prcAddressIdentityValue          & \cdot & \scenIdentity          _{i} \\
+			+ & \prcAddressModexpValue            & \cdot & \scenModexp            _{i} \\
+			+ & \prcAddressEcAddValue             & \cdot & \scenEcadd             _{i} \\
+			+ & \prcAddressEcMulValue             & \cdot & \scenEcmul             _{i} \\
+			+ & \prcAddressEcPairingValue         & \cdot & \scenEcpairing         _{i} \\
+			+ & \prcAddressBlakeValue             & \cdot & \scenBlake             _{i} \\
+			+ & \prcAddressPointEvaluationValue   & \cdot & \scenPointEvaluation   _{i} \\
+			+ & \prcAddressBlsGOneAddValue        & \cdot & \scenBlsGOneAdd        _{i} \\
+			+ & \prcAddressBlsGOneMsmValue        & \cdot & \scenBlsGOneMsm        _{i} \\
+			+ & \prcAddressBlsGTwoAddValue        & \cdot & \scenBlsGTwoAdd        _{i} \\
+			+ & \prcAddressBlsGTwoMsmValue        & \cdot & \scenBlsGTwoMsm        _{i} \\
+			+ & \prcAddressBlsPairingCheckValue   & \cdot & \scenBlsPairingCheck   _{i} \\
+			+ & \prcAddressBlsMapFpToGOneValue    & \cdot & \scenBlsMapFpToGOne    _{i} \\
+			+ & \prcAddressBlsMapFpTwoToGTwoValue & \cdot & \scenBlsMapFpTwoToGTwo _{i} \\
+			+ & \prcAddressPVerifyValue           & \cdot & \scenPVerify           _{i} \\
+		\end{array} \right]
+	\]
+	We also define the following
+	\[
+		\left\{ \begin{array}{lcl}
+			\scenPrcFailure _{i} & \define &
+			\left[ \begin{array}{l}
+				+ \scenPrcFailureKnownToHub _{i} \\
+				+ \scenPrcFailureKnownToRam _{i} \\
+			\end{array} \right] \vspace{2mm} \\
+			\scenPrcSuccess _{i} & \define &
+			\left[ \begin{array}{l}
+				+ \scenPrcSuccessWillRevert _{i} \\
+				+ \scenPrcSuccessWontRevert _{i} \\
+			\end{array} \right] \vspace{2mm} \\
+			\scenPrcScenarioSum _{i} & \define & 
+			\left[ \begin{array}{l}
+				+ \scenPrcFailure _{i} \\
+				+ \scenPrcSuccess _{i} \\
+			\end{array} \right]
+		\end{array} \right.
+	\]
