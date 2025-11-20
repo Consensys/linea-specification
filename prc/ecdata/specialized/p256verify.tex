@@ -122,4 +122,21 @@ We set the following constraints:
                 \If \locInternalChecksPassed & = & 1 ~ \Then \ecdataSuccessBit _{i} \equiv \justifiedByExternalCircuit \\
             \end{array} \right.
         \]
+    \item[\underline{Setting / sanity checking the result:}]
+        we define the following shorthands
+        \[
+            \left\{ \begin{array}{lcl}
+                \locPVerifyResultHi  & \define & \limb _{i + \indexMaxPVerifyData + 1} \\
+                \locPVerifyResultLo  & \define & \limb _{i + \indexMaxPVerifyData + 2} \\
+            \end{array} \right.
+        \]
+        and immediatly impose
+        \[
+            \left\{ \begin{array}{lcl}
+                \locPVerifyResultHi  & = & 0 \\
+                \locPVerifyResultLo  & = & \ecdataSuccessBit _{i} \\        
+            \end{array} \right.
+        \]
+\saNote{}
+The above constraining of the result is a sanity check in case $\csPVerify_{i} \equiv \true$, since in that case an external circuit is already tasked with justifying both the result and the success bit. However, it is necessary to set the result in case $\csPVerify_{i} \equiv \false$ since no call to external circuits is made in that case.  
 \end{description}
