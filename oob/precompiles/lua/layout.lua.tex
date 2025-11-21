@@ -51,10 +51,11 @@
 |                            |            |            |               |                           |                                  |                            |                            |                            |                     |                     |
 |                            | ✓ trusted  | ✓ trusted  | ✓ trusted     | ⟦ π ⟧                     | ⟦ π ⟧                            | ⟦ π ⟧                      | ⟦ π ⟧                      | ⟦ π ⟧                      |                     |                     |
 |----------------------------+------------+------------+---------------+---------------------------+----------------------------------+----------------------------+----------------------------+----------------------------+---------------------+---------------------|
-| ⟦OOB_INST_p256_verify⟧     | callee_gas | cds        | r@c           | hub_success ≡             | return_gas ≡                     | extract_call_data ≡        | dont_extract_call_data ≡   | r@c_nonzero ≡              |                     |                     |
+| ⟦OOB_INST_p256_verify⟧     | callee_gas | cds        | r@c           | hub_success ≡             | return_gas ≡                     | extract_call_data ≡        | empty_call_data ≡          | r@c_nonzero ≡              |                     |                     |
 |                            |            |            |               | . [gas_cost ≤ callee_gas] | .   hub_success                  | .   hub_success            | .   hub_success            | .   [r@c ≠ 0]              |                     |                     |
-|                            |            |            |               |                           | .      ? [callee_gas - gas_cost] | .   ∧ [cds = 160]          | .   ∧ [cds ≠ 160]          |                            |                     |                     |
-|                            |            |            |               |                           | .      : 0                       |                            |                            |                            |                     |                     |
+|                            |            |            |               |                           | .      ? [callee_gas - gas_cost] | .   ∧ [cds = 160]          | .   ∧ [cds = 160]          |                            |                     |                     |
+|                            |            |            |               |                           | .      : 0                       | .   ∧ [cds ≠ 0]            | .   ∧ [cds = 0]            |                            |                     |                     |
+|                            |            |            |               |                           |                                  |                            | .   ≡ <false>              |                            |                     |                     |
 |                            |            |            |               |                           |                                  |                            |                            |                            |                     |                     |
 |                            | ✓ trusted  | ✓ trusted  | ✓ trusted     | ⟦ π ⟧                     | ⟦ π ⟧                            | ⟦ π ⟧                      | ⟦ π ⟧                      | ⟦ π ⟧                      |                     |                     |
 |----------------------------+------------+------------+---------------+---------------------------+----------------------------------+----------------------------+----------------------------+----------------------------+---------------------+---------------------|
@@ -123,8 +124,8 @@ NOTES.
         * ⟦OOB_ecmul⟧            * ⟦OOB_identity⟧         * ⟦OOB_INST_bls_*⟧
   is precisely the same; that of ⟦OOB_INST_p256_verify⟧ is almost the same, see below;
 - ⟦OOB_INST_p256_verify⟧ is ALMOST identical, in terms of its column specification, to the
-  ⟦OOB_INST_pointevaluation⟧ instruction and the ⟦OOB_INST_bls_*⟧ instructions. There is,
-  however, one important difference: for the ⟦OOB_INST_pointevaluation⟧ and the ⟦OOB_INST_bls_*⟧
+  ⟦OOB_INST_pointevaluation⟧ instruction and the ⟦OOB_INST_bls_*⟧ instructions. There are,
+  however, some important differences: for the ⟦OOB_INST_pointevaluation⟧ and the ⟦OOB_INST_bls_*⟧
   it holds that:
   
         hub_success  ⇔  [gas_cost ≤ callee_gas] ∧ [cds is valid]
@@ -134,8 +135,12 @@ NOTES.
         hub_success  ⇔  [gas_cost ≤ callee_gas]
   
 - ⟦OOB_INST_p256_verify⟧ uses the [cds is valid] bit, too;
+- the bit empty_call_data is necessarily FALSE for
+        * ⟦OOB_INST_pointevaluation⟧
+        * ⟦OOB_INST_bls_*⟧
+        * ⟦OOB_INST_p256_verify⟧
 - The ONLY scenario under which a call to the P256_VERIFY precompile may fail is if it isn't given enough gas.
-  Its call data size is wrong, or its call data being malformed only impacts its return data, but not the
+  Its call data size being wrong, or its call data being malformed only impacts its return data, not the
   success of the underlying CALL-type instruction.
 - the ``⟦ π ⟧'' label applies to HUB-module PREDICTIONS which the OOB module is tasked with justifying;
 - the ``✓ trusted'' label applies to "God-Given" input columns;
