@@ -1,25 +1,25 @@
-We settle for every precompile the relevant ``\col{flag sums}'' and ``\col{nsr's}''. 
+We settle for every precompile the relevant ``\col{flag sums}'' and ``\col{nsr's}''.
 A lot of them are the same. We thus introduce some high level shorthands first
 \[
 	\left\{ \begin{array}{lclcr}
-		\locStandardFailureFlagSum & \define & 
+		\locStandardFailureFlagSum & \define &
 		\left[ \begin{array}{cl}
-			+ & \peekScenario  _{i    } \\ 
-			+ & \peekMisc      _{i + 1} \\ 
-			+ & \peekContext   _{i + 2} \\ 
+			+ & \peekScenario  _{i    } \\
+			+ & \peekMisc      _{i + 1} \\
+			+ & \peekContext   _{i + 2} \\
 		\end{array} \right] & \text{and} & \locStandardFailureNsr = 3
 		\vspace{2mm} \\
-		\locStandardSuccessFlagSum & \define & 
+		\locStandardSuccessFlagSum & \define &
 		\left[ \begin{array}{cl}
-			+ & \peekScenario  _{i    } \\ 
-			+ & \peekMisc      _{i + 1} \\ 
-			+ & \peekMisc      _{i + 2} \\ 
-			+ & \peekMisc      _{i + 3} \\ 
-			+ & \peekContext   _{i + 4} \\ 
+			+ & \peekScenario  _{i    } \\
+			+ & \peekMisc      _{i + 1} \\
+			+ & \peekMisc      _{i + 2} \\
+			+ & \peekMisc      _{i + 3} \\
+			+ & \peekContext   _{i + 4} \\
 		\end{array} \right] & \text{and} & \locStandardSuccessNsr = 5 \\
 	\end{array} \right.
 \]
-We now tackle the case of interest: 
+We now tackle the case of interest:
 \begin{description}
 	\item[\underline{\underline{Shorthands for \instEcrecover{}, \instShaTwo{} and \instRipemd{}:}}]
 		for
@@ -38,7 +38,7 @@ We now tackle the case of interest:
 			\end{array} \right.
 		\]
 \end{description}
-\saNote{}
+\saNote{}\label{hub: instruction handling: call: precompiles: flag sums and nsr II: the 2 distinct success scenarios for ECRECOVER}
 There are actually two fundamentally distinct ``success'' scenarios for \instEcrecover{}.
 Recall that ``success'' (i.e. $\scenPrcSuccess \equiv 1$) for \instEcrecover{} simply means that the precompile is provided with sufficient gas.
 A successfull call to the \instEcrecover{} precompile may yet lead to two very distinct scenarios:
@@ -50,7 +50,7 @@ In the first case we \emph{could} get away with fewer rows.
 Indeed, the output of the precompile  is known to be empty and we \emph{could} skip the two miscellaneous-rows that are responsible for
 (\emph{a}) fully moving the return data from a \ecDataMod{} module to a fictitious execution context's \textsc{ram}
 (\emph{b}) doing a (partial) copy of the (freshly transferred) return data to the part of memory in the current execution context made available by the underlying \inst{CALL}-type instruction for that purpose.
-We have chosen \textbf{not} to go for this optimization as it would complexify the computation of \nonStackRows{}. 
+We have chosen \textbf{not} to go for this optimization as it would complexify the computation of \nonStackRows{}.
 The above definitions for flag sums and \col{nsr}'s are therefore somewhat wasteful.
 \begin{description}
 	\item[\underline{\underline{Shorthands for \instIdentity{}:}}] the \instIdentity{} precompile requires special care:
@@ -60,10 +60,10 @@ The above definitions for flag sums and \col{nsr}'s are therefore somewhat waste
 				\locFlagSumIdentityFKTR    & \equiv  & \leftUndefined             \\
 				\locFlagSumIdentitySuccess & \define &
 				\left[ \begin{array}{cl}
-					+ & \peekScenario  _{i    } \\ 
-					+ & \peekMisc      _{i + 1} \\ 
-					+ & \peekMisc      _{i + 2} \\ 
-					+ & \peekContext   _{i + 3} \\ 
+					+ & \peekScenario  _{i    } \\
+					+ & \peekMisc      _{i + 1} \\
+					+ & \peekMisc      _{i + 2} \\
+					+ & \peekContext   _{i + 3} \\
 				\end{array} \right] \vspace{2mm} \\
 				\locNsrIdentityFKTH    & \define & \locStandardFailureNsr \\
 				\locNsrIdentityFKTR    & \equiv  & \leftUndefined         \\
@@ -97,8 +97,8 @@ The above explains the special value attributed to \locFlagSumIdentitySuccess{} 
 				\left[ \begin{array}{cr}
 					+ & \peekScenario _{i     } \\
 					+ & \peekMisc     _{i +  1} \\
-					+ & \peekMisc     _{i +  2} 
-					+   \peekMisc     _{i +  3} 
+					+ & \peekMisc     _{i +  2}
+					+   \peekMisc     _{i +  3}
 					+   \peekMisc     _{i +  4} \\
 					+ & \peekMisc     _{i +  5} \\
 					+ & \peekMisc     _{i +  6} \\
@@ -108,13 +108,13 @@ The above explains the special value attributed to \locFlagSumIdentitySuccess{} 
 				\left[ \begin{array}{cr}
 					+ & \peekScenario _{i     } \\
 					+ & \peekMisc     _{i +  1} \\
-					+ & \peekMisc     _{i +  2} 
-					+   \peekMisc     _{i +  3} 
+					+ & \peekMisc     _{i +  2}
+					+   \peekMisc     _{i +  3}
 					+   \peekMisc     _{i +  4} \\
 					+ & \peekMisc     _{i +  5} \\
 					+ & \peekMisc     _{i +  6} \\
-					+ & \peekMisc     _{i +  7} 
-					+   \peekMisc     _{i +  8} 
+					+ & \peekMisc     _{i +  7}
+					+   \peekMisc     _{i +  8}
 					+   \peekMisc     _{i +  9} \\
 					+ & \peekMisc     _{i + 10} \\
 					+ & \peekMisc     _{i + 11} \\
@@ -133,59 +133,18 @@ The above explains the special value attributed to \locFlagSumIdentitySuccess{} 
 		\locBbs{},
 		\locEbs{}
 		and \locMbs{}.)
-	\item[\underline{\underline{Shorthands for \instEcadd{}, \instEcmul{}, \instEcpairing{} and \instPVerify{}:}}]
-		for
-		\[
-			\loc{xxx} \in \left\{ \loc{ecadd}, ~ \loc{ecmul}, ~ \loc{ecpairing}, ~ \loc{p256\_verify} \right\}
-		\]
-		we set
-		\[
-			\left\{ \begin{array}{lcl}
-				\locFlagSumXxxFKTH    & \define & \locStandardFailureFlagSum \\
-				\locFlagSumXxxFKTR    & \define & \locStandardFailureFlagSum \\
-				\locFlagSumXxxSuccess & \define & \locStandardSuccessFlagSum \\
-				\locNsrXxxFKTH        & \define & \locStandardFailureNsr     \\
-				\locNsrXxxFKTR        & \define & \locStandardFailureNsr     \\
-				\locNsrXxxSuccess     & \define & \locStandardSuccessNsr     \\
-			\end{array} \right.
-		\]
-	\item[\underline{\underline{Shorthands for \instBlake{}:}}] the \instBlake{} precompile requires special care:
-		\[
-			\left\{ \begin{array}{lcl}
-				\locFlagSumBlakeFKTH        & \define & \locStandardFailureFlagSum \\
-				\locFlagSumBlakeFKTR        & \define & 
-				\left[ \begin{array}{cr}
-					+ & \peekScenario _{i    } \\
-					+ & \peekMisc     _{i + 1} \\
-					+ & \peekMisc     _{i + 2} \\
-					+ & \peekContext  _{i + 3} \\
-				\end{array} \right] \\
-				\locFlagSumBlakeSuccess     & \define & 
-				\left[ \begin{array}{cr}
-					+ & \peekScenario _{i    } \\
-					+ & \peekMisc     _{i + 1} \\
-					+ & \peekMisc     _{i + 2} \\
-					+ & \peekMisc     _{i + 3} \\
-					+ & \peekMisc     _{i + 4} \\
-					+ & \peekContext  _{i + 5} \\
-				\end{array} \right] \\
-				\locNsrBlakeFKTH    & \define & \locStandardFailureNsr \\
-				\locNsrBlakeFKTR    & \define & 4                      \\
-				\locNsrBlakeSuccess & \define & 6                      \\
-			\end{array} \right.
-		\]
-\end{description}
-The following shorthands pertain to \blsDataMod{}-precompiles,
-i.e. the precompiles from \cite{EIP-4788} and \cite{EIP-2537}.
-\begin{description}
-	\item[\underline{\underline{Shorthands for \blsDataMod{} precompiles:}}] 
+	\item[\underline{\underline{Shorthands for \instEcadd{}, \instEcmul{}, \instEcpairing{}, \blsDataMod{} precompiles and \instPVerify{}:}}]
 		for
 		\[
 			\loc{xxx} \in
 			\left\{ \begin{array}{r}
-				\loc{point\_evaluation},    ~ \loc{bls\_g1add},           ~ \loc{bls\_g1msm},          \\
-				\loc{bls\_g2add},           ~ \loc{bls\_g2msm},           ~ \loc{bls\_pairing\_check}, \\
-				\loc{bls\_map\_fp\_to\_g1}, ~ \loc{bls\_map\_fp2\_to\_g2}                              \\
+				\loc{ecadd},                ~ \loc{ecmul},                ~ \loc{ecpairing}, \\
+				\loc{point\_evaluation},                                                     \\
+				\loc{bls\_g1\_add},         ~ \loc{bls\_g1\_msm},                            \\
+				\loc{bls\_g2\_add},         ~ \loc{bls\_g2\_msm},                            \\
+				\loc{bls\_pairing\_check},                                                   \\
+				\loc{bls\_map\_fp\_to\_g1}, ~ \loc{bls\_map\_fp2\_to\_g2}                    \\
+				\loc{p256\_verify}                                                           \\
 			\end{array} \right\}
 		\]
 		we set
@@ -197,6 +156,46 @@ i.e. the precompiles from \cite{EIP-4788} and \cite{EIP-2537}.
 				\locNsrXxxFKTH        & \define & \locStandardFailureNsr     \\
 				\locNsrXxxFKTR        & \define & \locStandardFailureNsr     \\
 				\locNsrXxxSuccess     & \define & \locStandardSuccessNsr     \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		Note~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr II: the 2 distinct success scenarios for ECRECOVER})
+		on the ``two fundamentally distinct `success' scenarios for \instEcrecover{}''
+		applies with minor modification to \instPVerify{}, too.
+
+		\saNote{}
+		\instPVerify{}, like \instEcrecover{}, does not permit \scenPrcFailureKnownToRam{},
+		see the definition of \scenPrecompileMayOnlyFailInHub{}
+		in section~(\ref{hub: scenarios: shorthands: precompile})
+		and the associated constraint
+		in section~(\ref{hub: instruction handling: call: precompiles: generalities: admissible failure scenarios}).
+		Yet, the above introduces two associated shorthands:
+		\locFlagSumPVerifyFKTR{} and
+		\locNsrPVerifyFKTR{}.
+		These serve no purpose and won't see any actual use.
+	\item[\underline{\underline{Shorthands for \instBlake{}:}}] the \instBlake{} precompile requires special care:
+		\[
+			\left\{ \begin{array}{lcl}
+				\locFlagSumBlakeFKTH        & \define & \locStandardFailureFlagSum \\
+				\locFlagSumBlakeFKTR        & \define &
+				\left[ \begin{array}{cr}
+					+ & \peekScenario _{i    } \\
+					+ & \peekMisc     _{i + 1} \\
+					+ & \peekMisc     _{i + 2} \\
+					+ & \peekContext  _{i + 3} \\
+				\end{array} \right] \\
+				\locFlagSumBlakeSuccess     & \define &
+				\left[ \begin{array}{cr}
+					+ & \peekScenario _{i    } \\
+					+ & \peekMisc     _{i + 1} \\
+					+ & \peekMisc     _{i + 2} \\
+					+ & \peekMisc     _{i + 3} \\
+					+ & \peekMisc     _{i + 4} \\
+					+ & \peekContext  _{i + 5} \\
+				\end{array} \right] \\
+				\locNsrBlakeFKTH    & \define & \locStandardFailureNsr \\
+				\locNsrBlakeFKTR    & \define & 4                      \\
+				\locNsrBlakeSuccess & \define & 6                      \\
 			\end{array} \right.
 		\]
 \end{description}

@@ -8,7 +8,7 @@
 				+ & \scenEcmul               _{i} \\
 				+ & \scenEcpairing           _{i} \\
 				+ & \scenPrecompileCommonBls _{i} \\
-				+ & \scenPVerify             _{i} \\
+				% + & \scenPVerify             _{i} \\
 			\end{array} \right]
 			& = & 1 \\
 			\scenPrcSuccess   _{i}      & = & 1 \\
@@ -17,7 +17,8 @@
 \end{center}
 We are thus assuming that the present row is the first of the second phase of dealing with one of the following precompiles:
 \instEcadd{}, \instEcmul{}, \instEcpairing{} or one of the
-\texttt{BLS} precompiles (including \instPointEvaluation{}) or \instPVerify{}.
+\texttt{BLS} precompiles (including \instPointEvaluation{}).
+% or \instPVerify{}.
 We are also assuming that $\scenPrcSuccess \equiv 1$.
 We remind the reader that success of any of these precompiles means that the precompile was
 (\emph{a}) provided with sufficient gas
@@ -33,6 +34,7 @@ We remind the reader that success of any of these precompiles means that the pre
 				\locNontrivialMul     & \define & \locOobResultExtractCallData & \cdot & \scenEcmul     _{i} \\
 				\locNontrivialPairing & \define & \locOobResultExtractCallData & \cdot & \scenEcpairing _{i} \\
 				\locTrivialPairing    & \define & \locOobResultEmptyCallData   & \cdot & \scenEcpairing _{i} \\
+				% \locNontrivialPVerify & \define & \locOobResultExtractCallData & \cdot & \scenPVerify   _{i} \\
 			\end{array} \right.
 		\]
 	\item[\underline{\underline{Miscellaneous-row $n^°(i + \prcStandardSuccessSecondMiscRowOffset)$:}}]
@@ -57,7 +59,7 @@ We remind the reader that success of any of these precompiles means that the pre
 						+ & \locNontrivialPairing         \\
 						+ & \locTrivialPairing            \\
 						+ & \scenPrecompileCommonBls _{i} \\
-						+ & \scenPVerify             _{i} \\
+						% + & \locNontrivialPVerify         \\
 					\end{array} \right]
 				\]
 				\saNote{}
@@ -80,11 +82,11 @@ We remind the reader that success of any of these precompiles means that the pre
 	\renewcommand{\arraystretch}{1.5}
 	\begin{tabular}{|ll|}
 		\hline
-		\underline{\instEcadd{}     case:}     & the precompile was provided with nonempty call data \\
-		\underline{\instEcmul{}     case:}     & the precompile was provided with nonempty call data \\
-		\underline{\instEcpairing{} case:}     & in \textbf{all} cases                               \\
-		\underline{\blsDataMod{}-precompiles:} & in \textbf{all} cases                               \\
-		\underline{\instPVerify{}   case:}     & in \textbf{all} cases                               \\ \hline
+		\underline{\instEcadd{}     case:}     & the precompile was provided with nonempty call data          \\
+		\underline{\instEcmul{}     case:}     & the precompile was provided with nonempty call data          \\
+		\underline{\instEcpairing{} case:}     & in \textbf{all} cases                                        \\
+		\underline{\blsDataMod{}-precompiles:} & in \textbf{all} cases                                        \\
+		% \underline{\instPVerify{}   case:}     & the precompile was provided with call data of the right size \\ \hline
 	\end{tabular}
 \end{center}
 We remind the reader that calling \instEcpairing{} with empty call data is a success case for that precompile.
@@ -100,12 +102,12 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 				\If $\locTrivialPairing = 1$ \Then we impose
 				\[
 					\setMmuInstructionParametersMstore {
-						anchorRow      = i                                        ,
-						relOffset      = \prcStandardSuccessSecondMiscRowOffset   ,
-						targetId       = 1 + \hubStamp _{i}                       ,
-						targetOffsetLo = 0                                        ,
-						limbOne        = \texttt{0x\,00} \; \cdots \; \texttt{00} ,
-						limbTwo        = \texttt{0x\,00} \; \cdots \; \texttt{01} ,
+						anchorRow      = i                                            ,
+						relOffset      = \prcStandardSuccessSecondMiscRowOffset       ,
+						targetId       = 1 + \hubStamp _{i}                           ,
+						targetOffsetLo = 0                                            ,
+						limbOne        = \utt{0x\,00}\, \utt{00}\, \cdots \, \utt{00} ,
+						limbTwo        = \utt{0x\,00}\, \utt{00}\, \cdots \, \utt{01} ,
 					}
 				\]
 				\saNote{}
@@ -123,7 +125,7 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 						+ & \locNontrivialMul             \\
 						+ & \locNontrivialPairing         \\
 						+ & \scenPrecompileCommonBls _{i} \\
-						+ & \scenPVerify             _{i} \\
+						% + & \scenPVerify             _{i} \\
 					\end{array} \right]
 					= 1
 				\]
@@ -155,7 +157,7 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 						+ & \resultSizeInBytesBlsPairingCheck   & \!\!\!\cdot\!\!\! & \scenBlsPairingCheck    _{i} \\
 						+ & \resultSizeInBytesBlsMapFpToGOne    & \!\!\!\cdot\!\!\! & \scenBlsMapFpToGOne     _{i} \\
 						+ & \resultSizeInBytesBlsMapFpTwoToGTwo & \!\!\!\cdot\!\!\! & \scenBlsMapFpTwoToGTwo  _{i} \\
-						+ & \resultSizeInBytesPVerify           & \!\!\!\cdot\!\!\! & \scenPVerify            _{i} \\
+						% + & \resultSizeInBytesPVerify           & \!\!\!\cdot\!\!\! & \scenPVerify            _{i} \\
 					\end{array} \right]
 				\]
 				\locMmuExoSum{} determines from which ``data'' module to extract return data and is defined as
@@ -166,7 +168,7 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 						+ & \exoWeightEcdata  & \!\!\!\cdot\!\!\! & \locNontrivialMul             \\
 						+ & \exoWeightEcdata  & \!\!\!\cdot\!\!\! & \locNontrivialPairing         \\
 						+ & \exoWeightBlsdata & \!\!\!\cdot\!\!\! & \scenPrecompileCommonBls _{i} \\
-						+ & \exoWeightEcdata  & \!\!\!\cdot\!\!\! & \scenPVerify _{i}             \\
+						% + & \exoWeightEcdata  & \!\!\!\cdot\!\!\! & \scenPVerify _{i}             \\
 					\end{array} \right]
 				\]
 				\locMmuPhase{} provides extra data to locate the result portion (as opposed to the input portion)
@@ -185,22 +187,22 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 						+ & \phaseBlsPairingCheckResult   & \!\!\!\cdot\!\!\! & \scenBlsPairingCheck    _{i} \\
 						+ & \phaseBlsMapFpToGOneResult    & \!\!\!\cdot\!\!\! & \scenBlsMapFpToGOne     _{i} \\
 						+ & \phaseBlsMapFpTwoToGTwoResult & \!\!\!\cdot\!\!\! & \scenBlsMapFpTwoToGTwo  _{i} \\
-						+ & \phasePVerifyResult           & \!\!\!\cdot\!\!\! & \scenPVerify            _{i} \\
+						% + & \phasePVerifyResult           & \!\!\!\cdot\!\!\! & \scenPVerify            _{i} \\
 					\end{array} \right]
 				\]
 				\saNote{}
 				Recall that the return data \textbf{o} of a successful call to the
 				\instEcrecover{}
 				precompile which successfully recovers an address
-				is a $\redm{32}$ byte string $\textbf{o} \in \mathbb{B}_{32}$
+				is a $\evmWordSize$ byte string $\textbf{o} \in \mathbb{B}_{\evmWordSize}$
 				composed of 12 (leading) zero bytes followed by 20 bytes making up the recovered Ethereum public address.
 				\specTodo{} move this to some \instEcrecover{} section.
 
 				\saNote{} \label{hub: instruction handling: call: precompiles: ecadd ecmul ecpairing and bls: success: no data extraction for ecadd ecmul if empty call data}
 				We remind the reader that \textsc{ram} segments (associated to a nonzero context number) are initialized as \textbf{empty}.
 				Since the case of \textbf{empty call data} yields the zero string in
-				$\mathbb{B}_{\phaseEcaddResult}$ and
-				$\mathbb{B}_{\phaseEcmulResult}$
+				$\mathbb{B} _{\phaseEcaddResult}$ and
+				$\mathbb{B} _{\phaseEcmulResult}$
 				for
 				\instEcadd{} and
 				\instEcmul{} respectively.
@@ -266,7 +268,7 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 							+ & \resultSizeInBytesBlsPairingCheck    & \!\!\!\cdot\!\!\! & \scenBlsPairingCheck   _{i} \\
 							+ & \resultSizeInBytesBlsMapFpToGOne     & \!\!\!\cdot\!\!\! & \scenBlsMapFpToGOne    _{i} \\
 							+ & \resultSizeInBytesBlsMapFpTwoToGTwo  & \!\!\!\cdot\!\!\! & \scenBlsMapFpTwoToGTwo _{i} \\
-							+ & \resultSizeInBytesPVerify            & \!\!\!\cdot\!\!\! & \scenPVerify           _{i} \\
+							% + & \resultSizeInBytesPVerify            & \!\!\!\cdot\!\!\! & \scenPVerify           _{i} \\
 						\end{array} \right]
 					\]
 					\saNote{}
