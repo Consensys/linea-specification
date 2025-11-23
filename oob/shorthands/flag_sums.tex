@@ -1,0 +1,125 @@
+We use the following shorthands.
+The first refers to all ``opcode'' related \oobMod{}-instructions
+\[
+	\locInstFlagSum _{i} \define
+	\left[ \begin{array}{cl}
+		+ & \oobInstIsJump       _{i} \\
+		+ & \oobInstIsJumpI      _{i} \\
+		+ & \oobInstIsRdc        _{i} \\
+		+ & \oobInstIsCdl        _{i} \\
+		+ & \oobInstIsXcall      _{i} \\
+		+ & \oobInstIsCall       _{i} \\
+		+ & \oobInstIsXcreate    _{i} \\
+		+ & \oobInstIsCreate     _{i} \\
+		+ & \oobInstIsSstore     _{i} \\
+		+ & \oobInstIsDeployment _{i} \\
+	\end{array} \right]
+\]
+The next few refer to ``common precompile'' related \oobMod{}-instructions
+\[
+	\left\{ \begin{array}{lcl}
+		\locPrcFlagSumCommon _{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \locPrcFlagSumLondonCommonPrecompiles _{i} \\
+			+ & \locFlagSumCancunPrecompiles          _{i} \\
+			+ & \locFlagSumPraguePrecompiles          _{i} \\
+			+ & \locFlagSumOsakaPrecompiles           _{i} \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\locPrcFlagSumLondonCommonPrecompiles _{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \oobInstIsEcrecover         _{i} \\
+			+ & \oobInstIsShaTwo            _{i} \\
+			+ & \oobInstIsRipemd            _{i} \\
+			+ & \oobInstIsIdentity          _{i} \\
+			+ & \oobInstIsEcadd             _{i} \\
+			+ & \oobInstIsEcmul             _{i} \\
+			+ & \oobInstIsEcpairing         _{i} \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\locFlagSumCancunPrecompiles _{i} & \define & \oobInstIsPointEvaluation _{i} \\
+		\vspace{2mm} \\
+		\locFlagSumPraguePrecompiles _{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \locFlagSumPraguePrecompilesFixedSize    _{i} \\
+			+ & \locFlagSumPraguePrecompilesVariableSize _{i} \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\locFlagSumPraguePrecompilesFixedSize _{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \oobInstIsBlsGOneAdd        _{i}  \\
+			% + & \oobInstIsBlsGOneMsm        _{i}  \\
+			+ & \oobInstIsBlsGTwoAdd        _{i}  \\
+			% + & \oobInstIsBlsGTwoMsm        _{i}  \\
+			% + & \oobInstIsBlsPairingCheck   _{i}  \\
+			+ & \oobInstIsBlsMapFpToGOne    _{i}  \\
+			+ & \oobInstIsBlsMapFpTwoToGTwo _{i}  \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\locFlagSumPraguePrecompilesVariableSize _{i} & \define &
+		\left[ \begin{array}{cl}
+			% + & \oobInstIsBlsGOneAdd        _{i}  \\
+			+ & \oobInstIsBlsGOneMsm        _{i}  \\
+			% + & \oobInstIsBlsGTwoAdd        _{i}  \\
+			+ & \oobInstIsBlsGTwoMsm        _{i}  \\
+			+ & \oobInstIsBlsPairingCheck   _{i}  \\
+			% + & \oobInstIsBlsMapFpToGOne    _{i}  \\
+			% + & \oobInstIsBlsMapFpTwoToGTwo _{i}  \\
+		\end{array} \right]
+		\vspace{2mm} \\
+		\locFlagSumOsakaPrecompiles _{i} & \define & \oobInstIsPVerify _{i}
+		\\
+	\end{array} \right.
+\]
+the next few relate to ``uncommon precompile'' related \oobMod{}-instructions
+\[
+	\left\{ \begin{array}{lcl}
+		\locPrcFlagSumBlake _{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \oobInstIsBlakeCds    _{i} \\
+			+ & \oobInstIsBlakeParams _{i} \\
+		\end{array} \right] \vspace{2mm} \\
+		\locPrcFlagSumModexp _{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \oobInstIsModexpCds     _{i} \\
+			+ & \oobInstIsModexpXbs     _{i} \\
+			+ & \oobInstIsModexpLead    _{i} \\
+			+ & \oobInstIsModexpPricing _{i} \\
+			+ & \oobInstIsModexpExtract _{i} \\
+		\end{array} \right]
+	\end{array} \right.
+\]
+\saNote{}
+What we dub ``\textbf{common} precompiles'' are those precompiles that
+can be given a mostly identical (common) treatment in the present module.
+It does not refer to any other interpretation of ``common'' e.g. to
+the frequency at which such precompiles are called upon \dots{}
+Similarly what we dub ``\textbf{uncommon} precompiles'' are those precompiles
+that evade this simple, uniform treatment.
+
+\saNote{} 
+If the \textsc{Ethereum} network configuration is at the \texttt{XXX} hard fork, one \emph{may} further impose
+\[
+	\locFlagSumYYYPrecompiles _{i} = 0 \qquad (\sanityCheck)
+\]
+thereby preventing \texttt{YYY}-specific precompiles to be executed, where \texttt{YYY} is every fork that is beyond \texttt{XXX}.
+This isn't strictly speaking necessary, as the \trmMod{} won't recognize addresses in the set
+$[\texttt{0x\,0b}..\texttt{0x\,11}] \cup [\texttt{0x\,100}]$
+as precompile addresses, hence the sanity check mark.
+
+we also set
+\[
+	\left\{ \begin{array}{lcl}
+		\locPrcFlagSum _{i} & \define &
+		\left[ \begin{array}{cl}
+			+ & \locPrcFlagSumCommon _{i} \\
+			+ & \locPrcFlagSumBlake  _{i} \\
+			+ & \locPrcFlagSumModexp _{i} \\
+		\end{array} \right] \vspace{2mm} \\
+		\flagSum _{i}       & \define &
+		\left[ \begin{array}{cl}
+			+ & \locInstFlagSum _{i} \\
+			+ & \locPrcFlagSum  _{i} \\
+		\end{array} \right] \\
+	\end{array} \right.
+\]

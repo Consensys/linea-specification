@@ -10,18 +10,18 @@
 We introduce the following (local) shorthands:
 \[
     \left\{ \begin{array}{lclr}
-        \locHHi & \define & \ecdataLimb_{i}     \\
-        \locHLo & \define & \ecdataLimb_{i + 1} \\
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        \locRHi & \define & \ecdataLimb_{i + 2} \\
-        \locRLo & \define & \ecdataLimb_{i + 3} \\
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        \locSHi & \define & \ecdataLimb_{i + 4} \\
-        \locSLo & \define & \ecdataLimb_{i + 5} \\
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        \locHHi & \define & \ecdataLimb_{i}      \\
+        \locHLo & \define & \ecdataLimb_{i + 1}  \\
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        \locRHi & \define & \ecdataLimb_{i + 2}  \\
+        \locRLo & \define & \ecdataLimb_{i + 3}  \\
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        \locSHi & \define & \ecdataLimb_{i + 4}  \\
+        \locSLo & \define & \ecdataLimb_{i + 5}  \\
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         \locQXHi & \define & \ecdataLimb_{i + 6} \\
         \locQXLo & \define & \ecdataLimb_{i + 7} \\
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         \locQYHi & \define & \ecdataLimb_{i + 8} \\
         \locQYLo & \define & \ecdataLimb_{i + 9} \\
     \end{array} \right.
@@ -64,10 +64,10 @@ We set the following constraints:
         we impose
         \[
             \wcpCallToLt {
-                anchorRow = i        ,
-                relOffset = 2        ,
-                argOneHi  = \locSHi  ,
-                argOneLo  = \locSLo  ,
+                anchorRow = i         ,
+                relOffset = 2         ,
+                argOneHi  = \locSHi   ,
+                argOneLo  = \locSLo   ,
                 argTwoHi  = \secprNHi ,
                 argTwoLo  = \secprNLo ,
             }
@@ -90,21 +90,21 @@ We set the following constraints:
         \[
             \locSIsPositive \define 1 - \wcpRes _{i + 3}
         \]
-        \item[\underline{Row $n^°(i+4)$:}]
+        \item[\underline{Row $n^°(i + 4)$:}]
         we impose
         \[
               \callToROneMembership {
-                  anchorRow        = i                      ,
-                  relOffset        = 4                      ,
-                  xHi              = \locQXHi               ,
-                  xLo              = \locQXLo               ,
-                  yHi              = \locQYHi               ,
-                  yLo              = \locQYLo               ,
+                  anchorRow = i        ,
+                  relOffset = 4        ,
+                  xHi       = \locQXHi ,
+                  xLo       = \locQXLo ,
+                  yHi       = \locQYHi ,
+                  yLo       = \locQYLo ,
               }
         \]
         as well as define the shorthand
         \[
-            \locROneMembership  \define \hurdle_{i+4}
+            \locROneMembership  \define \hurdle _{i + 4}
         \]
     \item[\underline{Justifying the \ecdataSuccessBit{}:}]
         we define the following shorthand
@@ -122,4 +122,27 @@ We set the following constraints:
                 \If \locInternalChecksPassed & = & 1 ~ \Then \ecdataSuccessBit _{i} \equiv \justifiedByExternalCircuit \\
             \end{array} \right.
         \]
+    \item[\underline{Setting / sanity checking the result:}]
+        we define the following shorthands
+        \[
+            \left\{ \begin{array}{lcl}
+                \locPVerifyResultHi  & \define & \limb _{i + \indexMaxPVerifyData + 1} \\
+                \locPVerifyResultLo  & \define & \limb _{i + \indexMaxPVerifyData + 2} \\
+            \end{array} \right.
+        \]
+        and immediatly impose
+        \[
+            \left\{ \begin{array}{lcl}
+                \locPVerifyResultHi & = & 0                      \\
+                \locPVerifyResultLo & = & \ecdataSuccessBit _{i} \\
+            \end{array} \right.
+        \]
+\saNote{}
+The above constraining of the result is a sanity check in case $\csPVerify _{i} \equiv \true$,
+since in that case an external circuit is already tasked with justifying both the result and the success bit.
+In case $\csPVerify _{i} \equiv \false$ there is no reason, really, to set the result.
+No call to external circuits is made in that case, so the result is \emph{a priori} completely unconstrained.
+Also th result won't be read, nor transferred anywhere (fully or otherwise).
+It would therefore be harmless to leave the result unconstrained.
+We set it to zero for definiteness.
 \end{description}
