@@ -377,7 +377,7 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 							\miscExpFlag _{i + \prcModexpLeadRowOffset} & = & \locExtractLeadingWord \quad \undefinedStar \\
 							\miscMmuFlag _{i + \prcModexpLeadRowOffset} & = & \locExtractLeadingWord \quad \undefinedStar \\
 							\miscMxpFlag _{i + \prcModexpLeadRowOffset} & = & \rZero                                   \\
-							\miscOobFlag _{i + \prcModexpLeadRowOffset} & = & \rOne                                    \\
+							\miscOobFlag _{i + \prcModexpLeadRowOffset} & = & \locAllByteSizesAreInBounds              \\
 							\miscStpFlag _{i + \prcModexpLeadRowOffset} & = & \gZero                                   \\
 						\end{array} \right.
 					\]
@@ -390,7 +390,7 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 						\left\{ \begin{array}{lclr}
 							\miscExpFlag _{i + \prcModexpLeadRowOffset} & = & \locExtractLeadingWord \quad \undefinedStar \\
 							\miscMmuFlag _{i + \prcModexpLeadRowOffset} & = & \locExtractLeadingWord \quad \undefinedStar \\
-							\miscOobFlag _{i + \prcModexpLeadRowOffset} & = & \rOne                                    \\
+							\miscOobFlag _{i + \prcModexpLeadRowOffset} & = & \locAllByteSizesAreInBounds              \\
 							\multicolumn{3}{l}{
 								\left[ \begin{array}{cl}
 									+ \!\!\! & \miscMxpFlag _{i + \prcModexpLeadRowOffset} \\
@@ -403,11 +403,16 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 					We define the following shorthands
 					\[
 						\left\{ \begin{array}{lcl}
-							\locCallExpForModexpToAnalyzeLeadingWord & \define & \miscExpFlag _{i + \prcModexpLeadRowOffset} \\
-							\locCallMmuForModexpToExtractLeadingWord & \define & \miscMmuFlag _{i + \prcModexpLeadRowOffset} \\
+							\locCallOobForModexpForLeadWordExtractionAnalysis & \define & \miscOobFlag _{i + \prcModexpLeadRowOffset} \\
+							\locCallExpForModexpToAnalyzeLeadingWord          & \define & \miscExpFlag _{i + \prcModexpLeadRowOffset} \\
+							\locCallMmuForModexpToExtractLeadingWord          & \define & \miscMmuFlag _{i + \prcModexpLeadRowOffset} \\
 						\end{array} \right.
 					\]
+					\saNote{}
+					\locCallOobForModexpForLeadWordExtractionAnalysis{} is logically equivalent to
+					\locAllByteSizesAreInBounds{}.
 				\item[\underline{Setting \oobMod{} values:}]
+					\If $\locCallOobForModexpForLeadWordExtractionAnalysis = 1$ \Then
 					we impose
 					\[
 						\setOobInstructionModexpLead {
@@ -496,19 +501,27 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 								relOffset = \prcModexpPricingRowOffset ,
 							}
 							=
-							\miscOobWeight
+							\miscOobWeight \cdot \locAllByteSizesAreInBounds
 						\]
 						in other words
 						\[
 							\left\{ \begin{array}{lclr}
-								\miscExpFlag _{i + \prcModexpPricingRowOffset} & = & \gZero & (\sanityCheck) \\
-								\miscMmuFlag _{i + \prcModexpPricingRowOffset} & = & \rZero & (\sanityCheck) \\
-								\miscMxpFlag _{i + \prcModexpPricingRowOffset} & = & \rZero & (\sanityCheck) \\
-								\miscOobFlag _{i + \prcModexpPricingRowOffset} & = & \rOne  & (\sanityCheck) \\
-								\miscStpFlag _{i + \prcModexpPricingRowOffset} & = & \gZero & (\sanityCheck) \\
+								\miscExpFlag _{i + \prcModexpPricingRowOffset} & = & \gZero                      & (\sanityCheck) \\
+								\miscMmuFlag _{i + \prcModexpPricingRowOffset} & = & \rZero                      & (\sanityCheck) \\
+								\miscMxpFlag _{i + \prcModexpPricingRowOffset} & = & \rZero                      & (\sanityCheck) \\
+								\miscOobFlag _{i + \prcModexpPricingRowOffset} & = & \locAllByteSizesAreInBounds & (\sanityCheck) \\
+								\miscStpFlag _{i + \prcModexpPricingRowOffset} & = & \gZero                      & (\sanityCheck) \\
 							\end{array} \right.
 						\]
+						and we set
+						\[
+							\locCallOobForModexpPricing \define \miscOobFlag _{i + \prcModexpPricingRowOffset} \\
+						\]
+						\saNote{}
+						\locCallOobForModexpPricing{} is logically equivalent to
+						\locAllByteSizesAreInBounds{}.
 					\item[\underline{Setting \oobMod{} values:}]
+						\If $\locCallOobForModexpPricing = 1$ \Then
 						we impose
 						\[
 							\setOobInstructionModexpPricing {
@@ -538,6 +551,12 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 						\locPrcReturnGas _{i} & = & \locReturnGas  & \cdot & \locAllByteSizesAreInBounds \\
 					\end{array} \right.
 				\]
+				\saNote{}
+				Given the automatic vanishing constraints from
+				section~(\ref{hub: misc: automatic vanishing: vanishing})
+				there really is no need to condition the above shorthands
+				by \locAllByteSizesAreInBounds{}.
+				We do it regardless for clarity.
 		\end{description}
 		\saNote{} The above equation involving \scenPrcFailure{} and \locPrcReturnGas{} is how we justify the presence/absence of failure due to insufficient gas and the amount of returned gas.
 
