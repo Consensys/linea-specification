@@ -13,17 +13,18 @@ We are thus assuming that the present row is the first of the second phase of de
 \instRipemd{},
 \instIdentity{},
 \instEcadd{},
-\instEcmul{} or
+\instEcmul{},
 \instEcpairing{}
 precompiles or with the ``\blsDataMod{}'' precompiles i.e.
-\instPointEvaluation{}
-\instBlsGOneAdd{}
-\instBlsGOneMsm{}
-\instBlsGTwoAdd{}
-\instBlsGTwoMsm{}
-\instBlsPairingCheck{}
-\instBlsMapFpToGOne{} or
-\instBlsMapFpTwoToGTwo{}
+\instPointEvaluation{},
+\instBlsGOneAdd{},
+\instBlsGOneMsm{},
+\instBlsGTwoAdd{},
+\instBlsGTwoMsm{},
+\instBlsPairingCheck{},
+\instBlsMapFpToGOne{},
+\instBlsMapFpTwoToGTwo{} or
+\instPVerify{} precompile.
 As previously remarked,
 see note~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr II: the prc scenario row is followed by a misc row}),
 the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcCommonMiscRowOffset)$.
@@ -89,6 +90,7 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 						+ & \oobInstBlsPairingCheck   & \cdot & \scenBlsPairingCheck   _{i} \\
 						+ & \oobInstBlsMapFpToGOne    & \cdot & \scenBlsMapFpToGOne    _{i} \\
 						+ & \oobInstBlsMapFpTwoToGTwo & \cdot & \scenBlsMapFpTwoToGTwo _{i} \\
+						+ & \oobInstPVerify           & \cdot & \scenPVerify           _{i} \\
 
 					\end{array} \right]
 				\]
@@ -122,12 +124,13 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 				\]
 				See section~(\ref{oob: populating: common precompiles}) for more details.
 
-				\saNote{} \label{hub: instruction handling: call: precompiles: common: generalities: sanity checks for BLS precompiles}
-				\If $\scenPrecompileCommonBls _{i} = 1$ \Then one expects
+				\saNote{} \label{hub: instruction handling: call: precompiles: common: generalities: sanity checks for BLS precompiles and P256_Verify}
+				\If $\scenPrecompileCommonBls _{i} + \scenPVerify _{i} = 1$ \Then one expects
 				\begin{enumerate}
 					\item $\locOobResultExtractCallData = \locOobResultHubSuccess$ \quad (\sanityCheck)
 					\item $\locOobResultEmptyCallData   = 0$ \quad (\sanityCheck)
 				\end{enumerate}
+				see note~(\ref{hub: instruction handling: call: precompiles: common: generalities: empty call data in well formed data shorthand for BLS precompiles and P256Verify})
 			\item[\underline{Setting \mmuMod{} instruction:}]
 				\If $\miscMmuFlag_{i + \prcCommonMiscRowOffset} = 1$ \Then we impose that
 				\begin{enumerate}
@@ -172,6 +175,7 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 						+ & \redm{96}  & \cdot & \scenEcmul               _{i} \\
 						+ & \locPrcCds & \cdot & \scenEcpairing           _{i} \\
 						+ & \locPrcCds & \cdot & \scenPrecompileCommonBls _{i} \\
+						+ & \locPrcCds & \cdot & \scenPVerify             _{i} \\
 					\end{array} \right]
 				\]
 				and
@@ -186,6 +190,7 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 						+ & \exoWeightEcdata  & \cdot & \scenEcmul               _{i} \\
 						+ & \exoWeightEcdata  & \cdot & \scenEcpairing           _{i} \\
 						+ & \exoWeightBlsdata & \cdot & \scenPrecompileCommonBls _{i} \\
+						+ & \exoWeightEcdata  & \cdot & \scenPVerify             _{i} \\
 					\end{array} \right]
 				\]
 				and
@@ -207,6 +212,7 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 						+ & \phaseBlsPairingCheckData   & \cdot & \scenBlsPairingCheck   _{i} \\
 						+ & \phaseBlsMapFpToGOneData    & \cdot & \scenBlsMapFpToGOne    _{i} \\
 						+ & \phaseBlsMapFpTwoToGTwoData & \cdot & \scenBlsMapFpTwoToGTwo _{i} \\
+						+ & \phasePVerifyData           & \cdot & \scenPVerify           _{i} \\
 					\end{array} \right]
 				\]
 				\saNote{}
@@ -248,7 +254,7 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 						\saNote{}
 						We finish by reminding that from the point of view of the \hubMod{} the bit $\miscMmuSuccessBit_{i + \prcCommonMiscRowOffset}$ is a \textbf{prediction}.
 						This prediction will be borne out in the \ecDataMod{} module.
-					\item[\underline{\instEcadd{}, \instEcmul{} and \instEcpairing{} as well as \inst{BLS}-precompile specific:}]
+					\item[\underline{\instEcadd{}, \instEcmul{} and \instEcpairing{} as well as \inst{BLS}-precompile and \instPVerify{} specific:}]
 						we set
 						\[
 							\left\{ \begin{array}{lcl}
@@ -262,7 +268,19 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 						\]
 						\saNote{}
 						These bits will be used in the processing of \instEcadd{}, \instEcmul{} and \instEcpairing{}
-						as well as the \inst{BLS}-precompiles (i.e. the precompiles whose flags go into the \scenPrecompileCommonBls{} shorthand.)
+						as well as the \inst{BLS}-precompiles (i.e. the precompiles whose flags go into the \scenPrecompileCommonBls{} shorthand) and \instPVerify{}.
+
+						\saNote{}\label{hub: instruction handling: call: precompiles: common: generalities: empty call data in well formed data shorthand for BLS precompiles and P256Verify}
+						Our definition of the \locWellFormedData{} shorthand may seem blatantly wrong, as it implies in particular that
+						$\locWellFormedData \equiv \true$ whenever $\locOobResultEmptyCallData \equiv \true$.
+						This would explicitly clash with the specifications of \instPointEvaluation{}, the \inst{BLS}-precompiles and \instPVerify{},
+						which are all required to throw an exception when called with empty call data.
+						Surely one must insist on having $\locWellFormedData{} \equiv false$ in those cases.
+						Despite appearances, this will actually be the case.
+						Indeed the \oobMod{}-module \emph{always} outputs $\locOobResultEmptyCallData \equiv \false$ for these precompiles,
+						even when their call data happens to be empty,
+						see section~(\ref{oob: precompiles: common precompiles: generalities}).
+						Thus, the inclusion of \locOobResultEmptyCallData{} as a subcase of \locWellFormedData{} is unproblematic even for these precompiles.
 
 						\saNote{}
 						The elliptic curve precompiles
@@ -307,7 +325,7 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 				\locMmuWellFormedData{}.
 				As the names suggest \locMmuRecoverSuccess{} lets the \hubMod{} module know whether recovery of a public address was successful in case of a \inst{CALL} to \instEcrecover{}.
 				As the names suggest \locMmuWellFormedData{} lets the \hubMod{} module know whether the input data to \instEcadd{}, \instEcmul{} or \instEcpairing{}
-				as well as the \inst{BLS}-precompiles,
+				as well as the \inst{BLS}-precompiles and \instPVerify{},
 				is well formed.
 			\item[\underline{Justifying scenario success / failure predictions:}]
 				\scenPrcSuccess{}, \scenPrcFailureKnownToHub{} and \scenPrcFailureKnownToRam{} are, by construction, exclusive binary columns;
@@ -338,6 +356,7 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 							+ & \scenEcmul               _{i} \\
 							+ & \scenEcpairing           _{i} \\
 							+ & \scenPrecompileCommonBls _{i} \\
+							+ & \scenPVerify             _{i} \\
 						\end{array} \right] \\
 					\end{array} \right]
 				\]
@@ -376,6 +395,7 @@ the current scenario-row $i$ will be followed by a miscellaneous-row $(i + \prcC
 							+ & \scenEcmul               _{i} \\
 							+ & \scenEcpairing           _{i} \\
 							+ & \scenPrecompileCommonBls _{i} \\
+							+ & \scenPVerify             _{i} \\
 						\end{array} \right] \\
 					\end{array} \right]
 				\]
