@@ -1,0 +1,139 @@
+We define a series of simple parametrized constraint systems for instructions that are sent to the \addMod{} module, the \modMod{} module and the \wcpMod{} module.
+Let $\relof$ be a small nonnegative integer.
+\[
+	\hspace*{-0.5cm}
+	\left\{ \begin{array}{lcl}
+		\oobCallToAdd
+		{i}{\relof}
+		{\locArgOneHi}{\locArgOneLo}
+		{\locArgTwoHi}{\locArgTwoLo}
+		& \iff &
+		\left\{ \begin{array}{lcl}
+			\locLookupWeightedSum         _{i + \relof}  &  =  &  \locAdd      \\
+			\outgoingInst                 _{i + \relof}  &  =  &  \inst{ADD} \\
+			\outgoingData       {1}       _{i + \relof}  &  =  &  \locArgOneHi \\
+			\outgoingData       {2}       _{i + \relof}  &  =  &  \locArgOneLo \\
+			\outgoingData       {3}       _{i + \relof}  &  =  &  \locArgTwoHi \\
+			\outgoingData       {4}       _{i + \relof}  &  =  &  \locArgTwoLo \\
+		\end{array} \right. \vspace{2mm} \\
+		\callToDiv {
+			anchorRow  = i            ,
+			relOffset  = \relof       ,
+			dividendHi = \locArgOneHi ,
+			dividendLo = \locArgOneLo ,
+			divisorHi  = \locArgTwoHi ,
+			divisorLo  = \locArgTwoLo ,
+		}
+		& \iff &
+		\left\{ \begin{array}{lcl}
+			\locLookupWeightedSum         _{i + \relof}  &  =  &  \locMod      \\
+			\outgoingInst                 _{i + \relof}  &  =  &  \inst{DIV} \\
+			\outgoingData       {1}       _{i + \relof}  &  =  &  \locArgOneHi \\
+			\outgoingData       {2}       _{i + \relof}  &  =  &  \locArgOneLo \\
+			\outgoingData       {3}       _{i + \relof}  &  =  &  \locArgTwoHi \\
+			\outgoingData       {4}       _{i + \relof}  &  =  &  \locArgTwoLo \\
+		\end{array} \right. \vspace{2mm} \\
+		\callToMod {
+			anchorRow  = i            ,
+			relOffset  = \relof       ,
+			dividendHi = \locArgOneHi ,
+			dividendLo = \locArgOneLo ,
+			divisorHi  = \locArgTwoHi ,
+			divisorLo  = \locArgTwoLo ,
+		}
+		& \iff &
+		\left\{ \begin{array}{lcl}
+			\locLookupWeightedSum         _{i + \relof}  &  =  &  \locMod      \\
+			\outgoingInst                 _{i + \relof}  &  =  &  \inst{MOD}   \\
+			\outgoingData       {1}       _{i + \relof}  &  =  &  \locArgOneHi \\
+			\outgoingData       {2}       _{i + \relof}  &  =  &  \locArgOneLo \\
+			\outgoingData       {3}       _{i + \relof}  &  =  &  \locArgTwoHi \\
+			\outgoingData       {4}       _{i + \relof}  &  =  &  \locArgTwoLo \\
+		\end{array} \right. \vspace{2mm} \\
+		\wcpCallToLt {
+			anchorRow = i            ,
+			relOffset = \relof       ,
+			argOneHi  = \locArgOneHi ,
+			argOneLo  = \locArgOneLo ,
+			argTwoHi  = \locArgTwoHi ,
+			argTwoLo  = \locArgTwoLo ,
+		}
+		& \iff &
+		\left\{ \begin{array}{lcl}
+			\locLookupWeightedSum         _{i + \relof}  &  =  &  \locWcp      \\
+			\outgoingInst                 _{i + \relof}  &  =  &  \inst{LT} \\
+			\outgoingData       {1}       _{i + \relof}  &  =  &  \locArgOneHi \\
+			\outgoingData       {2}       _{i + \relof}  &  =  &  \locArgOneLo \\
+			\outgoingData       {3}       _{i + \relof}  &  =  &  \locArgTwoHi \\
+			\outgoingData       {4}       _{i + \relof}  &  =  &  \locArgTwoLo \\
+		\end{array} \right. \vspace{2mm} \\
+		\wcpCallToGt {
+			anchorRow = i            ,
+			relOffset = \relof       ,
+			argOneHi  = \locArgOneHi ,
+			argOneLo  = \locArgOneLo ,
+			argTwoHi  = \locArgTwoHi ,
+			argTwoLo  = \locArgTwoLo ,
+		}
+		& \iff &
+		\left\{ \begin{array}{lcl}
+			\locLookupWeightedSum         _{i + \relof}  &  =  &  \locWcp      \\
+			\outgoingInst                 _{i + \relof}  &  =  &  \inst{GT} \\
+			\outgoingData       {1}       _{i + \relof}  &  =  &  \locArgOneHi \\
+			\outgoingData       {2}       _{i + \relof}  &  =  &  \locArgOneLo \\
+			\outgoingData       {3}       _{i + \relof}  &  =  &  \locArgTwoHi \\
+			\outgoingData       {4}       _{i + \relof}  &  =  &  \locArgTwoLo \\
+		\end{array} \right.
+		\vspace{2mm}
+		\\
+		\wcpCallToIszero {
+			anchorRow = i            ,
+			relOffset = \relof       ,
+			argOneHi  = \locArgOneHi ,
+			argOneLo  = \locArgOneLo ,
+		}
+		& \iff &
+		\left\{ \begin{array}{lcl}
+			\locLookupWeightedSum         _{i + \relof}  &  =  &  \locWcp      \\
+			\outgoingInst                 _{i + \relof}  &  =  &  \inst{ISZERO} \\
+			\outgoingData       {1}       _{i + \relof}  &  =  &  \locArgOneHi \\
+			\outgoingData       {2}       _{i + \relof}  &  =  &  \locArgOneLo \\
+			\outgoingData       {3}       _{i + \relof}  &  =  &  0 \quad (\trash) \\
+			\outgoingData       {4}       _{i + \relof}  &  =  &  0 \quad (\trash) \\
+		\end{array} \right. \vspace{2mm} \\
+		\wcpCallToEq {
+			anchorRow = i            ,
+			relOffset = \relof       ,
+			argOneHi  = \locArgOneHi ,
+			argOneLo  = \locArgOneLo ,
+			argTwoHi  = \locArgTwoHi ,
+			argTwoLo  = \locArgTwoLo ,
+		}
+		& \iff &
+		\left\{ \begin{array}{lcl}
+			\locLookupWeightedSum         _{i + \relof}  &  =  &  \locWcp      \\
+			\outgoingInst                 _{i + \relof}  &  =  &  \inst{EQ} \\
+			\outgoingData       {1}       _{i + \relof}  &  =  &  \locArgOneHi \\
+			\outgoingData       {2}       _{i + \relof}  &  =  &  \locArgOneLo \\
+			\outgoingData       {3}       _{i + \relof}  &  =  &  \locArgTwoHi \\
+			\outgoingData       {4}       _{i + \relof}  &  =  &  \locArgTwoLo \\
+		\end{array} \right. \vspace{2mm} \\
+		\oobCallToBlsRefTable
+		{i}{\relof}
+		{\locPrcName}{\locNumInp}
+		& \iff &
+		\left\{ \begin{array}{lcl}
+			\locLookupWeightedSum         _{i + \relof}  &  =  &  \locBlsRefTable  \\
+			\outgoingInst                 _{i + \relof}  &  =  &  \locPrcName      \\
+			\outgoingData       {1}       _{i + \relof}  &  =  &  \locNumInp       \\
+			\outgoingData       {2}       _{i + \relof}  &  =  &  0 \quad (\trash) \\
+			\outgoingData       {3}       _{i + \relof}  &  =  &  0 \quad (\trash) \\
+			\outgoingData       {4}       _{i + \relof}  &  =  &  0 \quad (\trash) \\
+		\end{array} \right. \vspace{2mm} \\
+
+		\oobNoCall
+		{i}{\relof}
+		& \iff &
+		\locLookupFlagSum _{i + \relof} = 0 \\
+	\end{array} \right.
+	\]

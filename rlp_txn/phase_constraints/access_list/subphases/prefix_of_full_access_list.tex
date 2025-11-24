@@ -1,0 +1,57 @@
+\begin{center}
+	\boxed{\text{Throughout this section it is assumed that }
+	\locAccessListPrefix _{i}
+	}
+\end{center}
+We first determine the \rlp{} prefix of the data on the first row:
+\begin{enumerate}
+	\item
+		we impose
+		\[
+			\left\{ \begin{array}{lcll}
+				\rlpTxnSharedColumnIsPrefixOfAccessListItem _{i} & = & \false & (\sanityCheck), \text{ see section~(\ref{rlp txn: phase constraints: access list: access list bits})} \\
+				\rlpTxnSharedColumnIsAccessListAddress      _{i} & = & \false & (\sanityCheck), \text{ idem} \\
+				\rlpTxnSharedColumnIsPrefixOfStorageKeyList _{i} & = & \false & (\sanityCheck), \text{ idem} \\
+				\rlpTxnSharedColumnIsAccessListStorageKey   _{i} & = & \false & (\sanityCheck), \text{ idem} \\
+			\end{array} \right.
+		\]
+	\item
+		we impose
+		\[
+			\rlpProcessByteString {
+				anchorRow        = i                                  ,
+				relOffset        = 0                                  ,
+				byteStringLength = \locAccessListLengthCountdown _{i} ,
+				firstByte        = \nothing                           ,
+				isList           = \true                              ,
+				mustBeNontrivial = \false                             ,
+			}
+		\]
+		and we define
+		\[
+			\left\{ \begin{array}{lcl}
+				\locAccessListIsNonempty & \define & \rlpTxnComputationColumnExoDataColumn{4} _{i}       \\
+				\locAccessListIsEmpty    & \define & 1 - \locAccessListIsNonempty \\
+			\end{array} \right.
+		\]
+	\item $\phaseEnd _{i} = \locAccessListIsEmpty$
+\end{enumerate}
+Access list items always start with an address.
+As such we further impose
+\begin{enumerate}[resume]
+	\item \If $\phaseEnd _{i} = \false$ \Then:
+		\[
+			\left\{ \begin{array}{lclc}
+				% \rlpTxnSharedColumnIsPrefix                 _{i + 1} & = & \true  & (\sanityCheck) \\
+				\rlpTxnSharedColumnIsPrefixOfAccessListItem _{i + 1} & = & \true  & (\sanityCheck) \\
+				\rlpTxnSharedColumnIsAccessListAddress      _{i + 1} & = & \false & (\sanityCheck) \\
+				\rlpTxnSharedColumnIsPrefixOfStorageKeyList _{i + 1} & = & \false & (\sanityCheck) \\
+				\rlpTxnSharedColumnIsAccessListStorageKey   _{i + 1} & = & \false & (\sanityCheck) \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		The (\sanityCheck) constraints follow from
+		section~(\ref{rlp txn: phase constraints: access list: access list bits}) and
+		constraint~(\ref{rlp txn: phase constraints: access list: legal transitions: start with access list item prefix}).
+\end{enumerate}
+

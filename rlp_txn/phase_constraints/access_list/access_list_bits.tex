@@ -1,0 +1,38 @@
+We impose general constraints on access list bit columns.
+We impose that
+\begin{description}
+    \item[\underline{Generalities:}]
+	all columns below
+	\begin{multicols}{2}
+	    \begin{enumerate}
+		% \item \rlpTxnSharedColumnIsPrefix
+		\item \rlpTxnSharedColumnIsPrefixOfAccessListItem
+		\item \rlpTxnSharedColumnIsPrefixOfStorageKeyList
+		% \item[\vspace{\fill}]
+		\item \rlpTxnSharedColumnIsAccessListAddress
+		\item \rlpTxnSharedColumnIsAccessListStorageKey
+	    \end{enumerate}
+	\end{multicols}
+	are required to be \textbf{binary} (\sanityCheck),
+	see section~(\ref{rlp txn: generalities: binarities}),
+	and \textbf{counter-constant}.
+    \item[\underline{Flag exclusivities:}]
+	we impose
+	\[
+	    \left[ \begin{array}{c}
+		\isCmp _{i - 1} \cdot \isCmp _{i} \cdot \phaseAccessList _{i} \\
+	    \end{array} \right]
+	    = \locAccessListData _{i}
+	\]
+	\saNote{}
+	The above implies both flag exclusivity of the involved binary flags,
+	it also requires that precisely one is active on any \locAccessListData{}-row
+	of the \phaseAccessList{} phase.
+\end{description}
+
+\saNote{}
+The \rlp{}-prefix corresponding to the (possibly empty) access list itself
+\[
+    T_\mathbf{A} \equiv (E, E', \dots)
+\]
+is taken care of on \locAccessListPrefix{}-rows.

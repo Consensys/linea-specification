@@ -1,0 +1,24 @@
+We impose that
+\begin{enumerate}
+	\item
+		\If $\iomf _{i} = 0$
+		\Then $\authorityTupleIndex _{i} = 0$ (\trash)
+	\item
+		$\authorityTupleIndex _{i + 1} \in \{ \authorityTupleIndex _{i}, 1 + \authorityTupleIndex _{i}, 0 \}$
+	\item
+		\If $\userTransactionNumber _{i + 1} \neq \userTransactionNumber _{i}$
+		\Then $\authorityTupleIndex _{i} = 0$
+	\item
+		\If   $\userTransactionNumber _{i + 1} \neq 1 + \userTransactionNumber _{i}$
+		\Then $\authorityTupleIndex _{i + 1} = \authorityTupleIndex _{i} + \utils _{i} \cdot \computation _{i + 1}$
+	\item
+		\If   $\authorityTupleIndex _{i + 1} \neq \authorityTupleIndex _{i}$
+		\Then
+		\[
+			\left\{ \begin{array}{lclr}
+				\utils                     _{i} & = & \true       \\
+				\rlpAuthUtilsColumnIsNonce _{i} & = & \true       \\
+				\ct                        _{i} & = & \maxCt _{i} \\
+			\end{array} \right.
+		\]
+\end{enumerate}
