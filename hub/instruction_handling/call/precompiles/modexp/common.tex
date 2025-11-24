@@ -331,9 +331,41 @@ These rows follow the same pattern, with the third row also computing \locMaxMbs
 						\cdot & \locEbsIsWithinBounds \\
 						\cdot & \locMbsIsWithinBounds \\
 					\end{array} \right]
+					% QUESTION: what if we don't extract xbs ? Does the above work ?
+					% ANSWER: yes: the OOB xbs-analysis rows are active no matter what.
+					% \left[ \begin{array}{cl}
+					% 	\cdot & \left[ \begin{array}{crcl} + & \locExtractBbs & \cdot & \locBbsIsWithinBounds \\ + & [1 - \locExtractBbs] \\ \end{array} \right] \vspace{2mm} \\
+					% 	\cdot & \left[ \begin{array}{crcl} + & \locExtractEbs & \cdot & \locEbsIsWithinBounds \\ + & [1 - \locExtractEbs] \\ \end{array} \right] \vspace{2mm} \\
+					% 	\cdot & \left[ \begin{array}{crcl} + & \locExtractMbs & \cdot & \locMbsIsWithinBounds \\ + & [1 - \locExtractMbs] \\ \end{array} \right] \\
+					% \end{array} \right]
 				\]
 				\saNote{}
-				By definition \locMaxMbsBbs{} computes the maximum $\max \Big \{ \locMbs, \locBbs \Big \} $.
+				The above definition of \locAllByteSizesAreInBounds{}
+				is the correct one, and, in particular,
+				is compatible with all scenarios
+				where call data is \emph{very short}
+				i.e. $\locPrcCds < \cumulativeLengthOfModexpByteSizes = 3 \cdot \evmWordSize$,
+				the ``cumulative length of byte sizes''.
+				Indeed, the \oobMod{}-calls analyzing
+				the various \locXbs'
+				are  triggered no matter what,
+				and in particular: regardless of whether or not
+				the \locPrcCds{} is big enough to warrant
+				extracting the various byte sizes
+				(\locBbs{}, \locEbs{} and \locMbs{})
+				from \textsc{ram}.
+				One may choose to impose the further sanity check constraint
+				\[
+					\underbrace{\locAllByteSizesAreInBounds
+					=
+					\left[ \begin{array}{cl}
+						\cdot & \left[ \begin{array}{crcl} + & \locBbsIsWithinBounds & \!\!\!\cdot\!\!\! & \locExtractBbs \\ + & \numConst{1} & \!\!\!\cdot\!\!\! &  \big[ 1 - \locExtractBbs \big] \\ \end{array} \right] \vspace{2mm} \\
+						\cdot & \left[ \begin{array}{crcl} + & \locEbsIsWithinBounds & \!\!\!\cdot\!\!\! & \locExtractEbs \\ + & \numConst{1} & \!\!\!\cdot\!\!\! &  \big[ 1 - \locExtractEbs \big] \\ \end{array} \right] \vspace{2mm} \\
+						\cdot & \left[ \begin{array}{crcl} + & \locMbsIsWithinBounds & \!\!\!\cdot\!\!\! & \locExtractMbs \\ + & \numConst{1} & \!\!\!\cdot\!\!\! &  \big[ 1 - \locExtractMbs \big] \\ \end{array} \right] \\
+					\end{array} \right]}_{\displaystyle \sanityCheck}
+				\]
+				\saNote{}
+				By definition \locMaxMbsBbs{} computes the maximum $\max \Big \{ \locMbs, \locBbs \Big \}$.
 
 				\saNote{}
 				Similar comments apply as in
