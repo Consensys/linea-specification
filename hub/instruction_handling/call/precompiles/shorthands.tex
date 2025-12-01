@@ -5,7 +5,7 @@ section~(\ref{hub: instruction handling: call: finishing: cases: prc}).
 \[
 	\left\{ \begin{array}{lclr}
 		\locPrcCallerGas & \define & \scenPrcCurrentlyValidCallerGas _{i} \\
-		\locPrcCallGas   & \define & \scenPrcGasAllowance            _{i} \\
+		\locPrcCalleeGas & \define & \scenPrcGasAllowance            _{i} \\
 		\locPrcReturnGas & \define & \scenPrcGasOwedToCaller         _{i}  & \prediction \\
 		\locPrcCdo       & \define & \scenPrcCdo                     _{i} \\
 		\locPrcCds       & \define & \scenPrcCds                     _{i} \\
@@ -20,12 +20,14 @@ We also remind the reader that \locPrcReturnGas{} is meant to contain
 \[
 	\locPrcReturnGas \equiv
 	\begin{cases}
-		\text{precompile failure:} & 0 \\
-		\text{precompile success:} & \locPrcCallGas - \col{prc\_gas\_cost} \\	
+		\text{precompile failure:} & 0                                       \\
+		\text{precompile success:} & \locPrcCalleeGas - \col{prc\_gas\_cost} \\
 	\end{cases}
 \]
 The precise meaning of ``precompile failure'' and ``precompile success'' is that of 
 section~(\ref{hub: instruction handling: call: precompiles: failures vs. successes}) and
 section~(\ref{hub: instruction handling: call: precompiles: failure classification}).
-Also computing determining failure conditions for precompiles (which in particular involves, but is generally not limited to, computing \col{prc\_gas\_cost} and comparing it to \locPrcCallGas{}) is complex, as is determining the associated cost.
+Also computing determining failure conditions for precompiles
+(which in particular involves, but is generally not limited to, computing \col{prc\_gas\_cost} and comparing it to \locPrcCalleeGas{})
+is complex, as is determining the associated cost.
 Realizing the above requires some preparation. 
