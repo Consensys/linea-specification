@@ -4,19 +4,19 @@ The \instModexp{} computes the $\lfloor \log_{2} ( \cdots ) \rfloor$ of this in 
 	\boxed{\text{All constraints in this subsection further assume } \oobInstIsModexpLead_{i} = 1}
 \]
 What the present system of constraints aims to verify the following predictions made in the \hubMod{} module: 
-\green{(\emph{a})} compute the small integer $32\wedge \big[ \locCds - (96 + \locBbs) \big]^+$
-\green{(\emph{b})} compute the bit $[ \locCds > (96 + \locBbs) ] \wedge [ \locEbs \neq 0 ]$.
+\green{(\emph{a})} compute the small integer $\evmWordSize \wedge \big[ \locCds - (\cumulativeLengthOfModexpByteSizes + \locBbs) \big]^+$
+\green{(\emph{b})} compute the bit $[ \locCds > (\cumulativeLengthOfModexpByteSizes + \locBbs) ] \wedge [ \locEbs \neq 0 ]$.
 
 \noindent We use the shorthands defined below:
 \[
 	\left\{ \begin{array}{lclr}
-		\locBbs               & \define & \oobDataCol   {1}   _{i}  \\
-		\locCds               & \define & \oobDataCol   {2}   _{i}  \\
-		\locEbs               & \define & \oobDataCol   {3}   _{i}  \\
-		\locLoadLeadingWord   & \define & \oobDataCol   {4}   _{i}  & \prediction \\
-		\locCdsCutoff         & \define & \oobDataCol   {6}   _{i}  & \prediction \\
-		\locEbsCutoff         & \define & \oobDataCol   {7}   _{i}  & \prediction \\
-		\locEbsSubThirtyTwo   & \define & \oobDataCol   {8}   _{i}  & \prediction \\
+		\locBbs                & \define & \oobDataCol {1} _{i} \\
+		\locCds                & \define & \oobDataCol {2} _{i} \\
+		\locEbs                & \define & \oobDataCol {3} _{i} \\
+		\locExtractLeadingWord & \define & \oobDataCol {4} _{i} & \prediction \\
+		\locCdsCutoff          & \define & \oobDataCol {6} _{i} & \prediction \\
+		\locEbsCutoff          & \define & \oobDataCol {7} _{i} & \prediction \\
+		\locEbsSubThirtyTwo    & \define & \oobDataCol {8} _{i} & \prediction \\
 	\end{array} \right.
 \]
 \hubPredictionDecoratorBlurb{}
@@ -35,42 +35,59 @@ We impose the following constraints:
 				}
 				\vspace{2mm} \\
 				\wcpCallToLt {
-					anchorRow = i       ,
-					relOffset = 1       ,
-					argOneHi  = 0       ,
-					argOneLo  = \locEbs ,
-					argTwoHi  = 0       ,
-					argTwoLo  = 32      ,
+					anchorRow = i            ,
+					relOffset = 1            ,
+					argOneHi  = 0            ,
+					argOneLo  = \locEbs      ,
+					argTwoHi  = 0            ,
+					argTwoLo  = \evmWordSize ,
 				}
 				\vspace{2mm} \\
 				\wcpCallToLt {
-					anchorRow = i            ,
-					relOffset = 2            ,
-					argOneHi  = 0            ,
-					argOneLo  = 96 + \locBbs ,
-					argTwoHi  = 0            ,
-					argTwoLo  = \locCds      ,
+					anchorRow = i                                            ,
+					relOffset = 2                                            ,
+					argOneHi  = 0                                            ,
+					argOneLo  = \cumulativeLengthOfModexpByteSizes + \locBbs ,
+					argTwoHi  = 0                                            ,
+					argTwoLo  = \locCds                                      ,
 				}
 			\end{array} \right.
 		\]
-		and define the following shorthands
+		and we define the following shorthands
 		\[
 			\left\{ \begin{array}{lcl}
-				\locEbsIsZero                         & \define & \outgoingResLo_{i    } \\ 
-				\locEbsLtThirtyTwo                    & \define & \outgoingResLo_{i + 1} \\ 
-				\locCallDataContainsExponentBytes     & \define & \outgoingResLo_{i + 2} \\ 
+				\locEbsIsZero                 & \define & \outgoingResLo_{i    } \\
+				\locEbsLtThirtyTwo            & \define & \outgoingResLo_{i + 1} \\
+				\locCallDataExtendsBeyondBase & \define & \outgoingResLo_{i + 2} \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		The number $\cumulativeLengthOfModexpByteSizes = 3 \cdot \evmWordSize$ is the ``cumulative length of byte sizes''.
+		It accounts for the first three \evm{} words in the (right zero-padded) call data holding the
+		\textbf{base byte size},
+		\textbf{exponent byte size} and
+		\textbf{modulus byte size}
+		respectively.
+
+		\saNote{}
+		Thus, by definition
+		\[
+			\left\{ \begin{array}{rcl}
+				\locEbsIsZero                 ~ \equiv ~ \true & \iff & \big[ \locEbs \equiv 0            \big] \vspace{1mm}                    \\
+				\locEbsLtThirtyTwo            ~ \equiv ~ \true & \iff & \big[ \locEbs <      \evmWordSize \big] \vspace{1mm}                    \\
+				\locCallDataExtendsBeyondBase ~ \equiv ~ \true & \iff & \big[ \locCds >      \cumulativeLengthOfModexpByteSizes + \locBbs \big] \\
 			\end{array} \right.
 		\]
 	\item[\underline{Row $n^\circ(i + 3)$:}]
-		\If $\locCallDataContainsExponentBytes = 1$ \Then
+		\If $\locCallDataExtendsBeyondBase = 1$ \Then
 		\[
 			\wcpCallToLt {
-				anchorRow = i                                  ,
-				relOffset = 3                                  ,
-				argOneHi  = 0                                  ,
-				argOneLo  = \locCds - \big( 96 + \locBbs \big) ,
-				argTwoHi  = 0                                  ,
-				argTwoLo  = 32                                 ,
+				anchorRow = i                                                                  ,
+				relOffset = 3                                                                  ,
+				argOneHi  = 0                                                                  ,
+				argOneLo  = \locCds - \big( \cumulativeLengthOfModexpByteSizes + \locBbs \big) ,
+				argTwoHi  = 0                                                                  ,
+				argTwoLo  = \evmWordSize                                                       ,
 			}
 		\]
 		we define the following shorthand
@@ -79,29 +96,29 @@ We impose the following constraints:
 		\]
 	\item[\underline{Justifying \hubMod{} predictions:}] ---
 		\begin{description}
-			\item[Constraining \locLoadLeadingWord{}:] we impose that
+			\item[Constraining \locExtractLeadingWord{}:] we impose that
 				\[
-					\locLoadLeadingWord
+					\locExtractLeadingWord
 					=
-					\locCallDataContainsExponentBytes \cdot (1 - \locEbsIsZero)
+					\locCallDataExtendsBeyondBase \cdot (1 - \locEbsIsZero)
 				\]
 			\item[Constraining \locCdsCutoff{}:] we impose that
 				\begin{enumerate}
-					\item \If $\locCallDataContainsExponentBytes = 0$ \Then $\locCdsCutoff = 0$
-					\item \If $\locCallDataContainsExponentBytes = 1$ \Then
+					\item \If $\locCallDataExtendsBeyondBase = 0$ \Then $\locCdsCutoff = 0$
+					\item \If $\locCallDataExtendsBeyondBase = 1$ \Then
 						\begin{enumerate}
-							\item \If $\locResultOfComparison = 0$ \Then $\locCdsCutoff = 32$
-							\item \If $\locResultOfComparison = 1$ \Then $\locCdsCutoff = \locCds - \big( 96 + \locBbs \big)$
+							\item \If $\locResultOfComparison = 0$ \Then $\locCdsCutoff = \evmWordSize$
+							\item \If $\locResultOfComparison = 1$ \Then $\locCdsCutoff = \locCds - \big( \cumulativeLengthOfModexpByteSizes + \locBbs \big)$
 						\end{enumerate}
 				\end{enumerate}
 			\item[Constraining \locEbsCutoff       {}:] we impose that
 				\begin{enumerate}
-					\item \If $\locEbsLtThirtyTwo = 0$ \Then $\locEbsCutoff = 32$ 
+					\item \If $\locEbsLtThirtyTwo = 0$ \Then $\locEbsCutoff = \evmWordSize$ 
 					\item \If $\locEbsLtThirtyTwo = 1$ \Then $\locEbsCutoff = \locEbs$ 
 				\end{enumerate}
 			\item[Constraining \locEbsSubThirtyTwo {}:] we impose that
 				\begin{enumerate}
-					\item \If $\locEbsLtThirtyTwo = 0$ \Then $\locEbsSubThirtyTwo = \locEbs - 32$ 
+					\item \If $\locEbsLtThirtyTwo = 0$ \Then $\locEbsSubThirtyTwo = \locEbs - \evmWordSize$ 
 					\item \If $\locEbsLtThirtyTwo = 1$ \Then $\locEbsSubThirtyTwo = 0$ 
 				\end{enumerate}
 		\end{description}
@@ -109,8 +126,8 @@ We impose the following constraints:
 \saNote{} The above thus computes respectively
 \[
 	\left\{ \begin{array}{lcl}
-		\locCdsCutoff           & \equiv & \Big[ \locCds - \big( 96 + \locBbs \big) \Big] ^ + \wedge \, 32 \\
-		\locEbsCutoff           & \equiv & \locEbs \wedge 32                                               \\
-		\locEbsSubThirtyTwo     & \equiv & \Big[ \locEbs - 32 \Big] ^ +                                    \\
+		\locCdsCutoff       & \equiv & \Big[ \locCds - \big( \cumulativeLengthOfModexpByteSizes + \locBbs \big) \Big] ^ + \wedge \, \evmWordSize \\
+		\locEbsCutoff       & \equiv & \locEbs \wedge \evmWordSize                                                                               \\
+		\locEbsSubThirtyTwo & \equiv & \Big[ \locEbs - \evmWordSize \Big] ^ +                                                                    \\
 	\end{array} \right.
 \]

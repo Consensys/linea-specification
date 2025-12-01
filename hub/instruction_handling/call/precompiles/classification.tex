@@ -39,7 +39,8 @@ In particular we explain which precompiles may raise the $\scenPrcFailureKnownTo
 		\instBlsMapFpToGOne{}             & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                    &                                                  \\
                                                   & $\vee~\cds \neq  64$                           &                           &                                                                   &                                                  \\ \cline{1-4}
 		\instBlsMapFpTwoToGTwo{}          & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                    &                                                  \\
-                                                  & $\vee~\cds \neq 128$                           &                           &                                                                   &                                                  \\ \hline
+                                                  & $\vee~\cds \neq 128$                           &                           &                                                                   &                                                  \\ \hline \hline
+		\instPVerify{}                    & insufficient gas                               & \toOob                    & $\nothing$                                                        & \multirow{2}{*}{\text{\cite{EIP-7951}, Osaka}}   \\ \hline
 	\end{tabular}
 	\label{hub: instruction handling: call: precompiles: table classifying failures known to the HUB vs. to RAM}
 	\caption{All justifications for \scenPrcFailureKnownToHub{}'s are done through the \oobMod{} module. Notations such as ``$x = \varnothing$'' are from the \cite{EYP-London}.}
@@ -51,8 +52,8 @@ In particular we explain which precompiles may raise the $\scenPrcFailureKnownTo
 		failure is entirely detectable using \hubMod{} data; 
 		failure can only be due to insufficient gas;
 		gas cost is fixed;
-		the precompile may however return either $()$ if data is malformed or no public address is recoverable;
-		otherwise it returns $\textbf{o} \in \mathbb{B}_{32}$ a $32$ byte slice containing a $20$ byte address. 
+		the precompile may however return either $() \in \mathbb{B}_{0}$ if data is malformed or no public address is recoverable;
+		otherwise it returns $\textbf{o} \in \mathbb{B}_{\evmWordSize}$ a $\evmWordSize$ byte slice containing a $\addressSize$ byte address. 
 	\item[\instShaTwo{}, \instRipemd{} and \instIdentity{}:]
 		failure is entirely detectable using \hubMod{} data; 
 		failure can only be due to insufficient gas;
@@ -76,7 +77,7 @@ In particular we explain which precompiles may raise the $\scenPrcFailureKnownTo
 		these can fail for several independent reasons, some known to the \hubMod{}, others known to the \mmuMod{}:
 		(\emph{a}) insufficient gas (which triggers the \scenPrcFailureKnownToHub{})
 		(\emph{b}) sufficient gas but malformed call data (which triggers the \scenPrcFailureKnownToRam{});
-		if none of these conditions are triggered the output is a 32 byte integer slice $\textbf{o} \in \mathbb{B}_{32}$;
+		if none of these conditions are triggered the output is a \evmWordSize{}-byte integer slice $\textbf{o} \in \mathbb{B}_{\evmWordSize}$;
 	\item[\inst{ECPARIRING}:]
 		this can fail both for reasons known to the \hubMod{} module and for reasons known to \textsc{ram};
 		(\emph{a}) whenever $\CDS \not\equiv 0 \mod 192$
@@ -85,17 +86,17 @@ In particular we explain which precompiles may raise the $\scenPrcFailureKnownTo
 		conditions (\emph{a}) and (\emph{b}) are detected by the \scenPrcFailureKnownToHub{} flag;
 		only (\emph{c}) requires touching \textsc{ram} in order to detect;
 		it is detected by \scenPrcFailureKnownToRam{};
-		if none of these conditions are triggered the output is a 32 byte integer slice $\textbf{o} \in \mathbb{B}_{32}$;
+		if none of these conditions are triggered the output is a \evmWordSize byte integer slice $\textbf{o} \in \mathbb{B}_{\evmWordSize}$;
 		the output slice is either
 		$
 		\utt{00}\,
 		\utt{00} \cdots
-		\utt{00} \in \mathbb{B}_{32}$
+		\utt{00} \in \mathbb{B}_{\evmWordSize}$
 		or
 		$
 		\utt{00}\,
 		\utt{00} \cdots
-		\utt{01} \in \mathbb{B}_{32}$.
+		\utt{01} \in \mathbb{B}_{\evmWordSize}$.
 	\item[\instBlake{}:]
 		this can fail for several independent reasons;
 		(\emph{a}) whenever $\CDS \neq 213$
@@ -145,7 +146,8 @@ the data is analyzed in a precompile specific manner in the \blsDataMod{} module
 with some ``data malformation'' detection steps delegated to outside circuits;
 the failure of this condition is recorded in \scenPrcFailureKnownToRam{}.
 
-The next precompile was introduced in the \textsc{Cancun} hardfork, specifically with \cite{EIP-4788};
+
+\noindent The next precompile was introduced in the \textsc{Cancun} hardfork, specifically with \cite{EIP-4788};
 \begin{description}
 	\item[\instPointEvaluation:]
 		can fail due to:
@@ -193,4 +195,34 @@ The next precompiles were introduced in the \textsc{Prague} hardfork, specifical
 		\locBlsPrecompileFailureReasonGas,
 		\locBlsPrecompileFailureReasonSize, with $\locImposedCallDataSizeForBlsPrecompiles \equiv 128$,
 		\locBlsPrecompileFailureReasonData;
+\end{description}
+
+\noindent The next precompile was introduced in the \textsc{Osaka} hardfork, specifically with \cite{EIP-7951}.
+It behaves near identical witht he \instEcrecover{} precompile.
+In particular, and contrary to all precompiles introduced since the \textsc{Cancun} hardfork,
+failure (of the underlying \inst{CALL}-type instruction) cannot be triggered by either
+$\CDS$ being wrong (i.e. $\neq 160$)
+nor by the contents of call data being malformed
+(as measured by the \ecDataMod{}-module).
+\begin{description}
+	\item[\instPVerify{}:]
+		can fail due to:
+		\locBlsPrecompileFailureReasonGas;
+		as for \instEcrecover{}, failure is entirely detectable using \hubMod{} data
+		and entirely comes down to insufficient gas;
+		gas cost is fixed;
+		the precompile returns $() \in \mathbb{B}_{0}$ in any of the following scenarios:
+		(\emph{a}) if call data size is $\neq 160$,
+		(\emph{b}) if call data contents are malformed (as measured by the \ecDataMod{}-module),
+		(\emph{c}) if signature verification fails (as relayed by the \ecDataMod{}-module, and verified in a specialized circuit);
+		otherwise it returns $\textbf{o} \in \mathbb{B}_{\evmWordSize}$ a $\evmWordSize$-byte slice
+		$ \utt{00} \; \utt{00} \; \cdots \; \utt{01} \in \mathbb{B}_{\evmWordSize}$.
+		% this can fail both for reasons known to the \hubMod{} module and for reasons known to \textsc{ram};
+		% (\emph{a}) whenever $\CDS \neq 160$
+		% (\emph{b}) insufficient gas
+		% (\emph{c}) malformed data;
+		% conditions (\emph{a}) and (\emph{b}) are detected by the \scenPrcFailureKnownToHub{} flag;
+		% only (\emph{c}) requires touching \textsc{ram} in order to detect;
+		% it is detected by \scenPrcFailureKnownToRam{};
+		% if none of these conditions are triggered the output is a 32 byte integer slice $\textbf{o} \in \mathbb{B}_{32}$;
 \end{description}

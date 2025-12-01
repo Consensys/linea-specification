@@ -1,0 +1,148 @@
+\[
+    \boxed{\text{All constraints in this subsection assume }
+    \left\{ \begin{array}{lcl}
+        \isPVerifyData _{i} & =    & 1                  \\
+        \ecdataId      _{i} & \neq & \ecdataId _{i - 1} \\
+    \end{array} \right.
+    }
+\]
+
+We introduce the following (local) shorthands:
+\[
+    \left\{ \begin{array}{lclr}
+        \locHHi & \define & \ecdataLimb_{i}      \\
+        \locHLo & \define & \ecdataLimb_{i + 1}  \\
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        \locRHi & \define & \ecdataLimb_{i + 2}  \\
+        \locRLo & \define & \ecdataLimb_{i + 3}  \\
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        \locSHi & \define & \ecdataLimb_{i + 4}  \\
+        \locSLo & \define & \ecdataLimb_{i + 5}  \\
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        \locQXHi & \define & \ecdataLimb_{i + 6} \\
+        \locQXLo & \define & \ecdataLimb_{i + 7} \\
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        \locQYHi & \define & \ecdataLimb_{i + 8} \\
+        \locQYLo & \define & \ecdataLimb_{i + 9} \\
+    \end{array} \right.
+\]
+
+We set the following constraints:
+
+\begin{description}
+    \item[\underline{Row $n^°(i)$:}]
+        we impose
+        \[
+            \wcpCallToLt {
+                anchorRow = i        ,
+                relOffset = 0        ,
+                argOneHi  = \locRHi  ,
+                argOneLo  = \locRLo  ,
+                argTwoHi  = \secprNHi ,
+                argTwoLo  = \secprNLo ,
+            }
+        \]
+        as well as define the shorthand
+        \[
+            \locRIsInRange \define \wcpRes _{i}
+        \]
+    \item[\underline{Row $n^°(i + 1)$:}]
+        we impose
+        \[
+            \wcpCallToIszero{
+                anchorRow = i       ,
+                relOffset = 1       ,
+                argOneHi  = \locRHi ,
+                argOneLo  = \locRLo ,
+            }
+        \]
+        as well as define the shorthand
+        \[
+            \locRIsPositive \define 1 - \wcpRes _{i + 1}
+        \]
+    \item[\underline{Row $n^°(i + 2)$:}]
+        we impose
+        \[
+            \wcpCallToLt {
+                anchorRow = i         ,
+                relOffset = 2         ,
+                argOneHi  = \locSHi   ,
+                argOneLo  = \locSLo   ,
+                argTwoHi  = \secprNHi ,
+                argTwoLo  = \secprNLo ,
+            }
+        \]
+        as well as define the shorthand
+        \[
+            \locSIsInRange  \define \wcpRes _{i + 2}
+        \]
+    \item[\underline{Row $n^°(i + 3)$:}]
+        we impose
+        \[
+            \wcpCallToIszero {
+                anchorRow = i       ,
+                relOffset = 3       ,
+                argOneHi  = \locSHi ,
+                argOneLo  = \locSLo ,
+            }
+        \]
+        as well as define the shorthand
+        \[
+            \locSIsPositive \define 1 - \wcpRes _{i + 3}
+        \]
+        \item[\underline{Row $n^°(i + 4)$:}]
+        we impose
+        \[
+              \callToROneMembership {
+                  anchorRow = i        ,
+                  relOffset = 4        ,
+                  xHi       = \locQXHi ,
+                  xLo       = \locQXLo ,
+                  yHi       = \locQYHi ,
+                  yLo       = \locQYLo ,
+              }
+        \]
+        as well as define the shorthand
+        \[
+            \locROneMembership  \define \hurdle _{i + 4}
+        \]
+    \item[\underline{Justifying the \ecdataSuccessBit{}:}]
+        we define the following shorthand
+        \[
+            \locInternalChecksPassed \define \hurdle _{i + \indexMaxPVerifyData} \\
+        \]
+        and impose the following constraints
+        \[
+            \left\{ \begin{array}{lcl}
+                \hurdle _{i}                 & = & \locRIsInRange \cdot \locRIsPositive                                \\
+                \hurdle _{i + 1}             & = & \locSIsInRange \cdot \locSIsPositive                                \\
+                \hurdle _{i + 2}             & = & \hurdle _{i}   \cdot \hurdle _{i + 1}                               \\
+                \locInternalChecksPassed     & = & \locROneMembership \cdot \hurdle _{i + 2}                           \\
+                \If \locInternalChecksPassed & = & 0 ~ \Then \ecdataSuccessBit _{i} = 0                                \\
+                \If \locInternalChecksPassed & = & 1 ~ \Then \ecdataSuccessBit _{i} \equiv \justifiedByExternalCircuit \\
+            \end{array} \right.
+        \]
+    \item[\underline{Setting / sanity checking the result:}]
+        we define the following shorthands
+        \[
+            \left\{ \begin{array}{lcl}
+                \locPVerifyResultHi  & \define & \limb _{i + \indexMaxPVerifyData + 1} \\
+                \locPVerifyResultLo  & \define & \limb _{i + \indexMaxPVerifyData + 2} \\
+            \end{array} \right.
+        \]
+        and immediatly impose
+        \[
+            \left\{ \begin{array}{lcl}
+                \locPVerifyResultHi & = & 0                      \\
+                \locPVerifyResultLo & = & \ecdataSuccessBit _{i} \\
+            \end{array} \right.
+        \]
+\saNote{}
+The above constraining of the result is a sanity check in case $\csPVerify _{i} \equiv \true$,
+since in that case an external circuit is already tasked with justifying both the result and the success bit.
+In case $\csPVerify _{i} \equiv \false$ there is no reason, really, to set the result.
+No call to external circuits is made in that case, so the result is \emph{a priori} completely unconstrained.
+Also th result won't be read, nor transferred anywhere (fully or otherwise).
+It would therefore be harmless to leave the result unconstrained.
+We set it to zero for definiteness.
+\end{description}

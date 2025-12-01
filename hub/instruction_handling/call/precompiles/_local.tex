@@ -1,6 +1,6 @@
 \def\locFlagSum                     {\loc{flag\_sum}}
 \def\locPrcCallerGas                {\loc{dup\_caller\_gas}}
-\def\locPrcCallGas                  {\loc{dup\_call\_gas}}
+\def\locPrcCalleeGas                {\loc{dup\_callee\_gas}}
 \def\locPrcCdo                      {\loc{dup\_cdo}}
 \def\locPrcCds                      {\loc{dup\_cds}}
 \def\locPrcRao                      {\loc{dup\_r@o}}
@@ -40,6 +40,10 @@
 \def\locMmuWellFormedData           {\loc{wellformed\_data}}
 \def\locMmuMalFormedData            {\loc{malformed\_data}}
 %
+\def\locOobPVerifySufficientGasWrongCds     {\loc{p256\_sufficient\_gas\_wrong\_cds}}
+\def\locSignatureVerificationFailure        {\loc{p256\_sig\_verification\_failure}}
+\def\locSignatureVerificationSuccess        {\loc{p256\_sig\_verification\_success}}
+%
 \def\locAddressRecoveryFailure      {\loc{address\_recovery\_failure}}
 \def\locAddressRecoverySuccess      {\loc{address\_recovery\_success}}
 \def\locMalFormedData               {\loc{mal\_formed\_data}} 
@@ -56,6 +60,10 @@
 \def\locNontrivialMul               {\loc{nontrivial\_ecmul}}
 \def\locNontrivialPairing           {\loc{nontrivial\_ecpairing}} 
 \def\locTrivialPairing              {\phantom{\loc{non}}\loc{trivial\_ecpairing}} 
+\def\locNontrivialPVerify           {\loc{nontrivial\_p256\_verify}}
+
+\def\locTriggerMmuFullTransfer      {\locTriggerMmu\loc{\_full\_transfer}}
+\def\locTriggerMmuPartialCopy       {\locTriggerMmu\loc{\_partial\_copy}}
 
 % generic
 %%%%%%%%%
@@ -250,14 +258,25 @@
 
 % BLS_MAP_FP2_TO_G2
 %%%%%%%%%%%
-\def\locFlagSumBlsMapFpTwoToGTwo                         { \locFlagSum\secondHalf\loc{\_map\_fp2\_to\_g2}}
-\def\locFlagSumBlsMapFpTwoToGTwoSuccess                  { \locFlagSum\loc{\_map\_fp2\_to\_g2\_success}}
-\def\locFlagSumBlsMapFpTwoToGTwoFKTH                     { \locFlagSum\loc{\_map\_fp2\_to\_g2\_FKTH}}
-\def\locFlagSumBlsMapFpTwoToGTwoFKTR                     { \locFlagSum\loc{\_map\_fp2\_to\_g2\_FKTR}}
-\def\locNsrBlsMapFpTwoToGTwo                             {  \locNsr\secondHalf\loc{\_map\_fp2\_to\_g2}}
-\def\locNsrBlsMapFpTwoToGTwoSuccess                      {  \locNsr\loc{\_map\_fp2\_to\_g2\_success}}
-\def\locNsrBlsMapFpTwoToGTwoFKTH                         {  \locNsr\loc{\_map\_fp2\_to\_g2\_FKTH}}
-\def\locNsrBlsMapFpTwoToGTwoFKTR                         {  \locNsr\loc{\_map\_fp2\_to\_g2\_FKTR}}
+\def\locFlagSumBlsMapFpTwoToGTwo                      { \locFlagSum\secondHalf\loc{\_map\_fp2\_to\_g2}}
+\def\locFlagSumBlsMapFpTwoToGTwoSuccess               { \locFlagSum\loc{\_map\_fp2\_to\_g2\_success}}
+\def\locFlagSumBlsMapFpTwoToGTwoFKTH                  { \locFlagSum\loc{\_map\_fp2\_to\_g2\_FKTH}}
+\def\locFlagSumBlsMapFpTwoToGTwoFKTR                  { \locFlagSum\loc{\_map\_fp2\_to\_g2\_FKTR}}
+\def\locNsrBlsMapFpTwoToGTwo                          {  \locNsr\secondHalf\loc{\_map\_fp2\_to\_g2}}
+\def\locNsrBlsMapFpTwoToGTwoSuccess                   {  \locNsr\loc{\_map\_fp2\_to\_g2\_success}}
+\def\locNsrBlsMapFpTwoToGTwoFKTH                      {  \locNsr\loc{\_map\_fp2\_to\_g2\_FKTH}}
+\def\locNsrBlsMapFpTwoToGTwoFKTR                      {  \locNsr\loc{\_map\_fp2\_to\_g2\_FKTR}}
+
+% P256_VERIFY
+%%%%%%%%%%%
+\def\locFlagSumPVerify                                { \locFlagSum\secondHalf\loc{\_p256\_verify}}
+\def\locFlagSumPVerifySuccess                         { \locFlagSum\loc{\_p256\_verify\_success}}
+\def\locFlagSumPVerifyFKTH                            { \locFlagSum\loc{\_p256\_verify\_FKTH}}
+\def\locFlagSumPVerifyFKTR                            { \locFlagSum\loc{\_p256\_verify\_FKTR}}        % impossible !
+\def\locNsrPVerify                                    {  \locNsr\secondHalf\loc{\_p256\_verify}}
+\def\locNsrPVerifySuccess                             {  \locNsr\loc{\_p256\_verify\_success}}
+\def\locNsrPVerifyFKTH                                {  \locNsr\loc{\_p256\_verify\_FKTH}}           % impossible !
+\def\locNsrPVerifyFKTR                                {  \locNsr\loc{\_p256\_verify\_FKTR}}
 
 \def\nsrPrcFailureKnownToTheHub                  {\redm{\locm{nsr\_failure}}}
 \def\nsrPrcSuccessWillRevertStandard             {\redm{\locm{nsr\_success\_will\_revert}}}
@@ -271,10 +290,10 @@
 \def\nsrPrcSuccessWontRevertIdentityConst        {\textcolor{draculaorange}{\bm{9 }}}
 
 
-\def\locFkth                   {\loc{FAIL\_HUB}}
-\def\locFktr                   {\loc{FAIL\_RAM}}
-\def\locSwill                  {\loc{SUCC\_WILL}}
-\def\locSwont                  {\loc{SUCC\_WONT}}
+\def\locFkth                   {\col{FAIL\_HUB}}
+\def\locFktr                   {\col{FAIL\_RAM}}
+\def\locSwill                  {\col{SUCC\_WILL}}
+\def\locSwont                  {\col{SUCC\_WONT}}
 \def\johnSnow                  {$\graym{\varnothing}$}
 \def\locStandardFail           {$\nsrPrcFailureKnownToTheHubConst      \quad ( = \callPrcFailureSecondScenarioRowOffset           + 3 )$}
 \def\locStandardSuccWill       {$\nsrPrcSuccessWillRevertStandardConst \quad ( = \callPrcSuccessWillRevertSecondScenarioRowOffset + 5 )$}

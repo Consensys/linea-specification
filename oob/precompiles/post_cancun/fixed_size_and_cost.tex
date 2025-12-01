@@ -1,0 +1,160 @@
+\[
+	\boxed{
+		\text{All constraints in this subsection further assume}
+		\left[ \begin{array}{cl}
+			+ & \locFlagSumCancunPrecompiles          _{i} \\
+			+ & \locFlagSumPraguePrecompilesFixedSize _{i} \\
+			+ & \locFlagSumOsakaPrecompiles           _{i} \\
+		\end{array} \right]
+		= 1}
+\]
+We define the following shorthands
+\[
+	\left\{ \begin{array}{lcl}
+		\locFixedCds & \define &
+		\left[ \begin{array}{clcl}
+			+ & \prcPointEvaluationSize    & \cdot & \oobInstIsPointEvaluation    _{i}  \\
+			+ & \prcBlsGOneAddSize         & \cdot & \oobInstIsBlsGOneAdd         _{i}  \\
+			+ & \prcBlsGTwoAddSize         & \cdot & \oobInstIsBlsGTwoAdd         _{i}  \\
+			+ & \prcBlsMapFpToGOneSize     & \cdot & \oobInstIsBlsMapFpToGOne     _{i}  \\
+			+ & \prcBlsMapFpTwoToGTwoSize  & \cdot & \oobInstIsBlsMapFpTwoToGTwo  _{i}  \\
+			+ & \prcPVerifySize            & \cdot & \oobInstIsPVerify            _{i}  \\
+		\end{array} \right]
+		\vspace{2mm}
+		\\
+		\locFixedGasCost & \define &
+		\left[ \begin{array}{clcl}
+			+ & \gasConstPointEvaluation    & \cdot & \oobInstIsPointEvaluation    _{i}  \\
+			+ & \gasConstBlsGOneAdd         & \cdot & \oobInstIsBlsGOneAdd         _{i}  \\
+			+ & \gasConstBlsGTwoAdd         & \cdot & \oobInstIsBlsGTwoAdd         _{i}  \\
+			+ & \gasConstBlsMapFpToGOne     & \cdot & \oobInstIsBlsMapFpToGOne     _{i}  \\
+			+ & \gasConstBlsMapFpTwoToGTwo  & \cdot & \oobInstIsBlsMapFpTwoToGTwo  _{i}  \\
+			+ & \prcPVerifyCost             & \cdot & \oobInstIsPVerify            _{i}  \\
+		\end{array} \right]
+	\end{array} \right.
+\]
+where
+\[
+	\begin{array}{ll}
+		\left\{ \begin{array}{lcr}
+			\prcPointEvaluationSize    & \define & \numConst{192} \\
+			\prcBlsGOneAddSize         & \define & \numConst{256} \\
+			\prcBlsGTwoAddSize         & \define & \numConst{512} \\
+			\prcBlsMapFpToGOneSize     & \define & \numConst{64}  \\
+			\prcBlsMapFpTwoToGTwoSize  & \define & \numConst{128} \\
+			\prcPVerifySize            & \define & \numConst{160} \\
+		\end{array} \right.
+		&
+		\left\{ \begin{array}{lcr}
+			\gasConstPointEvaluation   & \define & \numConst{50\_000} \\
+			\gasConstBlsGOneAdd        & \define & \numConst{375}     \\
+			\gasConstBlsGTwoAdd        & \define & \numConst{600}     \\
+			\gasConstBlsMapFpToGOne    & \define & \numConst{5\_500}  \\
+			\gasConstBlsMapFpTwoToGTwo & \define & \numConst{23\_800} \\
+			\prcPVerifyCost            & \define & \numConst{6\_900}  \\
+		\end{array} \right.
+	\end{array}
+\]
+We impose the following constraints:
+\begin{description}
+	\item[\underline{Rows n°$(i+2)$ and n°$(i + 3)$:}]
+		we impose the following:
+		\[
+			\left\{ \begin{array}{l}
+				\wcpCallToEq  {
+					anchorRow = i            ,
+					relOffset = 2            ,
+					argOneHi  = 0            ,
+					argOneLo  = \locCds      ,
+					argTwoHi  = 0            ,
+					argTwoLo  = \locFixedCds ,
+				}
+				\vspace{2mm}
+				\\
+				\wcpCallToLt  {
+					anchorRow = i                  ,
+					relOffset = 3                  ,
+					argOneHi  = 0                  ,
+					argOneLo  = \locCalleeGas      ,
+					argTwoHi  = 0                  ,
+					argTwoLo  = \locPrecompileCost ,
+				}
+				\\
+			\end{array} \right.
+		\]
+		we then set the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locPrecompileCost & \define & \locFixedGasCost             \\
+				\locValidCds       & \define & \outgoingResLo  _{i + 2}     \\
+				\locSufficientGas  & \define & 1 - \outgoingResLo  _{i + 3} \\
+			\end{array} \right.
+		\]
+		It follows that $[\locValidCds = \true] \iff [\locCds = \locFixedCds]$.
+	\item[\underline{The missing \( \locP256VerifyValidCds \) shorthand:}]
+		we set
+		\[
+			\locP256VerifyValidCds
+			\define
+			\locValidCds
+		\]
+		\saNote{}
+		This definition completes that of \locCallDataExtractionFilter{},
+		see section~(\ref{oob: precompiles: common precompiles: generalities}).
+	\item[\underline{Justifying \hubMod{} predictions:}]
+		we impose
+		\begin{enumerate}
+			\item \If
+				\[
+					\left[ \begin{array}{cl}
+						+ & \locFlagSumCancunPrecompiles          _{i} \\
+						+ & \locFlagSumPraguePrecompilesFixedSize _{i} \\
+					\end{array} \right]
+					= 1
+				\]
+				\Then
+				\[
+					\locHubSuccess \define
+					\left[  \begin{array}{cl}
+						\cdot & \locValidCds                 \\
+						\cdot & \locSufficientGas            \\
+					\end{array} \right]
+				\]
+			\item \If $\locFlagSumOsakaPrecompiles _{i} = 1$ \Then $\locHubSuccess \define \locSufficientGas$
+		\end{enumerate}
+		we further impose that
+		\begin{enumerate}
+			\item \If $\locHubSuccess = 0$ \Then $\locReturnGas = 0$
+			\item \If $\locHubSuccess = 1$ \Then $\locReturnGas = \locCalleeGas - \locPrecompileCost$
+		\end{enumerate}
+		% We must still justify the ``valid call data size bit'' in the case of the \instPVerify{} precompile,
+		% which we do below:
+		% \begin{enumerate}[resume]
+		% 	\item \If $\locFlagSumOsakaPrecompiles = 1$ \Then
+		% 		\[
+		% 			\locCdsIsValid =
+		% 			\left[  \begin{array}{cl}
+		% 				\cdot & \locValidCds      \\
+		% 				\cdot & \locSufficientGas \\
+		% 			\end{array} \right]
+		% 		\]
+		% \end{enumerate}
+		\saNote{}
+		The definition of $\locHubSuccess$ is more forgiving in the \instPVerify{} case than it is in the other cases.
+		This reflects the fact that, for \instPVerify{} precompile calls,
+		call data being malformed, in particular call data being of the wrong size ($\locValidCds \equiv \false$),
+		\textbf{does not impact} the success of the underlying call.
+		% It will, however, through \locCdsIsValid{}, impact the \hubMod{}'s further processing of the precompile call.
+		On the other hand, in the case of \instPointEvaluation{} and \instBlsXxx{} calls,
+		call data being malformed, in particular call data being of the wrong (imposed) size,
+		\textbf{does negatively impact} the underlying \inst{CALL}-instruction's
+		success, by necessarily rendering it unsuccessful.
+
+		% \saNote{}
+		% The definition of \locCdsIsValid{} involves both
+		% \locValidCds{} and
+		% \locSufficientGas{}.
+		% As with other definitions that are conditioned by (what amounts to \locHubSuccess{}),
+		% the purpose is to alleviate the case analysis of the \hubMod{}-module,
+		% which uses these bits in deciding on the next steps in the precompile processing.
+\end{description}
