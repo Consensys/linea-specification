@@ -4,8 +4,8 @@ The \instModexp{} computes the $\lfloor \log_{2} ( \cdots ) \rfloor$ of this in 
 	\boxed{\text{All constraints in this subsection further assume } \oobInstIsModexpLead_{i} = 1}
 \]
 What the present system of constraints aims to verify the following predictions made in the \hubMod{} module: 
-\green{(\emph{a})} compute the small integer $\evmWordSize \wedge \big[ \locCds - (\locCumulativeLengthOfByteSizes + \locBbs) \big]^+$
-\green{(\emph{b})} compute the bit $[ \locCds > (\locCumulativeLengthOfByteSizes + \locBbs) ] \wedge [ \locEbs \neq 0 ]$.
+\green{(\emph{a})} compute the small integer $\evmWordSize \wedge \big[ \locCds - (\cumulativeLengthOfModexpByteSizes + \locBbs) \big]^+$
+\green{(\emph{b})} compute the bit $[ \locCds > (\cumulativeLengthOfModexpByteSizes + \locBbs) ] \wedge [ \locEbs \neq 0 ]$.
 
 \noindent We use the shorthands defined below:
 \[
@@ -44,12 +44,12 @@ We impose the following constraints:
 				}
 				\vspace{2mm} \\
 				\wcpCallToLt {
-					anchorRow = i                                         ,
-					relOffset = 2                                         ,
-					argOneHi  = 0                                         ,
-					argOneLo  = \locCumulativeLengthOfByteSizes + \locBbs ,
-					argTwoHi  = 0                                         ,
-					argTwoLo  = \locCds                                   ,
+					anchorRow = i                                            ,
+					relOffset = 2                                            ,
+					argOneHi  = 0                                            ,
+					argOneLo  = \cumulativeLengthOfModexpByteSizes + \locBbs ,
+					argTwoHi  = 0                                            ,
+					argTwoLo  = \locCds                                      ,
 				}
 			\end{array} \right.
 		\]
@@ -62,7 +62,7 @@ We impose the following constraints:
 			\end{array} \right.
 		\]
 		\saNote{}
-		The number $\locCumulativeLengthOfByteSizes = 3 \cdot \evmWordSize$ is the ``cumulative length of byte sizes''.
+		The number $\cumulativeLengthOfModexpByteSizes = 3 \cdot \evmWordSize$ is the ``cumulative length of byte sizes''.
 		It accounts for the first three \evm{} words in the (right zero-padded) call data holding the
 		\textbf{base byte size},
 		\textbf{exponent byte size} and
@@ -73,21 +73,21 @@ We impose the following constraints:
 		Thus, by definition
 		\[
 			\left\{ \begin{array}{rcl}
-				\locEbsIsZero                 ~ \equiv ~ \true & \iff & \big[ \locEbs \equiv 0            \big] \vspace{1mm}                 \\
-				\locEbsLtThirtyTwo            ~ \equiv ~ \true & \iff & \big[ \locEbs <      \evmWordSize \big] \vspace{1mm}                 \\
-				\locCallDataExtendsBeyondBase ~ \equiv ~ \true & \iff & \big[ \locCds >      \locCumulativeLengthOfByteSizes + \locBbs \big] \\
+				\locEbsIsZero                 ~ \equiv ~ \true & \iff & \big[ \locEbs \equiv 0            \big] \vspace{1mm}                    \\
+				\locEbsLtThirtyTwo            ~ \equiv ~ \true & \iff & \big[ \locEbs <      \evmWordSize \big] \vspace{1mm}                    \\
+				\locCallDataExtendsBeyondBase ~ \equiv ~ \true & \iff & \big[ \locCds >      \cumulativeLengthOfModexpByteSizes + \locBbs \big] \\
 			\end{array} \right.
 		\]
 	\item[\underline{Row $n^\circ(i + 3)$:}]
 		\If $\locCallDataExtendsBeyondBase = 1$ \Then
 		\[
 			\wcpCallToLt {
-				anchorRow = i                                                               ,
-				relOffset = 3                                                               ,
-				argOneHi  = 0                                                               ,
-				argOneLo  = \locCds - \big( \locCumulativeLengthOfByteSizes + \locBbs \big) ,
-				argTwoHi  = 0                                                               ,
-				argTwoLo  = \evmWordSize                                                    ,
+				anchorRow = i                                                                  ,
+				relOffset = 3                                                                  ,
+				argOneHi  = 0                                                                  ,
+				argOneLo  = \locCds - \big( \cumulativeLengthOfModexpByteSizes + \locBbs \big) ,
+				argTwoHi  = 0                                                                  ,
+				argTwoLo  = \evmWordSize                                                       ,
 			}
 		\]
 		we define the following shorthand
@@ -108,7 +108,7 @@ We impose the following constraints:
 					\item \If $\locCallDataExtendsBeyondBase = 1$ \Then
 						\begin{enumerate}
 							\item \If $\locResultOfComparison = 0$ \Then $\locCdsCutoff = \evmWordSize$
-							\item \If $\locResultOfComparison = 1$ \Then $\locCdsCutoff = \locCds - \big( \locCumulativeLengthOfByteSizes + \locBbs \big)$
+							\item \If $\locResultOfComparison = 1$ \Then $\locCdsCutoff = \locCds - \big( \cumulativeLengthOfModexpByteSizes + \locBbs \big)$
 						\end{enumerate}
 				\end{enumerate}
 			\item[Constraining \locEbsCutoff       {}:] we impose that
@@ -126,8 +126,8 @@ We impose the following constraints:
 \saNote{} The above thus computes respectively
 \[
 	\left\{ \begin{array}{lcl}
-		\locCdsCutoff       & \equiv & \Big[ \locCds - \big( \locCumulativeLengthOfByteSizes + \locBbs \big) \Big] ^ + \wedge \, \evmWordSize \\
-		\locEbsCutoff       & \equiv & \locEbs \wedge \evmWordSize                                                                            \\
-		\locEbsSubThirtyTwo & \equiv & \Big[ \locEbs - \evmWordSize \Big] ^ +                                                                 \\
+		\locCdsCutoff       & \equiv & \Big[ \locCds - \big( \cumulativeLengthOfModexpByteSizes + \locBbs \big) \Big] ^ + \wedge \, \evmWordSize \\
+		\locEbsCutoff       & \equiv & \locEbs \wedge \evmWordSize                                                                               \\
+		\locEbsSubThirtyTwo & \equiv & \Big[ \locEbs - \evmWordSize \Big] ^ +                                                                    \\
 	\end{array} \right.
 \]
