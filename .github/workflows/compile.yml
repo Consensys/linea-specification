@@ -8,7 +8,8 @@ jobs:
   archive-build-spec:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
       - name: Install JetBrainsMono
         run: mkdir JetBrainsMono
              && cd JetBrainsMono
@@ -16,17 +17,34 @@ jobs:
              && unzip JetBrainsMono-2.304.zip
              && sudo mv fonts/ttf/*.ttf /usr/share/fonts/
              && cd -
+
       - name: Install fontawesome
         run: sudo apt-get install fonts-font-awesome
+
       - name: Install tectonic
         run: curl --proto '=https' --tlsv1.2 -fsSL https://drop-sh.fullyjustified.net |sh
+
       - name: Install lualatex
         # run: sudo apt-get install texlive-latex-base && sudo apt install texlive-luatex && sudo apt-get install texlive-latex-extra
         run: sudo apt-get update && sudo apt install texlive-full --fix-missing
+
       - name: Compile Specification
         run: make ospec
+
+      - name: Failure Notification
+        if: failure() || cancelled()
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: webhook-trigger
+          payload: |
+            name: "SpecCompilation"
+            status: "${{ job.status }}"
+
       - name: Upload the Specification
         uses: actions/upload-artifact@v4
         with:
           name: specification.pdf
           path: spec/_all_spec.pdf
+
+
