@@ -3,14 +3,15 @@
 ## Columns
 
 For the account perspective:
-- new `TRANSACTION_DELEGATION_PHASE` / `TX_DLGT` (on the same level as `TX_WARM`, `TX_SKIP`, `TX_INIT`, `TX_EXEC`, `TX_FINL` transaction phases)
-- new `IS_DELEGATED`                / `IS_DELEGATED_NEW`            columns
-- new `DELEGATION_ADDRESS_HI`       / `DELEGATION_ADDRESS_LO`       columns
-- new `DELEGATION_ADDRESS_NEW_HI`   / `DELEGATION_ADDRESS_NEW_LO`   columns
-- new `DELEGATION_CODE_HASH_HI`     / `DELEGATION_CODE_HASH_LO`     columns
-- new `DELEGATION_CODE_HASH_NEW_HI` / `DELEGATION_CODE_HASH_NEW_LO` columns
-- constrain `IS_DELEGATED` to remain constant unless `TX_DLGT ≡ 1`
-- every RLP_TXN row of `ACCOUNT_DELEGATION_DATA` type gives rise to exactly one `TX_DLGT` row
+- new `TRANSACTION_AUTHORIZATION_PHASE` / `TX_AUTH` (on the same level as `TX_WARM`, `TX_SKIP`, `TX_INIT`, `TX_EXEC`, `TX_FINL` transaction phases)
+- new `PEEK_AT_AUTHORIZATION`           / `AUTH` (on the same level as `ACC`, `CON`, `MISC`, `STACK`, `STO`, `TXN` etc ...)
+- new `IS_DELEGATED`                    / `IS_DELEGATED_NEW`            columns
+- new `DELEGATION_ADDRESS_HI`           / `DELEGATION_ADDRESS_LO`       columns
+- new `DELEGATION_ADDRESS_NEW_HI`       / `DELEGATION_ADDRESS_NEW_LO`   columns
+- new `DELEGATION_CODE_HASH_HI`         / `DELEGATION_CODE_HASH_LO`     columns
+- new `DELEGATION_CODE_HASH_NEW_HI`     / `DELEGATION_CODE_HASH_NEW_LO` columns
+- constrain `IS_DELEGATED` to remain constant unless `TX_AUTH ≡ 1`
+- every RLP_TXN row of `ACCOUNT_DELEGATION_DATA` type gives rise to exactly one `TX_AUTH` row
 - every row does the expected delegation and sets `IS_DELEGATED_NEW` to `deleg/IS_DE_DELEGATION`
 - every row does `acc/NONCE_NEW = 1 + acc/NONCE`
     - even the "sender self delegation" rows
@@ -23,11 +24,43 @@ Question:
 - how do we modify the recognition of EOA's for CALL's ?
 
 
-
 - we add a new lookup `RLP_TXN -> HUB` lookup for account delegation transaction phase
-    - source selector : `hub/TX_DLGT`
+    - source selector : `hub/TX_AUTH`
     - target filter   : none required
 
+
+## The HUB's view on the `TX_AUTH` phase
+
+
+We will require
+```rust
+// processing requires only ACC or AUTH
+If TX_AUTH[i] ≡ 1 Then PEEK_AT_ACCOUNT[i] + PEEK_AT_AUTHORIZATION[i] ≡ 1
+
+// entry constraint: you start on an account row
+If TX_AUTH[i - 1] ≡ 0 ∧ TX_AUTH[i] ≡ 1 Then PEEK_AT_ACCOUNT[i] ≡ 1
+
+// forced oscillations between ACC and AUTH
+If TX_AUTH[i] ≡ 1 ∧ TX_AUTH[i + 1] ≡ 1 Then
+    + PEEK_AT_ACCOUNT[i]     ∙ PEEK_AT_AUTHORIZATION[i + 1]
+    + PEEK_AT_ACCOUNT[i + 1] ∙ PEEK_AT_AUTHORIZATION[i]
+        ≡ 1
+
+// ACC → AUTH always
+If TX_AUTH[i] ≡ 1 ∧ PEEK_AT_ACCOUNT[i] ≡ 1 Then
+    ∙ TX_AUTH[i + 1] ≡ 1
+    ∙ PEEK_AT_AUTHORIZATION[i + 1] ≡ 1 // obsolete
+```
+
+The above ensures that the `TX_AUTHORIZATION` phase always happens like this:
+
+```go
+───>  ACC  ───>  AUTH  ───>
+       ↑           │
+       └───────────┘
+```
+
+Recall: the purpose of the `PEEK_AT_AUTHORIZATION` perspective is to serve as a vehicle between the `RLP_AUTH` and the `HUB` modules.
 
 ## `TX_INIT` and `TX_SKIP` changes
 
@@ -123,7 +156,7 @@ consider the following diagram showing how we want to populate the dummy context
 
 ## `CODE_HASH` computation for account delegations
 
-We will need to send stuff to some hasher. It's easiest to do this for every `TX_DLGT` row. There are various options for where to do this.
+We will need to send stuff to some hasher. It's easiest to do this for every `TX_AUTH` row. There are various options for where to do this.
 One _could_ insert MISC rows between every account row. I don't like this.
 One _could_ use the lookup to RLP_ADDR which we will also trigger, send the DELEGATION_ADDRESS, too, and also request the hashing of the 'code', that is the 
 following 23 bytes
