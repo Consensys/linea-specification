@@ -1,0 +1,36 @@
+We constrain the \authorityIsSenderAcc{} column.
+We impose
+\begin{enumerate}
+	\item
+		\If   $\iomf _{i} = 0$
+		\Then $\authorityIsSenderAcc _{i} = 0$
+		(\sanityCheck)
+	\item
+		\If   $\userTransactionNumber _{i} \neq \userTransactionNumber _{i - 1}$
+		\Then $\authorityIsSenderAcc  _{i} =    0$
+	\item
+		\If   $\userTransactionNumber _{i} \neq 1 + \userTransactionNumber _{i - 1}$
+		\[
+			\authorityIsSenderAcc _{i} = \authorityIsSenderAcc _{i - 1}
+			+
+			\left[ \begin{array}{cl}
+				\cdot & \macro                              _{i + \roffCompMacroRow}  \\
+				\cdot & \extern                             _{i + \roffCompExternRow} \\
+				\cdot & \rlpAuthExternAuthorityTupleIsValid _{i + \roffCompExternRow} \\
+				\cdot & \locAuthorityIsSender                                         \\
+			\end{array} \right]
+		\]
+\end{enumerate}
+\saNote{}
+We refer the reader to
+section~(\ref{rlp auth: comparisons: shorthands})
+for the definition of \locAuthorityIsSender{}.
+We have pegged the above ``increment constraint'' to
+$\macro _{i + \roffCompMacroRow} \equiv \true$
+in order to be able to use said shorthand.
+
+\saNote{}
+We don't strictly require the inclusion of the
+$\macro _{i + \roffCompMacroRow}$ in the
+expression / definition of the increment.
+We include it here for clarity.

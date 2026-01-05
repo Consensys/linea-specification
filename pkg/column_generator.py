@@ -45,6 +45,8 @@ full_names = {
 	"blake": "blake",
 	"ecData": "ec Data",
 	"precInfo": "prec Info",
+	"txnData": "transaction Data",
+	"bls": "bls Data",
 	"userTxnData": "user Transaction Data",
 	"systTxnData": "system Transaction Data",
 	"txnComp": "txn Comp",
@@ -52,6 +54,7 @@ full_names = {
 	"shakira": "shakira",
 	"ripSha": "rip Sha",
 	"blkMdx": "blk Mdx",
+	"blsData": "bls Data",
 	# flags
 	"txn": "txn",
 	"trans": "trans Storage",
@@ -62,11 +65,14 @@ full_names = {
 	"swap": "swap",
 	"invalid": "invalid",
 	# rlp modules
-	"rlpAddr": "address Rlp",		# I'm taking out the d for readability
+	"rlpAddr": "address Rlp",
+	"rlpAuth": "authorization Rlp",
 	"rlpTxn": "transaction Rlp",
 	"rlpTxnRcpt": "transaction Receipt Rlp",
+	"rlpUtils": "rlp Utils",
 	# instruction decoder
 	"id": "instruction Decoder",
+	"blsRefTable": "bls Reference Table"
 }
 
 def module_list():

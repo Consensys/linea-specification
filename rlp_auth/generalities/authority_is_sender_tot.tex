@@ -1,0 +1,22 @@
+We constrain the \authorityIsSenderTot{} column.
+We impose
+\begin{enumerate}
+	\item
+		\If   $\iomf _{i} = 0$
+		\Then $\authorityIsSenderTot _{i} = 0$
+		(\sanityCheck)
+	\item
+		$\authorityIsSenderTot$ is \textbf{transaction-constant};
+	\item
+		\If   $\userTransactionNumber _{i} \neq \userTransactionNumber _{i - 1}$
+		\Then
+		\[ \authorityIsSenderTot _{i - 1} = \authorityIsSenderAcc _{i - 1} \]
+	\item
+		$\authorityIsSenderTot _{N} = \authorityIsSenderAcc _{N}$
+\end{enumerate}
+\saNote{}
+In other words, the \textbf{transaction-constant} column
+\authorityIsSenderTot{} keeps a record of the
+number of authority tuple of a given transaction which had their
+\locAuthorityAddress{} equal to the
+\locSenderAddress{} of the transaction.

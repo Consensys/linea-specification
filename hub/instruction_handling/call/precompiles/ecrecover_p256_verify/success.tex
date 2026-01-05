@@ -1,0 +1,177 @@
+\begin{center}
+	\boxed{%
+		\text{The constraints presented below assume that }
+		\left\{ \begin{array}{lcl}
+			\peekScenario  _{i} & = & 1 \\
+			\left[ \begin{array}{cr}
+				+ & \scenEcrecover _{i} \\
+				+ & \scenPVerify   _{i} \\
+			\end{array} \right]
+			& = & 1 \\
+			\scenPrcSuccess _{i} & = & 1 \\
+		\end{array} \right.
+		}
+\end{center}
+We are thus assuming that the present row is
+the first of the second phase of dealing with
+either the \instEcrecover{} precompile or
+either the \instPVerify{}   precompile.
+We are also assuming that $\scenPrcSuccess \equiv 1$.
+We remind the reader that, for both \instEcrecover{} and \instPVerify{},
+\textbf{success} only means that the precompile call was provided with sufficient gas.
+It does \textbf{not} mean,
+in the \instEcrecover{} case, that an address was effectively recovered, nor
+in the \instPVerify{}   case, that signature verification was successful.
+\begin{description}
+	\item[\underline{\underline{Miscellaneous-row $n^°(i + \prcStandardSuccessSecondMiscRowOffset)$: full transfer of return data:}}] ---
+		\begin{description}
+			\item[\underline{Defining \locTriggerMmuFullTransfer{}:}]
+				we define
+				\[
+					\locTriggerMmuFullTransfer
+					\define
+					\left[ \begin{array}{crcl}
+						+ & \locAddressRecoverySuccess       & \cdot & \scenEcrecover _{i} \\
+						+ & \locSignatureVerificationSuccess & \cdot & \scenPVerify   _{i} \\
+					\end{array} \right]
+				\]
+				\saNote{}
+				\locTriggerMmuFullTransfer{} is provably binary,
+				see note~(\ref{hub: instruction handling: call: precompiles: common: generalities: ecrecover recovery success failure flags are provably binary}).
+			\item[\underline{Setting lookup flags:}]
+				we impose
+				\[
+					\weightedMiscFlagSum {
+						anchorRow = i                                      ,
+						relOffset = \prcStandardSuccessSecondMiscRowOffset ,
+					}
+					=
+					\miscMmuWeight \cdot \locTriggerMmuFullTransfer
+					% OK
+				\]
+				in other words
+				\[
+					\left\{ \begin{array}{lclr}
+						\miscExpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locTriggerMmuFullTransfer & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero                     & (\sanityCheck) \\
+					\end{array} \right.
+				\]
+		\end{description}
+		\saNote{} In other words the ``result transfer'' step of a call to the \instEcrecover{} only required if the call is
+		(\emph{a}) is successful (i.e. is given sufficient gas) and
+		(\emph{b}) is successful in recovering an address (as measured by $\locAddressRecoverySuccess \equiv 1$.)
+		\begin{description}
+			\item[\underline{Setting \mmuMod{}-instruction data:}]
+				\If $\miscMmuFlag_{i + \prcStandardSuccessSecondMiscRowOffset} = 1$ \Then we impose
+				\[
+					\setMmuInstructionParametersExoToRamTransplants {
+						anchorRow = i                                      ,
+						relOffset = \prcStandardSuccessSecondMiscRowOffset ,
+						sourceId  = 1 + \hubStamp_{i}                      ,
+						targetId  = 1 + \hubStamp_{i}                      ,
+						size      = \evmWordSize                           ,
+						exoSum    = \exoWeightEcdata                       ,
+						phase     = \locMmuPhase                           ,
+					}
+				\]
+				where
+				\[
+					\locMmuPhase
+					\define
+					\left[ \begin{array}{crcl}
+						+ & \phaseEcrecoverResult & \cdot & \scenEcrecover _{i} \\
+						+ & \phasePVerifyResult   & \cdot & \scenPVerify   _{i} \\
+					\end{array} \right]
+				\]
+				\saNote{}
+				Recall that the return data \textbf{o}
+				of a successful call to the \instEcrecover{} precompile
+				which successfully recovers an address is an $\evmWordSize$-byte string
+				$\textbf{o} \in \mathbb{B}_{\evmWordSize}$
+				composed of 12 (leading) zero bytes
+				followed by $\addressSize$ bytes making up
+				the recovered \ethereum{} public address.
+
+				\saNote{}
+				The return data $\textbf{o}$
+				of a successful call to the \instPVerify{} precompile
+				which successfully verifies a signature is the $\evmWordSize$-byte string
+				$\utt{00}\, \utt{0x\,00}\, \cdots \, \utt{01} \in \mathbb{B}_{\evmWordSize}$.
+		\end{description}
+	\item[\underline{\underline{Miscellaneous-row $n^°(i + \prcStandardSuccessThirdMiscRowOffset)$: partial copy of return data:}}] ---
+		\begin{description}
+			\item[\underline{Defining \locTriggerMmuPartialCopy{}:}]
+				we define
+				\[
+					\locTriggerMmuPartialCopy
+					\define
+					\left[ \begin{array}{cl}
+						\cdot & \locTriggerMmuFullTransfer \\
+						\cdot & \locOobResultNonzeroRac    \\
+					\end{array} \right]
+				\]
+				\saNote{}
+				\locTriggerMmuPartialCopy{} is provably binary.
+			\item[\underline{Setting lookup flags:}]
+				we impose
+				\[
+					\weightedMiscFlagSum {
+						anchorRow = i                                     ,
+						relOffset = \prcStandardSuccessThirdMiscRowOffset ,
+					}
+					=
+					\miscMmuWeight
+					\cdot
+					\locTriggerMmuPartialCopy
+					% OK
+				\]
+				in other words
+				\[
+					\left\{ \begin{array}{lclc}
+						\miscExpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                    & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \locTriggerMmuPartialCopy & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                    & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                    & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                    & (\sanityCheck) \\
+					\end{array} \right.
+				\]
+		\end{description}
+		\saNote{}
+		In other words the ``(partial) copy of return data to the caller's \textsc{ram}''
+		step of a call to either the \instEcrecover{} or the \instPVerify{} precompile
+		is only required if the call is
+		(\emph{a}) is successful (i.e. is given sufficient gas) and
+		(\emph{b}) is successful in recovering an address or verifiying a signature
+		(\emph{c}) and the underlying call has a nonzero \RAC{}.
+		\begin{description}
+			\item[\underline{\mmuMod{} data:}]
+				\If $\miscMmuFlag_{i + \prcStandardSuccessThirdMiscRowOffset} = 1$ \Then we impose
+				\[
+					\setMmuInstructionParametersRamToRamSansPadding {
+						anchorRow       = i                                     ,
+						relOffset       = \prcStandardSuccessThirdMiscRowOffset ,
+						sourceId        = 1 + \hubStamp _{i}                    ,
+						targetId        = \cn _{i}                              ,
+						sourceOffsetLo  = 0                                     ,
+						size            = \evmWordSize                          ,
+						referenceOffset = \locPrcRao                            ,
+						referenceSize   = \locPrcRac                            ,
+					}
+				\]
+		\end{description}
+	\item[\underline{Context-row $n^°(i + \prcStandardSuccessCallerContextRowRowOffset)$:}] 
+		we impose
+		\[
+			\provideReturnData {
+				anchorRow          = i                                             ,
+				relOffset          = \prcStandardSuccessCallerContextRowRowOffset  ,
+				returnDataReceiver = \cn _{i}                                      ,
+				returnDataProvider = 1 + \hubStamp _{i}                            ,
+				returnDataOffset   = 0                                             ,
+				returnDataSize     = \evmWordSize \cdot \locTriggerMmuFullTransfer ,
+			}
+		\]
+\end{description}

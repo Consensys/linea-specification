@@ -1,0 +1,38 @@
+The following colunms in the \utils{}-perspective require no further comment.
+The \rlpAuthMod{} module serves these columns exclusively to the \rlpUtilsMod{} module,
+see section~(\ref{rlp auth: lookup: into utils}).
+\begin{enumerate}
+	\item \rlpAuthUtilsColumnLimbBit:
+		binary column;
+		turns on along \utils{}-rows containing a (nontrivial, finished) \limb{};
+	\item \rlpAuthUtilsColumnLimb:
+		contains limbs;
+	\item \rlpAuthUtilsColumnLimbSize:
+		contains the number of significant bytes of \rlpAuthUtilsColumnLimb{};
+	\item \rlpAuthUtilsColumnExoDataColumn{k}, for $k = 1, \dots, \numberOfRlpUtilsDataColumns$:
+	\item \rlpAuthUtilsColumnRlpUtilsFlag:
+		binary flag indicating when to trigger the lookup to the \rlpUtilsMod{} module;
+	\item \rlpAuthUtilsColumnRlpUtilsInstruction:
+		contains \rlpUtilsMod{}-module instructions;
+	\item \rlpAuthUtilsColumnSizeCountdown:
+		column that performs a countdown of the number of remaining bytes
+		to \rlp{}-ize;
+\end{enumerate}
+\saNote{}
+As per usual, \limb{}'s are \textbf{left aligned on the $\llarge$-th byte}.
+
+\saNote{}
+The purpose of the $(\rlpAuthUtilsColumnLimbBit, \rlpAuthUtilsColumnLimb, \rlpAuthUtilsColumnLimbSize)$
+tuples is that,
+whenever $\rlpAuthUtilsColumnLimbBit = \true$,
+$\rlpAuthUtilsColumnLimb$ contain a ``nonempty'' data limb left aligned (on the $\llarge$-th byte)
+with $\rlpAuthUtilsColumnLimbSize$ many significant bytes (counting from the $\llarge$-th byte)
+which, if concatenated together, make up the \rlp{}-string
+\[
+	\locMagic                   \, \cdot \,
+	\loc{<prefix>}              \, \cdot \,
+	\rlp\Big( \locChainId \Big) \, \cdot \,
+	\rlp\Big( \locAddress \Big) \, \cdot \,
+	\rlp\Big( \locNonce   \Big)
+\]
+

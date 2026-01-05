@@ -1,0 +1,23 @@
+\item[\underline{\underline{Row n$°(i + \maxRefundRowOffset)$: upper limit for refunds:}}]
+	we impose that
+	\[
+		\eucCall {
+			anchorRow = i                    ,
+			relOffset = \maxRefundRowOffset  ,
+			argOne    = \locExecutionGasCost ,
+			argTwo    = \maxRefundQuotient   ,
+		}
+	\]
+	where we set / have used the following shorthands
+	\[
+		\left\{ \begin{array}{lcl}
+			\locExecutionGasCost & \define & \locRlpGasLimit - \locHubLeftoverGas                \\
+			\locRefundLimit      & \define & \txnDataCmptnEucQuotient _{i + \maxRefundRowOffset} \\
+		\end{array} \right.
+	\]
+	where we have set
+	\[
+		\maxRefundQuotient \define \maxRefundQuotientValue
+	\]
+	\saNote{}
+	By construction $\locRefundLimit \equiv \displaystyle \left\lfloor\frac{\locExecutionGasCost}\maxRefundQuotient\right\rfloor$.

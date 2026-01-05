@@ -1,0 +1,27 @@
+We impose the following constraints
+\begin{enumerate}
+	\item $\userTransactionNumber _{0} = 0$
+	\item \If $\userTransactionNumber _{i} =    0$ \Then $\iomf _{i} = 0$
+	\item \If $\userTransactionNumber _{i} \neq 0$ \Then $\iomf _{i} = 1$
+	\item $\userTransactionNumber _{i} \in \{ \userTransactionNumber _{i - 1}, 1 + \userTransactionNumber _{i - 1} \}$ \quad (\sanityCheck)
+\end{enumerate}
+We cannot completely characterize when the \userTransactionNumber{} increments, but we impose the following
+\begin{enumerate}[resume]
+	\item
+		\If $\transactionTypeSansAuthorityLists _{i} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\userTransactionNumber _{i}     & = & 1 + \userTransactionNumber _{i - 1} \\
+				\userTransactionNumber _{i + 1} & = & 1 + \userTransactionNumber _{i}     \\
+			\end{array} \right.
+		\]
+	\item
+		\If $\transactionTypeWithAuthorityLists _{i} = 1$ \et  $\userTransactionNumber _{i} \neq  \userTransactionNumber _{i + 1}$
+		\Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\utils                     _{i} & = & \true  \\
+				\ct                        _{i} & = & \maxCt _{i} \\
+			\end{array} \right.
+		\]
+\end{enumerate}

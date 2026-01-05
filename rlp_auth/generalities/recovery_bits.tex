@@ -1,0 +1,33 @@
+We impose the following general constraints:
+\begin{enumerate}
+	\item
+		we impose binarity constraints the following columns
+		\begin{enumerate}
+			\item \rlpAuthExternAuthorityEcrecoverAttempt{} (\sanityCheck)
+			\item \rlpAuthExternAuthorityRecoverySuccess{}  (\sanityCheck)
+			\item \rlpAuthExternAuthorityTupleIsValid{}     (\sanityCheck)
+		\end{enumerate}
+	\item
+		\If $\extern _{i} = \true$
+		\Then we impose
+		\begin{enumerate}
+			\item
+				\If   $\rlpAuthExternAuthorityEcrecoverAttempt _{i} = \false$
+				\Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\rlpAuthExternAuthorityRecoverySuccess _{i} & = & \false \\
+						\rlpAuthExternAuthorityTupleIsValid    _{i} & = & \false \\
+					\end{array} \right.
+				\]
+			\item
+				\If   $\rlpAuthExternAuthorityRecoverySuccess _{i} = \false$
+				\Then
+				\[
+					\rlpAuthExternAuthorityTupleIsValid _{i} = \false
+				\]
+		\end{enumerate}
+\end{enumerate}
+\saNote{}
+Explicit values for these columns are set in
+section~(\ref{rlp auth: comparisons: justifying extern values}).

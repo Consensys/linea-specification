@@ -1,0 +1,59 @@
+\item[\underline{\underline{Row n$°(i + \effectiveRefundVsTransactionFloorCostRowOffset)$: comparing effective refund to transaction floor cost:}}]
+	we impose that
+	\[
+		\left\{ \begin{array}{lcl}
+			\multicolumn{3}{l}{%
+				\smallCallToLt {
+					anchorRow = i                                               ,
+					relOffset = \effectiveRefundVsTransactionFloorCostRowOffset ,
+					argOneLo  = \locConsumedGasAfterRefunds                     ,
+					argTwoLo  = \locTransactionFloorCost                        ,
+				}}
+				\vspace{2mm} \\
+				\locPayFloorCost & \define & \txnDataCmptnWcpRes _{i + \effectiveRefundVsTransactionFloorCostRowOffset} \\
+		\end{array} \right.
+	\]
+	In other words $\locPayFloorCost \equiv \true \iff \big[ \locConsumedGasAfterRefunds < \locTransactionFloorCost \big]$.
+
+	We are now in a position to constrain \locHubEffectiveRefund{}.
+	However, the value of \locHubEffectiveRefund{} depends on the hardfork:
+	there will be one definition for the \cite{EYP-Cancun} hardfork, and
+	another definition for the \cite{EYP-Prague} hardfork.
+
+	As such we impose
+	\begin{description}
+		\item[\underline{Setting \locHubEffectiveRefund{} for the \textsc{Cancun} hardfork:}]
+			we impose
+			\[
+				\locHubEffectiveRefund
+				=
+				\left[ \begin{array}{cr}
+					+ & \locRlpGasLimit             \\
+					- & \locConsumedGasAfterRefunds \\
+				\end{array} \right]
+			\]
+		\item[\underline{Setting \locHubEffectiveRefund{} for the \textsc{Prague} hardfork:}]
+			we impose
+			\begin{enumerate}
+				\item \If $\locPayFloorCost = \false$ \Then
+					\[
+						\locHubEffectiveRefund
+						=
+						\left[ \begin{array}{cr}
+							+ & \locRlpGasLimit             \\
+							- & \locConsumedGasAfterRefunds \\
+						\end{array} \right]
+					\]
+				\item \If $\locPayFloorCost = \true$ \Then
+					\[
+						\locHubEffectiveRefund
+						=
+						\left[ \begin{array}{cr}
+							+ & \locRlpGasLimit          \\
+							- & \locTransactionFloorCost \\
+						\end{array} \right]
+					\]
+			\end{enumerate}
+	\end{description}
+	\saNote{}
+	The above implies that the computations related to

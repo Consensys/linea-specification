@@ -1,0 +1,42 @@
+The purpose of the $\rlpAuthMod \hookrightarrow \hubMod$ lookup is to extract the $\rlpAuthExternAuthorityNonce$.
+Furthermore, this lookup is the means by which the \hubMod{} learns about authority tuples, whether valid or invalid.
+% TODO: @OLIVIER: we need an inverse lookup from HUB to RLP_AUTH to make sure we don't add extra delegations
+% TODO: @OLIVIER: we need a new transaction execution phase in the HUB, which we should name TXN_AUTH (like TXN_WARM) to deal with authorization tuples
+% TODO: @OLIVIER: we need an indexing mechanism for tuples for which ecrecovery was successful to prevent "double authorizations" or what not (likely impossible but ok) in the HUB
+\begin{description}
+	\item[\underline{Selector:}]
+		we use
+		\[
+			\col{hub\_selector} _{i}
+			\define
+			\extern _{i} \cdot \rlpAuthExternAuthorityRecoverySuccess _{i}
+		\]
+	\item[\underline{Source columns:}] ---
+	\item[\underline{Column correspondence:}]
+		\[
+			\renewcommand{\arraystretch}{1.5}
+			\begin{array}{|l|c|l|}
+				\hline
+				\text{\rlpAuthMod{}-columns}                  &                  & \text{\hubMod{}-columns}                                 \\ \hline\hline
+				1                                             & \rightsquigarrow & ``\col{TX\_AUTH}"              \\ \hline
+				1                                             & \rightsquigarrow & ``\col{PEEK\_AT\_AUTH}"        \\ \hline
+				\rlpAuthExternAuthorityAddressHi     _{i}     & \rightsquigarrow &                                \\ \hline
+				\rlpAuthExternAuthorityAddressLo     _{i}     & \rightsquigarrow &                                \\ \hline
+				\rlpAuthMacroAddressHi               _{i - 1} & \rightsquigarrow &                                \\ \hline
+				\rlpAuthMacroAddressLo               _{i - 1} & \rightsquigarrow &                                \\ \hline \hline
+				\rlpAuthExternAddressIsZeroAddress   _{i}     & \rightsquigarrow &                                \\ \hline
+				\rlpAuthExternAuthorityNonce         _{i}     & \rightsquigarrow &                                \\ \hline
+				\rlpAuthExternSenderIsAuthority      _{i}     & \rightsquigarrow &                                \\ \hline
+				\rlpAuthExternPotentialNewCodeHashHi _{i}     & \rightsquigarrow &                                \\ \hline
+				\rlpAuthExternPotentialNewCodeHashLo _{i}     & \rightsquigarrow &                                \\ \hline
+			\end{array}
+		\]
+	\item[\underline{Target columns:}] ---
+		\begin{multicols}{2}
+			\begin{enumerate}
+				\item "\col{TX\_AUTH}" % \txAuth % transaction processing phase
+				\item "\col{PEEK\_AT\_AUTH}" % \peekAuth % perspective
+				\item various \col{authorization/XXX} columns of the "\col{PEEK\_AT\_AUTH}" perspective
+			\end{enumerate}
+		\end{multicols}
+\end{description}

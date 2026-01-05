@@ -1,0 +1,44 @@
+The purpose of the present lookup argument is to connect deployment transactions (characterized by $\txIsDeployment \equiv 1$) with the \CFI{} identifying the associated initialization code. Such a connection must be drawn for any deployment which \emph{actually} requires \textsc{evm} execution. As such we set:
+\begin{description}
+	\item[\underline{Selector:}]
+		we define
+		\[
+			\col{romlex\_product} _{i} \define
+			\left[ \begin{array}{cl}
+				\cdot & \user                   _{i} \\
+				\cdot & \isUserTxnHubView       _{i} \\
+				\cdot & \txnDataHubIsDeployment _{i} \\
+				\cdot & \txnDataHubInitCodeSize _{i} \\
+			\end{array} \right]
+		\]
+		and from it derive the selector
+		\begin{enumerate}
+			\item \If $\col{romlex\_product} _{i} =    0 $ \Then $\col{romlex\_selector} _{i} \define \false $
+			\item \If $\col{romlex\_product} _{i} \neq 0 $ \Then $\col{romlex\_selector} _{i} \define \true  $
+		\end{enumerate}
+	\item[\underline{Source columns:}] ---
+		\begin{multicols}{3}
+			\begin{enumerate}
+				\item $\txnDataHubCfi          _{i}$
+				\item $\txnDataHubInitCodeSize _{i}$
+				\item $\txnDataHubToHi         _{i}$
+				\item $\txnDataHubToHi         _{i}$
+				\item $1$
+				\item $1$
+					%\item[\vspace{\fill}]
+			\end{enumerate}
+		\end{multicols}
+	\item[\underline{Target columns:}] ---
+		\begin{multicols}{3}
+			\begin{enumerate}
+				\item $\cfi       _{j}$
+				\item $\codeSize  _{j}$
+				\item $\addr\high _{j}$
+				\item $\addr\low  _{j}$
+				\item $\depNumber _{j}$
+				\item $\depStatus _{j}$
+					%\item[\vspace{\fill}]
+			\end{enumerate}
+		\end{multicols}
+\end{description}
+

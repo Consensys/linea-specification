@@ -1,0 +1,132 @@
+The next volley of columns pertains to sender account information:
+\begin{enumerate}
+	\item
+		\markAsExtractedFromBtc{}
+		\txnDataHubBlockNumber{}
+	\item
+		\markAsExtractedFromBtc{}
+		\txnDataHubBlockGasLimit{}
+	\item
+		\markAsExtractedFromBtc{}
+		$\txnDataHubBasefee$
+	\item
+		\markAsExtractedFromBtc{}
+		$\txnDataHubTimestamp$
+	\item
+		\markAsExtractedFromBtc{}
+		$\txnDataHubCoinbaseHi$
+	\item
+		\markAsExtractedFromBtc{}
+		$\txnDataHubCoinbaseLo$
+	\item
+		\markAsExtractedFromRlpTxn{}
+		\markAsExtractedFromRlpAddr{}
+		$\txnDataHubToHi$
+	\item
+		\markAsExtractedFromRlpTxn{}
+		\markAsExtractedFromRlpAddr{}
+		$\txnDataHubToLo$
+	\item
+		\markAsObtainedViaEcrecover{}
+		$\txnDataHubFromHi$
+	\item
+		\markAsObtainedViaEcrecover{}
+		$\txnDataHubFromLo$
+	\item
+		\markAsExtractedFromRlpTxn{}
+		$\txnDataHubIsDeployment$:
+		binary column;
+		turns on \emph{precisely} for deployment transactions;
+	\item
+		\markAsExtractedFromRlpTxn{}
+		$\txnDataHubNonce$:
+		transaction nonce;
+	\item
+		\markAsExtractedFromRlpTxn{}
+		$\txnDataHubValue$:
+		transaction value;
+	\item
+		\markAsExtractedFromRlpTxn{}
+		$\txnDataHubGasLimit$:
+		transaction gas limit;
+	\item
+		\markAsJustifiedHere{}
+		$\txnDataHubGasPrice$:
+		effective gas price of the transaction as computed from transaction data;
+	\item
+		\markAsJustifiedHere{}
+		$\txnDataHubInitialGas$:
+		gas available to \evm{} execution after covering the transaction's upfront gas cost;
+	\item
+		\markAsJustifiedHere{}
+		$\txnDataHubCallDataSize$:
+		call data size;
+		vanishes for deployment transactions;
+	\item
+		\markAsJustifiedHere{}
+		$\txnDataHubInitCodeSize$
+		initialization code size;
+		vanishes for message call transactions;
+	\item
+		\markAsJustifiedHere{}
+		$\txnDataHubHasTypeTwoGasSemantics$:
+		boolean column;
+		lights up for transactions implementing \cite{EIP-1559} gas semantics;
+	\item
+		\markAsPartiallyJustifiedHere{}
+		$\txnDataHubRequiresEvmExecution$
+		binary column;
+		lights up precisely for message calls targeting accounts with nonempty bytecode
+		and for deployments provided with nonempty initialization code;
+	\item
+		\markAsJustifiedHere{}
+		$\txnDataHubCopyTxcd$:
+		binary column;
+		turns on \emph{precisely}
+		for message call transaction
+		requiring \evm{} execution,
+		which are provided with nonempty call data;
+	\item
+		\markAsExtractedFromHub{}
+		$\txnDataHubCfi$:
+		provides nontrivial deployment transactions with a $\CFI$;
+	\item
+		\markAsExtractedFromHub{}
+		$\txnDataHubInitialBalance$:
+		balance initially available in the sender account;
+	\item
+		\markAsExtractedFromHub{}
+		$\txnDataHubStatusCode$:
+		status code of the transaction;
+		$0$ if the transaction reverts,
+		$1$ otherwise;
+	\item
+		\markAsExtractedFromHub{}
+		$\txnDataHubLeftoverGas$
+		left over gas after transaction execution;
+	\item
+		\markAsExtractedFromHub{}
+		$\txnDataHubFinalRefundCounter$:
+		accrued refunds of the transaction;
+	\item
+		\markAsJustifiedHere{}
+		$\txnDataHubEffectiveRefund$:
+		gas to be refunded to the sender at the end of the transaction;
+	\item
+		\markAsExtractedFromHub{}
+		$\txnDataHubNoopSystemTransaction$:
+		binary column;
+	\item
+		\markAsExtractedFromHub{}
+		$\txnDataHubEipBeaconRoot$:
+		binary column;
+	\item
+		\markAsExtractedFromHub{}
+		$\txnDataHubEipBlockHash$:
+		binary column;
+	\item
+		\markAsExtractedFromHub{}
+		$\txnDataHubDataCol{k}$,
+		$k = 1, \dots, \txnDataHubNumberOfDataColumns$:
+		data columns used to contain data needed to process system transactions;
+\end{enumerate}

@@ -1,0 +1,41 @@
+The present lookup connects the \userTxnDataMod{} module to the \rlpAddrMod{} module.
+It provides justification for deployment addresses.
+Deployment addresses need to be computed for all deployment transactions,
+regardless of whether they require \textsc{evm} execution or not:
+those that don't are automatically successful and lead to the creation of an account with nonzero nonce and potentially nonzero balance.
+The lookup relation is very simple:
+\begin{description}
+	\item[\underline{Selector:}]
+		we use
+		\[
+			\col{rlpaddr\_selector} _{i}
+			\define
+			\left[ \begin{array}{cl}
+				\cdot & \user                   _{i} \\
+				\cdot & \isUserTxnHubView       _{i} \\
+				\cdot & \txnDataHubIsDeployment _{i} \\
+			\end{array} \right]
+		\]
+	\item[\underline{Source columns:}] ---
+		\begin{multicols}{3}
+			\begin{enumerate}
+				\item $\txnDataHubFromHi                 _{i}$
+				\item $\txnDataHubFromLo                 _{i}$
+				\item $\txnDataHubNonce                  _{i}$
+				\item $\addressCreationRecipeConstantStd _{i}$
+				\item $\txnDataHubToHi                   _{i}$
+				\item $\txnDataHubToLo                   _{i}$
+			\end{enumerate}
+		\end{multicols}
+	\item[\underline{Target columns:}] ---
+		\begin{multicols}{3}
+			\begin{enumerate}
+				\item $\addrHi       _{j}$
+				\item $\addrLo       _{j}$
+				\item $\nonce        _{j}$
+				\item $\rlpAddrInst  _{j}$
+				\item $\depAddr\high _{j}$
+				\item $\depAddr\low  _{j}$
+			\end{enumerate}
+		\end{multicols}
+\end{description}

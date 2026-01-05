@@ -1,0 +1,34 @@
+We impose that
+\begin{enumerate}
+	\item $\totalTransactionNumber$ is counter-constant
+	\item $\totalTransactionNumber _{0} = 0$ (\sanityCheck)
+	\item $\totalTransactionNumber _{i + 1} \in \{ \totalTransactionNumber _{i}, 1 + \totalTransactionNumber _{i} \}$ (\sanityCheck)
+	\item $\totalTransactionNumber _{i + 1} = \totalTransactionNumber _{i} + \isUserTxnHubView _{i + 1}$
+	\item \If $\totalTransactionNumber _{i} =    0$ \Then $\transactionFlagSum _{i} = 0$ (\sanityCheck)
+	\item \If $\totalTransactionNumber _{i} \neq 0$ \Then $\transactionFlagSum _{i} = 1$ (\sanityCheck)
+\end{enumerate}
+\saNote{}
+The above enforces that transactions are dealt with in order.
+
+\saNote{} \label{user txn data: generalities: total transaction number: transaction processing starts with a HUB row}
+It further enforces that,
+from the \txnDataMod{} point of view,
+any transaction processing start with a $\isUserTxnHubView$-row
+and, conversely,
+$\isUserTxnHubView$-row mark the start of any new transaction processing.
+
+\saNote{}
+We remind the reader of the defining property of the $\totalTransactionNumber$ column
+as specified in the \hubMod{} module,
+see section~(\ref{hub: system: transaction numbers: definition of the total transaction number}):
+\[
+	\totalTransactionNumber
+	\equiv
+	\left[ \begin{array}{cl}
+		+ & \sysiTransactionNumber \\
+		+ & \userTransactionNumber \\
+		+ & \sysfTransactionNumber \\
+	\end{array} \right]
+\]
+This property is preserved in the current module through the lookup
+from section~(\ref{user txn data: lookups: into the hub})

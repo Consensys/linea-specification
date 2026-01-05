@@ -1,0 +1,34 @@
+We impose
+\begin{description}
+    \item[\underline{\underline{Initialization:}}]
+        both \ltByteSizeCountdown{} and \lxByteSizeCountdown{} are \textbf{implicitly} initialized,
+        see section~(\ref{rlp txn: phase constraints: rlp prefix}),
+        during the ``$\phaseRlpPrefix _{i} = \true$'' rows.
+    \item[\underline{\underline{Updates:}}]
+        \If $\phaseRlpPrefix _{i} = \false$ \Then
+        \begin{enumerate}
+            \item $\ltByteSizeCountdown _{i} = \ltByteSizeCountdown _{i - 1} - \lc _{i} \cdot \lt _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}$
+            \item $\lxByteSizeCountdown _{i} = \lxByteSizeCountdown _{i - 1} - \lc _{i} \cdot \lx _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}$
+        \end{enumerate}
+        \saNote{}
+        Recall that by
+        constraint~(\ref{rlp txn: generalities: lc lt and lx constraints: lc vanishes outside of computation rows}),
+        $\lc$ vanishes outside of \textbf{computation-rows}.
+        This enforces that the above ``update constraints''
+        only apply along \textbf{computation-rows},
+        so that the use of the \rlpTxnComputationColumnLimbSize{} column
+        of the \textbf{computation-perspective} without explicitly requiring
+        ``$\isCmp _{i} = \true$'' is legitimate.
+    \item[\underline{\underline{Finalization:}}]
+        \If $\phaseS _{i} = \true$ \et $\phaseEnd _{i} = \true$ \Then
+        \begin{enumerate}
+            \item $\ltByteSizeCountdown _{i} = 0$
+            \item $\lxByteSizeCountdown _{i} = 0$
+        \end{enumerate}
+    \item[\underline{\underline{\toHashByProver{} definition:}}]
+        $\toHashByProver _{i} = \lc _{i} \cdot \lx _{i}$
+\end{description}
+We represent the intent in a diagram below.
+
+\includepdf[fitpaper=true, pages={1}]{lua/lc_lt_lx_etc.pdf}
+

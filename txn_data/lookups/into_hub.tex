@@ -1,0 +1,40 @@
+We impose a lookup into the \hubMod{} module. Its purpose is to enforce that the \hubMod{} module deal with \textbf{all} transactions from the block. The lookup is very simple:
+\begin{description}
+	\item[Selector:]
+		none required;
+	\item[Source columns:]
+		the source is the \userTxnDataMod{} module and the source columns are
+		\begin{multicols}{3}
+			\begin{enumerate}
+				\item $\blockNumber            _{i}$
+				\item $\totalTransactionNumber _{i}$
+				\item[\vspace{\fill}]
+				\item $\sysiTransactionNumber  _{i}$
+				\item $\userTransactionNumber  _{i}$
+				\item $\sysfTransactionNumber  _{i}$
+				\item $\sysi                   _{i}$
+				\item $\user                   _{i}$
+				\item $\sysf                   _{i}$
+			\end{enumerate}
+		\end{multicols}
+	\item[Target columns:]
+		the target is the \hubMod{} module and the target columns are
+		\begin{multicols}{3}
+			\begin{enumerate}
+				\item $\blockNumber            _{j}$
+				\item $\totalTransactionNumber _{j}$
+				\item[\vspace{\fill}]
+				\item $\sysiTransactionNumber  _{j}$
+				\item $\userTransactionNumber  _{j}$
+				\item $\sysfTransactionNumber  _{j}$
+				\item $\sysi                   _{j}$
+				\item $\user                   _{j}$
+				\item $\sysf                   _{j}$
+			\end{enumerate}
+		\end{multicols}
+\end{description}
+\saNote{} \label{user txn data: lookups: into hub: purpose and consequences}
+The above lookup has the following desirable consequences:
+(\emph{a}) the columns $\sysi$, $\user$ and $\sysf$ are necessarily binary in the present \userTxnDataMod{} module given that their \hubMod{} module counterparts are
+(\emph{b}) the value of $\totalTransactionNumber$ completely determines all other columns above
+(\emph{c}) all other columns are therefore automatically $\totalTransactionNumber$-constant.

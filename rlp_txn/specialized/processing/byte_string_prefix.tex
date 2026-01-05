@@ -1,0 +1,57 @@
+We define the following shorthands
+\[
+	\rlpProcessByteString {
+		anchorRow        = i                          ,
+		relOffset        = \relof                     ,
+		byteStringLength = \loc{length}               ,
+		firstByte        = \loc{first\_byte}          ,
+		isList           = \loc{is\_list}             ,
+		mustBeNontrivial = \loc{must\_be\_nontrivial} ,
+	}
+\]
+which stands for the following collection of constraints:
+\begin{description}
+	\item[\underline{\underline{Setting \maxCt{}:}}]
+		we impose $\maxCt _{i + \relof} = 0$
+	% \item[\underline{\underline{Setting \rlpTxnSharedColumnIsPrefix{}:}}]
+	% 	we impose $\rlpTxnSharedColumnIsPrefix _{i + \relof} = \true$
+	\item[\underline{\underline{\rlpUtilsMod{} instruction call:}}] 
+		we impose
+		\[
+			\rlpUtilsInstCallByteStringPrefix {
+				anchorRow        = i                 ,
+				relOffset        = \relof            ,
+				byteStringLength = \loc{length}      ,
+				firstByte        = \loc{first\_byte} ,
+				isList           = \loc{is\_list}    ,
+			}
+		\]
+		and we define the following shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locByteStringIsNonempty & \define & \rlpTxnComputationColumnExoDataColumn{4} _{i + \relof} \\
+				\locRlpPrefixRequired    & \define & \rlpTxnComputationColumnExoDataColumn{5} _{i + \relof} \\
+				\locRlpPrefix            & \define & \rlpTxnComputationColumnExoDataColumn{6} _{i + \relof} \\
+				\locRlpPrefixByteSize    & \define & \rlpTxnComputationColumnExoDataColumn{8} _{i + \relof} \\
+			\end{array} \right.
+		\]
+	\item[\underline{\underline{Enshrining the byte string's \rlp{} prefix into the \rlp{} string:}}] 
+		we impose
+		\[
+			\conditionallySetLimb {
+				anchorRow = i                     ,
+				relOffset = \relof                ,
+				condition = \locRlpPrefixRequired ,
+				limb      = \locRlpPrefix         ,
+				nBytes    = \locRlpPrefixByteSize ,
+			}
+		\]
+	\item[\underline{\underline{Imposing nontriviality:}}] 
+		\If $\loc{must\_be\_nontrivial} = \true$ \Then we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\locRlpPrefixRequired    & = & \true \\
+				\locByteStringIsNonempty & = & \true \\
+			\end{array} \right.
+		\]
+\end{description}

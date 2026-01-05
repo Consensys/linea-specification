@@ -8,18 +8,23 @@
 				+ & \scenEcmul               _{i} \\
 				+ & \scenEcpairing           _{i} \\
 				+ & \scenPrecompileCommonBls _{i} \\
+				% + & \scenPVerify             _{i} \\
 			\end{array} \right]
 			& = & 1 \\
 			\scenPrcSuccess   _{i}      & = & 1 \\
 		\end{array} \right.
 		}
 \end{center}
-We are thus assuming that the present row is the first of the second phase of dealing with one of the following precompiles: \instEcadd{}, \instEcmul{} or \instEcpairing{}.
+We are thus assuming that the present row is the first of the second phase of dealing with one of the following precompiles:
+\instEcadd{}, \instEcmul{}, \instEcpairing{} or one of the
+\texttt{BLS} precompiles (including \instPointEvaluation{}).
+% or \instPVerify{}.
 We are also assuming that $\scenPrcSuccess \equiv 1$.
-We remind the reader that success of any of the \instEcadd{}, \instEcmul{}, \instEcpairing{} precompiles means that the precompile was
+We remind the reader that success of any of these precompiles means that the precompile was
 (\emph{a}) provided with sufficient gas
 (\emph{b}) in the case of \instEcpairing{} was provided with call data satisfying $\cds \equiv 0 \mod 192$
-(\emph{c}) the call data is well formed in the sense that it represents point(s) on the right curve (or sugroup of a curve in the case of \instEcpairing{}.)
+(\emph{b'}) in the case of the \texttt{BLS}-precompiles the call data is nonempty either has the correct fixed size or satisfies a (precompile dependent) congruence relation
+(\emph{c}) the call data is well formed in the sense that it represents point(s) on the right curve or subgroup, or scalars in the appropriate field.
 \begin{description}
 	\item[\underline{\underline{Shorthands:}}]
 		to streamline the upcoming constraints we introduce some shorthands
@@ -29,6 +34,7 @@ We remind the reader that success of any of the \instEcadd{}, \instEcmul{}, \ins
 				\locNontrivialMul     & \define & \locOobResultExtractCallData & \cdot & \scenEcmul     _{i} \\
 				\locNontrivialPairing & \define & \locOobResultExtractCallData & \cdot & \scenEcpairing _{i} \\
 				\locTrivialPairing    & \define & \locOobResultEmptyCallData   & \cdot & \scenEcpairing _{i} \\
+				% \locNontrivialPVerify & \define & \locOobResultExtractCallData & \cdot & \scenPVerify   _{i} \\
 			\end{array} \right.
 		\]
 	\item[\underline{\underline{Miscellaneous-row $n^°(i + \prcStandardSuccessSecondMiscRowOffset)$:}}]
@@ -37,45 +43,50 @@ We remind the reader that success of any of the \instEcadd{}, \instEcmul{}, \ins
 			\item[\underline{Setting lookup flags:}]
 				we impose
 				\[
-					\weightedMiscFlagSum
-					{i}{\prcStandardSuccessSecondMiscRowOffset}
+					\weightedMiscFlagSum {
+						anchorRow = i                                      ,
+						relOffset = \prcStandardSuccessSecondMiscRowOffset ,
+					}
 					=
 					\miscMmuWeight \cdot \locTriggerMmu
 				\]
-				in other words
+				where we define the \locTriggerMmu{} shorthand as follows:
+				\[
+					\locTriggerMmu \define
+					\left[ \begin{array}{cl}
+						+ & \locNontrivialAdd             \\
+						+ & \locNontrivialMul             \\
+						+ & \locNontrivialPairing         \\
+						+ & \locTrivialPairing            \\
+						+ & \scenPrecompileCommonBls _{i} \\
+						% + & \locNontrivialPVerify         \\
+					\end{array} \right]
+				\]
+				\saNote{}
+				\locTriggerMmu{} is \textbf{provably binary}.
+
+				In other words
 				\[
 					\left\{ \begin{array}{lclr}
-						\miscExpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero         & (\trash) \\
-						\miscMmuFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locTriggerMmu & (\trash) \\
-						\miscMxpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \rZero         & (\trash) \\
-						\miscOobFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero         & (\trash) \\
-						\miscStpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero         & (\trash) \\
+						\miscExpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero         & (\sanityCheck) \\
+						\miscMmuFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \locTriggerMmu & (\sanityCheck) \\
+						\miscMxpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \rZero         & (\sanityCheck) \\
+						\miscOobFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero         & (\sanityCheck) \\
+						\miscStpFlag _{i + \prcStandardSuccessSecondMiscRowOffset} & = & \gZero         & (\sanityCheck) \\
 					\end{array} \right.
 				\]
 		\end{description}
-		where we define the \locTriggerMmu{} shorthand as follows:
-		\[
-			\locTriggerMmu \define
-			\left[ \begin{array}{cl}
-				+ & \locNontrivialAdd             \\
-				+ & \locNontrivialMul             \\
-				+ & \locNontrivialPairing         \\
-				+ & \locTrivialPairing            \\
-				+ & \scenPrecompileCommonBls _{i} \\
-			\end{array} \right]
-		\]
-		\saNote{}
-		\locTriggerMmu{} is indeed binary.
 \end{description}
 \saNote{} In other words we trigger the \mmuMod{} module \emph{iff}
 \begin{center}
 	\renewcommand{\arraystretch}{1.5}
 	\begin{tabular}{|ll|}
 		\hline
-		\underline{\instEcadd{}     case:} & the precompile was provided with nonempty call data \\
-		\underline{\instEcmul{}     case:} & the precompile was provided with nonempty call data \\
-		\underline{\instEcpairing{} case:} & in \textbf{all} cases                               \\
-		\underline{\blsMod{}-precompiles:} & in \textbf{all} cases                               \\ \hline
+		\underline{\instEcadd{}     case:}     & the precompile was provided with nonempty call data          \\
+		\underline{\instEcmul{}     case:}     & the precompile was provided with nonempty call data          \\
+		\underline{\instEcpairing{} case:}     & in \textbf{all} cases                                        \\
+		\underline{\blsDataMod{}-precompiles:} & in \textbf{all} cases                                        \\
+		% \underline{\instPVerify{}   case:}     & the precompile was provided with call data of the right size \\ \hline
 	\end{tabular}
 \end{center}
 We remind the reader that calling \instEcpairing{} with empty call data is a success case for that precompile.
@@ -91,12 +102,12 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 				\If $\locTrivialPairing = 1$ \Then we impose
 				\[
 					\setMmuInstructionParametersMstore {
-						anchorRow      = i                                        ,
-						relOffset      = \prcStandardSuccessSecondMiscRowOffset   ,
-						targetId       = 1 + \hubStamp _{i}                       ,
-						targetOffsetLo = 0                                        ,
-						limbOne        = \texttt{0x\,00} \; \cdots \; \texttt{00} ,
-						limbTwo        = \texttt{0x\,00} \; \cdots \; \texttt{01} ,
+						anchorRow      = i                                            ,
+						relOffset      = \prcStandardSuccessSecondMiscRowOffset       ,
+						targetId       = 1 + \hubStamp _{i}                           ,
+						targetOffsetLo = 0                                            ,
+						limbOne        = \utt{0x\,00}\, \utt{00}\, \cdots \, \utt{00} ,
+						limbTwo        = \utt{0x\,00}\, \utt{00}\, \cdots \, \utt{01} ,
 					}
 				\]
 				\saNote{}
@@ -114,6 +125,7 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 						+ & \locNontrivialMul             \\
 						+ & \locNontrivialPairing         \\
 						+ & \scenPrecompileCommonBls _{i} \\
+						% + & \scenPVerify             _{i} \\
 					\end{array} \right]
 					= 1
 				\]
@@ -145,6 +157,7 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 						+ & \resultSizeInBytesBlsPairingCheck   & \!\!\!\cdot\!\!\! & \scenBlsPairingCheck    _{i} \\
 						+ & \resultSizeInBytesBlsMapFpToGOne    & \!\!\!\cdot\!\!\! & \scenBlsMapFpToGOne     _{i} \\
 						+ & \resultSizeInBytesBlsMapFpTwoToGTwo & \!\!\!\cdot\!\!\! & \scenBlsMapFpTwoToGTwo  _{i} \\
+						% + & \resultSizeInBytesPVerify           & \!\!\!\cdot\!\!\! & \scenPVerify            _{i} \\
 					\end{array} \right]
 				\]
 				\locMmuExoSum{} determines from which ``data'' module to extract return data and is defined as
@@ -155,6 +168,7 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 						+ & \exoWeightEcdata  & \!\!\!\cdot\!\!\! & \locNontrivialMul             \\
 						+ & \exoWeightEcdata  & \!\!\!\cdot\!\!\! & \locNontrivialPairing         \\
 						+ & \exoWeightBlsdata & \!\!\!\cdot\!\!\! & \scenPrecompileCommonBls _{i} \\
+						% + & \exoWeightEcdata  & \!\!\!\cdot\!\!\! & \scenPVerify _{i}             \\
 					\end{array} \right]
 				\]
 				\locMmuPhase{} provides extra data to locate the result portion (as opposed to the input portion)
@@ -173,21 +187,22 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 						+ & \phaseBlsPairingCheckResult   & \!\!\!\cdot\!\!\! & \scenBlsPairingCheck    _{i} \\
 						+ & \phaseBlsMapFpToGOneResult    & \!\!\!\cdot\!\!\! & \scenBlsMapFpToGOne     _{i} \\
 						+ & \phaseBlsMapFpTwoToGTwoResult & \!\!\!\cdot\!\!\! & \scenBlsMapFpTwoToGTwo  _{i} \\
+						% + & \phasePVerifyResult           & \!\!\!\cdot\!\!\! & \scenPVerify            _{i} \\
 					\end{array} \right]
 				\]
 				\saNote{}
 				Recall that the return data \textbf{o} of a successful call to the
 				\instEcrecover{}
 				precompile which successfully recovers an address
-				is a $\redm{32}$ byte string $\textbf{o} \in \mathbb{B}_{32}$
+				is a $\evmWordSize$ byte string $\textbf{o} \in \mathbb{B}_{\evmWordSize}$
 				composed of 12 (leading) zero bytes followed by 20 bytes making up the recovered Ethereum public address.
 				\specTodo{} move this to some \instEcrecover{} section.
 
 				\saNote{} \label{hub: instruction handling: call: precompiles: ecadd ecmul ecpairing and bls: success: no data extraction for ecadd ecmul if empty call data}
 				We remind the reader that \textsc{ram} segments (associated to a nonzero context number) are initialized as \textbf{empty}.
 				Since the case of \textbf{empty call data} yields the zero string in
-				$\mathbb{B}_{\phaseEcaddResult}$ and
-				$\mathbb{B}_{\phaseEcmulResult}$
+				$\mathbb{B} _{\phaseEcaddResult}$ and
+				$\mathbb{B} _{\phaseEcmulResult}$
 				for
 				\instEcadd{} and
 				\instEcmul{} respectively.
@@ -200,23 +215,29 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 				\item[\underline{Setting lookup flags:}]
 					we impose
 					\[
-						\weightedMiscFlagSum
-						{i}{\prcStandardSuccessThirdMiscRowOffset}
+						\weightedMiscFlagSum {
+							anchorRow = i                                     ,
+							relOffset = \prcStandardSuccessThirdMiscRowOffset ,
+						}
 						=
 						\miscMmuWeight \cdot \locOobResultNonzeroRac
 					\]
 					in other words
 					\[
 						\left\{ \begin{array}{lclr}
-							\miscExpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\trash) \\
-							\miscMmuFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \locOobResultNonzeroRac & (\trash) \\
-							\miscMxpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\trash) \\
-							\miscOobFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\trash) \\
-							\miscStpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\trash) \\
+							\miscExpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\sanityCheck) \\
+							\miscMmuFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \locOobResultNonzeroRac & (\sanityCheck) \\
+							\miscMxpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\sanityCheck) \\
+							\miscOobFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\sanityCheck) \\
+							\miscStpFlag _{i + \prcStandardSuccessThirdMiscRowOffset} & = & \gZero                  & (\sanityCheck) \\
 						\end{array} \right.
 					\]
+					\saNote{}
+					Recall note~(\ref{hub: instruction handling: call: precompiles: common: generalities: oob shorthands are provably binary})
+					whereby \locOobResultNonzeroRac{} is \textbf{provably binary}.
 			\end{description}
-			\saNote{} In other words the ``result transfer'' step of a call to the \instEcadd{}, \instEcmul{}, \instEcpairing{} is only required if the \inst{CALL} is provided with nonzero \RAC{}.
+			\saNote{}
+			In other words the ``result transfer'' step of a call to the \instEcadd{}, \instEcmul{}, \instEcpairing{} is only required if the \inst{CALL} is provided with nonzero \RAC{}.
 			\begin{description}
 				\item[\underline{Setting the \mmuMod{} instruction for partial return data copy:}]
 					\If $\miscMmuFlag_{i + \prcStandardSuccessThirdMiscRowOffset} = 1$ \Then we impose
@@ -247,13 +268,14 @@ section~(\ref{hub: instruction handling: call: precompiles: common: empty}).
 							+ & \resultSizeInBytesBlsPairingCheck    & \!\!\!\cdot\!\!\! & \scenBlsPairingCheck   _{i} \\
 							+ & \resultSizeInBytesBlsMapFpToGOne     & \!\!\!\cdot\!\!\! & \scenBlsMapFpToGOne    _{i} \\
 							+ & \resultSizeInBytesBlsMapFpTwoToGTwo  & \!\!\!\cdot\!\!\! & \scenBlsMapFpTwoToGTwo _{i} \\
+							% + & \resultSizeInBytesPVerify            & \!\!\!\cdot\!\!\! & \scenPVerify           _{i} \\
 						\end{array} \right]
 					\]
 					\saNote{}
 					The above holds for all (successful) calls to either of \instEcadd{}, \instEcmul{},
 					i.e. not just for the ``nontrivial'' ones,
 					as well to all (successful) \instEcpairing{} calls and
-					to all (successful) \blsMod{}-precompile calls.
+					to all (successful) \blsDataMod{}-precompile calls.
 			\end{description}
 		\item[\underline{Context-row $n^°(i + \prcStandardSuccessCallerContextRowRowOffset)$:}] 
 			we impose

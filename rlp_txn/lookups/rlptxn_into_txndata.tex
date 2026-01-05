@@ -1,0 +1,57 @@
+The lookup from the $\rlpTxnMod$ module is constructed as follows:
+\begin{description}
+	\item[\underline{Selector:}] we use $\loc{sel} _{i} = \isTxn _{i}$;
+	\item[\underline{Source columns:}] from the \rlpTxnMod{} module:
+		\begin{multicols}{2}
+			\begin{enumerate}
+				\item $1$
+				\item $1$
+				\item $\userTransactionNumber                       _{i}$
+				\item $\CFI                                         _{i}$
+				\item $\rlpTxnSharedColumnRequiresEvmExecution      _{i}$
+				\item $\rlpTxnSharedColumnIsDep                     _{i}$
+				\item $\rlpTxnTransactionColumnTxType               _{i}$
+				\item $\rlpTxnTransactionColumnToHi                 _{i}$
+				\item $\rlpTxnTransactionColumnToLo                 _{i}$
+				\item $\rlpTxnTransactionColumnTxnValue             _{i}$
+				\item $\rlpTxnTransactionColumnNonce                _{i}$
+				\item $\rlpTxnTransactionColumnNumberOfZero         _{i}$
+				\item $\rlpTxnTransactionColumnNumberOfNonZero      _{i}$
+				\item $\rlpTxnTransactionColumnNbWarmedAddress      _{i}$
+				\item $\rlpTxnTransactionColumnNbWarmedStorageKey   _{i}$
+				\item $\rlpTxnTransactionColumnGasLimit             _{i}$
+				\item $\rlpTxnTransactionColumnGasPrice             _{i}$
+				\item $\rlpTxnTransactionColumnMaxPriorityFeePerGas _{i}$
+				\item $\rlpTxnTransactionColumnMaxFeePerGas         _{i}$
+			\end{enumerate}
+		\end{multicols}
+	\item[\underline{Target columns:}] from the \userTxnDataMod{} module: 
+		\begin{multicols}{2}
+			\begin{enumerate}
+				\item $\user                                    _{j}$
+				\item $\isUserTxnRlpView                        _{j}$
+				\item $\userTransactionNumber                   _{j}$
+				\item $\txnDataRlpCfi                           _{j}$
+				\item $\txnDataRlpRequiresEvmExecution          _{j}$
+				\item $\txnDataRlpIsDep                         _{j}$
+				\item $\txnDataRlpTxType                        _{j}$
+				\item $\txnDataRlpToAddrHi                      _{j}$
+				\item $\txnDataRlpToAddrLo                      _{j}$
+				\item $\txnDataRlpValue                         _{j}$
+				\item $\txnDataRlpNonce                         _{j}$
+				\item $\txnDataRlpNumberOfZeroBytes             _{j}$
+				\item $\txnDataRlpNumberOfNonzeroBytes          _{j}$
+				\item $\txnDataRlpNumberOfAccessListAddresses   _{j}$
+				\item $\txnDataRlpNumberOfAccessListStorageKeys _{j}$
+				\item $\txnDataRlpGasLimit                      _{j}$
+				\item $\txnDataRlpGasPrice                      _{j}$
+				\item $\txnDataRlpMaxPriorityFeePerGas          _{j}$
+				\item $\txnDataRlpMaxFeePerGas                  _{j}$
+			\end{enumerate} 
+		\end{multicols}
+\end{description}
+\saNote{}
+The present module \textbf{does not enforce value consistency among transaction-rows}.
+\textbf{Value consistency is achieved implicitly through the present lookup.}
+Indeed this lookup squashes all \textbf{transaction-rows} pertaining to a given transaction
+onto a single \textbf{transaction-row} in the \rlpTxnMod{} module.

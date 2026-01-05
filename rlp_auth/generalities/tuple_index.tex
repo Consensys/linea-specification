@@ -1,0 +1,37 @@
+We impose that
+\begin{enumerate}
+	\item
+		\If $\iomf _{i} = 0$
+		\Then $\authorityTupleIndex _{i} = 0$ (\trash)
+	\item
+		$\authorityTupleIndex _{i + 1} \in \{ \authorityTupleIndex _{i}, 1 + \authorityTupleIndex _{i}, 0 \}$
+		(\sanityCheck)
+	\item\label{rlp auth: generalities: authority tuple index: value change case}
+		\If $\userTransactionNumber _{i + 1} \neq \userTransactionNumber _{i}$
+		\Then $\authorityTupleIndex _{i} = 0$
+	\item\label{rlp auth: generalities: authority tuple index: no value change case}
+		\If   $\userTransactionNumber _{i + 1} = \userTransactionNumber _{i}$
+		\Then
+		\[
+			\authorityTupleIndex _{i + 1} = \authorityTupleIndex _{i} + \utils _{i} \cdot \computation _{i + 1}
+		\]
+	\item
+		\If   $\authorityTupleIndex _{i + 1} \neq \authorityTupleIndex _{i}$
+		\Then
+		\[
+			\left\{ \begin{array}{lclr}
+				\utils                     _{i} & = & \true       \\
+				\ct                        _{i} & = & \maxCt _{i} \\
+			\end{array} \right.
+		\]
+\end{enumerate}
+\saNote{}
+Given the nature of the increments of the \userTransactionNumber{} column,
+see section~(\ref{rlp auth: generalities: user transaction number}),
+constraint~(\ref{rlp auth: generalities: authority tuple index: no value change case})
+may be implemented alternatively, and more economically, as
+\[
+	``
+	\If   \userTransactionNumber _{i + 1} = \userTransactionNumber _{i} ~
+	\Then \authorityTupleIndex _{i + 1} = \authorityTupleIndex _{i} + \utils _{i} \cdot \computation _{i + 1}''
+\]

@@ -3,7 +3,7 @@ It thereby justifies the functional fields of the transactions that enter the \z
 Transactions enter the present module\footnote{and the \zkEvm{}!} through their ``full'' \rlp{} encodings, i.e. as a rather arbitrary looking string of bytes.
 In order to makes sense of a transaction the \zkEvm{} must decode this string and verify the validity of the underlying transaction (e.g. verifying the signature but also verifying the sender has sufficient balance and the transaction nonce is correct.)
 The present module takes care of the ``making sense of a transaction'' part of this.
-It furthermore produces the message whose hash along with the signature are provided as inputs to \instEcrecover{} to obtain the sender address.
+It furthermore produces the message whose hash along with the signature are provided as inputs to \inst{ECRECOVER} to obtain the sender address.
 We provide more details below.
 
 Recall that there are two \rlp{} strings of interest associated with a transaction $\locTransaction$.
@@ -36,36 +36,51 @@ Note that the method described below does not produce a single byte string.
 Rather it produces a series of chunks of bytes which, when correctly identified and assembled, yield $\locLtTildeOfT$ (resp. $\locLxTildeOfT$.)
 
 We now provide slightly more detail on the procedure.
-First of all we recall that, in the \zkEvm{} in general, and in this module in particular, transactions are identified with their absolute transaction number $\absTxNum$.
+First of all we recall that, in the \zkEvm{} in general, and in this module in particular,
+\emph{user transactions} are identified with their user transaction number
+$\userTransactionNumber$.
 The reader will find more information on this in the \userTxnDataMod{} module.
-We therefore consider a (well-formed) transaction $\locTransaction$ with $\absTxNum \equiv \col{a}$.
-The goal is that, considering exactly those rows $i$ where
+We therefore consider a (well-formed) transaction $\locTransaction$ with $\userTransactionNumber \equiv \loc{a}$.
+
+The goal is that the byte string $\locLtTildeOfT$
+of the \loc{a}-th transaction
+should be recoverable from data concentrated along rows
+(with row-index $i$) satisfying
 \begin{multicols}{3}
 	\begin{itemize}
-		\item $\absTxNum_{i} \equiv \col{a}$
-		\item $\lc_{i} \equiv 1$
-		\item $\lt_{i} \equiv 1$
+		\item $\userTransactionNumber _{i} \equiv \loc{a}$
+		\item $\lc                    _{i} \equiv 1$
+		\item $\lt                    _{i} \equiv 1$
 	\end{itemize}
 \end{multicols}
-\noindent in ascending order of $\indext$\footnote{starting from zero},
+The present module provides, along such rows,
+pairs
+$(\rlpTxnComputationColumnLimb _{i},
+\rlpTxnComputationColumnLimbSize _{i})$
+which must be interpreted as in the diagram below
+
+\includepdf[fitpaper=true, pages={1}]{lua/limb_and_limb_size.pdf}
+
+in ascending order of $\indext$\footnote{starting from zero},
 the concatenation of the most significant 
-$\limbsize _{i}$ bytes of $\limb _{i}$ should produce $\locLtTildeOfT$.
+$\rlpTxnComputationColumnLimbSize _{i}$ bytes of $\rlpTxnComputationColumnLimb _{i}$ should produce $\locLtTildeOfT$.
 
 Similarly, considering exactly those rows $i$ where
 \begin{multicols}{3}
 	\begin{itemize}
-		\item $\absTxNum_{i} \equiv \col{a}$
-		\item $\lc_{i} \equiv 1$
-		\item $\lx_{i} \equiv 1$
+		\item $\userTransactionNumber _{i} \equiv \loc{a}$
+		\item $\lc                    _{i} \equiv 1$
+		\item $\lx                    _{i} \equiv 1$
 	\end{itemize}
 \end{multicols}
 \noindent in ascending order of $\indexx$\footnote{starting from zero},
 the concatenation of the most significant 
-$\limbsize _{i}$ bytes of $\limb _{i}$ should give $\locLtTildeOfT$.
+$\rlpTxnComputationColumnLimbSize _{i}$ bytes of $\rlpTxnComputationColumnLimb _{i}$ should give $\locLtTildeOfT$.
 
-\saNote{} For a given transaction $\locTransaction$,
-the concatenation of the
-$\limb$ when
-$\phaseData_{i}=1$ \et{}
-$\isprefix_{i}=0$, indexed by
-$\indexData$ gives the input data of the transaction.
+% \saNote{}
+% For a given transaction $\locTransaction$,
+% the concatenation of the
+% $\rlpTxnComputationColumnLimb$ when
+% $\phaseData _{i} = 1$ \et{}
+% $\rlpTxnSharedColumnIsPrefix _{i} = 0$, indexed by
+% $\indexData$ gives the input data of the transaction.

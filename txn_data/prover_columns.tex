@@ -1,0 +1,70 @@
+\def\proverColA {\loc{prv\separator{}USR\_MAX}}
+\def\proverColB {\loc{prv\separator{}REL\_USR}}
+\def\proverColC {\loc{prv\separator{}REL\_MAX}}
+\def\proverColD {\loc{prv\separator{}LAST}}
+We introduce columns used directly by the prover.
+\begin{enumerate}
+        \item $(\proverColB \equiv)$ \proverColumnRelativeUserTransactionNumber    {}
+        \item $(\proverColC \equiv)$ \proverColumnRelativeUserTransactionNumberMax {}
+        \item $(\proverColD \equiv)$ \proverColumnIsLastUserTransactionOfBlock     {}
+        \item $(\proverColA \equiv)$ \proverColumnUserTransactionNumberMax         {}
+\end{enumerate}
+And we require that these columns satisfy the following constraints:
+\begin{description}
+        \item[$\proverColumnRelativeUserTransactionNumber {}$ constraints:]
+                we impose
+                \begin{enumerate}
+                        \item \proverColB{} is \textbf{transaction-constant}
+                        \item \If $\perspectiveSum _{i} = 0$ \Then $\proverColB _{i} = 0$
+                        \item \If $\blockNumber _{i + 1} \neq     \blockNumber _{i}$ \Then $\proverColB _{i + 1} = 0$
+                        \item \If $\blockNumber _{i + 1} \neq 1 + \blockNumber _{i}$ \Then
+                                \[
+                                        \proverColB _{i + 1}
+                                        =
+                                        \user _{i + 1} \cdot
+                                        \left[ \begin{array}{cl}
+                                                + & \proverColB _{i}                                                \\
+                                                + & (\userTransactionNumber _{i + 1} - \userTransactionNumber _{i}) \\
+                                        \end{array} \right]
+                                \]
+                \end{enumerate}
+                \saNote{}
+                In other words,
+                \proverColB{} resets to $0$ with every new block,
+                and increases by $1$ with every new \user{}-transaction
+                within a block.
+        \item[$\proverColumnRelativeUserTransactionNumberMax {}$ constraints:]
+                we impose
+                \begin{enumerate}
+                        \item \proverColC{} is \textbf{block-constant}
+                        \item \If $\perspectiveSum _{i} = 0$ \Then $\proverColC _{i} = 0$
+                        \item \If $\sysf _{i - 1} = 0$ \et $\sysf _{i} = 1$ \Then $\proverColC _{i - 1} = \proverColB _{i - 1}$
+                \end{enumerate}
+                \saNote{}
+                In other words,
+                \proverColC{} records the final value of \proverColB{} within a block.
+        \item[$\proverColumnIsLastUserTransactionOfBlock {}$ constraints:]
+                we impose
+                \begin{enumerate}
+                        \item \proverColD{} is \textbf{transaction-constant}
+                        \item \If $\user _{i} = 0$ \Then $\proverColD _{i} = 0$
+                        \item
+                                \If   $\totalTransactionNumber _{i - 1} \neq \totalTransactionNumber _{i}$
+                                \Then $\proverColD _{i - 1}                   =    \user _{i - 1} \cdot \sysf _{i}$
+                \end{enumerate}
+                \saNote{}
+                In other words,
+                \proverColD{} lights up along the last \user{}-transaction of any block
+                (provided it contains any).
+        \item[$\proverColumnUserTransactionNumberMax {}$ constraints:]
+                we impose
+                \begin{enumerate}
+                        \item \proverColA{} is \textbf{conflation-constant}
+                        \item \If $\perspectiveSum _{i} = 0$ \Then $\proverColA _{i} = 0$
+                        \item $\proverColA _{N} = \userTransactionNumber _{N}$
+                \end{enumerate}
+                \saNote{}
+                In other words,
+                \proverColA{} records the final, and thus \textbf{maximal},
+                value of the \userTransactionNumber{} column in a conflation.
+\end{description}

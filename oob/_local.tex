@@ -104,7 +104,8 @@
 \def\locRdcRoob                         {\loc{rdc\_roob}}
 \def\locRdcSoob                         {\loc{rdc\_soob}}
 %
-\def\locCompToFiveTwelve                {\loc{comp\_to\_512}}
+\def\locXbsIsLeqModexpMaxByteSize       {\loc{\locXbs\_is\_LEQ\_max\_bound}}
+\def\locXbsIsGtModexpMaxByteSize        {\loc{\locXbs\_is\_GT\_max\_bound}}
 \def\locBase                            {\ell_\text{B}}
 \def\locExponent                        {\ell_\text{E}}
 \def\locModulus                         {\ell_\text{M}}
@@ -119,7 +120,7 @@
 \def\locCdsLttt                         {\loc{cds\_LT\_32}}     % Lttt = less than thirty two
 \def\locCdsLtsf                         {\loc{cds\_LT\_64}}     % Ltsf = less than sixty four
 \def\locCdsLtns                         {\loc{cds\_LT\_96}}     % Ltns = less than ninety six
-% MODEXP: extract byte size ? trim it ? 
+% MODEXP: extract byte size ? trim it ?
 \def\locExtractBbs                      {\loc{extract\_bbs}}
 \def\locExtractEbs                      {\loc{extract\_ebs}}
 \def\locExtractMbs                      {\loc{extract\_mbs}}
@@ -135,81 +136,100 @@
 \def\locNDataBytesX                     {\locm{[\locCds - (96 + \locBbs) < 32]}}
 
 % MODEXP: generic byte size
-\def\locXbs                             {\loc {xbs}}
+\def\locXbs                             {\loc{xbs}}
+\def\locXbsNormalized                   {\locXbs\loc{\_normalized}}
+\def\locWithinBounds                    {\locXbs\loc{\_within\_bounds}}
+\def\locOutOfBounds                     {\locXbs\loc{\_out\_of\_bounds}}
+
 % MODEXP: exponent
-\def\locEbs                             {\loc {ebs}}
-\def\locEbsHi                           {\locEbs\locHi}
-\def\locEbsLo                           {\locEbs\locLo}
-\def\locEbsIsZero                       {\locEbs\loc{\_is\_zero}}
-\def\locEbsLtThirtyTwo                  {\locEbs\loc{\_less\_than\_32}}
-\def\locEbsMinThirtyTwo                 {\loc{min\_}\locEbs\loc{\_32}}
-\def\locEbsSubThirtyTwo                 {\loc{sub\_}\locEbs\loc{\_32}}
+\def\locEbs                               {\loc              {ebs}}
+\def\locEbsHi                             {\locEbs\locHi}
+\def\locEbsLo                             {\locEbs\locLo}
+\def\locEbsIsZero                         {\locEbs\loc{\_is\_zero}}
+\def\locEbsLtThirtyTwo                    {\locEbs\loc{\_less\_than\_32}}
+\def\locEbsMinThirtyTwo                   {\loc{min\_}\locEbs\loc{\_32}}
+\def\locEbsSubThirtyTwo                   {\loc{sub\_}\locEbs\loc{\_32}}
 % MODEXP: modulus
-\def\locMbs                             {\loc {mbs}}
-\def\locMbsHi                           {\locMbs\locHi}
-\def\locMbsLo                           {\locMbs\locLo}
-\def\locMbsIsZero                       {\locMbs\loc{\_is\_zero}}
-\def\locMaxMbsBbs                       {\loc{max\_}\locMbs\loc{\_}\locBbs}
-\def\locMbsLtBbs                        {\locMbs\loc{\_LT\_}\locBbs}
+\def\locMbs                               {\loc              {mbs}}
+\def\locMbsHi                             {\locMbs\locHi}
+\def\locMbsLo                             {\locMbs\locLo}
+\def\locMbsIsZero                         {\locMbs\loc{\_is\_zero}}
+\def\locMaxMbsBbs                         {\loc{max\_}\locMbs\loc{\_}\locBbs}
+\def\locMbsLtBbs                          {\locMbs\loc{\_LT\_}\locBbs}
 % MODEXP: leading word
-\def\locCdsCutoff                       {\loc{cds\_cutoff}}
-\def\locEbsCutoff                       {\loc{ebs\_cutoff}}
-\def\locExtractableCdsBytes             {\loc{cds\_bytes}}
-\def\locBeyondBase                      {\loc{call\_data\_extends\_beyond\_base}}
-\def\locBeyondBaseByLessThanAnEvmWord   {\loc{by\_less\_than\_an\_EVM\_word}}
-\def\locNDataBytes                      {\loc{up\_to\_32\_call\_data\_bytes}}
-\def\locLoadLeadingWord                 {\loc{load\_lead}}
-\def\locCallDataContainsExponentBytes   {\loc{call\_data\_contains\_exponent\_bytes}}
-\def\locCallDataExtendsBeyondExponent   {\loc{call\_data\_extends\_beyond\_exponent}}
+\def\locCdsCutoff                         {\loc{cds\_cutoff}}
+\def\locEbsCutoff                         {\loc{ebs\_cutoff}}
+\def\locExtractableCdsBytes               {\loc{cds\_bytes}}
+\def\locBeyondBase                        {\loc{call\_data\_extends\_beyond\_base}}
+\def\locBeyondBaseByLessThanAnEvmWord     {\loc{by\_less\_than\_an\_EVM\_word}}
+\def\locNDataBytes                        {\loc{up\_to\_32\_call\_data\_bytes}}
+\def\locExtractLeadingWord                {\loc{extract\_leading\_word}}
+\def\locCallDataExtendsBeyondBase         {\loc{call\_data\_extends\_beyond\_base}}
+\def\locCallDataExtendsBeyondExponent     {\loc{call\_data\_extends\_beyond\_exponent}}
 % MODEXP: pricing
-\def\locExponentLog                     {\loc{exponent\_log}}
-\def\locExponentLogIsZero               {\loc{exponent\_log\_is\_zero}}
-\def\locFOfMax                          {\loc{f\_of\_max}}
-\def\locBigQuotient                     {\loc{big\_quotient}}
-\def\locBigQuotientLtTwoHundred         {\loc{big\_quotient\_LT\_200}}
-\def\locProduct                         {\loc{big\_numerator}}
-% MODEXP: predicting RAM instruction for extraction of base, exponent, modulus 
-\def\locUsedBytes                       {\loc{used}}
-\def\locByteSize                        {\loc{size}}
-\def\locTransfer                        {\loc{trsf}}
-\def\locTransferAllZeros                {\locTransfer\loc{\_zeros}}
-\def\locTransferUntrimmed               {\locTransfer\loc{\_full}}
-\def\locTransferTrimmed                 {\locTransfer\loc{\_trim}}
-\def\locZeroByteSize                    {\loc{zero\_size}}
-\def\locNonZeroByteSize                 {\loc{nonzero\_size}}
-\def\locCallDataWillRunOut              {\loc{call\_data\_will\_run\_out}}
-\def\locCallDataWontRunOut              {\loc{call\_data\_wont\_run\_out}}
-\def\locSomeCallDataRemains             {\loc{some\_call\_data\_remains}}
-\def\locNoCallDataRemains               {\loc{no\_call\_data\_remains}}
+\def\locWordCostDominates                 {\loc{word\_cost\_dominates}}
+\def\locMultiplicationComplexity          {\loc{multiplication\_complexity}}
+\def\locIterationCountOrOne               {\loc{iteration\_count\_or\_1}}
+\def\locCeilingOfMaxOverEight             {\loc{ceiling\_of\_max\_over\_8}}
+\def\locExponentLog                       {\loc{exponent\_log}}
+\def\locExponentLogIsZero                 {\locExponentLog\loc{\_is\_zero}}
+\def\locFOfMax                            {\loc{f\_of\_max}}
+\def\locRawCost                           {\loc{raw\_cost}}
+\def\locRawCostLtMinModexpCost            {\locRawCost\loc{\_LT\_min\_cost}}
+\def\locProduct                           {\loc{big\_numerator}}
+\def\locCalleeGasLtPrecompileCost         {\locCalleeGas\loc{\_LT\_}\locPrecompileCost}
+\def\minModexpCostName                    {\numConst{MIN\_MODEXP\_COST}}
+\def\minModexpCostValue                   {\numConst{500}}
+% MODEXP: predicting RAM instruction for extraction of base, exponent, modulus
+\def\locUsedBytes                         {\loc{used}}
+\def\locByteSize                          {\loc{size}}
+\def\locTransfer                          {\loc{trsf}}
+\def\locTransferAllZeros                  {\locTransfer\loc{\_zeros}}
+\def\locTransferUntrimmed                 {\locTransfer\loc{\_full}}
+\def\locTransferTrimmed                   {\locTransfer\loc{\_trim}}
+\def\locZeroByteSize                      {\loc{zero\_size}}
+\def\locNonZeroByteSize                   {\loc{nonzero\_size}}
+\def\locCallDataWillRunOut                {\loc{call\_data\_will\_run\_out}}
+\def\locCallDataWontRunOut                {\loc{call\_data\_wont\_run\_out}}
+\def\locSomeCallDataRemains               {\loc{some\_call\_data\_remains}}
+\def\locNoCallDataRemains                 {\loc{no\_call\_data\_remains}}
 % BLAKE2f
-\def\locFNotABit                        {\loc{f\_is\_not\_a\_bit}}
-\def\locFisABit                         {\loc{f\_is\_a\_bit}}
-\def\locBlakeR                          {\loc{blake\_r}}
-\def\locBlakeF                          {\loc{blake\_f}}
+\def\locFNotABit                          {\loc{f\_is\_not\_a\_bit}}
+\def\locFisABit                           {\loc{f\_is\_a\_bit}}
+\def\locBlakeR                            {\loc{blake\_r}}
+\def\locBlakeF                            {\loc{blake\_f}}
 % CREATE
-\def\locNonce                           {\loc{nonce}}
-\def\locHasNonce                        {\loc{has\_nonce}}
-\def\locHasCode                         {\loc{has\_code}}
-\def\locNonzeroNonce                    {\loc{nonzero\_nonce}}
-\def\locCreatorNonce                    {\loc{creator\_nonce}}
+\def\locNonce                             {\loc{nonce}}
+\def\locHasNonce                          {\loc{has\_nonce}}
+\def\locHasCode                           {\loc{has\_code}}
+\def\locNonzeroNonce                      {\loc{nonzero\_nonce}}
+\def\locCreatorNonce                      {\loc{creator\_nonce}}
 % SSTORE
-\def\locSstoreGas                       {\loc{gas\_actual}}
-\def\locSstoreSufficientGas             {\loc{sufficient\_gas}}
-\def\locSstoreException                 {\loc{sstorex}}
+\def\locSstoreGas                         {\loc{gas\_actual}}
+\def\locSstoreSufficientGas               {\loc{sufficient\_gas}}
+\def\locSstoreException                   {\loc{sstorex}}
 % RETURN deployment
-\def\locExceedsMaxCodeSize              {\loc{exceeds\_max\_code\_size}}
-\def\locCodeSizeHi                      {\loc{code\_size\_hi}}
-\def\locCodeSizeLo                      {\loc{code\_size\_lo}}
-\def\locMaxCodeSizeException            {\loc{max\_code\_size\_exception}}
+\def\locExceedsMaxCodeSize                {\loc{exceeds\_max\_code\_size}}
+\def\locCodeSizeHi                        {\loc{code\_size\_hi}}
+\def\locCodeSizeLo                        {\loc{code\_size\_lo}}
+\def\locMaxCodeSizeException              {\loc{max\_code\_size\_exception}}
 % lookup shorthands
-\def\locLookupFlagSum                   {\loc{lookup\_flag\_sum}}
-\def\locLookupWeightedSum               {\loc{lookup\_wght\_sum}}
-\def\locInstFlagSum                     {\loc{flag\_sum\_inst}}
-\def\locPrcFlagSum                      {\loc{flag\_sum\_prc}}
-\def\locPrcFlagSumCommon                {\locPrcFlagSum\loc{\_common}}
-\def\locPrcFlagSumBlake                 {\locPrcFlagSum\loc{\_blake}}
-\def\locPrcFlagSumModexp                {\locPrcFlagSum\loc{\_modexp}}
-\def\locPrcFlagSumBls                   {\locPrcFlagSum\loc{\_bls}}
+\def\locLookupFlagSum                     {\loc{lookup\_flag\_sum}}
+\def\locLookupWeightedSum                 {\loc{lookup\_wght\_sum}}
+\def\locInstFlagSum                       {\loc{flag\_sum\_inst}}
+\def\locPrcFlagSum                        {\loc{flag\_sum\_prc}}
+\def\locPrcFlagSumCommon                  {\locPrcFlagSum\loc{\_common}}
+\def\locPrcFlagSumBlake                   {\locPrcFlagSum\loc{\_blake}}
+\def\locPrcFlagSumModexp                  {\locPrcFlagSum\loc{\_modexp}}
+\def\locPrcFlagSumBls                     {\locPrcFlagSum\loc{\_bls}}
+\def\locPrcFlagSumLondonCommonPrecompiles {\loc{flag\_sum\_london\_common\_precompiles}}
+\def\locFlagSumCancunPrecompiles          {\loc{flag\_sum\_cancun\_precompiles}}
+\def\locFlagSumPraguePrecompiles          {\loc{flag\_sum\_prague\_precompiles}}
+\def\locFlagSumOsakaPrecompiles           {\loc{flag\_sum\_osaka\_precompiles}}
+\def\locFlagSumYYYPrecompiles             {\loc{flag\_sum\_yyy\_precompiles}}
+
+\def\locFlagSumPraguePrecompilesVariableSize     {\locFlagSumPraguePrecompiles\loc{\_variable\_size}}
+\def\locFlagSumPraguePrecompilesFixedSize        {\locFlagSumPraguePrecompiles\loc{\_fixed\_size}}
 
 % common precompile shorthands
 % \def\locCalleeGas                       {\loc{callee\_gas}}
@@ -217,20 +237,28 @@
 % \def\locRac                             {\loc{r@c}}
 \def\locCommonPrecompile                {\loc{common\_precompile}}
 
-\def\locHubSuccess                      {\loc{hub\_success}}
-\def\locRamSuccess                      {\loc{ram\_success}}
-\def\locReturnGas                       {\loc{return\_gas}}
-\def\locExtractCallData                 {\loc{extract\_call\_data}}
-\def\locEmptyCallData                   {\loc{empty\_call\_data}}
-\def\locRacIsNonzero                    {\loc{r@c\_nonzero}}
+% \def\predictionTag                      {\loc{pred\_\_\_}}
+\def\predictionTag                      {}
+\def\locHubSuccess                      {\predictionTag\loc{hub\_success}}
+\def\locRamSuccess                      {\predictionTag\loc{ram\_success}}
+\def\locReturnGas                       {\predictionTag\loc{return\_gas}}
+\def\locExtractCallData                 {\predictionTag\loc{extract\_call\_data}}
+\def\locEmptyCallData                   {\predictionTag\loc{empty\_call\_data}}
+\def\locRacIsNonzero                    {\predictionTag\loc{r@c\_nonzero}}
+\def\locCdsIsValid                      {\predictionTag\loc{cds\_is\_valid}}
+\def\locCallDataExtractionFilter        {\loc{cdx\_filter}}
+\def\locP256VerifyValidCds              {\loc{p256\_verify\_valid\_cds}}
 
 \def\locXbsHi                           {\loc{xbs\_hi}}
 \def\locXbsLo                           {\loc{xbs\_lo}}
 \def\locYbsLo                           {\loc{ybs\_lo}}
 \def\locMax                             {\loc{max\_xbs\_ybs}}
-\def\locXbsNonzero                      {\loc{xbs\_nonzero}}
 \def\locComputeMax                      {\loc{compute\_max}}
-\def\locCmp                             {\loc{comp}}
+\def\locXbsIszero                       {\loc{xbs\_is\_zero}}
+\def\locResultOfComparison              {\loc{rslt\_of\_comp}}
+\def\locXbsNonzero                      {\loc{xbs\_nonzero}}
+\def\locXbsNormalized                   {\loc{xbs\_normalized}}
+\def\locYbsNormalized                   {\loc{ybs\_normalized}}
 
 \def\locExtractBase                     {\loc{extract\_base}}
 \def\locExtractExponent                 {\loc{extract\_exponent}}
@@ -243,7 +271,10 @@
 % BLS
 \def\locValidCds                        {\loc{valid\_cds}}
 \def\locFixedCds                        {\loc{fixed\_cds}}
-\def\locFixedGasCost                    {\loc{fixed\_gas\_cost}}                       
+\def\locFixedGasCost                    {\loc{fixed\_gas\_cost}}
 \def\locDiscount                        {\loc{discount}}
 \def\locMaxDiscount                     {\loc{max\_discount}}
 \def\locMsmMultiplicationCost           {\loc{msm\_multiplication\_cost}}
+\def\locMsmCostNumerator                {\loc{msm\_cost\_numerator}}
+
+\def\hubPredictionDecoratorBlurb           {\saNote{} The decorator `` $\prediction{}$ '' stands for ``\hubMod{} prediction.''}

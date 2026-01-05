@@ -1,0 +1,54 @@
+We define the following shorthand
+\[
+	\rlpProcessAddress {
+		anchorRow = i             ,
+		relOffset = \relof        ,
+		addressHi = \locAddressHi ,
+		addressLo = \locAddressLo ,
+	}
+\]
+which stands for the following collection of constraints:
+\begin{description}
+	\item[\underline{\underline{Setting \maxCt{}:}}] 
+		we impose $\maxCt _{i + \relof} = 2$
+	% \item[\underline{\underline{Setting \rlpTxnSharedColumnIsPrefix{}:}}]
+	% 	we impose $\rlpTxnSharedColumnIsPrefix _{i + \relof} = \false$
+	\item[\underline{\underline{Calling \rlpAddrMod{}:}}] 
+		we impose $\rlpTxnComputationColumnTrmFlag _{i + \relof} = \true$ as well as
+		\[
+			\left\{ \begin{array}{lcl}
+				\rlpTxnComputationColumnExoDataColumn{1} _{i + \relof} & = & \locAddressHi \\
+				\rlpTxnComputationColumnExoDataColumn{2} _{i + \relof} & = & \locAddressLo \\
+			\end{array} \right.
+		\]
+	\item[\underline{\underline{Enshrining the \rlp{} prefix into the \rlp{} string:}}] 
+		we impose
+		\[
+			\setLimb{
+				anchorRow = i                                          ,
+				relOffset = \relof                                     ,
+				limb      = (\rlprefixAddress) \cdot 256 ^ {\llargeMO} ,
+				nBytes    = 1                                          ,
+			}
+		\]
+	\item[\underline{\underline{Enshrining the hi part of the address into the \rlp{} string:}}] 
+		we impose
+		\[
+			\setLimb{
+				anchorRow = i                             ,
+				relOffset = \relof + 1                    ,
+				limb      = \locAddressHi \cdot 256 ^{12} ,
+				nBytes    = 4                             ,
+			}
+		\]
+	\item[\underline{\underline{Enshrining the lo part of the address into the \rlp{} string:}}] 
+		we impose
+		\[
+			\setLimb{
+				anchorRow = i             ,
+				relOffset = \relof + 2    ,
+				limb      = \locAddressLo ,
+				nBytes    = \llarge       ,
+			}
+		\]
+\end{description}

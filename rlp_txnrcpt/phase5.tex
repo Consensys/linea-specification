@@ -13,7 +13,7 @@ The general loop intrication is resumed in the next table.
 	\[
 		\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
 			\hline
-			$\Depth1$ & \isprefix & $\isOt $ & \isOd & Subphase                                                              \\ \hline
+			$\Depth1$ & \isPrefix & $\isOt $ & \isOd & Subphase                                                              \\ \hline
 			\zero     & \one      & \zero    & \zero & \rlp{} prefix of $R_\mathbf{l}$                                 \\ \hline \hline
 			\one      & \one      & \zero    & \zero & \rlp{} prefix of log entry $O$                                  \\ \hline
 			\one      & \zero     & \zero    & \zero & \rlp{} of $O_\text{a}$                                          \\ \hline
@@ -47,19 +47,19 @@ The general loop intrication is resumed in the next table.
 	\label{fig: phase 5 subphase table}
 \end{table}
 \begin{description}
-	\item[\underline{The RLP-\textbf{prefix} of $R_\mathbf{l}$:}] ---
+	\item[\underline{The \rlp{}-\textbf{prefix} of $R_\mathbf{l}$:}] ---
 		\begin{enumerate}[resume]
 			\item \If $\phase{5}_{i-1}=0$ \Then we switch to the following subphase
 				\[
 					\left\{ \begin{array}{lcl}
 						\Depth 1_{i}   & = & 0 \\
-						\isprefix_{i}  & = & 1 \\
+						\isPrefix_{i}  & = & 1 \\
 						\isOt_{i}      & = & 0 \\
 						\isOd_{i}      & = & 0 \\
 					\end{array} \right.
 				\]
 				\saNote{} The above sets the subphase to wherein one sets the \rlp{}-prefix for the totality of the log series $R_\textbf{l}$. 
-			\item \If ($\Depth 1_{i}=0$ \et $\isprefix_{i}=1$ (\trash) \et $\isOt_{i}=0$ (\trash) \et $\isOd_{i}=0$ (\trash)) \Then:
+			\item \If ($\Depth 1_{i}=0$ \et $\isPrefix_{i}=1$ (\trash) \et $\isOt_{i}=0$ (\trash) \et $\isOd_{i}=0$ (\trash)) \Then:
 				\begin{enumerate}
 					\item $\Input 1_{i} = \phasesize_{i}$ (\emph{initializes} the \ct{}-constant column $\Input{1}$, cf. \ref{rlp patterns: bytestring prefix: note: purpose of counter constancy of length})
 					\item \If $\Input 1_{i}=0$ \Then:
@@ -67,7 +67,7 @@ The general loop intrication is resumed in the next table.
 							\item $\nbstep_{i}=1$
 							\item $\limb_{i}=\rlprefixShortList \cdot 256 ^{\llargeMO}$
 							\item $\limbsize_{i}=1$
-							\item $\phasend_{i}=1$
+							\item $\phaseEnd_{i}=1$
 						\end{enumerate}
 					\item \If $\Input 1_{i} \neq 0$ \Then:
 						\begin{enumerate}
@@ -96,7 +96,7 @@ The general loop intrication is resumed in the next table.
 								\[
 									\left\{ \begin{array}{lcl}
 										\Depth 1_{i + 1}   & = & 1 \\
-										\isprefix_{i + 1}  & = & 1 \\
+										\isPrefix_{i + 1}  & = & 1 \\
 										\isOt_{i + 1}      & = & 0 \\
 										\isOd_{i + 1}      & = & 0 \\
 									\end{array} \right.
@@ -104,16 +104,16 @@ The general loop intrication is resumed in the next table.
 								%
 								% \begin{enumerate}
 								% 	\item $\Depth 1_{i+1}=1$
-								% 	\item $\isprefix_{i+1}=1$
+								% 	\item $\isPrefix_{i+1}=1$
 								% 	\item $\isOt_{i+1}=0$
 								% 	\item $\isOd_{i+1}=0$
 								% \end{enumerate} 
 						\end{enumerate}
 				\end{enumerate}
 		\end{enumerate}
-	\item[\underline{RLP\textbf{-prefix} of the log entry:}] ---
+	\item[\underline{\rlp{}\textbf{-prefix} of the log entry:}] ---
 		\begin{enumerate}[resume]
-			\item \If ($\Depth 1_{i}=1$ \et $\isprefix_{i}=1$ \et $\isOt_{i}=0$ \et $\isOd_{i}=0$) \Then:
+			\item \If ($\Depth 1_{i}=1$ \et $\isPrefix_{i}=1$ \et $\isOt_{i}=0$ \et $\isOd_{i}=0$) \Then:
 				\begin{enumerate}
 					\item \label{spec of logentrysize missing case} $\Input 1_{i} = \logentrysize_{i}$
 						\saNote{} This endows $\logentrysize$ with the counter-constancy of $\Input{1}$ during this subphase. This provides the behaviour of $\logentrysize$ during the only regime not specified in section (\ref{spec of logentrysize}).
@@ -141,7 +141,7 @@ The general loop intrication is resumed in the next table.
 						\[
 							\left\{ \begin{array}{lclr}
 								\Depth 1_{i + 1}   & = & 1 & (\trash) \\
-								\isprefix_{i + 1}  & = & 0 &          \\
+								\isPrefix_{i + 1}  & = & 0 &          \\
 								\isOt_{i + 1}      & = & 0 &          \\
 								\isOd_{i + 1}      & = & 0 &          \\
 							\end{array} \right.
@@ -149,9 +149,9 @@ The general loop intrication is resumed in the next table.
 						\saNote{} The constraint on $\Depth{1}$ is useless given that this binary column is $\phase{5}$-incrementing.
 				\end{enumerate}
 		\end{enumerate}
-	\item[\underline{RLP of the address $O_\text{a}$:}] We deal with the address in one fell swoop (the high and low parts of the address are provided in $\Input1$ and $\Input2$ respectively, see \ref{}):
+	\item[\underline{\rlp{} of the address $O_\text{a}$:}] We deal with the address in one fell swoop (the high and low parts of the address are provided in $\Input1$ and $\Input2$ respectively, see \ref{}):
 		\begin{enumerate}[resume]
-			\item \If ($\Depth 1_{i}=1$ (\trash) \et $\isprefix_{i}=0$ \et $\isOt_{i}=0$ \et $\isOd_{i}=0$) \Then:
+			\item \If ($\Depth 1_{i}=1$ (\trash) \et $\isPrefix_{i}=0$ \et $\isOt_{i}=0$ \et $\isOd_{i}=0$) \Then:
 				\begin{enumerate}
 					\item $\nbstep_{i}=3$
 					\item $\lc_{i}=1$
@@ -167,7 +167,7 @@ The general loop intrication is resumed in the next table.
 								\[
 									\left\{ \begin{array}{lclr}
 										\Depth 1_{i + 1}   & = & 1 & (\trash) \\
-										\isprefix_{i + 1}  & = & 1 &          \\
+										\isPrefix_{i + 1}  & = & 1 &          \\
 										\isOt_{i + 1}      & = & 1 &          \\
 										\isOd_{i + 1}      & = & 0 &          \\
 									\end{array} \right.
@@ -175,7 +175,7 @@ The general loop intrication is resumed in the next table.
 						\end{enumerate}
 				\end{enumerate}
 		\end{enumerate}
-	\item[\underline{RLP prefix of $O_{\mathbf{t}}$:}] the purpose of this subphase is to produce the \rlp{}-prefix of the list of log topics $O_\textbf{t}$; this list is either empty or composed of 1, 2, 3 or 4 topics ($\in\mathbb{B}_{32}$); as such the size of its \rlp{}-ization and the associated \rlp{} prefix are simple to determine: they are a deterministic function of the underlying logging instruction, and their computation does not require a call to a comlex constraint system. \saNote{} This subphase applies even for \inst{LOG0} isntructions (whose series of log topics, $(\,)$, must also be \rlp{}-ized). \\
+	\item[\underline{\rlp{} prefix of $O_{\mathbf{t}}$:}] the purpose of this subphase is to produce the \rlp{}-prefix of the list of log topics $O_\textbf{t}$; this list is either empty or composed of 1, 2, 3 or 4 topics ($\in\mathbb{B}_{32}$); as such the size of its \rlp{}-ization and the associated \rlp{} prefix are simple to determine: they are a deterministic function of the underlying logging instruction, and their computation does not require a call to a comlex constraint system. \saNote{} This subphase applies even for \inst{LOG0} isntructions (whose series of log topics, $(\,)$, must also be \rlp{}-ized). \\
 		We provide a little more insight. The main distinctions are as follows: 
 		(\emph{a})
 		is the list empty?
@@ -188,7 +188,7 @@ The general loop intrication is resumed in the next table.
 		\saNote{} For a logging operation triggered by a \inst{LOGX} instruction, with $\col{X} \in \{0, 1,\dots, 4\}$, the following relationship will hold \emph{at the beginning of this subphase} $\localsize = 33 \cdot \col{X}$.
 		The constraints are thus as follows:
 		\begin{enumerate}[resume]
-			\item \If ($\Depth 1_{i}=1$ (\trash) \et $\isprefix_{i}=1$ \et $\isOt_{i}=1$ \et $\isOd_{i}=0$(\trash)) \Then:
+			\item \If ($\Depth 1_{i}=1$ (\trash) \et $\isPrefix_{i}=1$ \et $\isOt_{i}=1$ \et $\isOd_{i}=0$(\trash)) \Then:
 				\begin{enumerate}
 						% \item $\Input 1_{i} = \localsize_{i}$
 					\item $\indexlocal_{i} = 0$
@@ -202,7 +202,7 @@ The general loop intrication is resumed in the next table.
 								\[
 									\left\{ \begin{array}{lclr}
 										\Depth 1_{i + 1}   & = & 1 &  (\trash) \\
-										\isprefix_{i + 1}  & = & 1 &           \\
+										\isPrefix_{i + 1}  & = & 1 &           \\
 										\isOt_{i + 1}      & = & 0 &           \\
 										\isOd_{i + 1}      & = & 1 &           \\
 									\end{array} \right.
@@ -225,7 +225,7 @@ The general loop intrication is resumed in the next table.
 								\[
 									\left\{ \begin{array}{lclr}
 										\Depth 1_{i + 1}   & = & 1 & (\trash) \\
-										\isprefix_{i + 1}  & = & 0 &          \\
+										\isPrefix_{i + 1}  & = & 0 &          \\
 										\isOt_{i + 1}      & = & 1 &          \\
 										\isOd_{i + 1}      & = & 0 &          \\
 									\end{array} \right.
@@ -233,9 +233,9 @@ The general loop intrication is resumed in the next table.
 						\end{enumerate}
 				\end{enumerate}
 		\end{enumerate}
-	\item[\underline{RLP of the log topics $O_{\mathbf{t_{i}}}$:}] the constraints below apply only when this subphase isn't skipped (i.e. for logging operations other than \inst{LOG0}):
+	\item[\underline{\rlp{} of the log topics $O_{\mathbf{t_{i}}}$:}] the constraints below apply only when this subphase isn't skipped (i.e. for logging operations other than \inst{LOG0}):
 		\begin{enumerate}[resume]
-			\item \If ($\Depth 1_{i}=1$ (\trash) \et $\isprefix_{i}=0$ \et $\isOt_{i}=1$ \et $\isOd_{i}=0$ (\trash)) \Then:
+			\item \If ($\Depth 1_{i}=1$ (\trash) \et $\isPrefix_{i}=0$ \et $\isOt_{i}=1$ \et $\isOd_{i}=0$ (\trash)) \Then:
 				\begin{enumerate}
 					\item $\nbstep_{i}=3$
 					\item \If $\Done_{i}=1$ \Then:
@@ -256,7 +256,7 @@ The general loop intrication is resumed in the next table.
 								\[
 									\left\{ \begin{array}{lclr}
 										\Depth 1_{i + 1}   & = & 1 & (\trash) \\
-										\isprefix_{i + 1}  & = & 0 &          \\
+										\isPrefix_{i + 1}  & = & 0 &          \\
 										\isOt_{i + 1}      & = & 1 &          \\
 										\isOd_{i + 1}      & = & 0 &          \\
 									\end{array} \right.
@@ -270,7 +270,7 @@ The general loop intrication is resumed in the next table.
 										\[
 											\left\{ \begin{array}{lclr}
 												\Depth 1_{i + 1}   & = & 1 & (\trash) \\
-												\isprefix_{i + 1}  & = & 1 &          \\
+												\isPrefix_{i + 1}  & = & 1 &          \\
 												\isOt_{i + 1}      & = & 0 &          \\
 												\isOd_{i + 1}      & = & 1 &          \\
 											\end{array} \right.
@@ -280,13 +280,13 @@ The general loop intrication is resumed in the next table.
 						\end{enumerate}
 				\end{enumerate}
 		\end{enumerate}
-	\item[\underline{RLP prefix of $O_{\mathbf{d}}$:}] the prefix to prepend to the data slice $O_{\mathbf{d}}$ is a function of its size, and, for log data of size 1, of its content. Recall that during the log data prefix phase the contents of the $\Input{1}$ column is the \textbf{(log) data size} of the instruction. 
+	\item[\underline{\rlp{} prefix of $O_{\mathbf{d}}$:}] the prefix to prepend to the data slice $O_{\mathbf{d}}$ is a function of its size, and, for log data of size 1, of its content. Recall that during the log data prefix phase the contents of the $\Input{1}$ column is the \textbf{(log) data size} of the instruction. 
 		\begin{enumerate}[resume]
-			\item \If %($\Depth 1_{i}=1$ (\trash) \et $\isprefix_{i}=1$ \et $\isOt_{i}=0$ (\trash) \et $\isOd_{i}=1$) \Then:
+			\item \If %($\Depth 1_{i}=1$ (\trash) \et $\isPrefix_{i}=1$ \et $\isOt_{i}=0$ (\trash) \et $\isOd_{i}=1$) \Then:
 				\[
 					\left\{ \begin{array}{lclr}
 						\Depth 1_{i}   & = & 1 & (\trash) \\
-						\isprefix_{i}  & = & 1 &          \\
+						\isPrefix_{i}  & = & 1 &          \\
 						\isOt_{i}      & = & 0 & (\trash) \\
 						\isOd_{i}      & = & 1 &          \\
 					\end{array} \right.
@@ -309,13 +309,13 @@ The general loop intrication is resumed in the next table.
 								\[
 									\left\{ \begin{array}{lclr}
 										\Depth 1_{i + 1}   & = & 1 & (\trash) \\
-										\isprefix_{i + 1}  & = & 1 &          \\
+										\isPrefix_{i + 1}  & = & 1 &          \\
 										\isOt_{i + 1}      & = & 0 &          \\
 										\isOd_{i + 1}      & = & 0 &          \\
 									\end{array} \right.
 								\]
 								\saNote{} The above applies when there are remaining log entries for the present transaction. The next subphase is thus the beginning subphase of a new log entry.
-							\item \If $\phasesize_{i}=0$ \Then $\phasend_{i}=1$. \saNote{} This applies at the end of the \rlp{}-ization of the transaction receipt. 
+							\item \If $\phasesize_{i}=0$ \Then $\phaseEnd_{i}=1$. \saNote{} This applies at the end of the \rlp{}-ization of the transaction receipt. 
 						\end{enumerate}
 					\item \If $\localsize_{i} \neq 0$ \Then:
 						\begin{enumerate}
@@ -376,7 +376,7 @@ The general loop intrication is resumed in the next table.
 								\[
 									\left\{ \begin{array}{lclr}
 										\Depth 1_{i + 1}   & = & 1 & (\trash) \\
-										\isprefix_{i + 1}  & = & 0 &          \\
+										\isPrefix_{i + 1}  & = & 0 &          \\
 										\isOt_{i + 1}      & = & 0 &          \\
 										\isOd_{i + 1}      & = & 1 &          \\
 									\end{array} \right.
@@ -387,11 +387,11 @@ The general loop intrication is resumed in the next table.
 			\item[\underline{Listing the data limbs of $O_{\mathbf{d}}$:}] recall that this is an optional phase (triggered \emph{iff} $\|O_\textbf{d}\|\neq0$):
 				\saNote{} Contrary to other subphases of phase 4, the $\nbstep$ column will remain (partially) \emph{unconstrained}, i.e. we won't set it \emph{explicitly} in the constraints themselves. General constraints remain true (counter-constancy and \ct{} counting from $0$ to $\nbstep - 1$ before resetting to $0$.)
 				\begin{enumerate}[resume]    
-					\item \If %($\Depth 1_{i}=1$ (\trash) \et $\isprefix_{i}=0$ \et $\isOt_{i}=0$ (\trash) \et $\isOd_{i}=1$) \Then:
+					\item \If %($\Depth 1_{i}=1$ (\trash) \et $\isPrefix_{i}=0$ \et $\isOt_{i}=0$ (\trash) \et $\isOd_{i}=1$) \Then:
 						\[
 							\left\{ \begin{array}{lclr}
 								\Depth 1_{i}   & = & 1 & (\trash) \\
-								\isprefix_{i}  & = & 0 &          \\
+								\isPrefix_{i}  & = & 0 &          \\
 								\isOt_{i}      & = & 0 & (\trash) \\
 								\isOd_{i}      & = & 1 &          \\
 							\end{array} \right.
@@ -411,12 +411,12 @@ The general loop intrication is resumed in the next table.
 										\[
 											\left\{ \begin{array}{lclr}
 												\Depth 1_{i + 1}   & = & 1 & (\trash) \\
-												\isprefix_{i + 1}  & = & 1 &          \\
+												\isPrefix_{i + 1}  & = & 1 &          \\
 												\isOt_{i + 1}      & = & 0 &          \\
 												\isOd_{i + 1}      & = & 0 &          \\
 											\end{array} \right.
 										\]
-									\item \If $\phasesize_{i}=0$ \Then $\phasend_{i}=1$
+									\item \If $\phasesize_{i}=0$ \Then $\phaseEnd_{i}=1$
 								\end{enumerate}
 						\end{enumerate}
 				\end{enumerate}
@@ -426,17 +426,17 @@ The general loop intrication is resumed in the next table.
 			\item[\underline{Decrementation of $\logentrysize$:}] \label{spec of logentrysize} \If $\Depth{1}_{i}=1$ \Then
 				\begin{enumerate}
 					\item \If \Big(
-						$\isprefix_{i} = 1$
+						$\isPrefix_{i} = 1$
 						\et $\isOt_{i} = 0$
 						\et $\isOd_{i} = 0$
 						\Big) \Then see constraint (\ref{spec of logentrysize missing case})
 					\item \If \Big(
-						$\isprefix_{i} = 0$
+						$\isPrefix_{i} = 0$
 						\Or $\isOt_{i} = 1$
 						\Or $\isOd_{i} = 1$
 						\Big)\footnote{In the implementation one may realize this condition (including that on $\Depth{1}$) through
 						``\If $(1 - \Depth{1}_{i})
-						+ (1 - \isprefix_{i})
+						+ (1 - \isPrefix_{i})
 						+ \isOt_{i}
 						+ \isOd_{i} \neq 0$ \Then \dots{}''} \Then
 						\[
@@ -446,7 +446,7 @@ The general loop intrication is resumed in the next table.
 				\saNote{} There is no need to constrain $\logentrysize$ when $\Depth{1}_{i}=0$.
 			\item[\underline{Decrementation of $\localsize$:}] ---
 				\begin{enumerate}
-					\item \If $\isprefix_{i}=0$ \et ($\isOt_{i} + \isOd_{i} \neq 0$) \Then
+					\item \If $\isPrefix_{i}=0$ \et ($\isOt_{i} + \isOd_{i} \neq 0$) \Then
 						\[ \localsize_{i} = \localsize_{i-1} - \lc_{i} \cdot \limbsize_{i} \]
 				\end{enumerate}
 		\end{description}

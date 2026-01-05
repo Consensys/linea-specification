@@ -1,0 +1,25 @@
+The \textbf{transaction data} module \txnDataMod{} module serves several important and essentially independent functions.
+For one it is the \textbf{main entry point for transaction data} contained in the \rlpTxnMod{} module into the ``execution environment" which is the \hubMod{} module.
+
+The \txnDataMod{} module performs simple computations which occur before transaction execution proper.
+These include computing the upfront gas cost of transactions,
+ensuring that the transaction's \textbf{gasLimit} covers that cost,
+ensuring that the underlying account has sufficient balance to cover both for gas cost and value transfer,
+computing the effective gas price (for transactions implementing \cite{EIP-1559} gas semantics)
+and the effective ``fee rate'' (i.e. the rate at which the \inst{COINBASE} address collects fees).
+The present module also (partially justifies and) serves the \txRequiresEvmExecution{} and \txCopyTxcd{} bits to the \hubMod{} module. 
+The former is established in cooperation between the two modules while the second is deduced from the first in the present module.
+
+
+The present module also handles computations related to finalizing transactions
+such as computing adequate gas refunds.
+
+It furthermore collects/updates block meta data
+including (using notations from the \cite{EYP-London}):
+\begin{enumerate}
+        \item the transaction's status code $\Upsilon^z(\bm{\sigma}, T)$,
+        \item the cumulative gas consumption of the block of transactions up to and including this transaction $\Upsilon^u(\bm{\sigma}, T)$,
+\end{enumerate}
+
+\saNote{}
+Refunds are those of the \textsc{London} release of the \evm{}.

@@ -1,0 +1,61 @@
+\begin{enumerate}
+	\item \iomf{}:
+		binary column;
+		separates \textbf{padding-rows}     (characterized by $\iomf \equiv \false$)
+		from      \textbf{non-padding-rows} (characterized by $\iomf \equiv \true$);
+	\item \blockNumber{}:
+		block number;
+	\item \userTransactionNumber{}:
+		user transaction number;
+	\item \authorityTupleIndex{}:
+		index of authorization tuple
+		in authorization list;
+	\item \ct{} and \maxCt{}:
+		usual counter columns;
+\end{enumerate}
+The following columns distinguish between (\user) transactions
+whose underlying transaction type allow for
+\textbf{authority lists}
+and those that don't.
+\begin{enumerate}[resume]
+	\item \transactionTypeWithAuthorityLists{}:
+		binary column;
+	\item \transactionTypeSansAuthorityLists{}:
+		binary column;
+\end{enumerate}
+The following columns define the perspectives of the present module.
+\begin{enumerate}[resume]
+	\item \computation{}:
+		binary column defining the
+		\computationPerspectivePrefix{}-perspective; 
+	\item \macro{}:
+		binary column defining the
+		\macroPerspectivePrefix{}-perspective; 
+	\item \extern{}:
+		binary column defining the
+		\externPerspectivePrefix{}-perspective; 
+	\item \utils{}:
+		binary column defining the
+		\utilsPerspectivePrefix{}-perspective; 
+\end{enumerate}
+The following columns are used for book-keeping related to
+authority tuples that \macroEcrecover{} the (transaction's) sender address.
+\begin{enumerate}[resume]
+	\item
+		\authorityIsSenderAcc{}:
+		accumulates, within a given transaction,
+		the number of \textbf{valid} authority tuples
+		whose \authority{} address is the transaction's
+		sender address;
+	\item
+		\authorityIsSenderTot{}:
+		\textbf{transaction-constant} column
+		containing the total number of \textbf{valid}
+		authority tuples in a transaction's authority list
+		whose \authority{} address is the transaction's
+		sender address;
+\end{enumerate}
+\saNote{}
+We provide more details on the difficulties that arise from authority tuples whose
+\authority{} is the (transaction's) sender address
+in note~(\ref{rlp auth: comparisons: validity: nonce vs account nonce: when authority is sender}).
