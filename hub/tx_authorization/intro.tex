@@ -1,0 +1,18 @@
+Starting with the \textsc{Prague} hardfork, specifically with \cite{EIP-7702},
+\textsc{Ethereum} supports account delegation transactions i.e. type 4 transactions.
+These transactions include a (necessarily nonempty) list of \textbf{account delegation tuples} / \textbf{authorization tuples}
+which are partially processed in the \rlpAuthMod{} module (to determine their validity).
+The remainder of their processing, in as much as processing modifies the \textbf{state},
+is carried out in the \txAuth{} phase.
+
+The present section details what happens in the \txAuth{} phase.
+In summary:
+\begin{itemize}
+	\item every \textbf{authorization tuple} is processed in either 1 or 2 rows;
+	\item the authorization tuple is processed in 1 row whenever it is \textbf{invalid}, as determined by the \rlpAuthMod{} module;
+	\item the authorization tuple is processed in 2 rows whenever it is \textbf{valid},  as determined by the \rlpAuthMod{} module;
+\end{itemize}
+The processing happens as follows:
+a single $\peekAuthorization$ row for the give tuple is inserted in the trace.
+If
+
