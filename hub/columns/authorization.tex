@@ -1,0 +1,23 @@
+\textbf{Authorization-rows} are characterized by $\peekAuthorization \equiv 1$
+and columns pertaining to that perspective are prefixed with the following symbol:
+$\authorizationSignifier$. The following are names for certain columns on authorization-rows.
+\begin{enumerate}
+	\item
+		\authEcrecoverWasAttempted{}:
+		binary column asserting whether an attempt at \macroEcrecover{}-ing the \authDelegationAddress{} was made;
+	\item
+		\authEcrecoverSuccess{}:
+		binary column asserting whether said attempt was successful;
+		defaults to zero if no attempt was made;
+	\item
+		\authAuthorityAddressHi{} and \authAuthorityAddressLo{}:
+		hi and lo parts of the authority address if \macroEcrecover{} was both attempted and successful
+		on a given authority tuple;
+		defaults to zero otherwise;
+	\item
+		\authDelegationAddressHi{} and  \authDelegationAddressLo{}:
+		hi and lo parts of the delegation address of the authority tuple;
+	\item
+		\authDelegationAddressIsZero{}:
+		binary column asserting whether the \authDelegationAddress{} is zero or not;
+\end{enumerate}
