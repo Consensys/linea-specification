@@ -3,6 +3,7 @@ We include them in order to make expectations explicit.
 \begin{enumerate}
 	\item \label{hub: system: hub stamp: entry increments: SKIP case} \If $\txSkip _{i} = 1$ \Then $\hubStamp _{i} = \hubStamp _{i - 1} + \peekTransaction _{i}$ (\sanityCheck)
 	\item \label{hub: system: hub stamp: entry increments: WARM case} \If $\txWarm _{i} = 1$ \Then $\hubStamp _{i} = \hubStamp _{i - 1} + 1$ (\sanityCheck)
+	\item \label{hub: system: hub stamp: entry increments: AUTH case} \If $\txAuth _{i} = 1$ \Then $\hubStamp _{i} = \hubStamp _{i - 1} + \peekAuthorization _{i}$ (\sanityCheck)
 	\item \label{hub: system: hub stamp: entry increments: INIT case} \If $\txInit _{i} = 1$ \Then $\hubStamp _{i} = \hubStamp _{i - 1} + \peekTransaction _{i}$ (\sanityCheck)
 	\item \label{hub: system: hub stamp: entry increments: FINL case} \If $\txFinl _{i} = 1$ \Then $\hubStamp _{i} = \hubStamp _{i - 1} + \peekTransaction _{i}$ (\sanityCheck)
 	\item \label{hub: system: hub stamp: entry increments: EXEC case} \If $\txExec _{i} = 1$ \Then $\hubStamp _{i} = \hubStamp _{i - 1} + (1 - \tliCounter _{i}) \cdot \peekStack _{i}$ (\sanityCheck)
@@ -13,6 +14,7 @@ We include them in order to make expectations explicit.
 			\left[ \begin{array}{lcl}
 				(1 - \txSkip _{i}) & \!\!\!\cdot\!\!\! & \txSkip _{i + 1} \\
 				(1 - \txWarm _{i}) & \!\!\!\cdot\!\!\! & \txWarm _{i + 1} \\
+				(1 - \txAuth _{i}) & \!\!\!\cdot\!\!\! & \txAuth _{i + 1} \\
 				(1 - \txInit _{i}) & \!\!\!\cdot\!\!\! & \txInit _{i + 1} \\
 				(1 - \txFinl _{i}) & \!\!\!\cdot\!\!\! & \txFinl _{i + 1} \\
 				(1 - \txExec _{i}) & \!\!\!\cdot\!\!\! & \txExec _{i + 1} \\
