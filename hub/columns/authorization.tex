@@ -2,18 +2,30 @@
 and columns pertaining to that perspective are prefixed with the following symbol:
 $\authorizationSignifier$. The following are names for certain columns on authorization-rows.
 \begin{enumerate}
-	\item
-		\authEcrecoverWasAttempted{}:
-		binary column asserting whether an attempt at \macroEcrecover{}-ing the \authDelegationAddress{} was made;
+		% \item
+		% 	\authEcrecoverWasAttempted{}:
+		% 	binary column asserting whether an attempt at \macroEcrecover{}-ing the \authDelegationAddress{} was made;
+		% 	% @OLIVIER: this column is likely not necessary
 	\item
 		\authEcrecoverSuccess{}:
-		binary column asserting whether said attempt was successful;
-		defaults to zero if no attempt was made;
+		binary column asserting whether an address was successfully \macroEcrecover{}-ed from the authorization tuple;
+		defaults to zero (i.e. \false{}) if no attempt at \macroEcrecover{}-ing the \authAuthorityAddress{} was made;
 	\item
 		\authAuthorityAddressHi{} and \authAuthorityAddressLo{}:
 		hi and lo parts of the authority address if \macroEcrecover{} was both attempted and successful
 		on a given authority tuple;
 		defaults to zero otherwise;
+	\item
+		\authAuthorityNonce{}:
+		column containing the nonce of the authority address provided the authority address was successfully \macroEcrecover{}'ed;
+	\item
+		\authAuthorityMeetsCodeRequirement{}:
+		binary column;
+		indicates whether the authority address meets the requirement that its code is either empty
+		or already delegated;
+	\item
+		\authCodeHashHi{} and \authCodeHashLo{}:
+		hi and lo parts of the potential new code hash;
 	\item
 		\authDelegationAddressHi{} and  \authDelegationAddressLo{}:
 		hi and lo parts of the delegation address of the authority tuple;
@@ -21,3 +33,37 @@ $\authorizationSignifier$. The following are names for certain columns on author
 		\authDelegationAddressIsZero{}:
 		binary column asserting whether the \authDelegationAddress{} is zero or not;
 \end{enumerate}
+\saNote{}
+\cite{EIP-7702} requires that authority tuples be processed \textbf{after} raising the transaction sender address' nonce.
+\linea's \zkEvm{} does it the other way around i.e. it processes the authority list (of transactions supporting authority lists)
+\textbf{before} raising the sender address' nonce.
+This is reflected in the fact that transaction processing for \textsc{type 4} transactions happens in the following order:
+\begin{enumerate}
+	\item for transactions that $\txRequiresEvmExecution \equiv \true$ transactions:
+		\begin{itemize}
+			\item optional pre-warming ($\txWarm$);
+			\item sequential processing of \textbf{all} authority tuples, including the invalid ones ($\txAuth$);
+			\item standard $\txInit \rightsquigarrow \txExec \rightsquigarrow \txFinl$ flow;
+		\end{itemize}
+	\item for transactions that $\txRequiresEvmExecution \equiv \false$ transactions:
+		\begin{itemize}
+			\item sequential processing of \textbf{all} authority tuples, including the invalid ones ($\txAuth$);
+			\item standard $\txSkip$ flow;
+		\end{itemize}
+\end{enumerate}
+One consequence of this is that if the sender address is among the (recovered) authority addresses
+of the authority list the nonce comparison, which happens in the \rlpAuthMod{} module,
+must be careful to use the appropriately raised nonce.
+
+\saNote{}
+Recall that if processing of the authorization tuple is a success then the \authAuthorityAddress{}'
+code is replaced with either
+\[
+	\mathbf{c} \equiv
+	\begin{cases}
+		\If \authDelegationAddressIsZero \equiv \false: & \texttt{ef\,01\,00} \cdot \col{delegation\_address} \\
+		\If \authDelegationAddressIsZero \equiv \true:  & ()                                                  \\
+	\end{cases}
+\]
+and the code hash, accordingly, with $\texttt{KECCAK} \big( \textbf{c} \big)$.
+
