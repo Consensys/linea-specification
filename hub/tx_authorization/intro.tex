@@ -1,18 +1,27 @@
-Starting with the \textsc{Prague} hardfork, specifically with \cite{EIP-7702},
-\textsc{Ethereum} supports account delegation transactions i.e. type 4 transactions.
-These transactions include a (necessarily nonempty) list of \textbf{account delegation tuples} / \textbf{authorization tuples}
-which are partially processed in the \rlpAuthMod{} module (to determine their validity).
-The remainder of their processing, in as much as processing modifies the \textbf{state},
-is carried out in the \txAuth{} phase.
+Starting with the \textsc{Prague} hardfork, specifically with \cite{EIP-7702}, \textsc{Ethereum} supports
+\textbf{set code transactions} a.k.a.
+\textbf{account delegation transactions} a.k.a.
+\textbf{type 4 transactions}.
+These transactions include a (necessarily nonempty) list of \textbf{account delegation tuples} / \textbf{authorization tuples}.
+Authorization tuples may be either invalid or valid; invalid tuples lead to no state change.
+These tuples are partially processed in the \rlpAuthMod{} module.
+The remainder of their processing, in as much as processing requires \textbf{reading} and \textbf{potentially modifying} the \textbf{state},
+is carried out in the \txAuth{} phase of the present \hubMod{} module.
 
 The present section details what happens in the \txAuth{} phase.
 In summary:
 \begin{itemize}
-	\item every \textbf{authorization tuple} is processed in either 1 or 2 rows;
+	\item every \textbf{authorization tuple} is processed requiring either 1 or 2 rows;
 	\item the authorization tuple is processed in 1 row whenever it is \textbf{invalid}, as determined by the \rlpAuthMod{} module;
 	\item the authorization tuple is processed in 2 rows whenever it is \textbf{valid},  as determined by the \rlpAuthMod{} module;
 \end{itemize}
 The processing happens as follows:
-a single $\peekAuthorization$ row for the give tuple is inserted in the trace.
-If
+a single $\peekAuthorization$-row for the give tuple is inserted in the trace.
+If $\authEcrecoverSuccess \equiv \true$ the following line is a $\peekAccount$-row, otherwise processing stops.
+Assuming $\authEcrecoverSuccess \equiv \true$, the account-row that follows is made to contain the authority address' account.
+The authority's nonce is copied over and to the $\peekAuthorization$-row,
+as is the bit verifying whether the authority's code meets the requirement to be delegated.
+
+If these requirements are met, the authority's code, code hash and delegation address
+are updated according to the data in the $\peekAuthorization$-row.
 

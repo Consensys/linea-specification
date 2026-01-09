@@ -1,0 +1,35 @@
+\begin{center}
+	\boxed{\text{All constraints in this subsection assume that $\txAuth _{i} = 1$.}}
+\end{center}
+We impose the following:
+\begin{enumerate}
+	\item $\peekAuthorization _{i} + \peekAccount _{i} = 1$
+	\item \If $\txAuth _{i - 1} = 0$ \Then $\peekAuthorization _{i} = 1$;
+	\item \If $\peekAuthorization _{i} = 1$ \Then
+		\begin{enumerate}
+			\item \If $\authEcrecoverSuccess _{i} = 1$ \Then
+				\begin{enumerate}
+					\item $\txAuth      _{i + 1} = 1$
+					\item $\peekAccount _{i + 1} = 1$
+				\end{enumerate}
+			\item \If $\authEcrecoverSuccess _{i} = 0$ \Then
+				\begin{enumerate}
+					\item $\txAuth      _{i + 1} = \peekAuthorization _{i + 1}$
+				\end{enumerate}
+		\end{enumerate}
+	\item \If $\peekAccount _{i} = 1$ \Then
+		\begin{enumerate}
+			\item $\txAuth               _{i + 1} = \peekAuthorization _{i + 1}$
+			\item we impose
+				\[
+					\standardDomSubStamps {
+						anchorRow        = i      ,
+						relOffset        = \rZero ,
+						domOffset        = 0      ,
+					}
+				\]
+			\item $\txAuth               _{i - 1} = 1$ ~ (\sanityCheck)
+			\item $\peekAuthorization    _{i - 1} = 1$ ~ (\sanityCheck)
+			\item $\authEcrecoverSuccess _{i - 1} = 1$ ~ (\sanityCheck)
+		\end{enumerate}
+\end{enumerate}
