@@ -16,7 +16,7 @@ We first determine the \rlp{} prefix of the data on the first row:
 \begin{enumerate}
         \item \If $\isTxn _{i - 1} = 1$ \Then:
         \[
-            \rlpProcessByteString {
+            \rlpProcessBlobHash {
                 anchorRow        = i                                  ,
                 relOffset        = 0                                  ,
                 byteStringLength = \locBlobHashLengthCountdown _{i}   ,
@@ -27,9 +27,14 @@ We first determine the \rlp{} prefix of the data on the first row:
         \] 
 \end{enumerate}
 
+And propagate the phase size counter:
+\begin{enumerate}[resume]
+    \item \If $\isCmp _{i} = 1$ \Then $\locBlobHashLengthCountdown_{i} = \locBlobHashLengthCountdown_{i - 1} - \lc_{i-1} \cdot \rlpTxnComputationColumnLimbSize_{i-1} $
+\end{enumerate}
+
 And we RLP-ize each blob hash:
 \begin{enumerate}[resume]
-    \item \If $\isTxn _{i - 1} = 0$ $\done _{i - 1} = 1$ \et  \Then:
+    \item \If $\isTxn _{i - 1} = 0$ \et $\done _{i - 1} = 1$ \Then:
     \[
             \rlpProcessBytesThirtyTwo {
                 anchorRow = i                    ,
@@ -50,4 +55,10 @@ And we RLP-ize each blob hash:
 And we define the index of the blob hash:
 \begin{enumerate}[resume]
     \item $\locBlobHashIndex _{i} = \isCmp _{i} \cdot \isCmp _{i - 1} \cdot (\locBlobHashIndex _{i - 1} + \done _{i - 1})$
+\end{enumerate}
+
+Finalization constraint:
+\begin{enumerate}[resume]
+    \item \If $\locBlobHashLengthCountdown _{i} =    0$ \Then $\phaseEnd _{i} =  1$
+    \item \If $\locBlobHashLengthCountdown _{i} \neq 0$ \Then $\phaseEnd _{i} =  0$ 
 \end{enumerate}
