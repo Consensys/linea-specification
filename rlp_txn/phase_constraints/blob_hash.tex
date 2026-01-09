@@ -1,0 +1,53 @@
+\begin{center}
+    \boxed{\text{All constraints in this subsection assume that 
+    $\phaseBlobVersionedHashes _{i} = 1$
+    }}
+\end{center}
+
+We use the following shorthands:
+\[
+    \left\{ \begin{array}{lcl}
+        \locBlobHashLengthCountdown        _{i} & \define & \rlpTxnComputationColumnAuxiliaryData{1}                   _{i} \\
+        \locBlobHashIndex                  _{i} & \define & \rlpTxnComputationColumnCounterConstantAuxiliaryData{1}    _{i} \\
+    \end{array}                            \right.
+\]
+
+We first determine the \rlp{} prefix of the data on the first row:
+\begin{enumerate}
+        \item \If $\isTxn _{i - 1} = 1$ \Then:
+        \[
+            \rlpProcessByteString {
+                anchorRow        = i                                  ,
+                relOffset        = 0                                  ,
+                byteStringLength = \locBlobHashLengthCountdown _{i}   ,
+                firstByte        = \nothing                           ,
+                isList           = \true                              ,
+                mustBeNontrivial = \true                              ,
+            }
+        \] 
+\end{enumerate}
+
+And we RLP-ize each blob hash:
+\begin{enumerate}[resume]
+    \item \If $\isTxn _{i - 1} = 0$ $\done _{i - 1} = 1$ \et  \Then:
+    \[
+            \rlpProcessBytesThirtyTwo {
+                anchorRow = i                    ,
+                relOffset = 0                    ,
+                dataHi    = \loc{blob\_hash\_hi} ,
+                dataLo    = \loc{blob\_hash\_lo} ,
+            }
+        \]
+        where
+        \[
+            \left\{ \begin{array}{lcl}
+                \loc{blob\_hash\_hi} & \define & \rlpTxnComputationColumnExoDataColumn{1} _{i} \\
+                \loc{blob\_hash\_lo} & \define & \rlpTxnComputationColumnExoDataColumn{2} _{i} \\
+            \end{array} \right.
+        \]
+\end{enumerate}
+
+And we define the index of the blob hash:
+\begin{enumerate}[resume]
+    \item $\locBlobHashIndex _{i} = \isCmp _{i} \cdot \isCmp _{i - 1} \cdot (\locBlobHashIndex _{i - 1} + \done _{i - 1})$
+\end{enumerate}
