@@ -1,0 +1,32 @@
+Below $\relof$ is a (small) positive integer.
+We introduce constraints pertaining to account delegation.
+\[
+	\left\{ \begin{array}{lcl}
+		\accSetDelegationAddress {
+			anchorRow           = i                             ,
+			relOffset           = \relof                        ,
+			delegationAddressHi = \loc{address\_hi} ,
+			delegationAddressLo = \loc{address\_lo} ,
+		}
+		\vspace{2mm}
+		\\
+		\qquad \define
+		\left\{ \begin{array}{lcl}
+			\accDelegationAddressNewHi _{i + \relof} & = & \loc{address\_hi} \\
+			\accDelegationAddressNewLo _{i + \relof} & = & \loc{address\_lo} \\
+		\end{array} \right.
+		\vspace{2mm}
+		\\
+		\accSameDelegationAddress {
+			anchorRow           = i                             ,
+			relOffset           = \relof                        ,
+		}
+		\vspace{2mm}
+		\\
+		\qquad \define
+		\left\{ \begin{array}{lcl}
+			\accDelegationAddressNewHi _{i + \relof} & = & \accDelegationAddressHi _{i + \relof} \\
+			\accDelegationAddressNewLo _{i + \relof} & = & \accDelegationAddressLo _{i + \relof} \\
+		\end{array} \right.
+	\end{array} \right.
+\]
