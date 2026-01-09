@@ -1,0 +1,31 @@
+\makeatletter
+
+\define@cmdkey [AUTH] {var} {anchorRow}           {}
+\define@cmdkey [AUTH] {var} {relOffset}           {}
+\define@cmdkey [AUTH] {var} {delegationAddressHi} {}
+\define@cmdkey [AUTH] {var} {delegationAddressLo} {}
+
+\presetkeys    [AUTH] {var} {
+	anchorRow           = \missingParameter,
+	relOffset           = \missingParameter,
+	delegationAddressHi = \missingParameter,
+	delegationAddressLo = \missingParameter,
+}{}
+
+
+
+% AUTH
+\newcommand{\accSameDelegationAddress}[1]{
+	\setkeys[AUTH]{var}{#1}
+	\texttt{sameDelegationAddress} _{\cmdAUTH@var@anchorRow}
+	\Big[ \utt{Rel. row offset:} \cmdAUTH@var@relOffset \Big]
+}
+
+\newcommand{\accSetDelegationAddress}[1]{
+	\setkeys[AUTH]{var}{#1}
+	\texttt{setDelegationAddress} _{\cmdAUTH@var@anchorRow}
+	\left[ \begin{array}{ll}
+		\utt{Rel.  row    offset:}   & \cmdAUTH@var@relOffset           \\
+		\utt{Delegation address hi:} & \cmdAUTH@var@delegationAddressHi \\
+		\utt{Delegation address lo:} & \cmdAUTH@var@delegationAddressLo \\
+	\end{array} \right] }
