@@ -11,7 +11,7 @@ which indicate whether the account is delegated as per \cite{EIP-7702}.
 			\item \If $\accDelegationAddressLo _{i} =    0$ \Then $\accIsDelegated _{i} = 0$
 		\end{enumerate}
 \end{enumerate}
-We enforce the analogous constraints for $\accHasCode\new$:
+We enforce the analogous constraints for $\accIsDelegatedNew$:
 \begin{enumerate}[resume]
 	\item \If $\accDelegationAddressNewHi _{i} \neq 0$ \Then $\accIsDelegatedNew _{i} = 1$
 	\item \If $\accDelegationAddressNewHi _{i} =    0$ \Then
@@ -25,12 +25,13 @@ The above ensures that
 \[
 	\left\{ \begin{array}{lclclcl}
 		\accIsDelegated    & \equiv & \true & \iff & \accDelegationAddress    & \equiv & \texttt{0x\,00\,\dots\,00} \in \mathbb{B}_{\addressSize} \\
-	        \accIsDelegatedNew & \equiv & \true & \iff & \accDelegationAddressNew & \equiv & \texttt{0x\,00\,\dots\,00} \in \mathbb{B}_{\addressSize} \\
+		\accIsDelegatedNew & \equiv & \true & \iff & \accDelegationAddressNew & \equiv & \texttt{0x\,00\,\dots\,00} \in \mathbb{B}_{\addressSize} \\
 	\end{array} \right.
 \]
 We impose some constraints ensuring that delegation information may only change during the \txAuth{}-phase
 \begin{enumerate}[resume]
-	\item \If $\txAuth _{i} = 0$ \Then
+	\item\label{account: delegation: the delegation address may not change outside of AUTH rows}
+		\If $\txAuth _{i} = 0$ \Then
 		\[
 			\accSameDelegationAddress {
 				anchorRow = i ,
@@ -40,3 +41,6 @@ We impose some constraints ensuring that delegation information may only change 
 	\item \If $\accIsDelegated    _{i} = 1$ \Then $\accCodesize     _{i} = \delegatedAccountCodeSize$
 	\item \If $\accIsDelegatedNew _{i} = 1$ \Then $\accCodesize\new _{i} = \delegatedAccountCodeSize$
 \end{enumerate}
+\saNote{}
+Constraint~(\ref{account: delegation: the delegation address may not change outside of AUTH rows})
+enforces that the delegation address of an account may not change outside of the \txAuth{}-phase.
