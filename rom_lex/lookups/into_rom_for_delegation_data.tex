@@ -1,4 +1,7 @@
-The lookup from the $\romLexMod$ module connects the \CFI{} associated in the \romLexMod{} to an address, a deployment number and deployment status, to the associated bytecode in the \romMod{}; it is constructed as follows:
+This lookup from the $\romLexMod$ module is used to extract the $\delegatedAccountCodeSize = 3 + \addressSize = 3 + 4 + 16$
+which constitute the entirety of the byte code of any byte code fragment that has
+$\byteCodeCouldBeDelegationCode \equiv \true$.
+It is constructed as follows:
 \begin{description}
 	\item[\underline{Selector:}] we use $\loc{sel} _{i} \define \byteCodeCouldBeDelegationCode _{i}$
 	\item[\underline{Source columns:}] from the \romLexMod{} module:
@@ -15,20 +18,20 @@ The lookup from the $\romLexMod$ module connects the \CFI{} associated in the \r
 	\item[\underline{Target columns:}] from the \romMod{} module: 
 		\begin{multicols}{2}
 			\begin{enumerate}
-				\item $\pc                       _{j + 1}$
-				\item $\cfi                      _{j}$
+				\item $\pc                    _{j + 1}$
+				\item $\cfi                   _{j}$
 				\item[\vspace{\fill}]
-				\item $\loc{prefix\_sum}         _{j}$
-				\item $\loc{4\_leading\_bytes}   _{j}$
-				\item $\loc{16\_trailing\_bytes} _{j}$
+				\item $\loc{3B\_prefix\_sum}  _{j}$
+				\item $\loc{4B\_lead\_bytes}  _{j}$
+				\item $\loc{16B\_tail\_bytes} _{j}$
 			\end{enumerate} 
 		\end{multicols}
 		where we use the following shorthands:
 		\[
 			\left\{ \begin{array}{lcl}
-				\loc{prefix\_sum}         _{j} & = & \displaystyle \sum _{k = 0} ^ {2}  256 ^ {2  - k} \cdot \PBCB _{j + k} \\
-				\loc{4\_leading\_bytes}   _{j} & = & \displaystyle \sum _{k = 0} ^ {3}  256 ^ {3  - k} \cdot \PBCB _{j + 3  + k} \\
-				\loc{16\_trailing\_bytes} _{j} & = & \displaystyle \sum _{k = 0} ^ {15} 256 ^ {15 - k} \cdot \PBCB _{j + 7  + k} \\
+				\loc{3B\_prefix\_sum}  _{j} & = & \displaystyle \sum _{k = 0} ^ {2}  256 ^ {2  - k} \cdot \PBCB _{j + k} \\
+				\loc{4B\_lead\_bytes}  _{j} & = & \displaystyle \sum _{k = 0} ^ {3}  256 ^ {3  - k} \cdot \PBCB _{j + 3  + k} \\
+				\loc{16B\_tail\_bytes} _{j} & = & \displaystyle \sum _{k = 0} ^ {15} 256 ^ {15 - k} \cdot \PBCB _{j + 7  + k} \\
 			\end{array} \right.
 		\]
 \end{description}
