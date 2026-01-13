@@ -7,7 +7,7 @@ $\authorizationSignifier$. The following are names for certain columns on author
 		% 	binary column asserting whether an attempt at \macroEcrecover{}-ing the \authDelegationAddress{} was made;
 		% 	% @OLIVIER: this column is likely not necessary
 	\item
-		\authEcrecoverSuccess{}:
+		\authAuthorityEcrecoverSuccess{}:
 		binary column asserting whether an address was successfully \macroEcrecover{}-ed from the authorization tuple;
 		defaults to zero (i.e. \false{}) if no attempt at \macroEcrecover{}-ing the \authAuthorityAddress{} was made;
 	\item
@@ -17,15 +17,16 @@ $\authorizationSignifier$. The following are names for certain columns on author
 		defaults to zero otherwise;
 	\item
 		\authAuthorityNonce{}:
-		column containing the nonce of the authority address provided the authority address was successfully \macroEcrecover{}'ed;
+		column containing the nonce of the authority address as read off of the state
+		\emph{provided} the authority address was successfully \macroEcrecover{}'ed;
 	\item
-		\authAuthorityMeetsCodeRequirement{}:
+		\authAuthorityHasEmptyCodeOrIsDelegated{}:
 		binary column;
 		indicates whether the authority address meets the requirement that its code is either empty
 		or already delegated;
-	\item
-		\authCodeHashHi{} and \authCodeHashLo{}:
-		hi and lo parts of the potential new code hash;
+		% \item
+		% 	\authCodeHashHi{} and \authCodeHashLo{}:
+		% 	hi and lo parts of the potential new code hash;
 	\item
 		\authDelegationAddressHi{} and  \authDelegationAddressLo{}:
 		hi and lo parts of the delegation address of the authority tuple;
@@ -61,8 +62,8 @@ code is replaced with either
 \[
 	\mathbf{c} \equiv
 	\begin{cases}
-		\If \authDelegationAddressIsZero \equiv \false: & \texttt{ef\,01\,00} \cdot \col{delegation\_address} \\
-		\If \authDelegationAddressIsZero \equiv \true:  & ()                                                  \\
+		\If \authDelegationAddressIsZero \equiv \false: & \texttt{0x\,ef\,01\,00} \cdot \col{delegation\_address} \\
+		\If \authDelegationAddressIsZero \equiv \true:  & ()                                                      \\
 	\end{cases}
 \]
 and the code hash, accordingly, with $\texttt{KECCAK} \big( \textbf{c} \big)$.
