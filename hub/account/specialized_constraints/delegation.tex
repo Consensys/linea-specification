@@ -2,31 +2,60 @@ Below $\relof$ is a (small) positive integer.
 We introduce constraints pertaining to account delegation.
 \[
 	\left\{ \begin{array}{lcl}
+		%
+		\accSameDelegationAddress {
+			anchorRow = i      ,
+			relOffset = \relof ,
+		}
+		\vspace{2mm} \\
+		\qquad \define
+		\left\{ \begin{array}{lcl}
+			\accDelegationAddressHiNew _{i + \relof} & = & \accDelegationAddressHi _{i + \relof} \\
+			\accDelegationAddressLoNew _{i + \relof} & = & \accDelegationAddressLo _{i + \relof} \\
+		\end{array} \right.
+		\vspace{2mm} \\
+		%
+		\accSameDelegationNumber {
+			anchorRow = i      ,
+			relOffset = \relof ,
+		}
+		\vspace{2mm} \\
+		\qquad \define
+		\accDelegationNumberNew _{i + \relof} = \accDelegationNumber _{i + \relof}
+		\vspace{2mm} \\
+		%
+		\accSameDelegationStatus  {
+			anchorRow = i ,
+			relOffset = \relof ,
+		}
+		\vspace{2mm} \\
+		\qquad \define
+		\accIsDelegatedNew _{i + \relof} = \accIsDelegated _{i + \relof}
+	\end{array} \right.
+\]
+and
+\[
+	\left\{ \begin{array}{lcl}
 		\accSetDelegationAddress {
 			anchorRow           = i                 ,
 			relOffset           = \relof            ,
 			delegationAddressHi = \loc{address\_hi} ,
 			delegationAddressLo = \loc{address\_lo} ,
 		}
-		\vspace{2mm}
-		\\
+		\vspace{2mm} \\
 		\qquad \define
 		\left\{ \begin{array}{lcl}
 			\accDelegationAddressHiNew _{i + \relof} & = & \loc{address\_hi} \\
 			\accDelegationAddressLoNew _{i + \relof} & = & \loc{address\_lo} \\
 		\end{array} \right.
-		\vspace{2mm}
-		\\
-		\accSameDelegationAddress {
+		\vspace{2mm} \\
+		\accIncrementDelegationNumber {
 			anchorRow = i      ,
 			relOffset = \relof ,
 		}
-		\vspace{2mm}
-		\\
+		\vspace{2mm} \\
 		\qquad \define
-		\left\{ \begin{array}{lcl}
-			\accDelegationAddressHiNew _{i + \relof} & = & \accDelegationAddressHi _{i + \relof} \\
-			\accDelegationAddressLoNew _{i + \relof} & = & \accDelegationAddressLo _{i + \relof} \\
-		\end{array} \right.
+		\accDelegationNumberNew _{i + \relof} = 1 + \accDelegationNumber _{i + \relof}
 	\end{array} \right.
 \]
+

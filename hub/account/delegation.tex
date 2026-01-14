@@ -33,10 +33,20 @@ We impose some constraints ensuring that delegation information may only change 
 	\item\label{hub: account: account delegation: the delegation address may not change outside of AUTH rows}
 		\If $\txAuth _{i} = 0$ \Then
 		\[
-			\accSameDelegationAddress {
-				anchorRow = i ,
-				relOffset = 0 ,
-			}
+			\left\{ \begin{array}{lcl}
+				\accSameDelegationAddress {
+					anchorRow = i ,
+					relOffset = 0 ,
+				} \\
+				\accSameDelegationNumber {
+					anchorRow = i ,
+					relOffset = 0 ,
+				} \\
+				\accSameDelegationStatus {
+					anchorRow = i ,
+					relOffset = 0 ,
+				} \\
+			\end{array} \right.
 		\]
 	\item \If $\accIsDelegated    _{i} = 1$ \Then $\accCodesize     _{i} = \delegatedAccountCodeSize$
 	\item \If $\accIsDelegatedNew _{i} = 1$ \Then $\accCodesize\new _{i} = \delegatedAccountCodeSize$
