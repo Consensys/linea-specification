@@ -1,0 +1,64 @@
+\begin{center}
+	\boxed{\text{All constraints in this subsection assume that }
+	\left\{ \begin{array}{lcl}
+		\txAuth      _{i} = 1 \\
+		\peekAccount _{i} = 1 \\
+	\end{array} \right.}
+\end{center}
+We impose the following:
+\begin{enumerate}
+	\item $\txAuth                        _{i \roffAuthorizationProcessingAuthorityRow} = 1$ ~ (\sanityCheck)
+	\item $\peekAuthorization             _{i \roffAuthorizationProcessingAuthorityRow} = 1$ ~ (\sanityCheck)
+	\item $\authAuthorityEcrecoverSuccess _{i \roffAuthorizationProcessingAuthorityRow} = 1$ ~ (\sanityCheck)
+	\item we peek into the authority account
+		\[
+			\left\{ \begin{array}{lclr}
+				\accAddress \high  _{i} & = & \authAuthorityAddressHi  _{i \roffAuthorizationProcessingAuthorityRow}              \\
+				\accAddress \low   _{i} & = & \authAuthorityAddressLo  _{i \roffAuthorizationProcessingAuthorityRow} \vspace{2mm} \\
+				\multicolumn{3}{l}{\accSameBalance                {i}{\roffAuthorizationProcessingAccountRow}}      \\
+				\multicolumn{3}{l}{\texttt{Nonce: TBD}}                        \\
+				\multicolumn{3}{l}{\texttt{Code and code hash: TBD}}           \\
+				\multicolumn{3}{l}{\texttt{Trigger delegation detection: TBD}} \\
+				\multicolumn{3}{l}{\accSameDeployment             {i}{\roffAuthorizationProcessingAccountRow}} \\
+				\multicolumn{3}{l}{\accSameWarmth                 {i}{\roffAuthorizationProcessingAccountRow}} \\
+				\multicolumn{3}{l}{\accSameMarkedForDeletionFlag  {i}{\roffAuthorizationProcessingAccountRow}} \\
+				% \multicolumn{3}{l}{\accIsntPrecompile             {i}{\roffAuthorizationProcessingAccountRow}} & (\trash) \\
+				\multicolumn{3}{l}{
+					\standardDomSubStamps {
+						anchorRow = i                                      ,
+						relOffset = \roffAuthorizationProcessingAccountRow ,
+						domOffset = 0                                      ,
+					}
+				} \\
+			\end{array} \right.
+		\]
+\end{enumerate}
+We now deal with the missing pieces
+\begin{description}
+	\item[\underline{Triggering delegation detection i.e. the \romLexMod{} lookups:}]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\accCheckForDelegation    _{i \roffAuthorizationProcessingAccountRow} & = & \accHasCode _{i \roffAuthorizationProcessingAccountRow}                    \\
+				\accCheckForDelegationNew _{i \roffAuthorizationProcessingAccountRow} & = &
+				\left[ \begin{array}{cl}
+					\cdot & \authAuthorizationTupleIsValid    _{i \roffAuthorizationProcessingAuthorityRow} \\
+					\cdot & (1 - \authDelegationAddressIsZero _{i \roffAuthorizationProcessingAuthorityRow})  \\
+				\end{array} \right]
+				\\
+			\end{array} \right.
+		\]
+	\item[\underline{Setting the code hash:}] 
+		we impose
+		\begin{enumerate}
+			\item \If $\authAuthorizationTupleIsValid _{i} = 1$ \Then $\accIncrementNonce {i}{\roffAuthorizationProcessingAccountRow}$
+			\item \If $\authAuthorizationTupleIsValid _{i} = 0$ \Then $\accSameNonce      {i}{\roffAuthorizationProcessingAccountRow}$
+		\end{enumerate}
+	\item[\underline{Setting the code size:}] 
+		we impose
+		\begin{enumerate}
+			\item \If $\authAuthorizationTupleIsValid _{i} = 1$ \Then
+			\item \If $\authAuthorizationTupleIsValid _{i} = 0$ \Then
+		\end{enumerate}
+\end{description}
+
