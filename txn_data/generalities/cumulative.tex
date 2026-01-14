@@ -1,15 +1,15 @@
 \def\locFirstRowOfNewTransactionRoff {\numConst{1}}
-The present section constrains the $\cumulativeConsumedGas$ column.
+The present section constrains $\cumulativeConsumedGas$ and $\cumulativeConsumedBlobGas$ columns.
 The goal is to have $\cumulativeConsumedGas$
 tally the consumed gas \textbf{in a block},
 \textbf{up to and including the current transaction},
 and \textbf{reset with every block}.
 \begin{enumerate}
 	\item
-		$\cumulativeConsumedGas$ is counter-constant
+		$\cumulativeConsumedGas$ and $\cumulativeConsumedBlobGas$ are counter-constant
 	\item
 		\label{user txn data: generalities: cumulative gas: cumulative gas is zero outside of user transactions}
-		\If $\user _{i} = \false$ \Then $\cumulativeConsumedGas _{i} = 0$
+		\If $\user _{i} = \false$ \Then $\cumulativeConsumedGas _{i} = $\cumulativeConsumedBlobGas$= 0$
 	\item
 		\label{user txn data: generalities: cumulative gas: cumulative gas update constraints}
 		\If $\userTransactionNumber _{i + \locFirstRowOfNewTransactionRoff} \neq \userTransactionNumber _{i}$ \Then
@@ -20,6 +20,11 @@ and \textbf{reset with every block}.
 				\left[ \begin{array}{ll}
 					+ & \cumulativeConsumedGas    _{i}                                                 \\
 					+ & \big( \txnDataHubGasLimit _{i + \locFirstRowOfNewTransactionRoff} - \txnDataHubEffectiveRefund _{i + \locFirstRowOfNewTransactionRoff} \big) \\
+				\end{array}\right] \\
+				\cumulativeConsumedBlobGas _{i + \locFirstRowOfNewTransactionRoff} & = &
+				\left[ \begin{array}{ll}
+					+ & \cumulativeConsumedBlobGas    _{i}                                                 \\
+					+ & GASPERBLOB \cdot \txnDataRlpNumberOfBlobs _{i + \firtComputationOfSystemTransactionRowOffset + \rlpViewRowOffset} \\
 				\end{array}\right] \\
 			\end{array} \right.
 		\]

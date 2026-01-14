@@ -40,7 +40,7 @@ We define exclusive binary columns the transaction type.
 	\item \typeZeroTx{}
 	\item \typeOneTx{}
 	\item \typeTwoTx{}
-	    % \item \typeThreeTx{}
+	\item \typeThreeTx{}
 	    % \item \typeFourTx{}
     \end{enumerate}
 \end{multicols}
@@ -60,6 +60,8 @@ We further introduce ``phase flag columns'':
 	\item \phaseBeta{}
 	\item \phaseMaxPriorityFeePerGas{}
 	\item \phaseMaxFeePerGas{}
+	\item \phaseMaxFeePerBlobGas{}
+	\item \phaseBlobVersionedHashes{}
 	\item \phaseY{}
 	\item \phaseR{}
 	\item \phaseS{}
@@ -99,6 +101,11 @@ The following columns we put into the ``shared columns'' for the sole reason tha
 	\rlpTxnSharedColumnIsDep{}:
 	transaction-constant binary column;
 	turns on precisely for deployment transactions;
+	\item 
+	\markAsJustifiedHere{}
+	\rlpTxnCommonColumnNumberOfBlobs{}:
+	transaction-constant column;
+	contains the number of blobs of the BLOB-transaction (else 0);
 \end{enumerate}
 The following are \textbf{counter-constant}, \textbf{binary} columns used in particular in the \rlp{}-ization of \textbf{access lists},
 see section~(\ref{rlp txn: phase constraints: access list: approach}).
