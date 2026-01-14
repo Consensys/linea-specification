@@ -16,7 +16,7 @@ We first determine the \rlp{} prefix of the data on the first computation row:
 \begin{enumerate}
         \item \If $\isTxn _{i - 1} = 1$ \Then:
         \[
-            \rlpProcessBlobHash {
+            \rlpProcessByteString {
                 anchorRow        = i                                  ,
                 relOffset        = 0                                  ,
                 byteStringLength = \locBlobHashLengthCountdown _{i}   ,
@@ -27,9 +27,9 @@ We first determine the \rlp{} prefix of the data on the first computation row:
         \] 
 \end{enumerate}
 
-From which we derive $\locBlobHashTotHashes$:
+From which we derive $\rlpTxnCommonColumnNumberOfBlobs$:
 \begin{enumerate}[resume]
-    \item \If $\isTxn _{i - 1} = 1$ \Then $\locBlobHashLengthCountdown_{i} = 33 \cdot \locBlobHashTotHashes_{i - 1}$
+    \item \If $\isTxn _{i - 1} = 1$ \Then $\locBlobHashLengthCountdown_{i} = 33 \cdot \rlpTxnCommonColumnNumberOfBlobs_{i - 1}$
 \end{enumerate}
 
 And propagate the phase size counter:
