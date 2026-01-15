@@ -50,7 +50,7 @@ The constraints below enforce the behavior described above.
 			\end{array} \right]
 			= 1
 		\]
-		\Then $\sameRefundCounter { anchorRow = i , relOffset = \relof , }$
+		\Then $\sameRefundCounter { anchorRow = i , relOffset = 0 , }$
 	\item[\underline{\underline{Refunds in the \txAuth-phase:}}]
 		\label{hub: generalities: refunds: during the authority phase}
 		\If   $\txAuth _{i} = 1$ \et $\peekAuthorization _{i} = 1$
@@ -112,7 +112,7 @@ section~(\ref{hub: instruction handling: sto}).
 	\item[\underline{\underline{Reverting frames don't accrue refunds:}}]
 		\label{hub: generalities: refunds: EXEC phase: refunds aren't accrued if the frame reverts}
 		\If   $\cnWillRev _{i} = 1$
-		\Then $\sameRefundCounter { anchorRow = i , relOffset = \relof , }$
+		\Then $\sameRefundCounter { anchorRow = i , relOffset = 0 , }$
 \end{description}
 Recall that \textbf{along stack-rows} (i.e. whenever $\peekStack \equiv 1$) one has
 \[
@@ -129,7 +129,7 @@ We thus define the following shorthand:
 	\item[\underline{\underline{Non \inst{SSTORE} opcodes don't accrue refunds:}}]
 		\label{hub: generalities: refunds: EXEC phase: instructions that aren't SSTORE don't accrue refunds}
 		\If   $\peekStack _{i} = 1$ \et $\locInstructionIsntSstore _{i} = 1$
-		\Then $\sameRefundCounter { anchorRow = i , relOffset = \relof , }$
+		\Then $\sameRefundCounter { anchorRow = i , relOffset = 0 , }$
 	\item[\underline{\underline{The \inst{SSTORE} case \dots{} or where to find it:}}]
 		\label{hub: generalities: refunds: EXEC phase: refunds associated with SSTORE}
 		% \If   $\cnWillRev _{i} = 0$ \et $\peekStack _{i} = 1$ \If $\stackDecStoFlag _{i} \cdot \decFlag{2} _{i}  = 1$
