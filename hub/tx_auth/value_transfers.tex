@@ -1,0 +1,36 @@
+\begin{center}
+	\boxed{\text{All constraints in this subsection assume that }
+	\left\{ \begin{array}{lcl}
+		\txAuth      _{i}                                          = 1 \\
+		\peekAccount _{i + \roffAuthorizationProcessingAccountRow} = 1 \\
+	\end{array} \right.}
+\end{center}
+We impose constraints imposing value transfers between the the authority-row
+and the account-row of the processing of an authority tuple.
+% \peekAuthorization _{i} + \peekAccount _{i}
+\begin{description}
+	\item[\underline{Extracting the authority nonce:}]
+		we impose $\authAuthorityNonce _{i + (\roffAuthorizationProcessingAuthorityRow)} = \accNonce _{i + \roffAuthorizationProcessingAccountRow}$
+	\item[\underline{Extracting the authority's code bit:}]
+		we impose
+		\begin{enumerate}
+		        \item \If $\accHasCode _{i + \roffAuthorizationProcessingAccountRow} = \false $ \Then
+				\[
+					\authAuthorityHasEmptyCodeOrIsDelegated _{i + (\roffAuthorizationProcessingAuthorityRow)} = \true
+				\]
+		        \item \If $\accHasCode _{i + \roffAuthorizationProcessingAccountRow} = \true$ \Then
+				\[
+					\authAuthorityHasEmptyCodeOrIsDelegated _{i + (\roffAuthorizationProcessingAuthorityRow)} = \accIsDelegated _{i + \roffAuthorizationProcessingAccountRow}
+				\]
+		\end{enumerate}
+		% \[
+		% 	\begin{array}{l}
+		% 		\authAuthorityHasEmptyCodeOrIsDelegated _{i + (\roffAuthorizationProcessingAuthorityRow)} \vspace{2mm} \\
+		% 		\qquad =
+		% 		\left[ \begin{array}{crcl}
+		% 			+ & (1 - \accHasCode _{i + \roffAuthorizationProcessingAccountRow})                                                                   \\
+		% 			+ & \accHasCode _{i + \roffAuthorizationProcessingAccountRow} & \cdot & \accIsDelegated _{i + \roffAuthorizationProcessingAccountRow} \\
+		% 		\end{array} \right]
+		% 	\end{array}
+		% \]
+\end{description}
