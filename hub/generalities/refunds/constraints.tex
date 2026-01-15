@@ -1,35 +1,142 @@
+We define the following constraint system
+\[
+	\sameRefundCounter {
+		anchorRow = i      ,
+		relOffset = \relof ,
+	}
+	\define
+	\refund\new _{i + \relof} = \refund _{i + \relof}
+\]
 The constraints below enforce the behavior described above.
-\begin{enumerate}
-        \item we impose hub-stamp-constancy on
+\begin{description}
+	\item[\underline{\underline{\hubStamp-constancies:}}]
+		we impose \hubStamp-constancy on the following columns:
 		\begin{multicols}{2}
 			\begin{enumerate}
 				\item $\refund$
 				\item $\refund\new$
 			\end{enumerate}
 		\end{multicols}
-	\item \If $\txExec_{i} = 0$ \Then
+	\item[\underline{\underline{Only \user-transactions may incur refunds:}}]
+		\label{hub: generalities: refunds: only USER transactions may accrue refunds}
+		\If $\user _{i} = 0$ \Then
+		we impose
 		\[
 			\left\{ \begin{array}{lcl}
-				\refund_{i}     & = & 0 \\
-				\refund\new_{i} & = & 0 \\
+				\refund     _{i} & = & 0 \\
+				\refund\new _{i} & = & 0 \\
 			\end{array} \right.
 		\]
-	\item \If $\txExec_{i} = 1$ \et $\hubStamp_{i} \neq \hubStamp_{i - 1}$ \Then $\refund_{i} = \refund\new_{i - 1}$
-\end{enumerate}
+	\item[\underline{\underline{Refunds reset at transaction boundaries:}}]
+		\label{hub: generalities: refunds: reset refunds at transaction boundaries}
+		we impose that
+		\If
+		\[
+			\totalTransactionNumber _{i} \neq \totalTransactionNumber _{i - 1}
+		\]
+		\Then $\refund _{i} = 0$
+	\item[\underline{\underline{Refunds remain constant during certain transaction processing phases:}}]
+		\label{hub: generalities: refunds: refunds remain constant during certain tx processing phases}
+		we impose
+		\[
+			\If
+			\left[ \begin{array}{cl}
+				+ & \txSkip _{i} \\
+				+ & \txWarm _{i} \\
+				% + & \txAuth _{i} \\
+				+ & \txInit _{i} \\
+				% + & \txExec _{i} \\
+				+ & \txFinl _{i} \\
+			\end{array} \right]
+			= 1
+		\]
+		\Then $\sameRefundCounter { anchorRow = i , relOffset = \relof , }$
+	\item[\underline{\underline{Refunds in the \txAuth-phase:}}]
+		\label{hub: generalities: refunds: during the authority phase}
+		\If   $\txAuth _{i} = 1$ \et $\peekAuthorization _{i} = 1$
+		\Then
+		we impose
+		\[
+			\refund\new _{i} = \refund _{i} + \locValidAuthorizationRefund _{i}
+		\]
+		where we set
+		\[
+			\locValidAuthorizationRefund _{i}
+			\define
+			\left[ \begin{array}{cl}
+				\cdot & \authAuthorizationTupleIsValid _{i}                     \\
+				\cdot & \big[ \perEmptyAccountCost - \perAuthBaseCostName \big] \\
+			\end{array} \right]
+		\]
+		and we recall
+		\[
+			\left\{ \begin{array}{lcl}
+				\perAuthBaseCostName & \define & \perAuthBaseCostValue     \\
+				\perEmptyAccountCost & \define & \perEmptyAccountCostValue \\
+			\end{array} \right.
+		\]
+	\item[\underline{\underline{Refunds in the \txExec-phase:}}]
+		\If   $\hubStamp _{i} \neq \hubStamp _{i - 1}$ \et $\txExec _{i} = 1$
+		\Then we impose
+		\begin{description}
+			\item[\underline{Initialization constraints:}]
+				\label{hub: generalities: refunds: initialization constraints for refunds in the EXEC phase}
+				\If   $\txExec _{i - 1} = 0$
+				\Then
+				\[
+					\refund _{i} = (1 - \cnWillRev _{i}) \cdot \refund\new _{i - 1}
+				\]
+				\saNote{}
+				The above constraint initializes the refund counter of the \txExec-phase in such
+				a way that refunds potentially accrued during the \txAuth-phase are discarded
+				if the transaction reverts, which is equivalent to its root frame reverting.
+			\item[\underline{Linking constraints:}]
+				\label{hub: generalities: refunds: linking constraints for refunds in the EXEC phase}
+				\If   $\txExec _{i - 1} = 1$
+				\Then
+				\[
+					\refund _{i} = \refund\new _{i - 1}
+				\]
+		\end{description}
+		\saNote{}
+		The implementation may drop the ``\hubStamp-increment'' precondition for
+		constraint~(\ref{hub: generalities: refunds: initialization constraints for refunds in the EXEC phase}).
+		Indeed, \hubStamp-constancy of \txExec{} renders it obsolete.
+\end{description}
 The above is the transition constraint for gas refunds.
-
+We are able to almost completely specify refunds,
+save for the case of the \inst{SSTORE} instruction
+which we postpone to
+section~(\ref{hub: instruction handling: sto}).
+\begin{description}
+	\item[\underline{\underline{Reverting frames don't accrue refunds:}}]
+		\label{hub: generalities: refunds: EXEC phase: refunds aren't accrued if the frame reverts}
+		\If   $\cnWillRev _{i} = 1$
+		\Then $\sameRefundCounter { anchorRow = i , relOffset = \relof , }$
+\end{description}
 Recall that \textbf{along stack-rows} (i.e. whenever $\peekStack \equiv 1$) one has
 \[
 	\stackDecStoFlag \cdot \decFlag{2} \equiv 1  \iff \stackInst \equiv \inst{SSTORE} \text{, see section~(\ref{hub: instruction handling: sto});}
 \]
-\begin{enumerate}[resume]
-	\item \If $\cnWillRev_{i} = 1$
-		\Then $\refund\new_{i} = \refund_{i}$
-	\item \If $\peekStack_{i} = 1$ \et $\stackDecStoFlag  _{i} \cdot \decFlag{2}_{i} = 0$
-		\Then $\refund\new_{i} = \refund_{i}$
-	\item \If $\cnWillRev_{i} = 0$ \et $\peekStack_{i} = 1$ \If $\stackDecStoFlag_{i} \cdot \decFlag{2}_{i}  = 1$ \Then \dots{} see section~(\ref{hub: instruction handling: sto})
-\end{enumerate}
-The above thus enforces that
-(\emph{a}) execution context that will revert don't contribute to the refunds
-(\emph{b}) only the \inst{SSTORE} opcode may change the refund counter.
-Details as to what exactly this entails will be presented in the relevant section.
+We thus define the following shorthand:
+\[
+	\left\{ \begin{array}{lcl}
+		\locInstructionIsSstore   _{i} & \define & \stackDecStoFlag   _{i} \cdot \decFlag{2} _{i} \\
+		\locInstructionIsntSstore _{i} & \define & 1 - \locInstructionIsSstore _{i}               \\
+	\end{array} \right.
+\]
+\begin{description}
+	\item[\underline{\underline{Non \inst{SSTORE} opcodes don't accrue refunds:}}]
+		\label{hub: generalities: refunds: EXEC phase: instructions that aren't SSTORE don't accrue refunds}
+		\If   $\peekStack _{i} = 1$ \et $\locInstructionIsntSstore _{i} = 1$
+		\Then $\sameRefundCounter { anchorRow = i , relOffset = \relof , }$
+	\item[\underline{\underline{The \inst{SSTORE} case \dots{} or where to find it:}}]
+		\label{hub: generalities: refunds: EXEC phase: refunds associated with SSTORE}
+		% \If   $\cnWillRev _{i} = 0$ \et $\peekStack _{i} = 1$ \If $\stackDecStoFlag _{i} \cdot \decFlag{2} _{i}  = 1$
+		\If   $\peekStack _{i} = 1$ \If $\locInstructionIsSstore _{i} = 1$
+		\Then \dots{} see section~(\ref{hub: instruction handling: sto})
+\end{description}
+The above may be interpreted as follows:
+constraint~(\ref{hub: generalities: refunds: EXEC phase: refunds aren't accrued if the frame reverts}) means that execution contexts that will revert don't accrue refunds,
+constraint~(\ref{hub: generalities: refunds: EXEC phase: instructions that aren't SSTORE don't accrue refunds}) means that opcodes that aren't the \inst{SSTORE} opcode don't accrue refunds, while
+constraint~(\ref{hub: generalities: refunds: EXEC phase: refunds associated with SSTORE}) is just a pointer to the relevant section where \inst{SSTORE} refunds are constrained.
