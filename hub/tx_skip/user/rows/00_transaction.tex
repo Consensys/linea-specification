@@ -5,7 +5,23 @@
 			we impose the following
 			\begin{enumerate}
 				\item $\txRequiresEvmExecution_{i + \roffTxSkipUserTransaction} = \rZero$;
-				\item \If $\txIsDeployment _{i + \roffTxSkipUserTransaction} = 0$ \Then $\accHasCode     _{i + \roffTxSkipUserRecipientAccount}  = 0$
+				\item \If $\txIsDeployment _{i + \roffTxSkipUserTransaction} = 0$ \Then
+					\[
+						\left[ \begin{array}{cl}
+							+ & \locRecipientHasEmptyCode                         \\
+							+ & \locRecipientIsDelegatedAndDelegationHasEmptyCode \\
+							+ & \locRecipientIsDelegatedAndDelegationIsDelegated  \\
+						\end{array} \right]
+						= 1
+					\]
+					where we set
+					\[
+						\left\{ \begin{array}{lcl}
+							\locRecipientHasEmptyCode                         & \define & (1 - \accHasCode _{i + \roffTxSkipUserRecipientAccount})                                                                         \\
+							\locRecipientIsDelegatedAndDelegationHasEmptyCode & \define & \accIsDelegated  _{i + \roffTxSkipUserRecipientAccount} \cdot (1 - \accHasCode _{i + \roffTxSkipUserRecipientOrDelegationAccount}) \\
+							\locRecipientIsDelegatedAndDelegationIsDelegated  & \define & \accIsDelegated  _{i + \roffTxSkipUserRecipientAccount} \cdot \accIsDelegated  _{i + \roffTxSkipUserRecipientOrDelegationAccount} \\
+						\end{array} \right.
+					\]
 				\item \If $\txIsDeployment _{i + \roffTxSkipUserTransaction} = 1$ \Then $\txInitCodeSize _{i + \roffTxSkipUserTransaction}    = 0$
 			\end{enumerate}
 		\item[\underline{Justifying $\txFinalRefundCounter$:}]
