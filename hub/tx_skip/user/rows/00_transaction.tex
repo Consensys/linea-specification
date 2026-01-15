@@ -1,11 +1,20 @@
 \item[\underline{\underline{Transaction-row n$^°~(\bm{i + \roffTxSkipUserTransaction})$:}}]
+	we define shorthands
+	\[
+		\left\{ \begin{array}{lcl}
+			\locIsDeploymentTransaction  & = & \txIsDeployment _{i + \roffTxSkipUserTransaction} \\
+			\locIsMessageCallTransaction & = & 1 - \locIsDeploymentTransaction                   \\
+		\end{array} \right.
+	\]
 	we peek into the transaction and justify portions of it:
 	\begin{description}
 		\item[\underline{(Partially) justifying \txRequiresEvmExecution{}:}]
 			we impose the following
 			\begin{enumerate}
 				\item $\txRequiresEvmExecution_{i + \roffTxSkipUserTransaction} = \rZero$;
-				\item \If $\txIsDeployment _{i + \roffTxSkipUserTransaction} = 0$ \Then
+				\item
+					\If   $\locIsMessageCallTransaction = 1$
+					\Then
 					\[
 						\left[ \begin{array}{cl}
 							+ & \locRecipientHasEmptyCode                         \\
@@ -22,10 +31,17 @@
 							\locRecipientIsDelegatedAndDelegationIsDelegated  & \define & \accIsDelegated  _{i + \roffTxSkipUserRecipientAccount} \cdot \accIsDelegated  _{i + \roffTxSkipUserRecipientOrDelegationAccount} \\
 						\end{array} \right.
 					\]
-				\item \If $\txIsDeployment _{i + \roffTxSkipUserTransaction} = 1$ \Then $\txInitCodeSize _{i + \roffTxSkipUserTransaction}    = 0$
+				\item
+					\If   $\locIsDeploymentTransaction = 1$
+					\Then $\txInitCodeSize _{i + \roffTxSkipUserTransaction}    = 0$
 			\end{enumerate}
 		\item[\underline{Justifying $\txFinalRefundCounter$:}]
-			we impose that $\txFinalRefundCounter _{i + \roffTxSkipUserTransaction} = 0$
+			we impose that $\txFinalRefundCounter _{i + \roffTxSkipUserTransaction} = \refund _{i}$
+
+			\saNote{}
+			Starting with \textsc{Prague} and more specifically with
+			\cite{EIP-7702}, transactions which require no code execution
+			may still accrue refunds due to successful delegation operations.
 		\item[\underline{Justifying $\txInitialBalance$:}]
 			we impose that $\txInitialBalance _{i + \roffTxSkipUserTransaction} = \accBalance _{i + \roffTxSkipUserSenderAccount}$
 		\item[\underline{Justifying \txStatusCode{}:}]
@@ -34,10 +50,6 @@
 			we impose $\accNonce_{i + \roffTxSkipUserSenderAccount} = \txNonce_{i + \roffTxSkipUserTransaction}$;
 		\item[\underline{Justifying $\txLeftoverGas$:}]
 			we impose that $\txLeftoverGas _{i + \roffTxSkipUserTransaction} = \txInitialGas _{i + \roffTxSkipUserTransaction}$
-			% \saNote{}
-			% Starting with \cite{EIP-7623} (which is part of the \textsc{Prague} \evm{}, and imposes a floor price on call data),
-			% the \txEffectiveRefund{} may may no longer coincide with \txLeftoverGas{} for transactions which don't require EVM
-			% execution.
 	\end{description}
 	The following constraint is true up to the \textsc{Cancun} hardfork,
 	but fails beyond that point.

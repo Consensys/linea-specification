@@ -1,111 +1,61 @@
 \item[\underline{\underline{Recipient account-row n$^°~\bm{(i + \roffTxSkipUserRecipientOrDelegationAccount)}$:}}]
-	we peek into the recipient account:
+	this account-row was included in order to display the delegated account,
+	in case of a \locIsMessageCallTransaction{} transaction where the target account is delegated;
+	in all other cases the present account row simply reproduces the target account.
+	We define the following shorthand
 	\[
 		\left\{ \begin{array}{lcl}
-			\accAddress    \high _{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & \txTo  \high  _{i + \roffTxSkipUserTransaction}              \\
-			\accAddress    \low  _{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & \txTo  \low   _{i + \roffTxSkipUserTransaction} \vspace{2mm} \\
-			\multicolumn{3}{l}{\accIncrementBalance {i}{\roffTxSkipUserRecipientOrDelegationAccount}{\txValue_{i + \roffTxSkipUserTransaction}}} \\
-			\texttt{Nonce:}      & \multicolumn{2}{l}{\valueToBeSet} \\
-			\texttt{Code:}       & \multicolumn{2}{l}{\valueToBeSet} \\
-			\texttt{Deployment:} & \multicolumn{2}{l}{\valueToBeSet} \\
-			\multicolumn{3}{l}{\accSameWarmth                      {i}{\roffTxSkipUserRecipientOrDelegationAccount}} \\
-			\multicolumn{3}{l}{\accSameMarkedForDeletionFlag       {i}{\roffTxSkipUserRecipientOrDelegationAccount}} \\
-			\multicolumn{3}{l}{\accIsntPrecompile                  {i}{\roffTxSkipUserRecipientOrDelegationAccount}} \\
-			\multicolumn{3}{l}{
-				\standardDomSubStamps {
-					anchorRow = i                               ,
-					relOffset = \roffTxSkipUserRecipientOrDelegationAccount ,
-					domOffset = \roffTxSkipUserRecipientOrDelegationAccount ,
-				}
-			} \\
+			\locLoadDelegationAccount  & \define & \locIsMessageCallTransaction \cdot \accIsDelegated _{i + \roffTxSkipUserRecipientAccount} \\
+			\locLoadToAccountAgain     & \define &
+			\left[ \begin{array}{cl}
+				+ & \locIsMessageCallTransaction \cdot (1 - \accIsDelegated _{i + \roffTxSkipUserRecipientAccount}) \\
+				+ & \locIsDeploymentTransaction                                                                     \\
+			\end{array} \right]
+			\\
 		\end{array} \right.
 	\]
-	In order to correctly update the recipient account one must distinguish between message call transactions (e.g. pure transfers) and (trivial) deployments.
-	For that purpose we introduce the following shorthand
-	\[
-		\locTxSkipIsTrivialDeployment \define \txIsDeployment _{i + \roffTxSkipUserTransaction}
-	\]
-	and set
+	We now impose constraints depending on which of the above is the case.
 	\begin{description}
-		\item[\underline{Pure transfers:}]
-			\If $\locTxSkipIsTrivialDeployment = 0$ \Then
+		\item[\underline{The ``load delegation'' case:}] 
+			\If   $\locLoadDelegationAccount = 1$
+			\Then we impose
 			\[
 				\left\{ \begin{array}{lcl}
-					\multicolumn{3}{l}{\accSameNonce       {i}{\roffTxSkipUserRecipientOrDelegationAccount}} \\
-					\multicolumn{3}{l}{\accSameCode        {i}{\roffTxSkipUserRecipientOrDelegationAccount}} \\
-					\multicolumn{3}{l}{\accSameDeployment  {i}{\roffTxSkipUserRecipientOrDelegationAccount}} \\
+					\accAddress \high         _{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & \accDelegationAddressHi  _{i + \roffTxSkipUserRecipientAccount}              \\
+					\accAddress \low          _{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & \accDelegationAddressLo  _{i + \roffTxSkipUserRecipientAccount} \vspace{2mm} \\
+					\accCheckForDelegation    _{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & \accHasCode              _{i + \roffTxSkipUserRecipientOrDelegationAccount}  \\
+					\accCheckForDelegationNew _{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & 0 \quad (\trash)                                                             \\
 				\end{array} \right.
 			\]
-		\item[\underline{Trivial deployments:}]
-			\If $\locTxSkipIsTrivialDeployment = 1$ \Then
-			\begin{description}
-				\item[\underline{Nonce:}]
-					we impose
-					\[
-						\left\{ \begin{array}{lclr}
-							\multicolumn{3}{l}{\accIncrementNonce {i}{\roffTxSkipUserRecipientOrDelegationAccount}} \\
-							\accNonce_{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & 0 & (\trash) \vspace{2mm} \\
-						\end{array} \right.
-					\]
-				\item[\underline{Code:}]
-					we impose
-					\[
-						\left\{ \begin{array}{lclr}
-							\accHasCode           _{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & 0              \\
-							\accCodehashHi        _{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & \emptyKeccakHi  & (\trash) \\
-							\accCodehashLo        _{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & \emptyKeccakLo  & (\trash) \\
-							\accCodesize          _{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & 0              \\
-						\end{array} \right.
-						\;\text{and}\;
-						\left\{ \begin{array}{lclr}
-							\accHasCode     \new  _{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & 0                                                     \\
-							\accCodehashHi  \new  _{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & \emptyKeccakHi                                         & (\trash) \\
-							\accCodehashLo  \new  _{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & \emptyKeccakLo                                         & (\trash) \\
-							\accCodesize    \new  _{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & \txInitCodeSize _{i + \roffTxSkipUserTransaction} \\
-							\accCodesize    \new  _{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & 0                                                      & (\trash) \\
-						\end{array} \right.
-					\]
-				\item[\underline{Deployment:}]
-					we impose
-					\[
-						\left\{ \begin{array}{lclr}
-							\multicolumn{3}{l}{\accIncrementDeploymentNumber  {i}{\roffTxSkipUserRecipientOrDelegationAccount}} \\
-							\accDeploymentStatus      _{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & 0  & (\trash) \\
-							\accDeploymentStatus\new  _{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & 0 \\
-						\end{array} \right.
-					\]
-					\saNote{}
-					As no deployment phase (in the sense of: execution of initialization code) will happen given that the transaction provided initialization code is empty we directly skip to the "deployed status" of the account through $\accDeploymentStatus\new \equiv 0$.
-
-					\saNote{} \label{hub: tx skip: user: transation processing: why we can't initialize the deployment number to 0 for deployment transactions}
-					It seems tempting to further impose that the deployment number should (initially) be zero (and go to one.)
-					While this will be true in practice there are scenarios in the \evm{} test suite where this assumption is violated.
-					In \texttt{BlockchainReferenceTest\_612/suicideStorageCheck\_London}, for instance,
-					the initial (world) state is made to contain an account with nonempty bytecode which allowing it to \inst{SELFDESTRUCT}.
-					In a subsequent deployment transaction this account is resurrected (with different bytecode.)
-					In that particular scenario the initial deployment number is 0.
-					It goes to 1 after the \inst{SELFDESTRUCT}.
-					It then goes from 1 to 2 with the deployment transaction resurrecting said acount.
-			\end{description}
-	\end{description}
-	we further impose
-	\begin{description}
-		\item[\underline{Address trimming:}]
-			\If $\locTxSkipIsTrivialDeployment = 0$
+		\item[\underline{The ``load to account'' case:}]
+			\If   $\locLoadToAccountAgain = 1$
+			\Then we impose
 			\[
-				\accTrimAddress
-				{i}{\roffTxSkipUserRecipientOrDelegationAccount}
-				{\txTo  \high  _{i + \roffTxSkipUserTransaction}}
-				{\txTo  \low   _{i + \roffTxSkipUserTransaction}}
+				\left\{ \begin{array}{lcl}
+					\accAddress \high _{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & \txTo  \high  _{i + \roffTxSkipUserTransaction}              \\
+					\accAddress \low  _{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & \txTo  \low   _{i + \roffTxSkipUserTransaction} \vspace{2mm} \\
+					\accCheckForDelegation    _{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & 0 \quad (\trash) \\
+					\accCheckForDelegationNew _{i + \roffTxSkipUserRecipientOrDelegationAccount} & = & 0 \quad (\trash) \\
+				\end{array} \right.
+			\]
+		\item[\underline{The ``common'' account operations:}]
+			In either case we impose
+			\[
+				\left\{ \begin{array}{lcl}
+					\multicolumn{3}{l}{\accSameBalance    {i}{\roffTxSkipUserRecipientOrDelegationAccount}} \\
+					\multicolumn{3}{l}{\accSameNonce      {i}{\roffTxSkipUserRecipientOrDelegationAccount}} \\
+					\multicolumn{3}{l}{\accSameCode       {i}{\roffTxSkipUserRecipientOrDelegationAccount}} \\
+					\multicolumn{3}{l}{\accSameDeployment {i}{\roffTxSkipUserRecipientOrDelegationAccount}} \\
+					\multicolumn{3}{l}{\accSameWarmth                {i}{\roffTxSkipUserRecipientOrDelegationAccount}} \\
+					\multicolumn{3}{l}{\accSameMarkedForDeletionFlag {i}{\roffTxSkipUserRecipientOrDelegationAccount}} \\
+					\multicolumn{3}{l}{\accIsntPrecompile            {i}{\roffTxSkipUserRecipientOrDelegationAccount}} \\
+					\multicolumn{3}{l}{
+						\standardDomSubStamps {
+							anchorRow = i                                           ,
+							relOffset = \roffTxSkipUserRecipientOrDelegationAccount ,
+							domOffset = \roffTxSkipUserRecipientOrDelegationAccount ,
+						}
+					} \\
+				\end{array} \right.
 			\]
 	\end{description}
-	\saNote{}
-	Let us provide context for the above:
-	\begin{itemize}
-		\item
-			setting the \accTrmFlag{} enforces the computation (in the \trmMod{} module) of the \accTrmIsPrecompile{} flag;
-		\item \label{warning: no message calls to precompiles};
-			we already required $\accIsntPrecompile {i}{\roffTxSkipUserRecipientOrDelegationAccount}$;
-			this \textbf{disallows message call transactions to precompiles}
-	\end{itemize}
-

@@ -8,6 +8,8 @@
 			\texttt{Nonce:}      & \multicolumn{2}{l}{\valueToBeSet} \\
 			\texttt{Code:}       & \multicolumn{2}{l}{\valueToBeSet} \\
 			\texttt{Deployment:} & \multicolumn{2}{l}{\valueToBeSet} \\
+			\accCheckForDelegation    _{i + \roffTxSkipUserRecipientAccount} & = & \locIsMessageCallTransaction \\
+			\accCheckForDelegationNew _{i + \roffTxSkipUserRecipientAccount} & = & 0 \quad (\trash) \\
 			\multicolumn{3}{l}{\accSameWarmth                      {i}{\roffTxSkipUserRecipientAccount}} \\
 			\multicolumn{3}{l}{\accSameMarkedForDeletionFlag       {i}{\roffTxSkipUserRecipientAccount}} \\
 			\multicolumn{3}{l}{\accIsntPrecompile                  {i}{\roffTxSkipUserRecipientAccount}} \\
@@ -20,15 +22,17 @@
 			} \\
 		\end{array} \right.
 	\]
-	In order to correctly update the recipient account one must distinguish between message call transactions (e.g. pure transfers) and (trivial) deployments.
-	For that purpose we introduce the following shorthand
-	\[
-		\locTxSkipIsTrivialDeployment \define \txIsDeployment _{i + \roffTxSkipUserTransaction}
-	\]
-	and set
+	In order to correctly update the recipient account one must distinguish between
+	message call transactions (e.g. pure transfers) and
+	(trivial) deployments.
+	% For that purpose we introduce the following shorthand
+	% \[
+	% 	\locIsDeploymentTransaction \define \txIsDeployment _{i + \roffTxSkipUserTransaction}
+	% \]
+	% and set
 	\begin{description}
 		\item[\underline{Pure transfers:}]
-			\If $\locTxSkipIsTrivialDeployment = 0$ \Then
+			\If $\locIsMessageCallTransaction = 1$ \Then
 			\[
 				\left\{ \begin{array}{lcl}
 					\multicolumn{3}{l}{\accSameNonce       {i}{\roffTxSkipUserRecipientAccount}} \\
@@ -37,7 +41,7 @@
 				\end{array} \right.
 			\]
 		\item[\underline{Trivial deployments:}]
-			\If $\locTxSkipIsTrivialDeployment = 1$ \Then
+			\If $\locIsDeploymentTransaction = 1$ \Then
 			\begin{description}
 				\item[\underline{Nonce:}]
 					we impose
@@ -91,7 +95,7 @@
 	we further impose
 	\begin{description}
 		\item[\underline{Address trimming:}]
-			\If $\locTxSkipIsTrivialDeployment = 0$
+			\If $\locIsMessageCallTransaction = 1$
 			\[
 				\accTrimAddress
 				{i}{\roffTxSkipUserRecipientAccount}
