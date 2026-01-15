@@ -5,14 +5,19 @@ We impose the following consistency constraint:
 		\Then we impose that
 		\[
 			\left\{ \begin{array}{lclr}
-				\order{\accNonce            } _{i} & = & \order{\accNonce            \new } _{i - 1}              \\
-				\order{\accBalance          } _{i} & = & \order{\accBalance          \new } _{i - 1}              \\
-				\order{\accCodesize         } _{i} & = & \order{\accCodesize         \new } _{i - 1}              \\
-				\order{\accCodehashHi       } _{i} & = & \order{\accCodehashHi       \new } _{i - 1}              \\
-				\order{\accCodehashLo       } _{i} & = & \order{\accCodehashLo       \new } _{i - 1}              \\
-				\order{\accDeploymentNumber } _{i} & = & \order{\accDeploymentNumber \new } _{i - 1}              \\
-				\order{\accDeploymentStatus } _{i} & = & \order{\accDeploymentStatus \new } _{i - 1} \vspace{2mm} \\
-				\order{\accExists           } _{i} & = & \order{\accExists           \new } _{i - 1}               & (\trash) \\
+				\order{\accNonce               } _{i} & = & \order{\accNonce                  \new} _{i - 1} \\
+				\order{\accBalance             } _{i} & = & \order{\accBalance                \new} _{i - 1} \\
+				\order{\accCodesize            } _{i} & = & \order{\accCodesize               \new} _{i - 1} \\
+				\order{\accCodehashHi          } _{i} & = & \order{\accCodehashHi             \new} _{i - 1} \\
+				\order{\accCodehashLo          } _{i} & = & \order{\accCodehashLo             \new} _{i - 1} \\
+				\order{\accDeploymentNumber    } _{i} & = & \order{\accDeploymentNumber       \new} _{i - 1} \\
+				\order{\accDeploymentStatus    } _{i} & = & \order{\accDeploymentStatus       \new} _{i - 1} \vspace{2mm} \\
+				\order{\accExists              } _{i} & = & \order{\accExists                 \new} _{i - 1} &            (\trash) \\
+				%
+				\order{\accDelegationAddressHi } _{i} & = & \order{\accDelegationAddressHiNew }     _{i - 1} \\
+				\order{\accDelegationAddressLo } _{i} & = & \order{\accDelegationAddressLoNew }     _{i - 1} \\
+				\order{\accDelegationNumber    } _{i} & = & \order{\accDelegationNumberNew    }     _{i - 1} \\
+				\order{\accIsDelegated         } _{i} & = & \order{\accIsDelegatedNew         }     _{i - 1} \\
 			\end{array} \right.
 		\]
 		\saNote{}
@@ -65,9 +70,10 @@ We impose the following consistency constraint:
 		\If
 		\[
 			\left\{ \begin{array}{lclc}
-				\accAgainInConflation_{i}             & = & 1                                & \et \\
-				\order{\accDeploymentNumber \new}_{i} & = & \order{\accDeploymentNumber}_{i} & \et \\
-				\order{\accDeploymentStatus \new}_{i} & = & \order{\accDeploymentStatus}_{i} \\
+				\accAgainInConflation _{i}             & = & 1                                 & \et \\
+				\order{\accDeploymentNumber \new} _{i} & = & \order{\accDeploymentNumber} _{i} & \et \\
+				\order{\accDeploymentStatus \new} _{i} & = & \order{\accDeploymentStatus} _{i} & \et \\
+				\order{\accDelegationNumberNew  } _{i} & = & \order{\accDelegationNumber} _{i} & \et \\
 			\end{array} \right.
 		\]
 		\Then $\order{\accCfi} _{i} = \order{\accCfi} _{i - 1}$
