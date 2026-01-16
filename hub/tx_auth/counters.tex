@@ -1,0 +1,46 @@
+We describe the behaviour of
+\authAuthorizationTupleIndex{} and
+\authSenderIsAuthorityAcc{}.
+We first impose
+\begin{enumerate}[resume]
+	\item
+		we require \hubStamp-constancy of
+		\begin{multicols}{2}
+			\begin{enumerate}
+				\item \authAuthorizationTupleIndex{}
+				\item \authSenderIsAuthorityAcc{}
+			\end{enumerate}
+		\end{multicols}
+\end{enumerate}
+We start with \authAuthorizationTupleIndex{}:
+\begin{enumerate}[resume]
+	\item
+		\If   $\txAuth _{i - 1} = 0$ \et $\txAuth _{i} = 1$
+		\Then $\authAuthorizationTupleIndex _{i} = 1$
+	\item
+		\If   $\txAuth _{i - 1} = 1$ \et $\txAuth _{i} = 1$
+		\Then $\authAuthorizationTupleIndex _{i} = \authAuthorizationTupleIndex _{i - 1} + \peekAuthorization _{i}$
+\end{enumerate}
+We now proceed with \authSenderIsAuthorityAcc{}.
+We first introduce a shorthand
+\[
+	\left\{ \begin{array}{l}
+		\locSuccessfulDelegationWhereSenderIsAuthority _{i}                                   \\
+		\qquad \define \authAuthorizationTupleIsValid  _{i} \cdot \authSenderIsAuthority _{i} \\
+	\end{array} \right.
+\]
+\begin{enumerate}[resume]
+	\item
+		\If
+		\[
+			\left\{ \begin{array}{ll}
+				\wedge & \txAuth            _{i - 1} = 0 \\
+				\wedge & \txAuth            _{i}     = 1 \\
+				% \wedge & \peekAuthorization _{i}     = 1 \\
+			\end{array} \right.
+		\]
+		\Then $\authSenderIsAuthorityAcc _{i} = \locSuccessfulDelegationWhereSenderIsAuthority _{i}$
+	\item
+		\If   $\txAuth _{i - 1} = 1$ \et $\txAuth _{i} = 1$ \et $\peekAuthorization _{i} = 1$
+		\Then $\authSenderIsAuthorityAcc _{i} = \authSenderIsAuthorityAcc _{i - 1} + \locSuccessfulDelegationWhereSenderIsAuthority _{i}$
+\end{enumerate}

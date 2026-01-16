@@ -15,6 +15,15 @@ $\authorizationSignifier$. The following are names for certain columns on author
 		binary column asserting whether an address was successfully \macroEcrecover{}-ed from the authorization tuple;
 		defaults to zero (i.e. \false{}) if no attempt at \macroEcrecover{}-ing the \authAuthorityAddress{} was made;
 	\item
+		\authSenderIsAuthority{}:
+		binary column that lights up on every authoritization tuple where
+		the authority was recovered and the authority coincides with the
+		transaction sender;
+	\item
+		\authSenderIsAuthorityAcc{}:
+		accumulator column that tallies the number of authorization tuples that are both
+		valid and have as authority the sender of the transaction;
+	\item
 		\authAuthorityAddressHi{} and \authAuthorityAddressLo{}:
 		hi and lo parts of the authority address if \macroEcrecover{} was both attempted and successful
 		on a given authority tuple;
