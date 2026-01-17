@@ -26,3 +26,18 @@ We impose the views over the next rows:
 		\nsrTxSkipUser
 	\]
 \end{enumerate}
+We provide a brief summary of what these rows represent
+\begin{description}
+	\item[\underline{Transaction-row $n^\circ \; \roffTxSkipUserTransaction                  $:}]
+		we load the transaction;
+	\item[\underline{Account-row     $n^\circ \; \roffTxSkipUserSenderAccount                $:}]
+		we load the sender and deduct the value and gas cost of the transaction from its balance;
+	\item[\underline{Account-row     $n^\circ \; \roffTxSkipUserRecipientAccount             $:}]
+		we load the recipient and add the value to its balance;
+	\item[\underline{Account-row     $n^\circ \; \roffTxSkipUserRecipientOrDelegationAccount $:}]
+		if the recipient is delegated we load the delegate, otherwise we re-load the recipient again;
+		in either case we don't modify the account, we simply read it;
+	\item[\underline{Account-row     $n^\circ \; \roffTxSkipUserCoinbaseAccount              $:}]
+		we load the coinbase address and pay it;
+	\item[\underline{Context-row     $n^\circ \; \roffTxSkipUserZeroContext                  $:}]
+\end{description}
