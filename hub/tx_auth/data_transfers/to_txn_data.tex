@@ -1,0 +1,30 @@
+\begin{center}
+	\boxed{\text{All constraints in this subsection assume that }
+	\left\{ \begin{array}{lcl}
+		\txAuth          _{i} & = & 1 \\
+		\peekTransaction _{i} & = & 1 \\
+	\end{array} \right.
+	}
+\end{center}
+We record the number of successful delegation tuples where the authority is the transaction sender:
+\begin{enumerate}
+	\item
+		\If $\peekAuthorization _{i - 1} = 1$
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\txLengthOfDelegationList              _{i} & = & \authAuthorizationTupleIndex _{i - 1} \\
+				\txNumberOfSuccessfulSenderDelegations _{i} & = & \authSenderIsAuthorityAcc    _{i - 1} \\
+			\end{array} \right.
+		\]
+	\item
+		\If $\peekAccount _{i - 1} = 1$
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\txLengthOfDelegationList              _{i} & = & \authAuthorizationTupleIndex _{i - 2} \\
+				\txNumberOfSuccessfulSenderDelegations _{i} & = & \authSenderIsAuthorityAcc    _{i - 2} \\
+			\end{array} \right.
+		\]
+\end{enumerate}
+

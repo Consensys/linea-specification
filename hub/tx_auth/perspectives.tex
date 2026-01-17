@@ -3,7 +3,7 @@
 \end{center}
 We impose the following:
 \begin{enumerate}
-	\item $\peekAuthorization _{i} + \peekAccount _{i} = 1$
+	\item $\peekAuthorization _{i} + \peekAccount _{i} + \peekTransaction _{i} = 1$
 	\item \If $\txAuth _{i - 1} = 0$ \Then $\peekAuthorization _{i} = 1$;
 	\item \If $\peekAuthorization _{i} = 1$ \Then
 		\begin{enumerate}
@@ -14,12 +14,13 @@ We impose the following:
 				\end{enumerate}
 			\item \If $\authAuthorityEcrecoverSuccess _{i} = 0$ \Then
 				\begin{enumerate}
-					\item $\txAuth      _{i + 1} = \peekAuthorization _{i + 1}$
+					\item $\peekAuthorization _{i} + \peekTransaction _{i} = 1$
 				\end{enumerate}
 		\end{enumerate}
 	\item \If $\peekAccount _{i} = 1$ \Then
 		\begin{enumerate}
-			\item $\txAuth _{i + 1} = \peekAuthorization _{i + 1}$
+			% \item $\txAuth _{i + 1} = \peekAuthorization _{i + 1}$
+			\item $\peekAuthorization _{i - 1} = 1$
 			\item we impose
 				\[
 					\standardDomSubStamps {
@@ -29,6 +30,7 @@ We impose the following:
 					}
 				\]
 		\end{enumerate}
+	\item $\peekTransaction _{i} + \txAuth _{i + 1} = 1$
 \end{enumerate}
 The above enforces that the \txAuth{}-phase is obtained by concatenating an arbitratry number the following building blocks
 \begin{itemize}
