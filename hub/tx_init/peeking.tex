@@ -20,9 +20,9 @@ Given peeking flag exclusivity,
 see section~(\ref{hub: heartbeat: peeking flag exclusivity}),
 the above translates precisely to
 \begin{enumerate}[resume]
-	\item $\peekTransaction _{i + \roffTxInitTxn}      = 1$ ~ (\trash)
-	\item $\peekMisc        _{i + \roffTxInitMisc}     = 1$ ~ (\trash)
-	\item $\peekAccount     _{i + \roffTxInitWarmCoinbase} = 1$ ~ (\trash)
+	\item $\peekTransaction _{i + \roffTxInitTxn}      = 1$     ~ (\sanityCheck)
+	\item $\peekMisc        _{i + \roffTxInitMisc}     = 1$     ~ (\sanityCheck)
+	\item $\peekAccount     _{i + \roffTxInitWarmCoinbase} = 1$ ~ (\sanityCheck)
 \end{enumerate}
 \begin{enumerate}[resume]
 	\item \If $\locTransactionWillRevert = 1$ \Then
@@ -39,10 +39,11 @@ the above translates precisely to
 					\left[ \begin{array}{cl} 
 						+ & \peekTransaction _{i + \roffTxInitTxn                               } \\
 						+ & \peekMisc        _{i + \roffTxInitMisc                              } \\
-						+ & \peekAccount     _{i + \roffTxInitWarmCoinbase                          } \\
-						+ & \peekAccount     _{i + \roffTxInitAccDoingSndPayGas                 } \\
+						+ & \peekAccount     _{i + \roffTxInitWarmCoinbase                      } \\
+						+ & \peekAccount     _{i + \roffTxInitAccDoingSenderPayForGas           } \\
 						+ & \peekAccount     _{i + \roffTxInitAccDoingSenderValueTransfer       } \\
 						+ & \peekAccount     _{i + \roffTxInitAccDoingRecipientValueReception   } \\
+						+ & \peekAccount     _{i + \roffTxInitAccViewingDelegationOrRecipient   } \\
 						+ & \peekAccount     _{i + \roffTxInitAccUndoingSenderValueTransfer     } \\
 						+ & \peekAccount     _{i + \roffTxInitAccUndoingRecipientValueReception } \\
 						+ & \peekContext     _{i + \roffTxInitConExceptionalContextRowOffset    } \\
@@ -64,10 +65,11 @@ the above translates precisely to
 					\left[ \begin{array}{cl} 
 						+ & \peekTransaction _{i + \roffTxInitTxn                              } \\
 						+ & \peekMisc        _{i + \roffTxInitMisc                             } \\
-						+ & \peekAccount     _{i + \roffTxInitWarmCoinbase                         } \\
-						+ & \peekAccount     _{i + \roffTxInitAccDoingSndPayGas                } \\
+						+ & \peekAccount     _{i + \roffTxInitWarmCoinbase                     } \\
+						+ & \peekAccount     _{i + \roffTxInitAccDoingSenderPayForGas          } \\
 						+ & \peekAccount     _{i + \roffTxInitAccDoingSenderValueTransfer      } \\
 						+ & \peekAccount     _{i + \roffTxInitAccDoingRecipientValueReception  } \\
+						+ & \peekAccount     _{i + \roffTxInitAccViewingDelegationOrRecipient  } \\
 						+ & \peekContext     _{i + \roffTxInitConUnexceptionalContextRowOffset } \\
 					\end{array} \right] =
 					\nsrTxInitWontRevert
