@@ -1,0 +1,67 @@
+\item[\underline{\underline{Delegation or recipient account-row n$^°\bm{(i + \roffTxInitAccViewingDelegationOrRecipient)}$:}}]
+	we peek into the recipient account to transfer the transaction value
+	\[
+		\left\{ \begin{array}{lcl}
+			% \texttt{Address:}    & \multicolumn{2}{l}{\valueToBeSet} \\
+			\accAddress \high _{i + \roffTxInitAccViewingDelegationOrRecipient} & = & \locDelegateOrRecipientAddressHi \\
+			\accAddress \low  _{i + \roffTxInitAccViewingDelegationOrRecipient} & = & \locDelegateOrRecipientAddressLo \\
+			\multicolumn{3}{l}{
+				\accTrimAddress
+				{i}{\roffTxInitAccViewingDelegationOrRecipient}
+				{\locDelegateOrRecipientAddressHi}
+				{\locDelegateOrRecipientAddressLo}} \qquad (\sanityCheck) \vspace{2mm} \\
+			\multicolumn{3}{l}{\accSameBalance                    {i}{\roffTxInitAccViewingDelegationOrRecipient}} \\
+			\multicolumn{2}{l}{\accSameNonce                      {i}{\roffTxInitAccViewingDelegationOrRecipient}} \\
+			\multicolumn{2}{l}{\accSameCode                       {i}{\roffTxInitAccViewingDelegationOrRecipient}} \\
+			\multicolumn{2}{l}{\accSameDeployment                 {i}{\roffTxInitAccViewingDelegationOrRecipient}} \\
+			\multicolumn{3}{l}{\accTurnOnWarmth                   {i}{\roffTxInitAccViewingDelegationOrRecipient}} \\
+			\multicolumn{3}{l}{\accCheckForDelegationIfAccountHasCode { anchorRow = i, relOffset = \roffTxInitAccViewingDelegationOrRecipient }} \\
+			\multicolumn{3}{l}{\accSameMarkedForDeletionFlag      {i}{\roffTxInitAccViewingDelegationOrRecipient}} \\
+			\multicolumn{3}{l}{\accRetrieveCodeFragmentIndex      {i}{\roffTxInitAccViewingDelegationOrRecipient}} \\
+			% \multicolumn{3}{l}{\accIsntPrecompile                 {i}{\roffTxInitAccViewingDelegationOrRecipient}} \\ % can't guarantee: you can delegate to a precompile ...
+			\multicolumn{3}{l}{
+				\standardDomSubStamps {
+					anchorRow = i                                          ,
+					relOffset = \roffTxInitAccViewingDelegationOrRecipient ,
+					domOffset = \roffTxInitAccViewingDelegationOrRecipient ,
+				}
+			} \\
+		\end{array} \right.
+	\]
+	where we define the
+	as follows:
+	\begin{enumerate}
+		\item
+			\If   $\locTxInitIsMessageCall = 1$
+			\Then
+			\begin{enumerate}
+				\item
+					\If   $\locRecipientIsDelegated = 0$
+					\Then
+					\[
+						\left\{ \begin{array}{lcl}
+							\locDelegateOrRecipientAddressHi & \define & \locTxInitRecipientAddressHi \\
+							\locDelegateOrRecipientAddressLo & \define & \locTxInitRecipientAddressLo \\
+						\end{array} \right.
+					\]
+				\item
+					\If   $\locRecipientIsDelegated = 1$
+					\Then
+					\[
+						\left\{ \begin{array}{lcl}
+							\locDelegateOrRecipientAddressHi & \define & \accDelegationAddressHi _{i + \roffTxInitAccDoingRecipientValueReception} \\
+							\locDelegateOrRecipientAddressLo & \define & \accDelegationAddressLo _{i + \roffTxInitAccDoingRecipientValueReception} \\
+						\end{array} \right.
+					\]
+			\end{enumerate}
+		\item
+			\If   $\locTxInitIsDeployment  = 1$
+			\Then
+			\[
+				\left\{ \begin{array}{lcl}
+					\locDelegateOrRecipientAddressHi & \define & \locTxInitRecipientAddressHi \\
+					\locDelegateOrRecipientAddressLo & \define & \locTxInitRecipientAddressLo \\
+				\end{array} \right.
+			\]
+	\end{enumerate}
+
