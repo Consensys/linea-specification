@@ -5,7 +5,7 @@
 			we impose the following
 			\begin{enumerate}
 				\item $\txRequiresEvmExecution_{i + \roffTxInitTxn} = \rOne$;
-				\item \If $\locTxInitIsMessageCall = 1$ \Then $\accHasCode     _{i + \roffTxInitAccDoingRecipientValueReception}  =    1$
+				\item \If $\locTxInitIsMessageCall = 1$ \Then $\locNonSkipMessageCall = 1$ % $\accHasCode     _{i + \roffTxInitAccDoingRecipientValueReception}  =    1$
 				\item \If $\locTxInitIsDeployment  = 1$ \Then $\txInitCodeSize _{i + \roffTxInitTxn}       \neq 0$ (\trash)
 			\end{enumerate}
 			where we set
@@ -30,15 +30,28 @@
 						\cdot & \locDelegateHasNonemptyCode \\
 						\cdot & \locDelegateIsntDelegated \\
 					\end{array} \right]
-					\vspace{2mm} \\
-					\locRecipientHasNonemptyCode                               & \define & \accHasCode     _{i + \roffTxInitAccDoingRecipientValueReception}                                                                          \\
-					\locRecipientHasEmptyCode                                  & \define & 1 - \locRecipientHasNonemptyCode                                                                                                           \\
-					\locRecipientIsDelegated                                   & \define & \accIsDelegated _{i + \roffTxInitAccDoingRecipientValueReception}                                                                          \\
-					\locRecipientIsntDelegated                                 & \define & 1 - \locRecipientIsDelegated                                      \vspace{2mm}                                                             \\
-					\locDelegateHasNonemptyCode                                & \define & \accHasCode     _{i + \roffTxInitAccViewingDelegationOrRecipient}                                                                          \\
-					\locDelegateHasEmptyCode                                   & \define & 1 - \locDelegateHasNonemptyCode                                                                                                            \\
-					\locDelegateIsDelegated                                    & \define & \accIsDelegated _{i + \roffTxInitAccViewingDelegationOrRecipient}                                                                          \\
-					\locDelegateIsntDelegated                                  & \define & 1 - \locDelegateIsDelegated                                                                                                                \\
+				\end{array} \right.
+			\]
+			where we have used the following auxiliary shorthands
+			\[
+				\left\{ \begin{array}{lcl}
+					\locSenderHasNonemptyCode    & \define & \accHasCode     _{i + \roffTxInitAccDoingSenderPayForGas}         \\
+					\locRecipientHasNonemptyCode & \define & \accHasCode     _{i + \roffTxInitAccDoingRecipientValueReception} \\
+					\locDelegateHasNonemptyCode  & \define & \accHasCode     _{i + \roffTxInitAccViewingDelegationOrRecipient} \\
+					\locSenderIsDelegated        & \define & \accIsDelegated _{i + \roffTxInitAccDoingSenderPayForGas}         \\
+					\locRecipientIsDelegated     & \define & \accIsDelegated _{i + \roffTxInitAccDoingRecipientValueReception} \\
+					\locDelegateIsDelegated      & \define & \accIsDelegated _{i + \roffTxInitAccViewingDelegationOrRecipient} \\
+				\end{array} \right.
+			\]
+			as well as their ``negations''
+			\[
+				\left\{ \begin{array}{lcl}
+					\locSenderHasEmptyCode     & \define & 1 - \locSenderHasNonemptyCode    \\
+					\locRecipientHasEmptyCode  & \define & 1 - \locRecipientHasNonemptyCode \\
+					\locDelegateHasEmptyCode   & \define & 1 - \locDelegateHasNonemptyCode  \\
+					\locSenderIsntDelegated    & \define & 1 - \locSenderIsDelegated        \\
+					\locRecipientIsntDelegated & \define & 1 - \locRecipientIsDelegated     \\
+					\locDelegateIsntDelegated  & \define & 1 - \locDelegateIsDelegated      \\
 				\end{array} \right.
 			\]
 		\item[\underline{Justifying $\txFinalRefundCounter$:}]

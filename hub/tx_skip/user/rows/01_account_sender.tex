@@ -8,6 +8,7 @@
 			\multicolumn{3}{l}{\accIncrementNonce             {i}{\roffTxSkipUserSenderAccount}} \\
 			\multicolumn{3}{l}{\accSameCode                   {i}{\roffTxSkipUserSenderAccount}} \\
 			\multicolumn{3}{l}{\accSameDeployment             {i}{\roffTxSkipUserSenderAccount}} \\
+			\multicolumn{3}{l}{\accCheckForDelegationIfAccountHasCode { anchorRow = i , relOffset = \roffTxSkipUserSenderAccount , }} \\
 			\multicolumn{3}{l}{\accSameWarmth                 {i}{\roffTxSkipUserSenderAccount}} \\
 			\multicolumn{3}{l}{\accSameMarkedForDeletionFlag  {i}{\roffTxSkipUserSenderAccount}} \\
 			\multicolumn{3}{l}{\accIsntPrecompile             {i}{\roffTxSkipUserSenderAccount}} & (\trash) \\
@@ -26,14 +27,41 @@
 		\left[ \begin{array}{cr}
 			+ & \txValue    _{i + \roffTxSkipUserTransaction} \\
 			+ & \txGasPrice _{i + \roffTxSkipUserTransaction}
-			    \cdot
-			    \big[ \txGasLimit _{i + \roffTxSkipUserTransaction} - \txEffectiveRefund _{i + \roffTxSkipUserTransaction} \big] \\
+			\cdot
+			\big[ \txGasLimit _{i + \roffTxSkipUserTransaction} - \txEffectiveRefund _{i + \roffTxSkipUserTransaction} \big] \\
 		\end{array} \right]
 	\]
-	In accordance with \cite{EIP-3607} we further impose
+	In accordance with \cite{EIP-3607} and \cite{EIP-7702} we further impose
 	\[
-		\accHasCode _{i + \roffTxSkipUserSenderAccount} = 0
+		\left[ \begin{array}{clcl}
+			+ & \locSenderHasEmptyCode    \\
+			+ & \locSenderHasNonemptyCode  & \cdot & \locSenderIsDelegated \\
+		\end{array} \right]
+		\equiv 1
 	\]
-	\iffalse
-	% TODO: uncomment the NOTE below for Prague
-	\fi
+	where
+	\[
+		\left\{ \begin{array}{lcl}
+			\locSenderHasNonemptyCode      & \define & \accHasCode     _{i + \roffTxSkipUserSenderAccount} \\
+			% \locRecipientHasNonemptyCode & \define & \accHasCode     _{i + \roffTxSkipUserSenderAccount} \\
+			% \locDelegateHasNonemptyCode  & \define & \accHasCode     _{i + \roffTxSkipUserSenderAccount} \\
+			\locSenderIsDelegated          & \define & \accIsDelegated _{i + \roffTxSkipUserSenderAccount} \\
+			% \locRecipientIsDelegated     & \define & \accIsDelegated _{i + \roffTxSkipUserSenderAccount} \\
+			% \locDelegateIsDelegated      & \define & \accIsDelegated _{i + \roffTxSkipUserSenderAccount} \\
+		\end{array} \right.
+	\]
+	as well as their ``negations''
+	\[
+		\left\{ \begin{array}{lcl}
+			\locSenderHasEmptyCode       & \define & 1 - \locSenderHasNonemptyCode    \\
+			% \locRecipientHasEmptyCode  & \define & 1 - \locRecipientHasNonemptyCode \\
+			% \locDelegateHasEmptyCode   & \define & 1 - \locDelegateHasNonemptyCode  \\
+			\locSenderIsntDelegated      & \define & 1 - \locSenderIsDelegated        \\
+			% \locRecipientIsntDelegated & \define & 1 - \locRecipientIsDelegated     \\
+			% \locDelegateIsntDelegated  & \define & 1 - \locDelegateIsDelegated      \\
+		\end{array} \right.
+	\]
+	thus imposing that either
+	(\emph{a}) the sender address has empty byte code or
+	(\emph{b}) the sender address (has nonempty byte code and) is delegated.
+

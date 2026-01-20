@@ -26,9 +26,13 @@
 					where we set
 					\[
 						\left\{ \begin{array}{lcl}
-							\locRecipientHasEmptyCode                         & \define & (1 - \accHasCode _{i + \roffTxSkipUserRecipientAccount})                                                                         \\
-							\locRecipientIsDelegatedAndDelegationHasEmptyCode & \define & \accIsDelegated  _{i + \roffTxSkipUserRecipientAccount} \cdot (1 - \accHasCode _{i + \roffTxSkipUserRecipientOrDelegationAccount}) \\
-							\locRecipientIsDelegatedAndDelegationIsDelegated  & \define & \accIsDelegated  _{i + \roffTxSkipUserRecipientAccount} \cdot \accIsDelegated  _{i + \roffTxSkipUserRecipientOrDelegationAccount} \\
+							\locRecipientHasNonemptyCode                      & \define & \accHasCode      _{i + \roffTxSkipUserRecipientAccount}                                                                     \\
+							\locRecipientIsDelegated                          & \define & \accIsDelegated  _{i + \roffTxSkipUserRecipientAccount}                                                                     \\
+							\locDelegateHasNonemptyCode                       & \define & \accHasCode      _{i + \roffTxSkipUserRecipientOrDelegationAccount}                                                         \\
+							\locDelegateIsDelegated                           & \define & \accIsDelegated  _{i + \roffTxSkipUserRecipientOrDelegationAccount}                                                         \\
+							\locRecipientHasEmptyCode                         & \define & 1 - \locRecipientHasNonemptyCode                                                                                            \\
+							\locRecipientIsDelegatedAndDelegationHasEmptyCode & \define & \locRecipientHasNonemptyCode \cdot \locRecipientIsDelegated \cdot \locDelegateHasEmptyCode                                  \\
+							\locRecipientIsDelegatedAndDelegationIsDelegated  & \define & \locRecipientHasNonemptyCode \cdot \locRecipientIsDelegated \cdot \locDelegateHasNonemptyCode \cdot \locDelegateIsDelegated \\
 						\end{array} \right.
 					\]
 				\item

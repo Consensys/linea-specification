@@ -13,22 +13,31 @@
 			\multicolumn{3}{l}{\accIncrementNonce                    {i}{\roffTxInitAccDoingSenderPayForGas}} \\
 			\multicolumn{3}{l}{\accSameCode                          {i}{\roffTxInitAccDoingSenderPayForGas}} \\
 			\multicolumn{3}{l}{\accSameDeployment                    {i}{\roffTxInitAccDoingSenderPayForGas}} \\
+			\multicolumn{3}{l}{\accCheckForDelegationIfAccountHasCode { anchorRow = i, relOffset = \roffTxInitAccDoingSenderPayForGas }} \\
 			\multicolumn{3}{l}{\accTurnOnWarmth                      {i}{\roffTxInitAccDoingSenderPayForGas}} \\
 			\multicolumn{3}{l}{\accSameMarkedForDeletionFlag         {i}{\roffTxInitAccDoingSenderPayForGas}} \\
 			\multicolumn{3}{l}{\accIsntPrecompile                    {i}{\roffTxInitAccDoingSenderPayForGas}} \\
 			\multicolumn{3}{l}{
 				\standardDomSubStamps {
-					anchorRow = i                               ,
+					anchorRow = i                                  ,
 					relOffset = \roffTxInitAccDoingSenderPayForGas ,
-					domOffset = 1                               ,
+					domOffset = \roffTxInitAccDoingSenderPayForGas ,
 				}
 			} \\
 		\end{array} \right.
 	\]
-	In accordance with \cite{EIP-3607} we further impose
+	In accordance with \cite{EIP-3607} and \cite{EIP-7702} we further impose
 	\[
-		\accHasCode _{i + \roffTxInitAccDoingSenderPayForGas} = 0
+		\left[ \begin{array}{clcl}
+		+ & \locSenderHasEmptyCode    \\
+		+ & \locSenderHasNonemptyCode  & \cdot & \locSenderIsDelegated \\
+		\end{array} \right]
+		\equiv 1
 	\]
+	thus imposing that either
+	(\emph{a}) the sender address has empty byte code or
+	(\emph{b}) the sender address (has nonempty byte code and) is delegated.
+
 	\saNote{} \label{hub: initialization phase: why we trim the sender address}
 	We impose address trimming constraints \emph{in spite} of the fact that the pair
 	\[

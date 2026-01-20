@@ -54,3 +54,24 @@ We impose some constraints ensuring that delegation information may only change 
 \saNote{}
 Constraint~(\ref{hub: account: account delegation: the delegation address may not change outside of AUTH rows})
 enforces that the delegation address of an account may not change outside of the \txAuth{}-phase.
+
+We further impose general constraints on which accounts the arithmetization is allowed to \textbf{check} for delegation.
+\begin{enumerate}[resume]
+	\item\label{hub: account: account delegation: checks for delegation require non empty code}
+		\If $\accHasCode     _{i} = 0$ \Then $\accCheckForDelegation    _{i} = 0$
+	\item
+		\If $\accHasCode\new _{i} = 0$ \Then $\accCheckForDelegationNew _{i} = 0$
+	\item
+		\If $\txAuth         _{i} = 0$ \Then $\accCheckForDelegationNew _{i} = 0$
+\end{enumerate}
+\saNote{}\label{hub: account: account delegation: checks for delegation are prohibited if the account has empty code}
+Clearly, no account with empty byte code, as measured by $\accHasCode \equiv \false$
+(which is logically equivalent to the code hash being $\emptyKeccak$,
+see section~(\ref{hub: account: empty code})),
+is delegated.
+This makes checking for delegation \textbf{redundant} in that precise case,
+but certainly not ``ban-worthy''.
+Yet the arithmetization outright prohibits it, which is the interpretation of
+constraint~(\ref{hub: account: account delegation: checks for delegation are prohibited if the account has empty code}).
+The reason for that restriction is that the arithmetization thereby avoids
+the inclusion of empty byte code in the \romLexMod{} module.

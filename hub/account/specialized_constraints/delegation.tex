@@ -31,6 +31,7 @@ We introduce constraints pertaining to account delegation.
 		\vspace{2mm} \\
 		\qquad \define
 		\accIsDelegatedNew _{i + \relof} = \accIsDelegated _{i + \relof}
+		% \vspace{2mm} \\
 	\end{array} \right.
 \]
 and
@@ -58,4 +59,46 @@ and
 		\accDelegationNumberNew _{i + \relof} = 1 + \accDelegationNumber _{i + \relof}
 	\end{array} \right.
 \]
-
+We also define various shorthands for checking for account delegation
+\[
+	\left\{ \begin{array}{lcl}
+		\accConditionallyCheckForDelegation {
+			anchorRow = i               ,
+			relOffset = \relof          ,
+			condition = \loc{condition} ,
+		}
+		\vspace{2mm} \\
+		\qquad \define
+		\left\{ \begin{array}{lcl}
+			\accCheckForDelegation    _{i + \relof} & = & \loc{condition} \\
+			\accCheckForDelegationNew _{i + \relof} & = & 0               \\
+		\end{array} \right.
+		\vspace{2mm} \\
+		\accCheckForDelegationIfAccountHasCode {
+			anchorRow = i      ,
+			relOffset = \relof ,
+		}
+		\vspace{2mm} \\
+		\qquad \define
+		\left\{ \begin{array}{lcl}
+			\accCheckForDelegation    _{i + \relof} & = & \accHasCode _{i + \relof} \\
+			\accCheckForDelegationNew _{i + \relof} & = & 0 \\
+		\end{array} \right.
+		\vspace{2mm} \\
+		\accDontCheckForDelegation {
+			anchorRow = i      ,
+			relOffset = \relof ,
+		}
+		\vspace{2mm} \\
+		\qquad \define
+		\left\{ \begin{array}{lcl}
+			\accCheckForDelegation    _{i + \relof} & = & 0 \\
+			\accCheckForDelegationNew _{i + \relof} & = & 0 \\
+		\end{array} \right.
+		\\
+	\end{array} \right.
+\]
+\saNote{}
+We draw the attention of the reader to the restriction
+on checking for delegation imposed in
+note~(\ref{hub: account: account delegation: checks for delegation are prohibited if the account has empty code}).
