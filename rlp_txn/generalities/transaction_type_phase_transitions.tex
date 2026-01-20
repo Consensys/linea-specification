@@ -108,6 +108,48 @@ and
         \\
     \end{array} \right.
 \]
+and
+\[
+    \hspace*{-2cm}
+    \left\{ \begin{array}{lcl}
+        \locValidPhaseTransitionTypeFour_{i} & \define &
+        \left[ \begin{array}{clcl}
+            + & \phaseRlpPrefix            _{i} & \cdot & \phaseChainId              _{i + 1} \\
+            + & \phaseChainId              _{i} & \cdot & \phaseNonce                _{i + 1} \\
+            + & \phaseNonce                _{i} & \cdot & \phaseMaxPriorityFeePerGas _{i + 1} \\
+            + & \phaseMaxPriorityFeePerGas _{i} & \cdot & \phaseMaxFeePerGas         _{i + 1} \\
+            + & \phaseMaxFeePerGas         _{i} & \cdot & \phaseGasLimit             _{i + 1} \\
+            + & \phaseGasLimit             _{i} & \cdot & \phaseTo                   _{i + 1} \\
+            + & \phaseTo                   _{i} & \cdot & \phaseValue                _{i + 1} \\
+            + & \phaseValue                _{i} & \cdot & \phaseData                 _{i + 1} \\
+            + & \phaseData                 _{i} & \cdot & \phaseAccessList           _{i + 1} \\
+            + & \phaseAccessList           _{i} & \cdot & \phaseAuthorizationList    _{i + 1} \\
+            + & \phaseAuthorizationList    _{i} & \cdot & \phaseY                    _{i + 1} \\
+            + & \phaseY                    _{i} & \cdot & \phaseR                    _{i + 1} \\
+            + & \phaseR                    _{i} & \cdot & \phaseS                    _{i + 1} \\
+            + & \phaseS                    _{i} & \cdot & \phaseRlpPrefix            _{i + 1} \\
+        \end{array} \right]
+        \vspace{2mm} \\
+        \locWillRemainInSamePhaseTypeFour_{i} & \define &
+        \left[ \begin{array}{clcl}
+            + & \phaseRlpPrefix            _{i} & \cdot & \phaseRlpPrefix            _{i + 1} \\
+            + & \phaseChainId              _{i} & \cdot & \phaseChainId              _{i + 1} \\
+            + & \phaseNonce                _{i} & \cdot & \phaseNonce                _{i + 1} \\
+            + & \phaseMaxPriorityFeePerGas _{i} & \cdot & \phaseMaxPriorityFeePerGas _{i + 1} \\
+            + & \phaseMaxFeePerGas         _{i} & \cdot & \phaseMaxFeePerGas         _{i + 1} \\
+            + & \phaseGasLimit             _{i} & \cdot & \phaseGasLimit             _{i + 1} \\
+            + & \phaseTo                   _{i} & \cdot & \phaseTo                   _{i + 1} \\
+            + & \phaseValue                _{i} & \cdot & \phaseValue                _{i + 1} \\
+            + & \phaseData                 _{i} & \cdot & \phaseData                 _{i + 1} \\
+            + & \phaseAccessList           _{i} & \cdot & \phaseAccessList           _{i + 1} \\
+            + & \phaseAuthorizationList    _{i} & \cdot & \phaseAuthorizationList    _{i + 1} \\
+            + & \phaseY                    _{i} & \cdot & \phaseY                    _{i + 1} \\
+            + & \phaseR                    _{i} & \cdot & \phaseR                    _{i + 1} \\
+            + & \phaseS                    _{i} & \cdot & \phaseS                    _{i + 1} \\
+        \end{array} \right]
+        \\
+    \end{array} \right.
+\]
 and we impose that
 \begin{enumerate}
     \item
@@ -131,4 +173,11 @@ and we impose that
 	    + & \locWillRemainInSamePhaseTypeTwo _{i} \\
 	\end{array} \right]
 	= 1 $
+    \item
+    \If $\typeFourTx _{i} = 1$ \Then
+    $ \left[ \begin{array}{clcl}
+        + & \locValidPhaseTransitionTypeFour _{i} \\
+        + & \locWillRemainInSamePhaseTypeFour_{i} \\
+    \end{array} \right]
+    = 1 $
 \end{enumerate}
