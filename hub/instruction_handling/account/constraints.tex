@@ -2,9 +2,9 @@
 	\boxed{%
 		\text{The stack constraints presented below assume }
 		\left\{ \begin{array}{lcl}
-			\peekStack_{i}                & = & 1 \\
-			\stackDecAccFlag_{i}          & = & 1 \\
-			\stackSux_{i} + \stackSox_{i} & = & 0 \\
+			\peekStack _{i}                & = & 1 \\
+			\stackDecAccFlag _{i}          & = & 1 \\
+			\stackSux _{i} + \stackSox _{i} & = & 0 \\
 		\end{array} \right. }
 \end{center}
 
@@ -12,16 +12,16 @@
 	\item[\underline{Setting the stack pattern:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locTouchesForeignAddress = 1$ \Then $\oneOneSP  _{i}$
-			\item \If $\locTouchesCurrentAddress   = 1$ \Then $\zeroOneSP _{i}$
+			\item \If $\locTouchesForeignAddress = 1$ \Then $\oneOneSP   _{i}$
+			\item \If $\locTouchesCurrentAddress   = 1$ \Then $\zeroOneSP  _{i}$
 		\end{enumerate}
 	\item[\underline{Setting allowable exceptions:}]
-		we impose $\xAhoy_{i} = \stackOogx_{i}$ \quad (\trash)
+		we impose $\xAhoy _{i} = \stackOogx _{i}$ \quad (\trash)
 	\item[\underline{Setting $\nonStackRows$:}]
 		we impose that
 		\begin{enumerate}
-			\item \If $\locTouchesForeignAddress = 1$ \Then $\nonStackRows_{i} = 1 + \cnWillRev_{i} \cdot (1 + \cmc_{i})$
-			\item \If $\locTouchesCurrentAddress = 1$ \Then $\nonStackRows_{i} = 1 + (1 - \cmc_{i})$
+			\item \If $\locTouchesForeignAddress = 1$ \Then $\nonStackRows _{i} = 1 + \cnWillRev _{i} \cdot (1 + \cmc _{i})$
+			\item \If $\locTouchesCurrentAddress = 1$ \Then $\nonStackRows _{i} = 1 + (1 - \cmc _{i})$
 		\end{enumerate}
 		\saNote{}
 		For instructions raising the $\stackDecAccFlag$ one has $\cmc \equiv \xAhoy$.
@@ -30,32 +30,32 @@
 		\begin{enumerate}
 			\item \If $\locTouchesForeignAddress = 1$ \Then
 				\begin{enumerate}
-					\item \If $\cnWillRev_{i} = 0$ \Then
+					\item \If $\cnWillRev _{i} = 0$ \Then
 						\[
-							\peekAccount _{i + \locRoffAccFamForeignAccountDoingRow}
-							= \nonStackRows_{i}
+							\peekAccount  _{i + \locRoffAccFamForeignAccountDoingRow}
+							= \nonStackRows _{i}
 						\]
-					\item \If $\cnWillRev_{i} = 1$ \Then
+					\item \If $\cnWillRev _{i} = 1$ \Then
 						\[
 							\left[ \begin{array}{cr}
-								+ & \peekAccount_{i + \locRoffAccFamForeignAccountDoingRow  }             \\
-								+ & \peekAccount_{i + \locRoffAccFamForeignAccountUndoingRow}             \\
-								+ & \cmc_{i} \cdot \peekContext_{i + \locRoffAccFamForeignAccountFailure} \\
+								+ & \peekAccount _{i + \locRoffAccFamForeignAccountDoingRow  }             \\
+								+ & \peekAccount _{i + \locRoffAccFamForeignAccountUndoingRow}             \\
+								+ & \cmc _{i} \cdot \peekContext _{i + \locRoffAccFamForeignAccountFailure} \\
 							\end{array} \right]
-							= \nonStackRows_{i}
+							= \nonStackRows _{i}
 						\]
 				\end{enumerate}
 			\item \If $\locTouchesCurrentAddress   = 1$ \Then
 				\begin{enumerate}
-					\item \If $\xAhoy_{i} = 0$ \Then
+					\item \If $\xAhoy _{i} = 0$ \Then
 						\[
 							\left[ \begin{array}{cr}
-								+ & \peekContext_{i + \locRoffAccFamCurrentContextRow       } \\ 
-								+ & \peekAccount_{i + \locRoffAccFamCurrentAccountReadingRow} \\ 
+								+ & \peekContext _{i + \locRoffAccFamCurrentContextRow       } \\ 
+								+ & \peekAccount _{i + \locRoffAccFamCurrentAccountReadingRow} \\ 
 							\end{array} \right]
-							= \nonStackRows_{i}
+							= \nonStackRows _{i}
 						\]
-					\item \If $\xAhoy_{i} = 1$ \Then $\peekContext_{i + \locRoffAccFamCurrentAccountFailure} = \nonStackRows_{i}$
+					\item \If $\xAhoy _{i} = 1$ \Then $\peekContext _{i + \locRoffAccFamCurrentAccountFailure} = \nonStackRows _{i}$
 				\end{enumerate}
 		\end{enumerate}
 	\item[\underline{Setting the gas cost:}]
@@ -63,26 +63,26 @@
 		\begin{enumerate}
 			\item \If $\locTouchesForeignAddress = 1$ \Then
 				\[
-					\gasCost_{i}
+					\gasCost _{i}
 					=
 					\left[ \begin{array}{crcl}
-						+ & \locWarmth       & \cdot & G_{\text{warmaccess}}        \\
-						+ & (1 - \locWarmth) & \cdot & G_{\text{coldaccountaccess}} \\
+						+ & \locWarmth       & \cdot & G _{\text{warmaccess}}        \\
+						+ & (1 - \locWarmth) & \cdot & G _{\text{coldaccountaccess}} \\
 					\end{array} \right]
 				\]
 				\saNote{}
 				Recall that
-				$G_{\text{coldaccountaccess}} = 2600$ and
-				$G_{\text{warmaccess}} = 100$.
+				$G _{\text{coldaccountaccess}} = 2600$ and
+				$G _{\text{warmaccess}} = 100$.
 			\item \If $\locTouchesCurrentAddress   = 1$ \Then
 				\[
-					\gasCost_{i} = \stackStaticGas_{i}
-					% = G_{\text{low}} + \decFlag {4} _{i} \cdot ( G_{\text{base}} - G_{\text{low}} )
+					\gasCost _{i} = \stackStaticGas _{i}
+					% = G _{\text{low}} + \decFlag {4}  _{i} \cdot ( G _{\text{base}} - G _{\text{low}} )
 				\]
 				\saNote{}
 				In other words for
-				\inst{CODESIZE}    one has $\gasCost \equiv G_{\text{base}} \equiv 2$ while for
-				\inst{SELFBALANCE} one has $\gasCost \equiv G_{\text{low}}  \equiv 5$.
+				\inst{CODESIZE}    one has $\gasCost \equiv G _{\text{base}} \equiv 2$ while for
+				\inst{SELFBALANCE} one has $\gasCost \equiv G _{\text{low}}  \equiv 5$.
 		\end{enumerate}
 	\item[\underline{Garnishing the non stack rows:}]
 		we impose that
@@ -102,6 +102,7 @@
 						\multicolumn{3}{l}{\accSameNonce                      {i}{\locRoffAccFamForeignAccountDoingRow}}   \\
 						\multicolumn{3}{l}{\accSameCode                       {i}{\locRoffAccFamForeignAccountDoingRow}}   \\
 						\multicolumn{3}{l}{\accSameDeployment                 {i}{\locRoffAccFamForeignAccountDoingRow}}   \\
+						\multicolumn{3}{l}{\accConditionallyCheckForDelegation { anchorRow = i, relOffset = \locRoffAccFamForeignAccountDoingRow, condition = \locJustifyCodeSize }} \\
 						% \multicolumn{3}{l}{\accTurnOnWarmth                   {i}{\locRoffAccFamForeignAccountDoingRow}} \\
 						\texttt{Warmth:} & \valueToBeSet                                                                   \\ 
 						\multicolumn{3}{l}{\accSameMarkedForDeletionFlag      {i}{\locRoffAccFamForeignAccountDoingRow}}   \\
@@ -113,15 +114,35 @@
 							}} \\
 					\end{array} \right.
 				\]
-				where the required warmth update depends on whether the instruction is exceptional or not:
+				where we define the \locJustifyCodeSize{} shorthand as follows:
+				\[
+					\locJustifyCodeSize
+					\define
+					\left[ \begin{array}{cl}
+						\cdot & (1 - \xAhoy _{i + \locRoffAccFamForeignAccountDoingRow}) \\
+						\cdot & \locIsExtCodeSize                                        \\
+						\cdot & \accHasCode _{i + \locRoffAccFamForeignAccountDoingRow}  \\
+					\end{array} \right]
+				\]
+				Given the lookup from
+				section~(\ref{hub: lookups: into romLex: for delegation})
+				the above automatically triggers the \romLexMod{} module for all
+				unexceptional ($\xAhoy \equiv \false$)
+				instances of the \inst{EXTCODESIZE} opcode ($\locIsExtCodeSize \equiv \true$)
+				where the target account has nonempty code ($\accHasCode \equiv \true$).
+				Triggering the \romLexMod{} module automatically triggers the \romMod{} module,
+				which loads the byte code into the \romMod{} module and implicitly leads to its hashing,
+				thereby justifying the output of \inst{EXTCODESIZE}.
+
+				The required warmth update depends on whether the instruction is exceptional or not:
 				\begin{enumerate}
 					\item \If $\xAhoy _{i} = 1$ \Then $\accSameWarmth   {i}{\locRoffAccFamForeignAccountDoingRow}$
 					\item \If $\xAhoy _{i} = 0$ \Then $\accTurnOnWarmth {i}{\locRoffAccFamForeignAccountDoingRow}$
 				\end{enumerate}
 				We continue as follows:
 				\begin{enumerate}
-					\item \If $\cnWillRev_{i} = 0$ \Then we don't need to impose anything else;
-					\item \If $\cnWillRev_{i} = 1$ \Then
+					\item \If $\cnWillRev _{i} = 0$ \Then we don't need to impose anything else;
+					\item \If $\cnWillRev _{i} = 1$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
 						\accRomLexFlag   _{i + \locRoffAccFamForeignAccountUndoingRow} & = & 0                    \\
@@ -143,11 +164,11 @@
 				\end{enumerate}
 			\item \If $\locTouchesCurrentAddress   = 1$ \Then
 				\begin{enumerate}
-					\item \If $\xAhoy_{i} = 0$ \Then we impose
+					\item \If $\xAhoy _{i} = 0$ \Then we impose
 						\begin{description}
 							\item[\underline{Context-row:}]
 								we impose
-								$\readContextData {i}{\locRoffAccFamCurrentContextRow}{\cn_{i}}$
+								$\readContextData {i}{\locRoffAccFamCurrentContextRow}{\cn _{i}}$
 							\item[\underline{Account row:}]
 								we impose
 								\[
@@ -190,11 +211,11 @@
 										\]
 								\end{enumerate}
 						\end{description}
-					\item \If $\xAhoy_{i} = 1$ \Then we don't need to impose anything;
+					\item \If $\xAhoy _{i} = 1$ \Then we don't need to impose anything;
 				\end{enumerate}
 		\end{enumerate}
 	\item[\underline{Value constraints:}]
-		\If $\xAhoy_{i} = 0$ \Then
+		\If $\xAhoy _{i} = 0$ \Then
 		we impose the following
 		\begin{description}
 			\item[\underline{The \inst{BALANCE} case:}]
@@ -202,7 +223,7 @@
 				\[
 					\left\{ \begin{array}{lcl}
 						\locResultHi & \!\!\! = \!\!\! & 0 \\
-						\locResultLo & \!\!\! = \!\!\! & \accBalance_{i + \locRoffAccFamForeignAccountDoingRow} \\
+						\locResultLo & \!\!\! = \!\!\! & \accBalance _{i + \locRoffAccFamForeignAccountDoingRow} \\
 					\end{array} \right.
 				\]
 			\item[\underline{The \inst{EXTCODESIZE} case:}]
@@ -210,7 +231,7 @@
 				\[
 					\left\{ \begin{array}{lcl}
 						\locResultHi & \!\!\! = \!\!\! & 0 \\
-						\locResultLo & \!\!\! = \!\!\! & \accCodesize_{i + \locRoffAccFamForeignAccountDoingRow} \cdot \accHasCode_{i + \locRoffAccFamForeignAccountDoingRow} \\
+						\locResultLo & \!\!\! = \!\!\! & \accCodesize _{i + \locRoffAccFamForeignAccountDoingRow} \cdot \accHasCode _{i + \locRoffAccFamForeignAccountDoingRow} \\
 					\end{array} \right.
 				\]
 				\saNote{}
@@ -219,8 +240,8 @@
 				\If $\locIsExtCodeHash = 1$ \Then
 				\[
 					\left\{ \begin{array}{lcl}
-						\locResultHi & \!\!\! = \!\!\! & \accCodehash_{i + \locRoffAccFamForeignAccountDoingRow}\high \cdot \accExists_{i + \locRoffAccFamForeignAccountDoingRow}\\
-						\locResultLo & \!\!\! = \!\!\! & \accCodehash_{i + \locRoffAccFamForeignAccountDoingRow}\low  \cdot \accExists_{i + \locRoffAccFamForeignAccountDoingRow}\\
+						\locResultHi & \!\!\! = \!\!\! & \accCodehash _{i + \locRoffAccFamForeignAccountDoingRow}\high \cdot \accExists _{i + \locRoffAccFamForeignAccountDoingRow}\\
+						\locResultLo & \!\!\! = \!\!\! & \accCodehash _{i + \locRoffAccFamForeignAccountDoingRow}\low  \cdot \accExists _{i + \locRoffAccFamForeignAccountDoingRow}\\
 					\end{array} \right.
 				\]
 				\saNote{}
@@ -230,7 +251,7 @@
 				\[
 					\left\{ \begin{array}{lcl}
 						\locResultHi & \!\!\! = \!\!\! & 0 \\
-						\locResultLo & \!\!\! = \!\!\! & \accCodesize_{i + \locRoffAccFamCurrentAccountReadingRow} \\
+						\locResultLo & \!\!\! = \!\!\! & \accCodesize _{i + \locRoffAccFamCurrentAccountReadingRow} \\
 					\end{array} \right.
 				\]
 			\item[\underline{The \inst{SELFBALANCE} case:}]
@@ -238,7 +259,7 @@
 				\[
 					\left\{ \begin{array}{lcl}
 						\locResultHi & \!\!\! = \!\!\! & 0 \\
-						\locResultLo & \!\!\! = \!\!\! & \accBalance_{i + \locRoffAccFamCurrentAccountReadingRow} \\
+						\locResultLo & \!\!\! = \!\!\! & \accBalance _{i + \locRoffAccFamCurrentAccountReadingRow} \\
 					\end{array} \right.
 				\]
 		\end{description}
@@ -248,7 +269,7 @@
 \label{hub: instruction handling: account: extcodesize and extcodehash: subtleties in the EVM}
 We provide more details on the \inst{EXTCODEHASH} and \inst{EXTCODESIZE} cases.
 In doing so we recall several facts about the \evm{}.
-Below we write $x \define \bm{\mu}_\textbf{s}\big[0\big]$ and $a \define (x \mod 2^{160})$.
+Below we write $x \define \bm{\mu} _\textbf{s}\big[0\big]$ and $a \define (x \mod 2^{160})$.
 \begin{itemize}
 	\item 
 		The return value $\col{ech}$ of \inst{EXTCODEHASH} on input $x$ is
@@ -257,25 +278,25 @@ Below we write $x \define \bm{\mu}_\textbf{s}\big[0\big]$ and $a \define (x \mod
 			\equiv
 			\begin{cases}
 				0                & \text{if $\bm{\sigma}[a] =    \varnothing$} \\
-				\bm{\sigma}[a]_c & \text{if $\bm{\sigma}[a] \neq \varnothing$} \\
+				\bm{\sigma}[a] _c & \text{if $\bm{\sigma}[a] \neq \varnothing$} \\
 			\end{cases}
 		\]
 		where, assuming that $\bm{\sigma}[a] \neq \varnothing$,
-		$\bm{\sigma}[a]_c$ is the code hash of the account with address $a$.
+		$\bm{\sigma}[a] _c$ is the code hash of the account with address $a$.
 	\item 
 		The return value $\col{ecs}$ of \inst{EXTCODESIZE} on input $x$ is
 		\[
 			\specialStar' ~ \col{ecs}
 			\equiv
 			\begin{cases}
-				0              & \text{if $\bm{\sigma}[a] = \varnothing$}     \\
+				0                & \text{if $\bm{\sigma}[a] =    \varnothing$} \\
 				\| \mathbf{b} \| & \text{if $\bm{\sigma}[a] \neq \varnothing$} \\
 			\end{cases}
 		\]
 		where, assuming that $\bm{\sigma}[a] \neq \varnothing$,
-		$\mathbf{b}$ is the byte array such that $\texttt{KECCAK}(\mathbf{b}) = \bm{\sigma}[a]_c$.
+		$\mathbf{b}$ is the byte array such that $\texttt{KECCAK}(\mathbf{b}) = \bm{\sigma}[a] _c$.
 	\item 
-		While a deployment is under way at some address $a'$ the associated account's code hash is set to $\bm{\sigma}[a']_c \equiv \emptyKeccak$.
+		While a deployment is under way at some address $a'$ the associated account's code hash is set to $\bm{\sigma}[a'] _c \equiv \emptyKeccak$.
 \end{itemize}
 
 \saNote{}
@@ -285,7 +306,7 @@ The issue is that this quantity \emph{may or may not} be represented by $\accCod
 We further recall several facts about the \zkEvm.
 \begin{itemize}
 	\item 
-		The code hash of the account with address $a$, i.e. $\bm{\sigma}[a]_c$, is represented by the pair
+		The code hash of the account with address $a$, i.e. $\bm{\sigma}[a] _c$, is represented by the pair
 		\[ \big( \accCodehashHi, \accCodehashLo \big) \]
 	\item 
 		By the defining property of \accHasCode{} in section~(\ref{hub: account: empty code}),
@@ -297,7 +318,7 @@ We further recall several facts about the \zkEvm.
 					\accCodehashLo & = & \emptyKeccakLo \\
 				\end{array} \right. \\
 				& \iff &
-				\bm{\sigma}[a]_c = \emptyKeccak \\
+				\bm{\sigma}[a] _c = \emptyKeccak \\
 			\end{array}
 		\]
 	\item 
@@ -315,11 +336,11 @@ Our first observation is that if the foreign account does not (currently) exist 
 $\locCodeSizeCandidate \equiv 0$. This is compatible with $\specialStar$. We shall now assume that the account does exist in the state.
 
 When the target account \textbf{isn't} (currently) undergoing deployment $\accCodesize$ represents the code size and $\accCodesize \equiv \|\mathbf{b}\|$.
-Furthermore $(\accCodehashHi, \accCodehashLo)$ contains the code hash $\bm{\sigma}[a]_c$.
+Furthermore $(\accCodehashHi, \accCodehashLo)$ contains the code hash $\bm{\sigma}[a] _c$.
 One therefore has
 \[
 	\begin{array}{lcl}
-		\accHasCode \equiv 0 & \iff & \bm{\sigma}[a]_c = \emptyKeccak \\
+		\accHasCode \equiv 0 & \iff & \bm{\sigma}[a] _c = \emptyKeccak \\
 		& \iff & \| \mathbf{b} \| = 0            \\
 	\end{array}
 \]
@@ -328,7 +349,7 @@ One therefore finds that
 and always coincides with $\col{ecs} \equiv \| \mathbf{b} \|$,
 in accordance with expectations $\specialStar$.
 
-When the target account \textbf{is} (currently) undergoing deployment then $\mathbf{b} = ()$ and $\bm{\sigma}[a]_c = \emptyKeccak$.
+When the target account \textbf{is} (currently) undergoing deployment then $\mathbf{b} = ()$ and $\bm{\sigma}[a] _c = \emptyKeccak$.
 It follows that $\accHasCode \equiv 0$ and so $\accCodesize \cdot \accHasCode \equiv 0$ always coincides with $\col{ecs} \equiv \|\mathbf{b}\|$
 in accordance with expectations $\specialStar$.
 This happens despite the fact that $\accCodesize$ contains the initialization code size.
@@ -338,4 +359,4 @@ Therefore $\accCodesize \cdot \accHasCode$ always contains the correct return va
 \saNote{}
 \label{hub: instruction handling: account: extcodesize and extcodehash: justifying our treatment of EXTCODEHASH}
 Not much justification is required given the above reminder of the functioning of \inst{EXTCODEHASH}.
-The only thing to point out is that while an address is undergoing deployment it exists (since its nonce is initially $=1$ and may only grow until the end of the deployment) and is provided by both the \evm{} and the present \zkEvm{} with $\bm{\sigma}[a]_c = \emptyKeccak$.
+The only thing to point out is that while an address is undergoing deployment it exists (since its nonce is initially $=1$ and may only grow until the end of the deployment) and is provided by both the \evm{} and the present \zkEvm{} with $\bm{\sigma}[a] _c = \emptyKeccak$.
