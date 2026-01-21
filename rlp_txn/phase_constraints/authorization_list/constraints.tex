@@ -31,7 +31,7 @@ We define authorization constancy by:
 \end{enumerate}
 We now constraint the global RLP prefix of tghe phase:
 \begin{enumerate}[resume]
-	\item \If $\locAuthorizationPrefix_{i} = 1$
+	\item \If $\locAuthorizationPrefix_{i} = 1$ \Then:
 		\[
 			\rlpProcessByteString {
 				anchorRow        = i                          ,
@@ -48,6 +48,7 @@ And each authorization has the following constraint:
 	\item \If $\locAuthorizationFirstRow_{i} = 1$ \Then:
 	\begin{enumerate}
 		\item an authorization is $\locAuthorizationNumberOfRows$ row long: $\locAuthorizationIndex_{i + \locAuthorizationNumberOfRows -1 } = \locAuthorizationIndex_{i}$
+		\item $\locAuthorizationItemCountdown   _{i + \locAuthorizationNumberOfRows -1} = 0$
 		\item 
 		\[
 			\rlpProcessByteString {
@@ -121,6 +122,11 @@ And each authorization has the following constraint:
 	\end{enumerate}
 	Finally, if this authorization is not the last, we constrain to start a new one by:
 	\begin{enumerate}
-		\item $\locAuthorizationIndex_{i + \locAuthorizationNumberOfRows } = \locAuthorizationIndex_{i} + 1$
+		\item \If $ \numberOfAuthorization \neq \locAuthorizationIndex_{i} + 1 $ \Then:
+		$\locAuthorizationIndex_{i + \locAuthorizationNumberOfRows } = \locAuthorizationIndex_{i} + 1$
 	\end{enumerate}
+\end{enumerate}
+And a finalization constraint:
+\begin{enumerate}
+	\item \If $\phaseEnd_{i} = 1$ \Then $\locAuthorizationLengthCountdown _{i} = 0$ 
 \end{enumerate}
