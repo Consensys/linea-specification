@@ -20,14 +20,67 @@ Recall that a \inst{CALL}-type instruction will be aborted for any of the follow
 an \textbf{externally owned account},
 a  \textbf{smart contract} or
 a  \textbf{precompile}.
-In our arithmetization
+In our arithmetization,
+and abusing terminology somewhat,
+we define
 \begin{description}
-	\item[\textsc{Externally owned accounts}]
-		are characterized by having empty code ($\accHasCode \equiv 0$) and not being a precompile ($\accTrmIsPrecompile \equiv 0$);
-	\item[\textsc{Smart contracts}]
-		are characterized by having nonempty code ($\accHasCode \equiv 1$);
-	\item[\textsc{Precompiles}]
-		are characterized by raising the precompile flag (i.e. $\accTrmIsPrecompile \equiv 1$).
+	\item[\underline{\underline{Externally owned accounts:}}]
+		defined as accounts with
+		one of the following:
+		\begin{description}
+			\item[\underline{``True eoa's'':}]
+				these have are characterized by
+				\begin{itemize}
+					\item having empty code ($\accHasCode \equiv \false$) and
+					\item not being a precompile ($\accTrmIsPrecompile \equiv \false$)
+				\end{itemize}
+			\item[\underline{Delegated accounts pointing to empty code:}]
+				these have are characterized by
+				\begin{itemize}
+					\item having nonempty code ($\accHasCode \equiv \true$)
+					\item and being delegated ($\accIsDelegated \equiv \true$)
+					\item where the delegate has empty byte code ($\accHasCode \equiv \false$)
+				\end{itemize}
+			\item[\underline{Delegated accounts pointing to a delegated account:}]
+				with as delegate an account which itself either
+				\begin{itemize}
+					\item having nonempty code ($\accHasCode \equiv \true$)
+					\item and being delegated ($\accIsDelegated \equiv \true$)
+					\item where the delegate
+						\begin{itemize}
+							\item has nonempty byte code ($\accHasCode \equiv \true$)
+							\item and is delegated ($\accIsDelegated \equiv \true$)
+						\end{itemize}
+				\end{itemize}
+		\end{description}
+	\item[\underline{\underline{Smart contracts:}}]
+		defined as accounts with
+		one of the following:
+		\begin{description}
+			\item[\underline{``True \textsc{smc}'s'':}]
+				these have are characterized by
+				\begin{itemize}
+					\item having nonempty code ($\accHasCode \equiv \true$) and
+					\item not being delegated ($\accIsDelegated \equiv \false$)
+				\end{itemize}
+			\item[\underline{Delegated accounts pointing to nonempty code:}]
+				these have are characterized by
+				\begin{itemize}
+					\item having nonempty code ($\accHasCode \equiv \true$) and
+					\item being delegated ($\accIsDelegated \equiv \true$)
+					\item where the delegate
+						\begin{itemize}
+							\item has nonempty byte code ($\accHasCode \equiv \true$)
+							\item and isn't delegated ($\accIsDelegated \equiv \false$)
+						\end{itemize}
+				\end{itemize}
+		\end{description}
+	\item[\underline{\underline{Precompiles:}}]
+		defined as accounts
+		\begin{itemize}
+			\item having empty code ($\accHasCode \equiv \false$) and
+			\item raising the precompile flag (i.e. $\accTrmIsPrecompile \equiv \true$)
+		\end{itemize}
 \end{description}
 Instruction processing beyond that point is either done in a single phase or subdivided two phases.
 In more detail:
@@ -54,7 +107,7 @@ In more detail:
 		to \textsc{precompiles}
 		processing is subdivided into \textbf{two phases}:
 		\begin{enumerate}
-		        \item
+			\item
 				The first phase is similar to the processing of \inst{CALL}'s to \textsc{eoa}'s and to \textsc{smc}'s and their processing is shared.
 				However, rather than finishing on a context-row the final row of this phase is a \textbf{scenario-row}, where, among other things, we determine the relevant precompile scenario
 
