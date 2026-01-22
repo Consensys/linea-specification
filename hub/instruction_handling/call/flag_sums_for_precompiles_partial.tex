@@ -20,12 +20,32 @@ section~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr II
 			\peekingSumPrcSuccessWillRevertFH
 			\define
 			\left[ \begin{array}{lcl}
-				+ & \extendedPeekingSumForCalls                                           \\
-				+ & \peekAccount  _{i + \callSecondCallerAccountRowOffset}                \\
-				+ & \peekAccount  _{i + \callSecondCalleeAccountRowOffset}                \\
-				+ & \peekScenario _{i + \callPrcSuccessWillRevertSecondScenarioRowOffset} \\
+				+ & \extendedPeekingSumForCalls                                            \\
+				+ & \peekAccount  _{i + \callSecondCallerAccountRowOffset                } \\
+				+ & \peekAccount  _{i + \callSecondCalleeAccountRowOffset                } \\
+				+ & \peekAccount  _{i + \callSecondDelegateOrCalleeAccountRowOffset      } \\ % TBD ... we may do this just for simplicity's sake
+				+ & \peekScenario _{i + \callPrcSuccessWillRevertSecondScenarioRowOffset } \\
 			\end{array} \right]
 		\]
+		\saNote{}
+		For context,
+		\begin{itemize}
+			\item account-row $n°(i + \callSecondCallerAccountRowOffset           )$ pertains to the caller,             ``at \inst{REVERT}-time'';
+			\item account-row $n°(i + \callSecondCalleeAccountRowOffset           )$ pertains to the callee,             ``at \inst{REVERT}-time'';
+			\item account-row $n°(i + \callSecondDelegateOrCalleeAccountRowOffset )$ pertains to the delegate or callee, ``at \inst{REVERT}-time'';
+		\end{itemize}
+		With successful \textsc{prc}-calls that are rolled-back one must
+		undo balance transfers both for the caller and the (precompile) recipient.
+		Note that there are no ``warmth''-related changes to undo since precompile addresses are warm by default,
+		though the constraints may implement undoing operations anyway (that amount to \texttt{Noop}'s).
+		All of this happens ``at \inst{REVERT}-time''.
+
+		\saNote{}
+		Recall that the only way to trigger precompiles is by directly targeting them,
+		by which we mean that the (trimmed) address argument popped off of the stack by the
+		\inst{CALL}-type instruction must be that of a precompiled contract.
+		Account delegation, as enabled by \cite{EIP-7702}, doesn't allow for
+		calling \textsc{prc}'s through delegation.
 	\item[\underline{Precompile success, current context won't revert:}]
 		\[
 			\peekingSumPrcSuccessWontRevertFH
