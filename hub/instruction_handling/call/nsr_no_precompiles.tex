@@ -8,16 +8,30 @@
 		}
 \end{center}
 In other words we consider all \inst{CALL}-type instructions that are either
-(\emph{a}) exceptional,
-(\emph{b}) unexceptional and aborted,
-(\emph{c}) unexceptional, unaborted targeting an externally owned account or a smart contract.
-The only case we \textbf{don't} deal with here is that of
-(\emph{d}) unexceptional, unaborted \inst{CALL}-type instructions targeting a precompile.
+\begin{itemize}
+	\item exceptional,
+	\item unexceptional and aborted,
+	\item unexceptional, unaborted \textsc{eoa}-calls or \textsc{smc}-calls
+\end{itemize}
+Where we abuse notation in terms of what we call
+\textsc{eoa}-calls and \textsc{smc}-calls as explained in
+section~(\ref{hub: instruction handling: call: general approach})
+
+Thus, the only case we \textbf{don't} deal with here is that of
+unexceptional, unaborted \inst{CALL}-type instructions targeting a precompile.
 This task will be taken up in \emph{in part} in
 section~(\ref{hub: instruction handling: call: peeking flags and nRows for precompiles first half}).
+
+For the cases covered in the above,
+that is: for all \inst{CALL}-type instructions except for precompile calls,
+we can, once and for all,
+settle the value of \nonStackRows{}
+and prescribe which peeking flags to activate.
+Everything is expressed in terms of the active \inst{CALL}-scenario flag.
 \begin{description}
 	\item[\underline{Setting \nonStackRows{} for non precompiles:}]
-		we can set \nonStackRows{} once and for all (as long as we are not entering a precompile, that is):
+		we can set \nonStackRows{} once and for all
+		for all \inst{CALL}-type instructions except for precompile calls:
 		\[
 			\nonStackRows_{i - \callFirstStackRowOffset}
 			=
@@ -35,8 +49,9 @@ section~(\ref{hub: instruction handling: call: peeking flags and nRows for preco
 				+ & (\callSmcSuccessWontRevertInitializeCalleeContextRowOffset + 1) & \!\!\! \cdot \!\!\! & \scenCallSmcSuccessWontRevert _{i + \callFirstScenarioRowOffset} \\
 			\end{array} \right]
 		\]
-	\item[\underline{Setting the peeking flags:}]
-		we set the peeking flags once and for all (as long as we are not entering a precompile, that is):
+	\item[\underline{Setting the peeking flags for non precompiles:}]
+		we set the peeking flags once and for all
+		for all \inst{CALL}-type instructions except for precompile calls:
 		\[
 			\hspace*{-3.8cm}
 			\left[ \begin{array}{lrcl}
@@ -64,7 +79,7 @@ Below are the concrete values of \nonStackRows{} depending on the \inst{CALL}-ty
 		\scenCallException{} & \staticxSH{} & (\callStaticxUpdateParentContextRowOffset                        + 1) \\ \hline
 		\scenCallException{} & \mxpxSH{}    & (\callMxpxUpdateParentContextRowOffset                           + 1) \\ \hline
 		\scenCallException{} & \oogxSH{}    & (\callOogxUpdateParentContextRowOffset                           + 1) \\ \hline \hline
-		\multicolumn{2}{|l|}{\scenCallAbortWillRevert}      & (\callAbortWillRevertUpdateCurrentContextRowOffset         + 1) \\ \hline \hline
+		\multicolumn{2}{|l|}{\scenCallAbortWillRevert}      & (\callAbortWillRevertUpdateCurrentContextRowOffset         + 1) \\ \hline
 		\multicolumn{2}{|l|}{\scenCallAbortWontRevert}      & (\callAbortWontRevertUpdateCurrentContextRowOffset         + 1) \\ \hline \hline
 		\multicolumn{2}{|l|}{\scenCallEoaSuccessWillRevert} & (\callEoaWillRevertCallerContextRowOffset                  + 1) \\ \hline
 		\multicolumn{2}{|l|}{\scenCallEoaSuccessWontRevert} & (\callEoaWontRevertCallerContextRowOffset                  + 1) \\ \hline \hline
