@@ -1,27 +1,33 @@
 \makeatletter
  
-\define@cmdkey [STP] {var} {anchorRow}   {}
-\define@cmdkey [STP] {var} {relOffset}   {}
-\define@cmdkey [STP] {var} {instruction} {}
-\define@cmdkey [STP] {var} {gasHi}       {}
-\define@cmdkey [STP] {var} {gasLo}       {}
-\define@cmdkey [STP] {var} {valueHi}     {}
-\define@cmdkey [STP] {var} {valueLo}     {}
-\define@cmdkey [STP] {var} {warmth}      {}
-\define@cmdkey [STP] {var} {exists}      {}
-\define@cmdkey [STP] {var} {mxpGas}      {}
+\define@cmdkey [STP] {var} {anchorRow}      {}
+\define@cmdkey [STP] {var} {relOffset}      {}
+\define@cmdkey [STP] {var} {instruction}    {}
+\define@cmdkey [STP] {var} {gasHi}          {}
+\define@cmdkey [STP] {var} {gasLo}          {}
+\define@cmdkey [STP] {var} {valueHi}        {}
+\define@cmdkey [STP] {var} {valueLo}        {}
+\define@cmdkey [STP] {var} {warmth}         {}
+\define@cmdkey [STP] {var} {exists}         {}
+\define@cmdkey [STP] {var} {isDelegated}    {}
+\define@cmdkey [STP] {var} {isDelegatedToSelf} {}
+\define@cmdkey [STP] {var} {delegateWarmth} {}
+\define@cmdkey [STP] {var} {mxpGas}         {}
 
 \presetkeys    [STP] {var} {
-anchorRow   = \missingParameter,
-relOffset   = \missingParameter,
-instruction = \missingParameter,
-gasHi       = \missingParameter,
-gasLo       = \missingParameter,
-valueHi     = \missingParameter,
-valueLo     = \missingParameter,
-warmth      = \missingParameter,
-exists      = \missingParameter,
-mxpGas      = \missingParameter,
+anchorRow         = \missingParameter,
+relOffset         = \missingParameter,
+instruction       = \missingParameter,
+gasHi             = \missingParameter,
+gasLo             = \missingParameter,
+valueHi           = \missingParameter,
+valueLo           = \missingParameter,
+warmth            = \missingParameter,
+exists            = \missingParameter,
+isDelegated       = \missingParameter,
+isDelegatedToSelf = \missingParameter,
+delegateWarmth    = \missingParameter,
+mxpGas            = \missingParameter,
 }{}
 
 
@@ -31,15 +37,18 @@ mxpGas      = \missingParameter,
     \setkeys[STP]{var}{#1}
     \texttt{setStpInstructionCall}             _{\cmdSTP@var@anchorRow}
     \left[ \begin{array}{ll}
-        \utt{Rel. row offset:}      & \cmdSTP@var@relOffset   \\
-        \utt{Instruction:}          & \cmdSTP@var@instruction \\
-        \utt{Gas high:}             & \cmdSTP@var@gasHi       \\
-        \utt{Gas low:}              & \cmdSTP@var@gasLo       \\
-        \utt{Value high:}           & \cmdSTP@var@valueHi     \\
-        \utt{Value low:}            & \cmdSTP@var@valueLo     \\
-        \utt{Target exists:}        & \cmdSTP@var@exists      \\
-        \utt{Target warmth:}        & \cmdSTP@var@warmth      \\
-        \utt{Memory expansion gas:} & \cmdSTP@var@mxpGas      \\
+        \utt{Rel. row offset:}      & \cmdSTP@var@relOffset         \\
+        \utt{Instruction:}          & \cmdSTP@var@instruction       \\
+        \utt{Gas high:}             & \cmdSTP@var@gasHi             \\
+        \utt{Gas low:}              & \cmdSTP@var@gasLo             \\
+        \utt{Value high:}           & \cmdSTP@var@valueHi           \\
+        \utt{Value low:}            & \cmdSTP@var@valueLo           \\
+        \utt{Target exists:}        & \cmdSTP@var@exists            \\
+        \utt{Target warmth:}        & \cmdSTP@var@warmth            \\
+        \utt{Is delegated:}         & \cmdSTP@var@isDelegated       \\
+        \utt{Is delegated to self:} & \cmdSTP@var@isDelegatedToSelf \\
+        \utt{Delegate warmth:}      & \cmdSTP@var@delegateWarmth    \\
+        \utt{Memory expansion gas:} & \cmdSTP@var@mxpGas            \\
     \end{array} \right] }
 
 \newcommand{\setStpInstructionCreate} [1] {

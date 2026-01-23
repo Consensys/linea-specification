@@ -81,6 +81,20 @@ Next we list shorthands related to the \textbf{callee account}
 		\locCalleeDelegateAddressLo & \define & \accDelegationAddressLo _{i + \callFirstCalleeAccountRowOffset} \\
 	\end{array} \right.
 \]
+We further define \locCalleeIsDelegatedToSelf{} as follows:
+\begin{enumerate}
+        \item \If $\locCalleeIsDelegated = \false $ \Then $\locCalleeIsDelegatedToSelf \define \false$
+        \item \If $\locCalleeIsDelegated = \true  $ \Then
+		\begin{enumerate}
+		        \item
+				\If   $\locCalleeDelegateAddressHi \neq \locCalleeAddressHi $ \Then $\locCalleeIsDelegatedToSelf \define \false$
+		        \item                                                               
+				\If   $\locCalleeDelegateAddressLo \neq \locCalleeAddressLo $ \Then $\locCalleeIsDelegatedToSelf \define \false$
+		        \item                                                               
+				\If   $\locCalleeDelegateAddressHi =    \locCalleeAddressHi $
+				\et   $\locCalleeDelegateAddressLo =    \locCalleeAddressLo $ \Then $\locCalleeIsDelegatedToSelf \define \true$
+		\end{enumerate}
+\end{enumerate}
 Next we list shorthands related to the \textbf{delegate (or callee) account}
 \[
 	\left\{ \begin{array}{lcl}
@@ -94,6 +108,11 @@ Next we list shorthands related to the \textbf{delegate (or callee) account}
 		% \locDelegateOrCalleeIsPrecompile & \define & \accTrmIsPrecompile _{i + \callFirstCalleeAccountRowOffset} \\
 	\end{array} \right.
 \]
+We further define \locDelegateWarmth{} as follows:
+\begin{enumerate}
+        \item \If $\locCalleeIsDelegated = \false $ \Then $\locDelegateWarmth \define \false                     $
+        \item \If $\locCalleeIsDelegated = \true  $ \Then $\locDelegateWarmth \define \locDelegateOrCalleeWarmth $
+\end{enumerate}
 We further introduce some shorthands for ``revert data'':
 \[
 	\left\{ \begin{array}{lcl}
