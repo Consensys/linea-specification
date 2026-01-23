@@ -29,7 +29,7 @@ We impose the following constraints:
 	\item[\underline{Setting allowable exceptions:}]
 		we impose that
 		\begin{enumerate}
-		        \item \If $\locIsCall = 1$ \Then
+			\item \If $\locIsCall = 1$ \Then
 				\[
 					\xAhoy _{i}
 					=
@@ -39,7 +39,7 @@ We impose the following constraints:
 						+ & \locOogx    \\
 					\end{array} \right]
 				\]
-		        \item \If $\locIsCallcode + \locIsDelegatecall + \locIsStaticcall = 1$ \Then
+			\item \If $\locIsCallcode + \locIsDelegatecall + \locIsStaticcall = 1$ \Then
 				\[
 					\xAhoy _{i}
 					=
@@ -88,7 +88,7 @@ We impose the following constraints:
 		\If $\miscOobFlag_{i + \callMiscRowOffset} = 1$ \Then
 		we impose that 
 		\begin{enumerate}
-			\item \If $\scenCallException _{i} = 1$ \Then
+			\item \If $\scenCallException _{i + \callFirstScenarioRowOffset} = 1$ \Then
 				\[
 					\setOobInstructionXcall {
 						anchorRow = i,
@@ -183,6 +183,97 @@ We impose the following constraints:
 			\locOogx =
 			\locStpOogx
 		\]
+	\item[\underline{Defining shorthands related to delegation:}]
+		we define some negations
+		\[
+			\hspace*{-2cm}
+			\left\{ \begin{array}{lcl}
+				\locCalleeIsntPrecompile          & \define & (1 - \locCalleeIsPrecompile          )              \\
+				\locCalleeHasEmptyCode            & \define & (1 - \locCalleeHasCode               )              \\
+				\locCalleeIsntDelegated           & \define & (1 - \locCalleeIsDelegated           ) \vspace{2mm} \\
+				\locDelegateOrCalleeHasEmptyCode  & \define & (1 - \locDelegateOrCalleeHasCode     )              \\
+				\locDelegateOrCalleeIsntDelegated & \define & (1 - \locDelegateOrCalleeIsDelegated )              \\
+			\end{array} \right.
+		\]
+		and some composite shorthands for \inst{CALL}'s whose effective target has empty code but isn't a precompile
+		\[
+			\hspace*{-2.7cm}
+			\left\{ \begin{array}{lcl}
+				\locCalleeIsntPrecompileButHasEmptyCode & \define &
+				\left[ \begin{array}{cl}
+					\cdot & \locCalleeIsntPrecompile \\
+					\cdot & \locCalleeHasEmptyCode   \\
+				\end{array} \right]
+				\vspace{2mm}
+				\\                                                              
+				\locCalleeIsDelegatedAndDelegateHasEmptyCode & \define &
+				\left[ \begin{array}{cl}
+					\cdot & \locCalleeIsDelegated            \\
+					\cdot & \locDelegateOrCalleeHasEmptyCode \\
+				\end{array} \right]
+				\vspace{2mm}
+				\\                                                              
+				\locCalleeIsDelegatedAndDelegateIsItselfDelegated & \define &
+				\left[ \begin{array}{cl}
+					\cdot & \locCalleeIsDelegated           \\
+					\cdot & \locDelegateOrCalleeIsDelegated \\
+				\end{array} \right]
+				\\
+			\end{array} \right.
+		\]
+		and some composite shorthands for \inst{CALL}'s whose effective target has nonempty code
+		\[
+			\hspace*{-2.7cm}
+			\left\{ \begin{array}{lcl}
+				\locCalleeHasNonemptyCodeAndIsntDelegated & \define &
+				\left[ \begin{array}{cl}
+					\cdot & \locCalleeHasCode       \\
+					\cdot & \locCalleeIsntDelegated \\
+				\end{array} \right]
+				\vspace{2mm}
+				\\                                                              
+				\locCalleeIsDelegatedAndDelegateHasNonemptyCodeAndIsntDelegated & \define &
+				\left[ \begin{array}{cl}
+					\cdot & \locCalleeIsDelegated             \\
+					\cdot & \locDelegateOrCalleeHasCode       \\
+					\cdot & \locDelegateOrCalleeIsntDelegated \\
+				\end{array} \right]
+				\\
+			\end{array} \right.
+		\]
+		We further set
+		\[
+			\hspace{-2cm}
+			\left\{ \begin{array}{lcl}
+				\locCallGeneralPrcScenario & \define & \locCalleeIsPrecompile
+				\vspace{2mm}
+				\\
+				\locCallGeneralEoaScenario & \define &
+				\left[ \begin{array}{cl}
+					+ & \locCalleeIsntPrecompileButHasEmptyCode           \\
+					+ & \locCalleeIsDelegatedAndDelegateHasEmptyCode      \\
+					+ & \locCalleeIsDelegatedAndDelegateIsItselfDelegated \\
+				\end{array} \right]
+				\vspace{2mm}
+				\\
+				\locCallGeneralSmcScenario & \define & 
+				\left[ \begin{array}{cl}
+					+ & \locCalleeHasNonemptyCodeAndIsntDelegated                       \\
+					+ & \locCalleeIsDelegatedAndDelegateHasNonemptyCodeAndIsntDelegated \\
+				\end{array} \right]
+				\\
+			\end{array} \right.
+		\]
+		\saNote{}
+		Recall that
+		constraint~(\ref{hub: account: empty code: precompiles have empty code}) and
+		constraint~(\ref{hub: account: account delegation: checks for delegation require non empty code})
+		forbid certain combinations of the binary values
+		\begin{enumerate}
+			\item \locCalleeIsPrecompile {}
+			\item \locCalleeHasCode      {}
+			\item \locCalleeIsDelegated  {}
+		\end{enumerate}
 	\item[\underline{Setting the \inst{CALL}-scenario flag:}]
 		we constrain the \inst{CALL}-scenario:
 		\begin{enumerate}
@@ -205,9 +296,9 @@ We impose the following constraints:
 				\Then we impose that
 				\[
 					\left\{ \begin{array}{lcl}
-						\scenCallPrc _{i + \callFirstScenarioRowOffset} & = & \locCalleeIsPrecompile                                     \\
-						\scenCallEoa _{i + \callFirstScenarioRowOffset} & = & (1 - \locCalleeIsPrecompile) \cdot (1 - \locCalleeHasCode) \\
-						\scenCallSmc _{i + \callFirstScenarioRowOffset} & = & \locCalleeHasCode                                          \\
+						\scenCallPrc _{i + \callFirstScenarioRowOffset} & = & \locCallGeneralEoaScenario \\
+						\scenCallEoa _{i + \callFirstScenarioRowOffset} & = & \locCallGeneralSmcScenario \\
+						\scenCallSmc _{i + \callFirstScenarioRowOffset} & = & \locCallGeneralPrcScenario \\
 					\end{array} \right.
 				\]
 			\item \If
@@ -216,7 +307,7 @@ We impose the following constraints:
 					+ & \scenCallPrcSuccessWontRevert _{i + \callFirstScenarioRowOffset} \\
 				\end{array} \right] = 1$
 				\Then we impose that
-			% \item \If $\scenCallPrc  _{i + \callFirstScenarioRowOffset} = 1$ \Then we impose that
+				% \item \If $\scenCallPrc  _{i + \callFirstScenarioRowOffset} = 1$ \Then we impose that
 				\[
 					\left\{ \begin{array}{lclr}
 						\scenCallPrcSuccessWillRevert _{i + \callFirstScenarioRowOffset} & = & \locCallerWillRevert     \\
