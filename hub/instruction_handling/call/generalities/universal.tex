@@ -287,8 +287,8 @@ We impose the following constraints:
 				\Then we impose that
 				\[
 					\left\{ \begin{array}{lclr}
-						\scenCallAbortWillRevert _{i + \callFirstScenarioRowOffset} & = & \locCallerWillRevert                \\
-						\scenCallAbortWontRevert _{i + \callFirstScenarioRowOffset} & = & 1 - \locCallerWillRevert & (\trash) \\
+						\scenCallAbortWillRevert _{i + \callFirstScenarioRowOffset} & = & \locCallerWillRevert     \\
+						\scenCallAbortWontRevert _{i + \callFirstScenarioRowOffset} & = & 1 - \locCallerWillRevert  & (\sanityCheck) \\
 					\end{array} \right.
 				\]
 			\item
@@ -311,14 +311,14 @@ We impose the following constraints:
 				\[
 					\left\{ \begin{array}{lclr}
 						\scenCallPrcSuccessWillRevert _{i + \callFirstScenarioRowOffset} & = & \locCallerWillRevert     \\
-						\scenCallPrcSuccessWontRevert _{i + \callFirstScenarioRowOffset} & = & 1 - \locCallerWillRevert  & (\trash) \\
+						\scenCallPrcSuccessWontRevert _{i + \callFirstScenarioRowOffset} & = & 1 - \locCallerWillRevert  & (\sanityCheck) \\
 					\end{array} \right.
 				\]
 			\item \If $\scenCallEoa  _{i + \callFirstScenarioRowOffset} = 1$ \Then we impose that
 				\[
 					\left\{ \begin{array}{lclr}
 						\scenCallEoaSuccessWillRevert _{i + \callFirstScenarioRowOffset} & = & \locCallerWillRevert     \\
-						\scenCallEoaSuccessWontRevert _{i + \callFirstScenarioRowOffset} & = & 1 - \locCallerWillRevert  & (\trash) \\
+						\scenCallEoaSuccessWontRevert _{i + \callFirstScenarioRowOffset} & = & 1 - \locCallerWillRevert  & (\sanityCheck) \\
 					\end{array} \right.
 				\]
 			\item \If $\scenCallSmc  _{i + \callFirstScenarioRowOffset} = 1$ \Then we impose that
@@ -327,18 +327,20 @@ We impose the following constraints:
 						\left[ \begin{array}{ll}
 							+ & \scenCallSmcSuccessWillRevert _{i + \callFirstScenarioRowOffset} \\
 							+ & \scenCallSmcFailureWillRevert _{i + \callFirstScenarioRowOffset} \\
-						\end{array} \right] & = & \locCallerWillRevert \vspace{2mm} \\
+						\end{array} \right] & = & \locCallerWillRevert
+						\vspace{2mm}
+						 \\
 						\left[ \begin{array}{ll}
 							+ & \scenCallSmcSuccessWontRevert _{i + \callFirstScenarioRowOffset} \\
 							+ & \scenCallSmcFailureWontRevert _{i + \callFirstScenarioRowOffset} \\
-						\end{array} \right] & = & 1 - \locCallerWillRevert & (\trash) \\
+						\end{array} \right] & = & 1 - \locCallerWillRevert & (\sanityCheck) \\
 					\end{array} \right.
 				\]
 				we further impose
 				\[
 					\left\{ \begin{array}{lclr}
 						\scenCallSmcFailure _{i + \callFirstScenarioRowOffset} & = & \locCalleeSelfReverts     \\
-						\scenCallSmcSuccess _{i + \callFirstScenarioRowOffset} & = & 1 - \locCalleeSelfReverts \\
+						\scenCallSmcSuccess _{i + \callFirstScenarioRowOffset} & = & 1 - \locCalleeSelfReverts  & (\sanityCheck) \\
 					\end{array} \right.
 				\]
 		\end{enumerate}
@@ -376,7 +378,9 @@ We impose the following constraints:
 					+ & \locStaticx \\
 					+ & \locMxpx    \\
 				\end{array} \right]
-				= 1 & \Then \!\!\! & \gasCost_{i} = 0 & (\trash) \vspace{2mm} \\
+				= 1 & \Then \!\!\! & \gasCost_{i} = 0 & (\trash)
+				\vspace{2mm}
+				\\
 				\If
 				\left[ \begin{array}{cl}
 					+ & \locOogx                                          \\
@@ -393,14 +397,16 @@ We impose the following constraints:
 		\[
 			\hspace*{-2cm}
 			\left\{ \begin{array}{lclr}
-				\If \locStaticx  = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\trash) \\
-				\If \locMxpx     = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\trash) \\
-				\If \locOogx     = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\trash) \\
+				\If \locStaticx  = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\sanityCheck) \\
+				\If \locMxpx     = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\sanityCheck) \\
+				\If \locOogx     = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\sanityCheck) \\
 				\If \scenCallAbort _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasNext_{i} = \gasActual_{i} - \locStpGasUpfront + \locStpGasStipend \\
 				\If \scenCallEoa   _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasNext_{i} = \gasActual_{i} - \locStpGasUpfront + \locStpGasStipend \\
 				\If \scenCallSmc   _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasNext_{i} = \gasActual_{i} - \locStpGasUpfront - \locStpGasPoop    \\
 				\If \scenCallPrc   _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasNext_{i} = \ob{TODO!}                                             \\
 			\end{array} \right.
 		\]
-		\saNote{} We will complete the specification of \gasNext{} in case $\scenCallPrc \equiv 1$ in section~(\ref{hub: instruction handling: call: precompile memory operations}). 
+		\saNote{}
+		Pricing of \inst{CALL}'s to precompiles is far more complex than for other kinds of calls.
+		We will complete the specification of \gasNext{} in case $\scenCallPrc \equiv 1$ in section~(\ref{hub: instruction handling: call: precompile memory operations}). 
 \end{description}
