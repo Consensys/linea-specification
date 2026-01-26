@@ -19,6 +19,10 @@ In the present section we describe the various account operations that are requi
 				\multicolumn{3}{l}{\textcolor{solarized-green}{\texttt{<caller balance operation set below>}}} \\
 				\multicolumn{3}{l}{\accSameNonce                     {i}{\callFirstCallerAccountRowOffset}} \\
 				\multicolumn{3}{l}{\accSameCode                      {i}{\callFirstCallerAccountRowOffset}} \\
+				\multicolumn{3}{l}{\accDontCheckForDelegation {
+					anchorRow = i                                ,
+					relOffset = \callFirstCallerAccountRowOffset ,
+				}} \\
 				\multicolumn{3}{l}{\accSameWarmth                    {i}{\callFirstCallerAccountRowOffset}} \\
 				\multicolumn{3}{l}{\accSameDeploymentNumber          {i}{\callFirstCallerAccountRowOffset}} \\
 				\multicolumn{3}{l}{\accSameDeploymentStatus          {i}{\callFirstCallerAccountRowOffset}} \\
@@ -29,9 +33,9 @@ In the present section we describe the various account operations that are requi
 				\accRlpAddrFlag  _{i + \callFirstCallerAccountRowOffset} & = & 0 \vspace{2mm} \\
 				\multicolumn{3}{l}{
 					\standardDomSubStamps {
-						anchorRow = i,
-						relOffset = \callFirstCallerAccountRowOffset,
-						domOffset = 0,
+						anchorRow = i                                ,
+						relOffset = \callFirstCallerAccountRowOffset ,
+						domOffset = \callFirstCallerAccountRowOffset ,
 					}
 				} \\
 			\end{array} \right.
@@ -46,7 +50,7 @@ In the present section we describe the various account operations that are requi
 				\]
 			\item \If $\scenCallBalanceUpdateRequired _{i} = 1$ \Then
 				\begin{enumerate}
-				        \item \If $\locIsCall = 1$ \Then
+					\item \If $\locIsCall = 1$ \Then
 						\[
 							\accDecrementBalance
 							{i}{\callFirstCallerAccountRowOffset}{\locValueLo}
@@ -69,7 +73,7 @@ In the present section we describe the various account operations that are requi
 				It is noteworthy that while no \emph{actual} value transfer takes place,
 				\inst{CALLCODE} may nonetheless incur a value transfer cost.
 		\end{enumerate}
-	\item[\underline{First \calleee{} account-row $n^°(i + \callFirstCalleeAccountRowOffset)$:}]
+	\item[\underline{First \calleeName{} account-row $n^°(i + \callFirstCalleeAccountRowOffset)$:}]
 		we impose that
 		\[
 			\left\{ \begin{array}{lcll}
@@ -79,12 +83,16 @@ In the present section we describe the various account operations that are requi
 				\multicolumn{4}{l}{\textcolor{solarized-green}{\texttt{<callee balance operation set below>}}} \\
 				\multicolumn{4}{l}{\accSameNonce             {i}{\callFirstCalleeAccountRowOffset}} \\
 				\multicolumn{4}{l}{\accSameCode              {i}{\callFirstCalleeAccountRowOffset}} \\
+				\multicolumn{3}{l}{\accCheckForDelegationIfAccountHasCode {
+					anchorRow = i                                ,
+					relOffset = \callFirstCalleeAccountRowOffset ,
+				}} \\
 				\multicolumn{4}{l}{\textcolor{solarized-green}{\texttt{<callee warmth operation set below>}}} \\
 				\multicolumn{4}{l}{\accSameDeploymentNumber  {i}{\callFirstCalleeAccountRowOffset}} \\
 				\multicolumn{4}{l}{\accSameDeploymentStatus  {i}{\callFirstCalleeAccountRowOffset}} \\
 				\multicolumn{4}{l}{\accSameMarkedForDeletionFlag {i}{\callFirstCalleeAccountRowOffset}} \\
 				%%%%
-				\accRomLexFlag   _{i + \callFirstCalleeAccountRowOffset} & = & \scenCallSmc _{i} \\
+				\accRomLexFlag   _{i + \callFirstCalleeAccountRowOffset} & = & 0 \\
 				\multicolumn{4}{l}{\accTrimAddress
 				{i}{\callFirstCalleeAccountRowOffset}
 				{\locRawAddressHi}
@@ -93,22 +101,25 @@ In the present section we describe the various account operations that are requi
 				\accRlpAddrFlag  _{i + \callFirstCalleeAccountRowOffset} & = & 0 \vspace{2mm} \\
 				\multicolumn{4}{l}{
 					\standardDomSubStamps {
-						anchorRow = i,
-						relOffset = \callFirstCalleeAccountRowOffset,
-						domOffset = 1,
+						anchorRow = i                                ,
+						relOffset = \callFirstCalleeAccountRowOffset ,
+						domOffset = \callFirstCalleeAccountRowOffset ,
 					}
 				} \\
 			\end{array} \right.
 		\]
 		\saNote{}
 		The various $(\trash)$ constraints above are redundant with the ``address trimming'' constraint.
-	\item[\underline{Setting the \calleee{} balance operation on account-row $n^°(i + \callFirstCalleeAccountRowOffset)$:}]
+
+		\saNote{}
+		We obtain the $\accCfi{}$ in the following row, if necessary.
+	\item[\underline{Setting the \calleeName{} balance operation on account-row $n^°(i + \callFirstCalleeAccountRowOffset)$:}]
 		we impose that
 		\begin{enumerate}
 			\item \If $\scenCallBalanceUpdateNotRequired _{i} = 1$ \Then $\accSameBalance      {i}{\callFirstCalleeAccountRowOffset}$
 			\item \If $\scenCallBalanceUpdateRequired    _{i} = 1$ \Then
 				\begin{enumerate}
-				        \item \If $\locIsCall = 1$ \Then
+					\item \If $\locIsCall = 1$ \Then
 						\[
 							\accIncrementBalance
 							{i}{\callFirstCalleeAccountRowOffset}{\locValueLo}
@@ -128,10 +139,66 @@ In the present section we describe the various account operations that are requi
 					{i}{\callFirstCalleeAccountRowOffset}{\locIsCall \cdot \locValueLo}
 				\]
 		\end{enumerate}
-	\item[\underline{Setting the \calleee{} warmth update on account-row $n^°(i + \callFirstCalleeAccountRowOffset)$:}]
+	\item[\underline{Setting the \calleeName{} warmth update on account-row $n^°(i + \callFirstCalleeAccountRowOffset)$:}]
 		we impose that
 		\begin{enumerate}
 			\item \If $\scenCallCalleeWarmthUpdateNotRequired _{i} = 1$ \Then $\accSameWarmth    {i}{\callFirstCalleeAccountRowOffset}$
 			\item \If $\scenCallCalleeWarmthUpdateRequired    _{i} = 1$ \Then $\accTurnOnWarmth  {i}{\callFirstCalleeAccountRowOffset}$
+		\end{enumerate}
+	\item[\underline{First \delegateName{} / \calleeName{} account-row $n^°(i + \callFirstDelegateOrCalleeAccountRowOffset)$:}]
+		we impose that
+		\[
+			\left\{ \begin{array}{lcll}
+				\multicolumn{4}{l}{\textcolor{solarized-green}{\texttt{<delegate or callee address set below>}}} \\
+				\multicolumn{4}{l}{\accSameBalance           {i}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
+				\multicolumn{4}{l}{\accSameNonce             {i}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
+				\multicolumn{4}{l}{\accSameCode              {i}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
+				\multicolumn{3}{l}{\accCheckForDelegationIfAccountHasCode {
+					anchorRow = i                                          ,
+					relOffset = \callFirstDelegateOrCalleeAccountRowOffset ,
+				}} \\
+				\multicolumn{4}{l}{\textcolor{solarized-green}{\texttt{<delegate or callee warmth operation set below>}}} \\
+				\multicolumn{4}{l}{\accSameDeploymentNumber      {i}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
+				\multicolumn{4}{l}{\accSameDeploymentStatus      {i}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
+				\multicolumn{4}{l}{\accSameMarkedForDeletionFlag {i}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
+				%%%%
+				\accRomLexFlag   _{i + \callFirstDelegateOrCalleeAccountRowOffset} & = & \scenCallUnexceptional _{i + \callFirstScenarioRowOffset} \cdot \scenCallSmc _{i + \callFirstScenarioRowOffset} \\
+				\multicolumn{4}{l}{
+					\accTrimAddress
+					{i}{\callFirstDelegateOrCalleeAccountRowOffset}
+					{\locExplicitDelegateOrCalleeAddressHi}
+					{\locExplicitDelegateOrCalleeAddressLo}} \\
+				\accTrmFlag      _{i + \callFirstDelegateOrCalleeAccountRowOffset} & = & \rOne & (\trash) \\
+				\accRlpAddrFlag  _{i + \callFirstDelegateOrCalleeAccountRowOffset} & = & 0 \vspace{2mm} \\
+				\multicolumn{4}{l}{
+					\standardDomSubStamps {
+						anchorRow = i                                ,
+						relOffset = \callFirstDelegateOrCalleeAccountRowOffset ,
+						domOffset = \callFirstDelegateOrCalleeAccountRowOffset ,
+					}
+				} \\
+			\end{array} \right.
+		\]
+	\item[\underline{Setting the address of the first \delegateName{} / \calleeName{} account-row $n^°(i + \callFirstDelegateOrCalleeAccountRowOffset)$:}]
+		we define the address of the account invoked in the above
+		\begin{enumerate}
+		        \item
+				\If   $\locCalleeIsntDelegated = \true$
+				\Then $\accSameAddr {i}{\callFirstDelegateOrCalleeAccountRowOffset}{\callFirstCalleeAccountRowOffset}$
+		        \item
+				\If   $\locCalleeIsDelegated = \true$
+				\Then
+				\[
+					\left\{ \begin{array}{lcl}
+						\accAddressHi    _{i + \callFirstDelegateOrCalleeAccountRowOffset } & \define & \locCalleeDelegateAddressHi \\
+						\accAddressLo    _{i + \callFirstDelegateOrCalleeAccountRowOffset } & \define & \locCalleeDelegateAddressLo \\
+					\end{array} \right.
+				\]
+		\end{enumerate}
+	\item[\underline{Updating the warmth of the first \delegateName{} / \calleeName{} account-row $n^°(i + \callFirstDelegateOrCalleeAccountRowOffset)$:}]
+		we impose that
+		\begin{enumerate}
+			\item \If $\scenCallCalleeWarmthUpdateNotRequired _{i} = 1$ \Then $\accSameWarmth    {i}{\callFirstDelegateOrCalleeAccountRowOffset}$
+			\item \If $\scenCallCalleeWarmthUpdateRequired    _{i} = 1$ \Then $\accTurnOnWarmth  {i}{\callFirstDelegateOrCalleeAccountRowOffset}$
 		\end{enumerate}
 \end{description}

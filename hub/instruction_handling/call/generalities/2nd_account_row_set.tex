@@ -17,34 +17,8 @@ This undoing operation pertains to
 (\emph{a}) the value transfer, both for the caller and callee,
 (\emph{b}) the warmth update of the callee.
 \begin{description}
-	\item[\underline{Account-row $n^°(i + \callSecondCallerAccountRowOffset)$:}] 
-		we impose that
-		\[
-			\left\{ \begin{array}{lcl}
-				\multicolumn{3}{l}{\accSameAddr                      {i}{\callSecondCallerAccountRowOffset}{\callFirstCallerAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accUndoBalanceUpdate             {i}{\callSecondCallerAccountRowOffset}{\callFirstCallerAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accSameNonce                     {i}{\callSecondCallerAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accSameCode                      {i}{\callSecondCallerAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accSameWarmth                    {i}{\callSecondCallerAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accSameDeploymentNumber          {i}{\callSecondCallerAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accSameDeploymentStatus          {i}{\callSecondCallerAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accSameMarkedForDeletionFlag     {i}{\callSecondCallerAccountRowOffset}} \\
-				%%%%
-				\accRomLexFlag   _{i + \callSecondCallerAccountRowOffset} & = & 0 \\
-				\accTrmFlag      _{i + \callSecondCallerAccountRowOffset} & = & 0 \\
-				\accRlpAddrFlag  _{i + \callSecondCallerAccountRowOffset} & = & 0 \vspace{2mm} \\
-				\multicolumn{3}{l}{\textcolor{solarized-green}{\texttt{<DOM/SUB stamp operation set below>}}} \\
-				% \multicolumn{3}{l}{
-				% 	\standardDomSubStamps {
-				% 		anchorRow = i,
-				% 		relOffset = \callSecondCallerAccountRowOffset,
-				% 		domOffset = 2,
-				% 	}
-				% } \\
-			\end{array} \right.
-		\]
-	\item[] 
-		we impose that
+	\item[\underline{Setting the balance operation on account-row $n^°(i + \callSecondCallerAccountRowOffset)$:}] 
+		we impose
 		\begin{enumerate}
 			\item \If $\scenCallBalanceUpdateUndoneWithCalleeFailure _{i + \callFirstScenarioRowOffset} = 1$ \Then
 				\[

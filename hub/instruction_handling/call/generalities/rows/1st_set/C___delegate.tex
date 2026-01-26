@@ -1,0 +1,41 @@
+\item[\underline{First \delegateName{} / \calleeName{} account-row $n^°(i + \callFirstDelegateOrCalleeAccountRowOffset)$:}]
+	we impose that
+	\[
+		\left\{ \begin{array}{lcll}
+			\multicolumn{4}{l}{\textcolor{solarized-green}{\texttt{<delegate / callee address set below>}}} \\
+			\multicolumn{4}{l}{\accSameBalance           {i}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
+			\multicolumn{4}{l}{\accSameNonce             {i}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
+			\multicolumn{4}{l}{\accSameCode              {i}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
+			\multicolumn{3}{l}{\accCheckForDelegationIfAccountHasCode {
+				anchorRow = i                                          ,
+				relOffset = \callFirstDelegateOrCalleeAccountRowOffset ,
+			}} \\
+			\multicolumn{4}{l}{\textcolor{solarized-green}{\texttt{<delegate / callee warmth operation set below>}}} \\
+			\multicolumn{4}{l}{\accSameDeploymentNumber      {i}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
+			\multicolumn{4}{l}{\accSameDeploymentStatus      {i}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
+			\multicolumn{4}{l}{\accSameMarkedForDeletionFlag {i}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
+			%%%%
+			\accRomLexFlag   _{i + \callFirstDelegateOrCalleeAccountRowOffset} & = & \scenCallUnexceptional _{i + \callFirstScenarioRowOffset} \cdot \scenCallSmc _{i + \callFirstScenarioRowOffset} \\
+			\multicolumn{4}{l}{
+				\accTrimAddress
+				{i}{\callFirstDelegateOrCalleeAccountRowOffset}
+				{\locExplicitDelegateOrCalleeAddressHi}
+				{\locExplicitDelegateOrCalleeAddressLo}} \\
+			\accTrmFlag      _{i + \callFirstDelegateOrCalleeAccountRowOffset} & = & \rOne & (\trash) \\
+			\accRlpAddrFlag  _{i + \callFirstDelegateOrCalleeAccountRowOffset} & = & 0 \vspace{2mm} \\
+			\multicolumn{4}{l}{
+				\standardDomSubStamps {
+					anchorRow = i                                ,
+					relOffset = \callFirstDelegateOrCalleeAccountRowOffset ,
+					domOffset = \callFirstDelegateOrCalleeAccountRowOffset ,
+				}
+			} \\
+		\end{array} \right.
+	\]
+	\saNote{}
+	We are yet to define the shorthands
+	\locExplicitDelegateOrCalleeAddressHi{} and
+	\locExplicitDelegateOrCalleeAddressLo{}.
+	We do this below.
+
+
