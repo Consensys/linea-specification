@@ -1,7 +1,7 @@
 We provide some \textbf{partial peeking flag sums for precompiles} below.
-We can't precisely predict the number of required rows at this point in time. 
-We will be setting \nonStackRows{} and associated peeking flag sums on the scenario row that marks the end of the first half of peeking flags for \inst{CALL}'s to precompiles. 
-This will be achieved in 
+We can't precisely predict the number of required rows at this point in time.
+We will be setting \nonStackRows{} and associated peeking flag sums on the scenario row that marks the end of the first half of peeking flags for \inst{CALL}'s to precompiles.
+This will be achieved in
 section~(\ref{hub: instruction handling: call: precompiles: generalities}),
 section~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr I}) and
 section~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr II}).
@@ -20,25 +20,25 @@ section~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr II
 			\peekingSumPrcSuccessWillRevertFH
 			\define
 			\left[ \begin{array}{lcl}
-				+ & \extendedPeekingSumForCalls                                            \\
+				+ & \extendedPeekingSumForCalls                                            \\ \hline
 				+ & \peekAccount  _{i + \callSecondCallerAccountRowOffset                } \\
 				+ & \peekAccount  _{i + \callSecondCalleeAccountRowOffset                } \\
-				+ & \peekAccount  _{i + \callSecondDelegateOrCalleeAccountRowOffset      } \\ % TBD ... we may do this just for simplicity's sake
+				+ & \peekAccount  _{i + \callSecondDelegateOrCalleeAccountRowOffset      } \\ \hline % TBD ... we may do this just for simplicity's sake
 				+ & \peekScenario _{i + \callPrcSuccessWillRevertSecondScenarioRowOffset } \\
 			\end{array} \right]
 		\]
 		\saNote{}
 		For context,
 		\begin{itemize}
-			\item account-row $n°(i + \callSecondCallerAccountRowOffset           )$ pertains to the \callerName{},                    ``at \inst{REVERT}-time'';
-			\item account-row $n°(i + \callSecondCalleeAccountRowOffset           )$ pertains to the \calleeName{},                    ``at \inst{REVERT}-time'';
-			\item account-row $n°(i + \callSecondDelegateOrCalleeAccountRowOffset )$ pertains to the \delegateName{} or \calleeName{}, ``at \inst{REVERT}-time'';
+			\item \atRevertTime{} account-row $n°(i + \callSecondCallerAccountRowOffset           )$ pertains to the \callerName{},
+			\item \atRevertTime{} account-row $n°(i + \callSecondCalleeAccountRowOffset           )$ pertains to the \calleeName{},
+			\item \atRevertTime{} account-row $n°(i + \callSecondDelegateOrCalleeAccountRowOffset )$ pertains to the \delegateName{} or \calleeName{},
 		\end{itemize}
 		With successful \textsc{prc}-calls that are rolled-back one must
 		undo balance transfers both for the caller and the (precompile) recipient.
 		Note that there are no ``warmth''-related changes to undo since precompile addresses are warm by default,
 		though the constraints may implement undoing operations anyway (that amount to \texttt{Noop}'s).
-		All of this happens ``at \inst{REVERT}-time''.
+		All of this happens \atRevertTime{}.
 
 		\saNote{}
 		Recall that the only way to trigger precompiles is by directly targeting them,
