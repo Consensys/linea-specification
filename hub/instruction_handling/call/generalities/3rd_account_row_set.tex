@@ -13,29 +13,6 @@ The present section finishes the ``reverting/undoing'' of \textbf{callee} accoun
 \]
 case. What remains to be done is to undo the warmth update induced by the underlying \inst{CALL}-instruction.
 \begin{description}
-	\item[\underline{Account-row $n^°(i + \callThirdCalleeAccountRowOffset)$:}] 
-		we impose that
-		\[
-			\left\{ \begin{array}{lcl}
-				\multicolumn{3}{l}{\accSameAddr             {i}{\callThirdCalleeAccountRowOffset}{\callSecondCalleeAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accSameBalance          {i}{\callThirdCalleeAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accSameNonce            {i}{\callThirdCalleeAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accSameCode             {i}{\callThirdCalleeAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accUndoWarmthUpdate     {i}{\callThirdCalleeAccountRowOffset}{\callFirstCalleeAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accSameDeploymentNumber {i}{\callThirdCalleeAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accSameDeploymentStatus {i}{\callThirdCalleeAccountRowOffset}} \\
-				%%%%
-				\multicolumn{3}{l}{\accSameMarkedForDeletionFlag {i}{\callThirdCalleeAccountRowOffset}} \\
-				\accRomLexFlag   _{i + \callThirdCalleeAccountRowOffset} & = & 0 \\
-				\accTrmFlag      _{i + \callThirdCalleeAccountRowOffset} & = & 0 \\
-				\accRlpAddrFlag  _{i + \callThirdCalleeAccountRowOffset} & = & 0 \vspace{2mm} \\
-				\multicolumn{3}{l}{
-					\revertDomSubStamps {
-						anchorRow        = i,
-						relOffset        = \callThirdCalleeAccountRowOffset,
-						subOffset        = 4,
-						}
-					} \\
-			\end{array} \right.
-		\]
+		\input{instruction_handling/call/generalities/rows/3rd_set/B___callee}
+		\input{instruction_handling/call/generalities/rows/3rd_set/C___delegate}
 \end{description}

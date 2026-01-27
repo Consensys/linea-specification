@@ -7,72 +7,27 @@
 		\end{array} \right.
 		}
 \end{center}
-When
-a (successful) \inst{CALL} to precompile is (eventually) reverted,
-a pure transfer to an externally owned account is eventually reverted,
-a \inst{CALL} to a smartcontract is (eventually) unsuccessful or
-a \inst{CALL} to a smartcontract is successful but later on execution is reverted
+Consider a \inst{CALL}-type instruction which falls into one of the following categories:
+\begin{itemize}
+	\item a pure transfer to an externally owned account is eventually reverted,
+	\item a \inst{CALL} to a smart contract is unsuccessful or
+	\item a \inst{CALL} to a smart contract is successful but later on the caller frame is reverted,
+	\item a (successful) \inst{CALL} to precompile is (eventually) reverted,
+\end{itemize}
+where we abuse nomenclature as explained in
+section~(\ref{hub: instruction handling: call: general approach}),
+in each and every one of these scenarios
 certain account operations must be undone.
-This undoing operation pertains to
+These undoing operations pertain to
 (\emph{a}) the value transfer, both for the caller and callee,
 (\emph{b}) the warmth update of the callee.
 \begin{description}
-	\item[\underline{Second \calleeName{} account-row $n^°(i + \callSecondCalleeAccountRowOffset)$:}] 
-		we impose that
-		\[
-			\left\{ \begin{array}{lcl}
-				\multicolumn{3}{l}{\accSameAddr              {i}{\callSecondCalleeAccountRowOffset}{\callFirstCalleeAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accUndoBalanceUpdate     {i}{\callSecondCalleeAccountRowOffset}{\callFirstCalleeAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accSameNonce             {i}{\callSecondCalleeAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accSameCode              {i}{\callSecondCalleeAccountRowOffset}} \\
-				\multicolumn{3}{l}{\textcolor{solarized-green}{\texttt{<warmth operation set below>}}} \\
-				\multicolumn{3}{l}{\accSameDeploymentNumber  {i}{\callSecondCalleeAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accSameDeploymentStatus  {i}{\callSecondCalleeAccountRowOffset}} \\
-				\multicolumn{3}{l}{\accSameMarkedForDeletionFlag {i}{\callSecondCalleeAccountRowOffset}} \\
-				%%%%
-				\accRomLexFlag   _{i + \callSecondCalleeAccountRowOffset} & = & 0 \\
-				\accTrmFlag      _{i + \callSecondCalleeAccountRowOffset} & = & 0 \\
-				\accRlpAddrFlag  _{i + \callSecondCalleeAccountRowOffset} & = & 0 \vspace{2mm} \\
-				\multicolumn{3}{l}{\textcolor{solarized-green}{\texttt{<DOM/SUB stamp operation set below>}}} \\
-				% \multicolumn{3}{l}{
-				% 	\standardDomSubStamps {
-				% 		anchorRow = i,
-				% 		relOffset = \callSecondCalleeAccountRowOffset,
-				% 		domOffset = 3,
-				% 	}
-				% } \\
-			\end{array} \right.
-		\]
-	\item[\underline{Setting the balance and warmth operation on account-row $n^°(i + \callSecondCalleeAccountRowOffset)$:}] 
-		we impose that
-		\begin{enumerate}
-			\item \If $\scenCallBalanceUpdateUndoneWithCalleeFailure _{i + \callFirstScenarioRowOffset} = 1$ \Then
-				\[
-					\left\{ \begin{array}{lcl}
-						\revertWithChildFailureDomSubStamps {
-							anchorRow        = i                                 ,
-							relOffset        = \callSecondCalleeAccountRowOffset ,
-							childRevertStamp = \locCalleeRevertStamp             ,
-							subOffset        = \callSecondCalleeAccountRowOffset ,
-						} \\
-						\accSameWarmth {i}{\callSecondCalleeAccountRowOffset} \\
-					\end{array} \right.
-					% \revertWithChildFailureDomSubStamps {i}{\callSecondCallerAccountRowOffset}
-				\]
-				\saNote{}
-				For \scenCallSmcFailureWillRevert{} (which is one of the two subcases of the above) warmth \textbf{will} be reverted but with the caller reverting (not with failure of the child context, see section~(\ref{hub: instruction handling: call: third  set of account rows}).
-			\item \If $\scenCallBalanceUpdateUndoneWithCallerRevert _{i + \callFirstScenarioRowOffset} = 1$ \Then
-				\[
-					\left\{ \begin{array}{lcl}
-						\revertDomSubStamps {
-							anchorRow = i                                 ,
-							relOffset = \callSecondCalleeAccountRowOffset ,
-							subOffset = \callSecondCalleeAccountRowOffset ,
-						} \\
-						\accUndoWarmthUpdate {i}{\callSecondCalleeAccountRowOffset}{\callFirstCalleeAccountRowOffset} \\
-					\end{array} \right.
-				\]
-		\end{enumerate}
+		\input{instruction_handling/call/generalities/rows/2nd_set/A___caller}
+		\input{instruction_handling/call/generalities/rows/2nd_set/A___caller_balance}
+		\input{instruction_handling/call/generalities/rows/2nd_set/B___callee}
+		\input{instruction_handling/call/generalities/rows/2nd_set/B___callee_warmth_and_dom_sub_stamps}
+		\input{instruction_handling/call/generalities/rows/2nd_set/C___delegate}
+		\input{instruction_handling/call/generalities/rows/2nd_set/C___delegate_warmth_and_dom_sub_stamps}
 \end{description}
 
 \noindent Table~(\ref{hub: instruction handling: call: generalities: fig: when to revert warmth and balance}) below subsumes when these operations must be undone:
@@ -84,13 +39,13 @@ This undoing operation pertains to
 			\hline
 			\inst{CALL}-scenario          & Callee account actions                                 \\ \hline \hline
 			\scenCallEoaSuccessWillRevert & \undoSignifier{} balance update with \textcolor{draculapurple}{caller revert}     \\
-                                                      & \undoSignifier{} warmth  update with \textcolor{draculapurple}{caller revert}     \\ \hline \hline
+			& \undoSignifier{} warmth  update with \textcolor{draculapurple}{caller revert}     \\ \hline \hline
 			\scenCallSmcFailureWillRevert & \undoSignifier{} balance update with \textcolor{draculaorange}{child failure}     \\
-                                                      & \undoSignifier{} warmth  update with \textcolor{draculapurple}{caller revert}     \\ \hline
+			& \undoSignifier{} warmth  update with \textcolor{draculapurple}{caller revert}     \\ \hline
 			\scenCallSmcFailureWontRevert & \undoSignifier{} balance update with \textcolor{draculaorange}{child failure}     \\
-                                                      & \sameSignifier{} warmth as after initial update        \\ \hline
+			& \sameSignifier{} warmth as after initial update        \\ \hline
 			\scenCallSmcSuccessWillRevert & \undoSignifier{} balance update with \textcolor{draculapurple}{caller revert}     \\
-                                                      & \undoSignifier{} warmth  update with \textcolor{draculapurple}{caller revert}     \\ \hline \hline
+			& \undoSignifier{} warmth  update with \textcolor{draculapurple}{caller revert}     \\ \hline \hline
 			\scenCallPrcSuccessWillRevert & \undoSignifier{} balance update with \textcolor{draculapurple}{caller revert}     \\ \hline
 		\end{tabular}
 		\caption{Observe that there is \textbf{no undoing of the warmth update} in the \scenCallPrcSuccessWillRevert{} case. Precompiles are (constrained to be) perpetually warm in our arithmetization, see section~(\ref{hub: consistencies: account}).}
