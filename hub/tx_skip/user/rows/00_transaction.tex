@@ -1,0 +1,73 @@
+\item[\underline{\underline{Transaction-row n$^°~(\bm{i + \roffTxSkipUserTransaction})$:}}]
+	we define shorthands
+	\[
+		\left\{ \begin{array}{lcl}
+			\locIsDeploymentTransaction  & = & \txIsDeployment _{i + \roffTxSkipUserTransaction} \\
+			\locIsMessageCallTransaction & = & 1 - \locIsDeploymentTransaction                   \\
+		\end{array} \right.
+	\]
+	we peek into the transaction and justify portions of it:
+	\begin{description}
+		\item[\underline{(Partially) justifying \txRequiresEvmExecution{}:}]
+			we impose the following
+			\begin{enumerate}
+				\item $\txRequiresEvmExecution_{i + \roffTxSkipUserTransaction} = \rZero$;
+				\item
+					\If   $\locIsMessageCallTransaction = 1$
+					\Then
+					\[
+						\left[ \begin{array}{cl}
+							+ & \locRecipientHasEmptyCode                         \\
+							+ & \locRecipientIsDelegatedAndDelegationHasEmptyCode \\
+							+ & \locRecipientIsDelegatedAndDelegationIsDelegated  \\
+						\end{array} \right]
+						= 1
+					\]
+					where we set
+					\[
+						\left\{ \begin{array}{lcl}
+							\locRecipientHasNonemptyCode                      & \define & \accHasCode      _{i + \roffTxSkipUserRecipientAccount}                                                                     \\
+							\locRecipientIsDelegated                          & \define & \accIsDelegated  _{i + \roffTxSkipUserRecipientAccount}                                                                     \\
+							\locDelegateHasNonemptyCode                       & \define & \accHasCode      _{i + \roffTxSkipUserRecipientOrDelegationAccount}                                                         \\
+							\locDelegateIsDelegated                           & \define & \accIsDelegated  _{i + \roffTxSkipUserRecipientOrDelegationAccount}                                                         \\
+							\locRecipientHasEmptyCode                         & \define & 1 - \locRecipientHasNonemptyCode                                                                                            \\
+							\locRecipientIsDelegatedAndDelegationHasEmptyCode & \define & \locRecipientHasNonemptyCode \cdot \locRecipientIsDelegated \cdot \locDelegateHasEmptyCode                                  \\
+							\locRecipientIsDelegatedAndDelegationIsDelegated  & \define & \locRecipientHasNonemptyCode \cdot \locRecipientIsDelegated \cdot \locDelegateHasNonemptyCode \cdot \locDelegateIsDelegated \\
+						\end{array} \right.
+					\]
+				\item
+					\If   $\locIsDeploymentTransaction = 1$
+					\Then $\txInitCodeSize _{i + \roffTxSkipUserTransaction}    = 0$
+			\end{enumerate}
+		\item[\underline{Justifying $\txFinalRefundCounter$:}]
+			we impose that $\txFinalRefundCounter _{i + \roffTxSkipUserTransaction} = \refund _{i}$
+
+			\saNote{}
+			Starting with \textsc{Prague} and more specifically with
+			\cite{EIP-7702}, type-4 transactions which require no code execution
+			still accrue refunds due to successful delegation operations.
+		\item[\underline{Justifying $\txInitialBalance$:}]
+			we impose that $\txInitialBalance _{i + \roffTxSkipUserTransaction} = \accBalance _{i + \roffTxSkipUserSenderAccount}$
+		\item[\underline{Justifying \txStatusCode{}:}]
+			we impose that $\txStatusCode _{i + \roffTxSkipUserTransaction} = 1$
+		\item[\underline{Justifying \txNonce{}:}]
+			we impose
+			\[
+				\accNonce                              _{i + \roffTxSkipUserSenderAccount} =
+				\txNonce                               _{i + \roffTxSkipUserTransaction} +
+				\txNumberOfSuccessfulSenderDelegations _{i + \roffTxSkipUserTransaction}
+			\]
+		\item[\underline{Justifying $\txLeftoverGas$:}]
+			we impose that $\txLeftoverGas _{i + \roffTxSkipUserTransaction} = \txInitialGas _{i + \roffTxSkipUserTransaction}$
+	\end{description}
+	The following constraint is true up to the \textsc{Cancun} hardfork,
+	but fails beyond that point.
+	Specifically \cite{EIP-7623}, which is part of the \textsc{Prague} hardfork,
+	imposes a floor price on call data
+	which invalidates the upcoming ``sanity-check'' constraint.
+	\begin{description}
+		\item[\underline{Justifying $\txEffectiveRefund$:}]
+			if the network runs on the \textsc{Cancun}-\evm{},
+			we may impose the following sanity check:
+			\[ \txEffectiveRefund _{i + \roffTxSkipUserTransaction} = \txLeftoverGas _{i + \roffTxSkipUserTransaction} \quad (\sanityCheck) \]
+	\end{description}

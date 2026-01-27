@@ -1,6 +1,6 @@
-We shall use the following shorthands
+We shall use many shorthands.
+We start by listing shorthands related to stack values.
 \[
-	\hspace*{-2.7cm}
 	\left\{ \begin{array}{lcl}
 		\locIsCall         & \define & \decFlag         {1}  _{i - \callFirstStackRowOffset}  \\
 		\locIsCallcode     & \define & \decFlag         {2}  _{i - \callFirstStackRowOffset}  \\
@@ -14,6 +14,8 @@ We shall use the following shorthands
 		\locCdoLo          & \define & \stackItemValLo  {1}  _{i - \callFirstStackRowOffset}  \\
 		\locCdsHi          & \define & \stackItemValHi  {2}  _{i - \callFirstStackRowOffset}  \\
 		\locCdsLo          & \define & \stackItemValLo  {2}  _{i - \callFirstStackRowOffset}  \\
+	\end{array} \right.
+	\left\{ \begin{array}{lcl}
 		\locRaoHi          & \define & \stackItemValHi  {3}  _{i - \callFirstStackRowOffset}  \\
 		\locRaoLo          & \define & \stackItemValLo  {3}  _{i - \callFirstStackRowOffset}  \\
 		\locRacHi          & \define & \stackItemValHi  {4}  _{i - \callFirstStackRowOffset}  \\
@@ -26,36 +28,97 @@ We shall use the following shorthands
 		\locValueLo        & \define & \stackItemValLo  {3}  _{i - \callSecondStackRowOffset} \\
 		\locSuccessBitHi   & \define & \stackItemValHi  {4}  _{i - \callSecondStackRowOffset} \\
 		\locSuccessBitLo   & \define & \stackItemValLo  {4}  _{i - \callSecondStackRowOffset} \\
-		\locGasActual      & \define & \gasActual            _{i - \callFirstStackRowOffset}  \\
-	\end{array} \right.
-	\left\{ \begin{array}{lcl}
-		\locCurrentAddressHi            & \define & \cnAccountAddress\high        _{i + \callCurrentContextRowOffset}     \\
-		\locCurrentAddressLo            & \define & \cnAccountAddress\low         _{i + \callCurrentContextRowOffset}     \\
-		\locIsStatic                    & \define & \cnStatic                     _{i + \callCurrentContextRowOffset}     \\
-		\locCurrentCallerAddressHi      & \define & \cnCallerAddress\high         _{i + \callCurrentContextRowOffset}     \\
-		\locCurrentCallerAddressLo      & \define & \cnCallerAddress\low          _{i + \callCurrentContextRowOffset}     \\
-		\locCurrentCallValue            & \define & \cnCallValue                  _{i + \callCurrentContextRowOffset}     \\
-		\locCsd                         & \define & \cnCsd                        _{i + \callCurrentContextRowOffset}     \\
-		\locMxpMemoryExpansionException & \define & \miscMxpMxpx                  _{i + \callMiscRowOffset}               \\
-		\locMxpMemoryExpansionGas       & \define & \miscMxpGasMxp                _{i + \callMiscRowOffset}               \\
-		\locMxpSizeOneNonzeroAndNoMxpx  & \define & \miscMxpSizeOneNonzeroNoMxpx  _{i + \callMiscRowOffset}               \\
-		\locMxpSizeTwoNonzeroAndNoMxpx  & \define & \miscMxpSizeTwoNonzeroNoMxpx  _{i + \callMiscRowOffset}               \\
-		\locStpGasUpfront               & \define & \miscStpGasUpfront            _{i + \callMiscRowOffset}               \\
-		\locStpGasPoop                  & \define & \miscStpGasPoop               _{i + \callMiscRowOffset}               \\
-		\locStpGasStipend               & \define & \miscStpGasStipend            _{i + \callMiscRowOffset}               \\
-		\locStpOogx                     & \define & \miscStpOogx                  _{i + \callMiscRowOffset}               \\
-		\locNonzeroValue                & \define & \miscOobDataCol  {7}          _{i + \callMiscRowOffset}               \\
-		\locOobAbortingCondition        & \define & \miscOobDataCol  {8}          _{i + \callMiscRowOffset}               \\
-		\locCallerBalance               & \define & \accBalance                   _{i + \callFirstCallerAccountRowOffset} \\
-		\locCalleeAddressHi             & \define & \accAddressHi                 _{i + \callFirstCalleeAccountRowOffset} \\
-		\locCalleeAddressLo             & \define & \accAddressLo                 _{i + \callFirstCalleeAccountRowOffset} \\
-		\locCalleeCfi                   & \define & \accCfi                       _{i + \callFirstCalleeAccountRowOffset} \\
-		\locCalleeHasCode               & \define & \accHasCode                   _{i + \callFirstCalleeAccountRowOffset} \\
-		\locCalleeWarmth                & \define & \accWarmth                    _{i + \callFirstCalleeAccountRowOffset} \\
-		\locCalleeExists                & \define & \accExists                    _{i + \callFirstCalleeAccountRowOffset} \\
-		\multicolumn{3}{l}{\locCalleeIsPrecompile \define \accTrmIsPrecompile     _{i + \callFirstCalleeAccountRowOffset}} \\
 	\end{array} \right.
 \]
+Next we introduce a shorthand for the current gas
+\[
+	\locGasActual \define \gasActual _{i - \callFirstStackRowOffset}
+\]
+Next we list shorthands related to the \textbf{current execution context}
+\[
+	\left\{ \begin{array}{lcl}
+		\locCurrentAddressHi       & \define & \cnAccountAddress\high _{i + \callCurrentContextRowOffset} \\
+		\locCurrentAddressLo       & \define & \cnAccountAddress\low  _{i + \callCurrentContextRowOffset} \\
+		\locIsStatic               & \define & \cnStatic              _{i + \callCurrentContextRowOffset} \\
+		\locCurrentCallerAddressHi & \define & \cnCallerAddress\high  _{i + \callCurrentContextRowOffset} \\
+		\locCurrentCallerAddressLo & \define & \cnCallerAddress\low   _{i + \callCurrentContextRowOffset} \\
+		\locCurrentCallValue       & \define & \cnCallValue           _{i + \callCurrentContextRowOffset} \\
+		\locCsd                    & \define & \cnCsd                 _{i + \callCurrentContextRowOffset} \\
+	\end{array} \right.
+\]
+Next we list shorthands related to the \textbf{miscellaneous-row}
+\[
+	\left\{ \begin{array}{lcl}
+		\locMxpMemoryExpansionException & \define & \miscMxpMxpx                 _{i + \callMiscRowOffset} \\
+		\locMxpMemoryExpansionGas       & \define & \miscMxpGasMxp               _{i + \callMiscRowOffset} \\
+		\locMxpSizeOneNonzeroAndNoMxpx  & \define & \miscMxpSizeOneNonzeroNoMxpx _{i + \callMiscRowOffset} \\
+		\locMxpSizeTwoNonzeroAndNoMxpx  & \define & \miscMxpSizeTwoNonzeroNoMxpx _{i + \callMiscRowOffset} \\
+		\locStpGasUpfront               & \define & \miscStpGasUpfront           _{i + \callMiscRowOffset} \\
+		\locStpGasPoop                  & \define & \miscStpGasPoop              _{i + \callMiscRowOffset} \\
+		\locStpGasStipend               & \define & \miscStpGasStipend           _{i + \callMiscRowOffset} \\
+		\locStpOogx                     & \define & \miscStpOogx                 _{i + \callMiscRowOffset} \\
+		\locNonzeroValue                & \define & \miscOobDataCol {7}          _{i + \callMiscRowOffset} \\
+		\locOobAbortingCondition        & \define & \miscOobDataCol {8}          _{i + \callMiscRowOffset} \\
+	\end{array} \right.
+\]
+Next we list shorthands related to the \textbf{caller account}
+\[
+	\locCallerBalance \define \accBalance _{i + \callFirstCallerAccountRowOffset}
+\]
+Next we list shorthands related to the \textbf{callee account}
+\[
+	\left\{ \begin{array}{lcl}
+		\locCallerBalance           & \define & \accBalance             _{i + \callFirstCallerAccountRowOffset} \\
+		\locCalleeAddressHi         & \define & \accAddressHi           _{i + \callFirstCalleeAccountRowOffset} \\
+		\locCalleeAddressLo         & \define & \accAddressLo           _{i + \callFirstCalleeAccountRowOffset} \\
+		\locCalleeCfi               & \define & \accCfi                 _{i + \callFirstCalleeAccountRowOffset} \\
+		\locCalleeHasCode           & \define & \accHasCode             _{i + \callFirstCalleeAccountRowOffset} \\
+		\locCalleeWarmth            & \define & \accWarmth              _{i + \callFirstCalleeAccountRowOffset} \\
+		\locCalleeExists            & \define & \accExists              _{i + \callFirstCalleeAccountRowOffset} \\
+		\locCalleeIsPrecompile      & \define & \accTrmIsPrecompile     _{i + \callFirstCalleeAccountRowOffset} \\
+		\locCalleeIsDelegated       & \define & \accIsDelegated         _{i + \callFirstCalleeAccountRowOffset} \\
+		\locCalleeDelegateAddressHi & \define & \accDelegationAddressHi _{i + \callFirstCalleeAccountRowOffset} \\
+		\locCalleeDelegateAddressLo & \define & \accDelegationAddressLo _{i + \callFirstCalleeAccountRowOffset} \\
+	\end{array} \right.
+\]
+We further define \locCalleeIsDelegatedToSelf{} as follows:
+\begin{enumerate}
+	\item \If $\locCalleeIsDelegated = \false $ \Then $\locCalleeIsDelegatedToSelf \define \false$
+	\item \If $\locCalleeIsDelegated = \true  $ \Then
+		\begin{enumerate}
+			\item
+				\If   $\locCalleeDelegateAddressHi \neq \locCalleeAddressHi $ \Then $\locCalleeIsDelegatedToSelf \define \false$
+			\item
+				\If   $\locCalleeDelegateAddressLo \neq \locCalleeAddressLo $ \Then $\locCalleeIsDelegatedToSelf \define \false$
+			\item
+				\If
+				\[
+					\left\{ \begin{array}{lclr}
+						\locCalleeDelegateAddressHi & = & \locCalleeAddressHi  & \et \\
+						\locCalleeDelegateAddressLo & = & \locCalleeAddressLo \\
+					\end{array} \right.
+				\]
+				\Then $\locCalleeIsDelegatedToSelf \define \true$
+		\end{enumerate}
+\end{enumerate}
+Next we list shorthands related to the \textbf{delegate (or callee) account}
+\[
+	\left\{ \begin{array}{lcl}
+		\locDelegateOrCalleeAddressHi    & \define & \accAddressHi       _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
+		\locDelegateOrCalleeAddressLo    & \define & \accAddressLo       _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
+		\locDelegateOrCalleeCfi          & \define & \accCfi             _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
+		\locDelegateOrCalleeHasCode      & \define & \accHasCode         _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
+		\locDelegateOrCalleeWarmth       & \define & \accWarmth          _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
+		\locDelegateOrCalleeExists       & \define & \accExists          _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
+		\locDelegateOrCalleeIsDelegated  & \define & \accIsDelegated     _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
+		% \locDelegateOrCalleeIsPrecompile & \define & \accTrmIsPrecompile _{i + \callFirstCalleeAccountRowOffset} \\
+	\end{array} \right.
+\]
+We further define \locDelegateWarmth{} as follows:
+\begin{enumerate}
+	\item \If $\locCalleeIsDelegated = \false $ \Then $\locDelegateWarmth \define \false                     $
+	\item \If $\locCalleeIsDelegated = \true  $ \Then $\locDelegateWarmth \define \locDelegateOrCalleeWarmth $
+\end{enumerate}
 We further introduce some shorthands for ``revert data'':
 \[
 	\left\{ \begin{array}{lcl}

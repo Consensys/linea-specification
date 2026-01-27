@@ -10,9 +10,11 @@ We update the current execution context's return data.
 The current execution context receives empty return data.
 \begin{description}
 	\item[\underline{The \textsc{revert}ed case:}]
-		\If $\scenCallAbortWillRevert  _{i + \callFirstScenarioRowOffset} = 1$ \Then we undo the warmth udpate and reset the \callerr's return data:
+		\If   $\scenCallAbortWillRevert  _{i + \callFirstScenarioRowOffset} = 1$
+		\Then we undo the warmth udpate to both the \callerName{} and (potentiallly) the \delegateName{} accounts
+		and reset the return data of the current execution context:
 		\begin{description}
-			\item[\underline{Account-row $n^°(i + \callSecondCalleeAccountRowOffsetAbortWillRevert)$:}]
+			\item[\underline{Resetting the warmth update of the \callerName{} on account-row $n^°(i + \callSecondCalleeAccountRowOffsetAbortWillRevert)$:}]
 				we impose that
 				\[
 					\left\{ \begin{array}{lcl}
@@ -20,6 +22,7 @@ The current execution context receives empty return data.
 						\multicolumn{3}{l}{\accSameBalance          {i}{\callSecondCalleeAccountRowOffsetAbortWillRevert}} \\
 						\multicolumn{3}{l}{\accSameNonce            {i}{\callSecondCalleeAccountRowOffsetAbortWillRevert}} \\
 						\multicolumn{3}{l}{\accSameCode             {i}{\callSecondCalleeAccountRowOffsetAbortWillRevert}} \\
+						\multicolumn{3}{l}{\accDontCheckForDelegation   { anchorRow = i, relOffset = \callSecondCalleeAccountRowOffsetAbortWillRevert }} \\
 						\multicolumn{3}{l}{\accUndoWarmthUpdate     {i}{\callSecondCalleeAccountRowOffsetAbortWillRevert}{\callFirstCalleeAccountRowOffset}} \\
 						\multicolumn{3}{l}{\accSameDeploymentNumber {i}{\callSecondCalleeAccountRowOffsetAbortWillRevert}} \\
 						\multicolumn{3}{l}{\accSameDeploymentStatus {i}{\callSecondCalleeAccountRowOffsetAbortWillRevert}} \\
@@ -30,9 +33,35 @@ The current execution context receives empty return data.
 						\accRlpAddrFlag  _{i + \callSecondCalleeAccountRowOffsetAbortWillRevert} & = & 0 \vspace{2mm} \\
 						\multicolumn{3}{l}{
 							\revertDomSubStamps {
-								anchorRow        = i,
-								relOffset        = \callSecondCalleeAccountRowOffsetAbortWillRevert,
-								subOffset        = 2,
+								anchorRow = i                                                ,
+								relOffset = \callSecondCalleeAccountRowOffsetAbortWillRevert ,
+								subOffset = \callSecondCalleeAccountRowOffsetAbortWillRevert ,
+							}
+						} \\
+					\end{array} \right.
+				\]
+			\item[\underline{Resetting the warmth update of the \delegateName{} on account-row $n^°(i + \callSecondDelegateOrCalleeAccountRowOffsetAbortWillRevert)$:}]
+				we impose that
+				\[
+					\left\{ \begin{array}{lcl}
+						\multicolumn{3}{l}{\accSameAddr             {i}{\callSecondDelegateOrCalleeAccountRowOffsetAbortWillRevert}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
+						\multicolumn{3}{l}{\accSameBalance          {i}{\callSecondDelegateOrCalleeAccountRowOffsetAbortWillRevert}} \\
+						\multicolumn{3}{l}{\accSameNonce            {i}{\callSecondDelegateOrCalleeAccountRowOffsetAbortWillRevert}} \\
+						\multicolumn{3}{l}{\accSameCode             {i}{\callSecondDelegateOrCalleeAccountRowOffsetAbortWillRevert}} \\
+						\multicolumn{3}{l}{\accDontCheckForDelegation   { anchorRow = i, relOffset = \callSecondDelegateOrCalleeAccountRowOffsetAbortWillRevert }} \\
+						\multicolumn{3}{l}{\accUndoWarmthUpdate     {i}{\callSecondDelegateOrCalleeAccountRowOffsetAbortWillRevert}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
+						\multicolumn{3}{l}{\accSameDeploymentNumber {i}{\callSecondDelegateOrCalleeAccountRowOffsetAbortWillRevert}} \\
+						\multicolumn{3}{l}{\accSameDeploymentStatus {i}{\callSecondDelegateOrCalleeAccountRowOffsetAbortWillRevert}} \\
+						%%%%
+						\multicolumn{3}{l}{\accSameMarkedForDeletionFlag {i}{\callSecondDelegateOrCalleeAccountRowOffsetAbortWillRevert}} \\
+						\accRomLexFlag   _{i + \callSecondDelegateOrCalleeAccountRowOffsetAbortWillRevert} & = & 0 \\
+						\accTrmFlag      _{i + \callSecondDelegateOrCalleeAccountRowOffsetAbortWillRevert} & = & 0 \\
+						\accRlpAddrFlag  _{i + \callSecondDelegateOrCalleeAccountRowOffsetAbortWillRevert} & = & 0 \vspace{2mm} \\
+						\multicolumn{3}{l}{
+							\revertDomSubStamps {
+								anchorRow = i                                                          ,
+								relOffset = \callSecondDelegateOrCalleeAccountRowOffsetAbortWillRevert ,
+								subOffset = \callSecondDelegateOrCalleeAccountRowOffsetAbortWillRevert ,
 							}
 						} \\
 					\end{array} \right.
@@ -45,7 +74,9 @@ The current execution context receives empty return data.
 				\]
 		\end{description}
 	\item[\underline{The un\textsc{revert}ed case:}]
-		\If $\scenCallAbortWontRevert  _{i + \callFirstScenarioRowOffset} = 1$ \Then we reset the \callerr's return data:
+		\If   $\scenCallAbortWontRevert  _{i + \callFirstScenarioRowOffset} = 1$
+		\Then all that's left to do is to
+		and reset the return data of the current execution context:
 		\begin{description}
 			\item[\underline{Context-row $n^°(i + \callAbortWontRevertUpdateCurrentContextRowOffset)$:}]
 				we impose that

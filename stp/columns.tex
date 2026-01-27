@@ -1,20 +1,20 @@
 We begin by listing columns that pertain to the heartbeat of the present module, see section \ref{stp: constraints: heartbeat}:
 \begin{enumerate}
 	\item $\stpStamp{}$:
-		stamp column for the \stpMod{} module; 
+		stamp column for the \stpMod{} module;
 	\item $\ct{}$:
 		counter column; counts from 0 to \maxCt{};
 	\item $\maxCt{}$:
 		\ccc{}; its value depends on the instruction an whether or not it produces an \oogxSH{};
 \end{enumerate}
-The following columns allow the \stpMod{} to identify the instruction that gave rise to the present instruction. The computation depend on whether the instruction is a \inst{CREATE}-type or \inst{CALL}-type instruction; furthermore among \inst{CALL}-type instruction only some may transfer value, whence the \cctv{} flag. 
+The following columns allow the \stpMod{} to identify the instruction that gave rise to the present instruction. The computation depend on whether the instruction is a \inst{CREATE}-type or \inst{CALL}-type instruction; furthermore among \inst{CALL}-type instruction only some may transfer value, whence the \cctv{} flag.
 \begin{enumerate}[resume]
 	\item $\INST$: \godGiven{};
 		\ccc{}; contains the instruction for which a stipend has to be computed;
 	\item \stpCreate, \stpCreateTwo, \stpCall, \stpCallCode, \stpDelegateCall, \stpStaticCall:
-		\ccbc{}; exclusive binary columns which light up for the respective instruction; 
+		\ccbc{}; exclusive binary columns which light up for the respective instruction;
 \end{enumerate}
-The following are instruction parameters (not all are provided by all instructions.) 
+The following are instruction parameters (not all are provided by all instructions.)
 \begin{enumerate}[resume]
 	\item $\gasHi$ and $\gasLo$: \godGiven{};
 		\ccc{}; high and low parts of the stack value (a 256 bit integer) containing the gas parameter of a \inst{CALL}-type instruction;
@@ -28,7 +28,7 @@ The following columns contain account information required to price \inst{CALL}-
 	\item $\warm$: \godGiven{};
 		\ccbc{}; current warmth of the $\col{to} = \mu_\textbf{s}[1]\texttt{[12:32]}$ address; used for \inst{CALL} pricing;
 	\item $\oogx$: \godGiven{};
-		\ccbc{}; indicates whether an \oogxSH{} occurs; 
+		\ccbc{}; indicates whether an \oogxSH{} occurs;
 \end{enumerate}
 The following columns pertain to gas values obtained in the \hubMod{};
 one of the main purposes of the present module is to justify some of them, that is
@@ -41,11 +41,11 @@ $\gasUpfront$, $\gasPoop$ and $\gasStipend$.
 	\item $\gasUpfront$: \godGiven{};
 		\ccc{}; upfront gas cost of the instruction;
 		% \item $\gasNext$:
-		% the amount of gas left over to the caller / creator contract prior just as the \inst{CALL}/\inst{CREATE} instruction is about to start; 
+		% the amount of gas left over to the caller / creator contract prior just as the \inst{CALL}/\inst{CREATE} instruction is about to start;
 	\item $\gasPoop$: \godGiven{};
-		\ccc{}; gas amount ``paid out of pocket'' from the remaining gas of the \callerr{}/\creator{} to the \calleee{}/\createe{};	
+		\ccc{}; gas amount ``paid out of pocket'' from the remaining gas of the \callerName{}/\creator{} to the \calleeName{}/\createe{};
 	\item $\gasStipend$: \godGiven{};
-		\ccc{}; call gas stipend provided to the callee context of a \inst{CALL} or \inst{CALLCODE} if the transfer value is nonzero; 
+		\ccc{}; call gas stipend provided to the callee context of a \inst{CALL} or \inst{CALLCODE} if the transfer value is nonzero;
 \end{enumerate}
 \saNote{}
 The \gasUpfront{} excludes
@@ -66,5 +66,5 @@ We further introduce columns that allow us to duplicate values from the current 
 	\item $\argTwoLo{}$:
 		low part of the second instruction argument; its high part will always vanish;
 	\item $\resLo{}$:
-		instruction result; its high part will also always vanish; 
+		instruction result; its high part will also always vanish;
 \end{enumerate}

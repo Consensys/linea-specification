@@ -84,3 +84,27 @@ The next collection of columns is required for computing deployment addresses of
 \end{enumerate}
 \saNote{}
 The \rlpAddrMod{} module further requires the creator address' (high and low parts) and the current nonce (pre-deployment); these fields are already present on the current account row.
+
+The next batch of columns pertain to account delegation,
+which is enabled starting with \cite{EIP-7702}.
+\begin{enumerate}[resume]
+	\item
+		\accDelegationAddressHi{} and \accDelegationAddressLo{}:
+		columns containing the current delegation address of the account;
+	\item
+		\accDelegationAddressHiNew{} and \accDelegationAddressLoNew{}:
+		columns containing the updated delegation address of the account;
+	\item
+		\accDelegationNumber{} and \accDelegationNumberNew{}:
+		columns containing the current delegation address of the account;
+	\item
+		\accCheckForDelegation{} and \accCheckForDelegationNew{}:
+		binary columns indicating whether it is necessary to check for delegation;
+	\item
+		\accIsDelegated{} and \accIsDelegatedNew{}:
+		binary columns indicating whether the account is currently (resp. about to be) delegated;
+\end{enumerate}
+\saNote{}
+The delegation address of an account may only change during the $\txAuth{}$ phase of transaction processing,
+see section~(\ref{hub: account: account delegation}) and specifically
+constraint~(\ref{account: delegation: the delegation address may not change outside of AUTH rows}).

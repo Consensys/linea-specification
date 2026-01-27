@@ -62,6 +62,9 @@
 \def\locCsd                                {\loc{current\_call\_stack\_depth}}
 \def\locGasActual                          {\loc{gas\_actual}}
 %
+\def\locExplicitDelegateOrCalleeAddressHi  {\loc{explicit\_delegate\_or\_callee\_address\_hi}}
+\def\locExplicitDelegateOrCalleeAddressLo  {\loc{explicit\_delegate\_or\_callee\_address\_lo}}
+%
 \def\relevantValue                         {\texttt{<rel. val.>}}
 \def\locPrecompileNames                    {\mathscr{P}\textit{rec}}
 %
@@ -102,27 +105,34 @@
 \def\callMiscRowOffset                                        {\roffConstYellow{2}}
 \def\callFirstCallerAccountRowOffset                          {\roffConstYellow{3}}
 \def\callFirstCalleeAccountRowOffset                          {\roffConstYellow{4}}
-\def\callSecondCalleeAccountRowOffsetAbortWillRevert          {\roffConstYellow{5}}
-\def\callSecondCallerAccountRowOffset                         {\roffConstYellow{5}}
-\def\callSecondCalleeAccountRowOffset                         {\roffConstYellow{6}}
-\def\callThirdCalleeAccountRowOffset                          {\roffConstYellow{7}}
+\def\callFirstDelegateOrCalleeAccountRowOffset                {\roffConstYellow{5}}
+
+\def\callSecondCalleeAccountRowOffsetAbortWillRevert           {\roffConstYellow{6}}
+\def\callSecondDelegateOrCalleeAccountRowOffsetAbortWillRevert {\roffConstYellow{7}}
+
+\def\callSecondCallerAccountRowOffset                         {\roffConstYellow{6}}
+\def\callSecondCalleeAccountRowOffset                         {\roffConstYellow{7}}
+\def\callSecondDelegateOrCalleeAccountRowOffset               {\roffConstYellow{8}}
+
+\def\callThirdCalleeAccountRowOffset                          {\roffConstYellow{9}}
+\def\callThirdDelegateOrCalleeAccountRowOffset                {\roffConstYellow{10}}
 
 \def\callStaticxUpdateParentContextRowOffset                  {\roffConstOrange{3}}
 \def\callMxpxUpdateParentContextRowOffset                     {\roffConstOrange{3}}
-\def\callOogxUpdateParentContextRowOffset                     {\roffConstOrange{5}}
-\def\callAbortWillRevertUpdateCurrentContextRowOffset         {\roffConstOrange{6}}
-\def\callAbortWontRevertUpdateCurrentContextRowOffset         {\roffConstOrange{5}}
-\def\callEoaWillRevertCallerContextRowOffset                  {\roffConstOrange{7}}
-\def\callEoaWontRevertCallerContextRowOffset                  {\roffConstOrange{5}}
-\def\callSmcFailureWillRevertInitializeCalleeContextRowOffset {\roffConstOrange{8}}
-\def\callSmcFailureWontRevertInitializeCalleeContextRowOffset {\roffConstOrange{7}}
-\def\callSmcSuccessWillRevertInitializeCalleeContextRowOffset {\roffConstOrange{7}}
+\def\callOogxUpdateParentContextRowOffset                     {\roffConstOrange{6}}
+\def\callAbortWillRevertUpdateCurrentContextRowOffset         {\roffConstOrange{8}}
+\def\callAbortWontRevertUpdateCurrentContextRowOffset         {\roffConstOrange{6}}
+\def\callEoaWillRevertCallerContextRowOffset                  {\roffConstOrange{9}}
+\def\callEoaWontRevertCallerContextRowOffset                  {\roffConstOrange{6}}
+\def\callSmcFailureWillRevertInitializeCalleeContextRowOffset {\roffConstOrange{11}}
+\def\callSmcFailureWontRevertInitializeCalleeContextRowOffset {\roffConstOrange{9}}
+\def\callSmcSuccessWillRevertInitializeCalleeContextRowOffset {\roffConstOrange{9}}
 \def\callSmcSuccessWontRevertInitializeCalleeContextRowOffset {\roffConstOrange{5}}
 %
 \def\callFirstScenarioRowOffset                               {\roffConstBlue{0}}
-\def\callPrcFailureSecondScenarioRowOffset                    {\roffConstBlue{5}}
-\def\callPrcSuccessWillRevertSecondScenarioRowOffset          {\roffConstBlue{7}}
-\def\callPrcSuccessWontRevertSecondScenarioRowOffset          {\roffConstBlue{5}}
+\def\callPrcFailureSecondScenarioRowOffset                    {\roffConstBlue{6}}
+\def\callPrcSuccessWillRevertSecondScenarioRowOffset          {\roffConstBlue{9}}
+\def\callPrcSuccessWontRevertSecondScenarioRowOffset          {\roffConstBlue{6}}
 %
 \def\peekingSumPrcFailureFH                       {\loc{flag\_sum\_prc\_failure\_first\_half}}
 \def\peekingSumPrcSuccessWillRevertFH             {\loc{flag\_sum\_prc\_success\_will\_revert\_first\_half}}
@@ -144,3 +154,24 @@
 \def\peekingSumSmcSuccessWontRevert               {\loc{flag\_sum\_smc\_success\_wont\_revert}}
 
 \def\calleeContextInitializationParameters        {\loc{callee\_context\_params}}
+
+\def\callerName                                   {\yellow        {caller}}
+\def\calleeName                                   {\draculaGreen  {callee}}
+\def\delegateName                                 {\draculaPurple {delegate}}
+
+\def\atDoingTime   {\colorbox{solarized-green}     {At \texttt{DOING}-time:}}
+\def\atFailureTime {\colorbox{solarized-red}       {At \texttt{FAILURE}-time:}}
+\def\atRevertTime  {\colorbox{solarized-magenta}   {At \texttt{REVERT}-time:}}
+
+\def\locCalleeHasEmptyCode                                          {\loc{callee\_has\_empty\_code}}
+\def\locCalleeIsntPrecompile                                        {\loc{callee\_isnt\_precompile}}
+\def\locCalleeIsntPrecompileButHasEmptyCode                         {\locCalleeIsntPrecompile\loc{\_but\_has\_empty\_code}}
+\def\locDelegateOrCalleeHasEmptyCode                                {\loc{delegate\_has\_empty\_code}}
+\def\locCalleeIsDelegatedAndDelegateHasEmptyCode                    {\loc{callee\_is\_delegated\_and\_delegate\_has\_empty\_code}}
+\def\locCalleeIsDelegatedAndDelegateIsItselfDelegated               {\loc{callee\_is\_delegated\_and\_delegate\_is\_ifself\_delegated}}
+\def\locCalleeHasNonemptyCodeAndIsntDelegated                       {\loc{callee\_has\_nonempty\_code\_and\_isnt\_delegated}}
+\def\locCalleeIsDelegatedAndDelegateHasNonemptyCodeAndIsntDelegated {\loc{callee\_is\_delegated\_and\_delegate\_has\_nonempty\_code\_and\_isnt\_delegated}}
+
+\def\locCallGeneralEoaScenario                                      {\loc{general\_EOA\_scenario}}
+\def\locCallGeneralSmcScenario                                      {\loc{general\_SMC\_scenario}}
+\def\locCallGeneralPrcScenario                                      {\loc{general\_PRC\_scenario}}

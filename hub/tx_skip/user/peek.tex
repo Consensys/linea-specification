@@ -15,13 +15,29 @@ We impose the views over the next rows:
 	\item The following rows (in which we include the present row with index $i$) peek into account data and finally peek into transaction data:
 	\[
 		\left[ \begin{array}{cl}
-			+ & \peekTransaction  _{i + \roffTxSkipUserTransaction      } \\
-			+ & \peekAccount      _{i + \roffTxSkipUserSenderAccount    } \\
-			+ & \peekAccount      _{i + \roffTxSkipUserRecipientAccount } \\
-			+ & \peekAccount      _{i + \roffTxSkipUserCoinbaseAccount  } \\
-			+ & \peekContext      _{i + \roffTxSkipUserZeroContext      } \\
+			+ & \peekTransaction _{i + \roffTxSkipUserTransaction                  } \\
+			+ & \peekAccount     _{i + \roffTxSkipUserSenderAccount                } \\
+			+ & \peekAccount     _{i + \roffTxSkipUserRecipientAccount             } \\
+			+ & \peekAccount     _{i + \roffTxSkipUserRecipientOrDelegationAccount } \\
+			+ & \peekAccount     _{i + \roffTxSkipUserCoinbaseAccount              } \\
+			+ & \peekContext     _{i + \roffTxSkipUserZeroContext                  } \\
 		\end{array} \right]
 		= 
 		\nsrTxSkipUser
 	\]
 \end{enumerate}
+We provide a brief summary of what these rows represent
+\begin{description}
+	\item[\underline{Transaction-row $n^\circ \; \roffTxSkipUserTransaction                  $:}]
+		we load the transaction;
+	\item[\underline{Account-row     $n^\circ \; \roffTxSkipUserSenderAccount                $:}]
+		we load the sender and deduct the value and gas cost of the transaction from its balance;
+	\item[\underline{Account-row     $n^\circ \; \roffTxSkipUserRecipientAccount             $:}]
+		we load the recipient and add the value to its balance;
+	\item[\underline{Account-row     $n^\circ \; \roffTxSkipUserRecipientOrDelegationAccount $:}]
+		if the recipient is delegated we load the delegate, otherwise we re-load the recipient again;
+		in either case we don't modify the account, we simply read it;
+	\item[\underline{Account-row     $n^\circ \; \roffTxSkipUserCoinbaseAccount              $:}]
+		we load the coinbase address and pay it;
+	\item[\underline{Context-row     $n^\circ \; \roffTxSkipUserZeroContext                  $:}]
+\end{description}

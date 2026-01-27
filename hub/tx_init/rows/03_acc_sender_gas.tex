@@ -1,0 +1,51 @@
+\item[\underline{\underline{Sender account-row n$^°\bm{(i + \roffTxInitAccDoingSenderPayForGas)}$:}}]
+	the purpose of the current row is for the sender to pay for \textbf{gas costs}:
+	\[
+		\left\{ \begin{array}{lclr}
+			\accAddress  \high _{i + \roffTxInitAccDoingSenderPayForGas} & = & \locTxInitSenderAddressHi \\
+			\accAddress  \low  _{i + \roffTxInitAccDoingSenderPayForGas} & = & \locTxInitSenderAddressLo \\
+			\multicolumn{3}{l}{
+				\accTrimAddress
+				{i}{\roffTxInitAccDoingSenderPayForGas}
+				{\locTxInitSenderAddressHi}
+				{\locTxInitSenderAddressLo}} \vspace{2mm} \\
+			\multicolumn{3}{l}{\accDecrementBalance                  {i}{\roffTxInitAccDoingSenderPayForGas}{\locTxInitGasCost}} \\
+			\multicolumn{3}{l}{\accIncrementNonce                    {i}{\roffTxInitAccDoingSenderPayForGas}} \\
+			\multicolumn{3}{l}{\accSameCode                          {i}{\roffTxInitAccDoingSenderPayForGas}} \\
+			\multicolumn{3}{l}{\accSameDeployment                    {i}{\roffTxInitAccDoingSenderPayForGas}} \\
+			\multicolumn{3}{l}{\accCheckForDelegationIfAccountHasCode { anchorRow = i, relOffset = \roffTxInitAccDoingSenderPayForGas }} \\
+			\multicolumn{3}{l}{\accTurnOnWarmth                      {i}{\roffTxInitAccDoingSenderPayForGas}} \\
+			\multicolumn{3}{l}{\accSameMarkedForDeletionFlag         {i}{\roffTxInitAccDoingSenderPayForGas}} \\
+			\multicolumn{3}{l}{\accIsntPrecompile                    {i}{\roffTxInitAccDoingSenderPayForGas}} \\
+			\multicolumn{3}{l}{
+				\standardDomSubStamps {
+					anchorRow = i                                  ,
+					relOffset = \roffTxInitAccDoingSenderPayForGas ,
+					domOffset = \roffTxInitAccDoingSenderPayForGas ,
+				}
+			} \\
+		\end{array} \right.
+	\]
+	In accordance with \cite{EIP-3607} and \cite{EIP-7702} we further impose
+	\[
+		\left[ \begin{array}{clcl}
+		+ & \locSenderHasEmptyCode    \\
+		+ & \locSenderHasNonemptyCode  & \cdot & \locSenderIsDelegated \\
+		\end{array} \right]
+		\equiv 1
+	\]
+	thus imposing that either
+	(\emph{a}) the sender address has empty byte code or
+	(\emph{b}) the sender address (has nonempty byte code and) is delegated.
+
+	\saNote{} \label{hub: initialization phase: why we trim the sender address}
+	We impose address trimming constraints \emph{in spite} of the fact that the pair
+	\[
+		\big( \locTxInitSenderAddressHi, \locTxInitSenderAddressLo \big)
+	\]
+	both of whose components come from the \userTxnDataMod{} module,
+	necessarily constitutes valid high and low parts of an address.
+	The reason for this precaution is that the present row \emph{may} constitute the first occurrence of this particular address in the present conflation of blocks.
+	Imposing trimming \emph{here} ensures that
+	constraint~(\ref{hub: consistency: account: trimming first appearance of an address})
+	will automatically hold \emph{if} this row turns out to be the first encounter with that particular address.

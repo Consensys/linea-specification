@@ -1,0 +1,21 @@
+\item[\underline{Undoing the balance operation on \callerName{} account-row $n^°(i + \callSecondCallerAccountRowOffset)$:}]
+	we impose
+	\begin{enumerate}
+		\item \If $\scenCallBalanceUpdateUndoneWithCalleeFailure _{i + \callFirstScenarioRowOffset} = 1$ \Then
+			\[
+				\revertWithChildFailureDomSubStamps {
+					anchorRow        = i                                 ,
+					relOffset        = \callSecondCallerAccountRowOffset ,
+					childRevertStamp = \locCalleeRevertStamp             ,
+					subOffset        = \callSecondCallerAccountRowOffset ,
+				}
+			\]
+		\item \If $\scenCallBalanceUpdateUndoneWithCallerRevert _{i + \callFirstScenarioRowOffset} = 1$ \Then
+			\[
+				\revertDomSubStamps {
+					anchorRow = i                                 ,
+					relOffset = \callSecondCallerAccountRowOffset ,
+					subOffset = \callSecondCallerAccountRowOffset ,
+				}
+			\]
+	\end{enumerate}

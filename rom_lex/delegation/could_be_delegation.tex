@@ -1,0 +1,28 @@
+We completely specify \byteCodeCouldBeDelegationCode{}:
+\begin{enumerate}
+	\item \If $\depStatus _{i} = 1$ \Then $\byteCodeCouldBeDelegationCode _{i} = \false$
+	\item \If $\depStatus _{i} = 0$ \Then
+		\begin{enumerate}
+			\item \If $\codeSize _{i} \neq \delegatedAccountCodeSize$ \Then $\byteCodeCouldBeDelegationCode _{i} = \false$
+			\item \If $\codeSize _{i} =    \delegatedAccountCodeSize$ \Then $\byteCodeCouldBeDelegationCode _{i} = \true $
+		\end{enumerate}
+\end{enumerate}
+\saNote{}
+Recall that $\delegatedAccountCodeSizeName \define \delegatedAccountCodeSize$.
+
+We further impose the following:
+\begin{enumerate}[resume]
+	\item \If $\byteCodeCouldBeDelegationCode _{i} = 0$ \Then
+		\[
+			\left\{ \begin{array}{lclc}
+				\leadingThreeBytes              _{i} & = & 0 \\
+				\leadBytesOfDelegationAddress   _{i} & = & 0 \\
+				\tailBytesOfDelegationAddress   _{i} & = & 0 \vspace{2mm} \\
+				\byteCodeActuallyDelegationCode _{i} & = & 0 &            (\sanityCheck) \\
+			\end{array} \right.
+		\]
+\end{enumerate}
+\saNote{}
+The values to use in the ``$\byteCodeCouldBeDelegationCode _{i} = 1$'' case
+are settled through the lookup $\romLexMod \hookrightarrow \romMod$
+of section~(\ref{rom lex: lookups: into rom for delegation data}).

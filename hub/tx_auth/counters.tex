@@ -1,0 +1,77 @@
+We describe the behaviour of
+\authAuthorizationTupleIndex{} and
+\authSenderIsAuthorityAcc{}.
+% NOTE: the constraint below makes no sense:
+% we are talking about a column of the auth perspective
+% if two such rows follow each other, we know the increments
+% otherwise these two rows don't belong both to the AUTH perspective
+% We first impose
+% \begin{enumerate}
+% 	\item
+% 		we require \hubStamp-constancy of
+% 		\begin{multicols}{2}
+% 			\begin{enumerate}
+% 				\item \authAuthorizationTupleIndex{}
+% 				\item \authSenderIsAuthorityAcc{}
+% 			\end{enumerate}
+% 		\end{multicols}
+% \end{enumerate}
+We first introduce a shorthand
+\[
+	\left\{ \begin{array}{l}
+		\locSuccessfulSenderIsAuthorityDelegation _{i}                                   \\
+		\qquad \define \authAuthorizationTupleIsValid  _{i} \cdot \authSenderIsAuthority _{i} \\
+	\end{array} \right.
+\]
+We now impose the following:
+\begin{enumerate}[resume]
+	\item
+		\If
+		\[
+			\left\{ \begin{array}{lcl}
+				\txAuth            _{i - 1} & = & 0 \\
+				\txAuth            _{i}     & = & 1 \\
+			\end{array} \right.
+		\]
+		\Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\authAuthorizationTupleIndex _{i} & = & 1                                                   \\
+				\authSenderIsAuthorityAcc    _{i} & = & \locSuccessfulSenderIsAuthorityDelegation _{i} \\
+			\end{array} \right.
+		\]
+	\item
+		\If
+		\[
+			\left\{ \begin{array}{lclr}
+				\txAuth            _{i - 1} & = & 1 & ~ (\sanityCheck) \\
+				\txAuth            _{i}     & = & 1 & ~ (\sanityCheck) \vspace{2mm} \\
+				\peekAuthorization _{i - 1} & = & 1 \\
+				\peekAuthorization _{i}     & = & 1 \\
+			\end{array} \right.
+		\]
+		\Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\authAuthorizationTupleIndex _{i} & = & \authAuthorizationTupleIndex _{i - 1} + 1                                                   \\
+				\authSenderIsAuthorityAcc    _{i} & = & \authSenderIsAuthorityAcc    _{i - 1} + \locSuccessfulSenderIsAuthorityDelegation _{i} \\
+			\end{array} \right.
+		\]
+	\item
+		\If
+		\[
+			\left\{ \begin{array}{lclr}
+				\txAuth            _{i - 1} & = & 1 \\
+				\txAuth            _{i}     & = & 1 & ~ (\sanityCheck) \vspace{2mm} \\
+				\peekAccount       _{i - 1} & = & 1 \\
+				\peekAuthorization _{i}     & = & 1 \\
+			\end{array} \right.
+		\]
+		\Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\authAuthorizationTupleIndex _{i} & = & \authAuthorizationTupleIndex _{i - 2} + 1                                                   \\
+				\authSenderIsAuthorityAcc    _{i} & = & \authSenderIsAuthorityAcc    _{i - 2} + \locSuccessfulSenderIsAuthorityDelegation _{i} \\
+			\end{array} \right.
+		\]
+\end{enumerate}

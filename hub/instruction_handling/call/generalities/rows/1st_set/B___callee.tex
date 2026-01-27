@@ -1,0 +1,41 @@
+\item[\underline{First \calleeName{} account-row $n^°(i + \callFirstCalleeAccountRowOffset)$:}]
+	we impose that
+	\[
+		\left\{ \begin{array}{lcll}
+			\accAddressHi    _{i + \callFirstCalleeAccountRowOffset} & = & \relevantValue   & (\trash) \\
+			\accAddressLo    _{i + \callFirstCalleeAccountRowOffset} & = & \locRawAddressLo & (\trash) \\
+			\accTrmRawAddrHi _{i + \callFirstCalleeAccountRowOffset} & = & \locRawAddressHi & (\trash) \\
+			\multicolumn{4}{l}{\textcolor{solarized-green}{\texttt{<callee balance operation set below>}}} \\
+			\multicolumn{4}{l}{\accSameNonce             {i}{\callFirstCalleeAccountRowOffset}} \\
+			\multicolumn{4}{l}{\accSameCode              {i}{\callFirstCalleeAccountRowOffset}} \\
+			\multicolumn{3}{l}{\accCheckForDelegationIfAccountHasCode {
+				anchorRow = i                                ,
+				relOffset = \callFirstCalleeAccountRowOffset ,
+			}} \\
+			\multicolumn{4}{l}{\textcolor{solarized-green}{\texttt{<callee warmth operation set below>}}} \\
+			\multicolumn{4}{l}{\accSameDeploymentNumber  {i}{\callFirstCalleeAccountRowOffset}} \\
+			\multicolumn{4}{l}{\accSameDeploymentStatus  {i}{\callFirstCalleeAccountRowOffset}} \\
+			\multicolumn{4}{l}{\accSameMarkedForDeletionFlag {i}{\callFirstCalleeAccountRowOffset}} \\
+			%%%%
+			\accRomLexFlag   _{i + \callFirstCalleeAccountRowOffset} & = & 0 \\
+			\multicolumn{4}{l}{\accTrimAddress
+			{i}{\callFirstCalleeAccountRowOffset}
+			{\locRawAddressHi}
+			{\locRawAddressLo}} \\
+			\accTrmFlag      _{i + \callFirstCalleeAccountRowOffset} & = & \rOne & (\trash) \\
+			\accRlpAddrFlag  _{i + \callFirstCalleeAccountRowOffset} & = & 0 \vspace{2mm} \\
+			\multicolumn{4}{l}{
+				\standardDomSubStamps {
+					anchorRow = i                                ,
+					relOffset = \callFirstCalleeAccountRowOffset ,
+					domOffset = \callFirstCalleeAccountRowOffset ,
+				}
+			} \\
+		\end{array} \right.
+	\]
+	\saNote{}
+	The various $(\trash)$ constraints above are redundant with the ``address trimming'' constraint.
+
+	\saNote{}
+	We obtain the $\accCfi{}$ in the following row, if necessary.
+

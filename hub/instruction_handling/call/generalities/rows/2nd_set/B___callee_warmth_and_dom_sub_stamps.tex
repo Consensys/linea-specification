@@ -1,0 +1,30 @@
+\item[\underline{Undoing the warmth update of the \callerName{} and setting the dom/sub stamps for account-row $n^°(i + \callSecondCalleeAccountRowOffset)$:}]
+	we impose that
+	\begin{enumerate}
+		\item \If $\scenCallBalanceUpdateUndoneWithCalleeFailure _{i + \callFirstScenarioRowOffset} = 1$ \Then
+			\[
+				\left\{ \begin{array}{lcl}
+					\revertWithChildFailureDomSubStamps {
+						anchorRow        = i                                 ,
+						relOffset        = \callSecondCalleeAccountRowOffset ,
+						childRevertStamp = \locCalleeRevertStamp             ,
+						subOffset        = \callSecondCalleeAccountRowOffset ,
+					} \\
+					\accSameWarmth {i}{\callSecondCalleeAccountRowOffset} \\
+				\end{array} \right.
+				% \revertWithChildFailureDomSubStamps {i}{\callSecondCallerAccountRowOffset}
+			\]
+			\saNote{}
+			For \scenCallSmcFailureWillRevert{} (which is one of the two subcases of the above) warmth \textbf{will} be reverted but with the caller reverting (not with failure of the child context, see section~(\ref{hub: instruction handling: call: third  set of account rows}).
+		\item \If $\scenCallBalanceUpdateUndoneWithCallerRevert _{i + \callFirstScenarioRowOffset} = 1$ \Then
+			\[
+				\left\{ \begin{array}{lcl}
+					\revertDomSubStamps {
+						anchorRow = i                                 ,
+						relOffset = \callSecondCalleeAccountRowOffset ,
+						subOffset = \callSecondCalleeAccountRowOffset ,
+					} \\
+					\accUndoWarmthUpdate {i}{\callSecondCalleeAccountRowOffset}{\callFirstCalleeAccountRowOffset} \\
+				\end{array} \right.
+			\]
+	\end{enumerate}

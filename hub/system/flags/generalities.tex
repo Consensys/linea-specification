@@ -2,14 +2,11 @@ We impose that
 \begin{enumerate}
 	\item $\flagSum$ is binary
 	\item $\flagSum _{0} = 0$
+	\item \label{hub: system: flags: generalities: the first transaction of any conflation must be sysi} \If $\flagSum _{i} = 0$ \Then $\flagSum _{i + 1} = \sysi _{i + 1}$ (\sanityCheck)
 	\item \If $\flagSum _{i} = 1$ \Then $\flagSum _{i + 1} = 1$
 	\item \If $\blockNumber _{i} =    0$ \Then $\flagSum _{i} = 0$
 	\item \If $\blockNumber _{i} \neq 0$ \Then $\flagSum _{i} = 1$
 \end{enumerate}
-\saNote{} \label{hub: system: padding row definition}
-We define \textbf{padding-rows} to be those rows where $\blockNumber \equiv 0$ and
-\textbf{non-padding-rows} to be those rows where $\blockNumber \neq 0$.
-
 \saNote{} \label{hub: system: exclusivity of the system and user transaction flags}
 The above imposes \textbf{(binary) exclusivity constraints} on the system and user transaction flags.
 It also imposes that precisely one of these flags be active on any non-padding-row.
@@ -19,3 +16,19 @@ We say that a row index $i$ defines
 (\emph{a}) an \textbf{initial-system-transaction-row} when $\sysi _{i} \equiv 1$
 (\emph{b}) a  \textbf{user-transaction-row}           when $\user _{i} \equiv 1$
 (\emph{c}) a  \textbf{final-system-transaction-row}   when $\sysf _{i} \equiv 1$.
+
+\saNote{}
+Constraint~(\ref{hub: system: flags: generalities: the first transaction of any conflation must be sysi})
+follows from
+constraint~(\ref{hub: system: system flags: block number: blocks start with sysi}),
+whence the (\sanityCheck) mark.
+
+\saNote{} \label{hub: system: padding row definition}
+We define \textbf{padding-rows} to be those rows where $\blockNumber \equiv 0$ and
+\textbf{non-padding-rows} to be those rows where $\blockNumber \neq 0$.
+By the above we have
+\[
+	\blockNumber _{i} \neq 0 \,\iff\, \flagSum _{i} = 1
+\]
+i.e. we peg the \blockNumber{} to the \flagSum{}.
+

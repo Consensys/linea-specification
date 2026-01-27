@@ -2,6 +2,44 @@ We centralize in this section \textbf{most} computations relative to the number 
 We exclude the case of (unexceptional, unaborted) \inst{CALL}'s to \textbf{precompiles}.
 Those scenarios take more care and depend on various factors, including which precompile is being executed.
 
+We also provide some ``interpretation'' as to the accounts that may be loaded on the account-rows.
+The main point to keep in mind is that \inst{CALL}-type instructions may lead to
+immediate changes in the \textbf{account state}, in particular the \textbf{balances}, of
+\begin{itemize}
+	\item the \callerName{} account,
+	\item the \calleeName{} account,
+\end{itemize}
+as well as immediate changes in the \textbf{accrued state}, in particular \textbf{warmth}, of
+\begin{itemize}
+	\item the \calleeName{} account, and potentially
+	\item the \delegateName{} account.
+\end{itemize}
+Such actions are labeled as happening \atDoingTime{}.
+In the present context that time is accessible through $\hubStamp{}$.
+
+There are two reasons and two future points in time when these actions may be undone.
+
+The first is that \inst{CALL}-type instruction may end in \textbf{failure}.
+At that point in time the above mentioned \textbf{state} changes in the
+the \callerName{} account and
+the \calleeName{} account,
+in particular \textbf{balance} changes, may be undone.
+These updates are said to be undone \atFailureTime{}.
+In the present context that time is accessible through $\miscChildRevertStamp{}$,
+conditionally to $\miscChildSelfReverts{} \equiv \true$.
+
+The second is that the effects of \inst{CALL}-type instructions may be undone due to the calling frame (execution context) being reverted.
+At that point in time (as of yet un-reverted) \textbf{state} changes, in particular \textbf{balance} changes in the
+the \callerName{} account and
+the \calleeName{} account,
+but also \textbf{accrued state} changes, in particular changes in \textbf{account warmth} in the
+the \calleeName{} account, and potentially
+the \delegateName{} account,
+may be undone.
+These updates are said to be undone \atRevertTime{}.
+In the present context that time is accessible through $\cnRevStamp{}$,
+conditionally to $\cnGetsRev{} \equiv \true$.
+
 We start by defining a series of peeking flag shorthands:
 \begin{description}
 	\item[\underline{Standard and extended \inst{CALL} flag prefixes:}]
@@ -10,20 +48,28 @@ We start by defining a series of peeking flag shorthands:
 			\left\{ \begin{array}{lcl}
 				\standardPeekingSumForCalls & \define &
 				\left[ \begin{array}{cr}
-					+ & \peekScenario     _{i + \callFirstScenarioRowOffset}                                      \\
+					+ & \peekScenario     _{i + \callFirstScenarioRowOffset}        \\
 					+ & \peekContext      _{i + \callCurrentContextRowOffset}       \\
 					+ & \peekMisc         _{i + \callMiscRowOffset}                 \\
 				\end{array} \right]
 				\vspace{2mm} \\
 				\extendedPeekingSumForCalls & \define &
 				\left[ \begin{array}{cr}
-					+ & \standardPeekingSumForCalls                               \\
-					+ & \peekAccount      _{i + \callFirstCallerAccountRowOffset} \\
-					+ & \peekAccount      _{i + \callFirstCalleeAccountRowOffset} \\
+					+ & \standardPeekingSumForCalls                                     \\ \hline
+					+ & \peekAccount _{i + \callFirstCallerAccountRowOffset           } \\
+					+ & \peekAccount _{i + \callFirstCalleeAccountRowOffset           } \\
+					+ & \peekAccount _{i + \callFirstDelegateOrCalleeAccountRowOffset } \\
 				\end{array} \right]
 				\\
 			\end{array} \right.
 		\]
+		\saNote{}
+		For context,
+		\begin{itemize}
+			\item \atDoingTime{} account-row $n°(i + \callFirstCallerAccountRowOffset           )$ pertains to the \callerName{}
+			\item \atDoingTime{} account-row $n°(i + \callFirstCalleeAccountRowOffset           )$ pertains to the \calleeName{}
+			\item \atDoingTime{} account-row $n°(i + \callFirstDelegateOrCalleeAccountRowOffset )$ pertains to the \delegateName{} or \calleeName{}
+		\end{itemize}
 	\item[\underline{Exception: \staticxSH{}:}]
 		we define
 		\[
@@ -66,11 +112,19 @@ We start by defining a series of peeking flag shorthands:
 			\peekingSumAbortWillRevert
 			\define
 			\left[ \begin{array}{cr}
-				+ & \extendedPeekingSumForCalls                                                \\
-				+ & \peekAccount      _{i + \callSecondCalleeAccountRowOffsetAbortWillRevert}  \\
-				+ & \peekContext      _{i + \callAbortWillRevertUpdateCurrentContextRowOffset} \\
+				+ & \extendedPeekingSumForCalls                                                     \\
+				+ & \peekAccount _{i + \callSecondCalleeAccountRowOffsetAbortWillRevert           } \\
+				+ & \peekAccount _{i + \callSecondDelegateOrCalleeAccountRowOffsetAbortWillRevert } \\
+				+ & \peekContext _{i + \callAbortWillRevertUpdateCurrentContextRowOffset          } \\
 			\end{array} \right]
 		\]
+		\saNote{}
+		For context,
+		\begin{itemize}
+			\item \atRevertTime{} account-row $n°(i + \callSecondCalleeAccountRowOffsetAbortWillRevert           )$ pertains to the \calleeName{}
+			\item \atRevertTime{} account-row $n°(i + \callSecondDelegateOrCalleeAccountRowOffsetAbortWillRevert )$ pertains to the \delegateName{} or \calleeName{}
+		\end{itemize}
+		Either accounts may have had their warmth turned on.
 	\item[\underline{Aborted call, caller context won't revert:}]
 		we define
 		\[
@@ -87,12 +141,24 @@ We start by defining a series of peeking flag shorthands:
 			\peekingSumEoaWillRevert
 			\define
 			\left[ \begin{array}{cr}
-				+ & \extendedPeekingSumForCalls                                       \\
-				+ & \peekAccount      _{i + \callSecondCallerAccountRowOffset}        \\
-				+ & \peekAccount      _{i + \callSecondCalleeAccountRowOffset}        \\
-				+ & \peekContext      _{i + \callEoaWillRevertCallerContextRowOffset} \\
+				+ & \extendedPeekingSumForCalls                                      \\ \hline
+				+ & \peekAccount _{i + \callSecondCallerAccountRowOffset           } \\
+				+ & \peekAccount _{i + \callSecondCalleeAccountRowOffset           } \\
+				+ & \peekAccount _{i + \callSecondDelegateOrCalleeAccountRowOffset } \\ \hline
+				+ & \peekContext _{i + \callEoaWillRevertCallerContextRowOffset    } \\
 			\end{array} \right]
 		\]
+		\saNote{}
+		For context,
+		\begin{itemize}
+			\item \atRevertTime{} account-row $n°(i + \callSecondCallerAccountRowOffset           )$ pertains to the \callerName{}
+			\item \atRevertTime{} account-row $n°(i + \callSecondCalleeAccountRowOffset           )$ pertains to the \calleeName{}
+			\item \atRevertTime{} account-row $n°(i + \callSecondDelegateOrCalleeAccountRowOffset )$ pertains to the \delegateName{} or \calleeName{}
+		\end{itemize}
+		With successful \textsc{eoa}-calls that are rolled-back one must
+		undo balance transfers but also
+		undo changes to the warmth of the callee and potentially the delegate.
+		All of these changes happen \atRevertTime{}.
 	\item[\underline{(Successful) call to Externally Owned Account, caller context won't revert:}]
 		we define
 		\[
@@ -109,37 +175,86 @@ We start by defining a series of peeking flag shorthands:
 			\peekingSumSmcFailureWillRevert
 			\define
 			\left[ \begin{array}{cr}
-				+ & \extendedPeekingSumForCalls                                                        \\
-				+ & \peekAccount      _{i + \callSecondCallerAccountRowOffset}                         \\
-				+ & \peekAccount      _{i + \callSecondCalleeAccountRowOffset}                         \\
-				+ & \peekAccount      _{i + \callThirdCalleeAccountRowOffset}                          \\
-				+ & \peekContext      _{i + \callSmcFailureWillRevertInitializeCalleeContextRowOffset} \\
+				+ & \extendedPeekingSumForCalls                                                    \\ \hline
+				+ & \peekAccount _{i + \callSecondCallerAccountRowOffset                         } \\
+				+ & \peekAccount _{i + \callSecondCalleeAccountRowOffset                         } \\
+				+ & \peekAccount _{i + \callSecondDelegateOrCalleeAccountRowOffset               } \\ \hline
+				+ & \peekAccount _{i + \callThirdCalleeAccountRowOffset                          } \\
+				+ & \peekAccount _{i + \callThirdDelegateOrCalleeAccountRowOffset                } \\ \hline
+				+ & \peekContext _{i + \callSmcFailureWillRevertInitializeCalleeContextRowOffset } \\
 			\end{array} \right]
 		\]
+		\saNote{}
+		For context,
+		\begin{itemize}
+			\item \atFailureTime{} account-row $n°(i + \callSecondCallerAccountRowOffset           )$ pertains to the \callerName{}
+			\item \atFailureTime{} account-row $n°(i + \callSecondCalleeAccountRowOffset           )$ pertains to the \calleeName{}
+			\item \atFailureTime{} account-row $n°(i + \callSecondDelegateOrCalleeAccountRowOffset )$ pertains to the \delegateName{} $\undefinedStar$
+			\item \atRevertTime{}  account-row $n°(i + \callThirdCalleeAccountRowOffset            )$ pertains to the \calleeName{}
+			\item \atRevertTime{}  account-row $n°(i + \callThirdDelegateOrCalleeAccountRowOffset  )$ pertains to the \delegateName{} or the \calleeName{}
+		\end{itemize}
+		With failure \textsc{smc}-calls that are rolled-back one must
+		undo balance transfers at the point in time when the \inst{CALL} ``fails'',
+		i.e. \atFailureTime{},
+		but also undo changes to the warmth of the callee
+		and potentially undo warmth changes to the delegate, both \atRevertTime{}.
+
+		\saNote{}\label{hub: instruction handling: call: peeking flag sums for non precompiles: useless delegate row}
+		The account-row $n°(i + \callSecondDelegateOrCalleeAccountRowOffset )$ marked with $\undefinedStar$ serves no \emph{actual} purpose.
+		We include it here purely to simplify the upcoming presentation.
 	\item[\underline{Smart contract call failure, caller context won't revert:}]
 		we define
 		\[
 			\peekingSumSmcFailureWontRevert
 			\define
 			\left[ \begin{array}{cr}
-				+ & \extendedPeekingSumForCalls                                                        \\
-				+ & \peekAccount      _{i + \callSecondCallerAccountRowOffset}                         \\
-				+ & \peekAccount      _{i + \callSecondCalleeAccountRowOffset}                         \\
-				+ & \peekContext      _{i + \callSmcFailureWontRevertInitializeCalleeContextRowOffset} \\
+				+ & \extendedPeekingSumForCalls                                                    \\ \hline
+				+ & \peekAccount _{i + \callSecondCallerAccountRowOffset                         } \\
+				+ & \peekAccount _{i + \callSecondCalleeAccountRowOffset                         } \\
+				+ & \peekAccount _{i + \callSecondDelegateOrCalleeAccountRowOffset               } \\ \hline
+				+ & \peekContext _{i + \callSmcFailureWontRevertInitializeCalleeContextRowOffset } \\
 			\end{array} \right]
 		\]
+		\saNote{}
+		For context,
+		\begin{itemize}
+			\item \atFailureTime{} account-row $n°(i + \callSecondCallerAccountRowOffset           )$ pertains to the \callerName{}
+			\item \atFailureTime{} account-row $n°(i + \callSecondCalleeAccountRowOffset           )$ pertains to the \calleeName{}
+			\item \atFailureTime{} account-row $n°(i + \callSecondDelegateOrCalleeAccountRowOffset )$ pertains to the \delegateName{} $\undefinedStar$
+		\end{itemize}
+		With failure \textsc{smc}-calls that don't revert,
+		one must undo balance transfers at the point in time when the \inst{CALL} ``fails'',
+		i.e. \atFailureTime{},
+		and nothing else.
+
+		\saNote{}
+		The same comment as in
+		note~(\ref{hub: instruction handling: call: peeking flag sums for non precompiles: useless delegate row})
+		applies.
 	\item[\underline{Smart contract call success, caller context will revert:}]
 		we define
 		\[
 			\peekingSumSmcSuccessWillRevert
 			\define
 			\left[ \begin{array}{cr}
-				+ & \extendedPeekingSumForCalls                                                        \\
-				+ & \peekAccount      _{i + \callSecondCallerAccountRowOffset}                         \\
-				+ & \peekAccount      _{i + \callSecondCalleeAccountRowOffset}                         \\
-				+ & \peekContext      _{i + \callSmcSuccessWillRevertInitializeCalleeContextRowOffset} \\
+				+ & \extendedPeekingSumForCalls                                                    \\ \hline
+				+ & \peekAccount _{i + \callSecondCallerAccountRowOffset                         } \\
+				+ & \peekAccount _{i + \callSecondCalleeAccountRowOffset                         } \\
+				+ & \peekAccount _{i + \callSecondDelegateOrCalleeAccountRowOffset               } \\ \hline
+				+ & \peekContext _{i + \callSmcSuccessWillRevertInitializeCalleeContextRowOffset } \\
 			\end{array} \right]
 		\]
+		\saNote{}
+		For context,
+		\begin{itemize}
+			\item \atRevertTime{} account-row $n°(i + \callSecondCallerAccountRowOffset           )$ pertains to the \callerName{}
+			\item \atRevertTime{} account-row $n°(i + \callSecondCalleeAccountRowOffset           )$ pertains to the \calleeName{}
+			\item \atRevertTime{} account-row $n°(i + \callSecondDelegateOrCalleeAccountRowOffset )$ pertains to the \delegateName{} or \calleeName{}
+		\end{itemize}
+		With successful \textsc{smc}-calls that do revert,
+		one must undo balance transfers in the caller and callee,
+		but also warmth updates in the callee and potentially the delegate,
+		all at once \atRevertTime{}.
 	\item[\underline{Smart contract call success, caller context won't revert:}]
 		we define
 		\[

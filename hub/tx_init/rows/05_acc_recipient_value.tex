@@ -1,0 +1,100 @@
+\item[\underline{\underline{Recipient account-row n$^°\bm{(i + \roffTxInitAccDoingRecipientValueReception)}$:}}]
+	we peek into the recipient account to transfer the transaction value
+	\[
+		\left\{ \begin{array}{lcl}
+			\accAddress \high _{i + \roffTxInitAccDoingRecipientValueReception} & = & \locTxInitRecipientAddressHi \\
+			\accAddress \low  _{i + \roffTxInitAccDoingRecipientValueReception} & = & \locTxInitRecipientAddressLo \\
+			\multicolumn{3}{l}{
+				\accTrimAddress
+				{i}{\roffTxInitAccDoingRecipientValueReception}
+				{\locTxInitRecipientAddressHi}
+				{\locTxInitRecipientAddressLo}} \vspace{2mm} \\
+			\multicolumn{3}{l}{\accIncrementBalance  {i}{\roffTxInitAccDoingRecipientValueReception}{\locTxInitValue}} \\
+			\texttt{Nonce:}      & \multicolumn{2}{l}{\valueToBeSet} \\
+			\texttt{Code:}       & \multicolumn{2}{l}{\valueToBeSet} \\
+			\texttt{Deployment:} & \multicolumn{2}{l}{\valueToBeSet} \\
+			\multicolumn{3}{l}{\accCheckForDelegationIfAccountHasCode { anchorRow = i, relOffset = \roffTxInitAccDoingRecipientValueReception }} \\
+			\multicolumn{3}{l}{\accTurnOnWarmth                   {i}{\roffTxInitAccDoingRecipientValueReception}} \\
+			\multicolumn{3}{l}{\accSameMarkedForDeletionFlag      {i}{\roffTxInitAccDoingRecipientValueReception}} \\
+			\multicolumn{3}{l}{\accRetrieveCodeFragmentIndex      {i}{\roffTxInitAccDoingRecipientValueReception}} \\
+			\multicolumn{3}{l}{\accIsntPrecompile                 {i}{\roffTxInitAccDoingRecipientValueReception}} \\
+			\multicolumn{3}{l}{
+				\standardDomSubStamps {
+					anchorRow = i                                          ,
+					relOffset = \roffTxInitAccDoingRecipientValueReception ,
+					domOffset = \roffTxInitAccDoingRecipientValueReception ,
+				}
+			} \\
+		\end{array} \right.
+	\]
+	\saNote{} \label{hub: initialization phase: why we trim the recipient address}
+	The recipient address as contained in the pair
+	\[
+		\big( \locTxInitRecipientAddressHi, \locTxInitRecipientAddressLo \big)
+	\]
+	whether coming from the \texttt{to} field of the transaction
+	or being deduced from the \texttt{sender} address and its current \texttt{nonce},
+	requires no trimming for the same reason that the sender address requires no trimming.
+	Regardless, we trim said recipient address for reasons already expressed in
+	note~(\ref{hub: initialization phase: why we trim the sender address}).
+
+	\noindent We must distinguish between
+	message calls ($\locTxInitIsMessageCall~=~1$) and
+	deployments ($\locTxInitIsDeployment~=~1$).
+	\begin{description}
+		\item[\underline{Message calls:}] 
+			\If $\locTxInitIsMessageCall = 1$ \Then
+			\begin{description}
+				\item[\underline{Nonce, code and deployment:}]
+					\[
+						\left\{ \begin{array}{lcl}
+							\multicolumn{3}{l}{\accSameNonce        {i}{\roffTxInitAccDoingRecipientValueReception}} \\
+							\multicolumn{3}{l}{\accSameCode         {i}{\roffTxInitAccDoingRecipientValueReception}} \\
+							\multicolumn{3}{l}{\accSameDeployment   {i}{\roffTxInitAccDoingRecipientValueReception}} \\
+						\end{array} \right.
+					\]
+			\end{description}
+		\item[\underline{Nontrivial deployments:}] 
+			\If $\locTxInitIsDeployment = 1$ \Then
+			\begin{description}
+				\item[\underline{Nonce:}] 
+					we impose
+					\[
+						\left\{ \begin{array}{lcl}
+							\multicolumn{3}{l}{\accIncrementNonce {i}{\roffTxInitAccDoingRecipientValueReception}} \\
+							\accNonce_{i + \roffTxInitAccDoingRecipientValueReception} & = & 0  \\
+						\end{array} \right.
+					\]
+				\item[\underline{Code:}] 
+					we impose
+					\[
+						\hspace*{-1cm}
+						\left\{ \begin{array}{lcl}
+							\accHasCode     _{i + \roffTxInitAccDoingRecipientValueReception} & = & 0                       \\
+							\accCodehashHi  _{i + \roffTxInitAccDoingRecipientValueReception} & = & \emptyKeccakHi \quad (\trash) \\
+							\accCodehashLo  _{i + \roffTxInitAccDoingRecipientValueReception} & = & \emptyKeccakLo \quad (\trash) \\
+							\accCodesize    _{i + \roffTxInitAccDoingRecipientValueReception} & = & 0                       \\
+						\end{array} \right.
+						\;\text{and}\;
+						\left\{ \begin{array}{lclr}
+							\accHasCode     \new  _{i + \roffTxInitAccDoingRecipientValueReception} & = & 0                                       \\
+							\accCodehashHi  \new  _{i + \roffTxInitAccDoingRecipientValueReception} & = & \emptyKeccakHi \quad (\trash)                 \\
+							\accCodehashLo  \new  _{i + \roffTxInitAccDoingRecipientValueReception} & = & \emptyKeccakLo \quad (\trash)                 \\
+							\accCodesize    \new  _{i + \roffTxInitAccDoingRecipientValueReception} & = & \txInitCodeSize_{i + \roffTxInitTxn} \\
+						\end{array} \right.
+					\]
+				\item[\underline{Deployment:}] 
+					we impose
+					\[
+						\left\{ \begin{array}{lclr}
+							\multicolumn{3}{l}{\accIncrementDeploymentNumber  {i}{\roffTxInitAccDoingRecipientValueReception}} \\
+							\accDeploymentStatus      _{i + \roffTxInitAccDoingRecipientValueReception} & = & 0      & (\trash) \\
+							\accDeploymentStatus\new  _{i + \roffTxInitAccDoingRecipientValueReception} & = & \rOne \\
+						\end{array} \right.
+					\]
+					\saNote{}
+					The same remark about \accDeploymentNumber{} as in
+					note~(\ref{hub: tx skip: user: transation processing: why we can't initialize the deployment number to 0 for deployment transactions})
+					applies.
+			\end{description}
+	\end{description}

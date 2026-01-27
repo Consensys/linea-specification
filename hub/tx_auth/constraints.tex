@@ -1,0 +1,156 @@
+\begin{center}
+	\boxed{\text{All constraints in this subsection assume that }
+	\left\{ \begin{array}{lcl}
+		\txAuth      _{i}                                          = 1 \\
+		\peekAccount _{i + \roffAuthorizationProcessingAccountRow} = 1 \\
+	\end{array} \right.}
+\end{center}
+We impose the following:
+\begin{enumerate}
+	\item we may impose some sanity check constraints
+		\[
+			\left\{ \begin{array}{lclr}
+				\txAuth                        _{i + (\roffAuthorizationProcessingAuthorityRow)} & = & 1 & (\sanityCheck) \\
+				\peekAuthorization             _{i + (\roffAuthorizationProcessingAuthorityRow)} & = & 1 & (\sanityCheck) \\
+				\authAuthorityEcrecoverSuccess _{i + (\roffAuthorizationProcessingAuthorityRow)} & = & 1 & (\sanityCheck) \\
+			\end{array} \right.
+		\]
+	\item we peek into the authority account
+		\[
+			\left\{ \begin{array}{lclr}
+				\accAddress \high  _{i + \roffAuthorizationProcessingAccountRow} & = & \authAuthorityAddressHi  _{i + (\roffAuthorizationProcessingAuthorityRow)}              \\
+				\accAddress \low   _{i + \roffAuthorizationProcessingAccountRow} & = & \authAuthorityAddressLo  _{i + (\roffAuthorizationProcessingAuthorityRow)} \vspace{2mm} \\
+				\multicolumn{3}{l}{\accSameBalance                {i}{\roffAuthorizationProcessingAccountRow}}      \\
+				\multicolumn{3}{l}{\texttt{Nonce:                     \toBeSet}} \\
+				\multicolumn{3}{l}{\texttt{Code hash:                 \toBeSet}} \\
+				\multicolumn{3}{l}{\texttt{Code size:                 \toBeSet}} \\
+				\multicolumn{3}{l}{\texttt{Delegation check:          \toBeSet}} \\
+				\multicolumn{3}{l}{\texttt{Delegation address update: \toBeSet}} \\
+				\multicolumn{3}{l}{\texttt{Delegation number update:  \toBeSet}} \\
+				\multicolumn{3}{l}{\texttt{Delegation status update:  \toBeSet}} \\
+				\multicolumn{3}{l}{\accSameDeployment             {i}{\roffAuthorizationProcessingAccountRow}} \\
+				\multicolumn{3}{l}{\texttt{Warmth:           \toBeSet}} \\
+				% \multicolumn{3}{l}{\accSameWarmth                 {i}{\roffAuthorizationProcessingAccountRow}} \\
+				\multicolumn{3}{l}{\accSameMarkedForDeletionFlag  {i}{\roffAuthorizationProcessingAccountRow}} \\
+				% \multicolumn{3}{l}{\accIsntPrecompile             {i}{\roffAuthorizationProcessingAccountRow}} & (\trash) \\
+				\multicolumn{3}{l}{
+					\standardDomSubStamps {
+						anchorRow = i                                      ,
+						relOffset = \roffAuthorizationProcessingAccountRow ,
+						domOffset = 0                                      ,
+					}
+				} \\
+			\end{array} \right.
+		\]
+\end{enumerate}
+We now introduce the following shorthands
+\[
+	% \locTupleValidity \define \authAuthorizationTupleIsValid _{i + (\roffAuthorizationProcessingAuthorityRow)}
+	\left\{ \begin{array}{lcl}
+		% \locRecoverySuccess & \define & \authAuthorityEcrecoverSuccess _{i + (\roffAuthorizationProcessingAuthorityRow)} \\
+		\locTupleValidity     & \define & \authAuthorizationTupleIsValid _{i + (\roffAuthorizationProcessingAuthorityRow)} \\
+		\locTupleInvalidity   & \define & 1 - \locTupleValidity                              \vspace{2mm}                  \\
+		\locDelegationReset   & \define & \authDelegationAddressIsZero   _{i + (\roffAuthorizationProcessingAuthorityRow)} \\
+		\locProperDelegation  & \define & 1 - \locDelegationReset                                                          \\
+	\end{array} \right.
+\]
+We describe when we trigger delegation detection:
+\begin{description}
+	\item[\underline{\underline{Triggering delegation detection i.e. the \romLexMod{} lookups:}}]
+		we impose
+		\[
+			\left\{ \begin{array}{lcl}
+				\accCheckForDelegation    _{i + \roffAuthorizationProcessingAccountRow} & = & \accHasCode _{i + \roffAuthorizationProcessingAccountRow}                    \\
+				\accCheckForDelegationNew _{i + \roffAuthorizationProcessingAccountRow} & = &
+				\left[ \begin{array}{cl}
+					\cdot & \locTupleValidity    \\
+					\cdot & \locProperDelegation \\
+				\end{array} \right]
+				\\
+			\end{array} \right.
+		\]
+		\saNote{}
+		The purpose of setting $\accCheckForDelegationNew$ to something potentially nontrivial
+		is to trigger the \romLexMod{} module and thereby the hashing of the newly delegated
+		code.
+\end{description}
+We now deal with the missing pieces.
+\begin{description}
+	\item[\underline{\underline{The invalid authority tuple case:}}]
+		\If $\locTupleInvalidity = \true$ \Then we impose the following on the authority account:
+		\[
+			\left\{ \begin{array}{ll}
+				\utt{Nonce update:}              & \accSameNonce    {i}{\roffAuthorizationProcessingAccountRow}                                       \\
+				\utt{Code hash update:}          & \accSameCodeHash {i}{\roffAuthorizationProcessingAccountRow}                                       \\
+				\utt{Code size update:}          & \accSameCodeSize {i}{\roffAuthorizationProcessingAccountRow}                                       \\
+				\utt{Delegation address update:} & \accSameDelegationAddress { anchorRow = i , relOffset = \roffAuthorizationProcessingAccountRow , } \\
+				\utt{Delegation number update:}  & \accSameDelegationNumber  { anchorRow = i , relOffset = \roffAuthorizationProcessingAccountRow , } \\
+				\utt{Delegation status update:}  & \accSameDelegationStatus  { anchorRow = i , relOffset = \roffAuthorizationProcessingAccountRow , } \\
+				\utt{Warmth update:}             & \accSameWarmth   {i}{\roffAuthorizationProcessingAccountRow}                                       \\
+			\end{array} \right.
+		\]
+		% \begin{description}
+		% 	\item[\underline{Updating the authority's nonce:}]    $\accSameNonce    {i}{\roffAuthorizationProcessingAccountRow}$
+		% 	\item[\underline{Setting the authority's code hash:}] $\accSameCodeHash {i}{\roffAuthorizationProcessingAccountRow}$
+		% 	\item[\underline{Setting the authority's code size:}] $\accSameCodeSize {i}{\roffAuthorizationProcessingAccountRow}$
+		% 	\item[\underline{Updating the authority's delegation address:}]
+		% 		\(
+		% 		\accSameDelegationAddress {
+		% 			anchorRow = i                                      ,
+		% 			relOffset = \roffAuthorizationProcessingAccountRow ,
+		% 		}
+		% 		\)
+		% 	\item[\underline{Updating the authority's warmth:}] $\accSameWarmth {i}{\roffAuthorizationProcessingAccountRow}$
+		% \end{description}
+	\item[\underline{\underline{The valid authority tuple case:}}]
+		\If $\locTupleValidity = \true$ \Then we impose the following on the authority account:
+		\[
+			\left\{ \begin{array}{ll}
+				\utt{Nonce update:}              & \accIncrementNonce    {i}{\roffAuthorizationProcessingAccountRow}                                       \\
+				\utt{Code hash update:}          & \toBeSet                                                                                                \\
+				\utt{Code size update:}          & \toBeSet                                                                                                \\
+				\utt{Delegation address update:} & \toBeSet                                                                                                \\
+				\utt{Delegation number update:}  & \accIncrementDelegationNumber  { anchorRow = i , relOffset = \roffAuthorizationProcessingAccountRow , } \\
+				\utt{Delegation status update:}  & \toBeSet                                                                                                \\
+				\utt{Warmth update:}             & \accTurnOnWarmth      {i}{\roffAuthorizationProcessingAccountRow}                                       \\
+			\end{array} \right.
+		\]
+		\begin{description}
+			\item[\underline{Authority code hash update:}]
+				we impose
+				\begin{enumerate}
+					\item \If $\locDelegationReset  = \true$ \Then
+						\[
+							\left\{ \begin{array}{lcl}
+								\accCodehashHi _{i + \roffAuthorizationProcessingAccountRow} & = & \emptyKeccakHi \\
+								\accCodehashLo _{i + \roffAuthorizationProcessingAccountRow} & = & \emptyKeccakLo \\
+							\end{array} \right.
+						\]
+					\item \If $\locProperDelegation = \true$ \Then
+						the code hash is set implicitly by the lookup from
+						section~(\ref{hub: lookups: into romLex: for delegation new})
+				\end{enumerate}
+			\item[\underline{Authority code size update:}]
+				we impose
+				\begin{enumerate}
+					\item \If $\locDelegationReset  = \true$ \Then $\accCodesize\new _{i + \roffAuthorizationProcessingAccountRow} = 0$
+					\item \If $\locProperDelegation = \true$ \Then $\accCodesize\new _{i + \roffAuthorizationProcessingAccountRow} = \delegatedAccountCodeSize$
+				\end{enumerate}
+			\item[\underline{Authority delegation address update:}]
+				we impose
+				\[
+					\accSetDelegationAddress {
+						anchorRow           = i                                                                          ,
+						relOffset           = \roffAuthorizationProcessingAccountRow                                     ,
+						delegationAddressHi = \authDelegationAddressHi _{i + (\roffAuthorizationProcessingAuthorityRow)} ,
+						delegationAddressLo = \authDelegationAddressLo _{i + (\roffAuthorizationProcessingAuthorityRow)} ,
+					}
+				\]
+			\item[\underline{Authority delegation status update:}]
+				we impose
+				\[
+					\accIsDelegatedNew _{i + \roffAuthorizationProcessingAccountRow} =  \locProperDelegation
+				\]
+		\end{description}
+\end{description}
+

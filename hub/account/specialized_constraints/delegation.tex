@@ -1,0 +1,104 @@
+Below $\relof$ is a (small) positive integer.
+We introduce constraints pertaining to account delegation.
+\[
+	\left\{ \begin{array}{lcl}
+		%
+		\accSameDelegationAddress {
+			anchorRow = i      ,
+			relOffset = \relof ,
+		}
+		\vspace{2mm} \\
+		\qquad \define
+		\left\{ \begin{array}{lcl}
+			\accDelegationAddressHiNew _{i + \relof} & = & \accDelegationAddressHi _{i + \relof} \\
+			\accDelegationAddressLoNew _{i + \relof} & = & \accDelegationAddressLo _{i + \relof} \\
+		\end{array} \right.
+		\vspace{2mm} \\
+		%
+		\accSameDelegationNumber {
+			anchorRow = i      ,
+			relOffset = \relof ,
+		}
+		\vspace{2mm} \\
+		\qquad \define
+		\accDelegationNumberNew _{i + \relof} = \accDelegationNumber _{i + \relof}
+		\vspace{2mm} \\
+		%
+		\accSameDelegationStatus  {
+			anchorRow = i ,
+			relOffset = \relof ,
+		}
+		\vspace{2mm} \\
+		\qquad \define
+		\accIsDelegatedNew _{i + \relof} = \accIsDelegated _{i + \relof}
+		% \vspace{2mm} \\
+	\end{array} \right.
+\]
+and
+\[
+	\left\{ \begin{array}{lcl}
+		\accSetDelegationAddress {
+			anchorRow           = i                 ,
+			relOffset           = \relof            ,
+			delegationAddressHi = \loc{address\_hi} ,
+			delegationAddressLo = \loc{address\_lo} ,
+		}
+		\vspace{2mm} \\
+		\qquad \define
+		\left\{ \begin{array}{lcl}
+			\accDelegationAddressHiNew _{i + \relof} & = & \loc{address\_hi} \\
+			\accDelegationAddressLoNew _{i + \relof} & = & \loc{address\_lo} \\
+		\end{array} \right.
+		\vspace{2mm} \\
+		\accIncrementDelegationNumber {
+			anchorRow = i      ,
+			relOffset = \relof ,
+		}
+		\vspace{2mm} \\
+		\qquad \define
+		\accDelegationNumberNew _{i + \relof} = 1 + \accDelegationNumber _{i + \relof}
+	\end{array} \right.
+\]
+We also define various shorthands for checking for account delegation
+\[
+	\left\{ \begin{array}{lcl}
+		\accConditionallyCheckForDelegation {
+			anchorRow = i               ,
+			relOffset = \relof          ,
+			condition = \loc{condition} ,
+		}
+		\vspace{2mm} \\
+		\qquad \define
+		\left\{ \begin{array}{lcl}
+			\accCheckForDelegation    _{i + \relof} & = & \loc{condition} \\
+			\accCheckForDelegationNew _{i + \relof} & = & 0               \\
+		\end{array} \right.
+		\vspace{2mm} \\
+		\accCheckForDelegationIfAccountHasCode {
+			anchorRow = i      ,
+			relOffset = \relof ,
+		}
+		\vspace{2mm} \\
+		\qquad \define
+		\left\{ \begin{array}{lcl}
+			\accCheckForDelegation    _{i + \relof} & = & \accHasCode _{i + \relof} \\
+			\accCheckForDelegationNew _{i + \relof} & = & 0 \\
+		\end{array} \right.
+		\vspace{2mm} \\
+		\accDontCheckForDelegation {
+			anchorRow = i      ,
+			relOffset = \relof ,
+		}
+		\vspace{2mm} \\
+		\qquad \define
+		\left\{ \begin{array}{lcl}
+			\accCheckForDelegation    _{i + \relof} & = & 0 \\
+			\accCheckForDelegationNew _{i + \relof} & = & 0 \\
+		\end{array} \right.
+		\\
+	\end{array} \right.
+\]
+\saNote{}
+We draw the attention of the reader to the restriction
+on checking for delegation imposed in
+note~(\ref{hub: account: account delegation: checks for delegation are prohibited if the account has empty code}).

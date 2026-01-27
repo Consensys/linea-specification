@@ -1,0 +1,27 @@
+\item[\underline{Setting the \calleeName{} balance operation on account-row $n^°(i + \callFirstCalleeAccountRowOffset)$:}]
+	we impose that
+	\begin{enumerate}
+		\item \If $\scenCallBalanceUpdateNotRequired _{i} = 1$ \Then $\accSameBalance      {i}{\callFirstCalleeAccountRowOffset}$
+		\item \If $\scenCallBalanceUpdateRequired    _{i} = 1$ \Then
+			\begin{enumerate}
+				\item \If $\locIsCall = 1$ \Then
+					\[
+						\accIncrementBalance
+						{i}{\callFirstCalleeAccountRowOffset}{\locValueLo}
+					\]
+				\item \If $\locIsCallcode + \locIsDelegatecall + \locIsStaticcall = 1$ \Then
+					\[
+						\accSameBalance
+						{i}{\callFirstCalleeAccountRowOffset}
+					\]
+			\end{enumerate}
+			\saNote{}
+			Echoing
+			note~(\ref{hub: instruction handling: call: generalities: first account rows: value transfer subtleties}),
+			the above may alternatively be implemented without case disjunction as
+			\[
+				\accIncrementBalance
+				{i}{\callFirstCalleeAccountRowOffset}{\locIsCall \cdot \locValueLo}
+			\]
+	\end{enumerate}
+

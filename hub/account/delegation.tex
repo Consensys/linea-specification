@@ -1,0 +1,77 @@
+\begin{center}
+	\boxed{\text{All constraints in this subsection assume that $\peekAccount _{i} = 1$.}}
+\end{center}
+We specify the behaviour of the $\accIsDelegated$ and $\accIsDelegatedNew$ columns
+which indicate whether the account is delegated as per \cite{EIP-7702}.
+\begin{enumerate}
+	\item \If $\accDelegationAddressHi _{i} \neq 0$ \Then $\accIsDelegated _{i} = 1$
+	\item \If $\accDelegationAddressHi _{i} =    0$ \Then
+		\begin{enumerate}
+			\item \If $\accDelegationAddressLo _{i} \neq 0$ \Then $\accIsDelegated _{i} = 1$
+			\item \If $\accDelegationAddressLo _{i} =    0$ \Then $\accIsDelegated _{i} = 0$
+		\end{enumerate}
+\end{enumerate}
+We enforce the analogous constraints for $\accIsDelegatedNew$:
+\begin{enumerate}[resume]
+	\item \If $\accDelegationAddressHiNew _{i} \neq 0$ \Then $\accIsDelegatedNew _{i} = 1$
+	\item \If $\accDelegationAddressHiNew _{i} =    0$ \Then
+		\begin{enumerate}
+			\item \If $\accDelegationAddressLoNew _{i} \neq 0$ \Then $\accIsDelegatedNew _{i} = 1$
+			\item \If $\accDelegationAddressLoNew _{i} =    0$ \Then $\accIsDelegatedNew _{i} = 0$
+		\end{enumerate}
+\end{enumerate}
+\saNote{}
+The above ensures that
+\[
+	\left\{ \begin{array}{lclclcl}
+		\accIsDelegated    & \equiv & \true & \iff & \accDelegationAddress    & \equiv & \texttt{0x\,00\,\dots\,00} \in \mathbb{B}_{\addressSize} \\
+		\accIsDelegatedNew & \equiv & \true & \iff & \accDelegationAddressNew & \equiv & \texttt{0x\,00\,\dots\,00} \in \mathbb{B}_{\addressSize} \\
+	\end{array} \right.
+\]
+We impose some constraints ensuring that delegation information may only change during the \txAuth{}-phase
+\begin{enumerate}[resume]
+	\item\label{hub: account: account delegation: the delegation address may not change outside of AUTH rows}
+		\If $\txAuth _{i} = 0$ \Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\accSameDelegationAddress {
+					anchorRow = i ,
+					relOffset = 0 ,
+				} \\
+				\accSameDelegationNumber {
+					anchorRow = i ,
+					relOffset = 0 ,
+				} \\
+				\accSameDelegationStatus {
+					anchorRow = i ,
+					relOffset = 0 ,
+				} \\
+			\end{array} \right.
+		\]
+	\item \If $\accIsDelegated    _{i} = 1$ \Then $\accCodesize     _{i} = \delegatedAccountCodeSize$
+	\item \If $\accIsDelegatedNew _{i} = 1$ \Then $\accCodesize\new _{i} = \delegatedAccountCodeSize$
+\end{enumerate}
+\saNote{}
+Constraint~(\ref{hub: account: account delegation: the delegation address may not change outside of AUTH rows})
+enforces that the delegation address of an account may not change outside of the \txAuth{}-phase.
+
+We further impose general constraints on which accounts the arithmetization is allowed to \textbf{check} for delegation.
+\begin{enumerate}[resume]
+	\item\label{hub: account: account delegation: checks for delegation require non empty code}
+		\If $\accHasCode     _{i} = 0$ \Then $\accCheckForDelegation    _{i} = 0$
+	\item
+		\If $\accHasCode\new _{i} = 0$ \Then $\accCheckForDelegationNew _{i} = 0$
+	\item
+		\If $\txAuth         _{i} = 0$ \Then $\accCheckForDelegationNew _{i} = 0$
+\end{enumerate}
+\saNote{}\label{hub: account: account delegation: checks for delegation are prohibited if the account has empty code}
+Clearly, no account with empty byte code, as measured by $\accHasCode \equiv \false$
+(which is logically equivalent to the code hash being $\emptyKeccak$,
+see section~(\ref{hub: account: empty code})),
+is delegated.
+This makes checking for delegation \textbf{redundant} in that precise case,
+but certainly not ``ban-worthy''.
+Yet the arithmetization outright prohibits it, which is the interpretation of
+constraint~(\ref{hub: account: account delegation: checks for delegation are prohibited if the account has empty code}).
+The reason for that restriction is that the arithmetization thereby avoids
+the inclusion of empty byte code in the \romLexMod{} module.
