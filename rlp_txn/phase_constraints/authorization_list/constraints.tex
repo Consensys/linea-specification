@@ -6,127 +6,128 @@
 
 We constrain \locAuthorizationIndex to increase by at most one:
 \begin{enumerate}
-	\item $\locAuthorizationIndex _{i} \in \{ \locAuthorizationIndex _{i - 1}, 1 + \locAuthorizationIndex _{i - 1} \}$ 
+	\item $\locAuthorizationIndex _{i} \in \{ \locAuthorizationIndex _{i - 1}, 1 + \locAuthorizationIndex _{i - 1} \}$
 \end{enumerate}
 We constrain the size counter:
 \begin{enumerate}[resume]
-	\item \If $\locAuthorizationData_{i} = 1$ \Then $\locAuthorizationLengthCountdown _{i} = \locAuthorizationLengthCountdown _{i-1}- \lc _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}$
-	\item \If $\locAuthorizationNotFirstRow_{i} = 1$ \Then $\locAuthorizationItemCountdown _{i} = \locAuthorizationItemCountdown _{i-1}- \lc _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}$
+	\item \If $\locAuthorizationData        _{i} = 1$ \Then $\locAuthorizationLengthCountdown _{i} = \locAuthorizationLengthCountdown _{i - 1} - \lc _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}$
+	\item \If $\locAuthorizationNotFirstRow _{i} = 1$ \Then $\locAuthorizationItemCountdown   _{i} = \locAuthorizationItemCountdown   _{i - 1} - \lc _{i} \cdot \rlpTxnComputationColumnLimbSize _{i}$
 \end{enumerate}
 We define authorization constancy by:
-\If $\locAuthorizationNotFirstRow_{i} = 1$ \Then: $\col{X}_{i} = \col{X}_{i-1} $.
+\If $\locAuthorizationNotFirstRow _{i} = 1$ \Then: $\col{X} _{i} = \col{X} _{i - 1} $.
 \begin{enumerate}[resume]
 	\item And we impose authorization constancy for:
-	\begin{enumerate}
-		\item \locAuthorizationChainId      
-		\item \locAuthorizationAddressHi    
-		\item \locAuthorizationAddressLo    
-		\item \locAuthorizationNonce        
-		\item \locAuthorizationY            
-		\item \locAuthorizationRHi          
-		\item \locAuthorizationRLo          
-		\item \locAuthorizationSHi          
-		\item \locAuthorizationSLo          
-	\end{enumerate}
+		\begin{enumerate}
+			\item \locAuthorizationChainId   {}
+			\item \locAuthorizationAddressHi {}
+			\item \locAuthorizationAddressLo {}
+			\item \locAuthorizationNonce     {}
+			\item \locAuthorizationY         {}
+			\item \locAuthorizationRHi       {}
+			\item \locAuthorizationRLo       {}
+			\item \locAuthorizationSHi       {}
+			\item \locAuthorizationSLo       {}
+		\end{enumerate}
 \end{enumerate}
 We now constraint the global RLP prefix of tghe phase:
 \begin{enumerate}[resume]
-	\item \If $\locAuthorizationPrefix_{i} = 1$ \Then:
+	\item \If $\locAuthorizationPrefix _{i} = 1$ \Then:
 		\[
 			\rlpProcessByteString {
-				anchorRow        = i                          ,
-				relOffset        = 0                          ,
+				anchorRow        = i                                ,
+				relOffset        = 0                                ,
 				byteStringLength = \locAuthorizationLengthCountdown ,
-				firstByte        = \nothing			          ,
-				isList           = \true                      ,
-				mustBeNontrivial = \true                      ,
+				firstByte        = \nothing                         ,
+				isList           = \true                            ,
+				mustBeNontrivial = \true                            ,
 			}
 		\]
 \end{enumerate}
 And each authorization has the following constraint:
 \begin{enumerate}[resume]
-	\item \If $\locAuthorizationFirstRow_{i} = 1$ \Then:
-	\begin{enumerate}
-		\item an authorization is $\locAuthorizationNumberOfRows$ row long: $\locAuthorizationIndex_{i + \locAuthorizationNumberOfRows -1 } = \locAuthorizationIndex_{i}$
-		\item $\locAuthorizationItemCountdown   _{i + \locAuthorizationNumberOfRows -1} = 0$
-		\item 
-		\[
-			\rlpProcessByteString {
-				anchorRow        = i                          ,
-				relOffset        = 0                          ,
-				byteStringLength = \locAuthorizationItemCountdown ,
-				firstByte        = \nothing			          ,
-				isList           = \true                      ,
-				mustBeNontrivial = \true                      ,
-			}
-		\]
-		\item 
-		  \[
-                    \rlpProcessInteger {
-                        anchorRow  = i                                  ,
-                        relOffset  = \yellowm{1}                        ,
-                        integerHi  = 0									,
-                        integerLo  = \locAuthorizationChainId			,
-                        endOfPhase = \false                             ,
-                    }
-            \]
-        \item
-        \[
-			    \rlpProcessAddress {
-				anchorRow = i               ,
-				relOffset = \yellowm{4}               ,
-				addressHi = \locAuthorizationAddressHi ,
-				addressLo = \locAuthorizationAddressLo ,
-			    }
-			\]
-		\item 
-		  \[
-                    \rlpProcessInteger {
-                        anchorRow  = i                                  ,
-                        relOffset  = \yellowm{7}                        ,
-                        integerHi  = 0									,
-                        integerLo  = \locAuthorizationNonce				,
-                        endOfPhase = \false                             ,
-                    }
-            \]
-        \item 
-		  \[
-                    \rlpProcessInteger {
-                        anchorRow  = i                                  ,
-                        relOffset  = \yellowm{10}                        ,
-                        integerHi  = 0									,
-                        integerLo  = \locAuthorizationY				,
-                        endOfPhase = \false                             ,
-                    }
-            \]
-        \item 
-		  \[
-                    \rlpProcessInteger {
-                        anchorRow  = i                                  ,
-                        relOffset  = \yellowm{13}                        ,
-                        integerHi  = \locAuthorizationRHi									,
-                        integerLo  = \locAuthorizationRLo				,
-                        endOfPhase = \false                             ,
-                    }
-            \]
-        \item 
-		  \[
-                    \rlpProcessInteger {
-                        anchorRow  = i                                  ,
-                        relOffset  = \yellowm{16}                        ,
-                        integerHi  = \locAuthorizationSHi									,
-                        integerLo  = \locAuthorizationSLo				,
-                        endOfPhase = \locAuthorizationEndOfPhase                             ,
-                    }
-            \]
-	\end{enumerate}
+	\item \If $\locAuthorizationFirstRow _{i} = 1$ \Then:
+		\begin{enumerate}
+			\item an authorization is $\locAuthorizationNumberOfRows$ row long: $\locAuthorizationIndex _{i + \locAuthorizationNumberOfRows - 1} = \locAuthorizationIndex _{i}$
+			\item $\locAuthorizationItemCountdown   _{i + \locAuthorizationNumberOfRows - 1} = 0$
+			\item
+				\[
+					\rlpProcessByteString {
+						anchorRow        = i                              ,
+						relOffset        = 0                              ,
+						byteStringLength = \locAuthorizationItemCountdown ,
+						firstByte        = \nothing                       ,
+						isList           = \true                          ,
+						mustBeNontrivial = \true                          ,
+					}
+				\]
+			\item
+				\[
+					\rlpProcessInteger {
+						anchorRow  = i                        ,
+						relOffset  = \yellowm{1}              ,
+						integerHi  = 0                        ,
+						integerLo  = \locAuthorizationChainId ,
+						endOfPhase = \false                   ,
+					}
+				\]
+			\item
+				\[
+					\rlpProcessAddress {
+						anchorRow = i                          ,
+						relOffset = \yellowm{4}                ,
+						addressHi = \locAuthorizationAddressHi ,
+						addressLo = \locAuthorizationAddressLo ,
+					}
+				\]
+			\item
+				\[
+					\rlpProcessInteger {
+						anchorRow  = i                      ,
+						relOffset  = \yellowm{7}            ,
+						integerHi  = 0                      ,
+						integerLo  = \locAuthorizationNonce ,
+						endOfPhase = \false                 ,
+					}
+				\]
+			\item
+				\[
+					\rlpProcessInteger {
+						anchorRow  = i                  ,
+						relOffset  = \yellowm{10}       ,
+						integerHi  = 0                  ,
+						integerLo  = \locAuthorizationY ,
+						endOfPhase = \false             ,
+					}
+				\]
+			\item
+				\[
+					\rlpProcessInteger {
+						anchorRow  = i                    ,
+						relOffset  = \yellowm{13}         ,
+						integerHi  = \locAuthorizationRHi ,
+						integerLo  = \locAuthorizationRLo ,
+						endOfPhase = \false               ,
+					}
+				\]
+			\item
+				\[
+					\rlpProcessInteger {
+						anchorRow  = i                           ,
+						relOffset  = \yellowm{16}                ,
+						integerHi  = \locAuthorizationSHi        ,
+						integerLo  = \locAuthorizationSLo        ,
+						endOfPhase = \locAuthorizationEndOfPhase ,
+					}
+				\]
+		\end{enumerate}
 	Finally, if this authorization is not the last, we constrain to start a new one by:
 	\begin{enumerate}
-		\item \If $ \rlpTxnCommonColumnNumberOfAuthorization \neq \locAuthorizationIndex_{i} + 1 $ \Then:
-		$\locAuthorizationIndex_{i + \locAuthorizationNumberOfRows } = \locAuthorizationIndex_{i} + 1$
+		\item
+			\If   $\rlpTxnCommonColumnNumberOfAuthorization \neq \locAuthorizationIndex _{i} + 1 $
+			\Then $\locAuthorizationIndex _{i + \locAuthorizationNumberOfRows } = \locAuthorizationIndex _{i} + 1$
 	\end{enumerate}
 \end{enumerate}
 And a finalization constraint:
 \begin{enumerate}
-	\item \If $\phaseEnd_{i} = 1$ \Then $\locAuthorizationLengthCountdown _{i} = 0$ 
+	\item \If $\phaseEnd _{i} = 1$ \Then $\locAuthorizationLengthCountdown _{i} = 0$
 \end{enumerate}
