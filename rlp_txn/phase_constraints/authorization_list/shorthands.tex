@@ -1,0 +1,37 @@
+\begin{center}
+	\boxed{\text{The following shorthands only make sense provided that $\phaseAuthorizationList _{i} = 1$.}}
+\end{center}
+We use the following shorthands:
+\[
+	\left\{ \begin{array}{lcl}
+		\locAuthorizationPrefix	         _{i} & \define & \isTxn _{i - 1} \cdot \isCmp _{i} \\
+		\locAuthorizationAgainAuthPhase  _{i} & \define & \isCmp _{i - 1} \cdot \isCmp _{i} \\
+		\locAuthorizationData	         _{i} & \define & \isCmp _{i} \cdot ( 1 - \isTxn _{i - 1}) \\
+		\locAuthorizationFirstRow        _{i} & \define & \phaseAuthorizationList _{i - 1} \cdot (\locAuthorizationIndex _{i} - \locAuthorizationIndex_{i - 1}) \\
+		\locAuthorizationNotFirstRow     _{i} & \define & \locAuthorizationData _{i} \cdot (1 - \locAuthorizationFirstRow) _{i} \\
+		\locAuthorizationLengthCountdown _{i} & \define & \rlpTxnComputationColumnAuxiliaryData                {1} _{i} \\
+		\locAuthorizationItemCountdown   _{i} & \define & \rlpTxnComputationColumnAuxiliaryData                {2} _{i} \\
+		\locAuthorizationIndex           _{i} & \define & \rlpTxnComputationColumnCounterConstantAuxiliaryData {1} _{i} \\
+		\locAuthorizationChainId         _{i} & \define & \rlpTxnComputationColumnCounterConstantAuxiliaryData {2} _{i} \\
+		\locAuthorizationAddressHi       _{i} & \define & \rlpTxnComputationColumnCounterConstantAuxiliaryData {4} _{i} \\
+		\locAuthorizationAddressLo       _{i} & \define & \rlpTxnComputationColumnCounterConstantAuxiliaryData {5} _{i} \\
+		\locAuthorizationNonce           _{i} & \define & \rlpTxnComputationColumnAuxiliaryData                {3} _{i} \\
+		\locAuthorizationY               _{i} & \define & \rlpTxnComputationColumnCounterConstantAuxiliaryData {3} _{i} \\
+		\locAuthorizationRHi             _{i} & \define & \rlpTxnComputationColumnAuxiliaryData                {4} _{i} \\
+		\locAuthorizationRLo             _{i} & \define & \rlpTxnComputationColumnAuxiliaryData                {5} _{i} \\
+		\locAuthorizationSHi             _{i} & \define & \rlpTxnComputationColumnAuxiliaryData                {6} _{i} \\
+		\locAuthorizationSLo             _{i} & \define & \rlpTxnComputationColumnAuxiliaryData                {7} _{i} \\
+		\locAuthorizationEndOfPhase      _{i} & \define & \locAuthorizationIndex _{i} ==  \rlpTxnCommonColumnNumberOfAuthorizations _{i} \\
+	\end{array} \right.
+\]
+\saNote{}
+None of the above shorthands are required to satisfy counter-constancy conditions.
+In the implementation they will be constant along the rows pertaining to a given authorization tuple.
+
+\saNote{}
+The implementation should adopt the following \textbf{equivalent but lower degree} definition:
+\[
+	\locAuthorizationPrefix _{i} \define \isTxn _{i - 1}
+\]
+The equivalence of both definitions follows from
+constraint~(\ref{rlp txn: generalities: perspectives: every transaction row is followed by a computation row}).

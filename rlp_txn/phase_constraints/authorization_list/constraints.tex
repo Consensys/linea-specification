@@ -1,0 +1,258 @@
+\begin{center}
+	\boxed{\text{In all this section, it is assumed that }
+	\phaseAuthorizationList _{i} = \true
+	}
+\end{center}
+We impose some general constraints onto \locAuthorizationIndex{}
+and also ensure that the \phaseAuthorizationList{} have a certain shape.
+Recall that \locAuthorizationIndex{} is meant to count the authority tuples in the \texttt{authority\_list}.
+The constraints that follow pertain mostly to
+\locAuthorizationIndex{} and enforce the following behaviour
+on the \phaseAuthorizationList{} phase.
+We wish to impose that these phases be structured as follows:
+\begin{itemize}
+	\item
+		\numConst{1} ``transaction-row'' marks the beginning of
+		the \phaseAuthorizationList{} phase, as it
+		does for any of the phases;
+		it is therefore expected;
+	\item
+		\numConst{1} follow-up ``computation-row'';
+		again this is to be expected;
+		on this row we compute the
+		\rlp{}-prefix of the \rlp{}-ization of the
+		\texttt{authority\_list};
+	\item
+		what follows are one or more batches of $\locAuthorizationNumberOfRows$ rows;
+		every such batch pertains to a given authorization tuple;
+		such batches should be characterized by a constant
+		\locAuthorizationIndex{}, and this index should
+		increment by one at the boundaries of said batches.
+\end{itemize}
+We achieve this by imposing the following constraints:
+\begin{enumerate}
+	\item
+		\If $\locAuthorizationPrefix _{i} = 1$ \Then
+
+		\ob{TODO: We require a constraint that connects \rlpTxnCommonColumnNumberOfAuthorizations{}
+		to an eponymous column in the $\isTxn{}$-perspective.}
+	\item\label{rlp txn: phase constraints: authorization list: constraints: setting values for the first few AUTH rows}
+		\If $\locAuthorizationPrefix _{i} = 1$ \Then
+		\[
+			\left\{ \begin{array}{lclr}
+				\locAuthorizationIndex  _{i -                             1} & = & 0               & (\sanityCheck) \\
+				\locAuthorizationIndex  _{i}                                 & = & 0              \\
+				\locAuthorizationIndex  _{i +                             1} & = & 1 \vspace{2mm} \\
+				\isCmp                  _{i +                             1} & = & 1 \vspace{2mm} \\
+				\phaseAuthorizationList _{i +                             1} & = & 1              \\
+				\phaseAuthorizationList _{i +                            10} & = & 1              \\
+				\phaseAuthorizationList _{i + \locAuthorizationNumberOfRows} & = & 1              \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		We include ``look ahead checkpoint constraints'' of the form $\phaseAuthorizationList _{i + \relof} \equiv 1$
+		in order to prevent premature exits from the present phase.
+		The above ensures that the present phase lasts at least
+		$1 + 1 + \locAuthorizationNumberOfRows$ rows.
+		We will in the end ensure that the present phase lasts
+		$1 + 1 + \ell \cdot \locAuthorizationNumberOfRows$ rows
+		where $\ell$ is the length of the \texttt{authorization\_list} in the
+		current ``set code transaction''.
+	\item\label{rlp txn: phase constraints: authorization list: constraints: monotonicity of tuple index}
+		\If $\phaseAuthorizationList _{i - 1} = \true$ \Then $\locAuthorizationIndex _{i} \in \{ \locAuthorizationIndex _{i - 1}, 1 + \locAuthorizationIndex _{i - 1} \}$
+	\item \If $\locAuthorizationIndex _{i} \neq \rlpTxnCommonColumnNumberOfAuthorizations _{i}$
+		\Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\phaseAuthorizationList _{i + 1}                             & = & 1                               \\
+				\isCmp                  _{i + 1}                             & = & 1 \vspace{2mm}                  \\
+				\phaseAuthorizationList _{i + \locAuthorizationNumberOfRows} & = & 1                               \\
+				\isCmp                  _{i + \locAuthorizationNumberOfRows} & = & 1 \vspace{2mm}                  \\
+				\locAuthorizationIndex  _{i + \locAuthorizationNumberOfRows} & = & 1 + \locAuthorizationIndex _{i} \\
+			\end{array} \right.
+		\]
+		% \begin{enumerate}
+		% 	\item
+		% 		\If   $\locAuthorizationIndex _{i} \neq \locAuthorizationIndex _{i - 1}$
+		% 		\Then $\locAuthorizationIndex _{i + \locAuthorizationNumberOfRows - 1} = \locAuthorizationIndex _{i}$
+		% 	\item
+		% 		\If   $\locAuthorizationIndex _{i} \neq \rlpTxnCommonColumnNumberOfAuthorizations _{i}$
+		% 		\Then
+		% 		\[
+		% 			\left\{ \begin{array}{lcl}
+		% 				\locAuthorizationIndex  _{i + \locAuthorizationNumberOfRows} & = & 1 + \locAuthorizationIndex _{i} \\
+		% 				\phaseAuthorizationList _{i + \locAuthorizationNumberOfRows} & = & 1                               \\
+		% 			\end{array} \right.
+		% 		\]
+		% \end{enumerate}
+		\saNote{}
+		The above, along with the constraints setting the initial values for \locAuthorizationIndex{},
+		see constraint~(\ref{rlp txn: phase constraints: authorization list: constraints: setting values for the first few AUTH rows}),
+		the monotonicity constraint for \locAuthorizationIndex{},
+		see constraint~(\ref{rlp txn: phase constraints: authorization list: constraints: monotonicity of tuple index}),
+		enforce that past its two initial values \locAuthorizationIndex{} remains constant for $\locAuthorizationNumberOfRows$ consecutive rows
+		and then grows by $1$.
+		I.e. its values are $0$, $0$, $1$, \dots{}, $1$, $2$, \dots{}, $2$, \dots, $\ell$, \dots{}, $\ell$.
+		Again, we denote by $\ell$ the length of the \texttt{authorization\_list}.
+	\item \If $\phaseAuthorizationList _{i + 1} = \false$ \Then $\locAuthorizationIndex _{i} = \rlpTxnCommonColumnNumberOfAuthorizations _{i}$
+		% \item \If $\locAuthorizationFirstRow _{i} = 1$ \Then
+		% 	\begin{enumerate}
+		% 		\item $\locAuthorizationIndex _{i} = 1 + \locAuthorizationIndex _{i - 1}$
+		% 		\item $\locAuthorizationIndex _{i + \locAuthorizationNumberOfRows - 1} = \locAuthorizationIndex _{i}$
+		% 	\end{enumerate}
+\end{enumerate}
+We constrain the size counter:
+\begin{enumerate}[resume]
+	\item \If $\locAuthorizationData        _{i} = 1$ \Then
+		\[
+			\locAuthorizationLengthCountdown _{i} =
+			\left[ \begin{array}{cl}
+				+ & \locAuthorizationLengthCountdown _{i - 1}            \\
+				- & \lc _{i} \cdot \rlpTxnComputationColumnLimbSize _{i} \\
+			\end{array} \right]
+		\]
+	\item \If $\locAuthorizationNotFirstRow _{i} = 1$ \Then
+		\[
+			\locAuthorizationItemCountdown   _{i} =
+			\left[ \begin{array}{cl}
+				+ & \locAuthorizationItemCountdown   _{i - 1}            \\
+				- & \lc _{i} \cdot \rlpTxnComputationColumnLimbSize _{i} \\
+			\end{array} \right]
+		\]
+\end{enumerate}
+We define authorization constancy by:
+\If $\locAuthorizationNotFirstRow _{i} = 1$ \Then $\col{X} _{i} = \col{X} _{i - 1} $.
+\begin{enumerate}[resume]
+	\item And we impose authorization constancy for:
+		\begin{enumerate}
+			\item \locAuthorizationChainId   {}
+			\item \locAuthorizationAddressHi {}
+			\item \locAuthorizationAddressLo {}
+			\item \locAuthorizationNonce     {}
+			\item \locAuthorizationY         {}
+			\item \locAuthorizationRHi       {}
+			\item \locAuthorizationRLo       {}
+			\item \locAuthorizationSHi       {}
+			\item \locAuthorizationSLo       {}
+		\end{enumerate}
+\end{enumerate}
+The first row of the \phaseAuthorizationList{}-phase is used to compute the \rlp{} prefix of the full authorization list.
+\begin{enumerate}[resume]
+	\item \If $\locAuthorizationPrefix _{i} = 1$ \Then
+		\[
+			\rlpProcessByteString {
+				anchorRow        = i                                ,
+				relOffset        = 0                                ,
+				byteStringLength = \locAuthorizationLengthCountdown ,
+				firstByte        = \nothing                         ,
+				isList           = \true                            ,
+				mustBeNontrivial = \true                            ,
+			}
+		\]
+\end{enumerate}
+And each authorization has the following constraint:
+\begin{enumerate}[resume]
+	\item \If $\locAuthorizationFirstRow _{i} = 1$ \Then
+		\begin{enumerate}
+				% \item
+				% 	the processing of an authorization tuple happens over $\locAuthorizationNumberOfRows$ rows:
+				% 	$\locAuthorizationIndex _{i + \locAuthorizationNumberOfRows - 1} = \locAuthorizationIndex _{i}$
+			\item $\locAuthorizationItemCountdown   _{i + \locAuthorizationNumberOfRows - 1} = 0$
+			\item
+				we process the \rlp{}-prefix of a new authorization tuple
+				\[
+					\rlpProcessByteString {
+						anchorRow        = i                              ,
+						relOffset        = 0                              ,
+						byteStringLength = \locAuthorizationItemCountdown ,
+						firstByte        = \nothing                       ,
+						isList           = \true                          ,
+						mustBeNontrivial = \true                          ,
+					}
+				\]
+			\item
+				we process the \rlp{}-ization of the authorization tuple's
+				\loc{chain\_id}
+				\[
+					\rlpProcessInteger {
+						anchorRow  = i                        ,
+						relOffset  = \yellowm{1}              ,
+						integerHi  = 0                        ,
+						integerLo  = \locAuthorizationChainId ,
+						endOfPhase = \false                   ,
+					}
+				\]
+			\item
+				we process the \rlp{}-ization of the authorization tuple's
+				\loc{address}
+				\[
+					\rlpProcessAddress {
+						anchorRow = i                          ,
+						relOffset = \yellowm{4}                ,
+						addressHi = \locAuthorizationAddressHi ,
+						addressLo = \locAuthorizationAddressLo ,
+					}
+				\]
+			\item
+				we process the \rlp{}-ization of the authorization tuple's
+				\loc{address}
+				\[
+					\rlpProcessInteger {
+						anchorRow  = i                      ,
+						relOffset  = \yellowm{7}            ,
+						integerHi  = 0                      ,
+						integerLo  = \locAuthorizationNonce ,
+						endOfPhase = \false                 ,
+					}
+				\]
+			\item
+				we process the \rlp{}-ization of the authorization tuple's
+				\loc{y\_parity} signature component
+				\[
+					\rlpProcessInteger {
+						anchorRow  = i                  ,
+						relOffset  = \yellowm{10}       ,
+						integerHi  = 0                  ,
+						integerLo  = \locAuthorizationY ,
+						endOfPhase = \false             ,
+					}
+				\]
+			\item
+				we process the \rlp{}-ization of the authorization tuple's
+				\loc{r} signature component
+				\[
+					\rlpProcessInteger {
+						anchorRow  = i                    ,
+						relOffset  = \yellowm{13}         ,
+						integerHi  = \locAuthorizationRHi ,
+						integerLo  = \locAuthorizationRLo ,
+						endOfPhase = \false               ,
+					}
+				\]
+			\item
+				we process the \rlp{}-ization of the authorization tuple's
+				\loc{s} signature component
+				\[
+					\rlpProcessInteger {
+						anchorRow  = i                           ,
+						relOffset  = \yellowm{16}                ,
+						integerHi  = \locAuthorizationSHi        ,
+						integerLo  = \locAuthorizationSLo        ,
+						endOfPhase = \locAuthorizationEndOfPhase ,
+					}
+				\]
+				\saNote{}
+				This is also the only point in time when the current phase
+				may come to a close.
+		\end{enumerate}
+		% Finally, if this authorization is not the last, we constrain to start a new one by:
+		% \begin{enumerate}
+		% 	\item
+		% 		\If   $\rlpTxnCommonColumnNumberOfAuthorizations _{i} \neq \locAuthorizationIndex _{i} + 1 $
+		% 		\Then $\locAuthorizationIndex _{i + \locAuthorizationNumberOfRows } = \locAuthorizationIndex _{i} + 1$
+		% \end{enumerate}
+	\end{enumerate}
+	And a finalization constraint:
+	\begin{enumerate}[resume]
+		\item \If $\phaseEnd _{i} = 1$ \Then $\locAuthorizationLengthCountdown _{i} = 0$
+	\end{enumerate}
