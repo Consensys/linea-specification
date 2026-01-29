@@ -3,8 +3,19 @@
 	\phaseAuthorizationList _{i} = \true
 	}
 \end{center}
-We now start the \rlp{}-ization of the authority list and authority tuple related constraints.
-The first $\isCmp$-row of the \phaseAuthorizationList{}-phase is used to compute the \rlp{} prefix of the full authorization list.
+We now start the \rlp{}-ization related constraints.
+\rlp{}-ization involves two different items
+\begin{itemize}
+	\item the \rlp{}-prefix of the full authority list
+		\[
+			\texttt{authority\_list} \equiv \texttt{[authority\_tuple, ...]}
+		\]
+	\item the \rlp{}-ization of the individual authority tuples
+		\[
+			\texttt{authority\_tuple} \equiv \texttt{[chain\_id, address, nonce, y\_parity, r, s]}
+		\]
+\end{itemize}
+The first $\isCmp$-row of the \phaseAuthorizationList{}-phase is used to compute the \rlp{}-prefix of the full authorization list.
 \begin{enumerate}[resume]
 	\item \If $\locAuthorizationPrefix _{i} = 1$ \Then
 		\[
@@ -63,7 +74,7 @@ And each authorization has the following constraint:
 				\]
 			\item
 				we process the \rlp{}-ization of the authorization tuple's
-				\loc{address}
+				\loc{nonce}
 				\[
 					\rlpProcessInteger {
 						anchorRow  = i                      ,
@@ -124,3 +135,4 @@ And each authorization has the following constraint:
 	\begin{enumerate}[resume]
 		\item \If $\phaseEnd _{i} = 1$ \Then $\locAuthorizationLengthCountdown _{i} = 0$
 	\end{enumerate}
+
