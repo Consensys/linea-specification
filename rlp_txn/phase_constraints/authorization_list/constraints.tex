@@ -60,7 +60,7 @@ We achieve this by imposing the following constraints:
 		current ``set code transaction''.
 	\item\label{rlp txn: phase constraints: authorization list: constraints: monotonicity of tuple index}
 		\If $\phaseAuthorizationList _{i - 1} = \true$ \Then $\locAuthorizationIndex _{i} \in \{ \locAuthorizationIndex _{i - 1}, 1 + \locAuthorizationIndex _{i - 1} \}$
-	\item \If $\locAuthorizationIndex _{i} \neq \rlpTxnCommonColumnNumberOfAuthorizations _{i}$ 
+	\item \If $\locAuthorizationIndex _{i} \neq \rlpTxnCommonColumnNumberOfAuthorizations _{i}$
 		\Then
 		\[
 			\left\{ \begin{array}{lcl}
@@ -73,10 +73,10 @@ We achieve this by imposing the following constraints:
 		\]
 		% \begin{enumerate}
 		% 	\item
-		% 		\If   $\locAuthorizationIndex _{i} \neq \locAuthorizationIndex _{i - 1}$ 
+		% 		\If   $\locAuthorizationIndex _{i} \neq \locAuthorizationIndex _{i - 1}$
 		% 		\Then $\locAuthorizationIndex _{i + \locAuthorizationNumberOfRows - 1} = \locAuthorizationIndex _{i}$
 		% 	\item
-		% 		\If   $\locAuthorizationIndex _{i} \neq \rlpTxnCommonColumnNumberOfAuthorizations _{i}$ 
+		% 		\If   $\locAuthorizationIndex _{i} \neq \rlpTxnCommonColumnNumberOfAuthorizations _{i}$
 		% 		\Then
 		% 		\[
 		% 			\left\{ \begin{array}{lcl}
@@ -154,9 +154,9 @@ And each authorization has the following constraint:
 \begin{enumerate}[resume]
 	\item \If $\locAuthorizationFirstRow _{i} = 1$ \Then
 		\begin{enumerate}
-			\item 
-				the processing of an authorization tuple happens over $\locAuthorizationNumberOfRows$ rows:
-				$\locAuthorizationIndex _{i + \locAuthorizationNumberOfRows - 1} = \locAuthorizationIndex _{i}$
+				% \item
+				% 	the processing of an authorization tuple happens over $\locAuthorizationNumberOfRows$ rows:
+				% 	$\locAuthorizationIndex _{i + \locAuthorizationNumberOfRows - 1} = \locAuthorizationIndex _{i}$
 			\item $\locAuthorizationItemCountdown   _{i + \locAuthorizationNumberOfRows - 1} = 0$
 			\item
 				we process the \rlp{}-prefix of a new authorization tuple
@@ -253,6 +253,6 @@ And each authorization has the following constraint:
 		% \end{enumerate}
 	\end{enumerate}
 	And a finalization constraint:
-	\begin{enumerate}
+	\begin{enumerate}[resume]
 		\item \If $\phaseEnd _{i} = 1$ \Then $\locAuthorizationLengthCountdown _{i} = 0$
 	\end{enumerate}
