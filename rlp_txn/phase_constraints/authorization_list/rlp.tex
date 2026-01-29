@@ -1,0 +1,126 @@
+\begin{center}
+	\boxed{\text{In all this section, it is assumed that }
+	\phaseAuthorizationList _{i} = \true
+	}
+\end{center}
+We now start the \rlp{}-ization of the authority list and authority tuple related constraints.
+The first $\isCmp$-row of the \phaseAuthorizationList{}-phase is used to compute the \rlp{} prefix of the full authorization list.
+\begin{enumerate}[resume]
+	\item \If $\locAuthorizationPrefix _{i} = 1$ \Then
+		\[
+			\rlpProcessByteString {
+				anchorRow        = i                                ,
+				relOffset        = 0                                ,
+				byteStringLength = \locAuthorizationLengthCountdown ,
+				firstByte        = \nothing                         ,
+				isList           = \true                            ,
+				mustBeNontrivial = \true                            ,
+			}
+		\]
+\end{enumerate}
+And each authorization has the following constraint:
+\begin{enumerate}[resume]
+	\item \If $\locAuthorizationFirstRow _{i} = 1$ \Then
+		\begin{enumerate}
+				% \item
+				% 	the processing of an authorization tuple happens over $\locAuthorizationNumberOfRows$ rows:
+				% 	$\locAuthorizationIndex _{i + \locAuthorizationNumberOfRows - 1} = \locAuthorizationIndex _{i}$
+			\item $\locAuthorizationItemCountdown   _{i + \locAuthorizationNumberOfRows - 1} = 0$
+			\item
+				we process the \rlp{}-prefix of a new authorization tuple
+				\[
+					\rlpProcessByteString {
+						anchorRow        = i                              ,
+						relOffset        = 0                              ,
+						byteStringLength = \locAuthorizationItemCountdown ,
+						firstByte        = \nothing                       ,
+						isList           = \true                          ,
+						mustBeNontrivial = \true                          ,
+					}
+				\]
+			\item
+				we process the \rlp{}-ization of the authorization tuple's
+				\loc{chain\_id}
+				\[
+					\rlpProcessInteger {
+						anchorRow  = i                        ,
+						relOffset  = \yellowm{1}              ,
+						integerHi  = 0                        ,
+						integerLo  = \locAuthorizationChainId ,
+						endOfPhase = \false                   ,
+					}
+				\]
+			\item
+				we process the \rlp{}-ization of the authorization tuple's
+				\loc{address}
+				\[
+					\rlpProcessAddress {
+						anchorRow = i                          ,
+						relOffset = \yellowm{4}                ,
+						addressHi = \locAuthorizationAddressHi ,
+						addressLo = \locAuthorizationAddressLo ,
+					}
+				\]
+			\item
+				we process the \rlp{}-ization of the authorization tuple's
+				\loc{address}
+				\[
+					\rlpProcessInteger {
+						anchorRow  = i                      ,
+						relOffset  = \yellowm{7}            ,
+						integerHi  = 0                      ,
+						integerLo  = \locAuthorizationNonce ,
+						endOfPhase = \false                 ,
+					}
+				\]
+			\item
+				we process the \rlp{}-ization of the authorization tuple's
+				\loc{y\_parity} signature component
+				\[
+					\rlpProcessInteger {
+						anchorRow  = i                  ,
+						relOffset  = \yellowm{10}       ,
+						integerHi  = 0                  ,
+						integerLo  = \locAuthorizationY ,
+						endOfPhase = \false             ,
+					}
+				\]
+			\item
+				we process the \rlp{}-ization of the authorization tuple's
+				\loc{r} signature component
+				\[
+					\rlpProcessInteger {
+						anchorRow  = i                    ,
+						relOffset  = \yellowm{13}         ,
+						integerHi  = \locAuthorizationRHi ,
+						integerLo  = \locAuthorizationRLo ,
+						endOfPhase = \false               ,
+					}
+				\]
+			\item
+				we process the \rlp{}-ization of the authorization tuple's
+				\loc{s} signature component
+				\[
+					\rlpProcessInteger {
+						anchorRow  = i                           ,
+						relOffset  = \yellowm{16}                ,
+						integerHi  = \locAuthorizationSHi        ,
+						integerLo  = \locAuthorizationSLo        ,
+						endOfPhase = \locAuthorizationEndOfPhase ,
+					}
+				\]
+				\saNote{}
+				This is also the only point in time when the current phase
+				may come to a close.
+		\end{enumerate}
+		% Finally, if this authorization is not the last, we constrain to start a new one by:
+		% \begin{enumerate}
+		% 	\item
+		% 		\If   $\rlpTxnCommonColumnNumberOfAuthorizations _{i} \neq \locAuthorizationIndex _{i} + 1 $
+		% 		\Then $\locAuthorizationIndex _{i + \locAuthorizationNumberOfRows } = \locAuthorizationIndex _{i} + 1$
+		% \end{enumerate}
+	\end{enumerate}
+	And a finalization constraint:
+	\begin{enumerate}[resume]
+		\item \If $\phaseEnd _{i} = 1$ \Then $\locAuthorizationLengthCountdown _{i} = 0$
+	\end{enumerate}
