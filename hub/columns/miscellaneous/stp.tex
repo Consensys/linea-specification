@@ -12,18 +12,6 @@
 		binary column;
 		specifies if an account is warm or not;
 		used in \inst{CALL} pricing;
-	\item $\miscStpCalleeIsDelegated$:
-		binary column;
-		specifying if the target of a \inst{CALL}-type instruction (the \calleeName{}) is delegated;
-		used in \inst{CALL} pricing;
-	\item $\miscStpCalleeIsSelfDelegated$:
-		binary column;
-		specifies if the target of a \inst{CALL}-type instruction is self delegated (i.e. if $\calleeName = \delegateName$);
-		used in \inst{CALL} pricing;
-	\item $\miscStpDelegateWarmth$:
-		binary column;
-		specifies if a delegation address is warm or not;
-		used in \inst{CALL} pricing;
 	\item $\miscStpOogx$:
 		binary column;
 		specifies if the instruction produces an \oogxSH{};
@@ -38,3 +26,16 @@
 \end{enumerate}
 \saNote{} The \stpMod{} also requires ``actual gas'' and ``mxp gas'' fields.
 These columns are readily available as shared columns (except for the ``mxp gas'' which is available in the same miscellaneous-row.)
+
+The following columns are used in \inst{CALL} pricing in the wake of \cite{EIP-7702}.
+\begin{enumerate}[resume]
+	\item $\miscStpCalleeIsDelegated$:
+		binary column;
+		specifies if the target of a \inst{CALL}-type instruction (the \calleeName{}) is delegated;
+	\item $\miscStpCalleeIsSelfDelegated$:
+		binary column;
+		specifies if the target of a \inst{CALL}-type instruction is self delegated (i.e. if $\calleeName = \delegateName$);
+	\item $\miscStpDelegateWarmth$:
+		binary column;
+		specifies if a delegation address is warm or not;
+\end{enumerate}
