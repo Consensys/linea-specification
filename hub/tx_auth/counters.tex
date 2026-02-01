@@ -5,21 +5,17 @@
 We describe the behaviour of
 \authAuthorizationTupleIndex{} and
 \authSenderIsAuthorityAcc{}.
-% NOTE: the constraint below makes no sense:
-% we are talking about a column of the auth perspective
-% if two such rows follow each other, we know the increments
-% otherwise these two rows don't belong both to the AUTH perspective
-% We first impose
-% \begin{enumerate}
-% 	\item
-% 		we require \hubStamp-constancy of
-% 		\begin{multicols}{2}
-% 			\begin{enumerate}
-% 				\item \authAuthorizationTupleIndex{}
-% 				\item \authSenderIsAuthorityAcc{}
-% 			\end{enumerate}
-% 		\end{multicols}
-% \end{enumerate}
+% NOTE: I initially included a  ``hub stamp constancy'' constraint,
+% for the counters
+%   - \authAuthorizationTupleIndex{}
+%   - \authSenderIsAuthorityAcc{}
+% But the counters aren't shared columns, they
+% belong to auth/ perspective ... also two such rows may either
+% follow each other (``nearby case'') or be separated by two
+% account/-rows (``remote case'').
+%
+% In the latter case linking constraints span 2 rows
+%
 We first introduce a shorthand
 \[
 	\left\{ \begin{array}{l}
@@ -28,8 +24,8 @@ We first introduce a shorthand
 	\end{array} \right.
 \]
 We now impose the following:
-\begin{enumerate}
-	\item
+\begin{description}
+	\item[\underline{\underline{Initializing counters:}}]
 		\If
 		\[
 			\left\{ \begin{array}{lcl}
@@ -44,7 +40,9 @@ We now impose the following:
 				\authSenderIsAuthorityAcc    _{i} & = & \locSuccessfulSenderIsAuthorityDelegation _{i} \\
 			\end{array} \right.
 		\]
-	\item
+	\item[\underline{\underline{Update counters, the ``nearby'' case:}}]
+		we describe how counters are updated when the last $\peekAuthorization$-row is ``nearby''
+		i.e. one row back:
 		\If
 		\[
 			\left\{ \begin{array}{lclr}
@@ -61,7 +59,9 @@ We now impose the following:
 				\authSenderIsAuthorityAcc    _{i} & = & \authSenderIsAuthorityAcc    _{i - 1} + \locSuccessfulSenderIsAuthorityDelegation _{i} \\
 			\end{array} \right.
 		\]
-	\item
+	\item[\underline{\underline{Update counters, the ``remote'' case:}}]
+		we describe how counters are updated when the last $\peekAuthorization$-row is ``remote''
+		i.e. two rows back:
 		\If
 		\[
 			\left\{ \begin{array}{lclr}
@@ -78,4 +78,4 @@ We now impose the following:
 				\authSenderIsAuthorityAcc    _{i} & = & \authSenderIsAuthorityAcc    _{i - 2} + \locSuccessfulSenderIsAuthorityDelegation _{i} \\
 			\end{array} \right.
 		\]
-\end{enumerate}
+\end{description}
