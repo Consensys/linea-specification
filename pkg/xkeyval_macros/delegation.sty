@@ -5,6 +5,8 @@
 \define@cmdkey [AUTH] {var} {condition}           {}
 \define@cmdkey [AUTH] {var} {delegationAddressHi} {}
 \define@cmdkey [AUTH] {var} {delegationAddressLo} {}
+\define@cmdkey [AUTH] {var} {checkPostDelegation} {}
+
 
 \presetkeys    [AUTH] {var} {
 	anchorRow           = \missingParameter,
@@ -12,6 +14,7 @@
 	condition           = \missingParameter,
 	delegationAddressHi = \missingParameter,
 	delegationAddressLo = \missingParameter,
+	checkPostDelegation = \missingParameter,
 }{}
 
 
@@ -53,6 +56,16 @@
 	\big[ \cmdAUTH@var@relOffset \big]
 }
 
+
+\newcommand{\accCheckForDelegationInAuthorizationPhase}[1]{
+	\setkeys[AUTH]{var}{#1}
+	\accountSignifier\texttt{checkForDelegationInAuthorizationPhase}
+	_{\cmdAUTH@var@anchorRow}
+	\left[ \begin{array}{ll}
+		\utt{Rel. row offset:}       & \cmdAUTH@var@relOffset           \\
+		\utt{Check post delegation:} & \cmdAUTH@var@checkPostDelegation \\
+	\end{array} \right]
+}
 \newcommand{\accConditionallyCheckForDelegation}[1]{
 	\setkeys[AUTH]{var}{#1}
 	\accountSignifier\texttt{conditionallyCheckForDelegation}
@@ -61,7 +74,6 @@
 		\utt{Rel. row offset:} & \cmdAUTH@var@relOffset \\
 		\utt{Condition:}       & \cmdAUTH@var@condition \\
 	\end{array} \right]
-	\big[ \cmdAUTH@var@relOffset \big]
 }
 \newcommand{\accCheckForDelegationIfAccountHasCode}[1]{
 	\setkeys[AUTH]{var}{#1}
