@@ -112,27 +112,29 @@ We now deal with the missing pieces.
 		% 	\item[\underline{Updating the authority's warmth:}] $\accSameWarmth {i}{\roffAuthorizationProcessingAccountRow}$
 		% \end{description}
 	\item[\underline{\underline{The valid authority tuple case:}}]
-		\If $\locTupleValidity = \true$ \Then we impose the following on the authority account:
-		\[
-			\left\{ \begin{array}{ll}
-				\utt{Nonce update:}              & \accIncrementNonce    {i}{\roffAuthorizationProcessingAccountRow}                                       \\
-				\utt{Code hash update:}          & \toBeSet                                                                                                \\
-				\utt{Code size update:}          & \toBeSet                                                                                                \\
-				\utt{Delegation address update:} & \toBeSet                                                                                                \\
-				\utt{Delegation number update:}  & \accIncrementDelegationNumber  { anchorRow = i , relOffset = \roffAuthorizationProcessingAccountRow , } \\
-				\utt{Delegation status update:}  & \toBeSet                                                                                                \\
-				\utt{Warmth update:}             & \accTurnOnWarmth      {i}{\roffAuthorizationProcessingAccountRow}                                       \\
-			\end{array} \right.
-		\]
+		\If $\locTupleValidity = \true$ \Then we impose
 		\begin{description}
+			\item[\underline{Common constraints:}]
+				the following constraints hold in all cases:
+				\[
+					\left\{ \begin{array}{ll}
+						\utt{Nonce update:}              & \accIncrementNonce    {i}{\roffAuthorizationProcessingAccountRow}                                       \\
+						\utt{Code hash update:}          & \toBeSet                                                                                                \\
+						\utt{Code size update:}          & \toBeSet                                                                                                \\
+						\utt{Delegation address update:} & \toBeSet                                                                                                \\
+						\utt{Delegation number update:}  & \accIncrementDelegationNumber  { anchorRow = i , relOffset = \roffAuthorizationProcessingAccountRow , } \\
+						\utt{Delegation status update:}  & \toBeSet                                                                                                \\
+						\utt{Warmth update:}             & \accTurnOnWarmth      {i}{\roffAuthorizationProcessingAccountRow}                                       \\
+					\end{array} \right.
+				\]
 			\item[\underline{Authority code hash update:}]
 				we impose
 				\begin{enumerate}
 					\item \If $\locDelegationReset  = \true$ \Then
 						\[
 							\left\{ \begin{array}{lcl}
-								\accCodehashHi _{i + \roffAuthorizationProcessingAccountRow} & = & \emptyKeccakHi \\
-								\accCodehashLo _{i + \roffAuthorizationProcessingAccountRow} & = & \emptyKeccakLo \\
+								\accCodehashHi\new _{i + \roffAuthorizationProcessingAccountRow} & = & \emptyKeccakHi \\
+								\accCodehashLo\new _{i + \roffAuthorizationProcessingAccountRow} & = & \emptyKeccakLo \\
 							\end{array} \right.
 						\]
 					\item \If $\locProperDelegation = \true$ \Then
