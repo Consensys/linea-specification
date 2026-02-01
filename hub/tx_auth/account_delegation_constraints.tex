@@ -1,18 +1,23 @@
 \begin{center}
 	\boxed{\text{All constraints in this subsection assume that }
 	\left\{ \begin{array}{lcl}
-		\txAuth      _{i}                                          = 1 \\
+		\txAuth      _{i + \roffAuthorizationProcessingAccountRow} = 1 \\
 		\peekAccount _{i + \roffAuthorizationProcessingAccountRow} = 1 \\
 	\end{array} \right.}
 \end{center}
+We remind the reader of
+constraint~(\ref{hub: authorization phase: perspectives: account row iff authority successfully ECRECOVER'ed}):
+account-rows in the \txAuth-phase correspond precisely to authorization tuples with
+$\authAuthorityEcrecoverSuccess \equiv \true$.
+
 We impose the following:
 \begin{enumerate}
 	\item we may impose some sanity check constraints
 		\[
 			\left\{ \begin{array}{lclr}
-				\txAuth                        _{i + (\roffAuthorizationProcessingAuthorityRow)} & = & 1 & (\sanityCheck) \\
-				\peekAuthorization             _{i + (\roffAuthorizationProcessingAuthorityRow)} & = & 1 & (\sanityCheck) \\
-				\authAuthorityEcrecoverSuccess _{i + (\roffAuthorizationProcessingAuthorityRow)} & = & 1 & (\sanityCheck) \\
+				\txAuth                        _{i + \roffAuthorizationProcessingAuthorityRow} & = & 1 & (\sanityCheck) \\
+				\peekAuthorization             _{i + \roffAuthorizationProcessingAuthorityRow} & = & 1 & (\sanityCheck) \\
+				\authAuthorityEcrecoverSuccess _{i + \roffAuthorizationProcessingAuthorityRow} & = & 1 & (\sanityCheck) \\
 			\end{array} \right.
 		\]
 	\item we peek into the authority account
@@ -37,7 +42,7 @@ We impose the following:
 					\standardDomSubStamps {
 						anchorRow = i                                      ,
 						relOffset = \roffAuthorizationProcessingAccountRow ,
-						domOffset = 0                                      ,
+						domOffset = \roffAuthorizationProcessingAccountRow ,
 					}
 				} \\
 			\end{array} \right.
@@ -47,10 +52,10 @@ We now introduce the following shorthands
 \[
 	% \locTupleValidity \define \authAuthorizationTupleIsValid _{i + (\roffAuthorizationProcessingAuthorityRow)}
 	\left\{ \begin{array}{lcl}
-		% \locRecoverySuccess & \define & \authAuthorityEcrecoverSuccess _{i + (\roffAuthorizationProcessingAuthorityRow)} \\
-		\locTupleValidity     & \define & \authAuthorizationTupleIsValid _{i + (\roffAuthorizationProcessingAuthorityRow)} \\
+		% \locRecoverySuccess & \define & \authAuthorityEcrecoverSuccess _{i + \roffAuthorizationProcessingAuthorityRow} \\
+		\locTupleValidity     & \define & \authAuthorizationTupleIsValid _{i + \roffAuthorizationProcessingAuthorityRow} \\
 		\locTupleInvalidity   & \define & 1 - \locTupleValidity                              \vspace{2mm}                  \\
-		\locDelegationReset   & \define & \authDelegationAddressIsZero   _{i + (\roffAuthorizationProcessingAuthorityRow)} \\
+		\locDelegationReset   & \define & \authDelegationAddressIsZero   _{i + \roffAuthorizationProcessingAuthorityRow} \\
 		\locProperDelegation  & \define & 1 - \locDelegationReset                                                          \\
 	\end{array} \right.
 \]
@@ -59,15 +64,19 @@ We describe when we trigger delegation detection:
 	\item[\underline{\underline{Triggering delegation detection i.e. the \romLexMod{} lookups:}}]
 		we impose
 		\[
-			\left\{ \begin{array}{lcl}
-				\accCheckForDelegation    _{i + \roffAuthorizationProcessingAccountRow} & = & \accHasCode _{i + \roffAuthorizationProcessingAccountRow}                    \\
-				\accCheckForDelegationNew _{i + \roffAuthorizationProcessingAccountRow} & = &
-				\left[ \begin{array}{cl}
-					\cdot & \locTupleValidity    \\
-					\cdot & \locProperDelegation \\
-				\end{array} \right]
-				\\
-			\end{array} \right.
+			\accCheckForDelegationInAuthorizationPhase {
+				anchorRow           = i                                      ,
+				relOffset           = \roffAuthorizationProcessingAccountRow ,
+				checkPostDelegation = \locCheckPostDelegation                ,
+			}
+		\]
+		where
+		\[
+			\locCheckPostDelegation \define
+			\left[ \begin{array}{cl}
+				\cdot & \locTupleValidity    \\
+				\cdot & \locProperDelegation \\
+			\end{array} \right]
 		\]
 		\saNote{}
 		The purpose of setting $\accCheckForDelegationNew$ to something potentially nontrivial
@@ -140,10 +149,10 @@ We now deal with the missing pieces.
 				we impose
 				\[
 					\accSetDelegationAddress {
-						anchorRow           = i                                                                          ,
-						relOffset           = \roffAuthorizationProcessingAccountRow                                     ,
-						delegationAddressHi = \authDelegationAddressHi _{i + (\roffAuthorizationProcessingAuthorityRow)} ,
-						delegationAddressLo = \authDelegationAddressLo _{i + (\roffAuthorizationProcessingAuthorityRow)} ,
+						anchorRow           = i                                                                        ,
+						relOffset           = \roffAuthorizationProcessingAccountRow                                   ,
+						delegationAddressHi = \authDelegationAddressHi _{i + \roffAuthorizationProcessingAuthorityRow} ,
+						delegationAddressLo = \authDelegationAddressLo _{i + \roffAuthorizationProcessingAuthorityRow} ,
 					}
 				\]
 			\item[\underline{Authority delegation status update:}]

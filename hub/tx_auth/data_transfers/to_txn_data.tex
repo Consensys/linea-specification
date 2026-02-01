@@ -1,30 +1,30 @@
 \begin{center}
 	\boxed{\text{All constraints in this subsection assume that }
 	\left\{ \begin{array}{lcl}
-		\txAuth          _{i} & = & 1 \\
-		\peekTransaction _{i} & = & 1 \\
+		\txAuth          _{i + \roffAuthorizationProcessingFinalTransactionRow} & = & 1 \\
+		\peekTransaction _{i + \roffAuthorizationProcessingFinalTransactionRow} & = & 1 \\
 	\end{array} \right.
 	}
 \end{center}
 We record the number of successful delegation tuples where the authority is the transaction sender:
 \begin{enumerate}
 	\item
-		\If $\peekAuthorization _{i - 1} = 1$
+		\If $\peekAuthorization _{i + \roffAuthorizationProcessingPreviousRow} = 1$
 		we impose
 		\[
 			\left\{ \begin{array}{lcl}
-				\txLengthOfDelegationList              _{i} & = & \authAuthorizationTupleIndex _{i - 1} \\
-				\txNumberOfSuccessfulSenderDelegations _{i} & = & \authSenderIsAuthorityAcc    _{i - 1} \\
+				\txLengthOfDelegationList              _{i} & = & \authAuthorizationTupleIndex _{i + \roffAuthorizationProcessingLastAuthorityRowNearby} \\
+				\txNumberOfSuccessfulSenderDelegations _{i} & = & \authSenderIsAuthorityAcc    _{i + \roffAuthorizationProcessingLastAuthorityRowNearby} \\
 			\end{array} \right.
 		\]
 	\item
-		\If $\peekAccount _{i - 1} = 1$
+		\If $\peekAccount _{i + \roffAuthorizationProcessingPreviousRow} = 1$
 		we impose
 		\[
 			\left\{ \begin{array}{lcl}
-				\peekAuthorization                     _{i - 2} & = & 1      \qquad  (\sanityCheck) \\
-				\txLengthOfDelegationList              _{i}     & = & \authAuthorizationTupleIndex _{i - 2} \\
-				\txNumberOfSuccessfulSenderDelegations _{i}     & = & \authSenderIsAuthorityAcc    _{i - 2} \\
+				\peekAuthorization                     _{i + \roffAuthorizationProcessingLastAuthorityRowRemote } & = & 1 \qquad (\sanityCheck)                                                                 \\
+				\txLengthOfDelegationList              _{i + \roffAuthorizationProcessingFinalTransactionRow    } & = & \authAuthorizationTupleIndex _{i + \roffAuthorizationProcessingLastAuthorityRowRemote } \\
+				\txNumberOfSuccessfulSenderDelegations _{i + \roffAuthorizationProcessingFinalTransactionRow    } & = & \authSenderIsAuthorityAcc    _{i + \roffAuthorizationProcessingLastAuthorityRowRemote } \\
 			\end{array} \right.
 		\]
 \end{enumerate}

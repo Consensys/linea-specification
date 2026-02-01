@@ -10,49 +10,60 @@ be obtained by concatenating an arbitratry number the following building blocks
 \end{itemize}
 We thus impose the following:
 \begin{description}
-	\item[\underline{Legal perspectives:}]
+	\item[\underline{\underline{Legal perspectives:}}]
 		$\peekAuthorization _{i} + \peekAccount _{i} + \peekTransaction _{i} = 1$
-	\item[\underline{Authorization phases start with an authorization-row:}]
+	\item[\underline{\underline{Authorization phases start with an authorization-row:}}]
 		\If $\txAuth _{i - 1} = 0$ \Then $\peekAuthorization _{i} = 1$;
-	\item[\underline{Perspective transitions:}]
-		\If $\peekAuthorization _{i} = 1$ \Then
-		\begin{enumerate}
-			\item \If $\authAuthorityEcrecoverSuccess _{i} = 1$ \Then
+	\item[\underline{\underline{Perspective transitions:}}]
+		we impose
+		\begin{description}
+			\item[\underline{From an $\peekAuthorization$-row:}]\label{hub: authorization phase: perspectives: account row iff authority successfully ECRECOVER'ed}
+				\If $\peekAuthorization _{i} = 1$ \Then we impose
 				\begin{enumerate}
-					\item $\txAuth      _{i + 1} = 1$
-					\item $\peekAccount _{i + 1} = 1$
+					\item \If $\authAuthorityEcrecoverSuccess _{i} = 1$ \Then
+						\begin{enumerate}
+							\item $\txAuth      _{i + 1} = 1$
+							\item $\peekAccount _{i + 1} = 1$
+						\end{enumerate}
+					\item \If $\authAuthorityEcrecoverSuccess _{i} = 0$ \Then
+						\begin{enumerate}
+							\item
+								$\peekAuthorization _{i + 1}
+								+\peekTransaction   _{i + 1} = 1$
+						\end{enumerate}
+						\saNote{}
+						The above imposes no repeat account-rows in the authorization-phase.
 				\end{enumerate}
-			\item \If $\authAuthorityEcrecoverSuccess _{i} = 0$ \Then
+			\item[\underline{From an $\peekAccount$-row:}]
+				\If $\peekAccount _{i} = 1$ \Then we impose
 				\begin{enumerate}
-					\item $\peekAuthorization _{i} + \peekTransaction _{i} = 1$
+						% \item $\txAuth _{i + 1} = \peekAuthorization _{i + 1}$
+					\item $\peekAuthorization _{i - 1} = 1$ (\sanityCheck)
+					\item we impose
+						\[
+							\standardDomSubStamps {
+								anchorRow        = i      ,
+								relOffset        = \rZero ,
+								domOffset        = 0      ,
+							}
+						\]
 				\end{enumerate}
-				\saNote{}
-				The above imposes no repeat account-rows in the authorization-phase.
-		\end{enumerate}
-	\item \If $\peekAccount _{i} = 1$ \Then
-		\begin{enumerate}
-			% \item $\txAuth _{i + 1} = \peekAuthorization _{i + 1}$
-			\item $\peekAuthorization _{i - 1} = 1$
-			\item we impose
-				\[
-					\standardDomSubStamps {
-						anchorRow        = i      ,
-						relOffset        = \rZero ,
-						domOffset        = 0      ,
-					}
-				\]
-		\end{enumerate}
-	\item\label{hub: authorization phase: perspectives: authorization phase ends with a transaction row}
+		\end{description}
+	\item[\underline{\underline{Authorization phases finish on a $\peekTransaction$-row:}}] 
+		\label{hub: authorization phase: perspectives: authorization phase ends with a transaction row}
 		$\peekTransaction _{i} + \txAuth _{i + 1} = 1$
+
+		\saNote{}
+		The above imposes that the \txAuth{}-phase finishes on a $\peekTransaction$-row.
 \end{description}
 Constraint~(\ref{hub: authorization phase: perspectives: authorization phase ends with a transaction row})
 could alternatively be encoded as
 \begin{description}
-	\item[\underline{Authorization phase continues:}]
+	\item[\underline{\underline{Authorization phase continues:}}]
 		\If   $\peekTransaction _{i} = 0$
 		\Then $\txAuth _{i + 1} = 1$
 		(\sanityCheck)
-        \item[\underline{Authorization phase ends:}]
+	\item[\underline{\underline{Authorization phase ends:}}]
 		\If   $\peekTransaction _{i} = 1$
 		\Then $\txAuth _{i + 1} = 0$
 		(\sanityCheck)
