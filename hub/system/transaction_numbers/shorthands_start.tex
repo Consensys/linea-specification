@@ -5,13 +5,13 @@ We define the following shorthands
 		\sysfTransactionStart _{i} & \define & \sysf _{i} \cdot \txSkip _{i} \cdot \peekTransaction _{i} \\
 		\userTransactionStart _{i} & \define &
 		\user _{i} \cdot
-		\left[ \begin{array}{clcccccrcr}
-			+ & \big[ 1 & - & \txWarm _{i - 1} &   &                  &   &                  \big] & \!\!\!\cdot\!\!\! & \txWarm _{i} \\
-			+ & \big[ 1 & - & \txWarm _{i - 1} & - & \txAuth _{i - 1} &   &                  \big] & \!\!\!\cdot\!\!\! & \txAuth _{i} \\
-			+ & \big[ 1 & - & \txWarm _{i - 1} & - & \txAuth _{i - 1} & - & \txInit _{i - 1} \big] & \!\!\!\cdot\!\!\! & \txInit _{i} \\
-			+ & \big[ 1 &   &                  & - & \txAuth _{i - 1} & - & \txSkip _{i - 1} \big] & \!\!\!\cdot\!\!\! & \txSkip _{i} \\
-		\end{array} \right]
 		\vspace{2mm}
+		\left[ \begin{array}{cl}
+			+ & \locUserTransactionStartsInPrewarming                   _{i} \\
+			+ & \locUserTransactionStartsInAuthorizationListProcessing  _{i} \\
+			+ & \locUserTransactionStartsInTxInit                       _{i} \\
+			+ & \locUserTransactionStartsInTxSkip                       _{i} \\
+		\end{array} \right]
 		\\
 		\transactionStart _{i} & \define &
 		\left[ \begin{array}{rrcl}
@@ -19,6 +19,15 @@ We define the following shorthands
 			+ & \userTransactionStart _{i} \\
 			+ & \sysfTransactionStart _{i} \\
 		\end{array} \right]
+	\end{array} \right.
+\]
+where we define
+\[
+	\left\{ \begin{array}{lclcccccrcr}
+		\locUserTransactionStartsInPrewarming                  _{i} & \define & \big[ 1 & - & \txWarm _{i - 1} &   &                  &   &                  \big] & \!\!\!\cdot\!\!\! & \txWarm _{i} \\
+		\locUserTransactionStartsInAuthorizationListProcessing _{i} & \define & \big[ 1 & - & \txWarm _{i - 1} & - & \txAuth _{i - 1} &   &                  \big] & \!\!\!\cdot\!\!\! & \txAuth _{i} \\
+		\locUserTransactionStartsInTxInit                      _{i} & \define & \big[ 1 & - & \txWarm _{i - 1} & - & \txAuth _{i - 1} & - & \txInit _{i - 1} \big] & \!\!\!\cdot\!\!\! & \txInit _{i} \\
+		\locUserTransactionStartsInTxSkip                      _{i} & \define & \big[ 1 &   &                  & - & \txAuth _{i - 1} & - & \txSkip _{i - 1} \big] & \!\!\!\cdot\!\!\! & \txSkip _{i} \\
 	\end{array} \right.
 \]
 \saNote{}
