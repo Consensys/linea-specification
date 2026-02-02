@@ -48,6 +48,13 @@ We impose some constraints ensuring that delegation information may only change 
 				} \\
 			\end{array} \right.
 		\]
+\end{enumerate}
+\saNote{}
+Constraint~(\ref{hub: account: account delegation: the delegation address may not change outside of AUTH rows})
+enforces that the delegation address of an account may not change outside of the \txAuth{}-phase.
+
+We impose some sanity check constraints on the $\accIsDelegated$-columns:
+\begin{enumerate}[resume]
 	\item\label{hub: account: account delegation: delegated accounts have code and code size equal to 23}
 		\If $\accIsDelegated _{i} = 1$ \Then
 		\[
@@ -65,10 +72,6 @@ We impose some constraints ensuring that delegation information may only change 
 			\end{array} \right.
 		\]
 \end{enumerate}
-\saNote{}
-Constraint~(\ref{hub: account: account delegation: the delegation address may not change outside of AUTH rows})
-enforces that the delegation address of an account may not change outside of the \txAuth{}-phase.
-
 We further impose general constraints on which accounts the arithmetization is allowed to \textbf{check} for delegation.
 \begin{enumerate}[resume]
 	\item\label{hub: account: account delegation: checks for delegation require non empty code}

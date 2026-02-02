@@ -8,8 +8,7 @@
 			\texttt{Nonce:}      & \multicolumn{2}{l}{\valueToBeSet} \\
 			\texttt{Code:}       & \multicolumn{2}{l}{\valueToBeSet} \\
 			\texttt{Deployment:} & \multicolumn{2}{l}{\valueToBeSet} \\
-			\accCheckForDelegation    _{i + \roffTxSkipUserRecipientAccount} & = & \locIsMessageCallTransaction \\
-			\accCheckForDelegationNew _{i + \roffTxSkipUserRecipientAccount} & = & 0 \quad (\trash) \\
+			\multicolumn{3}{l}{\accConditionallyCheckForDelegation  { anchorRow = i, relOffset = \roffTxSkipUserRecipientAccount, condition = \locCheckRecipientForDelegation } } \\
 			\multicolumn{3}{l}{\accSameWarmth                      {i}{\roffTxSkipUserRecipientAccount}} \\
 			\multicolumn{3}{l}{\accSameMarkedForDeletionFlag       {i}{\roffTxSkipUserRecipientAccount}} \\
 			\multicolumn{3}{l}{\accIsntPrecompile                  {i}{\roffTxSkipUserRecipientAccount}} \\
@@ -21,6 +20,15 @@
 				}
 			} \\
 		\end{array} \right.
+	\]
+	where
+	\[
+		\locCheckRecipientForDelegation
+		\define
+		\left[ \begin{array}{cl}
+			\cdot & \locIsMessageCallTransaction \\
+			\cdot & \locRecipientHasNonemptyCode \\
+		\end{array} \right]
 	\]
 	In order to correctly update the recipient account one must distinguish between
 	message call transactions (e.g. pure transfers) and
