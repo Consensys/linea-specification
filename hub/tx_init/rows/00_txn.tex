@@ -65,8 +65,15 @@
 			we impose that $\txInitialBalance _{i + \roffTxInitTxn} = \accBalance _{i + \roffTxInitAccDoingSenderPayForGas}$
 		\item[\underline{Justifying \txStatusCode{}:}]
 			cannot be set at the moment\footnote{We \textbf{could} actually set the status code of the transaction at the present time as it coincides with  \locTransactionWontRevert{}.};
+		% \item[\underline{Justifying \txNonce{}:}]
+		% 	we impose $\txNonce_{i + \roffTxInitTxn} = \accNonce_{i + \roffTxInitAccDoingSenderPayForGas}$;
 		\item[\underline{Justifying \txNonce{}:}]
-			we impose $\txNonce_{i + \roffTxInitTxn} = \accNonce_{i + \roffTxInitAccDoingSenderPayForGas}$;
+			we impose
+			\[
+				\accNonce                              _{i + \roffTxInitAccDoingSenderPayForGas } =
+				\txNonce                               _{i + \roffTxInitTxn                     } +
+				\txNumberOfSuccessfulSenderDelegations _{i + \roffTxInitTxn                     }
+			\]
 		\item[\underline{Justifying $\txLeftoverGas$:}]
 			cannot be set at the moment;
 	\end{description}
