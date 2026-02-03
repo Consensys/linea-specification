@@ -32,7 +32,7 @@ section~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr II
 		\begin{itemize}
 			\item \atRevertTime{} account-row $n°(i + \callSecondCallerAccountRowOffset           )$ pertains to the \callerName{},
 			\item \atRevertTime{} account-row $n°(i + \callSecondCalleeAccountRowOffset           )$ pertains to the \calleeName{},
-			\item \atRevertTime{} account-row $n°(i + \callSecondDelegateOrCalleeAccountRowOffset )$ pertains to the \delegateName{} or \calleeName{},
+			\item \atRevertTime{} account-row $n°(i + \callSecondDelegateOrCalleeAccountRowOffset )$ pertains to the \delegateName{} or \calleeName{}, $\undefinedStar$
 		\end{itemize}
 		With successful \textsc{prc}-calls that are rolled-back one must
 		undo balance transfers both for the caller and the (precompile) recipient.
@@ -40,12 +40,16 @@ section~(\ref{hub: instruction handling: call: precompiles: flag sums and nsr II
 		though the constraints may implement undoing operations anyway (that amount to \texttt{Noop}'s).
 		All of this happens \atRevertTime{}.
 
-		\saNote{}
+		\saNote{}\label{hub: instruction handling: call: peeking flag sums for precompiles: useless delegate row}
 		Recall that the only way to trigger precompiles is by directly targeting them,
 		by which we mean that the (trimmed) address argument popped off of the stack by the
 		\inst{CALL}-type instruction must be that of a precompiled contract.
 		Account delegation, as enabled by \cite{EIP-7702}, doesn't allow for
 		calling \textsc{prc}'s through delegation.
+		This makes the account-row labeled with $\undefinedStar$
+		\emph{completely useless}.
+		We include it solely because it allows for a more uniform treatment of account-row operations, as we did previously,
+		see note~(\ref{hub: instruction handling: call: peeking flag sums for non precompiles: useless delegate row}).
 	\item[\underline{Precompile success, current context won't revert:}]
 		\[
 			\peekingSumPrcSuccessWontRevertFH
