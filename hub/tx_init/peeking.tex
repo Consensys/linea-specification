@@ -79,6 +79,21 @@ We further impose
 				\]
 		\end{enumerate}
 \end{enumerate}
+\saNote{}\label{hub: initialization phase: setting peeking flags: account row interpretation}
+For context, the intended interpretation of the account rows is
+\begin{description}
+	\item[\underline{Account-row $n^\circ(i + \roffTxInitWarmCoinbase                    )$}] warm up the \col{coinbase} address;
+	\item[\underline{Account-row $n^\circ(i + \roffTxInitAccDoingSenderPayForGas         )$}] deduct the cost of gas in \textsc{Wei} from the \col{sender} account;
+	\item[\underline{Account-row $n^\circ(i + \roffTxInitAccDoingSenderValueTransfer     )$}] deduct the transaction value from the \col{sender} account;
+	\item[\underline{Account-row $n^\circ(i + \roffTxInitAccDoingRecipientValueReception )$}] add the transaction value to the \col{recipient} account;
+	\item[\underline{Account-row $n^\circ(i + \roffTxInitAccViewingDelegationOrRecipient )$}] load the \col{delegate} account if the recipient $\accIsDelegated$ or the \col{recipient} account otherwise;
+\end{description}
+For transactions that will (ultimately) revert we further require
+\begin{description}
+	\item[\underline{Account-row $n^\circ(i + \roffTxInitAccUndoingSenderValueTransfer     )$}] undo the initial value transfer emanating from the \col{sender} account;
+	\item[\underline{Account-row $n^\circ(i + \roffTxInitAccUndoingRecipientValueReception )$}] undo the initial value transfer targeting the \col{recipient} account;
+\end{description}
+
 \saNote{}
 We remind the reader about
 constraint~(\ref{hub: heartbeat: initialization phase finishes on a context row})

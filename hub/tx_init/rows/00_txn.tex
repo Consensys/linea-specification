@@ -25,22 +25,22 @@
 					\vspace{2mm} \\
 					\locRecipientIsDelegatedAndDelegateHasCodeAndIsntDelegated & \define &
 					\left[ \begin{array}{cl}
-						\cdot & \locRecipientHasNonemptyCode \\
-						\cdot & \locRecipientIsDelegated \\
-						\cdot & \locDelegateHasNonemptyCode \\
-						\cdot & \locDelegateIsntDelegated \\
+						% \cdot & \locRecipientHasNonemptyCode \\
+						\cdot & \locRecipientIsDelegated     \\
+						\cdot & \locDelegateHasNonemptyCode  \\
+						\cdot & \locDelegateIsntDelegated    \\
 					\end{array} \right]
 				\end{array} \right.
 			\]
 			where we have used the following auxiliary shorthands
 			\[
 				\left\{ \begin{array}{lcl}
-					\locSenderHasNonemptyCode    & \define & \accHasCode     _{i + \roffTxInitAccDoingSenderPayForGas}         \\
-					\locRecipientHasNonemptyCode & \define & \accHasCode     _{i + \roffTxInitAccDoingRecipientValueReception} \\
-					\locDelegateHasNonemptyCode  & \define & \accHasCode     _{i + \roffTxInitAccViewingDelegationOrRecipient} \\
-					\locSenderIsDelegated        & \define & \accIsDelegated _{i + \roffTxInitAccDoingSenderPayForGas}         \\
-					\locRecipientIsDelegated     & \define & \accIsDelegated _{i + \roffTxInitAccDoingRecipientValueReception} \\
-					\locDelegateIsDelegated      & \define & \accIsDelegated _{i + \roffTxInitAccViewingDelegationOrRecipient} \\
+					\locSenderHasNonemptyCode    & \define & \accHasCode     _{i + \roffTxInitAccDoingSenderPayForGas         } \\
+					\locRecipientHasNonemptyCode & \define & \accHasCode     _{i + \roffTxInitAccDoingRecipientValueReception } \\
+					\locDelegateHasNonemptyCode  & \define & \accHasCode     _{i + \roffTxInitAccViewingDelegationOrRecipient } \\
+					\locSenderIsDelegated        & \define & \accIsDelegated _{i + \roffTxInitAccDoingSenderPayForGas         } \\
+					\locRecipientIsDelegated     & \define & \accIsDelegated _{i + \roffTxInitAccDoingRecipientValueReception } \\
+					\locDelegateIsDelegated      & \define & \accIsDelegated _{i + \roffTxInitAccViewingDelegationOrRecipient } \\
 				\end{array} \right.
 			\]
 			as well as their ``negations''
@@ -54,6 +54,11 @@
 					\locDelegateIsntDelegated  & \define & 1 - \locDelegateIsDelegated      \\
 				\end{array} \right.
 			\]
+			\saNote{}
+			We remind the reader that delegated accounts ($\accIsDelegated \equiv \true$)
+			automatically have nonempty code ($\accHasCode \equiv \true$), see
+			constraint~(\ref{hub: account: account delegation: delegated accounts have code and code size equal to 23}) and
+			constraint~(\ref{hub: account: account delegation: newly delegated accounts have code and code size equal to 23}).
 		\item[\underline{Justifying $\txFinalRefundCounter$:}]
 			cannot be set at the moment;
 		\item[\underline{Justifying $\txInitialBalance$:}]
