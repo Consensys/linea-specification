@@ -39,15 +39,16 @@
 \def\locStackValueLo                            {\locStackValue\loc{\_lo}}
 
 \newcommand{\locStackShorthand}            [1] {\loc{STACK/#1}}
-\newcommand{\locCalleeShorthand}           [1] {\loc{callee/#1}}
-\newcommand{\locCallerShorthand}           [1] {\loc{caller/#1}}
-\newcommand{\locDelegateOrCalleeShorthand} [1] {\loc{delegate\_or\_callee/#1}}
 \newcommand{\locMxpShorthand}              [1] {\loc{MXP/#1}}
 \newcommand{\locOobShorthand}              [1] {\loc{OOB/#1}}
 \newcommand{\locStpShorthand}              [1] {\loc{STP/#1}}
+\newcommand{\locCalleeShorthand}           [1] {\loc{callee/#1}}
+\newcommand{\locCallerShorthand}           [1] {\loc{caller/#1}}
+\newcommand{\locDelegateOrCalleeShorthand} [1] {\loc{delegate\_or\_callee/#1}}
 \newcommand{\locCurrFrame}                 [1] {\loc{frame/#1}}
 \newcommand{\locChildFrame}                [1] {\loc{child\_frame/#1}}
 \newcommand{\locTypeSafe}                  [1] {\loc{type\_safe\_#1}}
+\newcommand{\locEnvironmentShorthand}      [1] {\loc{env/#1}}
 
 
 \def\locCallerBalance                      {\locCallerShorthand{balance}}
@@ -84,7 +85,6 @@
 \def\locCurrentCallerAddressLo         {\locCurrFrame{caller\_address\_lo}}
 \def\locCurrentCallValue               {\locCurrFrame{call\_value}}
 \def\locCurrentCallStackDepth          {\locCurrFrame{call\_stack\_depth}}
-\def\locGasActual                      {\loc{gas\_actual}}
 
 
 \def\locChildContextAccountAddressHi        {\locChildFrame{account\_address\_hi}}
@@ -120,9 +120,10 @@
 \def\locStpGasPoop                         {\locStpShorthand{gas\_paid\_out\_of\_pocket}}
 \def\locStpGasStipend                      {\locStpShorthand{call\_stipend}}
 \def\locStpOogx                            {\locStpShorthand{out\_of\_gas\_exception}}
-%
+
 \def\locCnWillRevert                       {\loc{caller\_will\_revert}}
 \def\locCnRevertStamp                      {\loc{caller\_revert\_stamp}}
+\def\locGasActual                          {\loc{gas\_actual}}
 
 \def\callFirstStackRowOffset                                  {\roffConstGreen{2}} % are always preceded by minus sign (i.e. point to the past)
 \def\callSecondStackRowOffset                                 {\roffConstGreen{1}} % are always preceded by minus sign (i.e. point to the past)
@@ -178,7 +179,7 @@
 \def\peekingSumSmcSuccessWillRevert               {\loc{flag\_sum\_smc\_success\_will\_revert}}
 \def\peekingSumSmcSuccessWontRevert               {\loc{flag\_sum\_smc\_success\_wont\_revert}}
 
-\def\calleeContextInitializationParameters        {\loc{callee\_context\_params}}
+\def\childFrameInitializationParameters           {\locChildFrame{parameters}}
 
 \def\callerName                                   {\yellow        {caller}}
 \def\calleeName                                   {\draculaGreen  {callee}}
@@ -189,13 +190,13 @@
 \def\atRevertTime  {\colorbox{solarized-magenta}   {At \texttt{REVERT}-time:}}
 
 \def\locCalleeIsntPrecompileButHasEmptyCode                         {\locCalleeIsntPrecompile\loc{\_but\_has\_empty\_code}}
-\def\locDelegateOrCalleeHasEmptyCode                                {\loc{delegate\_or\_callee\_has\_empty\_code}}
-\def\locCalleeIsDelegatedAndDelegateHasEmptyCode                    {\loc{callee\_is\_delegated\_and\_delegate\_has\_empty\_code}}
-\def\locCalleeIsDelegatedAndDelegateIsItselfDelegated               {\loc{callee\_is\_delegated\_and\_delegate\_is\_ifself\_delegated}}
-\def\locCalleeHasNonemptyCodeAndIsntDelegated                       {\loc{callee\_has\_nonempty\_code\_and\_isnt\_delegated}}
-\def\locCalleeIsDelegatedAndDelegateHasNonemptyCodeAndIsntDelegated {\loc{callee\_is\_delegated\_and\_delegate\_has\_nonempty\_code\_and\_isnt\_delegated}}
-\def\locCalleeHasEmptyCode                                          {\loc{callee\_has\_empty\_code}}
-\def\locCalleeIsntPrecompile                                        {\loc{callee\_isnt\_precompile}}
+\def\locDelegateOrCalleeHasEmptyCode                                {\locDelegateOrCalleeShorthand{has\_empty\_code}}
+\def\locCalleeIsDelegatedAndDelegateHasEmptyCode                    {\locCalleeShorthand{is\_delegated\_and\_delegate\_has\_empty\_code}}
+\def\locCalleeIsDelegatedAndDelegateIsItselfDelegated               {\locCalleeShorthand{is\_delegated\_and\_delegate\_is\_ifself\_delegated}}
+\def\locCalleeHasNonemptyCodeAndIsntDelegated                       {\locCalleeShorthand{has\_nonempty\_code\_and\_isnt\_delegated}}
+\def\locCalleeIsDelegatedAndDelegateHasNonemptyCodeAndIsntDelegated {\locCalleeShorthand{is\_delegated\_and\_delegate\_has\_nonempty\_code\_and\_isnt\_delegated}}
+\def\locCalleeHasEmptyCode                                          {\locCalleeShorthand{has\_empty\_code}}
+\def\locCalleeIsntPrecompile                                        {\locCalleeShorthand{isnt\_precompile}}
 
 \def\locCallGeneralEoaScenario                                      {\loc{general\_EOA\_scenario}}
 \def\locCallGeneralSmcScenario                                      {\loc{general\_SMC\_scenario}}
