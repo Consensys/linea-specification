@@ -2,10 +2,11 @@
 	we impose that
 	\[
 		\left\{ \begin{array}{lcll}
-			\multicolumn{4}{l}{\textcolor{solarized-green}{\texttt{<delegate / callee address set below>}}} \\
-			\multicolumn{4}{l}{\accSameBalance           {i}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
-			\multicolumn{4}{l}{\accSameNonce             {i}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
-			\multicolumn{4}{l}{\accSameCode              {i}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
+			\accAddressHi _{i + \callFirstDelegateOrCalleeAccountRowOffset } & = & \locExplicitDelegateOrCalleeAddressHi \\
+			\accAddressLo _{i + \callFirstDelegateOrCalleeAccountRowOffset } & = & \locExplicitDelegateOrCalleeAddressLo \\
+			\multicolumn{4}{l}{\accSameBalance               {i}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
+			\multicolumn{4}{l}{\accSameNonce                 {i}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
+			\multicolumn{4}{l}{\accSameCode                  {i}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
 			\multicolumn{3}{l}{\accCheckForDelegationIfAccountHasCode {
 				anchorRow = i                                          ,
 				relOffset = \callFirstDelegateOrCalleeAccountRowOffset ,
@@ -15,17 +16,18 @@
 			\multicolumn{4}{l}{\accSameDeploymentStatus      {i}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
 			\multicolumn{4}{l}{\accSameMarkedForDeletionFlag {i}{\callFirstDelegateOrCalleeAccountRowOffset}} \\
 			%%%%
-			\accRomLexFlag   _{i + \callFirstDelegateOrCalleeAccountRowOffset} & = & \scenCallUnexceptional _{i + \callFirstScenarioRowOffset} \cdot \scenCallSmc _{i + \callFirstScenarioRowOffset} \\
+			\multicolumn{4}{l}{\accConditionallyTriggerRomLex { anchorRow = i, relOffset = \callFirstDelegateOrCalleeAccountRowOffset, condition = \locCallTriggersRomLex } } \\
 			\multicolumn{4}{l}{
 				\accTrimAddress
 				{i}{\callFirstDelegateOrCalleeAccountRowOffset}
 				{\locExplicitDelegateOrCalleeAddressHi}
-				{\locExplicitDelegateOrCalleeAddressLo}} \\
+				{\locExplicitDelegateOrCalleeAddressLo}}
+			\\
 			\accTrmFlag      _{i + \callFirstDelegateOrCalleeAccountRowOffset} & = & \rOne & (\trash) \\
 			\accRlpAddrFlag  _{i + \callFirstDelegateOrCalleeAccountRowOffset} & = & 0 \vspace{2mm} \\
 			\multicolumn{4}{l}{
 				\standardDomSubStamps {
-					anchorRow = i                                ,
+					anchorRow = i                                          ,
 					relOffset = \callFirstDelegateOrCalleeAccountRowOffset ,
 					domOffset = \callFirstDelegateOrCalleeAccountRowOffset ,
 				}
