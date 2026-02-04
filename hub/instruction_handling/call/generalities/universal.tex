@@ -22,8 +22,8 @@ We impose the following constraints:
 		we impose that
 		\[
 			\left\{ \begin{array}{lcl}
-				\locSuccessBitHi & = & 0                    \\
-				\locSuccessBitLo & = & \scenCallSuccess_{i + \callFirstScenarioRowOffset} \\
+				\locStackSuccessBitHi & = & 0                    \\
+				\locStackSuccessBitLo & = & \scenCallSuccess_{i + \callFirstScenarioRowOffset} \\
 			\end{array} \right.
 		\]
 	\item[\underline{Setting allowable exceptions:}]
@@ -34,9 +34,9 @@ We impose the following constraints:
 					\xAhoy _{i}
 					=
 					\left[ \begin{array}{lr}
-						+ & \locStaticx \\
-						+ & \locMxpx    \\
-						+ & \locOogx    \\
+						+ & \locStackStaticx \\
+						+ & \locStackMxpx    \\
+						+ & \locStackOogx    \\
 					\end{array} \right]
 				\]
 			\item \If $\locIsCallcode + \locIsDelegatecall + \locIsStaticcall = 1$ \Then
@@ -44,8 +44,8 @@ We impose the following constraints:
 					\xAhoy _{i}
 					=
 					\left[ \begin{array}{lr}
-						+ & \locMxpx    \\
-						+ & \locOogx    \\
+						+ & \locStackMxpx    \\
+						+ & \locStackOogx    \\
 					\end{array} \right]
 				\]
 		\end{enumerate}
@@ -91,10 +91,10 @@ We impose the following constraints:
 			\item \If $\scenCallException _{i + \callFirstScenarioRowOffset} = 1$ \Then
 				\[
 					\setOobInstructionXcall {
-						anchorRow = i,
-						relOffset = \callMiscRowOffset,
-						valueHi   = \locValueHi,
-						valueLo   = \locValueLo,
+						anchorRow = i                  ,
+						relOffset = \callMiscRowOffset ,
+						valueHi   = \locStackValueHi   ,
+						valueLo   = \locStackValueLo   ,
 					}
 				\]
 			\item \If $\scenCallUnexceptional _{i + \callFirstScenarioRowOffset} = 1$ \Then
@@ -102,8 +102,8 @@ We impose the following constraints:
 					\setOobInstructionCall {
 						anchorRow      = i                         ,
 						relOffset      = \callMiscRowOffset        ,
-						valueHi        = \locValueHi               ,
-						valueLo        = \locValueLo               ,
+						valueHi        = \locStackValueHi          ,
+						valueLo        = \locStackValueLo          ,
 						balance        = \locCallerBalance         ,
 						callStackDepth = \locCurrentCallStackDepth ,
 					}
@@ -114,7 +114,7 @@ We impose the following constraints:
 	\item[\underline{Justifying \staticxSH's:}]
 		we unconditionally impose that
 		\[
-			\locStaticx
+			\locStackStaticx
 			=
 			\left[ \begin{array}{cl}
 				\cdot & \locIsCall                 \\
@@ -137,34 +137,34 @@ We impose the following constraints:
 			\setMxpInstructionCalls {
 				anchorRow          = i                  ,
 				relOffset          = \callMiscRowOffset ,
-				instruction        = \locInst           ,
-				callDataOffsetHi   = \locCdoHi          ,
-				callDataOffsetLo   = \locCdoLo          ,
-				callDataSizeHi     = \locCdsHi          ,
-				callDataSizeLo     = \locCdsLo          ,
-				returnAtOffsetHi   = \locRaoHi          ,
-				returnAtOffsetLo   = \locRaoLo          ,
-				returnAtCapacityHi = \locRacHi          ,
-				returnAtCapacityLo = \locRacLo          ,
+				instruction        = \locStackInst      ,
+				callDataOffsetHi   = \locStackCdoHi     ,
+				callDataOffsetLo   = \locStackCdoLo     ,
+				callDataSizeHi     = \locStackCdsHi     ,
+				callDataSizeLo     = \locStackCdsLo     ,
+				returnAtOffsetHi   = \locStackRaoHi     ,
+				returnAtOffsetLo   = \locStackRaoLo     ,
+				returnAtCapacityHi = \locStackRacHi     ,
+				returnAtCapacityLo = \locStackRacLo     ,
 			}
 		\]
 	\item[\underline{Justifying \mxpxSH's:}]
 		\If $\miscMxpFlag_{i + \callMiscRowOffset} = 1$ \Then we impose that
 		\[
-			\locMxpx =
+			\locStackMxpx =
 			\locMxpMemoryExpansionException
 		\]
 	\item[\underline{Setting \stpMod{} instruction parameters:}]
 		\If $\miscStpFlag_{i + \callMiscRowOffset} = 1$ \Then we impose that
 		\[
 			\setStpInstructionCall{
-				anchorRow         = i                                 ,
-				relOffset         = \callMiscRowOffset                ,
-				instruction       = \locInst                          ,
-				gasHi             = \locGasHi                         ,
-				gasLo             = \locGasLo                         ,
-				valueHi           = \locValueHi                       ,
-				valueLo           = \locValueLo                       ,
+				anchorRow   = i                  ,
+				relOffset   = \callMiscRowOffset ,
+				instruction = \locStackInst      ,
+				gasHi             = \locStackGasHi                    ,
+				gasLo             = \locStackGasLo                    ,
+				valueHi           = \locStackValueHi                  ,
+				valueLo           = \locStackValueLo                  ,
 				exists            = \locCalleeExists \cdot \locIsCall ,
 				warmth            = \locCalleeWarmth                  ,
 				isDelegated       = \locCalleeIsDelegated             ,
@@ -180,7 +180,7 @@ We impose the following constraints:
 	\item[\underline{Justifying \oogxSH's:}]
 		\If $\miscStpFlag_{i + \callMiscRowOffset} = 1$ \Then we impose that
 		\[
-			\locOogx =
+			\locStackOogx =
 			\locStpOogx
 		\]
 	\item[\underline{Defining shorthands related to delegation:}]
@@ -358,9 +358,9 @@ We impose the following constraints:
 		we impose
 		\[
 			\left\{ \begin{array}{lcl}
-				\If \locStaticx = 1                                        & \Then \!\!\! & \gasCost_{i} = 0                 \\
-				\If \locMxpx    = 1                                        & \Then \!\!\! & \gasCost_{i} = 0                 \\
-				\If \locOogx    = 1                                        & \Then \!\!\! & \gasCost_{i} = \locStpGasUpfront \\
+				\If \locStackStaticx = 1                                        & \Then \!\!\! & \gasCost_{i} = 0                 \\
+				\If \locStackMxpx    = 1                                        & \Then \!\!\! & \gasCost_{i} = 0                 \\
+				\If \locStackOogx    = 1                                        & \Then \!\!\! & \gasCost_{i} = \locStpGasUpfront \\
 				\If \scenCallAbort  _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasCost_{i} = \locStpGasUpfront \\
 				\If \scenCallSmc    _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasCost_{i} = \locStpGasUpfront \\
 				\If \scenCallEoa    _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasCost_{i} = \locStpGasUpfront \\
@@ -373,15 +373,15 @@ We impose the following constraints:
 			\left\{ \begin{array}{lclr}
 				\If
 				\left[ \begin{array}{cl}
-					+ & \locStaticx \\
-					+ & \locMxpx    \\
+					+ & \locStackStaticx \\
+					+ & \locStackMxpx    \\
 				\end{array} \right]
 				= 1 & \Then \!\!\! & \gasCost_{i} = 0 & (\trash)
 				\vspace{2mm}
 				\\
 				\If
 				\left[ \begin{array}{cl}
-					+ & \locOogx                                          \\
+					+ & \locStackOogx                                          \\
 					+ & \scenCallAbort _{i + \callFirstScenarioRowOffset} \\
 					+ & \scenCallSmc   _{i + \callFirstScenarioRowOffset} \\
 					+ & \scenCallEoa   _{i + \callFirstScenarioRowOffset} \\
@@ -395,9 +395,9 @@ We impose the following constraints:
 		\[
 			\hspace*{-2cm}
 			\left\{ \begin{array}{lclr}
-				\If \locStaticx  = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\sanityCheck) \\
-				\If \locMxpx     = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\sanityCheck) \\
-				\If \locOogx     = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\sanityCheck) \\
+				\If \locStackStaticx  = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\sanityCheck) \\
+				\If \locStackMxpx     = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\sanityCheck) \\
+				\If \locStackOogx     = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\sanityCheck) \\
 				\If \scenCallAbort _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasNext_{i} = \gasActual_{i} - \locStpGasUpfront + \locStpGasStipend \\
 				\If \scenCallEoa   _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasNext_{i} = \gasActual_{i} - \locStpGasUpfront + \locStpGasStipend \\
 				\If \scenCallSmc   _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasNext_{i} = \gasActual_{i} - \locStpGasUpfront - \locStpGasPoop    \\

@@ -11,7 +11,7 @@
 				\item \If $\locIsCall = 1$ \Then
 					\[
 						\accDecrementBalance
-						{i}{\callFirstCallerAccountRowOffset}{\locValueLo}
+						{i}{\callFirstCallerAccountRowOffset}{\locStackValueLo}
 					\]
 				\item \If $\locIsCallcode + \locIsDelegatecall + \locIsStaticcall = 1$ \Then
 					\[
@@ -23,11 +23,11 @@
 			The above may alternatively be implemented without case disjunction as
 			\[
 				\accDecrementBalance
-				{i}{\callFirstCallerAccountRowOffset}{\locIsCall \cdot \locValueLo}
+				{i}{\callFirstCallerAccountRowOffset}{\locIsCall \cdot \locStackValueLo}
 			\]
 			Either way the above reflects that fact that only \inst{CALL} may \emph{actually} transfer value.
-			The \inst{CALL}-type instruction \inst{CALLCODE} also has a ``\locValue'' argument but it doesn't set off a value transfer.
-			This ``\locValue'' becomes the ``call value'' of the child context.
+			The \inst{CALL}-type instruction \inst{CALLCODE} also has a ``\locStackValue'' argument but it doesn't set off a value transfer.
+			This ``\locStackValue'' becomes the ``call value'' of the child context.
 			It is noteworthy that while no \emph{actual} value transfer takes place,
 			\inst{CALLCODE} may nonetheless incur a value transfer cost.
 	\end{enumerate}

@@ -16,36 +16,38 @@
 \def\locIsDelegatecall                     {\loc{is\_DELEGATECALL}}
 \def\locIsStaticcall                       {\loc{is\_STATICCALL}}
 
-\newcommand{\locStackShorthand} [1]        {\loc{STACK/#1}}
-\def\locInst                               {\locStackShorthand{instruction}}
-\def\locStaticx                            {\locStackShorthand{staticx}}
-\def\locMxpx                               {\locStackShorthand{mxpx}}
-\def\locOogx                               {\locStackShorthand{oogx}}
-\def\locCdoHi                              {\locStackShorthand{cdo\_hi}}
-\def\locCdoLo                              {\locStackShorthand{cdo\_lo}}
-\def\locCdsHi                              {\locStackShorthand{cds\_hi}}
-\def\locCdsLo                              {\locStackShorthand{cds\_lo}}
-\def\locRaoHi                              {\locStackShorthand{r@o\_hi}}
-\def\locRaoLo                              {\locStackShorthand{r@o\_lo}}
-\def\locRacHi                              {\locStackShorthand{r@c\_hi}}
-\def\locRacLo                              {\locStackShorthand{r@c\_lo}}
-\def\locGasHi                              {\locStackShorthand{gas\_hi}}
-\def\locGasLo                              {\locStackShorthand{gas\_lo}}
-\def\locSuccessBitHi                       {\locStackShorthand{success\_bit\_hi}}
-\def\locSuccessBitLo                       {\locStackShorthand{success\_bit\_lo}}
-\def\locRawAddressHi                       {\locStackShorthand{raw\_callee\_address\_hi}}
-\def\locRawAddressLo                       {\locStackShorthand{raw\_callee\_address\_lo}}
-\def\locValue                              {\locStackShorthand{value}}
-\def\locValueHi                            {\locValue\loc{\_hi}}
-\def\locValueLo                            {\locValue\loc{\_lo}}
+\def\locStackInst                               {\locStackShorthand{instruction}}
+\def\locStackStaticx                            {\locStackShorthand{staticx}}
+\def\locStackMxpx                               {\locStackShorthand{mxpx}}
+\def\locStackOogx                               {\locStackShorthand{oogx}}
+\def\locStackCdoHi                              {\locStackShorthand{cdo\_hi}}
+\def\locStackCdoLo                              {\locStackShorthand{cdo\_lo}}
+\def\locStackCdsHi                              {\locStackShorthand{cds\_hi}}
+\def\locStackCdsLo                              {\locStackShorthand{cds\_lo}}
+\def\locStackRaoHi                              {\locStackShorthand{r@o\_hi}}
+\def\locStackRaoLo                              {\locStackShorthand{r@o\_lo}}
+\def\locStackRacHi                              {\locStackShorthand{r@c\_hi}}
+\def\locStackRacLo                              {\locStackShorthand{r@c\_lo}}
+\def\locStackGasHi                              {\locStackShorthand{gas\_hi}}
+\def\locStackGasLo                              {\locStackShorthand{gas\_lo}}
+\def\locStackSuccessBitHi                       {\locStackShorthand{success\_bit\_hi}}
+\def\locStackSuccessBitLo                       {\locStackShorthand{success\_bit\_lo}}
+\def\locStackRawAddressHi                       {\locStackShorthand{raw\_callee\_address\_hi}}
+\def\locStackRawAddressLo                       {\locStackShorthand{raw\_callee\_address\_lo}}
+\def\locStackValue                              {\locStackShorthand{value}}
+\def\locStackValueHi                            {\locStackValue\loc{\_hi}}
+\def\locStackValueLo                            {\locStackValue\loc{\_lo}}
 
-\newcommand{\locCalleeShorthand} [1] {\loc{callee/#1}}
-\newcommand{\locCallerShorthand} [1] {\loc{caller/#1}}
-\newcommand{\locOobShorthand}    [1] {\loc{OOB/#1}}
-\newcommand{\locMxpShorthand}    [1] {\loc{MXP/#1}}
-\newcommand{\locCurrFrame}       [1] {\loc{frame/#1}}
-\newcommand{\locChildFrame}      [1] {\loc{child\_frame/#1}}
-\newcommand{\locTypeSafe}        [1] {\loc{type\_safe\_#1}}
+\newcommand{\locStackShorthand}            [1] {\loc{STACK/#1}}
+\newcommand{\locCalleeShorthand}           [1] {\loc{callee/#1}}
+\newcommand{\locCallerShorthand}           [1] {\loc{caller/#1}}
+\newcommand{\locDelegateOrCalleeShorthand} [1] {\loc{delegate\_or\_callee/#1}}
+\newcommand{\locMxpShorthand}              [1] {\loc{MXP/#1}}
+\newcommand{\locOobShorthand}              [1] {\loc{OOB/#1}}
+\newcommand{\locStpShorthand}              [1] {\loc{STP/#1}}
+\newcommand{\locCurrFrame}                 [1] {\loc{frame/#1}}
+\newcommand{\locChildFrame}                [1] {\loc{child\_frame/#1}}
+\newcommand{\locTypeSafe}                  [1] {\loc{type\_safe\_#1}}
 
 
 \def\locCallerBalance                      {\locCallerShorthand{balance}}
@@ -114,16 +116,13 @@
 % STP
 %
 %
-\def\locStpGasUpfront                      {\loc{STP\_gas\_upfront}}
-\def\locStpGasPoop                         {\loc{STP\_gas\_paid\_out\_of\_pocket}}
-\def\locStpGasStipend                      {\loc{STP\_call\_stipend}}
-\def\locStpOogx                            {\loc{STP\_out\_of\_gas\_exception}}
+\def\locStpGasUpfront                      {\locStpShorthand{gas\_upfront}}
+\def\locStpGasPoop                         {\locStpShorthand{gas\_paid\_out\_of\_pocket}}
+\def\locStpGasStipend                      {\locStpShorthand{call\_stipend}}
+\def\locStpOogx                            {\locStpShorthand{out\_of\_gas\_exception}}
 %
 \def\locCnWillRevert                       {\loc{caller\_will\_revert}}
 \def\locCnRevertStamp                      {\loc{caller\_revert\_stamp}}
-%
-\def\locCalleeWillRevert                   {\loc{callee\_self\_reverts}}
-\def\locCalleeRevertStamp                  {\loc{callee\_revert\_stamp}}
 
 \def\callFirstStackRowOffset                                  {\roffConstGreen{2}} % are always preceded by minus sign (i.e. point to the past)
 \def\callSecondStackRowOffset                                 {\roffConstGreen{1}} % are always preceded by minus sign (i.e. point to the past)

@@ -4,7 +4,7 @@
 		\left\{ \begin{array}{lcl}
 			\peekScenario                     _{i + \callFirstScenarioRowOffset} & = & 1 \\
 			\scenCallSum                      _{i + \callFirstScenarioRowOffset} & = & 1 \\
-			\locOogx + \scenCallUnexceptional _{i + \callFirstScenarioRowOffset} & = & 1 \\
+			\locStackOogx + \scenCallUnexceptional _{i + \callFirstScenarioRowOffset} & = & 1 \\
 		\end{array} \right.
 		}
 \end{center}
@@ -53,7 +53,7 @@ In the present section we describe the various account operations that are requi
 					\item \If $\locIsCall = 1$ \Then
 						\[
 							\accDecrementBalance
-							{i}{\callFirstCallerAccountRowOffset}{\locValueLo}
+							{i}{\callFirstCallerAccountRowOffset}{\locStackValueLo}
 						\]
 					\item \If $\locIsCallcode + \locIsDelegatecall + \locIsStaticcall = 1$ \Then
 						\[
@@ -65,11 +65,11 @@ In the present section we describe the various account operations that are requi
 				The above may alternatively be implemented without case disjunction as
 				\[
 					\accDecrementBalance
-					{i}{\callFirstCallerAccountRowOffset}{\locIsCall \cdot \locValueLo}
+					{i}{\callFirstCallerAccountRowOffset}{\locIsCall \cdot \locStackValueLo}
 				\]
 				Either way the above reflects that fact that only \inst{CALL} may \emph{actually} transfer value.
-				The \inst{CALL}-type instruction \inst{CALLCODE} also has a ``\locValue'' argument but it doesn't set off a value transfer.
-				This ``\locValue'' becomes the ``call value'' of the child context.
+				The \inst{CALL}-type instruction \inst{CALLCODE} also has a ``\locStackValue'' argument but it doesn't set off a value transfer.
+				This ``\locStackValue'' becomes the ``call value'' of the child context.
 				It is noteworthy that while no \emph{actual} value transfer takes place,
 				\inst{CALLCODE} may nonetheless incur a value transfer cost.
 		\end{enumerate}
@@ -78,8 +78,8 @@ In the present section we describe the various account operations that are requi
 		\[
 			\left\{ \begin{array}{lcll}
 				\accAddressHi    _{i + \callFirstCalleeAccountRowOffset} & = & \relevantValue   & (\trash) \\
-				\accAddressLo    _{i + \callFirstCalleeAccountRowOffset} & = & \locRawAddressLo & (\trash) \\
-				\accTrmRawAddrHi _{i + \callFirstCalleeAccountRowOffset} & = & \locRawAddressHi & (\trash) \\
+				\accAddressLo    _{i + \callFirstCalleeAccountRowOffset} & = & \locStackRawAddressLo & (\trash) \\
+				\accTrmRawAddrHi _{i + \callFirstCalleeAccountRowOffset} & = & \locStackRawAddressHi & (\trash) \\
 				\multicolumn{4}{l}{\textcolor{solarized-green}{\texttt{<callee balance operation set below>}}} \\
 				\multicolumn{4}{l}{\accSameNonce             {i}{\callFirstCalleeAccountRowOffset}} \\
 				\multicolumn{4}{l}{\accSameCode              {i}{\callFirstCalleeAccountRowOffset}} \\
@@ -95,8 +95,8 @@ In the present section we describe the various account operations that are requi
 				\accRomLexFlag   _{i + \callFirstCalleeAccountRowOffset} & = & 0 \\
 				\multicolumn{4}{l}{\accTrimAddress
 				{i}{\callFirstCalleeAccountRowOffset}
-				{\locRawAddressHi}
-				{\locRawAddressLo}} \\
+				{\locStackRawAddressHi}
+				{\locStackRawAddressLo}} \\
 				\accTrmFlag      _{i + \callFirstCalleeAccountRowOffset} & = & \rOne & (\trash) \\
 				\accRlpAddrFlag  _{i + \callFirstCalleeAccountRowOffset} & = & 0 \vspace{2mm} \\
 				\multicolumn{4}{l}{
@@ -122,7 +122,7 @@ In the present section we describe the various account operations that are requi
 					\item \If $\locIsCall = 1$ \Then
 						\[
 							\accIncrementBalance
-							{i}{\callFirstCalleeAccountRowOffset}{\locValueLo}
+							{i}{\callFirstCalleeAccountRowOffset}{\locStackValueLo}
 						\]
 					\item \If $\locIsCallcode + \locIsDelegatecall + \locIsStaticcall = 1$ \Then
 						\[
@@ -136,7 +136,7 @@ In the present section we describe the various account operations that are requi
 				the above may alternatively be implemented without case disjunction as
 				\[
 					\accIncrementBalance
-					{i}{\callFirstCalleeAccountRowOffset}{\locIsCall \cdot \locValueLo}
+					{i}{\callFirstCalleeAccountRowOffset}{\locIsCall \cdot \locStackValueLo}
 				\]
 		\end{enumerate}
 	\item[\underline{Setting the \calleeName{} warmth update on account-row $n^°(i + \callFirstCalleeAccountRowOffset)$:}]
