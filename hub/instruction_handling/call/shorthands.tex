@@ -37,13 +37,14 @@ Next we introduce a shorthand for the current gas
 Next we list shorthands related to the \textbf{current execution context}
 \[
 	\left\{ \begin{array}{lcl}
-		\locCurrentAddressHi       & \define & \cnAccountAddress\high _{i + \callCurrentContextRowOffset} \\
-		\locCurrentAddressLo       & \define & \cnAccountAddress\low  _{i + \callCurrentContextRowOffset} \\
-		\locIsStatic               & \define & \cnStatic              _{i + \callCurrentContextRowOffset} \\
-		\locCurrentCallerAddressHi & \define & \cnCallerAddress\high  _{i + \callCurrentContextRowOffset} \\
-		\locCurrentCallerAddressLo & \define & \cnCallerAddress\low   _{i + \callCurrentContextRowOffset} \\
-		\locCurrentCallValue       & \define & \cnCallValue           _{i + \callCurrentContextRowOffset} \\
-		\locCsd                    & \define & \cnCsd                 _{i + \callCurrentContextRowOffset} \\
+		\locCurrentAccountAddressHi        & \define & \cnAccountAddress\high _{i + \callCurrentContextRowOffset} \\
+		\locCurrentAccountAddressLo        & \define & \cnAccountAddress\low  _{i + \callCurrentContextRowOffset} \\
+		\locCurrentAccountDeploymentNumber & \define & \cnAccDepNum           _{i + \callCurrentContextRowOffset} \\
+		\locCurrentContextIsStatic         & \define & \cnStatic              _{i + \callCurrentContextRowOffset} \\
+		\locCurrentCallerAddressHi         & \define & \cnCallerAddress\high  _{i + \callCurrentContextRowOffset} \\
+		\locCurrentCallerAddressLo         & \define & \cnCallerAddress\low   _{i + \callCurrentContextRowOffset} \\
+		\locCurrentCallValue               & \define & \cnCallValue           _{i + \callCurrentContextRowOffset} \\
+		\locCurrentCallStackDepth          & \define & \cnCsd                 _{i + \callCurrentContextRowOffset} \\
 	\end{array} \right.
 \]
 Next we list shorthands related to the \textbf{miscellaneous-row}
@@ -53,10 +54,20 @@ Next we list shorthands related to the \textbf{miscellaneous-row}
 		\locMxpMemoryExpansionGas       & \define & \miscMxpGasMxp               _{i + \callMiscRowOffset} \\
 		\locMxpSizeOneNonzeroAndNoMxpx  & \define & \miscMxpSizeOneNonzeroNoMxpx _{i + \callMiscRowOffset} \\
 		\locMxpSizeTwoNonzeroAndNoMxpx  & \define & \miscMxpSizeTwoNonzeroNoMxpx _{i + \callMiscRowOffset} \\
+	\end{array} \right.
+\]
+and
+\[
+	\left\{ \begin{array}{lcl}
 		\locStpGasUpfront               & \define & \miscStpGasUpfront           _{i + \callMiscRowOffset} \\
 		\locStpGasPoop                  & \define & \miscStpGasPoop              _{i + \callMiscRowOffset} \\
 		\locStpGasStipend               & \define & \miscStpGasStipend           _{i + \callMiscRowOffset} \\
 		\locStpOogx                     & \define & \miscStpOogx                 _{i + \callMiscRowOffset} \\
+	\end{array} \right.
+\]
+and
+\[
+	\left\{ \begin{array}{lcl}
 		\locNonzeroValue                & \define & \miscOobDataCol {7}          _{i + \callMiscRowOffset} \\
 		\locOobAbortingCondition        & \define & \miscOobDataCol {8}          _{i + \callMiscRowOffset} \\
 	\end{array} \right.
@@ -70,6 +81,7 @@ Next we list shorthands related to the \textbf{callee account}
 	\left\{ \begin{array}{lcl}
 		\locCalleeAddressHi         & \define & \accAddressHi           _{i + \callFirstCalleeAccountRowOffset} \\
 		\locCalleeAddressLo         & \define & \accAddressLo           _{i + \callFirstCalleeAccountRowOffset} \\
+		\locCalleeDeploymentNumber  & \define & \accDeploymentNumber    _{i + \callFirstCalleeAccountRowOffset} \\
 		\locCalleeCfi               & \define & \accCfi                 _{i + \callFirstCalleeAccountRowOffset} \\
 		\locCalleeHasCode           & \define & \accHasCode             _{i + \callFirstCalleeAccountRowOffset} \\
 		\locCalleeWarmth            & \define & \accWarmth              _{i + \callFirstCalleeAccountRowOffset} \\
@@ -103,13 +115,15 @@ We further define \locCalleeIsDelegatedToSelf{} as follows:
 Next we list shorthands related to the \textbf{delegate (or callee) account}
 \[
 	\left\{ \begin{array}{lcl}
-		\locDelegateOrCalleeAddressHi    & \define & \accAddressHi       _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
-		\locDelegateOrCalleeAddressLo    & \define & \accAddressLo       _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
-		\locDelegateOrCalleeCfi          & \define & \accCfi             _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
-		\locDelegateOrCalleeHasCode      & \define & \accHasCode         _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
-		\locDelegateOrCalleeWarmth       & \define & \accWarmth          _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
-		\locDelegateOrCalleeExists       & \define & \accExists          _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
-		\locDelegateOrCalleeIsDelegated  & \define & \accIsDelegated     _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
+		\locDelegateOrCalleeAddressHi        & \define & \accAddressHi        _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
+		\locDelegateOrCalleeAddressLo        & \define & \accAddressLo        _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
+		\locDelegateOrCalleeDeploymentNumber & \define & \accDeploymentNumber _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
+		\locDelegateOrCalleeDeploymentStatus & \define & \accDeploymentStatus _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
+		\locDelegateOrCalleeCfi              & \define & \accCfi              _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
+		\locDelegateOrCalleeHasCode          & \define & \accHasCode          _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
+		\locDelegateOrCalleeWarmth           & \define & \accWarmth           _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
+		\locDelegateOrCalleeExists           & \define & \accExists           _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
+		\locDelegateOrCalleeIsDelegated      & \define & \accIsDelegated      _{i + \callFirstDelegateOrCalleeAccountRowOffset} \\
 		% \locDelegateOrCalleeIsPrecompile & \define & \accTrmIsPrecompile _{i + \callFirstCalleeAccountRowOffset} \\
 	\end{array} \right.
 \]
