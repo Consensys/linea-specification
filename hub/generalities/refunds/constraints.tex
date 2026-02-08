@@ -65,6 +65,7 @@ The constraints below enforce the behavior described above.
 			\define
 			\left[ \begin{array}{cl}
 				\cdot & \authAuthorizationTupleIsValid _{i}                     \\
+				\cdot & \accExists                     _{i + 1}                 \\
 				\cdot & \big[ \perEmptyAccountCost - \perAuthBaseCostName \big] \\
 			\end{array} \right]
 		\]
@@ -75,6 +76,13 @@ The constraints below enforce the behavior described above.
 				\perAuthBaseCostName & \define & \perAuthBaseCostValue     \\
 			\end{array} \right.
 		\]
+		\saNote{}
+		Refunds are accrued by \textbf{valid} authorization tuples whose
+		authority account already exists in the state.
+
+		\saNote{}
+		Refunds accrued through authorization tuples are provided regardless of anything else,
+		in particular they are granted even if the underlying transaction reverts.
 	\item[\underline{\underline{Refunds in the \txExec-phase:}}]
 		\If   $\hubStamp _{i} \neq \hubStamp _{i - 1}$ \et $\txExec _{i} = 1$
 		\Then we impose
