@@ -48,6 +48,24 @@ We thus impose the following:
 							}
 						\]
 				\end{enumerate}
+			\item[\underline{From the (only and final) $\peekTransaction$-row:}]
+				\If $\peekTransaction _{i} = 1$ \Then we impose
+				\[
+					\left\{ \begin{array}{lclr}
+						\txTypeSupportsDelegationLists _{i} & = & 1 \vspace{2mm} \\
+						\txSkip _{i + 1} + \txInit _{i + 1} & = & 1               & (\sanityCheck) \\
+						\peekTransaction _{i + 1}           & = & 1               & (\sanityCheck) \\
+					\end{array} \right.
+				\]
+
+				\saNote{}\label{hub: authorization phase: perspectives: the transation type must support delegation lists}
+				The above ensures that \emph{only} transactions with
+				$\txTypeSupportsDelegationLists \equiv \true$ may induce an \txAuth{}-phase.
+				This constraint should be contrasted with
+				constraint~(\ref{hub: initialization phase: common constraints: transactions supporting delegation lists must contain a TX AUTH phase}) and with
+				constraint~(\ref{hub: tx skip: user: transation processing: transactions supporting delegation lists start must contain a TX AUTH phase}).
+				The linked constraints ensure that \emph{every} transaction
+				with $\txTypeSupportsDelegationLists \equiv \true$ induce an \txAuth{}-phase.
 		\end{description}
 	\item[\underline{\underline{Authorization phases finish on a $\peekTransaction$-row:}}] 
 		\label{hub: authorization phase: perspectives: authorization phase ends with a transaction row}

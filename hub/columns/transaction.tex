@@ -45,10 +45,20 @@ Furthermore transaction data makes its way directly into the execution through o
 		\godGiven{}
 		$\txIsDeployment$:
 		binary column; equals $0$ \emph{iff} the transaction is a message call ($T_\text{t} \neq \varnothing$); equals $1$ if and only if the transaction is a contract deployment transaction ($T_{\text{t}} = \varnothing$.)
+	% % DEPRECATED in favor of \txTypeSupportsEipFifteenFiftyNineGasSemantics
+	% \item
+	% 	\godGiven{}
+	% 	$\txIsTypeTwo$:
+	% 	binary column which equals $1$ for \textsc{eip1559} transactions only;
 	\item
 		\godGiven{}
-		$\txIsTypeTwo$:
-		binary column which equals $1$ for \textsc{eip1559} transactions only;
+		$\txTypeSupportsEipFifteenFiftyNineGasSemantics$
+		binary column which equals $1$ for transactions supporting fee market pricing,
+		i.e. \cite{EIP-1559} gas semantics;
+	\item
+		\godGiven{}
+		$\txTypeSupportsDelegationLists$
+		binary column which equals $1$ for transactions supporting delegation lists;
 	\item
 		\godGiven{}
 		$\txGasLimit$:

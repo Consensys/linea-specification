@@ -86,8 +86,7 @@
 		\item[\underline{Justifying $\txLeftoverGas$:}]
 			we impose that $\txLeftoverGas _{i + \roffTxSkipUserTransaction} = \txInitialGas _{i + \roffTxSkipUserTransaction}$
 	\end{description}
-	The following constraint is true up to the \textsc{Cancun} hardfork,
-	but fails beyond that point.
+	The following constraint is true up to the \textsc{Cancun} hardfork, but fails beyond that point.
 	Specifically \cite{EIP-7623}, which is part of the \textsc{Prague} hardfork,
 	imposes a floor price on call data
 	which invalidates the upcoming ``sanity-check'' constraint.
@@ -97,3 +96,22 @@
 			we may impose the following sanity check:
 			\[ \txEffectiveRefund _{i + \roffTxSkipUserTransaction} = \txLeftoverGas _{i + \roffTxSkipUserTransaction} \quad (\sanityCheck) \]
 	\end{description}
+	We further impose that every \textbf{set code transaction} i.e. every \textbf{type 4 transaction}
+	begin with the processing of its delegation list.
+	\begin{description}
+		\item[\underline{Set code transactions must incorporate a \txAuth{}-phase:}]
+			\If $\txTypeSupportsDelegationLists _{i} = \true$ \Then
+			\[
+				\left\{ \begin{array}{lcl}
+					\txAuth          _{i - 1} & = & \true \\
+					\peekTransaction _{i - 1} & = & \true \\
+				\end{array} \right.
+			\]
+	\end{description}
+	\saNote{}\label{hub: tx skip: user: transation processing: transactions supporting delegation lists start must contain a TX AUTH phase}
+	Compare with
+	constraint~(\ref{hub: initialization phase: common constraints: transactions supporting delegation lists must contain a TX AUTH phase}).
+	Also recall
+	constraint~(\ref{hub: authorization phase: perspectives: the transation type must support delegation lists})
+	and the associated discussion.
+

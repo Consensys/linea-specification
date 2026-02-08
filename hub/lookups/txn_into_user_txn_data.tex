@@ -1,88 +1,58 @@
 The present section describes the lookup between the \hubMod{} and the \userTxnDataMod{} module.
 \begin{description}
-	\item[Selector column:] we use the following source selector: $\col{src\_sel} _{i} \define \peekTransaction _{i}$
-	\item[Source columns:] ---
-		\begin{enumerate}
+	\item[Source selector:]
+		we use the following source selector: $\col{src\_sel} _{i} \define \peekTransaction _{i}$
+	\item[Target selector:]
+		we use the following target selector: $\col{tgt\_sel} _{j} \define \isUserTxnHubView _{j}$
+	\item[\underline{Column correspondence:}]
+		we impose the following correspondence
+		\[
+			\hspace*{-2.5cm}
+			\renewcommand{\arraystretch}{1.5}
+			\begin{array}{|l|c|l|}
+				\hline
+				\text{\hubMod{}-columns}     &                  & \text{\txnDataMod{}-columns} \\ \hline\hline
 				% numbers
-			\item $\totalTransactionNumber _{i}$
-			\item $\blockNumber            _{i}$
+				\totalTransactionNumber _{i} & \rightsquigarrow & \totalTransactionNumber _{j} \\ \hline
+				\blockNumber            _{i} & \rightsquigarrow & \blockNumber            _{j} \\ \hline
 				% addresses
-			\item $\user _{i} \cdot \txFrom\high            _{i}$
-			\item $\user _{i} \cdot \txFrom\low             _{i}$
-			\item $\user _{i} \cdot \txTo\high              _{i}$
-			\item $\user _{i} \cdot \txTo\low               _{i}$
-			\item $\user _{i} \cdot \txCoinbase\high        _{i}$
-			\item $\user _{i} \cdot \txCoinbase\low         _{i}$
+				\user _{i} \cdot \txFrom\high     _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubFromHi     _{j} \\ \hline
+				\user _{i} \cdot \txFrom\low      _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubFromLo     _{j} \\ \hline
+				\user _{i} \cdot \txTo\high       _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubToHi       _{j} \\ \hline
+				\user _{i} \cdot \txTo\low        _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubToLo       _{j} \\ \hline
+				\user _{i} \cdot \txCoinbase\high _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubCoinbaseHi _{j} \\ \hline
+				\user _{i} \cdot \txCoinbase\low  _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubCoinbaseLo _{j} \\ \hline
 				% transaction parameters
-			\item $\user _{i} \cdot \txNonce                _{i}$
-			\item $\user _{i} \cdot \txValue                _{i}$
-			\item $\user _{i} \cdot \txIsDeployment         _{i}$
-			\item $\user _{i} \cdot \txIsTypeTwo            _{i}$
-			\item $\user _{i} \cdot \txGasPrice             _{i}$
-			\item $\user _{i} \cdot \txGasLimit             _{i}$
-			\item $\user _{i} \cdot \txPriorityFeePerGas    _{i}$
-			\item $\user _{i} \cdot \txBasefee              _{i}$
-			\item $\user _{i} \cdot \txCallDataSize         _{i}$
-			\item $\user _{i} \cdot \txInitCodeSize         _{i}$
-				% start of transaction data
-			\item $\user _{i} \cdot \txInitialGas           _{i}$
-			\item $\user _{i} \cdot \txInitialBalance       _{i}$
-			\item $\user _{i} \cdot \txRequiresEvmExecution _{i}$
-			\item $\user _{i} \cdot \txCopyTxcd             _{i}$
+				\user _{i} \cdot \txNonce                           _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubNonce                                      _{j} \\ \hline
+				\user _{i} \cdot \txValue                           _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubValue                                      _{j} \\ \hline
+				\user _{i} \cdot \txIsDeployment                    _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubIsDeployment                               _{j} \\ \hline
+				\user _{i} \cdot \txTypeSupportsEipFifteenFiftyNineGasSemantics _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubTransactionTypeSupportsEipFifteenFiftyNineGasSemantics _{j} \\ \hline
+				\user _{i} \cdot \txTypeSupportsDelegationLists     _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubTransactionTypeSupportsDelegationLists     _{j} \\ \hline
+				\user _{i} \cdot \txGasPrice                        _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubGasPrice                                   _{j} \\ \hline
+				\user _{i} \cdot \txGasLimit                        _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubGasLimit                                   _{j} \\ \hline
+				\user _{i} \cdot \txPriorityFeePerGas               _{i} & \rightsquigarrow & \user _{j} \cdot \big(\txnDataHubGasPrice                              _{j} -  \txnDataHubBasefee _{j}\big) \\ \hline
+				\user _{i} \cdot \txBasefee                         _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubBasefee                                    _{j} \\ \hline
+				\user _{i} \cdot \txCallDataSize                    _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubCallDataSize                               _{j} \\ \hline
+				\user _{i} \cdot \txInitCodeSize                    _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubInitCodeSize                               _{j} \\ \hline
+				% start of transaction data for the HUB
+				\user _{i} \cdot \txInitialGas           _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubInitialGas           _{j} \\ \hline
+				\user _{i} \cdot \txInitialBalance       _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubInitialBalance       _{j} \\ \hline
+				\user _{i} \cdot \txRequiresEvmExecution _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubRequiresEvmExecution _{j} \\ \hline
+				\user _{i} \cdot \txCopyTxcd             _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubCopyTxcd             _{j} \\ \hline
 				% end of transaction data
-			\item $\user _{i} \cdot \txStatusCode           _{i}$
-			\item $\user _{i} \cdot \txLeftoverGas          _{i}$
-			\item $\user _{i} \cdot \txFinalRefundCounter   _{i}$
-			\item $\user _{i} \cdot \txEffectiveRefund      _{i}$
-				% type 4 transaction specific
-			\item $\user _{i} \cdot \txLengthOfDelegationList              _{i}$
-			\item $\user _{i} \cdot \txNumberOfSuccessfulSenderDelegations _{i}$
+				\user _{i} \cdot \txStatusCode         _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubStatusCode         _{j} \\ \hline
+				\user _{i} \cdot \txLeftoverGas        _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubLeftoverGas        _{j} \\ \hline
+				\user _{i} \cdot \txFinalRefundCounter _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubFinalRefundCounter _{j} \\ \hline
+				\user _{i} \cdot \txEffectiveRefund    _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubEffectiveRefund    _{j} \\ \hline
+				% set code transaction specific
+				\user _{i} \cdot \txLengthOfDelegationList              _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubLengthOfDelegationList              _{j} \\ \hline
+				\user _{i} \cdot \txNumberOfSuccessfulSenderDelegations _{i} & \rightsquigarrow & \user _{j} \cdot \txnDataHubNumberOfSuccessfulSenderDelegations _{j} \\ \hline
 				% system transaction stuff
-			\item $\txnSystemTransactionNoop                _{i}$
-			\item $\txnSystemTransactionEipBeaconRoot       _{i}$
-			\item $\txnSystemTransactionEipBlockHash        _{i}$
-			\item $\txnSystemTransactionDataCol{k}          _{i}$, $1 \leq k \leq \txnDataHubNumberOfDataColumns$:
-		\end{enumerate}
-	\item[Target columns:] we use the following target selector: $\col{tgt\_sel} _{j} \define \isUserTxnHubView _{j}$
-		\begin{enumerate}
-				% numbers
-			\item $\totalTransactionNumber          _{j}$
-			\item $\blockNumber                     _{j}$
-				% addresses
-			\item $\user _{j} \cdot \txnDataHubFromHi               _{j}$
-			\item $\user _{j} \cdot \txnDataHubFromLo               _{j}$
-			\item $\user _{j} \cdot \txnDataHubToHi                 _{j}$
-			\item $\user _{j} \cdot \txnDataHubToLo                 _{j}$
-			\item $\user _{j} \cdot \txnDataHubCoinbaseHi           _{j}$
-			\item $\user _{j} \cdot \txnDataHubCoinbaseLo           _{j}$
-				% tx values
-			\item $\user _{j} \cdot \txnDataHubNonce                _{j}$
-			\item $\user _{j} \cdot \txnDataHubValue                _{j}$
-			\item $\user _{j} \cdot \txnDataHubIsDeployment         _{j}$
-			\item $\user _{j} \cdot \txnDataHubIsTypeTwo            _{j}$
-			\item $\user _{j} \cdot \txnDataHubGasPrice             _{j}$
-			\item $\user _{j} \cdot \txnDataHubGasLimit             _{j}$
-			\item $\user _{j} \cdot \big(\txnDataHubGasPrice        _{j} - \txnDataHubBasefee _{j}\big)$
-			\item $\user _{j} \cdot \txnDataHubBasefee              _{j}$
-			\item $\user _{j} \cdot \txnDataHubCallDataSize         _{j}$
-			\item $\user _{j} \cdot \txnDataHubInitCodeSize         _{j}$
-				% directly relevant to hub
-			\item $\user _{j} \cdot \txnDataHubInitialGas           _{j}$
-			\item $\user _{j} \cdot \txnDataHubInitialBalance       _{j}$
-			\item $\user _{j} \cdot \txnDataHubRequiresEvmExecution _{j}$
-			\item $\user _{j} \cdot \txnDataHubCopyTxcd             _{j}$
-				% end of tx prediction
-			\item $\user _{j} \cdot \txnDataHubStatusCode           _{j}$
-			\item $\user _{j} \cdot \txnDataHubLeftoverGas          _{j}$
-			\item $\user _{j} \cdot \txnDataHubFinalRefundCounter   _{j}$
-			\item $\user _{j} \cdot \txnDataHubEffectiveRefund      _{j}$
-				% type 4 transaction specific
-			\item $\user _{j} \cdot \txnDataLengthOfDelegationList  _{j}$
-			\item $\user _{j} \cdot \txnDataNumberOfSuccessfulSenderDelegations _{j}$
-				% \item $\cfi _{j}$
-			\item $\txnDataHubNoopSystemTransaction _{j}$
-			\item $\txnDataHubEipBeaconRoot         _{j}$
-			\item $\txnDataHubEipBlockHash          _{j}$
-			\item $\txnDataHubDataCol{k}            _{j}$, $k = 1, \dots, \txnDataHubNumberOfDataColumns$:
-		\end{enumerate}
+				\txnSystemTransactionNoop          _{i}                                                 & \rightsquigarrow & \txnDataHubNoopSystemTransaction _{j}                                                 \\ \hline
+				\txnSystemTransactionEipBeaconRoot _{i}                                                 & \rightsquigarrow & \txnDataHubEipBeaconRoot         _{j}                                                 \\ \hline
+				\txnSystemTransactionEipBlockHash  _{i}                                                 & \rightsquigarrow & \txnDataHubEipBlockHash          _{j}                                                 \\ \hline
+				\txnSystemTransactionDataCol{k}    _{i}, ~ k = 1, \dots, \txnDataHubNumberOfDataColumns & \rightsquigarrow & \txnDataHubDataCol{k}            _{j}, ~ k = 1, \dots, \txnDataHubNumberOfDataColumns \\ \hline
+				% & \rightsquigarrow &  \\ \hline
+			\end{array}
+		\]
 \end{description}
