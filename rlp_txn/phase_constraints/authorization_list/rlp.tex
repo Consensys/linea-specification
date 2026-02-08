@@ -4,13 +4,13 @@
 	}
 \end{center}
 We now start the \rlp{}-ization related constraints.
-\rlp{}-ization involves two different items
+\rlp{}-ization involves two different tasks
 \begin{itemize}
-	\item the \rlp{}-prefix of the full authority list
+	\item computing the \rlp{}-prefix of the full authority list
 		\[
 			\texttt{authority\_list} \equiv \texttt{[authority\_tuple, ...]}
 		\]
-	\item the \rlp{}-ization of the individual authority tuples
+	\item computing the \rlp{}-ization of the individual authority tuples
 		\[
 			\texttt{authority\_tuple} \equiv \texttt{[chain\_id, address, nonce, y\_parity, r, s]}
 		\]
@@ -41,12 +41,12 @@ And each authorization has the following constraint:
 				we process the \rlp{}-prefix of a new authorization tuple
 				\[
 					\rlpProcessByteString {
-						anchorRow        = i                              ,
-						relOffset        = 0                              ,
-						byteStringLength = \locAuthorizationItemCountdown ,
-						firstByte        = \nothing                       ,
-						isList           = \true                          ,
-						mustBeNontrivial = \true                          ,
+						anchorRow        = i                                               ,
+						relOffset        = \roffRlpTxnDelegationTupleProcessingTuplePrefix ,
+						byteStringLength = \locAuthorizationItemCountdown                  ,
+						firstByte        = \nothing                                        ,
+						isList           = \true                                           ,
+						mustBeNontrivial = \true                                           ,
 					}
 				\]
 			\item
@@ -54,11 +54,11 @@ And each authorization has the following constraint:
 				\loc{chain\_id}
 				\[
 					\rlpProcessInteger {
-						anchorRow  = i                        ,
-						relOffset  = \yellowm{1}              ,
-						integerHi  = \locAuthorizationChainIdHi                        ,
-						integerLo  = \locAuthorizationChainIdLo ,
-						endOfPhase = \false                   ,
+						anchorRow  = i                                           ,
+						relOffset  = \roffRlpTxnDelegationTupleProcessingChainId ,
+						integerHi  = \locAuthorizationChainIdHi                  ,
+						integerLo  = \locAuthorizationChainIdLo                  ,
+						endOfPhase = \false                                      ,
 					}
 				\]
 			\item
@@ -66,10 +66,10 @@ And each authorization has the following constraint:
 				\loc{address}
 				\[
 					\rlpProcessAddress {
-						anchorRow = i                          ,
-						relOffset = \yellowm{4}                ,
-						addressHi = \locAuthorizationAddressHi ,
-						addressLo = \locAuthorizationAddressLo ,
+						anchorRow = i                                           ,
+						relOffset = \roffRlpTxnDelegationTupleProcessingAddress ,
+						addressHi = \locAuthorizationAddressHi                  ,
+						addressLo = \locAuthorizationAddressLo                  ,
 					}
 				\]
 			\item
@@ -77,11 +77,11 @@ And each authorization has the following constraint:
 				\loc{nonce}
 				\[
 					\rlpProcessInteger {
-						anchorRow  = i                      ,
-						relOffset  = \yellowm{7}            ,
-						integerHi  = 0                      ,
-						integerLo  = \locAuthorizationNonce ,
-						endOfPhase = \false                 ,
+						anchorRow  = i                                         ,
+						relOffset  = \roffRlpTxnDelegationTupleProcessingNonce ,
+						integerHi  = 0                                         ,
+						integerLo  = \locAuthorizationNonce                    ,
+						endOfPhase = \false                                    ,
 					}
 				\]
 			\item
@@ -89,11 +89,11 @@ And each authorization has the following constraint:
 				\loc{y\_parity} signature component
 				\[
 					\rlpProcessInteger {
-						anchorRow  = i                  ,
-						relOffset  = \yellowm{10}       ,
-						integerHi  = 0                  ,
-						integerLo  = \locAuthorizationY ,
-						endOfPhase = \false             ,
+						anchorRow  = i                                     ,
+						relOffset  = \roffRlpTxnDelegationTupleProcessingY ,
+						integerHi  = 0                                     ,
+						integerLo  = \locAuthorizationY                    ,
+						endOfPhase = \false                                ,
 					}
 				\]
 			\item
@@ -101,11 +101,11 @@ And each authorization has the following constraint:
 				\loc{r} signature component
 				\[
 					\rlpProcessInteger {
-						anchorRow  = i                    ,
-						relOffset  = \yellowm{13}         ,
-						integerHi  = \locAuthorizationRHi ,
-						integerLo  = \locAuthorizationRLo ,
-						endOfPhase = \false               ,
+						anchorRow  = i                                     ,
+						relOffset  = \roffRlpTxnDelegationTupleProcessingR ,
+						integerHi  = \locAuthorizationRHi                  ,
+						integerLo  = \locAuthorizationRLo                  ,
+						endOfPhase = \false                                ,
 					}
 				\]
 			\item
@@ -113,11 +113,11 @@ And each authorization has the following constraint:
 				\loc{s} signature component
 				\[
 					\rlpProcessInteger {
-						anchorRow  = i                           ,
-						relOffset  = \yellowm{16}                ,
-						integerHi  = \locAuthorizationSHi        ,
-						integerLo  = \locAuthorizationSLo        ,
-						endOfPhase = \locAuthorizationEndOfPhase ,
+						anchorRow  = i                                     ,
+						relOffset  = \roffRlpTxnDelegationTupleProcessingS ,
+						integerHi  = \locAuthorizationSHi                  ,
+						integerLo  = \locAuthorizationSLo                  ,
+						endOfPhase = \locAuthorizationEndOfPhase           ,
 					}
 				\]
 				\saNote{}
