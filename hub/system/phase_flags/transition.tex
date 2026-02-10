@@ -1,8 +1,18 @@
 We impose that
 \begin{enumerate}
+        \item \If $\txAuth _{i} = 1$ \Then
+                \begin{enumerate}
+                        \item $\txAuth _{i + 1} + \txWarm _{i + 1} + \txSkip _{i + 1} + \txInit _{i + 1} = 1$
+                        \item $\txAuth _{i + 1} + \peekTransaction _{i} = 1$
+                \end{enumerate}
+        \item \If $\txWarm _{i} = 1$ \Then
+                \begin{enumerate}
+                        \item $\txWarm _{i + 1} + \txInit _{i + 1} = 1$
+                        \item $\txInit _{i + 1} = \peekTransaction _{i + 1}$
+                \end{enumerate}
         \item \If $\txSkip _{i} = 1$ \Then
                 \begin{enumerate}
-                        \item $\txSkip _{i + 1} + \txWarm _{i + 1} + \txAuth _{i + 1} + \txInit _{i + 1} = 1$
+                        \item $\txSkip _{i + 1} + \txAuth _{i + 1} + \txWarm _{i + 1} + \txInit _{i + 1} = 1$
                         \item \If $\peekContext _{i} = 0$ \Then $\txSkip _{i + 1} = 1$ (\sanityCheck)
                         \item \If $\peekContext _{i} = 1$ \Then $\txSkip _{i + 1} + \txWarm _{i + 1} + \txInit _{i + 1} = 1$ (\sanityCheck)
                 \end{enumerate}
@@ -12,17 +22,6 @@ We impose that
                 and of the way in which the \hubStamp{} increments when in \txSkip-transaction phase,
                 see constraint~(\ref{hub: system: phase flags: transaction phase flags are hub stamp constant}) and
                 see constraint~(\ref{hub: system: hub stamp: increments: SKIP case}) respectively.
-        \item \If $\txWarm _{i} = 1$ \Then
-                \begin{enumerate}
-                        \item $\txWarm _{i + 1} + \txAuth _{i + 1} + \txInit _{i + 1} = 1$
-                        \item $\txAuth _{i + 1} = \peekAuthorization _{i + 1}$
-                        \item $\txInit _{i + 1} = \peekTransaction   _{i + 1}$
-                \end{enumerate}
-        \item \If $\txAuth _{i} = 1$ \Then
-                \begin{enumerate}
-                        \item $\txAuth _{i + 1} + \txSkip _{i + 1} + \txInit _{i + 1} = 1$
-                        \item $\txSkip _{i + 1} + \txInit _{i + 1} = \peekTransaction _{i + 1}$
-                \end{enumerate}
         \item \If $\txInit _{i} = 1$ \Then
                 \begin{enumerate}
                         \item $\txInit _{i + 1} + \txExec _{i + 1} = 1$
@@ -46,7 +45,7 @@ We impose that
                 \end{enumerate}
         \item \If $\txFinl _{i} = 1$ \Then
                 \begin{enumerate}
-                        \item $\txFinl _{i + 1} + \txSkip _{i + 1} + \txWarm _{i + 1} + \txAuth _{i + 1} + \txInit _{i + 1} = 1$
+                        \item $\txFinl _{i + 1} + \txAuth _{i + 1} + \txWarm _{i + 1} + \txSkip _{i + 1} + \txInit _{i + 1} = 1$
                         \item furthermore\footnote{\input{system/phase_flags/footnotes/finl}}
                                 \[
                                         \left[ \begin{array}{lcl}

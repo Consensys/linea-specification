@@ -1,21 +1,21 @@
 \begin{figure}[!h]
         \begin{tikzpicture}[node distance={4cm}, thick, main/.style={rectangle, thick, draw, rounded corners = 3pt, inner sep = 6pt, outer sep = 4pt}]
-                \node[main, color = draculagreen]  (warm)                        {$\txWarm$};
-                \node[main, color = draculagreen]  (auth) [right of=warm]        {$\txAuth$};
-                \node[main, color = draculagreen]  (init) [right of=auth]        {$\txInit$};
+                \node[main, color = draculagreen]  (auth)                        {$\txAuth$};
+                \node[main, color = draculagreen]  (warm) [right of=auth]        {$\txWarm$};
+                \node[main, color = draculagreen]  (init) [right of=warm]        {$\txInit$};
                 \node[main, color = yellow!70]     (exec) [right of=init]        {$\txExec$};
                 \node[main, color = orange!70]     (finl) [below of=warm]        {$\txFinl$};
                 \node[main, color = orange!70]     (skip) [above left of=warm]   {$\txSkip$};
-                \draw[-latex] (warm) -- (auth);
-                \draw[-latex] (auth) -- (init);
+                \draw[-latex] (auth) -- (warm);
+                \draw[-latex] (warm) -- (init);
                 \draw[-latex] (init) -- (exec);
                 \draw[-latex] (exec) -- (finl);
                 \draw[-latex, dashed, color = solarized-blue] (finl) -- (warm);
                 \draw[-latex, dashed, color = solarized-blue] (finl) -- (auth);
                 \draw[-latex, dashed, color = solarized-blue] (finl) -- (init);
                 \draw (finl) edge [-latex , out=135  , in=-90 , dashed , color = solarized-blue]             (skip);
-                \draw (warm) edge [-latex , out=135  , in=45  , looseness=5] node [above] {$(\star)$}        (warm);
                 \draw (auth) edge [-latex , out=135  , in=45  , looseness=5] node [above] {$(\star)$}        (auth);
+                \draw (warm) edge [-latex , out=135  , in=45  , looseness=5] node [above] {$(\star)$}        (warm);
                 \draw (init) edge [-latex , out=135  , in=45  , looseness=5] node [above] {$\deterministic$} (init);
                 \draw (exec) edge [-latex , out=135  , in=45  , looseness=5] node [above] {$(\star)$}        (exec);
                 \draw (finl) edge [-latex , out=-135 , in=-45 , looseness=5] node [below] {$\deterministic$} (finl);
@@ -26,7 +26,7 @@
         \end{tikzpicture}
         \label{hub: system: phase flags: transaction phase transition graph}
         \caption{%
-                The above is the transition graph of the boolean flags $\txSkip$, $\txWarm$, $\txInit$, $\txExec$ and $\txFinl$.
+                The above is the transition graph of the boolean flags $\txAuth$, $\txWarm$, $\txSkip$, $\txInit$, $\txExec$ and $\txFinl$.
                 To occupy a node in this graph at row index $i$ is to have the associated boolean flag $=1$ on that row.
                 Every non-padding row $i$ occupies a single vertex of the above graph.
                 To move along an oriented edge is to have the source node's boolean flag $=1$ at time $i$ and have the target node's boolean flag $=1$ at time $i+1$.

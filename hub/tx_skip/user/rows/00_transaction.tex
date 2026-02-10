@@ -96,22 +96,43 @@
 			we may impose the following sanity check:
 			\[ \txEffectiveRefund _{i + \roffTxSkipUserTransaction} = \txLeftoverGas _{i + \roffTxSkipUserTransaction} \quad (\sanityCheck) \]
 	\end{description}
-	We further impose that every \textbf{set code transaction} i.e. every \textbf{type 4 transaction}
-	begin with the processing of its delegation list.
-	\begin{description}
-		\item[\underline{Set code transactions must incorporate a \txAuth{}-phase:}]
-			\If $\txTypeSupportsDelegationLists _{i} = \true$ \Then
-			\[
-				\left\{ \begin{array}{lcl}
-					\txAuth          _{i - 1} & = & \true \\
-					\peekTransaction _{i - 1} & = & \true \\
-				\end{array} \right.
-			\]
-	\end{description}
-	\saNote{}\label{hub: tx skip: user: transation processing: transactions supporting delegation lists start must contain a TX AUTH phase}
-	Compare with
-	constraint~(\ref{hub: initialization phase: common constraints: transactions supporting delegation lists must contain a TX AUTH phase}).
-	Also recall
-	constraint~(\ref{hub: authorization phase: perspectives: the transation type must support delegation lists})
-	and the associated discussion.
+	\iffalse
+	I had to switch the order of phases from
+
+	,   (TX_WARM) → (TX_AUTH) → (TX_SKIP ∨ TX_INIT) → ...
+	,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+	to 
+
+	,   (TX_AUTH) → (TX_WARM) → (TX_SKIP ∨ TX_INIT) → ...
+	,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+	the reason for this switch is that it is easier to determine tx.requiresEvmExecution(), which decides whether we trace the TX_WARM phase, and whether we do TX_SKIP or TX_INIT, _after_ the TX_AUTH phase, given that the recipient account may have been delegated to a smart contract in the delegation list processing. Or the opposite.
+
+	The real annoyance is that
+
+	,   tx.requiresEvmExecution()
+	,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+	can no longer be determined from the transaction and the initial world state alone.
+	\fi
+	%
+	% We further impose that every \textbf{set code transaction} i.e. every \textbf{type 4 transaction}
+	% begin with the processing of its delegation list.
+	% \begin{description}
+	% 	\item[\underline{Set code transactions must incorporate a \txAuth{}-phase:}]
+	% 		\If $\txTypeSupportsDelegationLists _{i} = \true$ \Then
+	% 		\[
+	% 			\left\{ \begin{array}{lcl}
+	% 				\txAuth          _{i - 1} & = & \true \\
+	% 				\peekTransaction _{i - 1} & = & \true \\
+	% 			\end{array} \right.
+	% 		\]
+	% \end{description}
+	% \saNote{}\label{hub: tx skip: user: transation processing: transactions supporting delegation lists start must contain a TX AUTH phase}
+	% Compare with
+	% constraint~(\ref{hub: initialization phase: common constraints: transactions supporting delegation lists must contain a TX AUTH phase}).
+	% Also recall
+	% constraint~(\ref{hub: authorization phase: perspectives: the transation type must support delegation lists})
+	% and the associated discussion.
 
