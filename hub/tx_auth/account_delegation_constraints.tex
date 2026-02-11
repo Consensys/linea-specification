@@ -10,6 +10,14 @@ constraint~(\ref{hub: authorization phase: perspectives: account row iff authori
 account-rows in the \txAuth-phase correspond precisely to authorization tuples with
 $\authAuthorityEcrecoverSuccess \equiv \true$.
 
+We define the following shorthands
+\[
+	\left\{ \begin{array}{lcl}
+		\locAuthAuthorityAddressHi & \define & \authAuthorityAddressHi  _{i + (\roffAuthorizationProcessingAuthorityRow)} \\
+		\locAuthAuthorityAddressLo & \define & \authAuthorityAddressLo  _{i + (\roffAuthorizationProcessingAuthorityRow)} \\
+	\end{array} \right.
+\]
+
 We impose the following:
 \begin{enumerate}
 	\item we may impose some sanity check constraints
@@ -23,8 +31,14 @@ We impose the following:
 	\item we peek into the authority account
 		\[
 			\left\{ \begin{array}{lclr}
-				\accAddress \high  _{i + \roffAuthorizationProcessingAccountRow} & = & \authAuthorityAddressHi  _{i + (\roffAuthorizationProcessingAuthorityRow)}              \\
-				\accAddress \low   _{i + \roffAuthorizationProcessingAccountRow} & = & \authAuthorityAddressLo  _{i + (\roffAuthorizationProcessingAuthorityRow)} \vspace{2mm} \\
+				\accAddress \high  _{i + \roffAuthorizationProcessingAccountRow} & = & \locAuthAuthorityAddressHi              \\
+				\accAddress \low   _{i + \roffAuthorizationProcessingAccountRow} & = & \locAuthAuthorityAddressLo \vspace{2mm} \\
+				\multicolumn{4}{l}{
+					\accTrimAddress
+					{i}{\roffAuthorizationProcessingAccountRow}
+					{\locAuthAuthorityAddressHi}
+					{\locAuthAuthorityAddressLo}
+				} \vspace{2mm} \\
 				\multicolumn{3}{l}{\accSameBalance                {i}{\roffAuthorizationProcessingAccountRow}}      \\
 				\multicolumn{3}{l}{\texttt{Nonce:                     \toBeSet}} \\
 				\multicolumn{3}{l}{\texttt{Code hash:                 \toBeSet}} \\
