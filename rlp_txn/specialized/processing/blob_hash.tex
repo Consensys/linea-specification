@@ -1,0 +1,44 @@
+We define the following shorthand
+\[
+	\rlpProcessBlobHash {
+		anchorRow = i              ,
+		relOffset = \relof         ,
+		dataHi    = \loc{data\_hi} ,
+		dataLo    = \loc{data\_lo} ,
+	}
+\]
+which stands the same consraints as $\rlpProcessBytesThirtyTwoName$ except the the call to rlp utils:
+\begin{description}
+	\item[\underline{\underline{Setting \maxCt{}:}}]
+		we impose $\maxCt _{i + \relof} = 2$
+	\item[\underline{\underline{Enshrining the \rlp{}-prefix into the \rlp{} string:}}] 
+		we impose
+		\[
+			\setLimb {
+				anchorRow = i                                         ,
+				relOffset = \relof                                    ,
+				limb      = (\rlprefixStorage) \cdot 256 ^{\llargeMO} ,
+				nBytes    = 1                                         ,
+			}
+		\]
+	\item[\underline{\underline{Enshrining \loc{data\_hi} into the \rlp{} string:}}] 
+		we impose
+		\[
+			\setLimb {
+				anchorRow = i              ,
+				relOffset = \relof + 1     ,
+				limb      = \loc{data\_hi} ,
+				nBytes    = \llarge        ,
+			}
+		\]
+	\item[\underline{\underline{Enshrining \loc{data\_lo} into the \rlp{} string:}}] 
+		we impose
+		\[
+			\setLimb {
+				anchorRow = i              ,
+				relOffset = \relof + 2     ,
+				limb      = \loc{data\_lo} ,
+				nBytes    = \llarge        ,
+			}
+		\]
+\end{description}
