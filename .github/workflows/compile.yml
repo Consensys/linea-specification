@@ -1,11 +1,16 @@
 name: Build & Upload the Specification
+
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
 
+permissions: {} # lock everything by default (least-privilege)
+
 jobs:
   archive-build-spec:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
