@@ -25,8 +25,10 @@ jobs:
           unzip -q JetBrainsMono.zip -d JetBrainsMono
           sudo mv JetBrainsMono/fonts/ttf/*.ttf /usr/share/fonts/
           rm -rf JetBrainsMono JetBrainsMono.zip
-      - name: Install fontawesome
-        run: sudo apt-get install fonts-font-awesome
+      - name: Install system packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-font-awesome texlive-full
       - name: Install tectonic
         env:
           TECTONIC_VERSION: "0.15.0"
@@ -39,8 +41,6 @@ jobs:
           tar xzf tectonic.tar.gz
           sudo install -m 755 tectonic /usr/local/bin/tectonic
           rm tectonic.tar.gz tectonic
-      - name: Install lualatex
-        run: sudo apt-get update && sudo apt install texlive-full --fix-missing
       - name: Compile Specification
         run: make ospec
       - name: Upload the Specification
