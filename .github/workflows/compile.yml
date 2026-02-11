@@ -16,11 +16,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - name: Install JetBrainsMono
         env:
           JETBRAINS_MONO_SHA256: "6f6376c6ed2960ea8a963cd7387ec9d76e3f629125bc33d1fdcd7eb7012f7bbf"
         run: |
-          wget -q https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip -O JetBrainsMono.zip
+          wget -q --secure-protocol=TLSv1_2 https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip -O JetBrainsMono.zip
           echo "${JETBRAINS_MONO_SHA256}  JetBrainsMono.zip" | sha256sum -c
           unzip -q JetBrainsMono.zip -d JetBrainsMono
           sudo mv JetBrainsMono/fonts/ttf/*.ttf /usr/share/fonts/
