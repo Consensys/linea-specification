@@ -7,7 +7,7 @@ recompile-%: lua_build
 	cd $* && tectonic -X compile _all_$*.tex
 
 buildOnGithub-%: lua_build
-	cd $* && ../tectonic -X compile _all_$*.tex
+	cd $* && tectonic -X compile _all_$*.tex
 
 alu:             view-alu
 blake:           view-blake_data
