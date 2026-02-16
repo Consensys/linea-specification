@@ -7,8 +7,8 @@ We define the following shorthands
 		\user _{i} \cdot
 		\vspace{2mm}
 		\left[ \begin{array}{cl}
-			+ & \locUserTransactionStartsInPrewarming                   _{i} \\
 			+ & \locUserTransactionStartsInAuthorizationListProcessing  _{i} \\
+			+ & \locUserTransactionStartsInPrewarming                   _{i} \\
 			+ & \locUserTransactionStartsInTxInit                       _{i} \\
 			+ & \locUserTransactionStartsInTxSkip                       _{i} \\
 		\end{array} \right]
@@ -23,11 +23,11 @@ We define the following shorthands
 \]
 where we define
 \[
-	\left\{ \begin{array}{lclcccccrcr}
-		\locUserTransactionStartsInPrewarming                  _{i} & \define & \big[ 1 & - & \txWarm _{i - 1} &   &                  &   &                  \big] & \!\!\!\cdot\!\!\! & \txWarm _{i} \\
-		\locUserTransactionStartsInAuthorizationListProcessing _{i} & \define & \big[ 1 & - & \txWarm _{i - 1} & - & \txAuth _{i - 1} &   &                  \big] & \!\!\!\cdot\!\!\! & \txAuth _{i} \\
-		\locUserTransactionStartsInTxInit                      _{i} & \define & \big[ 1 & - & \txWarm _{i - 1} & - & \txAuth _{i - 1} & - & \txInit _{i - 1} \big] & \!\!\!\cdot\!\!\! & \txInit _{i} \\
-		\locUserTransactionStartsInTxSkip                      _{i} & \define & \big[ 1 &   &                  & - & \txAuth _{i - 1} & - & \txSkip _{i - 1} \big] & \!\!\!\cdot\!\!\! & \txSkip _{i} \\
+	\left\{ \begin{array}{lclcccrcl}
+		\locUserTransactionStartsInAuthorizationListProcessing _{i} & \define & \big[ 1 & - & \txAuth _{i - 1} &   &                  \big] & \!\!\!\cdot\!\!\! & \txAuth _{i} \\
+		\locUserTransactionStartsInPrewarming                  _{i} & \define & \big[ 1 & - & \txAuth _{i - 1} & - & \txWarm _{i - 1} \big] & \!\!\!\cdot\!\!\! & \txWarm _{i} \\
+		\locUserTransactionStartsInTxInit                      _{i} & \define & \big[ 1 & - & \txAuth _{i - 1} & - & \txWarm _{i - 1} \big] & \!\!\!\cdot\!\!\! & \txInit _{i} \cdot \peekTransaction _{i} \\
+		\locUserTransactionStartsInTxSkip                      _{i} & \define & \big[ 1 & - & \txAuth _{i - 1} &   &                  \big] & \!\!\!\cdot\!\!\! & \txSkip _{i} \cdot \peekTransaction _{i} \\
 	\end{array} \right.
 \]
 \saNote{}
