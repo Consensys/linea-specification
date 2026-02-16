@@ -1,32 +1,52 @@
 name: Build & Upload the Specification
+
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
 
+permissions: {} # lock everything by default (least-privilege)
+
 jobs:
   archive-build-spec:
+    name: Build & Upload Specification PDF
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - name: Install JetBrainsMono
-        run: mkdir JetBrainsMono
-             && cd JetBrainsMono
-              && wget https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip
-             && unzip JetBrainsMono-2.304.zip
-             && sudo mv fonts/ttf/*.ttf /usr/share/fonts/
-             && cd -
-      - name: Install fontawesome
-        run: sudo apt-get install fonts-font-awesome
+        env:
+          JETBRAINS_MONO_SHA256: "6f6376c6ed2960ea8a963cd7387ec9d76e3f629125bc33d1fdcd7eb7012f7bbf"
+        run: |
+          wget -q --secure-protocol=TLSv1_2 https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip -O JetBrainsMono.zip
+          echo "${JETBRAINS_MONO_SHA256}  JetBrainsMono.zip" | sha256sum -c
+          unzip -q JetBrainsMono.zip -d JetBrainsMono
+          sudo mv JetBrainsMono/fonts/ttf/*.ttf /usr/share/fonts/
+          rm -rf JetBrainsMono JetBrainsMono.zip
+      - name: Install system packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --fix-missing fonts-font-awesome texlive-full
       - name: Install tectonic
-        run: curl --proto '=https' --tlsv1.2 -fsSL https://drop-sh.fullyjustified.net |sh
-      - name: Install lualatex
-        # run: sudo apt-get install texlive-latex-base && sudo apt install texlive-luatex && sudo apt-get install texlive-latex-extra
-        run: sudo apt-get update && sudo apt install texlive-full --fix-missing
+        env:
+          TECTONIC_VERSION: "0.15.0"
+          TECTONIC_SHA256: "875fbbc9ab48560d7776088c608e0beee49197b57ab4a2f6c5385b2c661c842f"
+        run: |
+          curl --proto '=https' --tlsv1.2 -fsSL \
+            "https://github.com/tectonic-typesetting/tectonic/releases/download/tectonic%40${TECTONIC_VERSION}/tectonic-${TECTONIC_VERSION}-x86_64-unknown-linux-gnu.tar.gz" \
+            -o tectonic.tar.gz
+          echo "${TECTONIC_SHA256}  tectonic.tar.gz" | sha256sum -c
+          tar xzf tectonic.tar.gz
+          sudo install -m 755 tectonic /usr/local/bin/tectonic
+          rm tectonic.tar.gz tectonic
       - name: Compile Specification
         run: make ospec
       - name: Upload the Specification
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: specification.pdf
           path: spec/_all_spec.pdf
