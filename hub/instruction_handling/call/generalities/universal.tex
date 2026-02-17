@@ -158,19 +158,19 @@ We impose the following constraints:
 		\If $\miscStpFlag_{i + \callMiscRowOffset} = 1$ \Then we impose that
 		\[
 			\setStpInstructionCall{
-				anchorRow   = i                  ,
-				relOffset   = \callMiscRowOffset ,
-				instruction = \locStackInst      ,
-				gasHi             = \locStackGasHi                    ,
-				gasLo             = \locStackGasLo                    ,
-				valueHi           = \locStackValueHi                  ,
-				valueLo           = \locStackValueLo                  ,
-				exists            = \locCalleeExists \cdot \locIsCall ,
-				warmth            = \locCalleeWarmth                  ,
-				isDelegated       = \locCalleeIsDelegated             ,
-				isDelegatedToSelf = \locCalleeIsDelegatedToSelf       ,
-				delegateWarmth    = \locDelegateWarmth                ,
-				mxpGas            = \locMxpMemoryExpansionGas         ,
+				anchorRow         = i                           ,
+				relOffset         = \callMiscRowOffset          ,
+				instruction       = \locStackInst               ,
+				gasHi             = \locStackGasHi              ,
+				gasLo             = \locStackGasLo              ,
+				valueHi           = \locStackValueHi            ,
+				valueLo           = \locStackValueLo            ,
+				exists            = \locCalleeExists            \cdot \locIsCall ,
+				warmth            = \locCalleeWarmth            ,
+				isDelegated       = \locCalleeIsDelegated       ,
+				isDelegatedToSelf = \locCalleeIsDelegatedToSelf ,
+				delegateWarmth    = \locDelegateWarmth          ,
+				mxpGas            = \locMxpMemoryExpansionGas   ,
 			}
 		\]
 		\saNote{} \label{hub: instruction handling: call: generalities: universal: account existence for non CALLs}
@@ -184,20 +184,52 @@ We impose the following constraints:
 			\locStpOogx
 		\]
 	\item[\underline{Defining shorthands related to delegation:}]
-		we define some negations
+		we define several shorthands in order to decide the general exectution scenario
+		(precompile, externally owned account or smart contract in the previously defined sense)
 		\[
+			\hspace{-2cm}
 			\left\{ \begin{array}{lcl}
-				\locCalleeIsntPrecompile          & \define & 1 - \locCalleeIsPrecompile                       \\
-				\locCalleeHasEmptyCode            & \define & 1 - \locCalleeHasCode                            \\
-				\locCalleeIsntDelegated           & \define & 1 - \locCalleeIsDelegated           \vspace{2mm} \\
-				\locDelegateOrCalleeHasEmptyCode  & \define & 1 - \locDelegateOrCalleeHasCode                  \\
-				\locDelegateOrCalleeIsntDelegated & \define & 1 - \locDelegateOrCalleeIsDelegated              \\
+				\locCallGeneralPrcScenario & \define & \locCalleeIsPrecompile
+				\vspace{2mm} \\
+				\locCallGeneralEoaScenario & \define &
+				\left[ \begin{array}{cl}
+					+ & \locCalleeHasEmptyCodeButIsntPrecompile      \\
+					+ & \locCalleeIsDelegatedAndDelegateHasEmptyCode \\
+					% + & \locCalleeIsDelegatedAndDelegateIsItselfDelegated \\
+				\end{array} \right]
+				\vspace{2mm} \\
+				\locCallGeneralSmcScenario & \define & 
+				\left[ \begin{array}{cl}
+					+ & \locCalleeHasNonemptyCodeAndIsntDelegated       \\
+					+ & \locCalleeIsDelegatedAndDelegateHasNonemptyCode \\
+				\end{array} \right]
+				\\
 			\end{array} \right.
 		\]
-		and some composite shorthands for \inst{CALL}'s whose effective target has empty code but isn't a precompile
+		where
+		\[
+			% \hspace*{-2.7cm}
+			\left\{ \begin{array}{lcl}
+				\locCalleeHasNonemptyCodeAndIsntDelegated & \define &
+				\left[ \begin{array}{cl}
+					\cdot & \locCalleeHasNonemptyCode \\
+					\cdot & \locCalleeIsntDelegated   \\
+				\end{array} \right]
+				\vspace{2mm}
+				\\                                                              
+				\locCalleeIsDelegatedAndDelegateHasNonemptyCode & \define &
+				\left[ \begin{array}{cl}
+					\cdot & \locCalleeIsDelegated             \\
+					\cdot & \locDelegateOrCalleeHasCode       \\
+					% \cdot & \locDelegateOrCalleeIsntDelegated \\
+				\end{array} \right]
+				\\
+			\end{array} \right.
+		\]
+		and
 		\[
 			\left\{ \begin{array}{lcl}
-				\locCalleeIsntPrecompileButHasEmptyCode & \define &
+				\locCalleeHasEmptyCodeButIsntPrecompile & \define &
 				\left[ \begin{array}{cl}
 					\cdot & \locCalleeIsntPrecompile \\
 					\cdot & \locCalleeHasEmptyCode   \\
@@ -209,55 +241,24 @@ We impose the following constraints:
 					\cdot & \locCalleeIsDelegated            \\
 					\cdot & \locDelegateOrCalleeHasEmptyCode \\
 				\end{array} \right]
-				\vspace{2mm}
-				\\                                                              
-				\locCalleeIsDelegatedAndDelegateIsItselfDelegated & \define &
-				\left[ \begin{array}{cl}
-					\cdot & \locCalleeIsDelegated           \\
-					\cdot & \locDelegateOrCalleeIsDelegated \\
-				\end{array} \right]
-				\\
+				% \vspace{2mm}
+				% \\                                                              
+				% \locCalleeIsDelegatedAndDelegateIsItselfDelegated & \define &
+				% \left[ \begin{array}{cl}
+				% 	\cdot & \locCalleeIsDelegated           \\
+				% 	\cdot & \locDelegateOrCalleeIsDelegated \\
+				% \end{array} \right]
+				% \\
 			\end{array} \right.
 		\]
-		and some composite shorthands for \inst{CALL}'s whose effective target has nonempty code
+		where we used the following ``negations'' shorthands
 		\[
-			\hspace*{-2.7cm}
 			\left\{ \begin{array}{lcl}
-				\locCalleeHasNonemptyCodeAndIsntDelegated & \define &
-				\left[ \begin{array}{cl}
-					\cdot & \locCalleeHasCode       \\
-					\cdot & \locCalleeIsntDelegated \\
-				\end{array} \right]
-				\vspace{2mm}
-				\\                                                              
-				\locCalleeIsDelegatedAndDelegateHasNonemptyCodeAndIsntDelegated & \define &
-				\left[ \begin{array}{cl}
-					\cdot & \locCalleeIsDelegated             \\
-					\cdot & \locDelegateOrCalleeHasCode       \\
-					\cdot & \locDelegateOrCalleeIsntDelegated \\
-				\end{array} \right]
-				\\
-			\end{array} \right.
-		\]
-		We further set
-		\[
-			\hspace{-2cm}
-			\left\{ \begin{array}{lcl}
-				\locCallGeneralEoaScenario & \define &
-				\left[ \begin{array}{cl}
-					+ & \locCalleeIsntPrecompileButHasEmptyCode           \\
-					+ & \locCalleeIsDelegatedAndDelegateHasEmptyCode      \\
-					+ & \locCalleeIsDelegatedAndDelegateIsItselfDelegated \\
-				\end{array} \right]
-				\vspace{2mm} \\
-				\locCallGeneralSmcScenario & \define & 
-				\left[ \begin{array}{cl}
-					+ & \locCalleeHasNonemptyCodeAndIsntDelegated                       \\
-					+ & \locCalleeIsDelegatedAndDelegateHasNonemptyCodeAndIsntDelegated \\
-				\end{array} \right]
-				\vspace{2mm} \\
-				\locCallGeneralPrcScenario & \define & \locCalleeIsPrecompile
-				\\
+				\locCalleeIsntPrecompile          & \define & 1 - \locCalleeIsPrecompile                       \\
+				\locCalleeHasEmptyCode            & \define & 1 - \locCalleeHasNonemptyCode                    \\
+				\locCalleeIsntDelegated           & \define & 1 - \locCalleeIsDelegated           \vspace{2mm} \\
+				\locDelegateOrCalleeHasEmptyCode  & \define & 1 - \locDelegateOrCalleeHasCode                  \\
+				\locDelegateOrCalleeIsntDelegated & \define & 1 - \locDelegateOrCalleeIsDelegated              \\
 			\end{array} \right.
 		\]
 		\saNote{}
@@ -266,9 +267,9 @@ We impose the following constraints:
 		constraint~(\ref{hub: account: account delegation: checks for delegation require non empty code})
 		forbid certain combinations of the binary values
 		\begin{enumerate}
-			\item \locCalleeIsPrecompile {}
-			\item \locCalleeHasCode      {}
-			\item \locCalleeIsDelegated  {}
+			\item \locCalleeIsPrecompile    {}
+			\item \locCalleeHasNonemptyCode {}
+			\item \locCalleeIsDelegated     {}
 		\end{enumerate}
 	\item[\underline{Setting the \inst{CALL}-scenario flag:}]
 		we constrain the \inst{CALL}-scenario:
