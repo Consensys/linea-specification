@@ -17,29 +17,34 @@
 					\Then
 					\[
 						\left[ \begin{array}{cl}
-							+ & \locRecipientHasEmptyCode                         \\
+							+ & \locRecipientHasEmptyCode                       \\
 							+ & \locRecipientIsDelegatedAndDelegateHasEmptyCode \\
-							+ & \locRecipientIsDelegatedAndDelegateIsDelegated  \\
+							% + & \locRecipientIsDelegatedAndDelegateIsDelegated  \\
 						\end{array} \right]
 						= 1
 					\]
 					where we set
 					\[
-						\hspace*{-2cm}
-						\left\{ \begin{array}{lcl}
-							\locRecipientIsDelegatedAndDelegateHasEmptyCode & \define &
-							\left[ \begin{array}{clr}
-								\cdot & \locRecipientIsDelegated \\
-								\cdot & \locDelegateHasEmptyCode \\
-							\end{array} \right]
-							\vspace{2mm} \\
-							\locRecipientIsDelegatedAndDelegateIsDelegated & \define &
-							\left[ \begin{array}{clr}
-								\cdot & \locRecipientIsDelegated \\
-								\cdot & \locDelegateIsDelegated  \\
-							\end{array} \right]
-							\\
-						\end{array} \right.
+						\locRecipientIsDelegatedAndDelegateHasEmptyCode \define
+						\left[ \begin{array}{clr}
+							\cdot & \locRecipientIsDelegated \\
+							\cdot & \locDelegateHasEmptyCode \\
+						\end{array} \right]
+						% \hspace*{-2cm}
+						% \left\{ \begin{array}{lcl}
+						% 	\locRecipientIsDelegatedAndDelegateHasEmptyCode & \define &
+						% 	\left[ \begin{array}{clr}
+						% 		\cdot & \locRecipientIsDelegated \\
+						% 		\cdot & \locDelegateHasEmptyCode \\
+						% 	\end{array} \right]
+						% 	\vspace{2mm} \\
+						% 	\locRecipientIsDelegatedAndDelegateIsDelegated & \define &
+						% 	\left[ \begin{array}{clr}
+						% 		\cdot & \locRecipientIsDelegated \\
+						% 		\cdot & \locDelegateIsDelegated  \\
+						% 	\end{array} \right]
+						% 	\\
+						% \end{array} \right.
 					\]
 					and define and derive some compound shorthands as follows
 					\[
@@ -47,11 +52,11 @@
 							\locRecipientHasEmptyCode    & \define & 1 - \locRecipientHasNonemptyCode                                                \\
 							\locDelegateHasEmptyCode     & \define & 1 - \locDelegateHasNonemptyCode                                    \vspace{2mm} \\
 							\locRecipientIsntDelegated   & \define & 1 - \locRecipientIsDelegated                                                    \\
-							\locDelegateIsntDelegated    & \define & 1 - \locDelegateIsDelegated                                        \vspace{2mm} \\
+							% \locDelegateIsntDelegated    & \define & 1 - \locDelegateIsDelegated                                        \vspace{2mm} \\
 							\locRecipientHasNonemptyCode & \define & \accHasCode     _{i + \roffTxSkipUserRecipientAccount}                          \\
 							\locDelegateHasNonemptyCode  & \define & \accHasCode     _{i + \roffTxSkipUserRecipientOrDelegationAccount} \vspace{2mm} \\
 							\locRecipientIsDelegated     & \define & \accIsDelegated _{i + \roffTxSkipUserRecipientAccount}                          \\
-							\locDelegateIsDelegated      & \define & \accIsDelegated _{i + \roffTxSkipUserRecipientOrDelegationAccount}              \\
+							% \locDelegateIsDelegated      & \define & \accIsDelegated _{i + \roffTxSkipUserRecipientOrDelegationAccount}              \\
 						\end{array} \right.
 					\]
 					\saNote{}
@@ -63,7 +68,7 @@
 					constraint~(\ref{hub: account: account delegation: delegated accounts have code and code size equal to 23}).
 				\item
 					\If   $\locIsDeploymentTransaction = 1$
-					\Then $\txInitCodeSize _{i + \roffTxSkipUserTransaction}    = 0$
+					\Then $\txInitCodeSize _{i + \roffTxSkipUserTransaction} = 0$
 			\end{enumerate}
 		\item[\underline{Justifying $\txFinalRefundCounter$:}]
 			we impose that $\txFinalRefundCounter _{i + \roffTxSkipUserTransaction} = \refund _{i}$
