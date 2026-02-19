@@ -45,14 +45,15 @@
 			In either case we impose
 			\[
 				\left\{ \begin{array}{lcl}
-					\accSameBalance                     {i}{\roffTxSkipUserRecipientOrDelegationAccount} \\
-					\accSameNonce                       {i}{\roffTxSkipUserRecipientOrDelegationAccount} \\
-					\accSameCode                        {i}{\roffTxSkipUserRecipientOrDelegationAccount} \\
-					\accSameDeployment                  {i}{\roffTxSkipUserRecipientOrDelegationAccount} \\
-					\accConditionallyCheckForDelegation { anchorRow = i, relOffset = \roffTxSkipUserRecipientOrDelegationAccount, condition = \locCheckDelegateForDelegation } \\
-					\accSameWarmth                      {i}{\roffTxSkipUserRecipientOrDelegationAccount} \\
-					\accSameMarkedForDeletionFlag       {i}{\roffTxSkipUserRecipientOrDelegationAccount} \\
-					\accIsntPrecompile                  {i}{\roffTxSkipUserRecipientOrDelegationAccount} \\
+					\accSameBalance                        {i}{\roffTxSkipUserRecipientOrDelegationAccount} \\
+					\accSameNonce                          {i}{\roffTxSkipUserRecipientOrDelegationAccount} \\
+					\accSameCode                           {i}{\roffTxSkipUserRecipientOrDelegationAccount} \\
+					\accSameDeployment                     {i}{\roffTxSkipUserRecipientOrDelegationAccount} \\
+					\accCheckForDelegationIfAccountHasCode { anchorRow = i, relOffset = \roffTxSkipUserRecipientOrDelegationAccount} \\
+					% \accConditionallyCheckForDelegation { anchorRow = i, relOffset = \roffTxSkipUserRecipientOrDelegationAccount, condition = \locCheckDelegateForDelegation } \\
+					\accSameWarmth                         {i}{\roffTxSkipUserRecipientOrDelegationAccount} \\
+					\accSameMarkedForDeletionFlag          {i}{\roffTxSkipUserRecipientOrDelegationAccount} \\
+					\accIsntPrecompile                     {i}{\roffTxSkipUserRecipientOrDelegationAccount} \\
 					\standardDomSubStamps {
 						anchorRow = i                                           ,
 						relOffset = \roffTxSkipUserRecipientOrDelegationAccount ,
@@ -61,13 +62,13 @@
 					\\
 				\end{array} \right.
 			\]
-			where we have set
-			\[
-				\locCheckDelegateForDelegation
-				\define
-				\left[ \begin{array}{cl}
-					\cdot & \locLoadDelegateAccount     \\
-					\cdot & \locDelegateOrCalleeHasCode \\
-				\end{array} \right]
-			\]
+			% where we have set
+			% \[
+			% 	\locCheckDelegateForDelegation
+			% 	\define
+			% 	\left[ \begin{array}{cl}
+			% 		\cdot & \locLoadDelegateAccount     \\
+			% 		\cdot & \locDelegateOrCalleeHasCode \\
+			% 	\end{array} \right]
+			% \]
 	\end{description}
