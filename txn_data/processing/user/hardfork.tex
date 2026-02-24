@@ -1,0 +1,28 @@
+We impose some hardfork specific constraints.
+These reflect the following facts:
+(\emph{a}) the \textsc{Cancun} hardfork doesn't support \loc{set code transactions}
+(\emph{b}) \linea{} currently doesn't support \loc{blob transactions}.
+\begin{description}
+	\item[\underline{\textsc{Cancun} specific restrictions:}]
+		for the \textsc{Cancun} hardfork we disallow both
+		\loc{blob transactions} and
+		\loc{set code transactions};
+		as such, if the underlying network runs the \textsc{Cancun} \evm{} we impose
+		\[
+			\left[ \begin{array}{cl}
+				+ & \txnDataRlpIsBlobTransaction              _{i + \rlpViewRowOffset} \\
+				+ & \txnDataRlpIsAccountDelegationTransaction _{i + \rlpViewRowOffset} \\
+			\end{array} \right]
+			=
+			\false
+		\]
+	\item[\underline{\textsc{Prague} specific restrictions:}]
+		for hardforks starting with the \textsc{Prague}\footnote{thus including the \textsc{Osaka} hardfork} hardfork we disallow
+		\loc{blob transactions};
+		as such, if the underlying network runs the \textsc{Prague} / \textsc{Osaka} \evm{} we impose
+		\[
+			\txnDataRlpIsBlobTransaction _{i + \rlpViewRowOffset}
+			=
+			\false
+		\]
+\end{description}
