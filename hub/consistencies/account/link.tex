@@ -52,15 +52,31 @@ We impose the following consistency constraint:
 		\If $\accAgainInTransaction_{i} = 1$
 		\Then we impose
 		\begin{enumerate}
-			\item
-				\label{hub: consistency: account: constancy of "acc had code at tx start"}
+			\item $\order{\accWarmth}            _{i} = \order{\accWarmth\new}            _{i - 1}$
+			\item $\order{\accMarkedForDeletion} _{i} = \order{\accMarkedForDeletion\new} _{i - 1}$
+			\item\label{hub: consistency: account: linking at the transaction level: marked for selfdestruct is monotonous}
+				\If $\order{\accMarkedForDeletion}_{i} = 1$ \Then $\order{\accMarkedForDeletion\new}_{i}~=~1$
+			\item\label{hub: consistency: account: transaction constancy of "account had code initially"}
 				$\order{\accHadCodeInitially} _{i} = \order{\accHadCodeInitially} _{i - 1}$
-			\item $\order{\accWarmth}                    _{i} = \order{\accWarmth\new}                _{i - 1}$
-			\item $\order{\accMarkedForDeletion}     _{i} = \order{\accMarkedForDeletion\new} _{i - 1}$
-			\item \label{hub: consistency: account: linking at the transaction level: marked for selfdestruct is monotonous} \If $\order{\accMarkedForDeletion}_{i} = 1$ \Then $\order{\accMarkedForDeletion\new}_{i}~=~1$
+			\item\label{hub: consistency: account: setting "account had code initially" at first non TXAUTH row}
+				\If $\locFirstNonTxAuthRow _{i} = 1$ \Then $\order{\accHadCodeInitially} _{i} = \order{\accHasCode} _{i}$
+			\item\label{hub: consistency: account: sanity check constraints: in a transaction TXAUTH rows precede non TXAUTH rows}
+				\If $\order{\txAuth} _{i - 1} = 0$ \Then $\order{\txAuth} _{i} = 0$ (\sanityCheck)
 		\end{enumerate}
+		where we define
+		\[
+			\locFirstNonTxAuthRow _{i}
+			\define
+			\left[ \begin{array}{cr}
+				\cdot &       \order{\txAuth} _{i - 1}   \\
+				\cdot & ( 1 - \order{\txAuth} _{i    } ) \\
+			\end{array} \right]
+		\]
+		is $\true$ precisely at the treshold where $\order{\txAuth}$ switches from $1$ to $0$,
+		see sanity check constraint~(\ref{hub: consistency: account: sanity check constraints: in a transaction TXAUTH rows precede non TXAUTH rows}).
+
 		\saNote{}
-		Constraint (\ref{hub: consistency: account: constancy of "acc had code at tx start"})
+		Constraint (\ref{hub: consistency: account: transaction constancy of "account had code initially"})
 		is more of a ``transaction constancy condition'' than a ``linking constraint.''
 
 		\saNote{}

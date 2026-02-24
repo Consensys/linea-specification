@@ -27,12 +27,21 @@ We impose the following consistency constraint:
 			\item $\order{\accWarmth} _{i} = \order{\accTrmIsPrecompile}_{i}$
 			\item $\order{\accDeploymentStatus} _{i} = 0$
 			\item $\order{\accMarkedForDeletion} _{i} = 0$
-			\item
-				\label{hub: consistency: account: initialization at the transaction level of the "acc had code at tx start" column}
-				$\order{\accHadCodeInitially} _{i} = \order{\accHasCode} _{i}$
+			\item\label{hub: consistency: account: initialization at the transaction level of the "account had code initially" column}
+				\If $\order{\txAuth} _{i} = 0$ \Then $\order{\accHadCodeInitially} _{i} = \order{\accHasCode} _{i}$
 		\end{enumerate}
 \end{description}
 \saNote{}
 We include $\accHasCode$ in the account consistency permutation argument ($\order{\accHasCode}$)
 in order to set $\order{\accHadCodeInitially}$ correctly,
 see constraint (\ref{hub: consistency: account: initialization at the transaction level of the "acc had code at tx start" column}).
+
+\saNote{}\label{hub: consistency: account: rationale for "account had code initially"}
+Here is the rationale for how we will set $\order{\accHadCodeInitially}$.
+We require this column to be
+(\emph{a}) transaction-constant,
+           see constraint~(\ref{hub: consistency: account: transaction constancy of "account had code initially"})
+(\emph{b}) set to the first \txAuth{}-related account-row value of $\accHasCode$,
+           see constraint~(\ref{hub: consistency: account: initialization at the transaction level of the "account had code initially" column}) and constraint~(\ref{hub: consistency: account: setting "account had code initially" at first non TXAUTH row}),
+(\emph{c}) if no non-\txAuth{}-related account-row emerges, set it to $\false$,
+           see~constraint~(\ref{hub: consistency: account: setting "account had code initially" if this account only exists in TXAUTH rows})
