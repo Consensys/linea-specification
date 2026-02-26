@@ -1,0 +1,48 @@
+\begin{center}
+	\boxed{\text{In all this section, it is assumed that }
+	\phaseAuthorizationList _{i} = \true
+	}
+\end{center}
+We begin by transfering data to the $\isTxn$-perspective
+
+We constrain the size counter:
+\begin{enumerate}
+	\item \If $\locAuthorizationData        _{i} = 1$ \Then
+		\[
+			\locAuthorizationLengthCountdown _{i} =
+			\left[ \begin{array}{cl}
+				+ & \locAuthorizationLengthCountdown _{i - 1}            \\
+				- & \lc _{i} \cdot \rlpTxnComputationColumnLimbSize _{i} \\
+			\end{array} \right]
+		\]
+	\item \If $\locAuthorizationNotFirstRow _{i} = 1$ \Then
+		\[
+			\locAuthorizationItemCountdown   _{i} =
+			\left[ \begin{array}{cl}
+				+ & \locAuthorizationItemCountdown   _{i - 1}            \\
+				- & \lc _{i} \cdot \rlpTxnComputationColumnLimbSize _{i} \\
+			\end{array} \right]
+		\]
+\end{enumerate}
+We define authorization constancy by:
+\If $\locAuthorizationNotFirstRow _{i} = 1$ \Then $\col{X} _{i} = \col{X} _{i - 1} $.
+\begin{enumerate}[resume]
+	\item And we impose authorization constancy for:
+		\begin{enumerate}
+			\item \locAuthorizationChainIdHi {}
+			\item \locAuthorizationChainIdLo {}
+			\item \locAuthorizationAddressHi {}
+			\item \locAuthorizationAddressLo {}
+			\item \locAuthorizationNonce     {}
+			\item \locAuthorizationY         {}
+			\item \locAuthorizationRHi       {}
+			\item \locAuthorizationRLo       {}
+			\item \locAuthorizationSHi       {}
+			\item \locAuthorizationSLo       {}
+		\end{enumerate}
+\end{enumerate}
+We enforce that authorization lists must be nonempty
+\begin{enumerate}[resume]
+	\item\label{rlp txn: phase constraints: authorization list: constraints: authorization lists must be nonempty}
+		$\rlpTxnCommonColumnNumberOfAuthorizations _{i} \neq 0$ \sanityCheck
+\end{enumerate}
