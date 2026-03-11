@@ -19,11 +19,14 @@ We unconditionally impose the following
 Given peeking flag exclusivity,
 see section~(\ref{hub: heartbeat: peeking flag exclusivity}),
 the above translates precisely to
-\begin{enumerate}[resume]
-	\item $\peekTransaction _{i + \roffTxInitTxn}      = 1$ ~ (\trash)
-	\item $\peekMisc        _{i + \roffTxInitMisc}     = 1$ ~ (\trash)
-	\item $\peekAccount     _{i + \roffTxInitWarmCoinbase} = 1$ ~ (\trash)
-\end{enumerate}
+\[
+	\left\{ \begin{array}{lcl}
+		\peekTransaction _{i + \roffTxInitTxn}          & = & 1 ~ (\sanityCheck) \\
+		\peekMisc        _{i + \roffTxInitMisc}         & = & 1 ~ (\sanityCheck) \\
+		\peekAccount     _{i + \roffTxInitWarmCoinbase} & = & 1 ~ (\sanityCheck) \\
+	\end{array} \right.
+\]
+We further impose
 \begin{enumerate}[resume]
 	\item \If $\locTransactionWillRevert = 1$ \Then
 		\begin{enumerate}
@@ -39,10 +42,11 @@ the above translates precisely to
 					\left[ \begin{array}{cl} 
 						+ & \peekTransaction _{i + \roffTxInitTxn                               } \\
 						+ & \peekMisc        _{i + \roffTxInitMisc                              } \\
-						+ & \peekAccount     _{i + \roffTxInitWarmCoinbase                          } \\
-						+ & \peekAccount     _{i + \roffTxInitAccDoingSndPayGas                 } \\
+						+ & \peekAccount     _{i + \roffTxInitWarmCoinbase                      } \\
+						+ & \peekAccount     _{i + \roffTxInitAccDoingSenderPayForGas           } \\
 						+ & \peekAccount     _{i + \roffTxInitAccDoingSenderValueTransfer       } \\
 						+ & \peekAccount     _{i + \roffTxInitAccDoingRecipientValueReception   } \\
+						+ & \peekAccount     _{i + \roffTxInitAccViewingDelegationOrRecipient   } \\
 						+ & \peekAccount     _{i + \roffTxInitAccUndoingSenderValueTransfer     } \\
 						+ & \peekAccount     _{i + \roffTxInitAccUndoingRecipientValueReception } \\
 						+ & \peekContext     _{i + \roffTxInitConExceptionalContextRowOffset    } \\
@@ -64,16 +68,32 @@ the above translates precisely to
 					\left[ \begin{array}{cl} 
 						+ & \peekTransaction _{i + \roffTxInitTxn                              } \\
 						+ & \peekMisc        _{i + \roffTxInitMisc                             } \\
-						+ & \peekAccount     _{i + \roffTxInitWarmCoinbase                         } \\
-						+ & \peekAccount     _{i + \roffTxInitAccDoingSndPayGas                } \\
+						+ & \peekAccount     _{i + \roffTxInitWarmCoinbase                     } \\
+						+ & \peekAccount     _{i + \roffTxInitAccDoingSenderPayForGas          } \\
 						+ & \peekAccount     _{i + \roffTxInitAccDoingSenderValueTransfer      } \\
 						+ & \peekAccount     _{i + \roffTxInitAccDoingRecipientValueReception  } \\
+						+ & \peekAccount     _{i + \roffTxInitAccViewingDelegationOrRecipient  } \\
 						+ & \peekContext     _{i + \roffTxInitConUnexceptionalContextRowOffset } \\
 					\end{array} \right] =
 					\nsrTxInitWontRevert
 				\]
 		\end{enumerate}
 \end{enumerate}
+\saNote{}\label{hub: initialization phase: setting peeking flags: account row interpretation}
+For context, the intended interpretation of the account rows is
+\begin{description}
+	\item[\underline{Account-row $n^\circ(i + \roffTxInitWarmCoinbase                    )$}] warm up the \col{coinbase} address;
+	\item[\underline{Account-row $n^\circ(i + \roffTxInitAccDoingSenderPayForGas         )$}] deduct the cost of gas in \textsc{Wei} from the \col{sender} account;
+	\item[\underline{Account-row $n^\circ(i + \roffTxInitAccDoingSenderValueTransfer     )$}] deduct the transaction value from the \col{sender} account;
+	\item[\underline{Account-row $n^\circ(i + \roffTxInitAccDoingRecipientValueReception )$}] add the transaction value to the \col{recipient} account;
+	\item[\underline{Account-row $n^\circ(i + \roffTxInitAccViewingDelegationOrRecipient )$}] load the \col{delegate} account if the recipient $\accIsDelegated$ or the \col{recipient} account otherwise;
+\end{description}
+For transactions that will (ultimately) revert we further require
+\begin{description}
+	\item[\underline{Account-row $n^\circ(i + \roffTxInitAccUndoingSenderValueTransfer     )$}] undo the initial value transfer emanating from the \col{sender} account;
+	\item[\underline{Account-row $n^\circ(i + \roffTxInitAccUndoingRecipientValueReception )$}] undo the initial value transfer targeting the \col{recipient} account;
+\end{description}
+
 \saNote{}
 We remind the reader about
 constraint~(\ref{hub: heartbeat: initialization phase finishes on a context row})

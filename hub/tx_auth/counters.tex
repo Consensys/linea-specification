@@ -1,0 +1,81 @@
+% \begin{center}
+% 	\boxed{\text{All constraints in this subsection assume that $\txAuth _{i} = 1$.}}
+% \end{center}
+% % this hypothesis is always explicitly added
+We describe the behaviour of
+\authAuthorizationTupleIndex{} and
+\authSenderIsAuthorityAcc{}.
+% NOTE: I initially included a  ``hub stamp constancy'' constraint,
+% for the counters
+%   - \authAuthorizationTupleIndex{}
+%   - \authSenderIsAuthorityAcc{}
+% But the counters aren't shared columns, they
+% belong to auth/ perspective ... also two such rows may either
+% follow each other (``nearby case'') or be separated by two
+% account/-rows (``remote case'').
+%
+% In the latter case linking constraints span 2 rows
+%
+We first introduce a shorthand
+\[
+	\left\{ \begin{array}{l}
+		\locSuccessfulSenderIsAuthorityDelegation       _{i}                                   \\
+		\qquad \define \authAuthorizationTupleIsValid   _{i} \cdot \authSenderIsAuthority _{i} \\
+	\end{array} \right.
+\]
+We now impose the following:
+\begin{description}
+	\item[\underline{\underline{Initializing counters:}}]
+		\If
+		\[
+			\left\{ \begin{array}{lcl}
+				\txAuth            _{i - 1} & = & 0 \\
+				\txAuth            _{i}     & = & 1 \\
+			\end{array} \right.
+		\]
+		\Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\authAuthorizationTupleIndex _{i} & = & 1                                                   \\
+				\authSenderIsAuthorityAcc    _{i} & = & \locSuccessfulSenderIsAuthorityDelegation _{i} \\
+			\end{array} \right.
+		\]
+	\item[\underline{\underline{Update counters, the ``nearby'' case:}}]
+		we describe how counters are updated when the last $\peekAuthorization$-row is ``nearby''
+		i.e. one row back:
+		\If
+		\[
+			\left\{ \begin{array}{lclr}
+				\txAuth            _{i - 1} & = & 1 & ~ (\sanityCheck) \\
+				\txAuth            _{i}     & = & 1 & ~ (\sanityCheck) \vspace{2mm} \\
+				\peekAuthorization _{i - 1} & = & 1 \\
+				\peekAuthorization _{i}     & = & 1 \\
+			\end{array} \right.
+		\]
+		\Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\authAuthorizationTupleIndex _{i} & = & \authAuthorizationTupleIndex _{i - 1} + 1                                                   \\
+				\authSenderIsAuthorityAcc    _{i} & = & \authSenderIsAuthorityAcc    _{i - 1} + \locSuccessfulSenderIsAuthorityDelegation _{i} \\
+			\end{array} \right.
+		\]
+	\item[\underline{\underline{Update counters, the ``remote'' case:}}]
+		we describe how counters are updated when the last $\peekAuthorization$-row is ``remote''
+		i.e. two rows back:
+		\If
+		\[
+			\left\{ \begin{array}{lclr}
+				\txAuth            _{i - 1} & = & 1 \\
+				\txAuth            _{i}     & = & 1 & ~ (\sanityCheck) \vspace{2mm} \\
+				\peekAccount       _{i - 1} & = & 1 \\
+				\peekAuthorization _{i}     & = & 1 \\
+			\end{array} \right.
+		\]
+		\Then
+		\[
+			\left\{ \begin{array}{lcl}
+				\authAuthorizationTupleIndex _{i} & = & \authAuthorizationTupleIndex _{i - 2} + 1                                                   \\
+				\authSenderIsAuthorityAcc    _{i} & = & \authSenderIsAuthorityAcc    _{i - 2} + \locSuccessfulSenderIsAuthorityDelegation _{i} \\
+			\end{array} \right.
+		\]
+\end{description}

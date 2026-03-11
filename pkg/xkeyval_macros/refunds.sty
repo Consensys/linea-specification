@@ -1,0 +1,25 @@
+\makeatletter
+
+\define@cmdkey [REFUND] {var} {anchorRow}           {}
+\define@cmdkey [REFUND] {var} {relOffset}           {}
+\define@cmdkey [REFUND] {var} {delegationAddressHi} {}
+\define@cmdkey [REFUND] {var} {delegationAddressLo} {}
+
+\presetkeys    [REFUND] {var} {
+	anchorRow           = \missingParameter,
+	relOffset           = \missingParameter,
+}{}
+
+\newcommand{\sameRefundCounter}[1]{
+	\setkeys[REFUND]{var}{#1}
+	\sameSignifier\texttt{RefundCounter}
+	_{\cmdREFUND@var@anchorRow}
+	\big[ \cmdREFUND@var@relOffset \big]
+}
+
+% \sameRefundCounter {
+% 	anchorRow = i      ,
+% 	relOffset = \relof ,
+% }
+
+\makeatother

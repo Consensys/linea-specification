@@ -5,12 +5,13 @@ We define the following shorthands
 		\sysfTransactionStart _{i} & \define & \sysf _{i} \cdot \txSkip _{i} \cdot \peekTransaction _{i} \\
 		\userTransactionStart _{i} & \define &
 		\user _{i} \cdot
-		\left[ \begin{array}{crcrclr}
-			+ &                        &                   & \txSkip _{i}           & \!\!\!\cdot\!\!\! & \peekTransaction _{i} \\
-			+ &                        &                   & (1 - \txWarm _{i - 1}) & \!\!\!\cdot\!\!\! & \txWarm          _{i} \\
-			+ & (1 - \txWarm _{i - 1}) & \!\!\!\cdot\!\!\! & (1 - \txInit _{i - 1}) & \!\!\!\cdot\!\!\! & \txInit          _{i} & \undefinedStar \\
-		\end{array} \right]
 		\vspace{2mm}
+		\left[ \begin{array}{cl}
+			+ & \locUserTransactionStartsInAuthorizationListProcessing  _{i} \\
+			+ & \locUserTransactionStartsInPrewarming                   _{i} \\
+			+ & \locUserTransactionStartsInTxInit                       _{i} \\
+			+ & \locUserTransactionStartsInTxSkip                       _{i} \\
+		\end{array} \right]
 		\\
 		\transactionStart _{i} & \define &
 		\left[ \begin{array}{rrcl}
@@ -20,8 +21,17 @@ We define the following shorthands
 		\end{array} \right]
 	\end{array} \right.
 \]
+where we define
+\[
+	\left\{ \begin{array}{lclcccrcl}
+		\locUserTransactionStartsInAuthorizationListProcessing _{i} & \define & \big[ 1 & - & \txAuth _{i - 1} &   &                  \big] & \!\!\!\cdot\!\!\! & \txAuth _{i} \\
+		\locUserTransactionStartsInPrewarming                  _{i} & \define & \big[ 1 & - & \txAuth _{i - 1} & - & \txWarm _{i - 1} \big] & \!\!\!\cdot\!\!\! & \txWarm _{i} \\
+		\locUserTransactionStartsInTxInit                      _{i} & \define & \big[ 1 & - & \txAuth _{i - 1} & - & \txWarm _{i - 1} \big] & \!\!\!\cdot\!\!\! & \txInit _{i} \cdot \peekTransaction _{i} \\
+		\locUserTransactionStartsInTxSkip                      _{i} & \define & \big[ 1 & - & \txAuth _{i - 1} &   &                  \big] & \!\!\!\cdot\!\!\! & \txSkip _{i} \cdot \peekTransaction _{i} \\
+	\end{array} \right.
+\]
 \saNote{}
-The above expressions always take on binary values.
+The above expressions, including those in parenthesis, always take on \textbf{binary values}.
 
 \saNote{}
 According to our definition of $\userTransactionStart$, \user{}-transactions may start in any of the following ways:
@@ -30,9 +40,18 @@ According to our definition of $\userTransactionStart$, \user{}-transactions may
 (\emph{c}) as the first initialization-row of a transaction with empty access-list.
 
 \saNote{}
-The expression labelled with a $\undefinedStar$ may be replaced, under transaction processing flag exclusivity,
-see section~(\ref{}),
-with
-\[
-	\Big(1 - (\txWarm _{i - 1} + \txInit _{i - 1}) \Big) \cdot \txInit _{i}
-\]
+The definition of $\userTransactionStart _{i}$ reflects the fact that \user{}-transactions may start
+\begin{itemize}
+	\item with a first prewarming operation: $\neg \txWarm \rightsquigarrow \txWarm$
+	\item with a first delegation operation: $\neg \big[\txWarm \vee \txAuth              \big] \rightsquigarrow \txAuth$
+	\item directly as $\txSkip$:             $\neg \big[\txAuth \vee \txSkip              \big] \rightsquigarrow \txSkip$
+	\item directly as $\txInit$:             $\neg \big[\txWarm \vee \txAuth \vee \txInit \big] \rightsquigarrow \txInit$
+\end{itemize}
+
+% \saNote{}
+% The expression labelled with a $\undefinedStar$ may be replaced, under transaction processing flag exclusivity,
+% see section~(\ref{}),
+% with
+% \[
+% 	\Big(1 - (\txWarm _{i - 1} + \txInit _{i - 1}) \Big) \cdot \txInit _{i}
+% \]

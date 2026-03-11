@@ -1,3 +1,47 @@
-The present module performs a simple function: enact the lexicographic ordering constraints required by the \romMod{} module. The lexicographic ordering constraints in the \romMod{} module serve a single purpose: ensure code uniqueness i.e. that any \textbf{code fragment identifier} uniquely identifies a particular piece of bytecode. What we call code fragment identifier is the following data: address, deployment number and deployment status. Allowing for two different code fragments to have the same identifier would have deleterious consequences. Indeed, the \hubMod{} references instructions by means of (\emph{a}) a code fragment identifier and (\emph{b}) a program counter \pc{} (index of opcode in the bytecode.) If a given identifier were be associated with several code fragments a malicious prover could potentially choose, for a given \pc{} value, between several opcodes. A malicious attacker could furthermore perform illegal jumps i.e. jump to positions within the code that are precluded under jump destination analysis or on the contrary declare a legal jump illegal. Finally a malicious attacker could return a given code fragment when deploying a smart contract but commit to a different one in the state. Ensuring a one to one correspondence between code fragment identifiers and code fragments is thus of paramount importance.
+The present module performs a simple function: enact the lexicographic ordering constraints required by the \romMod{} module.
+The lexicographic ordering constraints in the \romMod{} module serve a single purpose:
+ensure code uniqueness i.e. that any \textbf{code fragment identifier} uniquely identifies a particular piece of bytecode.
+What we call \textbf{code fragment identifier} is the following data:
+\begin{itemize}
+	\item an \textbf{address},
+	\item a  \textbf{deployment number},
+	\item a  \textbf{deployment status} and, starting with \textsc{Prague}'s \cite{EIP-7702},
+	\item a  \textbf{delegation number}.
+\end{itemize}
+The main purpose of the \romLexMod{} module is to derive an integer from the above called the \CFI{}.
 
-The \romMod{} module enables this one to one correspondence by requiring code fragments to be listed according to a lexical order imposed on code fragment identifiers. Enforcing such constraints inside of the \romMod{} would be very expensive: (\emph{a}) the \romMod{} module is consistently several million rows deep (\emph{b}) verifying \emph{weak} lexicographic ordering constraints on $n$ columns (here $n=4$) require the introduction of $n+1$ boolean columns and $\llarge$ byte columns. In applications the number of referenced code fragments in a block on the order of a few hundred at most. The present module will therefore also only contain on the order of a few hundred (non padding) rows. Also since it enforces a \emph{strict} lexicographic ordering it only requires $n$ boolean columns. It therefore pays off to off-load this constraint system to a dedicated, much shallower module. 
+Allowing for two different code fragments to have the same identifier would have deleterious consequences.
+Indeed, the \hubMod{} references instructions by means of
+(\emph{a}) a code fragment identifier and
+(\emph{b}) a program counter \pc{} (index of opcode in the bytecode).
+If a given identifier were to be associated with several slices of byte code,
+a malicious prover could choose, for a given \pc{} value, between several opcodes.
+A malicious attacker could furthermore perform illegal \inst{JUMP(I)}'s
+i.e. jump to positions within the code that are precluded under jump destination analysis or on the contrary declare a legal jump illegal.
+Finally a malicious attacker could return a given code fragment when deploying a smart contract but commit to a different one in the state.
+Ensuring a one to one correspondence between code fragment identifiers and code fragments is thus of paramount importance.
+
+The \romMod{} module enables this one to one correspondence
+by requiring code fragments to be listed according to a lexical order imposed on code fragment identifiers.
+Enforcing such constraints inside of the \romMod{} would be very expensive:
+(\emph{a}) the \romMod{} module is consistently several million rows deep
+(\emph{b}) verifying \emph{weak} lexicographic ordering constraints on $n$ columns (here $n=4$) requires the introduction of
+$n + 1$ boolean columns and $\llarge$ byte columns.
+In applications the number of referenced code fragments in a block on the order of a few thousand at most.
+The present module will therefore also only contain on the order of a few thousand non-padding-rows.
+Also since it enforces a \emph{strict} lexicographic ordering it only requires $n$ boolean columns.
+It therefore pays off to off-load this constraint system to a dedicated, much shallower module. 
+
+A secondary task the \romLexMod{} module achieves, as of \textsc{Prague}'s \cite{EIP-7702}, is to detect \textbf{delegation code}.
+We say that byte code is \textbf{could be} delegation code if
+\begin{itemize}
+	\item it isn't initialization code (i.e. $\depStatus \equiv \false$)
+	\item it has the right length (i.e. $\codeSize \equiv \delegatedAccountCodeSize$)
+\end{itemize}
+The column \byteCodeCouldBeDelegationCode{} is logically equivalent to this conjuction.
+Byte code actually \textbf{is} delegation code if $\byteCodeCouldBeDelegationCode \equiv \true$ and
+\begin{itemize}
+	\item it starts with the delegation prefix (i.e. $\leadingThreeBytes \equiv \delegationPrefix$).
+\end{itemize}
+Verifying this last claim requires an interaction with the \romMod{} module.
+

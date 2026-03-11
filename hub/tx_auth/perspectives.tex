@@ -1,0 +1,89 @@
+\begin{center}
+	\boxed{\text{All constraints in this subsection assume that $\txAuth _{i} = 1$.}}
+\end{center}
+Our goal in what follows is to impose that the \txAuth{}-phase
+be obtained by concatenating an arbitratry number the following building blocks
+\begin{itemize}
+	\item one $\peekAuthorization{}$-row;
+	\item one $\peekAuthorization{}$-row followed by one $\peekAccount$-row;
+	\item one final, and phase ending, $\peekTransaction{}$-row;
+\end{itemize}
+We thus impose the following:
+\begin{description}
+	\item[\underline{\underline{Legal perspectives:}}]
+		$\peekAuthorization _{i} + \peekAccount _{i} + \peekTransaction _{i} = 1$
+	\item[\underline{\underline{Authorization phases start with an authorization-row:}}]
+		\If $\txAuth _{i - 1} = 0$ \Then $\peekAuthorization _{i} = 1$;
+	\item[\underline{\underline{Perspective transitions:}}]
+		we impose
+		\begin{description}
+			\item[\underline{From an $\peekAuthorization$-row:}]\label{hub: authorization phase: perspectives: account row iff authority successfully ECRECOVER'ed}
+				\If $\peekAuthorization _{i} = 1$ \Then we impose
+				\begin{enumerate}
+					\item \If $\authAuthorityEcrecoverSuccess _{i} = 1$ \Then
+						\begin{enumerate}
+							\item $\txAuth      _{i + 1} = 1$
+							\item $\peekAccount _{i + 1} = 1$
+						\end{enumerate}
+					\item \If $\authAuthorityEcrecoverSuccess _{i} = 0$ \Then
+						\begin{enumerate}
+							\item
+								$\peekAuthorization _{i + 1}
+								+\peekTransaction   _{i + 1} = 1$
+						\end{enumerate}
+						\saNote{}
+						The above imposes no repeat account-rows in the authorization-phase.
+				\end{enumerate}
+			\item[\underline{From an $\peekAccount$-row:}]
+				\If $\peekAccount _{i} = 1$ \Then we impose
+				\begin{enumerate}
+						% \item $\txAuth _{i + 1} = \peekAuthorization _{i + 1}$
+					\item $\peekAuthorization _{i - 1} = 1$ (\sanityCheck)
+					% \item we impose
+					% 	\[
+					% 		\standardDomSubStamps {
+					% 			anchorRow        = i      ,
+					% 			relOffset        = \rZero ,
+					% 			domOffset        = 0      ,
+					% 		}
+					% 	\]
+				\end{enumerate}
+			\item[\underline{From the (only and final) $\peekTransaction$-row:}]
+				\If $\peekTransaction _{i} = 1$ \Then we impose
+				\[
+					\left\{ \begin{array}{lclr}
+						\txTypeSupportsDelegationLists _{i}                    & = & 1 \vspace{2mm}                      \\
+						\txAuth _{i + 1}                                       & = & 0                                    & (\sanityCheck) \\
+						\txWarm _{i + 1} + \txSkip _{i + 1} + \txInit _{i + 1} & = & 1                                    & (\sanityCheck) \\
+						\peekTransaction _{i + 1}                              & = & \txSkip _{i + 1} + \txInit _{i + 1}  & (\sanityCheck) \\
+					\end{array} \right.
+				\]
+
+				\saNote{}\label{hub: authorization phase: perspectives: the transation type must support delegation lists}
+				The above ensures that \emph{only} transactions with
+				$\txTypeSupportsDelegationLists \equiv \true$ may induce an \txAuth{}-phase.
+				This constraint should be contrasted with
+				constraint~(\ref{hub: initialization phase: common constraints: transactions supporting delegation lists must contain a TX AUTH phase}) and with
+				constraint~(\ref{hub: tx skip: user: transation processing: transactions supporting delegation lists start must contain a TX AUTH phase}).
+				The linked constraints ensure that \emph{every} transaction
+				with $\txTypeSupportsDelegationLists \equiv \true$ induce an \txAuth{}-phase.
+		\end{description}
+	\item[\underline{\underline{Authorization phases finish on a $\peekTransaction$-row:}}] 
+		\label{hub: authorization phase: perspectives: authorization phase ends with a transaction row}
+		$\peekTransaction _{i} + \txAuth _{i + 1} = 1$
+
+		\saNote{}
+		The above imposes that the \txAuth{}-phase finishes on a $\peekTransaction$-row.
+\end{description}
+Constraint~(\ref{hub: authorization phase: perspectives: authorization phase ends with a transaction row})
+could alternatively be encoded as
+\begin{description}
+	\item[\underline{\underline{Authorization phase continues:}}]
+		\If   $\peekTransaction _{i} = 0$
+		\Then $\txAuth _{i + 1} = 1$
+		(\sanityCheck)
+	\item[\underline{\underline{Authorization phase ends:}}]
+		\If   $\peekTransaction _{i} = 1$
+		\Then $\txAuth _{i + 1} = 0$
+		(\sanityCheck)
+\end{description}

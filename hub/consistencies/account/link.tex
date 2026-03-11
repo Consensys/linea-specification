@@ -5,14 +5,19 @@ We impose the following consistency constraint:
 		\Then we impose that
 		\[
 			\left\{ \begin{array}{lclr}
-				\order{\accNonce            } _{i} & = & \order{\accNonce            \new } _{i - 1}              \\
-				\order{\accBalance          } _{i} & = & \order{\accBalance          \new } _{i - 1}              \\
-				\order{\accCodesize         } _{i} & = & \order{\accCodesize         \new } _{i - 1}              \\
-				\order{\accCodehashHi       } _{i} & = & \order{\accCodehashHi       \new } _{i - 1}              \\
-				\order{\accCodehashLo       } _{i} & = & \order{\accCodehashLo       \new } _{i - 1}              \\
-				\order{\accDeploymentNumber } _{i} & = & \order{\accDeploymentNumber \new } _{i - 1}              \\
-				\order{\accDeploymentStatus } _{i} & = & \order{\accDeploymentStatus \new } _{i - 1} \vspace{2mm} \\
-				\order{\accExists           } _{i} & = & \order{\accExists           \new } _{i - 1}               & (\trash) \\
+				\order{\accNonce               } _{i} & = & \order{\accNonce                  \new} _{i - 1} \\
+				\order{\accBalance             } _{i} & = & \order{\accBalance                \new} _{i - 1} \\
+				\order{\accCodesize            } _{i} & = & \order{\accCodesize               \new} _{i - 1} \\
+				\order{\accCodehashHi          } _{i} & = & \order{\accCodehashHi             \new} _{i - 1} \\
+				\order{\accCodehashLo          } _{i} & = & \order{\accCodehashLo             \new} _{i - 1} \\
+				\order{\accDeploymentNumber    } _{i} & = & \order{\accDeploymentNumber       \new} _{i - 1} \\
+				\order{\accDeploymentStatus    } _{i} & = & \order{\accDeploymentStatus       \new} _{i - 1} \vspace{2mm} \\
+				\order{\accExists              } _{i} & = & \order{\accExists                 \new} _{i - 1} &            (\trash) \\
+				%
+				\order{\accDelegationAddressHi } _{i} & = & \order{\accDelegationAddressHiNew }     _{i - 1} \\
+				\order{\accDelegationAddressLo } _{i} & = & \order{\accDelegationAddressLoNew }     _{i - 1} \\
+				\order{\accDelegationNumber    } _{i} & = & \order{\accDelegationNumberNew    }     _{i - 1} \\
+				\order{\accIsDelegated         } _{i} & = & \order{\accIsDelegatedNew         }     _{i - 1} \\
 			\end{array} \right.
 		\]
 		\saNote{}
@@ -47,15 +52,31 @@ We impose the following consistency constraint:
 		\If $\accAgainInTransaction_{i} = 1$
 		\Then we impose
 		\begin{enumerate}
-			\item
-				\label{hub: consistency: account: constancy of "acc had code at tx start"}
+			\item $\order{\accWarmth}            _{i} = \order{\accWarmth\new}            _{i - 1}$
+			\item $\order{\accMarkedForDeletion} _{i} = \order{\accMarkedForDeletion\new} _{i - 1}$
+			\item\label{hub: consistency: account: linking at the transaction level: marked for selfdestruct is monotonous}
+				\If $\order{\accMarkedForDeletion}_{i} = 1$ \Then $\order{\accMarkedForDeletion\new}_{i}~=~1$
+			\item\label{hub: consistency: account: transaction constancy of "account had code initially"}
 				$\order{\accHadCodeInitially} _{i} = \order{\accHadCodeInitially} _{i - 1}$
-			\item $\order{\accWarmth}                    _{i} = \order{\accWarmth\new}                _{i - 1}$
-			\item $\order{\accMarkedForDeletion}     _{i} = \order{\accMarkedForDeletion\new} _{i - 1}$
-			\item \label{hub: consistency: account: linking at the transaction level: marked for selfdestruct is monotonous} \If $\order{\accMarkedForDeletion}_{i} = 1$ \Then $\order{\accMarkedForDeletion\new}_{i}~=~1$
+			\item\label{hub: consistency: account: setting "account had code initially" at first non TXAUTH row}
+				\If $\locFirstNonTxAuthRow _{i} = 1$ \Then $\order{\accHadCodeInitially} _{i} = \order{\accHasCode} _{i}$
+			\item\label{hub: consistency: account: sanity check constraints: in a transaction TXAUTH rows precede non TXAUTH rows}
+				\If $\order{\txAuth} _{i - 1} = 0$ \Then $\order{\txAuth} _{i} = 0$ (\sanityCheck)
 		\end{enumerate}
+		where we define
+		\[
+			\locFirstNonTxAuthRow _{i}
+			\define
+			\left[ \begin{array}{cr}
+				\cdot &       \order{\txAuth} _{i - 1}   \\
+				\cdot & ( 1 - \order{\txAuth} _{i    } ) \\
+			\end{array} \right]
+		\]
+		is $\true$ precisely at the treshold where $\order{\txAuth}$ switches from $1$ to $0$,
+		see sanity check constraint~(\ref{hub: consistency: account: sanity check constraints: in a transaction TXAUTH rows precede non TXAUTH rows}).
+
 		\saNote{}
-		Constraint (\ref{hub: consistency: account: constancy of "acc had code at tx start"})
+		Constraint (\ref{hub: consistency: account: transaction constancy of "account had code initially"})
 		is more of a ``transaction constancy condition'' than a ``linking constraint.''
 
 		\saNote{}
@@ -65,9 +86,10 @@ We impose the following consistency constraint:
 		\If
 		\[
 			\left\{ \begin{array}{lclc}
-				\accAgainInConflation_{i}             & = & 1                                & \et \\
-				\order{\accDeploymentNumber \new}_{i} & = & \order{\accDeploymentNumber}_{i} & \et \\
-				\order{\accDeploymentStatus \new}_{i} & = & \order{\accDeploymentStatus}_{i} \\
+				\accAgainInConflation _{i}             & = & 1                                 & \et \\
+				\order{\accDeploymentNumber \new} _{i} & = & \order{\accDeploymentNumber} _{i} & \et \\
+				\order{\accDeploymentStatus \new} _{i} & = & \order{\accDeploymentStatus} _{i} & \et \\
+				\order{\accDelegationNumberNew  } _{i} & = & \order{\accDelegationNumber} _{i} & \et \\
 			\end{array} \right.
 		\]
 		\Then $\order{\accCfi} _{i} = \order{\accCfi} _{i - 1}$

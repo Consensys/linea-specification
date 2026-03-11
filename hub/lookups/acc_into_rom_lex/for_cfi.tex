@@ -1,0 +1,61 @@
+The present section describes the lookup between the \hubMod{} and the \romLexMod{} module.
+The $\accRomLexFlag$ flag turns on opportunistically (e.g. when performing a \inst{CALL}-type or \inst{CREATE}-type instruction.
+In more detail: the \zkEvm{} turns on this flag whenever it is about to enter a new execution context and requires the associated \cfi{}. 
+\begin{description}
+	\item[Selector column:] we use the following selector: $\loc{selector} _{i} \define \peekAccount _{i} \cdot \accRomLexFlag _{i}$
+	\item[\underline{Column correspondence:}]
+		\[
+			\renewcommand{\arraystretch}{1.5}
+			\begin{array}{|l|c|l|}
+				\hline
+				\text{\hubMod{} module}         &                  & \text{\romLexMod{} module}           \\ \hline\hline
+                                \accCfi                    _{i} & \rightsquigarrow & \cfi                            _{j} \\ \hline
+                                \accAddressHi              _{i} & \rightsquigarrow & \addrHi                         _{j} \\ \hline
+                                \accAddressLo              _{i} & \rightsquigarrow & \addrLo                         _{j} \\ \hline
+                                \accDeploymentNumber\new   _{i} & \rightsquigarrow & \depNumber                      _{j} \\ \hline
+                                \accDeploymentStatus\new   _{i} & \rightsquigarrow & \depStatus                      _{j} \\ \hline
+                                \accDelegationNumberNew    _{i} & \rightsquigarrow & \delegationNumber               _{j} \\ \hline \hline
+                                \accCodehashHi\new         _{i} & \rightsquigarrow & \CH\high                        _{j} \\ \hline
+                                \accCodehashLo\new         _{i} & \rightsquigarrow & \CH\low                         _{j} \\ \hline
+                                \accCodesize\new           _{i} & \rightsquigarrow & \codeSize                       _{j} \\ \hline
+                                \accIsDelegatedNew         _{i} & \rightsquigarrow & \byteCodeActuallyDelegationCode _{j} \\ \hline
+                                \accDelegationAddressHiNew _{i} & \rightsquigarrow & \delegationAddressHi            _{j} \\ \hline
+                                \accDelegationAddressLoNew _{i} & \rightsquigarrow & \delegationAddressLo            _{j} \\ \hline
+                                %                               & \rightsquigarrow &                                      \\ \hline
+			\end{array}
+		\]
+	% \item[Source columns:] ---
+	% 	\begin{multicols}{4}
+	% 		\begin{enumerate}
+	% 			\item $\accCfi                    _{i}$
+	% 			\item $\accAddressHi              _{i}$
+	% 			\item $\accAddressLo              _{i}$
+	% 			\item $\accDepNum\new             _{i}$
+	% 			\item $\accDeploymentStatus\new   _{i}$
+	% 			\item $\accDelegationNumberNew    _{i}$
+	% 			\item $\accCodehashHi             _{i}$
+	% 			\item $\accCodehashLo             _{i}$
+	% 			\item $\accCodesize\new           _{i}$
+	% 			\item $\accIsDelegatedNew         _{i}$
+	% 			\item $\accDelegationAddressHiNew _{i}$
+	% 			\item $\accDelegationAddressLoNew _{i}$
+	% 		\end{enumerate}
+	% 	\end{multicols}
+	% \item[Target columns:] ---
+	% 	\begin{multicols}{4}
+	% 		\begin{enumerate}
+	% 			\item $\cfi                            _{j}$
+	% 			\item $\addrHi                         _{j}$
+	% 			\item $\addrLo                         _{j}$
+	% 			\item $\depNumber                      _{j}$
+	% 			\item $\depStatus                      _{j}$
+	% 			\item $\delegationNumber               _{j}$
+	% 			\item $\CH\high                        _{j}$
+	% 			\item $\CH\low                         _{j}$
+	% 			\item $\codeSize                       _{j}$
+	% 			\item $\byteCodeActuallyDelegationCode _{j}$
+	% 			\item $\delegationAddressHi            _{j}$
+	% 			\item $\delegationAddressLo            _{j}$
+	% 		\end{enumerate}
+	% 	\end{multicols}
+\end{description}

@@ -22,30 +22,30 @@ We impose the following constraints:
 		we impose that
 		\[
 			\left\{ \begin{array}{lcl}
-				\locSuccessBitHi & = & 0                    \\
-				\locSuccessBitLo & = & \scenCallSuccess_{i + \callFirstScenarioRowOffset} \\
+				\locStackSuccessBitHi & = & 0                    \\
+				\locStackSuccessBitLo & = & \scenCallSuccess_{i + \callFirstScenarioRowOffset} \\
 			\end{array} \right.
 		\]
 	\item[\underline{Setting allowable exceptions:}]
 		we impose that
 		\begin{enumerate}
-		        \item \If $\locIsCall = 1$ \Then
+			\item \If $\locIsCall = 1$ \Then
 				\[
 					\xAhoy _{i}
 					=
-					\left[ \begin{array}{lr}
-						+ & \locStaticx \\
-						+ & \locMxpx    \\
-						+ & \locOogx    \\
+					\left[ \begin{array}{ll}
+						+ & \locStackStaticx \\
+						+ & \locStackMxpx    \\
+						+ & \locStackOogx    \\
 					\end{array} \right]
 				\]
-		        \item \If $\locIsCallcode + \locIsDelegatecall + \locIsStaticcall = 1$ \Then
+			\item \If $\locIsCallcode + \locIsDelegatecall + \locIsStaticcall = 1$ \Then
 				\[
 					\xAhoy _{i}
 					=
-					\left[ \begin{array}{lr}
-						+ & \locMxpx    \\
-						+ & \locOogx    \\
+					\left[ \begin{array}{ll}
+						+ & \locStackMxpx    \\
+						+ & \locStackOogx    \\
 					\end{array} \right]
 				\]
 		\end{enumerate}
@@ -88,24 +88,24 @@ We impose the following constraints:
 		\If $\miscOobFlag_{i + \callMiscRowOffset} = 1$ \Then
 		we impose that 
 		\begin{enumerate}
-			\item \If $\scenCallException _{i} = 1$ \Then
+			\item \If $\scenCallException _{i + \callFirstScenarioRowOffset} = 1$ \Then
 				\[
 					\setOobInstructionXcall {
-						anchorRow = i,
-						relOffset = \callMiscRowOffset,
-						valueHi   = \locValueHi,
-						valueLo   = \locValueLo,
+						anchorRow = i                  ,
+						relOffset = \callMiscRowOffset ,
+						valueHi   = \locStackValueHi   ,
+						valueLo   = \locStackValueLo   ,
 					}
 				\]
 			\item \If $\scenCallUnexceptional _{i + \callFirstScenarioRowOffset} = 1$ \Then
 				\[
 					\setOobInstructionCall {
-						anchorRow      = i,
-						relOffset      = \callMiscRowOffset,
-						valueHi        = \locValueHi,
-						valueLo        = \locValueLo,
-						balance        = \locCallerBalance,
-						callStackDepth = \locCsd,
+						anchorRow      = i                         ,
+						relOffset      = \callMiscRowOffset        ,
+						valueHi        = \locStackValueHi          ,
+						valueLo        = \locStackValueLo          ,
+						balance        = \locCallerBalance         ,
+						callStackDepth = \locCurrentCallStackDepth ,
 					}
 				\]
 		\end{enumerate}
@@ -114,12 +114,12 @@ We impose the following constraints:
 	\item[\underline{Justifying \staticxSH's:}]
 		we unconditionally impose that
 		\[
-			\locStaticx
+			\locStackStaticx
 			=
 			\left[ \begin{array}{cl}
-				\cdot & \locIsCall       \\
-				\cdot & \locNonzeroValue \\
-				\cdot & \locIsStatic     \\
+				\cdot & \locIsCall                 \\
+				\cdot & \locNonzeroValue           \\
+				\cdot & \locCurrentContextIsStatic \\
 			\end{array} \right]
 		\]
 		\saNote{}
@@ -137,37 +137,40 @@ We impose the following constraints:
 			\setMxpInstructionCalls {
 				anchorRow          = i                  ,
 				relOffset          = \callMiscRowOffset ,
-				instruction        = \locInst           ,
-				callDataOffsetHi   = \locCdoHi          ,
-				callDataOffsetLo   = \locCdoLo          ,
-				callDataSizeHi     = \locCdsHi          ,
-				callDataSizeLo     = \locCdsLo          ,
-				returnAtOffsetHi   = \locRaoHi          ,
-				returnAtOffsetLo   = \locRaoLo          ,
-				returnAtCapacityHi = \locRacHi          ,
-				returnAtCapacityLo = \locRacLo          ,
+				instruction        = \locStackInst      ,
+				callDataOffsetHi   = \locStackCdoHi     ,
+				callDataOffsetLo   = \locStackCdoLo     ,
+				callDataSizeHi     = \locStackCdsHi     ,
+				callDataSizeLo     = \locStackCdsLo     ,
+				returnAtOffsetHi   = \locStackRaoHi     ,
+				returnAtOffsetLo   = \locStackRaoLo     ,
+				returnAtCapacityHi = \locStackRacHi     ,
+				returnAtCapacityLo = \locStackRacLo     ,
 			}
 		\]
 	\item[\underline{Justifying \mxpxSH's:}]
 		\If $\miscMxpFlag_{i + \callMiscRowOffset} = 1$ \Then we impose that
 		\[
-			\locMxpx =
+			\locStackMxpx =
 			\locMxpMemoryExpansionException
 		\]
 	\item[\underline{Setting \stpMod{} instruction parameters:}]
 		\If $\miscStpFlag_{i + \callMiscRowOffset} = 1$ \Then we impose that
 		\[
 			\setStpInstructionCall{
-				anchorRow   = i                                 ,
-				relOffset   = \callMiscRowOffset                ,
-				instruction = \locInst                          ,
-				gasHi       = \locGasHi                         ,
-				gasLo       = \locGasLo                         ,
-				valueHi     = \locValueHi                       ,
-				valueLo     = \locValueLo                       ,
-				exists      = \locCalleeExists \cdot \locIsCall ,
-				warmth      = \locCalleeWarmth                  ,
-				mxpGas      = \locMxpMemoryExpansionGas         ,
+				anchorRow         = i                           ,
+				relOffset         = \callMiscRowOffset          ,
+				instruction       = \locStackInst               ,
+				gasHi             = \locStackGasHi              ,
+				gasLo             = \locStackGasLo              ,
+				valueHi           = \locStackValueHi            ,
+				valueLo           = \locStackValueLo            ,
+				exists            = \locCalleeExists            \cdot \locIsCall ,
+				warmth            = \locCalleeWarmth            ,
+				isDelegated       = \locCalleeIsDelegated       ,
+				isDelegatedToSelf = \locCalleeIsDelegatedToSelf ,
+				delegateWarmth    = \locDelegateWarmth          ,
+				mxpGas            = \locMxpMemoryExpansionGas   ,
 			}
 		\]
 		\saNote{} \label{hub: instruction handling: call: generalities: universal: account existence for non CALLs}
@@ -177,9 +180,97 @@ We impose the following constraints:
 	\item[\underline{Justifying \oogxSH's:}]
 		\If $\miscStpFlag_{i + \callMiscRowOffset} = 1$ \Then we impose that
 		\[
-			\locOogx =
+			\locStackOogx =
 			\locStpOogx
 		\]
+	\item[\underline{Defining shorthands related to delegation:}]
+		we define several shorthands in order to decide the general exectution scenario
+		(precompile, externally owned account or smart contract in the previously defined sense)
+		\[
+			\hspace{-2cm}
+			\left\{ \begin{array}{lcl}
+				\locCallGeneralPrcScenario & \define & \locCalleeIsPrecompile
+				\vspace{2mm} \\
+				\locCallGeneralEoaScenario & \define &
+				\left[ \begin{array}{cl}
+					+ & \locCalleeHasEmptyCodeButIsntPrecompile      \\
+					+ & \locCalleeIsDelegatedAndDelegateHasEmptyCode \\
+					% + & \locCalleeIsDelegatedAndDelegateIsItselfDelegated \\
+				\end{array} \right]
+				\vspace{2mm} \\
+				\locCallGeneralSmcScenario & \define & 
+				\left[ \begin{array}{cl}
+					+ & \locCalleeHasNonemptyCodeAndIsntDelegated       \\
+					+ & \locCalleeIsDelegatedAndDelegateHasNonemptyCode \\
+				\end{array} \right]
+				\\
+			\end{array} \right.
+		\]
+		where
+		\[
+			% \hspace*{-2.7cm}
+			\left\{ \begin{array}{lcl}
+				\locCalleeHasNonemptyCodeAndIsntDelegated & \define &
+				\left[ \begin{array}{cl}
+					\cdot & \locCalleeHasNonemptyCode \\
+					\cdot & \locCalleeIsntDelegated   \\
+				\end{array} \right]
+				\vspace{2mm}
+				\\                                                              
+				\locCalleeIsDelegatedAndDelegateHasNonemptyCode & \define &
+				\left[ \begin{array}{cl}
+					\cdot & \locCalleeIsDelegated             \\
+					\cdot & \locDelegateOrCalleeHasCode       \\
+					% \cdot & \locDelegateOrCalleeIsntDelegated \\
+				\end{array} \right]
+				\\
+			\end{array} \right.
+		\]
+		and
+		\[
+			\left\{ \begin{array}{lcl}
+				\locCalleeHasEmptyCodeButIsntPrecompile & \define &
+				\left[ \begin{array}{cl}
+					\cdot & \locCalleeIsntPrecompile \\
+					\cdot & \locCalleeHasEmptyCode   \\
+				\end{array} \right]
+				\vspace{2mm}
+				\\                                                              
+				\locCalleeIsDelegatedAndDelegateHasEmptyCode & \define &
+				\left[ \begin{array}{cl}
+					\cdot & \locCalleeIsDelegated            \\
+					\cdot & \locDelegateOrCalleeHasEmptyCode \\
+				\end{array} \right]
+				% \vspace{2mm}
+				% \\                                                              
+				% \locCalleeIsDelegatedAndDelegateIsItselfDelegated & \define &
+				% \left[ \begin{array}{cl}
+				% 	\cdot & \locCalleeIsDelegated           \\
+				% 	\cdot & \locDelegateOrCalleeIsDelegated \\
+				% \end{array} \right]
+				% \\
+			\end{array} \right.
+		\]
+		where we used the following ``negations'' shorthands
+		\[
+			\left\{ \begin{array}{lcl}
+				\locCalleeIsntPrecompile          & \define & 1 - \locCalleeIsPrecompile                       \\
+				\locCalleeHasEmptyCode            & \define & 1 - \locCalleeHasNonemptyCode                    \\
+				\locCalleeIsntDelegated           & \define & 1 - \locCalleeIsDelegated           \vspace{2mm} \\
+				\locDelegateOrCalleeHasEmptyCode  & \define & 1 - \locDelegateOrCalleeHasCode                  \\
+				\locDelegateOrCalleeIsntDelegated & \define & 1 - \locDelegateOrCalleeIsDelegated              \\
+			\end{array} \right.
+		\]
+		\saNote{}
+		Recall that
+		constraint~(\ref{hub: account: empty code: precompiles have empty code}) and
+		constraint~(\ref{hub: account: account delegation: checks for delegation require non empty code})
+		forbid certain combinations of the binary values
+		\begin{enumerate}
+			\item \locCalleeIsPrecompile    {}
+			\item \locCalleeHasNonemptyCode {}
+			\item \locCalleeIsDelegated     {}
+		\end{enumerate}
 	\item[\underline{Setting the \inst{CALL}-scenario flag:}]
 		we constrain the \inst{CALL}-scenario:
 		\begin{enumerate}
@@ -193,8 +284,8 @@ We impose the following constraints:
 				\Then we impose that
 				\[
 					\left\{ \begin{array}{lclr}
-						\scenCallAbortWillRevert _{i + \callFirstScenarioRowOffset} & = & \locCallerWillRevert                \\
-						\scenCallAbortWontRevert _{i + \callFirstScenarioRowOffset} & = & 1 - \locCallerWillRevert & (\trash) \\
+						\scenCallAbortWillRevert _{i + \callFirstScenarioRowOffset} & = & \locCallerWillRevert     \\
+						\scenCallAbortWontRevert _{i + \callFirstScenarioRowOffset} & = & 1 - \locCallerWillRevert  & (\sanityCheck) \\
 					\end{array} \right.
 				\]
 			\item
@@ -202,9 +293,9 @@ We impose the following constraints:
 				\Then we impose that
 				\[
 					\left\{ \begin{array}{lcl}
-						\scenCallPrc _{i + \callFirstScenarioRowOffset} & = & \locCalleeIsPrecompile                                     \\
-						\scenCallEoa _{i + \callFirstScenarioRowOffset} & = & (1 - \locCalleeIsPrecompile) \cdot (1 - \locCalleeHasCode) \\
-						\scenCallSmc _{i + \callFirstScenarioRowOffset} & = & \locCalleeHasCode                                          \\
+						\scenCallEoa _{i + \callFirstScenarioRowOffset} & = & \locCallGeneralEoaScenario \\
+						\scenCallSmc _{i + \callFirstScenarioRowOffset} & = & \locCallGeneralSmcScenario \\
+						\scenCallPrc _{i + \callFirstScenarioRowOffset} & = & \locCallGeneralPrcScenario \\
 					\end{array} \right.
 				\]
 			\item \If
@@ -213,18 +304,18 @@ We impose the following constraints:
 					+ & \scenCallPrcSuccessWontRevert _{i + \callFirstScenarioRowOffset} \\
 				\end{array} \right] = 1$
 				\Then we impose that
-			% \item \If $\scenCallPrc  _{i + \callFirstScenarioRowOffset} = 1$ \Then we impose that
+				% \item \If $\scenCallPrc  _{i + \callFirstScenarioRowOffset} = 1$ \Then we impose that
 				\[
 					\left\{ \begin{array}{lclr}
 						\scenCallPrcSuccessWillRevert _{i + \callFirstScenarioRowOffset} & = & \locCallerWillRevert     \\
-						\scenCallPrcSuccessWontRevert _{i + \callFirstScenarioRowOffset} & = & 1 - \locCallerWillRevert  & (\trash) \\
+						\scenCallPrcSuccessWontRevert _{i + \callFirstScenarioRowOffset} & = & 1 - \locCallerWillRevert  & (\sanityCheck) \\
 					\end{array} \right.
 				\]
 			\item \If $\scenCallEoa  _{i + \callFirstScenarioRowOffset} = 1$ \Then we impose that
 				\[
 					\left\{ \begin{array}{lclr}
 						\scenCallEoaSuccessWillRevert _{i + \callFirstScenarioRowOffset} & = & \locCallerWillRevert     \\
-						\scenCallEoaSuccessWontRevert _{i + \callFirstScenarioRowOffset} & = & 1 - \locCallerWillRevert  & (\trash) \\
+						\scenCallEoaSuccessWontRevert _{i + \callFirstScenarioRowOffset} & = & 1 - \locCallerWillRevert  & (\sanityCheck) \\
 					\end{array} \right.
 				\]
 			\item \If $\scenCallSmc  _{i + \callFirstScenarioRowOffset} = 1$ \Then we impose that
@@ -233,18 +324,20 @@ We impose the following constraints:
 						\left[ \begin{array}{ll}
 							+ & \scenCallSmcSuccessWillRevert _{i + \callFirstScenarioRowOffset} \\
 							+ & \scenCallSmcFailureWillRevert _{i + \callFirstScenarioRowOffset} \\
-						\end{array} \right] & = & \locCallerWillRevert \vspace{2mm} \\
+						\end{array} \right] & = & \locCallerWillRevert
+						\vspace{2mm}
+						 \\
 						\left[ \begin{array}{ll}
 							+ & \scenCallSmcSuccessWontRevert _{i + \callFirstScenarioRowOffset} \\
 							+ & \scenCallSmcFailureWontRevert _{i + \callFirstScenarioRowOffset} \\
-						\end{array} \right] & = & 1 - \locCallerWillRevert & (\trash) \\
+						\end{array} \right] & = & 1 - \locCallerWillRevert & (\sanityCheck) \\
 					\end{array} \right.
 				\]
 				we further impose
 				\[
 					\left\{ \begin{array}{lclr}
 						\scenCallSmcFailure _{i + \callFirstScenarioRowOffset} & = & \locCalleeSelfReverts     \\
-						\scenCallSmcSuccess _{i + \callFirstScenarioRowOffset} & = & 1 - \locCalleeSelfReverts \\
+						\scenCallSmcSuccess _{i + \callFirstScenarioRowOffset} & = & 1 - \locCalleeSelfReverts  & (\sanityCheck) \\
 					\end{array} \right.
 				\]
 		\end{enumerate}
@@ -264,9 +357,9 @@ We impose the following constraints:
 		we impose
 		\[
 			\left\{ \begin{array}{lcl}
-				\If \locStaticx = 1                                        & \Then \!\!\! & \gasCost_{i} = 0                 \\
-				\If \locMxpx    = 1                                        & \Then \!\!\! & \gasCost_{i} = 0                 \\
-				\If \locOogx    = 1                                        & \Then \!\!\! & \gasCost_{i} = \locStpGasUpfront \\
+				\If \locStackStaticx = 1                                        & \Then \!\!\! & \gasCost_{i} = 0                 \\
+				\If \locStackMxpx    = 1                                        & \Then \!\!\! & \gasCost_{i} = 0                 \\
+				\If \locStackOogx    = 1                                        & \Then \!\!\! & \gasCost_{i} = \locStpGasUpfront \\
 				\If \scenCallAbort  _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasCost_{i} = \locStpGasUpfront \\
 				\If \scenCallSmc    _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasCost_{i} = \locStpGasUpfront \\
 				\If \scenCallEoa    _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasCost_{i} = \locStpGasUpfront \\
@@ -279,13 +372,15 @@ We impose the following constraints:
 			\left\{ \begin{array}{lclr}
 				\If
 				\left[ \begin{array}{cl}
-					+ & \locStaticx \\
-					+ & \locMxpx    \\
+					+ & \locStackStaticx \\
+					+ & \locStackMxpx    \\
 				\end{array} \right]
-				= 1 & \Then \!\!\! & \gasCost_{i} = 0 & (\trash) \vspace{2mm} \\
+				= 1 & \Then \!\!\! & \gasCost_{i} = 0 & (\trash)
+				\vspace{2mm}
+				\\
 				\If
 				\left[ \begin{array}{cl}
-					+ & \locOogx                                          \\
+					+ & \locStackOogx                                          \\
 					+ & \scenCallAbort _{i + \callFirstScenarioRowOffset} \\
 					+ & \scenCallSmc   _{i + \callFirstScenarioRowOffset} \\
 					+ & \scenCallEoa   _{i + \callFirstScenarioRowOffset} \\
@@ -299,14 +394,16 @@ We impose the following constraints:
 		\[
 			\hspace*{-2cm}
 			\left\{ \begin{array}{lclr}
-				\If \locStaticx  = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\trash) \\
-				\If \locMxpx     = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\trash) \\
-				\If \locOogx     = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\trash) \\
+				\If \locStackStaticx  = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\sanityCheck) \\
+				\If \locStackMxpx     = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\sanityCheck) \\
+				\If \locStackOogx     = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\sanityCheck) \\
 				\If \scenCallAbort _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasNext_{i} = \gasActual_{i} - \locStpGasUpfront + \locStpGasStipend \\
 				\If \scenCallEoa   _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasNext_{i} = \gasActual_{i} - \locStpGasUpfront + \locStpGasStipend \\
 				\If \scenCallSmc   _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasNext_{i} = \gasActual_{i} - \locStpGasUpfront - \locStpGasPoop    \\
 				\If \scenCallPrc   _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasNext_{i} = \ob{TODO!}                                             \\
 			\end{array} \right.
 		\]
-		\saNote{} We will complete the specification of \gasNext{} in case $\scenCallPrc \equiv 1$ in section~(\ref{hub: instruction handling: call: precompile memory operations}). 
+		\saNote{}
+		Pricing of \inst{CALL}'s to precompiles is far more complex than for other kinds of calls.
+		We will complete the specification of \gasNext{} in case $\scenCallPrc \equiv 1$ in section~(\ref{hub: instruction handling: call: precompile memory operations}). 
 \end{description}

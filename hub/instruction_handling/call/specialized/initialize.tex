@@ -1,56 +1,50 @@
 We define the \initializeCalleeContextName{} constraint system as follows, using the \initializeContextName{} constraints from section~(\ref{hub: consistencies: context: constraints}),
 \[
+	\hspace*{-1.5cm}
 	\left\{ \begin{array}{l}
 		\initializeCalleeContext {
-			anchorRow = i,
-			relOffset = \relof,
-			initializationParameters = \calleeContextInitializationParameters,
+			anchorRow                = i                                      ,
+			relOffset                = \relof                                 ,
+			initializationParameters = \childFrameInitializationParameters ,
 		} \vspace {4mm} \\
 		\qquad \define
 		\initializeContext{
-			anchorRow                   = i                                                                                  ,
-			relOffset                   = \relof                                                                             ,
-			contextNumber               = \cn\new_{i}                                                                        ,
-			callStackDepth              = 1 + \locCsd                                                                        ,
-			isRoot                      = 0                                                                                  ,
-			isStatic                    = (\textcolor{draculaorange}{\bigstar}) \quad \col{new\_context\_is\_static}         ,
-			accountAddressHigh          = (\textcolor{draculaorange}{\bigstar}) \quad \col{new\_account\_address\_hi}        ,
-			accountAddressLow           = (\textcolor{draculaorange}{\bigstar}) \quad \col{new\_account\_address\_lo}        ,
-			accountDeploymentNumber     = (\textcolor{draculaorange}{\bigstar}) \quad \col{new\_account\_deployment\_number} ,
-			byteCodeAddressHi           = \locCalleeAddressHi                                                                ,
-			byteCodeAddressLo           = \locCalleeAddressLo                                                                ,
-			byteCodeDeploymentNumber    = \accDeploymentNumber_{i + \callFirstCalleeAccountRowOffset}                        ,
-			byteCodeDeploymentStatus    = \accDeploymentStatus_{i + \callFirstCalleeAccountRowOffset}                        ,
-			byteCodeCodeFragmentIndex   = \locCalleeCfi                                                                      ,
-			callerAddressHi             = (\textcolor{draculaorange}{\bigstar}) \quad \col{new\_caller\_address\_hi}         ,
-			callerAddressLo             = (\textcolor{draculaorange}{\bigstar}) \quad \col{new\_caller\_address\_lo}         ,
-			callValue                   = (\textcolor{draculaorange}{\bigstar}) \quad \col{new\_call\_value}                 ,
-			callDataContextNumber       = \cn_{i}                                                                            ,
-			callDataOffset              = \locTypeSafeCdo                                                                    ,
-			callDataSize                = \locTypeSafeCds                                                                    ,
-			returnAtOffset              = \locTypeSafeRao                                                                    ,
-			returnAtCapacity            = \locTypeSafeRac                                                                    ,
+			anchorRow                   = i                                                                                             ,
+			relOffset                   = \relof                                                                                        ,
+			contextNumber               = \cn\new_{i}                                                                                   ,
+			callStackDepth              = 1 + \locCurrentCallStackDepth                                                                 ,
+			isRoot                      = 0                                                                                             ,
+			isStatic                    = (\textcolor{draculaorange}{\bigstar}) \quad \locChildContextIsStatic                          ,
+			accountAddressHigh          = (\textcolor{draculaorange}{\bigstar}) \quad \locChildContextAccountAddressHi                  ,
+			accountAddressLow           = (\textcolor{draculaorange}{\bigstar}) \quad \locChildContextAccountAddressLo                  ,
+			accountDeploymentNumber     = (\textcolor{draculaorange}{\bigstar}) \quad \locChildContextAccountDeploymentNumber           ,
+			byteCodeAddressHi           = \locDelegateOrCalleeAddressHi                                                                 ,
+			byteCodeAddressLo           = \locDelegateOrCalleeAddressLo                                                                 ,
+			byteCodeDeploymentNumber    = \locDelegateOrCalleeDeploymentNumber                                                          ,
+			byteCodeDeploymentStatus    = \locDelegateOrCalleeDeploymentStatus                                                          ,
+			byteCodeCodeFragmentIndex   = \locDelegateOrCalleeCfi                                                                       ,
+			callerAddressHi             = (\textcolor{draculaorange}{\bigstar}) \quad \locChildContextCallerAddressHi                   ,
+			callerAddressLo             = (\textcolor{draculaorange}{\bigstar}) \quad \locChildContextCallerAddressLo                   ,
+			callValue                   = (\textcolor{draculaorange}{\bigstar}) \quad \locChildContextCallValue                         ,
+			callDataContextNumber       = \cn_{i}                                                                                       ,
+			callDataOffset              = \locTypeSafeCdo                                                                               ,
+			callDataSize                = \locTypeSafeCds                                                                               ,
+			returnAtOffset              = \locTypeSafeRao                                                                               ,
+			returnAtCapacity            = \locTypeSafeRac                                                                               ,
 		}
 	\end{array} \right.
 \]
 All shorthands above were previously defined with the exception of those marked with $(\textcolor{draculaorange}{\bigstar})$
 \begin{multicols}{2}
 	\begin{itemize}
-		\item \col{new\_account\_address\_hi}
-		\item \col{new\_account\_address\_lo}
-		\item \col{new\_caller\_address\_hi}
-		\item \col{new\_caller\_address\_lo}
-		\item \col{new\_account\_deployment\_number}
-		\item \col{new\_context\_is\_static}
-		\item \col{new\_call\_value}
+		\item \locChildContextAccountAddressHi
+		\item \locChildContextAccountAddressLo
+		\item \locChildContextAccountDeploymentNumber
 		\item[\vspace{\fill}]
+		\item \locChildContextCallerAddressHi
+		\item \locChildContextCallerAddressLo
+		\item \locChildContextIsStatic
+		\item \locChildContextCallValue
 	\end{itemize}
 \end{multicols}
 \noindent These shorthands will be defined in section~(\ref{hub: instruction handling: call: specialized: callee context parameters definition}).
-% (\textcolor{draculaorange}{\bigstar}) \quad \textcolor{draculagreen}{\col{new\_context\_is\_static}},
-% (\textcolor{draculaorange}{\bigstar}) \quad \textcolor{draculagreen}{\col{new\_account\_address\_hi}},
-% (\textcolor{draculaorange}{\bigstar}) \quad \textcolor{draculagreen}{\col{new\_account\_address\_lo}},
-% (\textcolor{draculaorange}{\bigstar}) \quad \textcolor{draculagreen}{\col{new\_account\_deployment\_number}},
-% (\textcolor{draculaorange}{\bigstar}) \quad \textcolor{draculagreen}{\col{new\_caller\_address\_hi}},
-% (\textcolor{draculaorange}{\bigstar}) \quad \textcolor{draculagreen}{\col{new\_caller\_address\_lo}},
-% (\textcolor{draculaorange}{\bigstar}) \quad \textcolor{draculagreen}{\col{new\_call\_value}},

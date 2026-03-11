@@ -1,0 +1,143 @@
+\item[\underline{\underline{Transaction-row n$^°~(\bm{i + \roffTxSkipUserTransaction})$:}}]
+	we define shorthands
+	\[
+		\left\{ \begin{array}{lcl}
+			\locIsDeploymentTransaction  & \define & \txIsDeployment _{i + \roffTxSkipUserTransaction} \\
+			\locIsMessageCallTransaction & \define & 1 - \locIsDeploymentTransaction                   \\
+		\end{array} \right.
+	\]
+	we peek into the transaction and justify portions of it:
+	\begin{description}
+		\item[\underline{(Partially) justifying \txRequiresEvmExecution{}:}]
+			we impose the following
+			\begin{enumerate}
+				\item $\txRequiresEvmExecution_{i + \roffTxSkipUserTransaction} = \rZero$;
+				\item
+					\If   $\locIsMessageCallTransaction = 1$
+					\Then
+					\[
+						\left[ \begin{array}{cl}
+							+ & \locRecipientHasEmptyCode                       \\
+							+ & \locRecipientIsDelegatedAndDelegateHasEmptyCode \\
+							% + & \locRecipientIsDelegatedAndDelegateIsDelegated  \\
+						\end{array} \right]
+						= 1
+					\]
+					where we set
+					\[
+						\locRecipientIsDelegatedAndDelegateHasEmptyCode \define
+						\left[ \begin{array}{clr}
+							\cdot & \locRecipientIsDelegated \\
+							\cdot & \locDelegateHasEmptyCode \\
+						\end{array} \right]
+						% \hspace*{-2cm}
+						% \left\{ \begin{array}{lcl}
+						% 	\locRecipientIsDelegatedAndDelegateHasEmptyCode & \define &
+						% 	\left[ \begin{array}{clr}
+						% 		\cdot & \locRecipientIsDelegated \\
+						% 		\cdot & \locDelegateHasEmptyCode \\
+						% 	\end{array} \right]
+						% 	\vspace{2mm} \\
+						% 	\locRecipientIsDelegatedAndDelegateIsDelegated & \define &
+						% 	\left[ \begin{array}{clr}
+						% 		\cdot & \locRecipientIsDelegated \\
+						% 		\cdot & \locDelegateIsDelegated  \\
+						% 	\end{array} \right]
+						% 	\\
+						% \end{array} \right.
+					\]
+					and define and derive some compound shorthands as follows
+					\[
+						\left\{ \begin{array}{lcl}
+							\locRecipientIsntDelegated   & \define & 1 - \locRecipientIsDelegated                                        \\
+							\locRecipientHasEmptyCode    & \define & 1 - \locRecipientHasNonemptyCode                                    \\
+							\locDelegateHasEmptyCode     & \define & 1 - \locDelegateHasNonemptyCode            \vspace{2mm}             \\
+							% \locDelegateIsntDelegated  & \define & 1 - \locDelegateIsDelegated                \vspace{2mm}             \\
+							\locRecipientIsDelegated     & \define & \accIsDelegated _{i + \roffTxSkipUserRecipientAccount             } \\
+							\locRecipientHasNonemptyCode & \define & \accHasCode     _{i + \roffTxSkipUserRecipientAccount             } \\
+							\locDelegateHasNonemptyCode  & \define & \accHasCode     _{i + \roffTxSkipUserRecipientOrDelegationAccount } \\
+							% \locDelegateIsDelegated    & \define & \accIsDelegated _{i + \roffTxSkipUserRecipientOrDelegationAccount}  \\
+						\end{array} \right.
+					\]
+					\saNote{}
+					% The terms marked with $\undefinedStar$ may be omitted from the implementation.
+					There is no need to require accounts have nonempty code or have given code size to
+					prevent invalid values of ``\accIsDelegated''.
+					These are extraneous conditions given
+					constraint~(\ref{hub: account: account delegation: newly delegated accounts have code and code size equal to 23}) and
+					constraint~(\ref{hub: account: account delegation: delegated accounts have code and code size equal to 23}).
+				\item
+					\If   $\locIsDeploymentTransaction = 1$
+					\Then $\txInitCodeSize _{i + \roffTxSkipUserTransaction} = 0$
+			\end{enumerate}
+		\item[\underline{Justifying $\txFinalRefundCounter$:}]
+			we impose that $\txFinalRefundCounter _{i + \roffTxSkipUserTransaction} = \refund _{i}$
+
+			\saNote{}
+			Starting with \textsc{Prague} and more specifically with
+			\cite{EIP-7702}, type-4 transactions which require no code execution
+			still accrue refunds due to successful delegation operations.
+		\item[\underline{Justifying $\txInitialBalance$:}]
+			we impose that $\txInitialBalance _{i + \roffTxSkipUserTransaction} = \accBalance _{i + \roffTxSkipUserSenderAccount}$
+		\item[\underline{Justifying \txStatusCode{}:}]
+			we impose that $\txStatusCode _{i + \roffTxSkipUserTransaction} = 1$
+		\item[\underline{Justifying \txNonce{}:}]
+			we impose
+			\[
+				\accNonce                              _{i + \roffTxSkipUserSenderAccount} =
+				\txNonce                               _{i + \roffTxSkipUserTransaction} +
+				\txNumberOfSuccessfulSenderDelegations _{i + \roffTxSkipUserTransaction}
+			\]
+		\item[\underline{Justifying $\txLeftoverGas$:}]
+			we impose that $\txLeftoverGas _{i + \roffTxSkipUserTransaction} = \txInitialGas _{i + \roffTxSkipUserTransaction}$
+	\end{description}
+	The following constraint is true up to the \textsc{Cancun} hardfork, but fails beyond that point.
+	Specifically \cite{EIP-7623}, which is part of the \textsc{Prague} hardfork,
+	imposes a floor price on call data
+	which invalidates the upcoming ``sanity-check'' constraint.
+	\begin{description}
+		\item[\underline{Justifying $\txEffectiveRefund$:}]
+			if the network runs on the \textsc{Cancun}-\evm{},
+			we may impose the following sanity check:
+			\[ \txEffectiveRefund _{i + \roffTxSkipUserTransaction} = \txLeftoverGas _{i + \roffTxSkipUserTransaction} \quad (\sanityCheck) \]
+	\end{description}
+	\iffalse
+	I had to switch the order of phases from
+
+	,   (TX_WARM) → (TX_AUTH) → (TX_SKIP ∨ TX_INIT) → ...
+	,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+	to 
+
+	,   (TX_AUTH) → (TX_WARM) → (TX_SKIP ∨ TX_INIT) → ...
+	,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+	the reason for this switch is that it is easier to determine tx.requiresEvmExecution(), which decides whether we trace the TX_WARM phase, and whether we do TX_SKIP or TX_INIT, _after_ the TX_AUTH phase, given that the recipient account may have been delegated to a smart contract in the delegation list processing. Or the opposite.
+
+	The real annoyance is that
+
+	,   tx.requiresEvmExecution()
+	,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+	can no longer be determined from the transaction and the initial world state alone.
+	\fi
+	%
+	% We further impose that every \textbf{set code transaction} i.e. every \textbf{type 4 transaction}
+	% begin with the processing of its delegation list.
+	% \begin{description}
+	% 	\item[\underline{Set code transactions must incorporate a \txAuth{}-phase:}]
+	% 		\If $\txTypeSupportsDelegationLists _{i} = \true$ \Then
+	% 		\[
+	% 			\left\{ \begin{array}{lcl}
+	% 				\txAuth          _{i - 1} & = & \true \\
+	% 				\peekTransaction _{i - 1} & = & \true \\
+	% 			\end{array} \right.
+	% 		\]
+	% \end{description}
+	% \saNote{}\label{hub: tx skip: user: transation processing: transactions supporting delegation lists start must contain a TX AUTH phase}
+	% Compare with
+	% constraint~(\ref{hub: initialization phase: common constraints: transactions supporting delegation lists must contain a TX AUTH phase}).
+	% Also recall
+	% constraint~(\ref{hub: authorization phase: perspectives: the transation type must support delegation lists})
+	% and the associated discussion.
+

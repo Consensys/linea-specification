@@ -1,0 +1,124 @@
+\makeatletter
+
+\define@cmdkey [AUTH] {var} {anchorRow}           {}
+\define@cmdkey [AUTH] {var} {relOffset}           {}
+\define@cmdkey [AUTH] {var} {condition}           {}
+\define@cmdkey [AUTH] {var} {delegationAddressHi} {}
+\define@cmdkey [AUTH] {var} {delegationAddressLo} {}
+\define@cmdkey [AUTH] {var} {checkPostDelegation} {}
+
+
+\presetkeys    [AUTH] {var} {
+	anchorRow           = \missingParameter,
+	relOffset           = \missingParameter,
+	condition           = \missingParameter,
+	delegationAddressHi = \missingParameter,
+	delegationAddressLo = \missingParameter,
+	checkPostDelegation = \missingParameter,
+}{}
+
+
+
+% AUTH
+\newcommand{\accSameDelegationAddress}[1]{
+	\setkeys[AUTH]{var}{#1}
+	\accountSignifier\sameSignifier\texttt{DelegationAddress}
+	_{\cmdAUTH@var@anchorRow}
+	\big[ \cmdAUTH@var@relOffset \big]
+}
+\newcommand{\accSetDelegationAddress}[1]{
+	\setkeys[AUTH]{var}{#1}
+	\texttt{setDelegationAddress} _{\cmdAUTH@var@anchorRow}
+	\left[ \begin{array}{ll}
+		\utt{Rel.  row    offset:}   & \cmdAUTH@var@relOffset           \\
+		\utt{Delegation address hi:} & \cmdAUTH@var@delegationAddressHi \\
+		\utt{Delegation address lo:} & \cmdAUTH@var@delegationAddressLo \\
+	\end{array} \right]
+}
+
+\newcommand{\accSameDelegationNumber}[1]{
+	\setkeys[AUTH]{var}{#1}
+	\accountSignifier\sameSignifier\texttt{DelegationNumber}
+	_{\cmdAUTH@var@anchorRow}
+	\big[ \cmdAUTH@var@relOffset \big]
+}
+\newcommand{\accIncrementDelegationNumber}[1]{
+	\setkeys[AUTH]{var}{#1}
+	\accountSignifier\texttt{incrementDelegationNumber}
+	_{\cmdAUTH@var@anchorRow}
+	\big[ \cmdAUTH@var@relOffset \big]
+}
+
+\newcommand{\accSameDelegationStatus}[1]{
+	\setkeys[AUTH]{var}{#1}
+	\accountSignifier\sameSignifier\texttt{DelegationStatus}
+	_{\cmdAUTH@var@anchorRow}
+	\big[ \cmdAUTH@var@relOffset \big]
+}
+
+
+\newcommand{\accCheckForDelegationInAuthorizationPhase}[1]{
+	\setkeys[AUTH]{var}{#1}
+	\accountSignifier\texttt{checkForDelegationInAuthorizationPhase}
+	_{\cmdAUTH@var@anchorRow}
+	\big[ \cmdAUTH@var@relOffset \big]
+	% \left[ \begin{array}{ll}
+	% 	\utt{Rel. row offset:}       & \cmdAUTH@var@relOffset           \\
+	% 	\utt{Check post delegation:} & \cmdAUTH@var@checkPostDelegation \\
+	% \end{array} \right]
+}
+\newcommand{\accConditionallyCheckForDelegation}[1]{
+	\setkeys[AUTH]{var}{#1}
+	\accountSignifier\texttt{conditionallyCheckForDelegation}
+	_{\cmdAUTH@var@anchorRow}
+	\left[ \begin{array}{ll}
+		\utt{Rel. row offset:} & \cmdAUTH@var@relOffset \\
+		\utt{Condition:}       & \cmdAUTH@var@condition \\
+	\end{array} \right]
+}
+\newcommand{\accCheckForDelegationIfAccountHasCode}[1]{
+	\setkeys[AUTH]{var}{#1}
+	\accountSignifier\texttt{checkForDelegationIfAccountHasCode}
+	_{\cmdAUTH@var@anchorRow}
+	\big[ \cmdAUTH@var@relOffset \big]
+}
+\newcommand{\accDontCheckForDelegation}[1]{
+	\setkeys[AUTH]{var}{#1}
+	\accountSignifier\dontSignifier\texttt{CheckForDelegation}
+	_{\cmdAUTH@var@anchorRow}
+	\big[ \cmdAUTH@var@relOffset \big]
+}
+
+
+%-------------------------------------------%
+%   ROM_LEX triggering constraint systems   %
+%-------------------------------------------%
+
+
+\def\triggerRomLexName {\texttt{TriggerRomLex}}
+
+\newcommand{\accConditionallyTriggerRomLex}[1]{
+	\setkeys[AUTH]{var}{#1}
+	\accountSignifier\texttt{conditionally}\triggerRomLexName
+	_{\cmdAUTH@var@anchorRow}
+	\left[ \begin{array}{ll}
+		\utt{Rel. row offset:} & \cmdAUTH@var@relOffset \\
+		\utt{Condition:}   & \cmdAUTH@var@condition \\
+	\end{array} \right]
+}
+	
+\newcommand{\accDontTriggerRomLex}[1]{
+	\setkeys[AUTH]{var}{#1}
+	\accountSignifier\dontSignifier\triggerRomLexName
+	_{\cmdAUTH@var@anchorRow}
+	\big[ \cmdAUTH@var@relOffset \big]
+}
+
+\newcommand{\accDoTriggerRomLex}[1]{
+	\setkeys[AUTH]{var}{#1}
+	\accountSignifier\doSignifier\triggerRomLexName
+	_{\cmdAUTH@var@anchorRow}
+	\big[ \cmdAUTH@var@relOffset \big]
+}
+
+\makeatother

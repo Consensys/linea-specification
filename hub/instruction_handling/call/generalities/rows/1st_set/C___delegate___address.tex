@@ -1,0 +1,29 @@
+\item[\underline{Defining the address of the first \delegateName{} / \calleeName{} account-row $n^°(i + \callFirstDelegateOrCalleeAccountRowOffset)$:}]
+	% we set
+	% \[
+	% 	\left\{ \begin{array}{lcl}
+	% 		\accAddressHi _{i + \callFirstDelegateOrCalleeAccountRowOffset } & = & \locExplicitDelegateOrCalleeAddressHi \\
+	% 		\accAddressLo _{i + \callFirstDelegateOrCalleeAccountRowOffset } & = & \locExplicitDelegateOrCalleeAddressLo \\
+	% 	\end{array} \right.
+	% \]
+	we define the appropriate ``\delegateName{} or \calleeName{}'' address as follows:
+	\begin{enumerate}
+		\item
+			\If   $\locCalleeIsntDelegated = \true$
+			\[
+				\left\{ \begin{array}{lcl}
+					\locExplicitDelegateOrCalleeAddressHi & \define & \locCalleeAddressHi \\
+					\locExplicitDelegateOrCalleeAddressLo & \define & \locCalleeAddressLo \\
+				\end{array} \right.
+			\]
+		\item
+			\If   $\locCalleeIsDelegated = \true$
+			\Then
+			\[
+				\left\{ \begin{array}{lcl}
+					\locExplicitDelegateOrCalleeAddressHi & \define & \locCalleeDelegateAddressHi \\
+					\locExplicitDelegateOrCalleeAddressLo & \define & \locCalleeDelegateAddressLo \\
+				\end{array} \right.
+			\]
+	\end{enumerate}
+

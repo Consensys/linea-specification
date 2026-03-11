@@ -2,11 +2,14 @@ We impose strict lexicographic constraints:
 \begin{enumerate}
 	\item \If $\cfi_{i - 1} \neq 0$ \Then
 	\[
-		\strictLexConstraint\big[ +, +, +, - \big]
+		\strictLexConstraint\big[ +, +, +, -, + \big]
 		\left(
 		\begin{array}{c}
-			\addrHi, \addrLo, \depNum, \depStatus; \\
-			\big[@_{1}\big], \big[@_{2}\big], \big[@_{2}\big], \big[@_{4}\big]; \\
+			\addrHi, \addrLo, \depNum, \depStatus, \delegationNumber; \\
+			\big[ \col{@}_{k} \big],
+			~ k = 1,
+			\dots,
+			\numberOfAtColumnsInRomLex; \\
 			\byteCol{$\llargeMO$}, \dots, \byteCol{1}, \byteCol{0}, \\
 		\end{array}
 		\right)_{i}
@@ -14,11 +17,18 @@ We impose strict lexicographic constraints:
 \end{enumerate}
 
 \saNote{}
-Imposing the (strict lexicographic) ordering constraint conditionally to ``$\cfi_{i - 1} \neq 0$'' means that the ordering argument applies to pairs of adjacent non-padding rows only, and not e.g. to the transition between padding rows and non-padding rows.
+Imposing the (strict lexicographic) ordering constraint conditionally to ``$\cfi_{i - 1} \neq 0$''
+means that the ordering argument applies to pairs of adjacent non-padding rows only,
+and not e.g. to the transition between padding-rows and non-padding rows.
 This is done to prevent pathologies arising when the state is pre-populated with an account at address $\texttt{0x00}$ having nontrivial byte code.
-In this case the first nontrivial byte code loaded into the \romMod{} module \emph{may} have address, deployment number and deployment status all equal to 0 and $\cfi \neq 0$ (actually $\cfi = 1$),
-yet the final padding row also has address, deployment number and deployment status all equal to $0$ and $\cfi = 0$.
-This would break the strict lexicographic order constraint at the transition between padding and non-padding rows.
+In this case the first nontrivial byte code loaded into the \romMod{} module \emph{may} have
+address,
+deployment number,
+deployment status and
+delegation number
+all equal to $0$ and $\cfi \neq 0$ (actually $\cfi = 1$),
+yet the final padding-row also has address, deployment number and deployment status all equal to $0$ and $\cfi = 0$.
+This would break the strict lexicographic order constraint at the transition between padding-rows and non-padding-rows.
 
 \saNote{}
 The scenario described above cannot arise organically through deployments.

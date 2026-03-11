@@ -1,0 +1,40 @@
+Starting with the \textsc{Prague} hardfork, specifically with \cite{EIP-7702}, \textsc{Ethereum} supports
+\textbf{set code transactions} a.k.a.
+\textbf{account delegation transactions} a.k.a.
+\textbf{type 4 transactions}.
+These transactions include a (necessarily nonempty) list of \textbf{account delegation tuples} / \textbf{authorization tuples}.
+Authorization tuples may be either invalid or valid; invalid tuples lead to no state change.
+These tuples are partially processed in the \rlpAuthMod{} module.
+The remainder of their processing,
+in as much as it requires \textbf{reading} and \textbf{modifying} the \textbf{state},
+is carried out in the \txAuth{} phase of the present \hubMod{} module.
+
+The present section details what happens in the \txAuth{} phase.
+% Every \textbf{authorization tuple} is processed requiring either 1 or 2 rows.
+% The \hubMod{} module processes the authorization tuple
+% (\emph{a}) in 1 $\peekAuthorization$-row whenever the tuple fails at the latest at the \macroEcrecover{} stage, as determined by the \rlpAuthMod{} module;
+% (\emph{b}) in 1 $\peekAuthorization$-row followed by 1 $\peekAccount$-row in all other cases.
+%
+% The processing happens as follows.
+Every \textbf{authorization tuple} is processed on either 1 or 2 rows.
+We provide more details in what follows.
+The processing of a given tuple starts with a single $\peekAuthorization$-row being inserted in the trace.
+Let us write
+\[
+	\locRecoverySuccess \define \authAuthorityEcrecoverSuccess
+\]
+If $\locRecoverySuccess \equiv \false$ processing stops.
+If $\locRecoverySuccess \equiv \true$  processing continues,
+and the following line is a $\peekAccount$-row containing the authority address' account.
+Assuming \locRecoverySuccess{},
+the authority's nonce is copied over and to the $\peekAuthorization$-row,
+as is the bit verifying whether the authority's code is either empty or delegated.
+Note that whenever the byte code is nonempty, delegation must be scanned for.
+
+If these requirements are met, and the \rlpAuthMod{} module deems the tuple valid,
+as witnessed by $\locTupleValidity \equiv \true$,
+the authority's code, code hash and delegation address
+are updated according to the data in the $\peekAuthorization$-row.
+
+In either case, the processing of an authority tuple leads either
+to the processing of the next tuple or 

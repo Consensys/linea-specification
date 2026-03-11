@@ -1,0 +1,38 @@
+This lookup from the $\romLexMod$ module is used to extract the $\delegatedAccountCodeSize = 3 + \addressSize = 3 + 4 + 16$
+which constitute the entirety of the byte code of any byte code fragment that has
+$\byteCodeCouldBeDelegationCode \equiv \true$.
+It is constructed as follows:
+\begin{description}
+	\item[\underline{Selector:}] we use $\loc{sel} _{i} \define \byteCodeCouldBeDelegationCode _{i}$
+	\item[\underline{Column correspondence:}]
+		\[
+			\renewcommand{\arraystretch}{1.5}
+			\begin{array}{|l|c|l|}
+				\hline
+				\text{\romLexMod{}-columns}        &                  & \text{\romMod{}-columns}        \\ \hline\hline
+				1                                  & \rightsquigarrow & \pc                    _{j + 1} \\ \hline
+				\cfi                          _{i} & \rightsquigarrow & \cfi                   _{j}     \\ \hline
+				\leadingThreeBytes            _{i} & \rightsquigarrow & \loc{3B\_prefix\_sum}  _{j}     \\ \hline
+				\leadBytesOfDelegationAddress _{i} & \rightsquigarrow & \loc{4B\_lead\_bytes}  _{j}     \\ \hline
+				\tailBytesOfDelegationAddress _{i} & \rightsquigarrow & \loc{16B\_tail\_bytes} _{j}     \\ \hline
+			\end{array}
+		\]
+		where we use the following shorthands:
+		\[
+			\left\{ \begin{array}{lcl}
+				\loc{3B\_prefix\_sum}  _{j} & = & \displaystyle \sum _{k = 0} ^ {2}  256 ^ {2  - k} \cdot \PBCB _{j + k} \\
+				\loc{4B\_lead\_bytes}  _{j} & = & \displaystyle \sum _{k = 0} ^ {3}  256 ^ {3  - k} \cdot \PBCB _{j + 3  + k} \\
+				\loc{16B\_tail\_bytes} _{j} & = & \displaystyle \sum _{k = 0} ^ {15} 256 ^ {15 - k} \cdot \PBCB _{j + 7  + k} \\
+			\end{array} \right.
+		\]
+\end{description}
+\saNote{}
+The above, in particular the requirement that
+$1 \rightsquigarrow \pc _{j + 1}$,
+forces the lookup to ``land'' onto the first instruction of a piece of byte code
+(i.e. with $\pc _{j} \equiv 0$).
+
+\saNote{}
+Given the above, the expression
+$\loc{3B\_prefix\_sum}  _{j}$
+coincides with $\ACC _{j + 2}$.

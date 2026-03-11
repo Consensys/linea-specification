@@ -94,7 +94,8 @@
 \def\locCallDataSize                       {call\_data\_size}
 \def\locInitCodeSize                       {init\_code\_size}
 \def\locIsTypeTwo                          {is\_type\_two}
-\def\locHasEipFifteenFiftyNineGasSemantics {has\_EIP-1559\_gas\_semantics}
+\def\locHasEipFifteenFiftyNineGasSemantics {supports\_EIP\_1559\_gas\_semantics}
+\def\locSupportsDelegationLists            {supports\_delegation\_lists}
 \def\locRequiresEvmExecution               {requires\_EVM\_execution}
 \def\locCopyTxcd                           {copy\_txcd}
 \def\locStatusCode                         {status\_code}
@@ -117,33 +118,34 @@
 
 \newcommand{\localHubVariable}         [1]    {\loc{hub/#1}}
 
-\def\locHubBasefee                            {\hdef {\localHubVariable{\locBasefee                            }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubNonce                              {\hdef {\localHubVariable{\locNonce                              }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubInitialBalance                     {\hdef {\localHubVariable{\locInitialBalance                     }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubGasLimit                           {\hdef {\localHubVariable{\locGasLimit                           }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubGasPrice                           {\hdef {\localHubVariable{\locGasPrice                           }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubInitialGas                         {\hdef {\localHubVariable{\locInitialGas                         }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubInitialGasCost                     {\hdef {\localHubVariable{\locInitialGasCost                     }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubPriorityFeePerGas                  {\hdef {\localHubVariable{\locPriorityFeePerGas                  }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubValue                              {\hdef {\localHubVariable{\locValue                              }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubIsDeployment                       {\hdef {\localHubVariable{\locIsDeployment                       }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubIsMessageCall                      {\hdef {\localHubVariable{\locIsMessageCall                      }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubType                               {\hdef {\localHubVariable{\locType                               }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubDataSize                           {\hdef {\localHubVariable{\locPayloadSize                        }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubCallDataSize                       {\hdef {\localHubVariable{\locCallDataSize                       }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubInitCodeSize                       {\hdef {\localHubVariable{\locInitCodeSize                       }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubDataCost                           {\hdef {\localHubVariable{\locPayloadCost                        }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubHasEipFifteenFiftyNineGasSemantics {\hdef {\localHubVariable{\locHasEipFifteenFiftyNineGasSemantics }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubRequiresEvmExecution               {\hdef {\localHubVariable{\locRequiresEvmExecution               }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubCopyTxcd                           {\hdef {\localHubVariable{\locCopyTxcd                           }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubStatusCode                         {\hdef {\localHubVariable{\locStatusCode                         }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubLeftoverGas                        {\hdef {\localHubVariable{\locLeftoverGas                        }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubFinalRefundCounter                 {\hdef {\localHubVariable{\locFinalRefundCounter                 }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubEffectiveRefund                    {\hdef {\localHubVariable{\locEffectiveRefund                    }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubWeightedByteCount                  {\hdef {\localHubVariable{\locWeightedByteCount                  }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubDataCost                           {\hdef {\localHubVariable{\locPayloadCost                        }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubDataFloorCost                      {\hdef {\localHubVariable{\locPayloadFloorCost                   }} {user txn data: processing: user: hub view shorthands} }
-\def\locHubBlockGasLimit                      {\hdef {\localHubVariable{\locBlockGasLimit                      }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubBasefee                                                {\hdef {\localHubVariable{\locBasefee                            }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubNonce                                                  {\hdef {\localHubVariable{\locNonce                              }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubInitialBalance                                         {\hdef {\localHubVariable{\locInitialBalance                     }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubGasLimit                                               {\hdef {\localHubVariable{\locGasLimit                           }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubGasPrice                                               {\hdef {\localHubVariable{\locGasPrice                           }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubInitialGas                                             {\hdef {\localHubVariable{\locInitialGas                         }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubInitialGasCost                                         {\hdef {\localHubVariable{\locInitialGasCost                     }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubPriorityFeePerGas                                      {\hdef {\localHubVariable{\locPriorityFeePerGas                  }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubValue                                                  {\hdef {\localHubVariable{\locValue                              }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubIsDeployment                                           {\hdef {\localHubVariable{\locIsDeployment                       }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubIsMessageCall                                          {\hdef {\localHubVariable{\locIsMessageCall                      }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubType                                                   {\hdef {\localHubVariable{\locType                               }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubDataSize                                               {\hdef {\localHubVariable{\locPayloadSize                        }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubCallDataSize                                           {\hdef {\localHubVariable{\locCallDataSize                       }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubInitCodeSize                                           {\hdef {\localHubVariable{\locInitCodeSize                       }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubDataCost                                               {\hdef {\localHubVariable{\locPayloadCost                        }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubTransactionTypeSupportsEipFifteenFiftyNineGasSemantics {\hdef {\localHubVariable{\locHasEipFifteenFiftyNineGasSemantics }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubTransactionTypeSupportsDelegationLists                 {\hdef {\localHubVariable{\locSupportsDelegationLists            }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubRequiresEvmExecution                                   {\hdef {\localHubVariable{\locRequiresEvmExecution               }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubCopyTxcd                                               {\hdef {\localHubVariable{\locCopyTxcd                           }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubStatusCode                                             {\hdef {\localHubVariable{\locStatusCode                         }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubLeftoverGas                                            {\hdef {\localHubVariable{\locLeftoverGas                        }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubFinalRefundCounter                                     {\hdef {\localHubVariable{\locFinalRefundCounter                 }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubEffectiveRefund                                        {\hdef {\localHubVariable{\locEffectiveRefund                    }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubWeightedByteCount                                      {\hdef {\localHubVariable{\locWeightedByteCount                  }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubDataCost                                               {\hdef {\localHubVariable{\locPayloadCost                        }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubDataFloorCost                                          {\hdef {\localHubVariable{\locPayloadFloorCost                   }} {user txn data: processing: user: hub view shorthands} }
+\def\locHubBlockGasLimit                                          {\hdef {\localHubVariable{\locBlockGasLimit                      }} {user txn data: processing: user: hub view shorthands} }
 
 \newcommand{\localRlpVariable} [1] {\loc{rlp/#1}}
 
