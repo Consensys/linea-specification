@@ -27,7 +27,7 @@ The constraints will implement $\accHasCode = 1 \iff \accCodehash \neq \emptyKec
 	\item $\accExists$ and $\accExists\new$:
 		binary columns indicating the account's existence and its updated value;
 \end{enumerate}
-Recall that post EIP-\ob{TODO: What's the number?} an address $\textsf{a}$ is deemed to be \textbf{non-existent} in the world state $\sigma$ if
+Recall that an address $\textsf{a}$ is deemed to be \textbf{non-existent} in the world state $\sigma$ if % \ob{TODO: What's the number?}
 its nonce $\sigma[\textsf{a}]_\text{n}$ and balance $\sigma[\textsf{a}]_\text{b}$ vanish and
 its code is empty i.e. $\sigma[\textsf{a}]_\text{c} = \texttt{KEC}\big((~)\big)$.
 \begin{enumerate}[resume]
@@ -41,7 +41,7 @@ We furthermore introduce a binary column which will allow us to recognize addres
 		binary columns;
 		track whether an address was successfullly marked for selfdestruction within a given transaction;
 \end{enumerate}
-The following columns are \textsc{zk-evm} specific columns. We explain their purpose in section~\ob{TODO: write section and point to it}.
+The following columns are \textsc{zk-evm} specific columns. % \ob{TODO: write section and point to it}
 \begin{enumerate}[resume]
 	\item $\accDeploymentNumber$ and $\accDeploymentNumber\new$:
 		deployment number of the current address $\accAddress$ pre-instruction and the updated deployment number; 
@@ -49,7 +49,7 @@ The following columns are \textsc{zk-evm} specific columns. We explain their pur
 		binary columns indicating the deployment status ($1 \iff$ under deployment, $0 \iff $ (currenly) deployed) of the current address $\accAddress$ pre-instruction and its updated value;
 \end{enumerate}
 The following columns are used when an account has its balance decremented either at the onset of a transaction or when performing a \inst{CALL}-type or \inst{CREATE}-type transaction.
-The following column turns on \emph{if and only if} the account on the present row is about to create a new address either at the beginning of transaction processing (if $T_\text{t} = \varnothing$ i.e. $\txIsDeployment = 1$) or through a \inst{CREATE} instruction. \ob{TODO: for the \inst{CREATE2} path we can surely do it in terms of the create flag and flag 1.}
+The following column turns on \emph{if and only if} the account on the present row is about to create a new address either at the beginning of transaction processing (if $T_\text{t} = \varnothing$ i.e. $\txIsDeployment = 1$) or through a \inst{CREATE} instruction. % \ob{TODO: for the \inst{CREATE2} path we can surely do it in terms of the create flag and flag 1.}
 
 The next set of columns allow us to perform certain operations using as inputs fields from an account or stack arguments.
 We start with columns required for dealing with stack items which ought to be interpreted as addresses.
@@ -74,7 +74,7 @@ The next collection of columns is required for computing deployment addresses of
 	\item $\accRlpAddrFlag$:
 		binary column which switches on whenever a deployment address has to be computed;
 	\item $\accRlpAddrRecipe$:
-		``recipe'' column which distinguishes between the two ``recipes'' for computing a deployment address; see \ob{TODO: add reference to \rlpAddrMod{} module chapter}; 
+		``recipe'' column which distinguishes between the two ``recipes'' for computing a deployment address; % \ob{TODO: add reference to \rlpAddrMod{} module chapter}
 	\item $\accRlpAddrDepAddrHi$ and $\accRlpAddrDepAddrLo$:
 		high and low part of the deployment address as verified in the \rlpAddrMod{} module;
 	\item $\accRlpAddrSaltHi$ and $\accRlpAddrSaltLo$:
