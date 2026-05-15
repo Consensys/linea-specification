@@ -3,9 +3,10 @@ In the present section we go over the various precompiles and the failures they 
 We distinguish between two failure modes: $\scenPrcFailureKnownToHub$ and $\scenPrcFailureKnownToRam$.
 The general idea is that all failure scenarios that are detectable without interacting with \textsc{ram} trigger the $\scenPrcFailureKnownToHub$ flag, while those that require reading or even extracting data from \textsc{ram} fall into the $\scenPrcFailureKnownToRam$ category.
 In particular we explain which precompiles may raise the $\scenPrcFailureKnownToRam$ flag.
-\begin{figure}[!h]
-	\centering
-	\begin{tabular}{|l||l|c|l|c|} \hline
+	\begin{figure}[!h]
+		\centering
+		\resizebox{\linewidth}{!}{%
+		\begin{tabular}{|l||l|c|l|c|} \hline
 		\textsc{Precompile}               & \multicolumn{2}{c|}{\scenPrcFailureKnownToHub} & \scenPrcFailureKnownToRam & \textsc{Notes}                                                   \\ \hline \noalign{\vskip 0.5ex} \cline{1-4}
 		\instEcrecover{}                  & insufficient gas                               & \toOob                    & $\nothing$                                                       \\ \cline{1-4}
 		\instShaTwo{}                     & insufficient gas                               & \toOob                    & $\nothing$                                                       \\ \cline{1-4}
@@ -40,9 +41,10 @@ In particular we explain which precompiles may raise the $\scenPrcFailureKnownTo
                                                   & $\vee~\cds \neq  64$                           &                           &                                                                   &                                                  \\ \cline{1-4}
 		\instBlsMapFpTwoToGTwo{}          & insufficient gas                               & \multirow{2}{*}{\toOob}   & malformed data                                                    &                                                  \\
                                                   & $\vee~\cds \neq 128$                           &                           &                                                                   &                                                  \\ \hline \hline
-		\instPVerify{}                    & insufficient gas                               & \toOob                    & $\nothing$                                                        & \multirow{2}{*}{\text{\cite{EIP-7951}, Osaka}}   \\ \hline
-	\end{tabular}
-	\label{hub: instruction handling: call: precompiles: table classifying failures known to the HUB vs. to RAM}
+			\instPVerify{}                    & insufficient gas                               & \toOob                    & $\nothing$                                                        & \multirow{2}{*}{\text{\cite{EIP-7951}, Osaka}}   \\ \hline
+		\end{tabular}
+		}
+		\label{hub: instruction handling: call: precompiles: table classifying failures known to the HUB vs. to RAM}
 	\caption{All justifications for \scenPrcFailureKnownToHub{}'s are done through the \oobMod{} module. Notations such as ``$x = \varnothing$'' are from the \cite{EYP-London}.}
 \end{figure}
 

@@ -22,6 +22,7 @@
 \paragraph*{Account fresh new deployment number.}
 The following set of constraints will be used in \inst{SELFDESTRUCT} to ``wipe'' an existing from the state
 \[
+	\resizebox{.95\linewidth}{!}{$
 	\accFreshNewDeploymentStatusAndNumber{\relof}_{i}
 	\iff
 	\left\{ \begin{array}{lclr}
@@ -29,6 +30,7 @@ The following set of constraints will be used in \inst{SELFDESTRUCT} to ``wipe''
 		\accDeploymentStatus\new   _{i + \relof} & \!\!\! = \!\!\! & 0                                       \\
 		\accDeploymentStatus       _{i + \relof} & \!\!\! = \!\!\! & 0                                        & (\trash) \\
 	\end{array} \right.
+	$}
 \]
 It provides a given address with ``a fresh new identity'' and helps e.g. make previous storage inaccessible.
 
@@ -60,21 +62,25 @@ The following constraints, which span two distinct rows with offsets $\reluo$ an
 \]
 and 
 \[
+	\resizebox{.95\linewidth}{!}{$
 	\accSameAddrAndDepNum  {i}{\reluo}{\reldo}
 	\iff
 	\left\{ \begin{array}{lcl}
 		\multicolumn{3}{l}{\accSameAddr  {i}{\reluo}{\reldo}} \\
 		\accDeploymentNumber_{i + \reluo} 	& \!\!\! = \!\!\! & \accDeploymentNumber\new_{i + \reldo} \\
 	\end{array} \right.
+	$}
 \]
 and
 \[
+	\resizebox{.95\linewidth}{!}{$
 	\accSameAddrDepNumAndDepStage  {i}{\reluo}{\reldo}
 	\iff
 	\left\{ \begin{array}{lcl}
 		\multicolumn{3}{l}{\accSameAddrAndDepNum  {i}{\reluo}{\reldo}} \\
 		\accDeploymentStatus_{i + \reluo} & \!\!\! = \!\!\! & \accDeploymentStatus\new_{i + \reldo} \\
 	\end{array} \right.
+	$}
 \]
 \saNote{}
 These constraints should be applied only when it is known that $\peekAccount_{i + \reluo} = \peekAccount_{i + \reldo} = 1$.
