@@ -51,13 +51,25 @@
 		\]
 		where \locFirstMicroInst is a shorthand defined as follows:
 		\begin{enumerate}
-			\item \If $\locFirstLimbSingleSource = 1$ \Then
-				\begin{enumerate}
-				        \item \If $\locFirstLimbIsFull = 1$ \Then $\locFirstMicroInst = \mmioInstRamToLimbTransplant$
-				        \item \If $\locFirstLimbIsFull = 0$ \Then $\locFirstMicroInst = \mmioInstRamToLimbOneSource$
-				\end{enumerate}
-			\item \If $\locFirstLimbSingleSource = 0$ \Then $\locFirstMicroInst = \mmioInstRamToLimbTwoSource$
-		\end{enumerate}
+				\item \If $\locFirstLimbSingleSource = 1$ \Then
+					\begin{enumerate}
+					        \item
+							\[
+								\If \locFirstLimbIsFull = 1
+								\Then \locFirstMicroInst = \mmioInstRamToLimbTransplant
+							\]
+					        \item
+							\[
+								\If \locFirstLimbIsFull = 0
+								\Then \locFirstMicroInst = \mmioInstRamToLimbOneSource
+							\]
+					\end{enumerate}
+				\item
+					\[
+						\If \locFirstLimbSingleSource = 0
+						\Then \locFirstMicroInst = \mmioInstRamToLimbTwoSource
+					\]
+			\end{enumerate}
 	\def\rowNum{\nppMmuInstRightPaddedWordExtractionValuePT} \item[\underline{Second micro-instruction:}]
 		we impose that 
 		\[ \left\{ \begin{array}{lcl}		
@@ -87,13 +99,22 @@
 			\end{enumerate}
 			\item \If $\locSecondLimbVoid = 0$ \Then
 			\begin{enumerate}
-				\item \If $\locSecondLimbSingleSource = 1$ \Then
-					\begin{enumerate}
-						\item \If $\locSecondLimbPadded = 0$ \Then $\locSecondMicroInst \define \mmioInstRamToLimbTransplant$
-						\item \If $\locSecondLimbPadded = 1$ \Then $\locSecondMicroInst \define \mmioInstRamToLimbOneSource$
-					\end{enumerate}
-				\item \If $\locSecondLimbSingleSource = 0$ \Then $\locSecondMicroInst \define \mmioInstRamToLimbTwoSource$
-			\end{enumerate}
+					\item \If $\locSecondLimbSingleSource = 1$ \Then
+						\begin{enumerate}
+							\item \If $\locSecondLimbPadded = 0$ \Then
+								\[
+									\locSecondMicroInst \define \mmioInstRamToLimbTransplant
+								\]
+							\item \If $\locSecondLimbPadded = 1$ \Then
+								\[
+									\locSecondMicroInst \define \mmioInstRamToLimbOneSource
+								\]
+						\end{enumerate}
+					\item \If $\locSecondLimbSingleSource = 0$ \Then
+						\[
+							\locSecondMicroInst \define \mmioInstRamToLimbTwoSource
+						\]
+				\end{enumerate}
 		\end{enumerate}
 		\saNote{} The \mmioMod{} is going to carry out a second micro-instruction even if the second limb to be extracted is empty i.e. in case $\locSecondLimbVoid \equiv 1$.
 		We have chosen for that instruction to be \mmioInstLimbVanishes{}.

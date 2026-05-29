@@ -9,8 +9,8 @@
 \end{center}
 In other words we are in the most general case of a \inst{CALL}-type instruction that (at the very least) raises no \suxSH{}. 
 Recall from
-section~(\ref{hub: instruction handling: call: peeking flags and nRows no precompiles}) and
-section~(\ref{hub: instruction handling: call: peeking flags and nRows for precompiles first half})
+section~(\ref{hub: instruction handling: call: non stack rows for non precompiles}) and
+section~(\ref{hub: instruction handling: call: partial non stack rows for precompiles})
 that row
 $(i + \callCurrentContextRowOffset)$ is \textbf{always} a context-row and
 $(i + \callMiscRowOffset)$ is \textbf{always} a miscellaneous-row.
@@ -82,7 +82,7 @@ We impose the following constraints:
 		Indeed, given the definitions from
 		section~(\ref{hub: instruction handling: call: trigger: mxp}),
 		section~(\ref{hub: instruction handling: call: trigger: oob}) and
-		section~(\ref{hub: instruction handling: call: trigger: mmu})
+		section~(\ref{hub: instruction handling: call: trigger: stp})
 		all relevant trigger columns \textbf{unconditionally binary}.
 	\item[\underline{Setting \oobMod{} instruction parameters:}]
 		\If $\miscOobFlag_{i + \callMiscRowOffset} = 1$ \Then
@@ -226,9 +226,10 @@ We impose the following constraints:
 				\\
 			\end{array} \right.
 		\]
-		and
-		\[
-			\left\{ \begin{array}{lcl}
+			and
+			\[
+				\resizebox{.95\linewidth}{!}{$
+				\left\{ \begin{array}{lcl}
 				\locCalleeHasEmptyCodeButIsntPrecompile & \define &
 				\left[ \begin{array}{cl}
 					\cdot & \locCalleeIsntPrecompile \\
@@ -248,9 +249,10 @@ We impose the following constraints:
 				% 	\cdot & \locCalleeIsDelegated           \\
 				% 	\cdot & \locDelegateOrCalleeIsDelegated \\
 				% \end{array} \right]
-				% \\
-			\end{array} \right.
-		\]
+					% \\
+				\end{array} \right.
+				$}
+			\]
 		where we used the following ``negations'' shorthands
 		\[
 			\left\{ \begin{array}{lcl}
@@ -389,21 +391,22 @@ We impose the following constraints:
 				= 1 & \Then \!\!\! & \gasCost_{i} = \locStpGasUpfront & (\trash) \\
 			\end{array} \right.
 		\]
-	\item[\underline{Setting \gasNext{}:}]
-		we impose
-		\[
-			\hspace*{-2cm}
-			\left\{ \begin{array}{lclr}
-				\If \locStackStaticx  = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\sanityCheck) \\
+		\item[\underline{Setting \gasNext{}:}]
+			we impose
+			\[
+				\resizebox{.95\linewidth}{!}{$
+				\left\{ \begin{array}{lclr}
+					\If \locStackStaticx  = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\sanityCheck) \\
 				\If \locStackMxpx     = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\sanityCheck) \\
 				\If \locStackOogx     = 1 & \Then \!\!\! & \gasNext_{i} = 0 & (\sanityCheck) \\
 				\If \scenCallAbort _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasNext_{i} = \gasActual_{i} - \locStpGasUpfront + \locStpGasStipend \\
 				\If \scenCallEoa   _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasNext_{i} = \gasActual_{i} - \locStpGasUpfront + \locStpGasStipend \\
-				\If \scenCallSmc   _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasNext_{i} = \gasActual_{i} - \locStpGasUpfront - \locStpGasPoop    \\
-				\If \scenCallPrc   _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasNext_{i} = \ob{TODO!}                                             \\
-			\end{array} \right.
-		\]
-		\saNote{}
+					\If \scenCallSmc   _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasNext_{i} = \gasActual_{i} - \locStpGasUpfront - \locStpGasPoop    \\
+					% \If \scenCallPrc   _{i + \callFirstScenarioRowOffset} = 1 & \Then \!\!\! & \gasNext_{i} = \ob{TODO!}                                             \\
+				\end{array} \right.
+				$}
+			\]
+			\saNote{}
 		Pricing of \inst{CALL}'s to precompiles is far more complex than for other kinds of calls.
 		We will complete the specification of \gasNext{} in case $\scenCallPrc \equiv 1$ in section~(\ref{hub: instruction handling: call: precompile memory operations}). 
 \end{description}

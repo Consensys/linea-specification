@@ -1,12 +1,12 @@
 The purpose of the \textbf{out of bounds module} \oobMod{} is to perform certain comparisons and ``out of bounds'' detection for the \hubMod{} module.
 It only serves as a stepping stone and data formatting step --- all the \emph{actual} work is done by other modules: \addMod{}, \modMod{} and \wcpMod{} more specifically.
 
-What follows is the list of tasks in which the present module helps the \hubMod{}\footnote{These are deliberately vague, full details are in section~(\ref{oob: populating lookups})}:
+What follows is the list of tasks in which the present module helps the \hubMod{}\footnote{These are deliberately vague, full details are in section~(\ref{oob: populating: opcodes})}:
 \begin{description}
 	\item[\underline{Jump-destination pre-vetting:}]
 		(for \inst{JUMP} and \inst{JUMPI} instructions) compare the proposed (program counter) jump destination with the codesize;
 		and determine if a jump is to take place at all for \inst{JUMPI} instructions;
-		see section~(\ref{oob: populating: jump}) and section~(\ref{oob: populating: jumpi});
+		see section~(\ref{oob: populating: opcodes: jump}) and section~(\ref{oob: populating: opcodes: jumpi});
 	\item[\underline{\rdcxSH{} detection:}]
 		(for \inst{RETURNDATACOPY} instructions) perform the following addition and comparison: 
 		\[
@@ -17,54 +17,46 @@ What follows is the list of tasks in which the present module helps the \hubMod{
 			\end{cases}
 		\]
 		or not;
-		see section~(\ref{oob: populating: rdc});
+		see section~(\ref{oob: populating: opcodes: rdc});
 	\item[\underline{Trivial \inst{CALLDATALOAD} detection:}]
 		(for \inst{CALLDATACOPY} instructions) perform the comparison
 		\[
 			\loc{offset} \geq \CDS
 		\]
 		(in which case \inst{CALLDATALOAD} must put $0$ on the stack);
-		see section~(\ref{oob: populating: cdl});
+		see section~(\ref{oob: populating: opcodes: cdl});
 	\item[\underline{Exceptional \inst{CALL}'s:}]
 		detect whether $\loc{value} \neq 0$;
 	\item[\underline{\inst{CALL}-type abort detection:}]
 		detect $\loc{value} > \loc{balance}$, $\loc{callstackdepth} \ge 1024$, $\loc{value} \neq 0$;
-		see section~(\ref{oob: populating: call});
+		see section~(\ref{oob: populating: opcodes: call});
 	\item[\underline{Exceptional \inst{CREATE}'s:}]
 		determine if a \inst{CREATE(2)} instruction's init code is too long (i.e. $(\loc{initcodesize} > \maxInitCodeSizeValue$);
 	\item[\underline{\inst{CREATE}-type abort detection:}]
 		detect $\loc{value} > \loc{balance}$, $\loc{callstackdepth} \ge 1024$, $\locNonce \neq 0$ and $\locCreatorNonce \geq \maxNonce$;
-		see section~(\ref{oob: populating: create});
+		see section~(\ref{oob: populating: opcodes: create});
 	\item[\underline{\sstorexSH{} detection:}]
 		determine if $\loc{gas} \leq G_\text{callstipend} = 2300$;
-		see section~(\ref{oob: populating: sstore});
+		see section~(\ref{oob: populating: opcodes: sstore});
 	\item[\underline{\maxcsxSH{} detection:}]
 		determine if a \inst{RETURN} in a deployment context returns code that is too long (i.e. $(\loc{codesize} > \maxCodeSizeValue$);
-		see section~(\ref{oob: populating: return});
+		see section~(\ref{oob: populating: opcodes: deployment});
 \end{description}
 We furthermore use the \oobMod{} for the pricing of certain precompiles and the testing of certain conditions pertaining to some of the underlying \inst{CALL}'s parameters
 \CDS{} (recall its abbreviation \cds{}) and
 \RAC{} (recall its abbreviation \rac{}.)
 \saNote{} Below we use the \cite{EYP-London}'s notation $I_\textbf{d}$ for call data.
 \begin{description}
-	\item[\underline{\instEcrecover{},
-		\instShaTwo{},
-		\instRipemd{},
-		\instIdentity{},
-		\instEcadd{},
-		\instEcmul{},
-		\instEcpairing{},
-		\instPointEvaluation{},
-		\instBlsGOneAdd{},
-		\instBlsGTwoAdd{},
-		\instBlsMapFpToGOne{},
-		\instBlsMapFpTwoToGTwo{}:}]
-		detect both $\cds \equiv 0$ and $\rac \equiv 0$; 
-	\item[\underline{\instEcrecover{},
-		\instEcadd{},
-		\instEcmul{} and
-		\instPointEvaluation{} pricing:}]
-		performs the comparison
+		\item[]
+			\underline{\instEcrecover{}, \instShaTwo{}, \instRipemd{}, \instIdentity{},}\\
+			\underline{\instEcadd{}, \instEcmul{}, \instEcpairing{}, \instPointEvaluation{},}\\
+			\underline{\instBlsGOneAdd{}, \instBlsGTwoAdd{}, \instBlsMapFpToGOne{},}\\
+			\underline{\instBlsMapFpTwoToGTwo{}:}
+			detect both $\cds \equiv 0$ and $\rac \equiv 0$;
+		\item[]
+			\underline{\instEcrecover{}, \instEcadd{}, \instEcmul{} and}\\
+			\underline{\instPointEvaluation{} pricing:}
+			performs the comparison
 		\[
 			\left\{ \begin{array}{llcrcl}
 				\text{for }\instEcrecover{}       : & \locCalleeGas \leq g_\text{r} & := &  3000 \\
@@ -86,7 +78,7 @@ We furthermore use the \oobMod{} for the pricing of certain precompiles and the 
 				\text{for }\instBlsMapFpTwoToGTwo{} : & \locCalleeGas \leq g_\text{r} & := & 23800 \\
 			\end{array} \right.
 		\]
-		See section~(\ref{oob: generalities: shorthands}) for the definition of \locFixedCds{}.	
+		See section~(\ref{oob: precompiles: bls: fixed size and cost}) for the definition of \locFixedCds{}.	
 	\item[\underline{\instShaTwo{},
 		\instRipemd{} and
 		\instIdentity{}:}]
@@ -104,8 +96,8 @@ We furthermore use the \oobMod{} for the pricing of certain precompiles and the 
 		\]
 	\item[\underline{\instBlsGOneMsm{} and \instBlsGTwoMsm{}:}]
 		verifies that $\| I_\textbf{d} \| \equiv 0 \mod \locMinMsmSize$ and performs the comparison 
-		\[ \locCalleeGas \leq g_\text{r} := \frac{\| I_\textbf{d} \|}{\locMinMsmSize} \cdot \locMsmMultiplicationCost \cdot \frac{\locDiscount}{\prcBlsMultiplicationMultiplier} \]
-		See section~(\ref{oob: generalities: shorthands}) for the definition of \locMinMsmSize{}, \locMsmMultiplicationCost{} and \prcBlsMultiplicationMultiplier{} and section~(\ref{oob: precompiles: bls: msm}) for the definition of \locDiscount{}.
+			\[ \resizebox{.95\linewidth}{!}{$\locCalleeGas \leq g_\text{r} := \frac{\| I_\textbf{d} \|}{\locMinMsmSize} \cdot \locMsmMultiplicationCost \cdot \frac{\locDiscount}{\prcBlsMultiplicationMultiplier}$} \]
+			See section~(\ref{oob: precompiles: bls: msm}) for the definition of \locMinMsmSize{}, \locMsmMultiplicationCost{}, \prcBlsMultiplicationMultiplier{} and \locDiscount{}.
 	\item[\underline{\instEcpairing{}:}]
 		verifies that $\| I_\textbf{d} \| \equiv 0 \mod 192$ and performs the comparison 
 		\[ \locCalleeGas \leq g_\text{r} := 34000 \cdot \frac{\| I_\textbf{d} \|}{192} + 45000 \]

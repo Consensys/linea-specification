@@ -60,7 +60,7 @@ EXTCODEHASH  // 0xad is already warm (for two "reasons") so the cost is 100
              // the output should be 0 still.
 ```
 
-## The target of a successful (value transfering) CALL now exists as witnessed by its EXTCODEHASH and BALANCE 
+## The target of a successful (value transferring) CALL now exists as witnessed by its EXTCODEHASH and BALANCE 
 
 The CALL tries to pay `0x01` Wei so the CALL isn't aborted.
 We transfer **some** value to a nonexistent account (which thus starts existing.) 

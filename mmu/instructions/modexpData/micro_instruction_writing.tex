@@ -9,7 +9,7 @@ We impose the following:
 Recall that in the present case (\mmuInstFlagModexpData{} instruction) the we have
 initially\footnote{i.e. during the pre-processing phase} $\ppTot \equiv \numberOfLimbsForModexpArgumentsAndResult$,
 see~(\ref{mmu: instructions: modexpdata: preprocessing: tot equals 64 initially}),
-and intially\footnote{i.e. on the first micro-instruction-writing row}, again, $\microTlo \equiv 0$,
+and initially\footnote{i.e. on the first micro-instruction-writing row}, again, $\microTlo \equiv 0$,
 see~(\ref{mmu: instructions: modexpdata: initialize: tlo is initially 0}).
 The above therefore enforces that \microTlo{} will count monotonically,
 and without gaps, from $0$ to $\numberOfLimbsForModexpArgumentsAndResult - 1$
@@ -187,13 +187,19 @@ potentially left and/or right zero padded, bytes of data i.e. $\numberOfLimbsFor
 					\end{array} \right.
 				\]
 				where
-				\begin{description}
-					\item[\underline{Defining \locLastMicroInst:}] ---
-						\begin{enumerate}
-							\item \If $\locLastLimbSingleSource = 0$ \Then \( \locLastMicroInst = \mmioInstRamToLimbTwoSource \)
-							\item \If $\locLastLimbSingleSource = 1$ \Then \( \locLastMicroInst = \mmioInstRamToLimbOneSource \)
-						\end{enumerate}
-				\end{description}
+					\begin{description}
+						\item[\underline{Defining \locLastMicroInst:}] ---
+							\begin{enumerate}
+								\item \If $\locLastLimbSingleSource = 0$ \Then
+									\[
+										\locLastMicroInst = \mmioInstRamToLimbTwoSource
+									\]
+								\item \If $\locLastLimbSingleSource = 1$ \Then
+									\[
+										\locLastMicroInst = \mmioInstRamToLimbOneSource
+									\]
+							\end{enumerate}
+					\end{description}
 		\end{description}
 \end{description}
 \saNote{} Let us say a few words on the ``\textbf{multiple nontrivial rows case}'' and in particular let us address the matter of the 

@@ -250,10 +250,10 @@ We impose the following:
 		\saNote{} As we will impose below, for a deployment to trigger the \hashInfoMod{} certain conditions must be met. One of them being that its size parameter be small (in fact: $\leq 24576$.) The above \emph{truncated} size parameter therefore accurately represents the actual size parameter of the instruction (when it matters.)
 \end{description}
 For concreteness we include a table representing the desired behavior of these flags:
-\begin{figure}[!h]
-	\[
-		\hspace*{-2.9cm}
-		\begin{array}{|l|lc||c|c|c|c|c|c|} \hline
+	\begin{figure}[!h]
+		\[
+			\resizebox{.95\linewidth}{!}{$
+			\begin{array}{|l|lc||c|c|c|c|c|c|} \hline
 			\textsc{Scenario}                                                           & \textsc{Exception} &                                                              & \locTriggerMxp & \locTriggerOob  & \locTriggerMmu & \locTriggerHashInfo \\ \hline   \hline
 			\scenReturnException                                                        & \mxpxSH            & (\stackMxpx   _{i            - \locStackRowOffset} \equiv 1) & \oneCell       & \gZero          & \gZero         & \gZero              \\ \hline
 			\scenReturnException                                                        & \oogxSH            & (\stackOogx   _{i            - \locStackRowOffset} \equiv 1) & \oneCell       & \gZero          & \gZero         & \gZero              \\ \hline
@@ -264,10 +264,11 @@ For concreteness we include a table representing the desired behavior of these f
 			\multicolumn{3}{|l||}{\scenReturnFromDeploymentEmptyByteCodeWillRevert    }                                                                                     & \oneCell       & \gZero          & \gZero         & \gZero              \\ \hline
 			\multicolumn{3}{|l||}{\scenReturnFromDeploymentEmptyByteCodeWontRevert    }                                                                                     & \oneCell       & \gZero          & \gZero         & \gZero              \\ \hline
 			\multicolumn{3}{|l||}{\scenReturnFromDeploymentNonemptyByteCodeWillRevert }                                                                                     & \oneCell       & \oneCell        & \oneCell       & \oneCell            \\ \hline
-			\multicolumn{3}{|l||}{\scenReturnFromDeploymentNonemptyByteCodeWontRevert }                                                                                     & \oneCell       & \oneCell        & \oneCell       & \oneCell            \\ \hline
-		\end{array}
-	\]
-	\label{hub: instruction handling: halting: return: desired trigger flags}
+				\multicolumn{3}{|l||}{\scenReturnFromDeploymentNonemptyByteCodeWontRevert }                                                                                     & \oneCell       & \oneCell        & \oneCell       & \oneCell            \\ \hline
+			\end{array}
+			$}
+		\]
+		\label{hub: instruction handling: halting: return: desired trigger flags}
 	\caption{When to trigger different module functionalities.}
 \end{figure}
 
@@ -280,7 +281,7 @@ This is what is done in the following scenarios:
 	\item when $\scenReturnNonemptyDeployment _{i} \equiv 1$ we trigger a \textsc{ram} instruction \textbf{expecting not to detect} an \icpxSH{}.
 \end{enumerate}
 The other use case is for writing to the caller context's \textsc{ram}.
-This is the usecase for \scenReturnFromMessageCallWillTouchRam{}.
+This is the use case for \scenReturnFromMessageCallWillTouchRam{}.
 
 \saNote{} \label{hub: instruction handling: halting: return: why icpx requires an mxp instruction}
 When verifying the presence of a \icpxSH{} there is \emph{a priori} no reason to \emph{also} check for \mxpxSH{}'s, yet the above indicates that the \zkEvm{} does just that.

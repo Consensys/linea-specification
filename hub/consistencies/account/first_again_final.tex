@@ -73,16 +73,26 @@ Before continuing we introduce the following local shorthands
 				\end{enumerate}
 			\item[\underline{At the block       level:}] we impose that
 				\begin{enumerate}[resume]
-					\item
-						\label{hub: consistency: account: first and final: block}
-						\If   $\locAccFullAddress _{i} \neq \locAccFullAddress_{i - 1}$
-						\Then $ \locAccTransitionBlock ~=~ 2 $
-					\item
-						\If   $\order{\relBlockNum}_{i} \neq \order{\relBlockNum}_{i - 1}$
-						\Then $ \locAccTransitionBlock ~=~ 2 $
-					\item
-						\If   $\locAccFullAddress _{i} =    \locAccFullAddress_{i - 1}$ \et $\order{\relBlockNum}_{i} =    \order{\relBlockNum}_{i - 1}$
-						\Then $ \locAccTransitionBlock ~=~ 0 $
+						\item
+							\label{hub: consistency: account: first and final: block}
+							\[
+								\If \locAccFullAddress _{i} \neq \locAccFullAddress_{i - 1}
+								\Then \locAccTransitionBlock ~=~ 2
+							\]
+						\item
+							\[
+								\If \order{\relBlockNum}_{i} \neq \order{\relBlockNum}_{i - 1}
+								\Then \locAccTransitionBlock ~=~ 2
+							\]
+						\item
+							\[
+								\If
+								\left\{ \begin{array}{lcl}
+									\locAccFullAddress _{i} & = & \locAccFullAddress_{i - 1} \\
+									\order{\relBlockNum}_{i} & = & \order{\relBlockNum}_{i - 1}
+								\end{array} \right\}
+								\Then \locAccTransitionBlock ~=~ 0
+							\]
 				\end{enumerate}
 			\item[\underline{At the transaction level:}] we impose that
 				\begin{enumerate}[resume]
@@ -102,7 +112,7 @@ Before continuing we introduce the following local shorthands
 		The implementation may merge constraints
 		(\ref{hub: consistency: account: first and final: conflation}),
 		(\ref{hub: consistency: account: first and final: block}) and
-		(\ref{hub: consistency: account: first and final: transaction}) into a single contraint.
+		(\ref{hub: consistency: account: first and final: transaction}) into a single constraint.
 	\item[\underline{\underline{Final account row (1):}}]
 		\If
 		\[
